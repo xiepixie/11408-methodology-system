@@ -269,17 +269,17 @@ Task:\ Running\arr Blocked\arr Ready.
 \]
 
 \begin{center}
-\begin{tikzpicture}[x=2.90cm,y=1.60cm]
+\begin{tikzpicture}[x=4.50cm,y=1.70cm]
   \node[knode] (fd) at (0,0) {fd = 3\\[-1pt]\scriptsize Process Handle};
   \node[knodep] (file) at (1,0) {Open File\\[-1pt]\scriptsize Offset + Flags};
   \node[persistent] (inode) at (2,0) {Inode\\[-1pt]\scriptsize File Object};
   \node[knode] (va) at (0,-1) {Virtual Page\\[-1pt]\scriptsize VPN Address};
   \node[knodep] (pte) at (1,-1) {PTE\\[-1pt]\scriptsize Mapping + Perm};
   \node[knodeg] (frame) at (2,-1) {Physical Page\\[-1pt]\scriptsize PFN Frame};
-  \draw[relation] (fd) -- node[labelnote,above]{Reference} (file);
-  \draw[relation] (file) -- node[labelnote,above]{Reference} (inode);
-  \draw[relation] (va) -- node[labelnote,above]{Mapping} (pte);
-  \draw[relation] (pte) -- node[labelnote,above]{Mapping} (frame);
+  \draw[relation] (fd) -- node[above=3pt,font=\scriptsize\bfseries,text=purple]{Reference} (file);
+  \draw[relation] (file) -- node[above=3pt,font=\scriptsize\bfseries,text=purple]{Reference} (inode);
+  \draw[relation] (va) -- node[above=3pt,font=\scriptsize\bfseries,text=purple]{Mapping} (pte);
+  \draw[relation] (pte) -- node[above=3pt,font=\scriptsize\bfseries,text=purple]{Mapping} (frame);
 \end{tikzpicture}
 \end{center}
 
@@ -740,7 +740,7 @@ Cost & COW 减少 fork 初始复制；fault 把复制成本推迟到写入 slow 
 综合版不再只画一条调用栈，而同时追踪：\kw{Control、Task State、Data、Reference}。
 
 \begin{center}
-\begin{tikzpicture}[x=2.85cm,y=1.65cm]
+\begin{tikzpicture}[x=4.00cm,y=1.80cm]
   \node[knode] (u) at (0,0) {User Task\\[-1pt]\scriptsize Running State};
   \node[knodep] (fs) at (1,0) {File / VFS\\[-1pt]\scriptsize fd $\to$ Open File};
   \node[knodeg] (pc) at (2,0) {Page Cache\\[-1pt]\scriptsize Cache Miss};
@@ -750,13 +750,13 @@ Cost & COW 减少 fork 初始复制；fault 把复制成本推迟到写入 slow 
   \node[knode] (ready) at (1,-1) {Task Ready\\[-1pt]\scriptsize Run Queue};
   \node[knodeg] (ret) at (0,-1) {User Task\\[-1pt]\scriptsize Data Visible};
 
-  \draw[mainflow] (u) -- node[labelnote,above]{1. Syscall} (fs);
-  \draw[mainflow] (fs) -- node[labelnote,above]{2. Lookup} (pc);
-  \draw[mainflow] (pc) -- node[labelnote,above]{3. Miss} (io);
-  \draw[mainflow] (io) -- node[labelnote,right]{4. Block} (blk);
-  \draw[mainflow] (blk) -- node[labelnote,below]{5. IRQ} (irq);
-  \draw[mainflow] (irq) -- node[labelnote,below]{6. Wakeup} (ready);
-  \draw[mainflow] (ready) -- node[labelnote,below]{7. Return} (ret);
+  \draw[mainflow] (u) -- node[above=3pt,font=\scriptsize\bfseries,text=deepblue]{1. Syscall} (fs);
+  \draw[mainflow] (fs) -- node[above=3pt,font=\scriptsize\bfseries,text=deepblue]{2. Lookup} (pc);
+  \draw[mainflow] (pc) -- node[above=3pt,font=\scriptsize\bfseries,text=deepblue]{3. Miss} (io);
+  \draw[mainflow] (io) -- node[right=4pt,font=\scriptsize\bfseries,text=deepblue]{4. Block} (blk);
+  \draw[mainflow] (blk) -- node[below=3pt,font=\scriptsize\bfseries,text=deepblue]{5. IRQ} (irq);
+  \draw[mainflow] (irq) -- node[below=3pt,font=\scriptsize\bfseries,text=deepblue]{6. Wakeup} (ready);
+  \draw[mainflow] (ready) -- node[below=3pt,font=\scriptsize\bfseries,text=deepblue]{7. Return} (ret);
 \end{tikzpicture}
 \end{center}
 
@@ -883,7 +883,7 @@ Reader\ consumes\arr FreeSpace\arr WakeWriter.
 \section{第 19 章：母题七——Memory Pressure 的一生}
 
 \begin{center}
-\begin{tikzpicture}[x=2.85cm,y=1.65cm]
+\begin{tikzpicture}[x=4.00cm,y=1.80cm]
   \node[knode] (req) at (0,0) {Page Demand\\[-1pt]\scriptsize Alloc / Fault};
   \node[knodeo] (press) at (1,0) {Low Memory\\[-1pt]\scriptsize Pressure Event};
   \node[knodep] (victim) at (2,0) {Select Victim\\[-1pt]\scriptsize Eviction Policy};
@@ -893,13 +893,13 @@ Reader\ consumes\arr FreeSpace\arr WakeWriter.
   \node[knodeg] (free) at (1,-1) {Frame Free\\[-1pt]\scriptsize Capacity Restored};
   \node[knode] (retry) at (0,-1) {Retry Demand\\[-1pt]\scriptsize Continue Exec};
 
-  \draw[mainflow] (req) -- node[labelnote,above]{1. Demand} (press);
-  \draw[mainflow] (press) -- node[labelnote,above]{2. Trigger} (victim);
-  \draw[mainflow] (victim) -- node[labelnote,above]{3. Policy} (type);
-  \draw[mainflow] (type) -- node[labelnote,right]{4. Inspect} (action);
-  \draw[mainflow] (action) -- node[labelnote,below]{5. Reclaim} (io);
-  \draw[mainflow] (io) -- node[labelnote,below]{6. Complete} (free);
-  \draw[mainflow] (free) -- node[labelnote,below]{7. Restored} (retry);
+  \draw[mainflow] (req) -- node[above=3pt,font=\scriptsize\bfseries,text=deepblue]{1. Demand} (press);
+  \draw[mainflow] (press) -- node[above=3pt,font=\scriptsize\bfseries,text=deepblue]{2. Trigger} (victim);
+  \draw[mainflow] (victim) -- node[above=3pt,font=\scriptsize\bfseries,text=deepblue]{3. Policy} (type);
+  \draw[mainflow] (type) -- node[right=4pt,font=\scriptsize\bfseries,text=deepblue]{4. Inspect} (action);
+  \draw[mainflow] (action) -- node[below=3pt,font=\scriptsize\bfseries,text=deepblue]{5. Reclaim} (io);
+  \draw[mainflow] (io) -- node[below=3pt,font=\scriptsize\bfseries,text=deepblue]{6. Complete} (free);
+  \draw[mainflow] (free) -- node[below=3pt,font=\scriptsize\bfseries,text=deepblue]{7. Restored} (retry);
 \end{tikzpicture}
 \end{center}
 
@@ -944,7 +944,7 @@ Cost & 延迟写降低前台延迟，却把持久化成本推迟到 writeback/fs
 \section{第 21 章：母题九——unlink while open}
 
 \begin{center}
-\begin{tikzpicture}[x=2.85cm,y=1.65cm]
+\begin{tikzpicture}[x=4.00cm,y=1.80cm]
   \node[knode] (fd) at (0,0) {fd = 3\\[-1pt]\scriptsize Task Handle};
   \node[knodep] (file) at (1,0) {Open File\\[-1pt]\scriptsize Active Ref};
   \node[persistent] (inode) at (2,0) {Inode Object\\[-1pt]\scriptsize Ref Count > 0};
@@ -953,12 +953,12 @@ Cost & 延迟写降低前台延迟，却把持久化成本推迟到 writeback/fs
   \node[knodered] (unlink) at (3,-1) {unlink("a.txt")\\[-1pt]\scriptsize Remove Dentry};
   \node[knodeg] (alive) at (1,-1) {Object Alive\\[-1pt]\scriptsize Data Retained};
 
-  \draw[relation] (fd) -- node[labelnote,above]{Handle} (file);
-  \draw[relation] (file) -- node[labelnote,above]{Open Ref} (inode);
-  \draw[relation] (name) -- node[labelnote,above]{Name Ref} (inode);
-  \draw[mainflow] (name) -- node[labelnote,right]{Event} (unlink);
-  \draw[danger,densely dashed] (unlink) -- node[labelnote,below]{Drop Name Edge} (alive);
-  \draw[mainflow] (alive) -- node[labelnote,left]{Keep Inode} (file);
+  \draw[relation] (fd) -- node[above=3pt,font=\scriptsize\bfseries,text=purple]{Handle} (file);
+  \draw[relation] (file) -- node[above=3pt,font=\scriptsize\bfseries,text=purple]{Open Ref} (inode);
+  \draw[relation] (name) -- node[above=3pt,font=\scriptsize\bfseries,text=purple]{Name Ref} (inode);
+  \draw[mainflow] (name) -- node[right=4pt,font=\scriptsize\bfseries,text=deepblue]{Event} (unlink);
+  \draw[danger,densely dashed] (unlink) -- node[below=3pt,font=\scriptsize\bfseries,text=deepred]{Drop Name Edge} (alive);
+  \draw[mainflow] (alive) -- node[left=4pt,font=\scriptsize\bfseries,text=deepblue]{Keep Inode} (file);
 \end{tikzpicture}
 \end{center}
 
@@ -992,7 +992,7 @@ Cost & 延迟写降低前台延迟，却把持久化成本推迟到 writeback/fs
 \section{第 23 章：一页式综合决策树}
 
 \begin{center}
-\begin{tikzpicture}[x=2.85cm,y=1.65cm]
+\begin{tikzpicture}[x=4.00cm,y=1.80cm]
   \node[knode] (s) at (0,0) {Snapshot $S$\\[-1pt]\scriptsize $O + R + Q$};
   \node[knodep] (e) at (1,0) {Event Input\\[-1pt]\scriptsize What Happened?};
   \node[knodeg] (m) at (2,0) {Mechanism\\[-1pt]\scriptsize Allowed Actions};
@@ -1002,13 +1002,13 @@ Cost & 延迟写降低前台延迟，却把持久化成本推迟到 writeback/fs
   \node[knodeg] (c) at (1,-1) {Cost Check\\[-1pt]\scriptsize Fast / Slow Path};
   \node[knode] (a) at (0,-1) {Final Answer\\[-1pt]\scriptsize State + Output};
 
-  \draw[mainflow] (s) -- node[labelnote,above]{1. State} (e);
-  \draw[mainflow] (e) -- node[labelnote,above]{2. Trigger} (m);
-  \draw[mainflow] (m) -- node[labelnote,above]{3. Allow} (p);
-  \draw[mainflow] (p) -- node[labelnote,right]{4. Select} (n);
-  \draw[mainflow] (n) -- node[labelnote,below]{5. Update} (i);
-  \draw[mainflow] (i) -- node[labelnote,below]{6. Invariant} (c);
-  \draw[mainflow] (c) -- node[labelnote,below]{7. Cost} (a);
+  \draw[mainflow] (s) -- node[above=3pt,font=\scriptsize\bfseries,text=deepblue]{1. State} (e);
+  \draw[mainflow] (e) -- node[above=3pt,font=\scriptsize\bfseries,text=deepblue]{2. Trigger} (m);
+  \draw[mainflow] (m) -- node[above=3pt,font=\scriptsize\bfseries,text=deepblue]{3. Allow} (p);
+  \draw[mainflow] (p) -- node[right=4pt,font=\scriptsize\bfseries,text=deepblue]{4. Select} (n);
+  \draw[mainflow] (n) -- node[below=3pt,font=\scriptsize\bfseries,text=deepblue]{5. Update} (i);
+  \draw[mainflow] (i) -- node[below=3pt,font=\scriptsize\bfseries,text=deepblue]{6. Invariant} (c);
+  \draw[mainflow] (c) -- node[below=3pt,font=\scriptsize\bfseries,text=deepblue]{7. Cost} (a);
 \end{tikzpicture}
 \end{center}
 
