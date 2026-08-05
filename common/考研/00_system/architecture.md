@@ -14,8 +14,8 @@
 $$
 \boxed{
 \begin{aligned}
-\text{\textbf{Knowledge Plane (理解世界)}} &: \text{Subject} \to \text{Topic} \to \text{Bridge} \to \text{Integration}\\[4pt]
-\text{\textbf{Control Plane (操作模型)}} &: \text{Question Micro-Control} + \text{Exam Macro-Control}\\[4pt]
+\text{\textbf{Knowledge Plane (理解世界)}} &: \text{Subject / Atlas} \to \text{Topic} \to \text{Bridge} \to \text{Integration}\\[4pt]
+\text{\textbf{Control Plane (操作模型)}} &: \text{Question Micro-Control (通用九问)} + \text{Exam Macro-Control}\\[4pt]
 \text{\textbf{Learning Plane (进化闭环)}} &: \text{Observation} \to \text{Diagnosis} \to \text{Hypothesis} \to \text{Candidate} \to \text{Test} \to \text{Promote}\\[4pt]
 \text{\textbf{Publication Plane (发布视图)}} &: \text{Working Knowledge (.md)} \longrightarrow \text{Published Manuals (.tex / .pdf)}
 \end{aligned}
@@ -24,27 +24,35 @@ $$
 
 ---
 
-## 二、 核心解耦原则：二维坐标定位法
+## 二、 知识产品分类 (Knowledge Product Types)
 
-系统中的任何一项知识或规则，都可以用**【横轴：知识粒度】$\times$【纵轴：认知成熟度】**进行唯一定位，彻底消除“四层目录机械混用”的问题。
+正式区分以下 6 种知识产品，不得把所有内容都混同命名为“方法论手册”：
 
-### 1. 横轴：知识粒度 (Granularity Axis)
-- **Subject（学科总图）**：定义学科元概念、全景图与底座模型（如 408 的 `Data -> Program -> Machine -> OS -> Network`）。
-- **Topic（专题）**：深入分析单一步骤或局部机制（如 VM 的 `VA -> PTE -> PA`）。
-- **Bridge（桥梁）**：专门研究两个专题交接处的接口（如 `mmap: VM <-> File`）。
-- **Integration（综合）**：追踪多个机制在同一逻辑过程中的状态流转（如 `read()` 系统调用的跨子系统事件流）。
-
-### 2. 纵轴：认知成熟度 (Maturity Axis)
-- `O (Observation)`：原始现象与错题感知（存放在 `80_evidence/inbox/`）。
-- `H (Hypothesis)`：归因诊断后提出的可证伪假设。
-- `C (Candidate Rule)`：待验证的候选操作规则。
-- `V (Validated)`：经多场景测试验证有效的操作规则。
-- `K (Canonical Core)`：已正式吸收进 Knowledge/Control Plane 的标准定本。
-- `Published`：已编译导出为 `.pdf` 发布视图的稳定状态。
+| 类型 | 核心问题 | 典型稳定性 |
+|---|---|---|
+| **Atlas (学科总图)** | 这门学科的世界长什么样？ | 很稳定 |
+| **Topic Manual (专题手册)** | 单一机制为什么存在、怎样运转？ | 稳定 |
+| **Bridge (桥梁手册)** | 两个专题在哪里交接、谁负责什么？ | 稳定 |
+| **Integration (综合手册)** | 多个机制怎样共同完成一个过程？ | 稳定 |
+| **Practice System (训练系统)** | 做题和考试时怎样判断与行动？ | 持续生长 |
+| **Evidence Base (证据库)** | 哪些观察支持或反驳某条规则？ | 持续增长 |
 
 ---
 
-## 三、 知识归属原则：Canonical Ownership
+## 三、 认知成熟度标记 (Rule Maturity Tags)
+
+内容成熟度与知识粒度是两条独立坐标：
+- `O (Observation)`：原始观察
+- `H (Hypothesis)`：诊断后的假设
+- `C (Candidate)`：待测试候选规则
+- `V (Validated)`：多场景验证有效
+- `K (Canonical Core)`：标准宿主定本
+- `P (Published)`：已发布视图状态
+- `X (Rejected)`：否定废弃记录
+
+---
+
+## 四、 知识归属原则 (Canonical Ownership)
 
 为了防止系统在扩展过程中篇幅暴涨、自我重复：
 
@@ -52,17 +60,22 @@ $$
    - 每个元概念或公式机制只能在一本 Topic/Bridge 手册中被“拥有”（Owns）；
    - 下游手册（Bridge/Integration）或其他学科只能对其进行引用（`Use / Reference`），严禁重复全文解释。
 
-2. **所有权矩阵维护**：
-   - 每次新增概念或重构文档时，必须首先查阅并更新 `00_system/ownership_matrix.md`。
+2. **写作前置检查 5 问**：
+   - 这是 Knowledge、Control、Learning/Evidence 还是 Publication 内容？
+   - 它的粒度是 Subject、Topic、Bridge、Integration，还是 Rule/Case？
+   - 当前 Canonical Owner 是谁？
+   - 本文件是在 Own、Use、Bridge 还是 Integrate？
+   - 修改是否会影响依赖它的其他文档？
+
+3. **台账管理**：
+   - 所有权以 `00_system/ownership_matrix.md` 为唯一台账。
 
 ---
 
-## 四、 存储载体分离原则 (Working Knowledge vs Published View)
+## 五、 渐进式纳管原则 (Progressive Adoption)
 
 - **Markdown (`.md`) = Working Knowledge (工作态知识)**：
-  - 优点：文本易检索、AI 易增删、支持 git 细粒度 diff 与版本追溯、原生 Markdown 链接。
-  - 职责：承载总图、规则、错题诊断、接口定义、候选修改等日常演化内容。
-
+  - 承载总图、规则、错题诊断、接口定义、候选修改等日常演化内容。
 - **LaTeX (`.tex` $\to$ `.pdf`) = Published Handbook (发布态手册)**：
-  - 优点：4 页精排一界一页、TikZ 出版级图形、完美黑白打印与公式排版。
-  - 职责：只保存**已经成熟、准备发布的定本手册**。不随每日临时感悟直接修改 `.tex`，而是通过`inbox` $\to$ `validate` $\to$ `canonical md` $\to$ `tex/pdf` 的发布流水线进行周期性版本修订。
+  - 只保存已经成熟、准备发布的定本手册。
+  - 既有成果在 Bootstrap 阶段不得为了目录整齐而批量盲目搬迁；只在有真实内容修改时迁移。PDF 只能由对应的 Canonical LaTeX 源生成。
