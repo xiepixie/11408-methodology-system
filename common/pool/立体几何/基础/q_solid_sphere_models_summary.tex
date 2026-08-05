@@ -1,0 +1,56 @@
+% =====================================================
+% 题型：外接球与内切球模型总结
+% =====================================================
+% =====================================================
+% 难度：★ (基础)
+% =====================================================
+\newcommand{\qSolidSphereModelsSummaryStem}{%
+  外接球与内切球常见处理方法：
+  \begin{enumerate}[label=(\arabic*)]
+    \item \textbf{补形法}：把几何体补成长方体、正方体、直棱柱等常见几何体，借助整体模型求外接球半径。
+    \item \textbf{平面截球法}：寻找截面圆心以及球心到截面的距离，通过
+      \[
+        R^2=r^2+d^2
+      \]
+      求外接球半径。
+  \end{enumerate}
+
+  其中 $R$ 表示球半径，$r$ 表示截面圆半径或底面外接圆半径，$d$ 表示球心到截面的距离。%
+}
+
+\newcommand{\qSolidSphereModelsSummaryAnswer}{%
+  核心模型：补形法；平面截球法；$R^2=r^2+d^2$。%
+}
+
+\newcommand{\qSolidSphereModelsSummarySolution}{%
+  常用半径公式如下：
+  \[
+    \text{正方体：}\quad R=\frac{\sqrt3}{2}a.
+  \]
+  \[
+    \text{长方体：}\quad R=\frac{\sqrt{a^2+b^2+c^2}}{2}.
+  \]
+  \[
+    \text{正四面体：}\quad R=\frac{\sqrt6}{4}a.
+  \]
+  \[
+    \text{直三棱柱：}\quad R=\sqrt{r^2+\left(\frac h2\right)^2}.
+  \]
+  \[
+    \text{圆柱：}\quad R=\sqrt{r^2+\left(\frac h2\right)^2}.
+  \]
+
+  这些公式本质上都来自同一件事：
+  球心、截面圆心、球面上一点构成直角三角形。%
+}
+
+\newcommand{\qSolidSphereModelsSummaryDiagnosis}{%
+  这是外接球专题的模型页，不作为单题精讲。若学生只背公式而不会画截面，应回到 $R^2=r^2+d^2$ 的直角三角形来源。%
+}
+
+\newcommand{\qSolidSphereModelsSummaryTeachingNotes}{%
+  \item \textbf{使用方式}：适合作为学案公式复习页或专题课开场模型页。
+  \item \textbf{教学重点}：不要让学生孤立记五个公式，要统一到“球心、截面圆心、球面点”的直角三角形。
+  \item \textbf{落实建议}：每讲一个公式，都要求学生指出图中的 $R,r,d$ 分别是哪一段。
+}
+

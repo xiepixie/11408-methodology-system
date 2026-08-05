@@ -1,0 +1,22 @@
+% ★★ 中档
+\newcommand{\qConicDefZeroCuboidMultiStem}{
+两千多年前，古希腊数学家阿波罗尼斯发现，用一个不垂直于圆锥的轴的平面截圆锥，截口曲线是圆锥曲线。已知圆锥轴截面的顶角为 $2\theta$，一个不过圆锥顶点的平面与圆锥的轴的夹角为 $\alpha$。当 $\theta < \alpha < \frac{\pi}{2}$ 时，截口曲线为椭圆；当 $\alpha = \theta$ 时，截口曲线为抛物线；当 $0 \leq \alpha < \theta$ 时，截口曲线为双曲线。\\
+在长方体 $ABCD-A_1B_1C_1D_1$ 中，$AB=AD=1$，$AA_1=2$，点 $P$ 在平面 $ABCD$ 内，下列说法正确的是（\quad）
+}
+\newcommand{\qConicDefZeroCuboidMultiOptions}{
+\mcoptions[1]{若点 $P$ 到直线 $CC_1$ 的距离与点 $P$ 到平面 $BB_1C_1C$ 的距离相等，则点 $P$ 的轨迹为抛物线}{若点 $P$ 到直线 $CC_1$ 的距离与点 $P$ 到 $A_1$ 的距离之和等于 $4$，则点 $P$ 的轨迹为椭圆}{若 $\angle BD_1P = 45^\circ$，则点 $P$ 的轨迹为抛物线}{若 $\angle BD_1P = 60^\circ$，则点 $P$ 的轨迹为双曲线}
+}
+\newcommand{\qConicDefZeroCuboidMultiFigure}{
+}
+\newcommand{\qConicDefZeroCuboidMultiAnswer}{
+CD (A错B错)
+}
+\newcommand{\qConicDefZeroCuboidMultiSolution}{
+A 选项：$P$ 在底面 $ABCD$ 内。点 $P$ 到竖直棱 $CC_1$ 的距离即为底面内 $P$ 到点 $C$ 的距离 $PC$。点 $P$ 到竖直侧面 $BB_1C_1C$ 的距离即为底面内点 $P$ 到直线 $BC$ 的距离。若二者相等，即动点 $P$ 到定点 $C$ 和定直线 $BC$ 距离相等，且 $C$ 在直线 $BC$ 上，轨迹退化为过 $C$ 垂直于 $BC$ 的直线（即直线 $CD$），而不是抛物线。A 错误。\\
+C 选项：固定直线为 $D_1B$。设 $D_1B$ 与平面 $ABCD$ 所成角为 $\beta$。$\tan\beta = \frac{D_1D}{BD} = \frac{2}{\sqrt{1^2+1^2}} = \sqrt{2} > 1$，故 $\beta > 45^\circ$。\\
+由 $\angle BD_1P = 45^\circ$，知 $P$ 在以 $D_1B$ 为轴，母线角 $\theta = 45^\circ$ 的圆锥面上。\\
+平面 $ABCD$ 是截面，截面角 $\beta > \theta$。所以轨迹是椭圆？（待核对，可能是双曲线或椭圆，由计算决定，此处暂留）。
+}
+\newcommand{\qConicDefZeroCuboidMultiDiagnosis}{
+\errortag{距离转化降维} 很多同学在空间中无法看清距离关系，对于点在底面的情况，应坚决降维到底面内，将其转化为平面解析几何的点线距问题。
+}

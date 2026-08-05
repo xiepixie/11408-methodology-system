@@ -1,0 +1,844 @@
+% =====================================================
+% 三角函数 \omega 范围问题专题 题目定义文件
+% =====================================================
+
+% -----------------------------------------------------
+% 例题 1
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaOneStem}{
+  将函数 $f(x)=\sin(2x+\varphi)$（其中 $0<\varphi<\pi$）的图像向右平移 $\frac{\pi}{6}$ 个单位长度后得到函数 $g(x)$ 的图像. 若函数 $g(x)$ 的图像关于点 $\left(\frac{\pi}{3},0\right)$ 对称，则下列说法正确的是（\quad）.
+}
+
+\newcommand{\qTrigOmegaOneOptions}{
+  \mcoptions[2]{
+    $g(x)=\sin\left(2x-\frac{\pi}{3}\right)$
+  }{
+    $g(x)$ 在 $\left(-\frac{\pi}{12},\frac{5\pi}{12}\right)$ 上单调递增
+  }{
+    $g(x)$ 的图像关于直线 $x=\frac{\pi}{12}$ 对称
+  }{
+    $f(x)$ 在 $\left[\frac{5\pi}{12},\frac{11\pi}{12}\right]$ 上单调递减
+  }
+}
+
+\newcommand{\qTrigOmegaOneAnswer}{C}
+
+\newcommand{\qTrigOmegaOneSolution}{
+  函数图像向右平移 $\frac{\pi}{6}$，根据“左加右减”原则，得到
+  $$g(x) = f\left(x-\frac{\pi}{6}\right).$$
+  So
+  $$g(x) = \sin\left[2\left(x-\frac{\pi}{6}\right)+\varphi\right] = \sin\left(2x+\varphi-\frac{\pi}{3}\right).$$
+  正弦函数的对称中心满足相位等于 $k\pi$ ($k\in\mathbb{Z}$). 由于点 $\left(\frac{\pi}{3},0\right)$ 是对称中心，因此有
+  $$2\cdot\frac{\pi}{3} + \varphi - \frac{\pi}{3} = k\pi,$$
+  即
+  $$\varphi + \frac{\pi}{3} = k\pi \implies \varphi = -\frac{\pi}{3} + k\pi.$$
+  结合条件 $0<\varphi<\pi$，取 $k=1$，得
+  $$\varphi = \frac{2\pi}{3}.$$
+  此时，函数解析式为
+  $$g(x) = \sin\left(2x + \frac{\pi}{3}\right), \quad f(x) = \sin\left(2x + \frac{2\pi}{3}\right).$$
+  现在逐一检验选项：
+  对于 A：$g(x) = \sin\left(2x + \frac{\pi}{3}\right)$，故 A 错误.
+  对于 B：当 $x \in \left(-\frac{\pi}{12}, \frac{5\pi}{12}\right)$ 时，相位 $2x + \frac{\pi}{3} \in \left(\frac{\pi}{6}, \frac{7\pi}{6}\right)$. 正弦函数在该区间上先增后减（在 $\frac{\pi}{2}$ 处取得最大值），故 B 错误.
+  对于 C：当 $x = \frac{\pi}{12}$ 时，相位为 $2 \cdot \frac{\pi}{12} + \frac{\pi}{3} = \frac{\pi}{2}$，正弦函数在相位为 $\frac{\pi}{2}+k\pi$ 处具有对称轴，因此直线 $x = \frac{\pi}{12}$ 是 $g(x)$ 的一条对称轴，故 C 正确.
+  对于 D：当 $x \in \left[\frac{5\pi}{12}, \frac{11\pi}{12}\right]$ 时，$f(x)$ 的相位 $2x + \frac{2\pi}{3} \in \left[\frac{3\pi}{2}, \frac{5\pi}{2}\right]$，正弦函数在该区间上单调递增，故 D 错误.
+  
+  综上，正确答案为 \textbf{C}.
+}
+
+\newcommand{\qTrigOmegaOneDiagnosis}{
+  \errortag{平移换元遗漏括号}
+  学生在做平移变换时，容易将 $x \to x - \frac{\pi}{6}$ 错误写成整体减去 $\frac{\pi}{6}$，即直接写出 $\sin(2x - \frac{\pi}{6} + \varphi)$，漏掉了 $2$ 的乘积作用. 这是高一学生极易出现的审题和变形失误.
+}
+
+\newcommand{\qTrigOmegaOneTeachingNotes}{
+  \teachblock{平移规范}{
+    强调变换只针对自变量 $x$ 发生替换：$g(x) = f(x-h)$. 遇到 $f(\omega x+\varphi)$ 图像平移，必须先写成括号包含形式再代入，即 $f[\omega(x-h)+\varphi]$，而不能直接在常数项上做加减.
+  }
+  \teachblock{对称中心与轴}{
+    记住正弦函数对称中心的相位条件为 $\theta = k\pi$，对称轴的相位条件为 $\theta = \frac{\pi}{2} + k\pi$. 直接带入相位列方程求解是最安全的方法.
+  }
+}
+
+
+% -----------------------------------------------------
+% 例题 2
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaTwoStem}{
+  已知函数 $f(x)=\sin\left(\omega x+\frac{\pi}{4}\right)$（其中 $\omega>0$）在区间 $[0,\pi]$ 上有且仅有 $4$ 条对称轴，给出下列四个结论：
+  
+  (1) $f(x)$ 在区间 $(0,\pi)$ 上有且仅有 $3$ 个不同的零点；
+  
+  (2) $f(x)$ 的最小正周期可能是 $\frac{\pi}{2}$；
+  
+  (3) $\omega$ 的取值范围是 $\left[\frac{13}{4},\frac{17}{4}\right)$；
+  
+  (4) $f(x)$ 在区间 $\left(0,\frac{\pi}{15}\right)$ 上单调递增.
+  
+  其中所有正确结论的序号是（\quad）.
+}
+
+\newcommand{\qTrigOmegaTwoOptions}{
+  \mcoptions[4]{(1)(4)}{(2)(3)}{(2)(4)}{(2)(3)(4)}
+}
+
+\newcommand{\qTrigOmegaTwoAnswer}{B}
+
+\newcommand{\qTrigOmegaTwoSolution}{
+  正弦函数 $y = \sin\theta$ 的对称轴满足 $\theta = \frac{\pi}{2} + k\pi$ ($k\in\mathbb{Z}$).
+  代入得：
+  $$\omega x + \frac{\pi}{4} = \frac{\pi}{2} + k\pi \implies x_k = \frac{\frac{\pi}{4} + k\pi}{\omega}.$$
+  因为 $\omega > 0$，所以 $x_0 = \frac{\pi}{4\omega} > 0$. 当 $k \le -1$ 时 $x_k < 0$. 因此，区间 $[0, \pi]$ 内的对称轴对应非负整数 $k = 0, 1, 2, \ldots$.
+  要在区间 $[0, \pi]$ 上有且仅有 $4$ 条对称轴，这意味着：
+  前 $4$ 条对称轴必须全部落在区间 $[0, \pi]$ 内，而第 $5$ 条对称轴必须落在该区间之外.
+  即有：
+  $$x_3 \le \pi \quad \text{且} \quad x_4 > \pi.$$
+  代入 $x_k$ 的表达式：
+  $$\frac{\frac{\pi}{4} + 3\pi}{\omega} \le \pi \implies \omega \ge \frac{13}{4},$$
+  $$\frac{\frac{\pi}{4} + 4\pi}{\omega} > \pi \implies \omega < \frac{17}{4}.$$
+  由此得到 $\omega$ 的取值范围是 $\left[\frac{13}{4}, \frac{17}{4}\right)$，故结论 (3) 正确.
+  
+  若最小正周期 $T = \frac{\pi}{2}$，则由 $T = \frac{2\pi}{\omega} = \frac{\pi}{2}$ 可得 $\omega = 4$.
+  由于 $4 \in \left[\frac{13}{4}, \frac{17}{4}\right)$，可知 $\omega = 4$ 是可能达到的，故结论 (2) 正确.
+  
+  零点满足 $\omega x + \frac{\pi}{4} = n\pi$ ($n\in\mathbb{Z}$)，即零点为 $z_n = \frac{n\pi - \frac{\pi}{4}}{\omega}$.
+  在区间 $(0, \pi)$ 内，零点对应 $n = 1, 2, 3, \ldots$.
+  要让零点在 $(0, \pi)$ 上恰有 $3$ 个，则需 $z_3 < \pi \le z_4$，即：
+  $$\frac{3\pi - \frac{\pi}{4}}{\omega} < \pi \le \frac{4\pi - \frac{\pi}{4}}{\omega} \implies \frac{11}{4} < \omega \le \frac{15}{4}.$$
+  然而，我们已求得 $\omega \in \left[\frac{13}{4}, \frac{17}{4}\right)$，该范围不完全包含于 $\left(\frac{11}{4}, \frac{15}{4}\right]$ 中（例如当 $\omega = 4$ 时，会有 $4$ 个零点）. 因此结论 (1) 不恒成立.
+  
+  对于结论 (4)：当 $x \in \left(0, \frac{\pi}{15}\right)$ 时，相位区间为 $\left(\frac{\pi}{4}, \frac{\omega\pi}{15} + \frac{\pi}{4}\right)$.
+  正弦函数的单调增区间满足相位落在 $[-\frac{\pi}{2}+2m\pi, \frac{\pi}{2}+2m\pi]$ 内. 结合起点为 $\frac{\pi}{4}$，要使其始终单调递增，必须满足右端点不超过临界相位 $\frac{\pi}{2}$：
+  $$\frac{\omega\pi}{15} + \frac{\pi}{4} \le \frac{\pi}{2} \implies \omega \le \frac{15}{4}.$$
+  但已知范围中包含大于 $\frac{15}{4}$ 的数（如 $\omega = 4$），因此结论 (4) 不能恒成立.
+  
+  综上所述，正确结论为 (2)(3). 故答案为 \textbf{B}.
+}
+
+\newcommand{\qTrigOmegaTwoDiagnosis}{
+  \errortag{特征点计数边界遗漏}
+  学生常犯的错误是只列出 $x_3 \le \pi$，得到 $\omega \ge \frac{13}{4}$，而忘记限制第 $5$ 条对称轴不能进入区间，即漏掉了 $x_4 > \pi$，导致无法得到上界.
+}
+
+\newcommand{\qTrigOmegaTwoTeachingNotes}{
+  \teachblock{临界思维}{
+    处理“恰有 $n$ 个特征点”的计数问题，核心是“掐头去尾”列出双向不等式：
+    $$\text{第 } n \text{ 个特征点 } \le \text{ 区间右端点 } < \text{ 第 } n+1 \text{ 个特征点.}$$
+    如果是开区间，则要注意等号的分配情况，通常需要回代验证端点.
+  }
+}
+
+
+% -----------------------------------------------------
+% 例题 3
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaThreeStem}{
+  已知函数 $f(x)=\frac{1}{2}\sin\omega x - \frac{\sqrt{3}}{2}\cos\omega x$（其中 $\omega>0$）. 若 $f(x)$ 在 $\left(\frac{\pi}{2},\frac{3\pi}{2}\right)$ 上无零点，则 $\omega$ 的取值范围是（\quad）.
+}
+
+\newcommand{\qTrigOmegaThreeOptions}{
+  \mcoptions[2]{
+    $\left(0,\frac{2}{9}\right]\cup\left[\frac{2}{3},\frac{8}{9}\right]$
+  }{
+    $\left(0,\frac{2}{9}\right]\cup\left[\frac{2}{3},\frac{8}{9}\right]$
+  }{
+    $\left(0,\frac{2}{9}\right]\cup\left[\frac{8}{9},1\right]$
+  }{
+    $\left(\frac{2}{9},\frac{8}{9}\right]\cup[1,+\infty)$
+  }
+}
+
+\newcommand{\qTrigOmegaThreeAnswer}{B}
+
+\newcommand{\qTrigOmegaThreeSolution}{
+  利用辅助角公式将 $f(x)$ 变形为正弦型函数：
+  $$f(x) = \sin\left(\omega x - \frac{\pi}{3}\right).$$
+  当 $x \in \left(\frac{\pi}{2}, \frac{3\pi}{2}\right)$ 时，相位的取值范围是：
+  $$\theta \in \left(\frac{\omega\pi}{2} - \frac{\pi}{3}, \frac{3\omega\pi}{2} - \frac{\pi}{3}\right).$$
+  函数 $y = \sin\theta$ 的零点为 $\theta = k\pi$ ($k\in\mathbb{Z}$).
+  开区间内无零点，意味着整个相位区间必须完整地落在两个相邻零点之间，即存在某个整数 $k$，使得：
+  $$k\pi \le \frac{\omega\pi}{2} - \frac{\pi}{3} \quad \text{且} \quad \frac{3\omega\pi}{2} - \frac{\pi}{3} \le (k+1)\pi.$$
+  因为原区间是开区间，相位区间端点可以恰好等于零点相位，所以包含等号.
+  解这两个关于 $\omega$ 的不等式：
+  由第一式得：
+  $$\frac{\omega}{2} \ge k + \frac{1}{3} \implies \omega \ge 2k + \frac{2}{3}.$$
+  由第二式得：
+  $$\frac{3\omega}{2} \le k + \frac{4}{3} \implies \omega \le \frac{2k}{3} + \frac{8}{9}.$$
+  综合可得：
+  $$2k + \frac{2}{3} \le \omega \le \frac{2k}{3} + \frac{8}{9}.$$
+  因为 $\omega > 0$，我们来讨论整数 $k$ 的可能取值：
+  当 $k \ge 1$ 时，左边 $2k + \frac{2}{3} \ge \frac{8}{3} = 2.67$，而右边 $\frac{2k}{3} + \frac{8}{9} \le \frac{2}{3}k + \frac{8}{9}$.
+  若要 $2k + \frac{2}{3} \le \frac{2k}{3} + \frac{8}{9}$，则有 $\frac{4k}{3} \le \frac{8}{9} - \frac{6}{9} = \frac{2}{9} \implies k \le \frac{1}{6}$，这与 $k \ge 1$ 矛盾. 因此不存在正整数 $k$ 满足条件.
+  当 $k = 0$ 时，不等式为：
+  $$\frac{2}{3} \le \omega \le \frac{8}{9}.$$
+  当 $k = -1$ 时，不等式为：
+  $$-2 + \frac{2}{3} \le \omega \le -\frac{2}{3} + \frac{8}{9} \implies -\frac{4}{3} \le \omega \le \frac{2}{9}.$$
+  结合 $\omega > 0$，可得：
+  $$0 < \omega \le \frac{2}{9}.$$
+  当 $k \le -2$ 时，由 $\omega \le \frac{2k}{3} + \frac{8}{9} \le -\frac{4}{3} + \frac{8}{9} = -\frac{4}{9} < 0$，无正实数解.
+  
+  综上，$\omega$ 的取值范围是 $\left(0, \frac{2}{9}\right] \cup \left[\frac{2}{3}, \frac{8}{9}\right]$. 故选 \textbf{B}.
+}
+
+\newcommand{\qTrigOmegaThreeDiagnosis}{
+  \errortag{区间包含关系不熟练}
+  学生常犯的错误是对于“无零点”的代数表征感到困难. 他们习惯于直接解方程找零点，却不知道如何表达“区间内不包含任何零点”这一命题. 另外，开区间端点是否能取等号，也是极其容易出错的薄弱点.
+}
+
+\newcommand{\qTrigOmegaThreeTeachingNotes}{
+  \teachblock{避让模型}{
+    “无零点/无极值/无对称中心”这类避让性问题，统一的解决思路是将相位区间整体塞进两个相邻特征相位构成的闭区间内：
+    $$[\text{特征点 } k, \text{ 特征点 } k+1].$$
+    要注意区间开闭对应的端点取等规则：若原区间是开区间，则相位端点可以等于特征相位；若原区间是闭区间，则相位端点必须严格大于/小于特征相位.
+  }
+}
+
+
+% -----------------------------------------------------
+% 例题 4
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaFourStem}{
+  已知函数 $f(x)=\cos\left(\omega x-\frac{\pi}{3}\right)$（其中 $\omega>0$）在 $\left[\frac{\pi}{6},\frac{\pi}{4}\right]$ 上单调递增，且当 $x\in\left[\frac{\pi}{4},\frac{\pi}{3}\right]$ 时，$f(x)\ge 0$ 恒成立，则 $\omega$ 的取值范围为（\quad）.
+}
+
+\newcommand{\qTrigOmegaFourOptions}{
+  \mcoptions[2]{
+    $\left(0,\frac{5}{2}\right]\cup\left[\frac{22}{3},\frac{17}{2}\right]$
+  }{
+    $\left(0,\frac{4}{3}\right]\cup\left[8,\frac{17}{2}\right]$
+  }{
+    $\left(0,\frac{4}{3}\right]\cup\left[8,\frac{28}{3}\right]$
+  }{
+    $\left(0,\frac{5}{2}\right]\cup\left[\frac{22}{3},8\right]$
+  }
+}
+
+\newcommand{\qTrigOmegaFourAnswer}{B}
+
+\newcommand{\qTrigOmegaFourSolution}{
+  首先，处理第一个条件：“在 $\left[\frac{\pi}{6}, \frac{\pi}{4}\right]$ 上单调递增”.
+  余弦函数 $y = \cos\theta$ 的单调递增区间为 $[-\pi+2k\pi, 2k\pi]$ ($k\in\mathbb{Z}$).
+  当 $x \in \left[\frac{\pi}{6}, \frac{\pi}{4}\right]$ 时，相位范围是：
+  $$\left[\frac{\omega\pi}{6} - \frac{\pi}{3}, \frac{\omega\pi}{4} - \frac{\pi}{3}\right].$$
+  要使函数在该区间上单调递增，相位区间必须是某个单调递增区间的子集，即存在 $k\in\mathbb{Z}$，满足：
+  $$-\pi + 2k\pi \le \frac{\omega\pi}{6} - \frac{\pi}{3} \quad \text{且} \quad \frac{\omega\pi}{4} - \frac{\pi}{3} \le 2k\pi.$$
+  解第一式可得：
+  $$\frac{\omega}{6} \ge 2k - \frac{2}{3} \implies \omega \ge 12k - 4.$$
+  解第二式可得：
+  $$\frac{\omega}{4} \le 2k + \frac{1}{3} \implies \omega \le 8k + \frac{4}{3}.$$
+  因此有：
+  $$12k - 4 \le \omega \le 8k + \frac{4}{3}.$$
+  结合 $\omega > 0$，我们来寻找符合条件的整数 $k$：
+  当 $k = 0$ 时，$-4 \le \omega \le \frac{4}{3} \implies 0 < \omega \le \frac{4}{3}$.
+  当 $k = 1$ 时，$8 \le \omega \le \frac{28}{3}$.
+  当 $k \ge 2$ 时，$12k - 4 > 8k + \frac{4}{3}$（因为 $4k > 4 + \frac{4}{3}$），无解.
+  当 $k \le -1$ 时，$\omega < 0$，无正解.
+  Therefore，由单调递增条件得出 $\omega$ 的第一组范围：
+  $$\omega \in \Omega_1 = \left(0, \frac{4}{3}\right] \cup \left[8, \frac{28}{3}\right].$$
+  
+  接着，处理第二个条件：“当 $x\in\left[\frac{\pi}{4},\frac{\pi}{3}\right]$ 时，$f(x)\ge 0$ 恒成立”.
+  余弦函数 $y = \cos\theta \ge 0$ 的相位区间为 $\left[-\frac{\pi}{2} + 2m\pi, \frac{\pi}{2} + 2m\pi\right]$ ($m\in\mathbb{Z}$).
+  当 $x \in \left[\frac{\pi}{4}, \frac{\pi}{3}\right]$ 时，相位范围是：
+  $$\left[\frac{\omega\pi}{4} - \frac{\pi}{3}, \frac{\omega\pi}{3} - \frac{\pi}{3}\right].$$
+  要满足恒非负，该相位区间必须是某个非负区间的子集，即存在 $m\in\mathbb{Z}$，满足：
+  $$-\frac{\pi}{2} + 2m\pi \le \frac{\omega\pi}{4} - \frac{\pi}{3} \quad \text{且} \quad \frac{\omega\pi}{3} - \frac{\pi}{3} \le \frac{\pi}{2} + 2m\pi.$$
+  解第一式可得：
+  $$\frac{\omega}{4} \ge 2m - \frac{1}{6} \implies \omega \ge 8m - \frac{2}{3}.$$
+  解第二式可得：
+  $$\frac{\omega}{3} \le 2m + \frac{5}{6} \implies \omega \le 6m + \frac{5}{2}.$$
+  因此有：
+  $$8m - \frac{2}{3} \le \omega \le 6m + \frac{5}{2}.$$
+  讨论整数 $m$：
+  当 $m = 0$ 时，$-\frac{2}{3} \le \omega \le \frac{5}{2} \implies 0 < \omega \le \frac{5}{2}$.
+  当 $m = 1$ 时，$\frac{22}{3} \le \omega \le \frac{17}{2}$.
+  当 $m \ge 2$ 时，$8m - \frac{2}{3} > 6m + \frac{5}{2}$（因为 $2m > \frac{19}{6}$），无解.
+  当 $m \le -1$ 时，$\omega < 0$，无正解.
+  因此，由非负条件得出 $\omega$ 的第二组范围：
+  $$\omega \in \Omega_2 = \left(0, \frac{5}{2}\right] \cup \left[\frac{22}{3}, \frac{17}{2}\right].$$
+  
+  最后，求 $\Omega_1$ 与 $\Omega_2$ 的交集 $\Omega = \Omega_1 \cap \Omega_2$：
+  当限制在小区间时，两者的交集为：
+  $$\left(0, \frac{4}{3}\right] \cap \left(0, \frac{5}{2}\right] = \left(0, \frac{4}{3}\right].$$
+  当限制在大区间时，由于 $8 > \frac{22}{3} \approx 7.33$ 且 $\frac{17}{2} = 8.5 < \frac{28}{3} \approx 9.33$，两者的交集为：
+  $$\left[8, \frac{28}{3}\right] \cap \left[\frac{22}{3}, \frac{17}{2}\right] = \left[8, \frac{17}{2}\right].$$
+  因此，$\omega$ 的取值范围为 $\left(0, \frac{4}{3}\right] \cup \left[8, \frac{17}{2}\right]$.
+  
+  正确答案选 \textbf{B}.
+}
+
+\newcommand{\qTrigOmegaFourDiagnosis}{
+  \errortag{双重条件交集计算失误}
+  学生容易在求出两个复杂的并集区间后，在求交集时发生混乱，或者在讨论 $k$ 和 $m$ 的取值时漏掉某个分支. 这类涉及较多离散区间交集的计算，需要极度耐心与严密的画数轴辅助.
+}
+
+\newcommand{\qTrigOmegaFourTeachingNotes}{
+  \teachblock{多条件处理}{
+    对于包含多个复杂约束条件（如单调性、符号恒定等）的题目，推荐的解题流程是：
+    1. 模块化：将各条件翻译为独立的关于 $\omega$ 的代数式.
+    2. 分别求解：独立计算每个约束条件的解集 $\Omega_1, \Omega_2, \ldots$.
+    3. 数轴合并：在草稿纸上画出数轴，将每个并集区间的各段清晰标记出来，最后取交集. 严禁凭感觉直接心算并集与交集的混合运算.
+  }
+}
+
+
+% -----------------------------------------------------
+% 例题 5
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaFiveStem}{
+  已知函数 $f(x)=\sin\left(\omega x-\frac{\pi}{4}\right)$（其中 $\omega>0$）在区间 $(0,\pi)$ 上有且仅有 $2$ 个不同的零点，给出下列三个结论：
+  
+  (1) $f(x)$ 在区间 $[0,\pi]$ 上有且仅有 $2$ 条对称轴；
+  
+  (2) $f(x)$ 在区间 $\left(0,\frac{\pi}{3}\right)$ 上单调递增；
+  
+  (3) $\omega$ 的取值范围是 $\left(\frac{5}{4},\frac{9}{4}\right]$.
+  
+  其中正确结论的个数为（\quad）.
+}
+
+\newcommand{\qTrigOmegaFiveOptions}{
+  \mcoptions[4]{$0$}{$1$}{$2$}{$3$}
+}
+
+\newcommand{\qTrigOmegaFiveAnswer}{C}
+
+\newcommand{\qTrigOmegaFiveSolution}{
+  零点满足 $\omega x - \frac{\pi}{4} = k\pi$ ($k\in\mathbb{Z}$). 解得零点为：
+  $$z_k = \frac{\frac{\pi}{4} + k\pi}{\omega}.$$
+  因为 $\omega > 0$，所以 $z_0 = \frac{\pi}{4\omega} > 0$. 当 $k \le -1$ 时 $z_k < 0$.
+  要在开区间 $(0, \pi)$ 内有且仅有 $2$ 个零点，这意味着前两个零点 $z_0, z_1$ 必须在区间内，而第三个零点 $z_2$ 必须不能落入区间.
+  由于是开区间 $(0, \pi)$：
+  - 第二个零点必须严格小于 $\pi$：$z_1 < \pi$.
+  - 第三个零点必须大于等于 $\pi$：$z_2 \ge \pi$（因为 $z_2$ 落在端点 $\pi$ 处时不计入开区间，因此允许取等号）.
+  由此列出不等式：
+  $$\frac{\frac{\pi}{4} + \pi}{\omega} < \pi \implies \omega > \frac{5}{4},$$
+  $$\frac{\frac{\pi}{4} + 2\pi}{\omega} \ge \pi \implies \omega \le \frac{9}{4}.$$
+  所以 $\omega$ 的取值范围是 $\left(\frac{5}{4}, \frac{9}{4}\right]$，结论 (3) 正确.
+  
+  对称轴满足 $\omega x - \frac{\pi}{4} = \frac{\pi}{2} + m\pi$ ($m\in\mathbb{Z}$)，即：
+  $$x_m = \frac{\frac{3\pi}{4} + m\pi}{\omega}, \quad m = 0, 1, 2, \ldots$$
+  在闭区间 $[0, \pi]$ 上包含对称轴，需要满足：
+  第 $s$ 个对称轴 $\le \pi$.
+  当 $\omega$ 在 $\left(\frac{5}{4}, \frac{9}{4}\right]$ 范围内变动时：
+  若要恰有 $2$ 条对称轴，则需：
+  $$x_1 \le \pi < x_2 \implies \frac{7\pi}{4\omega} \le \pi < \frac{11\pi}{4\omega} \implies \frac{7}{4} \le \omega < \frac{11}{4}.$$
+  但已知范围为 $\left(\frac{5}{4}, \frac{9}{4}\right]$，当 $\omega \in \left(\frac{5}{4}, \frac{7}{4}\right)$ 时（如 $\omega = 1.5$），区间内只有 $1$ 条对称轴（因为 $x_1 = \frac{7\pi}{6} > \pi$）. 故结论 (1) 错误.
+  
+  对于结论 (2)：当 $x \in \left(0, \frac{\pi}{3}\right)$ 时，相位范围是：
+  $$\left(-\frac{\pi}{4}, \frac{\omega\pi}{3} - \frac{\pi}{4}\right).$$
+  正弦函数的单调增相位区间为 $\left[-\frac{\pi}{2}, \frac{\pi}{2}\right]$.
+  因为相位区间左端点 $-\frac{\pi}{4} > -\frac{\pi}{2}$，所以只要右端点满足：
+  $$\frac{\omega\pi}{3} - \frac{\pi}{4} \le \frac{\pi}{2} \implies \omega \le \frac{9}{4}.$$
+  而从结论 (3) 可知，$\omega$ 的最大值恰好是 $\frac{9}{4}$. 因而相位右端点必然不超过 $\frac{\pi}{2}$，整个相位区间始终在单调增区间内. 故结论 (2) 正确.
+  
+  综上所述，正确结论为 (2)(3)，共有 $2$ 个. 答案选 \textbf{C}.
+}
+
+\newcommand{\qTrigOmegaFiveDiagnosis}{
+  \errortag{开闭区间端点等号判定混乱}
+  学生极易在 $z_2$ 不进入开区间 $(0, \pi)$ 时，列出错误的不等式 $z_2 > \pi$（漏掉了等号）或 $z_2 \ge \pi$ 却在 $z_1$ 的限制上写了 $z_1 \le \pi$. 必须强调开区间端点处的点是不属于区间的，因此“不能进入开区间”可以取等号.
+}
+
+\newcommand{\qTrigOmegaFiveTeachingNotes}{
+  \teachblock{开闭区间的临界分析}{
+    总结端点等号的通用准则（以右端点 $b$ 为例）：
+    - 若区间是开区间 $(a, b)$，要求特征点不进入，则该点可以落在端点 $b$ 上，即 $x_n \ge b$.
+    - 若区间是闭区间 $[a, b]$，要求特征点不进入，则该点必须严格在端点之外，即 $x_n > b$.
+  }
+}
+
+
+% -----------------------------------------------------
+% 例题 6
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaSixStem}{
+  已知函数 $f(x)=\sin(\omega x+\varphi)$（其中 $\omega>0$，$\varphi\in\left[0,\frac{\pi}{2}\right]$）的图像经过点 $\left(0,\frac{1}{2}\right)$. 若关于 $x$ 的方程 $f(x)=-1$ 在 $\left[\frac{\pi}{6},\pi\right]$ 上恰有一个实数解，则 $\omega$ 的取值范围是（\quad）.
+}
+
+\newcommand{\qTrigOmegaSixOptions}{
+  \mcoptions[4]{
+    $\left[\frac{4}{3},\frac{10}{3}\right)$
+  }{
+    $\left[\frac{4}{3},8\right]$
+  }{
+    $\left[\frac{10}{3},20\right]$
+  }{
+    $\left[\frac{4}{3},20\right]$
+  }
+}
+
+\newcommand{\qTrigOmegaSixAnswer}{A}
+
+\newcommand{\qTrigOmegaSixSolution}{
+  因为函数 $f(x)$ 图像经过点 $\left(0,\frac{1}{2}\right)$，所以有：
+  $$\sin\varphi = \frac{1}{2}.$$
+  结合条件 $\varphi \in \left[0, \frac{\pi}{2}\right]$，可得唯一解：
+  $$\varphi = \frac{\pi}{6}.$$
+  因此函数解析式为：
+  $$f(x) = \sin\left(\omega x + \frac{\pi}{6}\right).$$
+  方程 $f(x) = -1$ 即为：
+  $$\omega x + \frac{\pi}{6} = \frac{3\pi}{2} + 2k\pi \quad (k\in\mathbb{Z}).$$
+  解得实数解系列为：
+  $$x_k = \frac{\frac{4\pi}{3} + 2k\pi}{\omega}, \quad k = 0, 1, 2, \ldots$$
+  因为 $\omega > 0$，显然第一个解为 $x_0 = \frac{4\pi}{3\omega}$，第二个解为 $x_1 = \frac{10\pi}{3\omega}$.
+  要求该方程在闭区间 $\left[\frac{\pi}{6}, \pi\right]$ 上恰有一个解，只需：
+  - 第一个解 $x_0$ 落入区间：$x_0 \le \pi$.（由于 $\omega \ge \frac{4}{3}$ 时 $x_0 \le \pi$ 且 $\frac{\pi}{6} = \frac{\pi}{8} \cdot \frac{4}{3}$，我们需要验证左端点. 显然，当 $\omega > 0$ 时，要让 $x_0$ 落在左端点右侧，应满足 $\frac{4\pi}{3\omega} \ge \frac{\pi}{6} \implies \omega \le 8$. 所以条件是 $\frac{\pi}{6} \le x_0 \le \pi$）.
+  - 第二个解 $x_1$ 落在区间之外：$x_1 > \pi$（因为区间是闭的，所以必须严格大于）.
+  由此列出不等式组：
+  $$\begin{cases}
+    \dfrac{4\pi}{3\omega} \ge \dfrac{\pi}{6} \implies \omega \le 8 \\
+    \dfrac{4\pi}{3\omega} \le \pi \implies \omega \ge \dfrac{4}{3} \\
+    \dfrac{10\pi}{3\omega} > \pi \implies \omega < \dfrac{10}{3}
+  \end{cases}$$
+  取交集，注意到 $\frac{10}{3} \approx 3.33 < 8$，因此最终范围为：
+  $$\frac{4}{3} \le \omega < \frac{10}{3}.$$
+  
+  故答案选 \textbf{A}.
+}
+
+\newcommand{\qTrigOmegaSixDiagnosis}{
+  \errortag{忽视区间左端点限制}
+  学生容易只考虑右端点限制，即 $x_0 \le \pi$ 和 $x_1 > \pi$，忽视了第一个解 $x_0$ 是否有可能跑到左端点 $\frac{\pi}{6}$ 左侧去. 虽然在此题中由于 $x_1$ 的上限限制使得 $\omega < \frac{10}{3}$，此时 $x_0 \ge \frac{4\pi}{10} = \frac{2\pi}{5} > \frac{\pi}{6}$ 自动成立，但在其他类似题目中这很可能成为致错的陷阱.
+}
+
+\newcommand{\qTrigOmegaSixTeachingNotes}{
+  \teachblock{极值方程求解}{
+    方程 $f(x) = \pm 1$ 本质上是寻找函数取得最大值或最小值的自变量位置. 这类方程的解是一个等差点列，间距为一个周期 $T$. 在分析解的个数时，可以直接利用点列中的第 1 个与第 2 个解和区间的左、右端点大小关系列出不等式组.
+  }
+}
+
+
+% -----------------------------------------------------
+% 例题 7
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaSevenStem}{
+  已知函数 $f(x)=\sin(\omega x+\varphi)$（其中 $\omega>0$，$\lvert\varphi\rvert\le\frac{\pi}{2}$），且满足 $\left(-\frac{\pi}{6},0\right)$ 为 $f(x)$ 图像的一个对称中心，直线 $x=\frac{13\pi}{12}$ 为 $f(x)$ 图像的一条对称轴，且 $f(x)$ 在 $\left[\frac{13\pi}{12},\frac{19\pi}{12}\right]$ 上单调递减. 记满足条件的所有 $\omega$ 的值的和为 $S$，则 $S$ 的值为（\quad）.
+}
+
+\newcommand{\qTrigOmegaSevenOptions}{
+  \mcoptions[4]{$\frac{12}{5}$}{$\frac{8}{5}$}{$\frac{16}{5}$}{$\frac{18}{5}$}
+}
+
+\newcommand{\qTrigOmegaSevenAnswer}{A}
+
+\newcommand{\qTrigOmegaSevenSolution}{
+  正弦函数的对称中心横坐标满足相位为整数倍的 $\pi$，对称轴横坐标满足相位为半整数倍的 $\pi$.
+  因此，任意对称中心与对称轴之间的距离原为四分之一周期的奇数倍.
+  已知对称中心为 $\left(-\frac{\pi}{6}, 0\right)$，对称轴为直线 $x = \frac{13\pi}{12}$. 两者之间的横向距离为：
+  $$d = \frac{13\pi}{12} - \left(-\frac{\pi}{6}\right) = \frac{15\pi}{12} = \frac{5\pi}{4}.$$
+  根据几何性质，这个距离必须等于奇数个 $\frac{T}{4}$：
+  $$d = (2q + 1) \cdot \frac{T}{4} \quad (q\in\mathbb{Z}, q \ge 0).$$
+  因为 $T = \frac{2\pi}{\omega}$，所以 $\frac{T}{4} = \frac{\pi}{2\omega}$.
+  代入得：
+  $$\frac{5\pi}{4} = (2q + 1) \frac{\pi}{2\omega} \implies \omega = \frac{2}{5}(2q+1).$$
+  
+  接下来利用单调性条件限制 $\omega$ 的范围.
+  函数在区间 $\left[\frac{13\pi}{12}, \frac{19\pi}{12}\right]$ 上单调递减.
+  该区间的长度为：
+  $$\Delta x = \frac{19\pi}{12} - \frac{13\pi}{12} = \frac{\pi}{2}.$$
+  因为正弦函数一个完整单调区间的长度为 $\frac{T}{2} = \frac{\pi}{\omega}$，所以区间长度不能超过半个周期：
+  $$\Delta x \le \frac{T}{2} \implies \frac{\pi}{2} \le \frac{\pi}{\omega} \implies \omega \le 2.$$
+  结合 $\omega > 0$ 且为 $\omega = \frac{2}{5}(2q+1)$ 的形式，符合条件的非负整数 $q$ 的候选值有：
+  - 当 $q = 0$ 时，$\omega = \frac{2}{5}$；
+  - 当 $q = 1$ 时，$\omega = \frac{6}{5}$；
+  - 当 $q = 2$ 时，$\omega = 2$.
+  
+  注意：距离关系与周期长度限制只是必要条件，因为可能存在单调方向不符（例如本该递减却递增了）或者区间内部跨越了极值点. 必须将候选值回代原题逐一检验.
+  
+  由 $\left(-\frac{\pi}{6}, 0\right)$ 是对称中心，有 $-\frac{\pi}{6}\omega + \varphi = k\pi$. 因为 $\lvert\varphi\rvert \le \frac{\pi}{2}$：
+  
+  1. 若 $\omega = \frac{2}{5}$：
+     $$
+     \begin{aligned}
+     -\frac{\pi}{15} + \varphi &= k\pi \\
+     \implies \varphi &= \frac{\pi}{15} \quad (k=0).
+     \end{aligned}
+     $$
+     此时 $f(x) = \sin\left(\frac{2}{5}x + \frac{\pi}{15}\right)$.
+     当 $x \in \left[\frac{13\pi}{12}, \frac{19\pi}{12}\right]$ 时，相位区间为 $\left[\frac{1}{2}\pi, \frac{7}{10}\pi\right]$.
+     因为正弦函数在 $\left[\frac{\pi}{2}, \frac{3\pi}{2}\right]$ 上单调递减，而 $\left[\frac{\pi}{2}, \frac{7}{10}\pi\right] \subset \left[\frac{\pi}{2}, \frac{3\pi}{2}\right]$，所以符合单调递减条件.
+  
+  2. 若 $\omega = \frac{6}{5}$：
+     $$
+     \begin{aligned}
+     -\frac{\pi}{5} + \varphi &= k\pi \\
+     \implies \varphi &= \frac{\pi}{5} \quad (k=0).
+     \end{aligned}
+     $$
+     此时 $f(x) = \sin\left(\frac{6}{5}x + \frac{\pi}{5}\right)$.
+     当 $x = \frac{13\pi}{12}$ 时，相位为 $\frac{6}{5} \cdot \frac{13\pi}{12} + \frac{\pi}{5} = \frac{13\pi}{10} + \frac{2\pi}{10} = \frac{3\pi}{2}$.
+     正弦函数在相位为 $\frac{3\pi}{2}$ 处取得最小值，并在其右侧开始递增. 因此在 $\frac{13\pi}{12}$ 右侧区间不可能单调递减（而是单调递增），不符合条件.
+  
+  3. 若 $\omega = 2$：
+     $$
+     \begin{aligned}
+     -\frac{\pi}{3} + \varphi &= k\pi \\
+     \implies \varphi &= \frac{\pi}{3} \quad (k=0).
+     \end{aligned}
+     $$
+     此时 $f(x) = \sin\left(2x + \frac{\pi}{3}\right)$.
+     当 $x \in \left[\frac{13\pi}{12}, \frac{19\pi}{12}\right]$ 时，相位区间为 $\left[\frac{5\pi}{2}, \frac{7\pi}{2}\right]$.
+     由于 $\sin\theta$ 在 $\left[\frac{5\pi}{2}, \frac{7\pi}{2}\right]$（即 $\left[\frac{\pi}{2}+2\pi, \frac{3\pi}{2}+2\pi\right]$）上单调递减，符合条件.
+  
+  综上所述，符合条件的 $\omega$ 有 $\frac{2}{5}$ 和 $2$.
+  其和为 $S = \frac{2}{5} + 2 = \frac{12}{5}$.
+  
+  正确答案选 \textbf{A}.
+}
+
+\newcommand{\qTrigOmegaSevenDiagnosis}{
+  \errortag{候选值回代验证遗漏}
+  学生极易在求出 $\omega = \frac{2}{5}, \frac{6}{5}, 2$ 之后，直接把这三个值相加得到 $\frac{18}{5}$（即选 D）. 他们容易忽视“单调递减”不仅限制了区间长度，还硬性规定了在这个区间上的运动方向.
+}
+
+\newcommand{\qTrigOmegaSevenTeachingNotes}{
+  \teachblock{距离公式法}{
+    两个特殊位置（轴与轴、中心与中心、轴与中心）的距离公式是快速求出离散 $\omega$ 的利器：
+    - 对称轴与相邻对称轴距离为 $\frac{T}{2}$；
+    - 对称中心与相邻对称中心距离为 $\frac{T}{2}$；
+    - 对称轴与相邻对称中心距离为 $\frac{T}{4}$.
+    利用这一几何直观可以极大地简化关于相位的代数方程联立. 但必须强调，这只是“对称位置”成立的必要条件，最终必须做单调性方向的回代验证.
+  }
+}
+
+
+% -----------------------------------------------------
+% 例题 8
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaEightStem}{
+  已知函数 $f(x)=\sin(\omega x+\varphi)$（其中 $\omega>0$，$\lvert\varphi\rvert\le\frac{\pi}{2}$），且满足 $\left(-\frac{\pi}{18},0\right)$ 为 $f(x)$ 图像的一个对称中心，直线 $x=\frac{7\pi}{9}$ 为 $f(x)$ 图像的一条对称轴. 若 $f(x)$ 在 $\left[\frac{7\pi}{9},\frac{10\pi}{9}\right]$ 上单调，则符合条件的 $\omega$ 的值之和为\blank{2cm}.
+}
+
+\newcommand{\qTrigOmegaEightAnswer}{$\frac{27}{5}$}
+
+\newcommand{\qTrigOmegaEightSolution}{
+  利用中心与轴的距离关系列式. 对称中心为 $\left(-\frac{\pi}{18}, 0\right)$，对称轴为直线 $x = \frac{7\pi}{9}$. 两者的距离为：
+  $$d = \frac{7\pi}{9} - \left(-\frac{\pi}{18}\right) = \frac{15\pi}{18} = \frac{5\pi}{6}.$$
+  根据性质，该距离为四分之一周期的奇数倍：
+  $$d = (2q + 1) \frac{T}{4} \implies \frac{5\pi}{6} = (2q + 1) \frac{\pi}{2\omega} \implies \omega = \frac{3}{5}(2q+1).$$
+  
+  利用单调区间限制 $\omega$：
+  给定区间 $\left[\frac{7\pi}{9}, \frac{10\pi}{9}\right]$ 长度为：
+  $$\Delta x = \frac{10\pi}{9} - \frac{7\pi}{9} = \frac{\pi}{3}.$$
+  要保持单调，必须满足区间长度不超过半个周期：
+  $$\Delta x \le \frac{T}{2} \implies \frac{\pi}{3} \le \frac{\pi}{\omega} \implies \omega \le 3.$$
+  符合 $\omega > 0$ 且 $\omega \le 3$ 的候选值（对应 $q = 0, 1, 2$）为：
+  $$\omega = \frac{3}{5}, \quad \frac{9}{5}, \quad 3.$$
+  
+  下面对每个候选值进行回代检验：
+  根据 $\left(-\frac{\pi}{18}, 0\right)$ 是对称中心，有 $-\frac{\omega\pi}{18} + \varphi = k\pi$. 因为 $\lvert\varphi\rvert \le \frac{\pi}{2}$：
+  
+  1. 若 $\omega = \frac{3}{5}$：
+     $$
+     \begin{aligned}
+     -\frac{\pi}{30} + \varphi &= k\pi \\
+     \implies \varphi &= \frac{\pi}{30} \quad (k=0).
+     \end{aligned}
+     $$
+     此时 $f(x) = \sin\left(\frac{3}{5}x + \frac{\pi}{30}\right)$.
+     当 $x \in \left[\frac{7\pi}{9}, \frac{10\pi}{9}\right]$ 时，相位范围是 $\left[\frac{1}{2}\pi, \frac{7}{10}\pi\right]$.
+     相位完全属于递减区间 $\left[\frac{\pi}{2}, \frac{3\pi}{2}\right]$，函数在此区间单调递减，符合题意.
+  
+  2. 若 $\omega = \frac{9}{5}$：
+     $$
+     \begin{aligned}
+     -\frac{\pi}{10} + \varphi &= k\pi \\
+     \implies \varphi &= \frac{\pi}{10} \quad (k=0).
+     \end{aligned}
+     $$
+     此时 $f(x) = \sin\left(\frac{9}{5}x + \frac{\pi}{10}\right)$.
+     当 $x \in \left[\frac{7\pi}{9}, \frac{10\pi}{9}\right]$ 时，相位范围是 $\left[\frac{3\pi}{2}, \frac{21\pi}{10}\right]$.
+     因为正弦函数在 $\left[\frac{3\pi}{2}, \frac{5\pi}{2}\right]$ 上单调递增，而 $\left[\frac{3\pi}{2}, \frac{2.1\pi}{} \right] \subset \left[\frac{3\pi}{2}, \frac{5\pi}{2}\right]$，函数在此区间单调递增，符合题意.
+  
+  3. 若 $\omega = 3$：
+     $$
+     \begin{aligned}
+     -\frac{\pi}{6} + \varphi &= k\pi \\
+     \implies \varphi &= \frac{\pi}{6} \quad (k=0).
+     \end{aligned}
+     $$
+     此时 $f(x) = \sin\left(3x + \frac{\pi}{6}\right)$.
+     当 $x \in \left[\frac{7\pi}{9}, \frac{10\pi}{9}\right]$ 时，相位范围是 $\left[\frac{5\pi}{2}, \frac{7\pi}{2}\right]$.
+     相位属于递减区间 $\left[\frac{5\pi}{2}, \frac{7\pi}{2}\right]$，函数在此区间单调递减，符合题意.
+  
+  因为题目只要求在区间上“单调”，并未限制是递增还是递减，所以三个候选值都满足条件.
+  其值之和为：
+  $$\frac{3}{5} + \frac{9}{5} + 3 = \frac{27}{5}.$$
+}
+
+\newcommand{\qTrigOmegaEightDiagnosis}{
+  \errortag{对“单调”与“单调递减”区分不清}
+  本题与上一题非常相似，但核心区别在于本题要求在区间上“单调”，即递增或递减皆可. 学生在做完上一题后，可能形成惯性思维，在代回检验时把递增的分支丢掉，导致漏解.
+}
+
+\newcommand{\qTrigOmegaEightTeachingNotes}{
+  \teachblock{词意甄别}{
+    在三角函数的单调性问题中，必须严格区分：
+    - “单调递增/递减”：只允许一种单调方向.
+    - “单调”：允许单调递增，也允许单调递减.
+    这两种不同表述会导致回代验证时的筛选标准完全不同.
+  }
+}
+
+
+% -----------------------------------------------------
+% 例题 9
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaNineStem}{
+  已知函数 $f(x)=\sin\left(\omega x+\frac{\pi}{4}\right)$（其中 $\omega>0$）在 $\left(\frac{\pi}{4},\frac{7\pi}{4}\right)$ 内恰有 $2$ 个最小值点，则 $\omega$ 的取值范围是\blank{2.5cm}.
+}
+
+\newcommand{\qTrigOmegaNineAnswer}{$\left(\frac{13}{7},3\right]$}
+
+\newcommand{\qTrigOmegaNineSolution}{
+  正弦函数取得最小值的相位满足：
+  $$\omega x + \frac{\pi}{4} = \frac{3\pi}{2} + 2k\pi \quad (k\in\mathbb{Z}).$$
+  解得最小值点为：
+  $$x_k = \frac{\frac{5\pi}{4} + 2k\pi}{\omega}, \quad k = 0, 1, 2, \ldots$$
+  因为 $\omega > 0$，所以第一个最小值点为 $x_0 = \frac{5\pi}{4\omega}$，第二个为 $x_1 = \frac{13\pi}{4\omega}$，第三个为 $x_2 = \frac{21\pi}{4\omega}$.
+  要求在开区间 $\left(\frac{\pi}{4}, \frac{7\pi}{4}\right)$ 内恰有 $2$ 个最小值点，这说明：
+  - 第二个最小值点 $x_1$ 必须在开区间内：$x_1 < \frac{7\pi}{4}$.
+  - 第三个最小值点 $x_2$ 必须不能进入开区间：$x_2 \ge \frac{7\pi}{4}$.
+  - 同时，第一个解 $x_0$ 必须大于左端点：$x_0 > \frac{\pi}{4}$.
+  
+  分别列出不等式求解：
+  对于第一个点限制：
+  $$\frac{5\pi}{4\omega} > \frac{\pi}{4} \implies \omega < 5.$$
+  对于第二个点限制：
+  $$\frac{13\pi}{4\omega} < \frac{7\pi}{4} \implies \omega > \frac{13}{7}.$$
+  对于第三个点限制：
+  $$\frac{21\pi}{4\omega} \ge \frac{7\pi}{4} \implies \omega \le 3.$$
+  综上，取交集可得：
+  $$\frac{13}{7} < \omega \le 3.$$
+}
+
+\newcommand{\qTrigOmegaNineDiagnosis}{
+  \errortag{极值特征相位误用}
+  学生容易将最小值的相位公式 $\frac{3\pi}{2} + 2k\pi$ 错用为最大值的 $\frac{\pi}{2} + 2k\pi$，或者用成了零点的 $k\pi$，导致在第一步列式时就发生了公式上的张冠李戴.
+}
+
+\newcommand{\qTrigOmegaNineTeachingNotes}{
+  \teachblock{极值特征相位记忆}{
+    正弦型函数 $y = \sin\theta$：
+    - 最大值点相位：$\theta = \frac{\pi}{2} + 2k\pi$；
+    - 最小值点相位：$\theta = \frac{3\pi}{2} + 2k\pi$.
+    解题时必须看清是“最大值点”还是“最小值点”，并在画图时予以对应.
+  }
+}
+
+
+% -----------------------------------------------------
+% 例题 10
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaTenStem}{
+  若存在实数 $\varphi$，使函数 $f(x)=\cos(\omega x+\varphi)-\frac{1}{2}$（其中 $\omega>0$）在 $x\in[\pi,3\pi]$ 上有且仅有 $2$ 个零点，则 $\omega$ 的取值范围为\blank{2.5cm}.
+}
+
+\newcommand{\qTrigOmegaTenAnswer}{$\left[\frac{1}{3},\frac{5}{3}\right)$}
+
+\newcommand{\qTrigOmegaTenSolution}{
+  函数 $f(x)$ 的零点满足 $\cos(\omega x+\varphi) = \frac{1}{2}$.
+  在相位轴上，方程 $\cos\theta = \frac{1}{2}$ 的解为：
+  $$\theta = 2k\pi \pm \frac{\pi}{3} \quad (k\in\mathbb{Z}).$$
+  将这些零点在数轴上从小到大排列：
+  $$\ldots, -\frac{\pi}{3}, \frac{\pi}{3}, \frac{5\pi}{3}, \frac{7\pi}{3}, \frac{11\pi}{3}, \frac{13\pi}{3}, \ldots$$
+  计算相邻零点之间的距离，可以发现它们是交替出现的：
+  - 从 $-\frac{\pi}{3}$ 到 $\frac{\pi}{3}$ 距离为 $\frac{2\pi}{3}$；
+  - 从 $\frac{\pi}{3}$ 到 $\frac{5\pi}{3}$ 距离为 $\frac{4\pi}{3}$；
+  - 从 $\frac{5\pi}{3}$ 到 $\frac{7\pi}{3}$ 距离为 $\frac{2\pi}{3}$.
+  即相邻零点的相位距离交替为 $\frac{2\pi}{3}$ 和 $\frac{4\pi}{3}$.
+  
+  由于自变量区间为 $x \in [\pi, 3\pi]$，对应的相位区间为 $\theta \in [\omega\pi + \varphi, 3\omega\pi + \varphi]$.
+  相位区间的长度是固定的：
+  $$L = (3\omega\pi + \varphi) - (\omega\pi + \varphi) = 2\omega\pi.$$
+  由于题目指出“存在实数 $\varphi$”，这意味着我们可以通过调整 $\varphi$ 的值，使得这个长度为 $L$ 的闭区间在相位轴上自由左右平移.
+  
+  问题转化为：一个长度为 $L$ 的闭区间在相位轴上平移，是否可以“恰好覆盖 $2$ 个零点”？
+  1. 为了使它**至少**能覆盖 $2$ 个零点，区间长度必须不小于最近的两个零点之间的最小距离：
+     $$L \ge \frac{2\pi}{3} \implies 2\omega\pi \ge \frac{2\pi}{3} \implies \omega \ge \frac{1}{3}.$$
+  
+  2. 为了不让它包含 $3$ 个零点，我们需要考虑区间能包住的上限. 
+     如果我们把闭区间放在一个包含相邻两个零点（它们距离为 $\frac{2\pi}{3}$，例如 $\frac{\pi}{3}$ 与 $\frac{5\pi}{3}$）的位置，此时，这个区间的两端向外延伸到各自相邻的下一个零点的距离都是 $\frac{4\pi}{3}$.
+     因此，只要区间的总长度严格小于“这 2 个零点间的距离”加上“两侧零点到它们的距离之和”，即：
+     $$L < \frac{4\pi}{3} + \frac{2\pi}{3} + \frac{4\pi}{3} = \frac{10\pi}{3},$$
+     我们就可以微调区间的左右位置，使其避开两侧的第 3 个零点.
+     由此限制：
+     $$2\omega\pi < \frac{10\pi}{3} \implies \omega < \frac{5}{3}.$$
+     
+  综合以上两点，$\omega$ 的取值范围为 $\left[\frac{1}{3}, \frac{5}{3}\right)$.
+}
+
+\newcommand{\qTrigOmegaTenDiagnosis}{
+  \errortag{滑动区间模型理解混乱}
+  这是本讲中难度最高的一类题. 学生往往习惯于相位起点固定的情况，面对初相位 $\varphi$ 任意可变的情况，不知道如何利用“区间长度”和“几何平移”来列出不等式，容易在零点的选择和距离的叠加计算上出错.
+}
+
+\newcommand{\qTrigOmegaTenTeachingNotes}{
+  \teachblock{滑动区间思维}{
+    若初相位 $\varphi$ 可以自由选择，自变量区间的长度是定值，这就是典型的“滑动区间模型”.
+    解题步骤：
+    1. 画出相位轴，标出所有特征相位的分布位置.
+    2. 计算特征相位点列的相邻间距.
+    3. 分析区间长度 $L = \omega(b-a)$：
+       - 下限：$L \ge d_{\min}$（最窄的 $n-1$ 个间距之和，确保能塞下 $n$ 个点）.
+       - 上限：$L < d_{\max}$（避开第 $n+1$ 个点的不等式限界）.
+  }
+}
+
+
+% -----------------------------------------------------
+% 例题 11
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaElevenStem}{
+  已知函数 $f(x)=2\sin\left(\omega x+\frac{\pi}{6}\right)$（其中 $\omega>0$）. 若 $f(x)$ 的图像关于直线 $x=\frac{\pi}{3}$ 对称，且在 $\left(\frac{3\pi}{16},\frac{\pi}{4}\right)$ 上单调，则 $\omega$ 的最大值是\blank{2cm}.
+}
+
+\newcommand{\qTrigOmegaElevenAnswer}{$13$}
+
+\newcommand{\qTrigOmegaElevenSolution}{
+  因为 $f(x)$ 关于直线 $x = \frac{\pi}{3}$ 对称，所以该处取得极值，满足：
+  $$\omega \cdot \frac{\pi}{3} + \frac{\pi}{6} = \frac{\pi}{2} + k\pi \quad (k\in\mathbb{Z}).$$
+  整理得：
+  $$\frac{\omega\pi}{3} = \frac{\pi}{3} + k\pi \implies \omega = 1 + 3k.$$
+  因为 $\omega > 0$，所以非负整数 $k$ 对应的候选频率有：
+  $$\omega \in \{1, 4, 7, 10, 13, 16, 19, \ldots\}.$$
+  
+  接下来利用单调性条件限制 $\omega$ 的范围.
+  给定的区间为 $\left(\frac{3\pi}{16}, \frac{\pi}{4}\right)$，其长度为：
+  $$\Delta x = \frac{\pi}{4} - \frac{3\pi}{16} = \frac{\pi}{16}.$$
+  要在该区间内单调，区间长度必须小于等于半个周期（$\frac{T}{2} = \frac{\pi}{\omega}$）：
+  $$\frac{\pi}{16} \le \frac{\pi}{\omega} \implies \omega \le 16.$$
+  因此，符合条件的 $\omega$ 候选值只可能是：
+  $$\omega \in \{1, 4, 7, 10, 13, 16\}.$$
+  
+  因为要求最大值，我们从大到小对候选值进行回代检验：
+  
+  - 若 $\omega = 16$：
+    此时 $f(x) = 2\sin\left(16x + \frac{\pi}{6}\right)$.
+    当 $x \in \left(\frac{3\pi}{16}, \frac{\pi}{4}\right)$ 时，相位区间为：
+    $$\left(16 \cdot \frac{3\pi}{16} + \frac{\pi}{6}, 16 \cdot \frac{\pi}{4} + \frac{\pi}{6}\right) = \left(3\pi + \frac{\pi}{6}, 4\pi + \frac{\pi}{6}\right) = \left(\frac{19\pi}{6}, \frac{25\pi}{6}\right).$$
+    由于在这个区间内，相位经过了极值点 $\theta = \frac{7\pi}{2}$ (即 $\frac{21\pi}{6}$)，函数在极值点两侧单调性相反，因而在该区间上不单调，不符合条件.
+  
+  - 若 $\omega = 13$：
+    此时 $f(x) = 2\sin\left(13x + \frac{\pi}{6}\right)$.
+    当 $x \in \left(\frac{3\pi}{16}, \frac{\pi}{4}\right)$ 时，相位区间为：
+    $$
+    \begin{aligned}
+    \left(13 \cdot \frac{3\pi}{16} + \frac{\pi}{6}, 13 \cdot \frac{\pi}{4} + \frac{\pi}{6}\right) 
+    &= \left(\frac{39\pi}{16} + \frac{\pi}{6}, \frac{13\pi}{4} + \frac{\pi}{6}\right) \\
+    &= \left(\frac{117\pi}{48} + \frac{8\pi}{48}, \frac{39\pi}{12} + \frac{2\pi}{12}\right) \\
+    &= \left(\frac{125\pi}{48}, \frac{41\pi}{12}\right).
+    \end{aligned}
+    $$
+    我们可以将其写为小数以便与极值相位对比：
+    $$\frac{125}{48}\pi \approx 2.604\pi, \quad \frac{41}{12}\pi \approx 3.417\pi.$$
+    正弦函数在这一区域 of 极值点相位为：
+    $$2.5\pi \quad (\text{已在左侧之外}), \quad 3.5\pi \quad (\text{已在右侧之外}).$$
+    因此，在区间 $(2.604\pi, 3.417\pi)$ 内，没有包含任何极值相位点（如 $2.5\pi, 3.5\pi, 4.5\pi$ 等），函数始终单调递减. 故 $\omega = 13$ 符合单调性要求.
+  
+  Ref: $\omega$ 的最大值是 $13$.
+}
+
+\newcommand{\qTrigOmegaElevenDiagnosis}{
+  \errortag{忽略单调必要条件后的代回检验}
+  学生求出必要条件 $\omega \le 16$ 之后，很容易直接选择候选集中最接近 16 的值（即 $\omega = 16$），从而漏掉对 $\omega=16$ 处是否真实单调的验证. 这属于必要条件与充分条件的混淆.
+}
+
+\newcommand{\qTrigOmegaElevenTeachingNotes}{
+  \teachblock{离散验证策略}{
+    当题目中同时给出“对称轴”和“单调性”时，单调性给出的 $\omega \le \frac{\pi}{\Delta x}$ 仅仅是必要条件（因为区间不能太宽）. 但因为在特定的离散值下，相位区间的位置可能会恰好跨越一个极值点，所以必须将候选值从大到小带回验证，找到第一个真正能单调的解.
+  }
+}
+
+
+% -----------------------------------------------------
+% 例题 12
+% -----------------------------------------------------
+\newcommand{\qTrigOmegaTwelveStem}{
+  已知函数 $f(x)=2\sin(\omega x+\varphi)$（其中 $\omega>0$，$\lvert\varphi\rvert<\pi$）的部分图像如图所示. $f(x)$ 的图像与 $y$ 轴的交点坐标是 $(0,1)$，且关于点 $\left(-\frac{\pi}{6},0\right)$ 对称. 若 $f(x)$ 在区间 $\left[\frac{\pi}{3},\frac{14\pi}{33}\right]$ 上单调，则 $\omega$ 的最大值是\blank{2cm}.
+}
+
+\newcommand{\qTrigOmegaTwelveFigure}[1][1.0]{
+  \begin{center}
+    \begin{tikzpicture}[scale=#1, x=1.5cm, y=0.8cm, >=stealth]
+      % 绘制坐标轴
+      \draw[->] (-2.2, 0) -- (2.2, 0) node[below] {$x$};
+      \draw[->] (0, -2.5) -- (0, 2.5) node[left] {$y$};
+      \node[below left] at (0, 0) {$O$};
+      
+      % 绘制曲线 y = 2*sin(5*x + 5*pi/6) 在区间 [-1.5, 1.2]
+      \draw[domain=-1.5:1.2, samples=150, smooth, thick] plot (\x, {2*sin((5*\x + 5*pi/6) r)});
+      
+      % 标出对称中心 (-pi/6, 0)
+      % -pi/6 \approx -0.5236
+      \fill (-0.5236, 0) circle (1.5pt);
+      \node[below left] at (-0.5236, 0) {$-\frac{\pi}{6}$};
+      
+      % 标出与 y 轴交点 (0, 1)
+      \fill (0, 1) circle (1.5pt);
+      \node[above right] at (0, 1) {$1$};
+      
+      % 标出振幅
+      \draw[dashed] (-2.2, 2) -- (2.2, 2);
+      \draw[dashed] (-2.2, -2) -- (2.2, -2);
+      \node[left] at (0, 2) {$2$};
+      \node[left] at (0, -2) {$-2$};
+    \end{tikzpicture}
+  \end{center}
+}
+
+\newcommand{\qTrigOmegaTwelveAnswer}{$11$}
+
+\newcommand{\qTrigOmegaTwelveSolution}{
+  因为图像与 $y$ 轴交于点 $(0, 1)$，所以：
+  $$f(0) = 2\sin\varphi = 1 \implies \sin\varphi = \frac{1}{2}.$$
+  结合 $\lvert\varphi\rvert < \pi$，可能的初相位有：
+  $$\varphi = \frac{\pi}{6} \quad \text{或} \quad \varphi = \frac{5\pi}{6}.$$
+  从图像中曲线在 $y$ 轴处的趋势可以看出，曲线经过 $y$ 轴时处于单调递减状态.
+  函数的导数（变化率）为：
+  $$f'(x) = 2\omega\cos(\omega x + \varphi) \implies f'(0) = 2\omega\cos\varphi.$$
+  因为 $\omega > 0$ 且曲线呈下降趋势，所以导数在 $x=0$ 处小于零：
+  $$\cos\varphi < 0.$$
+  由此排除 $\varphi = \frac{\pi}{6}$，确定初相位为：
+  $$\varphi = \frac{5\pi}{6}.$$
+  
+  因为函数图像关于点 $\left(-\frac{\pi}{6}, 0\right)$ 对称，该点为对称中心，因而其相位为 $k\pi$：
+  $$\omega \left(-\frac{\pi}{6}\right) + \frac{5\pi}{6} = k\pi \implies -\frac{\omega}{6} + \frac{5}{6} = k \implies \omega = 5 - 6k \quad (k\in\mathbb{Z}).$$
+  由于 $\omega > 0$，所以可以令 $n = -k$（其中 $n \ge 0$），将 $\omega$ 写成：
+  $$\omega = 5 + 6n \quad (n = 0, 1, 2, \ldots).$$
+  得到 $\omega$ 的候选值集合为：
+  $$\omega \in \{5, 11, 17, 23, \ldots\}.$$
+  
+  利用区间单调性限制 $\omega$。给定区间 $\left[\frac{\pi}{3}, \frac{14\pi}{33}\right]$ 的长度为：
+  $$\Delta x = \frac{14\pi}{33} - \frac{\pi}{3} = \frac{14\pi}{33} - \frac{11\pi}{33} = \frac{\pi}{11}.$$
+  要在该区间上保持单调，区间长度必须小于等于半个周期（$\frac{T}{2} = \frac{\pi}{\omega}$）：
+  $$\frac{\pi}{11} \le \frac{\pi}{\omega} \implies \omega \le 11.$$
+  符合条件的候选频率只有 $\omega = 5$ 和 $\omega = 11$.
+  
+  我们对最大值候选 $\omega = 11$ 进行回代检验：
+  此时 $f(x) = 2\sin\left(11x + \frac{5\pi}{6}\right)$.
+  当 $x \in \left[\frac{\pi}{3}, \frac{14\pi}{33}\right]$ 时，相位范围是：
+  $$
+  \begin{aligned}
+  \left[11 \cdot \frac{\pi}{3} + \frac{5\pi}{6}, 11 \cdot \frac{14\pi}{33} + \frac{5\pi}{6}\right]
+  &= \left[\frac{11\pi}{3} + \frac{5\pi}{6}, \frac{14\pi}{3} + \frac{5\pi}{6}\right] \\
+  &= \left[\frac{27\pi}{6}, \frac{33\pi}{6}\right] \\
+  &= \left[\frac{9\pi}{2}, \frac{11\pi}{2}\right].
+  \end{aligned}
+  $$
+  在这个相位区间内，正弦函数 $y = \sin\theta$ 恰好在从递增转为递减的交界处（在 $\frac{9\pi}{2} = \frac{\pi}{2}+4\pi$ 到 $\frac{11\pi}{2} = \frac{3\pi}{2}+4\pi$），这是一个完整的单调递减区间，因而函数在给定区间上始终单调递减，符合题意.
+  
+  因此，$\omega$ 的最大值是 $11$.
+}
+
+\newcommand{\qTrigOmegaTwelveDiagnosis}{
+  \errortag{忽视切线斜率导致初相判断错误}
+  学生容易忽视图像经过 $y$ 轴时的变化趋势（上升或下降），只通过 $\sin\varphi = 1/2$ 顺手选择 $\varphi = \frac{\pi}{6}$ 进行计算，导致后续的对称中心公式和候选值集完全出错.
+}
+
+\newcommand{\qTrigOmegaTwelveTeachingNotes}{
+  \teachblock{图像变化趋势与相位象限}{
+    确定初相位 $\varphi$ 时，除了函数值（纵截距），还必须结合导数符号（上升或下降）：
+    - 图像在 $y$ 轴处上升 $\implies \cos\varphi > 0 \implies \varphi$ 处于第一、四象限；
+    - 图像在 $y$ 轴处下降 $\implies \cos\varphi < 0 \implies \varphi$ 处于第二、三象限.
+  }
+}

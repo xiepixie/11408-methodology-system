@@ -1,0 +1,234 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[student]{../../../common/ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 三角函数\_公式推导与几何直观 学案}
+\rhead{\small 高一同步 / 高三高考复习}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\sessionformulas}{%
+  \arrayrulecolor{rulecolor}
+  \begin{tabularx}{\textwidth}{p{3.2cm}X}
+  \toprule[1.2pt]
+  诱导公式 & 
+  $\sin\left(\frac{\pi}{2}+\alpha\right) = \fblank[3cm]{\cos\alpha}$ \quad 
+  $\cos\left(\frac{\pi}{2}+\alpha\right) = \fblank[3cm]{-\sin\alpha}$ \\ \cmidrule{2-2}
+  & $\sin(\pi+\alpha) = \fblank[3cm]{-\sin\alpha}$ \quad 
+  $\cos(\pi+\alpha) = \fblank[3cm]{-\cos\alpha}$ \\ \midrule
+  两角和与差 & 
+  $\sin(\alpha+\beta) = \fblank[5.5cm]{\sin\alpha\cos\beta+\cos\alpha\sin\beta}$ \\ \cmidrule{2-2}
+  & $\cos(\alpha+\beta) = \fblank[5.5cm]{\cos\alpha\cos\beta-\sin\alpha\sin\beta}$ \\ \cmidrule{2-2}
+  & $\cos(\alpha-\beta) = \fblank[5.5cm]{\cos\alpha\cos\beta+\sin\alpha\sin\beta}$ \\ \midrule
+  二倍角公式 & 
+  $\sin 2\alpha = \fblank[4.5cm]{2\sin\alpha\cos\alpha}$ \\ \cmidrule{2-2}
+  & $\cos 2\alpha = \fblank[4.5cm]{\cos^2\alpha-\sin^2\alpha} = \fblank[4.5cm]{2\cos^2\alpha-1} = \fblank[4.5cm]{1-2\sin^2\alpha}$ \\ \cmidrule{2-2}
+  & $\tan 2\alpha = \fblank[4.5cm]{\frac{2\tan\alpha}{1-\tan^2\alpha}}$ \\ \midrule
+  降幂与半角 & 
+  $\sin^2\alpha = \fblank[4.5cm]{\frac{1-\cos 2\alpha}{2}}$ \quad 
+  $\cos^2\alpha = \fblank[4.5cm]{\frac{1+\cos 2\alpha}{2}}$ \\ \cmidrule{2-2}
+  & $\sin\frac{\alpha}{2} = \fblank[4.5cm]{\pm\sqrt{\frac{1-\cos\alpha}{2}}}$ \quad 
+  $\cos\frac{\alpha}{2} = \fblank[4.5cm]{\pm\sqrt{\frac{1+\cos\alpha}{2}}}$ \\ \midrule
+  积化和差 & 
+  $\sin\alpha\cos\beta = \fblank[5.5cm]{\frac{1}{2}[\sin(\alpha+\beta)+\sin(\alpha-\beta)]}$ \\ \cmidrule{2-2}
+  & $\cos\alpha\cos\beta = \fblank[5.5cm]{\frac{1}{2}[\cos(\alpha+\beta)+\cos(\alpha-\beta)]}$ \\ \cmidrule{2-2}
+  & $\sin\alpha\sin\beta = \fblank[5.5cm]{\frac{1}{2}[\cos(\alpha-\beta)-\cos(\alpha+\beta)]}$ \\ \midrule
+  和差化积 & 
+  $\sin x + \sin y = \fblank[5.5cm]{2\sin\frac{x+y}{2}\cos\frac{x-y}{2}}$ \\ \cmidrule{2-2}
+  & $\cos x - \cos y = \fblank[5.5cm]{-2\sin\frac{x+y}{2}\sin\frac{x-y}{2}}$ \\ \midrule
+  辅助角公式 &
+  $a\sin x + b\cos x = \fblank[5.5cm]{\sqrt{a^2+b^2}\sin(x+\varphi)}$ （其中 $\tan\varphi = \fblank[2cm]{\frac{b}{a}}$）\\ \midrule
+  万能公式 &
+  $\sin\alpha = \fblank[4.5cm]{\frac{2\tan\frac{\alpha}{2}}{1+\tan^2\frac{\alpha}{2}}}$ \quad 
+  $\cos\alpha = \fblank[4.5cm]{\frac{1-\tan^2\frac{\alpha}{2}}{1+\tan^2\frac{\alpha}{2}}}$ \\ \midrule
+  同角基本关系 &
+  $\sin^2\alpha + \cos^2\alpha = \fblank[1.5cm]{1}$ \quad
+  $\frac{1}{\cos^2\theta} = 1 + \tan^2\theta$ \\
+  \bottomrule[1.2pt]
+  \end{tabularx}
+}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 三角函数\_公式推导与几何直观 学案}\\
+  \vspace{0.5em}
+  姓名：\blank{2.6cm}
+  \quad
+  日期：\blank{2.6cm}
+  \quad
+  时长：120 分钟
+\end{center}
+
+\section{本讲目标}
+
+\begin{itemize}[itemsep=0.3em]
+  \item 理解诱导公式的几何对称本质，掌握“奇变偶不变，符号看象限”的底层逻辑。
+  \item 掌握两角和差公式的“旋转坐标系法”与“向量点积法”推导，能复述推导步骤与几何直观。
+  \item 建立三角公式的“衍生家谱树”，能够自主推导二倍角、半角、降幂、积化和差、和差化积公式。
+  \item 掌握辅助角公式的代数与几何投影意义，能熟练确定辅助角的值。
+  \item 掌握万能公式的代数推导与“直角三角形记忆机制”，深刻理解倒数平方关系在含切函数变形中的应用。
+\end{itemize}
+
+\section{公式默写与自查}
+\begingroup
+\large
+\renewcommand{\arraystretch}{1.55}
+\linespread{1.35}\selectfont
+\showpromptfalse % 学案默认不显示答案，供默写自查
+\sessionformulas
+\endgroup
+
+\newpage
+
+\section{课堂核心推导突破}
+
+\subsection{例题 1：诱导公式的单位圆对称性直观展示与推导}
+
+\sidefigureproblem{0.62}{
+  \studentproblem{1}
+  \qTrigInductionStem
+}{
+  \qTrigInductionFigure[0.9]
+}
+
+\answerblank[9.5cm]{几何直观与逻辑推导：}
+
+\studentthink{
+  \item 所谓的“奇变偶不变”中的“奇、偶”指的是哪个角中的什么项？
+  \item “符号看象限”时，如何判定相应角的象限？如果 $\alpha$ 是分度角（例如钝角），这一法则是否仍然适用？
+  \item 从几何全等三角形的视角来看，为什么 $\frac{\pi}{2}+\alpha$ 对应的点坐标会发生横纵分量的长度对调与符号变化？
+}
+
+\newpage
+
+\subsection{例题 2：两角和差公式的双重几何与向量推导}
+
+\studentproblem{2}
+\qTrigAdditionDerivationStem
+
+\vspace{0.5em}
+\sidefigureproblem{0.62}{
+  \textbf{(1) 旋转坐标系法：}
+  
+  在右侧建立基于基底向量 $\mathbf{e}_1 = (\cos\alpha,\sin\alpha)$ 与 $\mathbf{e}_2 = (-\sin\alpha,\cos\alpha)$ 的新直角坐标系。
+  
+  请写出点 $Q$ 在新旧坐标系下的坐标表示，并对比得到和角公式。
+}{
+  \qTrigRotationFigure[0.9]
+}
+
+\answerblank[11.5cm]{新坐标系法推导过程：}
+
+\newpage
+
+\sidefigureproblem{0.62}{
+  \textbf{(2) 向量点积法：}
+  
+  在右侧标准坐标系中，设 $\mathbf{u}=(\cos\alpha,\sin\alpha)$ 与 $\mathbf{v}=(\cos\beta,\sin\beta)$，它们的夹角为 $\alpha-\beta$。
+  
+  请通过点积的代数与几何双重定义，推导差角公式，并讨论如何由此推出和角公式。
+}{
+  \qTrigDotProductFigure[0.9]
+}
+
+\answerblank[11.5cm]{向量点积法推导过程：}
+
+\studentthink{
+  \item 在旋转坐标系法中，新基底向量 $\mathbf{e}_2$ 是由 $\mathbf{e}_1$ 逆时针旋转 $90^\circ$ 得到的，它的坐标表示 $(-\sin\alpha, \cos\alpha)$ 在数学上是如何推得的？
+  \item 点积法在推导两角差的余弦公式 $\cos(\alpha-\beta)$ 时，是否要求 $\alpha > \beta$？它的几何限制和代数通用性如何？
+}
+
+\newpage
+
+\subsection{例题 3：二倍角、半角与降幂公式的代数衍生推导}
+
+\sidefigureproblem{0.62}{
+  \studentproblem{3}
+  \qTrigDoubleHalfStem
+}{
+  \qTrigFormulaTreeFigure[0.7]
+}
+
+\answerblank[14.5cm]{二倍角、半角与降幂公式推导过程：}
+
+\studentthink{
+  \item 余弦二倍角公式有三种表现形式，在求导或三角积分、消常数项（如 $1+\cos 2\alpha$）时，应采取什么选择策略？
+  \item 半角公式中 $\sin\frac{\alpha}{2} = \pm\sqrt{\frac{1-\cos\alpha}{2}}$ 的正负号如何决定？是否只要已知 $\cos\alpha$ 就能唯一确定其正负？
+}
+
+\newpage
+
+\subsection{例题 4：积化和差与和差化积公式的对称换元推导}
+
+\studentproblem{4}
+\qTrigProductSumStem
+
+\answerblank[14.5cm]{积化和差与和差化积推导过程：}
+
+\studentthink{
+  \item 积化和差与和差化积是一对互逆过程。为什么和差化积公式中会自然产生“半和角” $\frac{x+y}{2}$ 与“半差角” $\frac{x-y}{2}$？它们的几何直观是什么？
+  \item 和差化积公式中 $\cos x - \cos y = -2\sin\frac{x+y}{2}\sin\frac{x-y}{2}$，这个负号代表了怎样的函数单调性或数值关系？
+}
+
+\newpage
+
+\subsection{例题 5：辅助角公式的几何投影与代数推导}
+
+\sidefigureproblem{0.62}{
+  \studentproblem{5}
+  \qTrigAuxiliaryStem
+}{
+  \qTrigAuxiliaryFigure[0.95]
+}
+
+\answerblank[14.5cm]{辅助角公式推导过程：}
+
+\studentthink{
+  \item 在辅助角公式 $a\sin x + b\cos x = \sqrt{a^2+b^2}\sin(x+\varphi)$ 中，辅助角 $\varphi$ 的值是如何由点 $(a, b)$ 所在的象限唯一确定的？
+  \item 若原式为 $a\sin x - b\cos x$ 或 $a\cos x - b\sin x$，该如何构造辅助角进行变形？
+}
+
+\newpage
+
+\subsection{例题 6：万能公式与同角三角函数的基本关系}
+
+\sidefigureproblem{0.62}{
+  \studentproblem{6}
+  \qTrigUniversalStem
+}{
+  \qTrigUniversalFigure[0.95]
+}
+
+\answerblank[14.5cm]{万能公式与同角倒数平方关系推导过程：}
+
+\studentthink{
+  \item 万能公式能将所有三角函数都转化为关于半角正切 $t = \tan\frac{\alpha}{2}$ 的有理分式。这一变形机制在解题中有什么代数前提限制？
+  \item 同角倒数平方关系 $\frac{1}{\cos^2\theta} = 1+\tan^2\theta$ 为什么在正切函数的导数大题中极为常用？它能将哪两个看似无关的函数进行统一？
+}
+
+\newpage
+
+\section{易错自查与课堂反思}
+
+\vspace{0.5em}
+\noindent\textbf{本讲我的主要问题集中在（请打勾）：}
+\begin{itemize}[itemsep=0.4em]
+  \item \checkbox 诱导公式符号记错：在处理 $\cos(\frac{\pi}{2}+\alpha)$ 时，符号没有看原函数（余弦在第二象限为负），而是误看成了变名后的正弦。
+  \item \checkbox 象限讨论遗漏：在应用半角公式开平方时，没有根据半角 $\frac{\alpha}{2}$ 的实际象限讨论正负号，直接丢弃了负号或没有保留正负分支。
+  \item \checkbox 倍角形式选用不当：在化简如 $\frac{1-\cos 2x}{\sin 2x}$ 等式子时，由于未能熟练应用二倍角公式消去常数 $1$ 而使化简卡壳。
+  \item \checkbox 积化和差/和差化积符号记反：特别是在 $\cos x - \cos y$ 的和差化积公式中，漏掉了前面的负号 $-2$；或在积化和差中记错 $\sin\alpha\sin\beta$ 后面两项的减法顺序。
+  \item \checkbox 辅助角象限混淆：在化简如 $-\sqrt{3}\sin x + \cos x$ 时，没有看清点 $(-\sqrt{3}, 1)$ 在第二象限，将辅助角 $\varphi$ 错算为 $-\frac{\pi}{6}$ 或者是第一象限的角。
+  \item \checkbox 万能公式代数前置条件缺失：在应用万能置换时，未注意到当 $\alpha = \pi + 2k\pi$ 时 $\tan\frac{\alpha}{2}$ 无意义，从而在求值时导致漏解或增根。
+\end{itemize}
+
+\vspace{1em}
+\noindent\textbf{本讲我最需要记住的一句话是：}
+\vspace{0.5em}
+
+\blank{14cm}
+
+\end{document}

@@ -1,0 +1,102 @@
+% =====================================================
+% 题型：直三棱柱平行证明与距离求法解答题 (q_solid_prism_distance.tex)
+% 知识板块：立体几何证明与距离
+% 主思维：卷面书写规范
+% 副思维：数形结合、化归转化、充分必要
+% 错因标签：线面平行证明前提缺失（线在面外、线在面内）
+% 讲义用途：立几过程分模板
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qSolidPrismDistanceStem}{%
+  如图，在直三棱柱 \(ABC - A_1B_1C_1\) 中，\(\angle ACB = 90^\circ\)，\(AC = BC\)，\(D, E\) 分别为 \(AB, AC_1\) 的中点。\\
+  (1) 证明：\(DE \parallel\) 平面 \(BCC_1B_1\)；\\
+  (2) 设 \(CC_1 = 2\)，直线 \(DE\) 与平面 \(ACC_1A_1\) 所成的角为 \(45^\circ\)，求直线 \(DE\) 到平面 \(BCC_1B_1\) 的距离。%
+}
+
+\newcommand{\qSolidPrismDistanceFigure}[1][1.3]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    % Bottom vertices
+    \coordinate (C) at (0,0);
+    \coordinate (A) at (-1.8,-0.8);
+    \coordinate (B) at (1.8,-0.4);
+    
+    % Top vertices
+    \coordinate (C1) at (0,3.0);
+    \coordinate (A1) at (-1.8,2.2);
+    \coordinate (B1) at (1.8,2.6);
+    
+    % Midpoints
+    \coordinate (D) at ($(A)!0.5!(B)$);
+    \coordinate (E) at ($(A)!0.5!(C1)$);
+    
+    % Hidden lines (back)
+    \draw[dashed, thick, gray!80] (C) -- (A);
+    \draw[dashed, thick, gray!80] (C) -- (B);
+    \draw[dashed, thick, gray!80] (C) -- (C1);
+    
+    % Visible edges
+    \draw[thick] (A) -- (B) -- (B1) -- (C1) -- (A1) -- cycle;
+    \draw[thick] (A) -- (A1);
+    \draw[thick] (B1) -- (A1);
+    
+    % DE line
+    \draw[very thick, black] (D) -- (E);
+    
+    % Nodes
+    \node[below left] at (A) {\small $A$};
+    \node[below right] at (B) {\small $B$};
+    \node[left] at (C) {\small $C$};
+    \node[above left] at (A1) {\small $A_1$};
+    \node[above right] at (B1) {\small $B_1$};
+    \node[above] at (C1) {\small $C_1$};
+    \fill (D) circle (1.5pt) node[below] {\small $D$};
+    \fill (E) circle (1.5pt) node[above left] {\small $E$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidPrismDistanceAnswer}{(1) 见解析；(2) 1}
+
+\newcommand{\qSolidPrismDistanceSolution}{%
+  \textbf{【解题思路】}\par
+  本题为直三棱柱中的线面平行证明与距离求法解答题。第一步，以 \(C\) 为原点建立空间直角坐标系；第二步，写出各关键点坐标与向量 \(\overrightarrow{DE}\)，利用与平面法向量点积为 0 证明线面平行；第三步，利用线面角公式逆求底面边长，最后将线面距离转化为点到平面的距离。\par\vspace{0.4em}
+
+  \textbf{【标准作答与步骤分析】}\par
+  \begin{enumerate}[leftmargin=1.8em, label=(\arabic*), itemsep=0.4em, topsep=0.3em]
+    \item 证明：如图，以 \(C\) 为原点，\(CA, CB, CC_1\) 所在直线分别为 \(x, y, z\) 轴建立空间直角坐标系。\\
+      设 \(AC = BC = a \ (a > 0)\)，\(CC_1 = h \ (h > 0)\)。则各点坐标为：
+      \[
+        C(0,0,0), \quad A(a,0,0), \quad B(0,a,0), \quad C_1(0,0,h), \quad A_1(a,0,h), \quad B_1(0,a,h).
+      \]
+      因为 \(D, E\) 分别为 \(AB, AC_1\) 的中点，可得坐标为 \(D\left(\dfrac{a}{2}, \dfrac{a}{2}, 0\right)\)，\(E\left(\dfrac{a}{2}, 0, \dfrac{h}{2}\right)\)。\\
+      因此方向向量为：
+      \[
+        \overrightarrow{DE} = \left(0, -\frac{a}{2}, \frac{h}{2}\right).
+      \]
+      平面 \(BCC_1B_1\) 在 \(yz\) 平面上，取其法向量 \(\boldsymbol{n}_1 = (1, 0, 0)\)。计算点积：
+      \[
+        \overrightarrow{DE} \cdot \boldsymbol{n}_1 = 0 \times 1 + \left(-\frac{a}{2}\right) \times 0 + \frac{h}{2} \times 0 = 0.
+      \]
+      所以 \(\overrightarrow{DE} \perp \boldsymbol{n}_1\)，且点 \(D\) 不在平面 \(BCC_1B_1\) 内，故 \(DE \parallel\) 平面 \(BCC_1B_1\)。
+
+    \item 解：已知 \(CC_1 = 2 \implies h = 2\)，此时 \(\overrightarrow{DE} = \left(0, -\dfrac{a}{2}, 1\right)\)，模长为 \(|\overrightarrow{DE}| = \sqrt{\dfrac{a^2}{4} + 1}\)。\\
+      平面 \(ACC_1A_1\) 在 \(xz\) 平面上，取其法向量 \(\boldsymbol{n}_2 = (0, 1, 0)\)。\\
+      设直线 \(DE\) 与平面 \(ACC_1A_1\) 所成的角为 \(\theta = 45^\circ\)，由线面角向量公式：
+      \[
+        \sin 45^\circ = \frac{|\overrightarrow{DE} \cdot \boldsymbol{n}_2|}{|\overrightarrow{DE}| |\boldsymbol{n}_2|} \implies \frac{\sqrt{2}}{2} = \frac{\frac{a}{2}}{\sqrt{\frac{a^2}{4} + 1}} \implies a = 2.
+      \]
+      因为 \(DE \parallel\) 平面 \(BCC_1B_1\)，所以直线到平面的距离等于点 \(D(1, 1, 0)\) 到平面 \(x = 0\) 的距离，得：
+      \[
+        d = 1.
+      \]
+      故直线 \(DE\) 到平面 \(BCC_1B_1\) 的距离为 \(1\)。
+  \end{enumerate}%
+}
+
+\newcommand{\qSolidPrismDistanceDiagnosis}{%
+  学生在利用向量法证明平行时容易漏掉“线不在面内”这一判定定理的必要前提，导致采分点扣分。计算距离时，应当建立“线面平行则线上面任意一点到平面的距离均相等”的转化思维。%
+}
+
+\newcommand{\qSolidPrismDistanceTeachingNotes}{%
+  本题为经典的立体几何解答题。第二问求线面角，除了几何投影法之外，坐标向量法最为通用且不易犯错。可让学生熟练掌握“建系 - 设点 - 求向量 - 数量积方程”的通性通法。%
+}

@@ -1,0 +1,85 @@
+% =====================================================
+% 题型：新定义集合与函数单调性证明压轴题 (q_func_subset_relation.tex)
+% 知识板块：抽象函数与集合包含
+% 主思维：充分必要条件分析
+% 副思维：函数思维、逆向推导方法、化归转化、卷面表达
+% 错因标签：集合包含方向写反、单调性反证法推导错误
+% 讲义用途：函数压轴逻辑专题
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qFuncSubsetRelationStem}{%
+  已知函数 \(f(x)\) 的定义域为 \(\mathbf{R}\)，且当 \(x < 0\) 时，\(f(x) = 2^x\)。对任意 \(x_0 \in \mathbf{R}\)，定义集合 \(D(x_0) = \{d \in \mathbf{R} \mid f(x_0 + d) > f(x_0)\}\)。\\
+  (1) 若当 \(x \geqslant 0\) 时，\(f(x) = 1 - x\)，求 \(D(-1)\)；\\
+  (2) 若 \(f(x)\) 是奇函数，\(f(x_1) \leqslant f(x_2)\)，且 \(x_1 x_2 \neq 0\)，证明：\(D(x_2) \subseteq D(x_1)\)；\\
+  (3) 设 \(f(x)\) 满足：① 若 \(f(x_1) \leqslant f(x_2)\)，则 \(D(x_2) \subseteq D(x_1)\)；② 当 \(0 < x < 1\) 时，\(f(x) < f(0)\)。\\
+  (i) 证明：\(f(0) \geqslant 1\)；\\
+  (ii) 证明：\(f(x)\) 在区间 \((0, +\infty)\) 单调递增。%
+}
+
+\newcommand{\qFuncSubsetRelationAnswer}{%
+  (1) \(D(-1) = \left(0, \dfrac{3}{2}\right)\)； (2) 见解析； (3)(i) 见解析； (ii) 见解析。%
+}
+
+\newcommand{\qFuncSubsetRelationSolution}{%
+  \textbf{【解题思路】}\par
+  本题为新定义集合与抽象函数单调性证明压轴题。第一问代入分段函数求解不等式；第二问利用奇函数性质求出全域解析式，分类讨论求解集合包含关系；第三问利用反证法先确定 \(f(0) \geqslant 1\)，再构造引理证明正半轴非正性，最终利用平移包含关系完成单调性证明。\par\vspace{0.4em}
+
+  \textbf{【标准作答与步骤分析】}\par
+  \begin{enumerate}[leftmargin=1.8em, label=(\arabic*), itemsep=0.5em, topsep=0.3em]
+    \item 解：当 \(x < 0\) 时，\(f(x) = 2^x \implies f(-1) = \dfrac{1}{2}\)。\\
+      由定义 \(D(-1) = \left\{d \in \mathbf{R} \mid f(-1 + d) > \dfrac{1}{2}\right\}\)，设 \(x = -1 + d\)：
+      \begin{enumerate}[leftmargin=1.5em, label=\arabic*)]
+        \item 若 \(x < 0 \ (\text{即 } d < 1)\)：\(2^x > \dfrac{1}{2} \implies x > -1 \implies d > 0 \implies 0 < d < 1\)；
+        \item 若 \(x \geqslant 0 \ (\text{即 } d \geqslant 1)\)：\(f(x) = 1 - x > \dfrac{1}{2} \implies x < \dfrac{1}{2} \implies d < \dfrac{3}{2} \implies 1 \leqslant d < \dfrac{3}{2}\)。
+      \end{enumerate}
+      综上所述，\(D(-1) = \left(0, \dfrac{3}{2}\right)\)。
+
+    \item 证明：因为 \(f(x)\) 是奇函数且 \(x < 0\) 时 \(f(x) = 2^x\)，所以分段解析式为：
+      \[
+        f(x) = \begin{cases}
+          2^x, & x < 0, \\
+          0, & x = 0, \\
+          -2^{-x}, & x > 0.
+        \end{cases}
+      \]
+      求得集合 \(D(x)\) 在 \(x \neq 0\) 时的表达式：
+      \[
+        D(x) = \begin{cases}
+          (0, -x), & x < 0, \\
+          (-\infty, -x] \cup (0, +\infty), & x > 0.
+        \end{cases}
+      \]
+      对 \(f(x_1) \leqslant f(x_2)\) 且 \(x_1 x_2 \neq 0\) 分类讨论：
+      \begin{enumerate}[leftmargin=1.5em, label=\arabic*)]
+        \item 当 \(x_1, x_2 < 0\) 时：\(f(x_1) \leqslant f(x_2) \implies x_1 \leqslant x_2 \implies -x_2 \leqslant -x_1 \implies D(x_2) \subseteq D(x_1)\)；
+        \item 当 \(x_1, x_2 > 0\) 时：\(f(x_1) \leqslant f(x_2) \implies x_1 \leqslant x_2 \implies D(x_2) \subseteq D(x_1)\)；
+        \item 当 \(x_1 > 0 > x_2\) 时：\(D(x_2) = (0, -x_2) \subset (0, +\infty) \subset D(x_1)\)。
+      \end{enumerate}
+      综上所述，\(D(x_2) \subseteq D(x_1)\) 恒成立。
+
+    \item 证明：
+      \begin{enumerate}[leftmargin=1.5em, label=(\text{i})]
+        \item 反证法：假设 \(f(0) < 1\)。因为 \(\lim_{x \to 0^-} 2^x = 1\)，故存在 \(x \in (-1, 0)\) 使 \(f(0) < 2^x = f(x)\)。\\
+          取 \(d = -\dfrac{x}{2} \in (0, 1)\)，有 \(x+d = \dfrac{x}{2} \in (x, 0) \implies f(x+d) > f(x) \implies d \in D(x)\)。\\
+          由条件① \(D(x) \subseteq D(0) \implies d \in D(0) \implies f(d) > f(0)\)，与条件②“当 \(0 < d < 1\) 时 \(f(d) < f(0)\)”矛盾。\\
+          故假设不成立，\(f(0) \geqslant 1\)。
+
+        \item 引理：对任意 \(x > 0\)，恒有 \(f(x) \leqslant 0\)。\\
+          反证法：假设存在 \(x > 0\) 使 \(f(x) > 0\)，取充分小的 \(a < 0\) 使 \(f(a) = 2^a \leqslant f(x) \implies D(x) \subseteq D(a)\)。\\
+          由条件②得 \(-x \in D(x) \implies -x \in D(a) \implies f(a-x) > f(a)\)，与负半轴递增矛盾！故 \(f(x) \leqslant 0\)。\\
+          单调性证明：任取 \(0 < x_1 < x_2\)，令 \(h = x_2 - x_1 > 0\)。\\
+          因为 \(f(x_1) \leqslant 0 < 2^{-h} = f(-h) < f(0)\)，由定义 \(h \in D(-h)\)。\\
+          又 \(f(x_1) \leqslant f(-h) \implies D(-h) \subseteq D(x_1) \implies h \in D(x_1) \implies f(x_2) > f(x_1)\)。\\
+          故 \(f(x)\) 在 \((0, +\infty)\) 上单调递增。
+      \end{enumerate}
+  \end{enumerate}%
+}
+
+\newcommand{\qFuncSubsetRelationDiagnosis}{%
+  本题为导数与抽象函数压轴题，第(3)问极难。利用已知集合包含关系（条件①）来推导函数在正半轴的单调性，其突破口在于：先利用反证法锁定自变量在 0 处的边界值；再通过构造一个“恒为负数”的引理作为过渡，最后构造平移步长 \(h\) 结合包含关系完成单调性推导。%
+}
+
+\newcommand{\qFuncSubsetRelationTeachingNotes}{%
+  本题是高阶抽象函数证明的代表作。教学讲评中应引导学生建立“翻译与构造”思维：首先学会将抽象的集合包含关系翻译为“函数值不等式关系”；其次，面对无从下手的单调性求证时，通过构造中介值（如引理 \(f(x)\leqslant 0\)）来进行过渡，这种反证和区间递推的设计是提升高考压轴题得分率的关键。%
+}

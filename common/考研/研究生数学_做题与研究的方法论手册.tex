@@ -1,0 +1,910 @@
+\documentclass[11pt,a4paper]{ctexart}
+
+% =========================================================
+% 研究生数学：做题与研究的方法论手册
+% Standalone XeLaTeX edition
+% =========================================================
+\usepackage[a4paper,margin=2.05cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array,multirow}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable,theorems}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,shapes.geometric}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{setspace}
+\RequirePackage[user,lastpage]{zref}
+
+\definecolor{ink}{HTML}{1E2732}
+\definecolor{deepblue}{HTML}{253B59}
+\definecolor{slate}{HTML}{5A6877}
+\definecolor{soft}{HTML}{F4F6F8}
+\definecolor{softblue}{HTML}{EEF3F8}
+\definecolor{softgray}{HTML}{F7F7F5}
+\definecolor{linegray}{HTML}{C8CED5}
+\definecolor{accent}{HTML}{7A4F2C}
+\definecolor{greenish}{HTML}{355E52}
+\definecolor{warm}{HTML}{F7F1E8}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deepblue,
+  urlcolor=deepblue,
+  pdftitle={研究生数学：做题与研究的方法论手册},
+  pdfauthor={数学学习与研究方法论手册}
+}
+
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.4em plus 0.1em minus 0.1em}
+\linespread{1.35}\selectfont
+\setlist[itemize]{leftmargin=2.2em,itemsep=0.32em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=2.35em,itemsep=0.35em,topsep=0.35em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{slate}\textbf{研究生数学：做题与研究的方法论}}
+\rhead{\small\color{slate}\leftmark}
+\cfoot{\small\color{slate}第 \thepage\ 页 / 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.35pt}
+
+\newcommand{\concept}[1]{\textbf{\color{deepblue}#1}}
+\newcommand{\keyword}[1]{\textbf{#1}}
+\newcommand{\eng}[1]{\textit{#1}}
+\newcommand{\arrowchain}{\ensuremath{\Longrightarrow}}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathbb{E}}
+
+\newtcolorbox{corebox}[1]{
+  enhanced,breakable,colback=softblue,colframe=deepblue,
+  boxrule=0.8pt,arc=1.5mm,left=1.5mm,right=1.5mm,top=1.2mm,bottom=1.2mm,
+  title=\textbf{#1},fonttitle=\bfseries
+}
+\newtcolorbox{researchbox}[1]{
+  enhanced,breakable,colback=warm,colframe=accent,
+  boxrule=0.8pt,arc=1.5mm,left=1.5mm,right=1.5mm,top=1.2mm,bottom=1.2mm,
+  title=\textbf{#1},fonttitle=\bfseries
+}
+\newtcolorbox{checkbox}[1]{
+  enhanced,breakable,colback=softgray,colframe=slate,
+  boxrule=0.6pt,arc=1.2mm,left=1.5mm,right=1.5mm,top=1.1mm,bottom=1.1mm,
+  title=\textbf{#1},fonttitle=\bfseries
+}
+\newtcolorbox{warningbox}[1]{
+  enhanced,breakable,colback=white,colframe=black!60,
+  borderline west={2.2pt}{0pt}{accent},boxrule=0.45pt,
+  arc=0.8mm,left=1.5mm,right=1.5mm,top=1.1mm,bottom=1.1mm,
+  title=\textbf{#1},fonttitle=\bfseries
+}
+\newtcolorbox{templatebox}[1]{
+  enhanced,breakable,colback=white,colframe=greenish,
+  boxrule=0.7pt,arc=1.2mm,left=1.5mm,right=1.5mm,top=1.1mm,bottom=1.1mm,
+  title=\textbf{#1},fonttitle=\bfseries
+}
+
+\newcommand{\stage}[2]{\textbf{\color{deepblue}#1}\quad #2}
+
+\begin{document}
+
+% =========================================================
+% Cover
+% =========================================================
+\begin{titlepage}
+\centering
+\vspace*{1.4cm}
+{\Huge\bfseries\color{ink} 研究生数学：做题与研究的方法论\par}
+\vspace{0.55cm}
+{\Large\color{slate}从“求出答案”到“发现结构、提出问题与建立理论”\par}
+\vspace{1.2cm}
+
+\begin{tikzpicture}[>=Latex,node distance=1.2cm]
+  \node[draw=deepblue,very thick,rounded corners=2mm,fill=softblue,
+        minimum width=4.2cm,minimum height=1.15cm,align=center] (base)
+        {\textbf{统一底座}\\对象·结构·映射·不变量·语言·估计};
+  \node[draw=greenish,thick,rounded corners=2mm,fill=softgray,
+        above left=1.2cm and 0.3cm of base,minimum width=4.6cm,minimum height=1.5cm,align=center] (solve)
+        {\textbf{做题模式}\\已知问题下的路径搜索\\正确性 × 速度 × 表达};
+  \node[draw=accent,thick,rounded corners=2mm,fill=warm,
+        above right=1.2cm and 0.3cm of base,minimum width=4.6cm,minimum height=1.5cm,align=center] (research)
+        {\textbf{研究模式}\\未知问题下的问题生成\\新颖性 × 可证性 × 解释力};
+  \draw[->,thick] (base) -- (solve);
+  \draw[->,thick] (base) -- (research);
+  \draw[<->,thick,dashed] (solve) -- node[above,sloped]{\small 训练与迁移} (research);
+\end{tikzpicture}
+
+\vfill
+{\large\bfseries 数学学习 · 考研复习 · 研究生课程 · 科研入门通用手册\par}
+\vspace{0.3cm}
+{\large 2026 年 8 月 · 第二层次数学能力框架\par}
+\vspace{1.3cm}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% =========================================================
+\section*{前言：做题与研究，究竟差在哪里？}
+\addcontentsline{toc}{section}{前言：做题与研究，究竟差在哪里？}
+
+高中阶段我们常把数学能力理解为“知识点 + 题型 + 技巧”；本科阶段逐渐加入定义、定理与证明；真正到了研究生专业数学，核心能力发生了一次结构性变化：\concept{你不只要会解决一个已经被别人定义好的问题，还要学会判断什么才是问题、哪些结构值得研究、什么条件真正必要、怎样把局部现象提升为一般理论。}
+
+\begin{corebox}{本手册的总判断}
+\textbf{做题与研究不是两套互不相干的方法论。}它们共享同一套数学底层能力，只是“谁负责决定问题”不同：
+\begin{itemize}
+  \item 做题时，题目替你决定了对象、目标与大部分约束；你主要负责\textbf{识别结构、搜索路径、证明结论}。
+  \item 研究时，连对象、目标、假设、正确的问题表述都可能需要你自己创造；你必须额外承担\textbf{问题生成、猜想形成、条件诊断、理论组织与价值判断}。
+\end{itemize}
+因此可以把二者理解为同一认知系统的两种工作模式：
+\[
+\boxed{\text{做题：在给定状态空间中找路}}
+\qquad
+\boxed{\text{研究：连状态空间、目标和规则本身也要设计}}
+\]
+\end{corebox}
+
+本手册不追求罗列更多“高等数学技巧”，而试图建立一套从考研、研究生课程作业，一直可迁移到科研工作的统一方法论。
+
+% =========================================================
+\section{第一部分：统一底座——数学问题真正由什么组成？}
+
+\subsection{数学问题的八个基本部件}
+
+面对任何一道题、一个定理或一个研究课题，都可以先拆成八个部件：
+
+\begin{longtable}{p{2.2cm}p{3.5cm}p{\dimexpr\linewidth-6.5cm\relax}}
+\toprule
+\textbf{部件} & \textbf{核心问题} & \textbf{典型内容与具体范例} \\
+\midrule
+对象 Object & 我在研究什么？ & \textbullet\ 代数对象：数、矩阵、群、环、域 \\[0.2em] & & \textbullet\ 分析对象：函数、算子、测度、微分方程 \\[0.2em] & & \textbullet\ 几何对象：流形、图、随机变量、概率测度 \\
+\midrule
+结构 Structure & 对象带什么结构？ & \textbullet\ 代数/线性结构：线性、序、代数、群作用 \\[0.2em] & & \textbullet\ 拓扑/微分结构：拓扑、度量、微分、光滑 \\[0.2em] & & \textbullet\ 分析/几何结构：测度、凸性、概率、对称 \\
+\midrule
+映射 Map & 哪些变化被允许？ & \textbullet\ 线性映射 / 同态 / 有界算子 \\[0.2em] & & \textbullet\ 连续映射 / 拓扑同胚 / 微分同胚 \\[0.2em] & & \textbullet\ 可测映射 / 保测变换 / 正交投影 \\
+\midrule
+不变量 Invariant & 什么在变化下不变？ & \textbullet\ 代数特征：秩、维数、谱、同伦类 \\[0.2em] & & \textbullet\ 拓扑几何：连通性、曲率、Euler 示性数 \\[0.2em] & & \textbullet\ 分析概率：能量、守恒量、概率质量 \\
+\midrule
+目标 Goal & 最终要知道什么？ & \textbullet\ 定性分析：存在性、唯一性、稳定性、分类 \\[0.2em] & & \textbullet\ 定量估计：上/下界、极限、渐近行为 \\[0.2em] & & \textbullet\ 构造应用：求解算法、反例设计、临界阈值 \\
+\midrule
+约束 Constraint & 什么不能被破坏？ & \textbullet\ 定义域 / 变量范围 / 非退化条件 \\[0.2em] & & \textbullet\ 正则性 / 紧致性 / 独立性 \\[0.2em] & & \textbullet\ 边界条件 / 守恒律约束 \\
+\midrule
+语言 Language & 哪个表示最自然？ & \textbullet\ 局部表示：坐标、矩阵、算子、频域 \\[0.2em] & & \textbullet\ 整体表示：流形、弱形式、对偶、范畴 \\
+\midrule
+验证 Verification & 结论为什么可靠？ & \textbullet\ 逻辑推导：严格证明、先验估计 \\[0.2em] & & \textbullet\ 边界检验：反例排除、极端情形、维数检查 \\[0.2em] & & \textbullet\ 实验辅助：数值计算、条件回溯 \\
+\bottomrule
+\end{longtable}
+
+\begin{researchbox}{研究生数学的第一个跃迁：先问“结构”，再问“技巧”}
+一个熟练的研究生面对复杂表达式时，不急着算，而会先判断：\textbf{当前真正起作用的结构是什么？}
+
+同一个 $\R^n$ 可以被视为向量空间、度量空间、拓扑空间、测度空间、光滑流形或凸集。若研究正交投影，线性与内积结构最重要；若研究连续性，拓扑结构最重要；若研究积分，测度结构才是主角。\textbf{选错结构，往往意味着在错误的语言中高速计算。}
+\end{researchbox}
+
+\subsection{定义驱动：陌生概念先展开定义}
+
+研究生阶段一个非常稳定的默认动作是：
+\[
+\text{陌生对象或陌生命题}
+\arrowchain
+\text{展开精确定义}
+\arrowchain
+\text{找出定义中必须控制的量}
+\arrowchain
+\text{逐项验证}.
+\]
+
+例如，面对“证明某算子连续”，不要先搜索套路，而应先问：连续采用哪种拓扑？若是赋范空间中的有界线性算子，则问题可能直接归结为寻找常数 $C$ 使
+\[
+\|Tx\|\le C\|x\|.
+\]
+
+\begin{checkbox}{定义检查四问}
+\begin{enumerate}
+  \item 这个对象的\textbf{精确定义}是什么？
+  \item 定义中的每一个量属于什么空间、什么范围？
+  \item 结论若按定义完全展开，会变成什么可操作的目标？
+  \item 有没有一个最简单的典型例子和一个最接近失败的反例？
+\end{enumerate}
+\end{checkbox}
+
+\subsection{对象—关系—映射：现代数学真正的组织方式}
+
+高层次数学往往不是孤立研究对象，而是研究“对象 + 合法映射”。矩阵只是线性映射在某组基下的坐标表示；坐标改变时矩阵会变，但算子本身没有改变。类似地：
+\begin{itemize}
+  \item 群之间研究同态；
+  \item 拓扑空间之间研究连续映射；
+  \item 测度空间之间研究可测映射；
+  \item 流形之间研究光滑映射；
+  \item Hilbert 空间中研究有界算子、自伴算子、紧算子等。
+\end{itemize}
+
+这意味着研究生数学要逐渐形成一个习惯：\concept{看到一个公式时，同时问它是否依赖坐标、依赖基底、依赖具体表示；如果换一种表示，什么才是真正没有改变的东西？}
+
+% =========================================================
+\section{第二部分：两种模式——做题与研究的根本区别}
+
+\subsection{目标函数不同}
+
+\begin{longtable}{p{2.8cm}p{\dimexpr0.5\linewidth-1.8cm\relax}p{\dimexpr0.5\linewidth-1.8cm\relax}}
+\toprule
+ & \textbf{做题模式 Problem Solving} & \textbf{研究模式 Research} \\
+\midrule
+问题来源 & \textbullet\ 题目已经固定给定 & \textbullet\ 需要自己形成、提炼或重写 \\
+\midrule
+目标方向 & \textbullet\ 找到标准解答与正确证明 & \textbullet\ 发现新结论、新解释或新反例 \\
+\midrule
+时间尺度 & \textbullet\ 分钟、小时或数天 & \textbullet\ 数周、数月甚至数年 \\
+\midrule
+信息状态 & \textbullet\ 通常保证“一定有解” & \textbullet\ 答案未知，甚至问题未必正确 \\
+\midrule
+允许试错 & \textbullet\ 时间受限，需快速回退 & \textbullet\ 试错本身就是核心工作方式 \\
+\midrule
+评价标准 & \textbullet\ 正确、完整、规范、可评分 & \textbullet\ 正确、新颖、重要、可推广 \\
+\midrule
+失败意义 & \textbullet\ 意味着解题路径需要调整 & \textbullet\ 产生反例、边界与下一新问题 \\
+\midrule
+最终产物 & \textbullet\ 一个具体答案或完整证明 & \textbullet\ 问题族、定理、方法或理论框架 \\
+\bottomrule
+\end{longtable}
+
+\begin{corebox}{最关键的区别}
+\textbf{做题的核心自由度是“路径”。研究的核心自由度还包括“问题”。}
+
+在做题中，你主要问：\emph{“怎样证明它？”}；在研究中，你还要不断问：\emph{“它真的成立吗？条件能不能弱？结论能不能强？这个问题是不是应该换一种语言？更自然的问题是什么？”}
+\end{corebox}
+
+\subsection{从做题到研究：被逐渐收回的六种决策权}
+
+\begin{enumerate}
+  \item \keyword{目标决定权}：不再只回答“证明 A”，而要判断什么结论值得证明。
+  \item \keyword{假设决定权}：不再被动接受条件，而要判断每个条件承担什么功能。
+  \item \keyword{对象决定权}：可能需要扩大、缩小或重新定义研究对象。
+  \item \keyword{语言决定权}：要主动选择坐标、算子、几何、概率、对偶、弱形式等语言。
+  \item \keyword{精度决定权}：可能不追求精确解，而追求界、渐近、稳定性或统计规律。
+  \item \keyword{停止决定权}：什么时候已经形成一个足够完整、可传播的数学结果？这也由研究者判断。
+\end{enumerate}
+
+% =========================================================
+\section{第三部分：做题模式——研究生课程与考研的解题控制系统}
+
+\subsection{总流程：八阶段解题协议}
+
+\begin{center}
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[>=Latex,
+  box/.style={draw=deepblue, thick, rounded corners=2mm, fill=white, align=center, font=\small, minimum height=1.0cm, text width=4.7cm, inner sep=6pt},
+  arr/.style={->, thick, deepblue},
+  dasharr/.style={->, thick, dashed}
+]
+  % Left Column: Preparation & Analysis
+  \node[box, fill=softblue] (a) at (0, 0) {\textbf{1. 读目标}\\[0.2em]\small 最终要得到什么信息？};
+  \node[box, below=0.75cm of a] (b) {\textbf{2. 展定义与扫约束}\\[0.2em]\small 空间、范围、正则性、边界};
+  \node[box, below=0.75cm of b] (c) {\textbf{3. 识别主结构}\\[0.2em]\small 线性/凸性/谱/拓扑/概率/对称};
+  \node[box, below=0.75cm of c] (d) {\textbf{4. 选择语言}\\[0.2em]\small 坐标、算子、几何、频域、弱形式};
+
+  % Right Column: Execution & Verification
+  \node[box, right=2.6cm of a] (e) {\textbf{5. 预测最终式}\\[0.2em]\small 什么中间结果一旦得到就足够？};
+  \node[box, below=0.75cm of e] (f) {\textbf{6. 搜索转化路径}\\[0.2em]\small 分解、线性化、对偶、估计、紧致};
+  \node[box, below=0.75cm of f] (g) {\textbf{7. 验证与压力测试}\\[0.2em]\small 边界、反例、等号、极端尺度};
+  \node[box, fill=softgray, below=0.75cm of g] (h) {\textbf{8. 压缩表达}\\[0.2em]\small 最短完整逻辑链};
+
+  % Forward Flow
+  \draw[arr] (a) -- (b);
+  \draw[arr] (b) -- (c);
+  \draw[arr] (c) -- (d);
+
+  \draw[arr] (a.east) -- (e.west);
+  \draw[arr] (e) -- (f);
+  \draw[arr] (f) -- (g);
+  \draw[arr] (g) -- (h);
+
+  % Cross Feedback 1: Language -> Conversion (Exit right 0.85cm, line at x=3.2)
+  \draw[dasharr, greenish] (d.east) -- node[above=1pt, font=\scriptsize\bfseries, text=greenish, pos=0.4] {进入计算/证明} ++(0.85,0) |- (f.west);
+
+  % Cross Feedback 2: Verification Failed -> Main Structure (Exit left 0.85cm, line at x=4.1)
+  \draw[dasharr, accent] (g.west) -- node[above=1pt, font=\scriptsize\bfseries, text=accent, pos=0.4] {失败则回退} ++(-0.85,0) |- (c.east);
+
+\end{tikzpicture}%
+}
+\end{center}
+
+\subsection{第一阶段：读目标——先判断“什么信息算够了”}
+
+高水平做题并不是从第一行一直往下算，而是先预测\concept{终止条件}。例如：
+
+\begin{longtable}{p{3.0cm}p{\dimexpr\linewidth-3.5cm\relax}}
+\toprule
+\textbf{目标类型} & \textbf{典型最终状态（终止条件）} \\
+\midrule
+证明收敛 & \textbullet\ Cauchy 控制机制 \\[0.2em] & \textbullet\ 单调有界定理与极限定理 \\[0.2em] & \textbullet\ 压缩映射不动点原理 \\[0.2em] & \textbullet\ 紧致性子列提取 + 极限唯一性 \\
+\midrule
+证明存在 & \textbullet\ 显式构造具体对象 \\[0.2em] & \textbullet\ 建立紧致性 / 完备性 / 不动点 \\[0.2em] & \textbullet\ 变分极小化 / 连续延拓机制 \\
+\midrule
+证明唯一 & \textbullet\ 差值估计 / 能量估计 \\[0.2em] & \textbullet\ 严格凸性 / 单调性 \\[0.2em] & \textbullet\ Grönwall 型微分/积分不等式控制 \\
+\midrule
+求最值 & \textbullet\ 凸性化简 / 一阶与二阶必要条件 \\[0.2em] & \textbullet\ 对偶问题转换 / 谱界控制 \\[0.2em] & \textbullet\ 紧集上连续函数极值存在性 \\
+\midrule
+证明等价 & \textbullet\ 明确两个方向的双向推导 \\[0.2em] & \textbullet\ 寻找共同中介结构或标准形 \\
+\midrule
+求极限 / 渐近 & \textbullet\ 提取主部，控制余项量级 \\[0.2em] & \textbullet\ 明确所用尺度与一致性范数 \\
+\midrule
+矩阵 / 算子问题 & \textbullet\ 转化为像、核、谱或二次型 \\[0.2em] & \textbullet\ 正交分解或 Jordan / 谱标准形 \\
+\bottomrule
+\end{longtable}
+
+\begin{corebox}{研究生版“最终式思想”}
+所谓最终式，不是“猜答案”，而是\textbf{足以结束当前任务的最低信息结构}。优秀的解题者会在运算前先问：
+\[
+\text{我到底需要证明到哪一步，问题就已经结束？}
+\]
+这能显著减少无目的展开、无意义精确计算和错误的技术堆叠。
+\end{corebox}
+
+\subsection{第二阶段：定义与条件——每个条件都应有“工作岗位”}
+
+研究生课程中，定理条件绝不能只背成一串名词。应该给每个条件标注功能，例如：
+
+\begin{longtable}{p{2.8cm}p{\dimexpr\linewidth-3.3cm\relax}}
+\toprule
+\textbf{条件} & \textbf{核心功能（在证明中负责什么）} \\
+\midrule
+连续性 & \textbullet\ 极限符号与映射交换 \\[0.2em] & \textbullet\ 保证原像开/闭性、介值性与紧集映射性质 \\
+\midrule
+紧致性 & \textbullet\ 阻止序列或能量逃逸到无穷远 \\[0.2em] & \textbullet\ 提供有限子覆盖、收敛子列或极值点 \\
+\midrule
+完备性 & \textbullet\ 保证 Cauchy 逼近序列在空间内部收敛 \\
+\midrule
+凸性 & \textbullet\ 将局部极小提升为全局极小 \\[0.2em] & \textbullet\ 改善问题唯一性与几何对偶结构 \\
+\midrule
+严格凸性 & \textbullet\ 强制极小值点或最优化解的唯一性 \\
+\midrule
+可微性 & \textbullet\ 允许局部一阶/二阶线性化 \\[0.2em] & \textbullet\ 开启梯度、Hessian 及 Taylor 展开分析 \\
+\midrule
+非退化 / 可逆 & \textbullet\ 保证局部唯一性、隐函数定理或正规坐标 \\
+\midrule
+一致估计 / 有界 & \textbullet\ 防止对象逃向无穷，为紧致性创造条件 \\
+\midrule
+独立性 & \textbullet\ 允许概率乘积分解与方差可加性 \\
+\midrule
+正则性 & \textbullet\ 决定求导次数、积分分部与边界迹映射 \\
+\bottomrule
+\end{longtable}
+
+做题时应养成一个动作：\concept{在证明中标记“这个条件第一次在哪一步被真正使用”。}如果某条件从头到尾没有出现，要么证明有问题，要么定理条件可能并非最优。
+
+\subsection{第三阶段：结构识别——先判断属于哪种数学机器}
+
+常见的“主结构触发信号”如下：
+
+\begin{longtable}{p{2.6cm}p{4.5cm}p{\dimexpr\linewidth-7.7cm\relax}}
+\toprule
+\textbf{结构} & \textbf{典型触发信号} & \textbf{优先工具} \\
+\midrule
+线性结构 & \textbullet\ 叠加、子空间、核像、线性约束 & \textbullet\ 基底、秩、投影、商空间、谱分解 \\
+\midrule
+凸结构 & \textbullet\ 平均、极值、支持超平面 & \textbullet\ Jensen 不等式、Hessian、分离定理 \\
+\midrule
+度量 / 拓扑 & \textbullet\ 收敛、连续、开闭、紧致 & \textbullet\ $\varepsilon$-$\delta$ 语言、覆盖、完备性 \\
+\midrule
+Hilbert 结构 & \textbullet\ 内积、正交、最小二乘 & \textbullet\ 投影定理、Riesz 表示、谱理论 \\
+\midrule
+概率结构 & \textbullet\ 随机和、独立性、典型行为 & \textbullet\ 期望、方差、条件化、极限定理 \\
+\midrule
+对称结构 & \textbullet\ 置换、旋转、等价对象 & \textbullet\ 群作用、轨道、不变量、表示论 \\
+\midrule
+微分结构 & \textbullet\ 局部变化、稳定性、流 & \textbullet\ 线性化、Jacobian、Hessian、切空间 \\
+\midrule
+尺度结构 & \textbullet\ 小参数、大参数、高维 & \textbullet\ 主项与余项、无量纲化、渐近展开 \\
+\bottomrule
+\end{longtable}
+
+\subsection{第四阶段：五大通用转化操作}
+
+\subsubsection*{1. 线性化：先理解局部的一阶世界}
+\[
+f(x+h)=f(x)+Df(x)h+o(\|h\|).
+\]
+导数、Jacobian、切空间、李代数、稳定性矩阵都可以理解为“复杂对象在局部的线性模型”。
+
+\begin{warningbox}{线性化的边界}
+局部线性信息不自动决定全局行为。做题时必须同时问：线性化在哪个邻域有效？误差项如何控制？是否存在分叉、奇点或远场结构？
+\end{warningbox}
+
+\subsubsection*{2. 分解：把整体拆成基本模态}
+基底展开、正交分解、谱分解、SVD、Fourier 展开、不可约表示分解背后的共同问题都是：
+\[
+\text{复杂对象}=\text{简单成分的组合}.
+\]
+但每次分解都要追问三件事：\textbf{存在吗？唯一吗？稳定吗？}
+
+\subsubsection*{3. 变换：换一种语言让操作变简单}
+例如 Fourier 变换的核心价值不是“会算积分”，而是把微分与卷积等操作变成更简单的代数操作：
+\[
+\widehat{f'}(\xi)=i\xi\widehat f(\xi),\qquad
+\widehat{f*g}(\xi)=\widehat f(\xi)\widehat g(\xi).
+\]
+
+\subsubsection*{4. 对偶：从“对象本身”转向“如何测试它”}
+向量 $v$ 可以通过所有线性泛函 $\varphi(v)$ 被测量；优化问题可以通过对偶变量暴露约束价格；弱形式把“函数满足微分方程”改写成“对所有测试函数满足积分恒等式”。
+
+\subsubsection*{5. 估计：从精确计算切换到可控性}
+高等分析最常见的成功形式不是 $A=$ 某个漂亮闭式，而是
+\[
+\|A\|\le C\|B\|.
+\]
+估计真正控制的是存在性、唯一性、稳定性、误差、极限交换以及数值可行性。
+
+\subsection{第五阶段：失败信号与回退机制}
+
+\begin{checkbox}{看到这些信号，要考虑“换语言”而不是硬算}
+\begin{itemize}
+  \item 展开三四页后，目标结构仍然没有出现；
+  \item 变量越来越多而不是越来越少；
+  \item 证明反复使用局部估计，却始终无法控制整体量；
+  \item 所有计算依赖某组基，但问题本身明显具有坐标无关性；
+  \item 为了证明一个极限，被迫逐点处理，而问题具有明显一致性/紧致性结构；
+  \item 一个证明需要大量“神奇凑项”，但缺乏能够解释这些项为何自然出现的能量、对偶或变分结构。
+\end{itemize}
+\end{checkbox}
+
+这时优先尝试：\textbf{回定义、换空间、换尺度、找不变量、找对偶、做分解、构造能量、降低精度要求。}
+
+\subsection{第六阶段：证明写作——从“过程记录”到“证明架构”}
+
+研究生数学的证明应该首先有架构，再有细节。一个长证明至少应能被压缩成三层：
+
+\begin{enumerate}
+  \item \keyword{Strategy（策略层）}：为什么这条路线有希望？
+  \item \keyword{Lemma chain（引理层）}：哪几个中间结论组成主骨架？
+  \item \keyword{Estimate/detail（细节层）}：每个引理如何严格完成？
+\end{enumerate}
+
+\begin{templatebox}{证明前的 60 秒草稿}
+\textbf{目标：}我要证明什么？\\
+\textbf{终止条件：}得到什么式子/性质就够了？\\
+\textbf{主机制：}紧致性 / 完备性 / 线性化 / 对偶 / 能量 / 反证 / 构造？\\
+\textbf{关键障碍：}最可能卡在哪里？\\
+\textbf{需要的引理：}哪 2--4 个中间结论可以把证明拆开？
+\end{templatebox}
+
+% =========================================================
+\section{第四部分：研究模式——如何从“会证明”进入“会研究”}
+
+\subsection{研究不是“做一道没有答案的难题”}
+
+研究与超难做题最大的不同，不是难度，而是\concept{问题本身处于不确定状态}。一个成熟研究过程通常同时包含：
+\[
+\text{现象}\to\text{问题}\to\text{猜想}\to\text{机制}\to\text{证明/反例}\to\text{推广}\to\text{理论组织}.
+\]
+
+\subsection{研究循环：九阶段开放问题协议}
+
+\begin{enumerate}
+  \item \stage{现象收集}{先找到真正反复出现、无法被当前理论顺畅解释的现象。}
+  \item \stage{问题压缩}{把宽泛兴趣压缩成变量明确、条件明确、可证伪的问题。}
+  \item \stage{玩具模型}{先做最小维度、最简单参数、最大对称情形。}
+  \item \stage{计算/实验}{手算、数值、符号计算、画图，寻找模式而非代替证明。}
+  \item \stage{猜想形成}{把观察转成精确命题，并主动注明可能的适用范围。}
+  \item \stage{机制定位}{判断结论如果成立，真正推动它的结构是什么。}
+  \item \stage{压力测试}{极端参数、退化情形、随机例子、边界、缺失条件、反例搜索。}
+  \item \stage{证明与理论化}{将一次性的证明压缩成可复用引理、命题或抽象框架。}
+  \item \stage{再提问}{哪些条件能弱？结论能强？能否推广到更大的对象类别？}
+\end{enumerate}
+
+\begin{researchbox}{科研的核心循环不是“证明”，而是“猜想—破坏—修复”}
+研究者首先提出一个足够具体的猜想，然后主动攻击它：找反例、推到边界、删除条件、构造退化对象。若猜想被破坏，失败并非浪费；它告诉你\textbf{真正的条件、真正的机制和正确的定理形状}。一个好定理往往是被反例“雕刻”出来的。
+\end{researchbox}
+
+\subsection{怎样生成一个值得研究的问题？}
+
+一个问题通常可以从以下七种方向生成：
+
+\begin{longtable}{p{2.8cm}p{\dimexpr\linewidth-3.3cm\relax}}
+\toprule
+\textbf{生成方式} & \textbf{研究问题模板与具体切入角度} \\
+\midrule
+削弱假设 & \textbullet\ 定理去掉紧致性 / 光滑性 / 独立性假设后，还剩多少有效结论？ \\[0.2em] & \textbullet\ 是否存在更弱的条件仍能维持结论成立？ \\
+\midrule
+加强结论 & \textbullet\ 只有存在性时，能否进一步得到唯一性、稳定性、收敛速率或正则性？ \\
+\midrule
+换对象 & \textbullet\ 从有限维推广到无限维，从欧氏空间推广到光滑流形，从标量推广到算子 \\
+\midrule
+换尺度 & \textbullet\ 当参数趋于 $0$、$\infty$ 或维数无限增大时，问题的主导结构如何变化？ \\
+\midrule
+换语言 & \textbullet\ 同一问题在对偶、频域、几何或概率表示下是否显出全新结构？ \\
+\midrule
+寻找边界 & \textbullet\ 什么是结论成立与失效之间的临界指数、临界维数或阈值参数？ \\
+\midrule
+寻找统一 & \textbullet\ 两个看似不同的定理是否本质上来自同一个更抽象的内在机制？ \\
+\bottomrule
+\end{longtable}
+
+\subsection{玩具模型：研究复杂问题前先压到最小}
+
+研究中一个极其高效的习惯是先问：
+\begin{itemize}
+  \item 一维会怎样？
+  \item $2\times2$ 矩阵会怎样？
+  \item 参数为 $0,1,-1$ 会怎样？
+  \item 对角、交换、对称、径向情形会怎样？
+  \item 有限集合、有限群、有限维空间是否已经暴露机制？
+\end{itemize}
+
+玩具模型不是“简化版答案”，而是用来识别：\textbf{哪些变量重要、哪些结构偶然、哪些现象稳定存在。}
+
+\subsection{从计算实验到猜想：实验的正确角色}
+
+研究生阶段可以大量使用数值实验、符号计算、随机测试，但要明确它们的功能：
+
+\begin{enumerate}
+  \item \keyword{发现模式}：观察可能的不变量、单调性、尺度律、谱分布。
+  \item \keyword{寻找反例}：快速攻击过强猜想。
+  \item \keyword{估计阈值}：猜测临界参数、最优常数。
+  \item \keyword{验证局部推导}：检查符号、维度、特殊情形。
+  \item \keyword{指导证明}：从数据中寻找可能的能量、归一化或正确变量。
+\end{enumerate}
+
+但实验永远不能自动替代证明，尤其不能把“很多样本成立”误当成“普遍成立”。
+
+\subsection{条件诊断：把定理当成一台机器拆开}
+
+对一个已有定理，不要只记
+\[
+A_1+A_2+\cdots+A_k\Longrightarrow B,
+\]
+而要建立\concept{条件—证明步骤映射}：
+\[
+A_i\longleftrightarrow \text{proof step }S_i.
+\]
+
+\begin{templatebox}{条件诊断表}
+\textbf{条件：}\\
+\textbf{在哪一步第一次使用：}\\
+\textbf{它具体阻止了什么坏现象：}\\
+\textbf{去掉条件的最小反例：}\\
+\textbf{能否替换为更弱条件：}\\
+\textbf{是否只用于技术证明而非真正本质：}
+\end{templatebox}
+
+这是从“会用定理”进入“理解定理”的关键动作，也是最自然的科研问题来源之一。
+
+\subsection{反例设计：不是找怪东西，而是定位失败机制}
+
+高质量反例往往围绕“某个关键机制刚好失效”构造：
+\begin{itemize}
+  \item 不紧致：让质量、峰值或序列逃向无穷；
+  \item 不完备：构造 Cauchy 序列的极限落在空间之外；
+  \item 不一致：点态控制成立，但极限交换失败；
+  \item 无限维：利用有限维直觉在无限维崩溃；
+  \item 非交换：改变乘法顺序暴露错误；
+  \item 退化：让 Jacobian、Hessian、秩或谱隙消失；
+  \item 临界尺度：把指数推到刚好使嵌入、积分或估计失效的位置。
+\end{itemize}
+
+研究者应该练习一种逆向能力：\concept{从证明中找最脆弱的一步，再专门构造一个对象破坏它。}
+
+% =========================================================
+\section{第五部分：研究中最重要的十类数学思想}
+
+\subsection{1. 不变量与标准形：寻找“变了以后仍没变的东西”}
+分类问题的典型路线是：
+\[
+\text{合法变换}\to\text{不变量}\to\text{区分类别}\to\text{标准代表}.
+\]
+相似矩阵的特征值、迹、行列式；同胚下的连通性；群同构下的元素阶；动力系统中的守恒量，都是同一思想的不同表现。
+
+\subsection{2. 等价与商：忽略不重要的差异}
+研究生数学经常把“表面不同、本质相同”的对象视为一个等价类。商空间思想可以理解为
+\[
+\frac{\text{所有具体表示}}{\text{被认为不重要的差异}}.
+\]
+真正成熟的能力是从“对象的具体写法”提升到“对象所属的等价类”。
+
+\subsection{3. 局部—整体：简单局部怎样拼成复杂整体？}
+很多理论都遵循：
+\[
+\text{局部分析}\to\text{拼接}\to\text{寻找整体障碍}.
+\]
+流形局部像 $\R^n$，但整体拓扑可能复杂；微分方程有局部解并不保证全局存在；局部极小不等于全局极小。研究时应主动问：\textbf{局部结论升级到整体需要什么额外结构？}
+
+\subsection{4. 紧致性：把无限自由度压回有限控制}
+分析中的经典存在性模板是：
+\[
+\text{一致估计}
+\to\text{有界性}
+\to\text{紧致性}
+\to\text{抽取收敛子列}
+\to\text{极限通过方程}.
+\]
+紧致性的本质不是“一个定义”，而是阻止对象以无限多种方式逃逸。
+
+\subsection{5. 完备化与弱化：原空间装不下极限时怎么办？}
+如果自然逼近序列“应该收敛”，但原空间没有极限，就可能需要：
+\begin{itemize}
+  \item 完备化空间；
+  \item 弱化收敛概念；
+  \item 弱化解的定义；
+  \item 引入分布、弱导数、弱解、测度值解等。
+\end{itemize}
+这不是降低严格性，而是在寻找一个对极限操作封闭的自然世界。
+
+\subsection{6. 存在—唯一—稳定：一个问题是否真正“可解”}
+Hadamard 式思维要求分别检查：
+\[
+\boxed{\text{Existence}}\qquad
+\boxed{\text{Uniqueness}}\qquad
+\boxed{\text{Stability}}.
+\]
+研究中必须牢记：理论上存在、唯一，并不意味着数值上可稳定恢复。反问题、PDE、统计估计中尤其如此。
+
+\subsection{7. 尺度与渐近：先问量级，再问精确值}
+\[
+f(n)=O(g(n)),\qquad f(n)=o(g(n)),\qquad f(n)\sim g(n)
+\]
+描述的是不同层次的控制。研究复杂系统时，要不断寻找：主项是什么？高阶项多小？临界尺度在哪里？怎样无量纲化？是否存在普适缩放律？
+
+\subsection{8. 对称性：复杂性往往被变换群组织起来}
+研究一个对象时不仅问“它是什么”，还问“哪些变换保持它不变”。对称性可以降低自由度、产生守恒量、组织分类，也可能在破缺时产生新的相结构和分叉。
+
+\subsection{9. 对偶性：难以直接控制的对象，换到测试空间中控制}
+对偶思想贯穿泛函分析、优化、PDE、Fourier 分析、凸分析。研究时常问：原问题是否存在一个更简单的对偶表述？某个存在问题是否可以转化为分离问题？某个约束是否可以变成乘子或泛函？
+
+\subsection{10. 自然性：一个构造是否依赖人为选择？}
+高级数学不仅问“能不能定义”，还问“这个定义是否自然”。典型检查：
+\begin{itemize}
+  \item 是否依赖坐标？
+  \item 是否依赖任意基底？
+  \item 是否与合法映射兼容？
+  \item 是否保留问题本身的对称性？
+\end{itemize}
+“自然性”往往意味着你抓到了真正属于对象本身的结构，而非某种偶然表示。
+
+% =========================================================
+\section{第六部分：不同数学方向的“主发动机”}
+
+\subsection{分析与 PDE}
+主问题通常围绕：极限、估计、紧致性、正则性、弱收敛、存在唯一稳定。
+
+\begin{corebox}{分析/PDE 高频证明骨架}
+\[
+\begin{aligned}
+\text{先验估计}&\to\text{逼近解}\to\text{紧致性/弱紧致性}\to\text{抽取子列}\\
+&\to\text{极限通过非线性项}\to\text{得到弱解}\to\text{追加正则性/唯一性}.
+\end{aligned}
+\]
+真正难点通常不是“把方程解出来”，而是\textbf{建立足够强且对逼近参数一致的估计}。
+\end{corebox}
+
+\subsection{代数与表示论}
+主问题围绕：结构、同态、核与像、商、不变量、分类、生成元与关系、不可约分解。
+
+常见问法：
+\begin{itemize}
+  \item 有没有标准形？
+  \item 哪些对象在同构意义下相同？
+  \item 一个复杂对象能否由简单对象扩张、直和或商得到？
+  \item 自同构群/对称群透露了什么？
+\end{itemize}
+
+\subsection{几何与拓扑}
+主问题围绕：坐标无关结构、局部—整体、曲率、拓扑不变量、纤维化、同伦与障碍。
+
+研究时应特别敏感于：\textbf{局部坐标只是计算工具，真正结论应尽可能具有坐标不变性。}
+
+\subsection{概率与统计}
+主问题围绕：分布、条件化、集中、极限、典型行为、估计误差、不确定性。
+
+常见思想切换：
+\[
+\text{逐点控制}
+\quad\to\quad
+\text{期望/高概率/几乎处处控制}.
+\]
+高维问题中，研究“绝大多数情况”经常比研究“每一种最坏情况”更有信息。
+
+\subsection{优化、数值与机器学习}
+主问题围绕：目标函数几何、条件数、对偶、正则化、算法收敛、稳定性、泛化与计算复杂度。
+
+\begin{researchbox}{不要把“有公式”误认为“可计算”}
+需要明确区分：\textbf{存在}、\textbf{可表示}、\textbf{可逼近}、\textbf{可有效计算}、\textbf{数值稳定}、\textbf{计算复杂度可接受}。研究生阶段，这些应被视为六个不同问题。
+\end{researchbox}
+
+% =========================================================
+\section{第七部分：从一道题训练出研究能力}
+
+同一道课程题可以训练成不同层级。不要在得到标准答案后立即停止。
+
+\begin{longtable}{p{2.5cm}p{\dimexpr\linewidth-3.0cm\relax}}
+\toprule
+\textbf{层级} & \textbf{训练动作与核心目标} \\
+\midrule
+L1 复现 & \textbullet\ 不看答案，独立写出完整且规范的解题/证明过程 \\
+\midrule
+L2 压缩 & \textbullet\ 用 3--5 句话精简提炼出证明骨架，忽略繁琐技术细节 \\
+\midrule
+L3 解释 & \textbullet\ 说明为什么首选当前方法，而非其他另外两种可行方案 \\
+\midrule
+L4 条件诊断 & \textbullet\ 逐一标出每个假设在推导中具体是在哪一步被关键使用 \\
+\midrule
+L5 反例 & \textbullet\ 尝试删除一个条件，专门构造最简反例定位机制失效点 \\
+\midrule
+L6 推广 & \textbullet\ 把常数、维数、空间或范数一般化，尝试提出并猜测新命题 \\
+\midrule
+L7 机制抽象 & \textbullet\ 判断该证明真正依赖的是线性、凸性、紧致性还是谱结构 \\
+\midrule
+L8 再命题 & \textbullet\ 重新提炼写出一个比原题更自然、更一般或更尖锐的新问题 \\
+\bottomrule
+\end{longtable}
+
+\begin{corebox}{课程题与科研之间的桥}
+如果一道题只训练到 L1，它只是做题；训练到 L4--L5，开始真正理解定理；训练到 L6--L8，它就变成了一个小型研究项目。
+\end{corebox}
+
+% =========================================================
+\section{第八部分：两套笔记系统——做题本与研究本}
+
+\subsection{A. 做题本：训练“结构识别与路径召回”}
+
+不建议把做题本写成完整答案仓库。每题优先记录：
+
+\begin{templatebox}{研究生版做题卡}
+\textbf{题目类型 / 对象：}\\[0.4em]
+\textbf{目标状态：}做到什么就足够？\\[0.4em]
+\textbf{触发结构：}为什么想到这个工具？\\[0.4em]
+\textbf{主路径：}3--6 个关键箭头。\\[0.4em]
+\textbf{关键估计/引理：}\\[0.4em]
+\textbf{失败路径：}我最初为什么走错？出现了什么失败信号？\\[0.4em]
+\textbf{边界/反例：}\\[0.4em]
+\textbf{可迁移模式：}下次看到什么结构应自动联想到它？
+\end{templatebox}
+
+\subsection{B. 研究本：训练“问题演化”而不是记录最终结果}
+
+\begin{templatebox}{研究日志模板}
+\textbf{当前问题版本：}把问题写成可证伪的精确句子。\\[0.4em]
+\textbf{为什么值得问：}它解决什么缺口或统一什么现象？\\[0.4em]
+\textbf{已知最小例子：}\\[0.4em]
+\textbf{支持猜想的证据：}\\[0.4em]
+\textbf{攻击猜想的证据：}\\[0.4em]
+\textbf{最脆弱的假设：}\\[0.4em]
+\textbf{当前主机制猜测：}紧致性 / 凸性 / 对称 / 谱 / 能量 / 其他。\\[0.4em]
+\textbf{本次失败说明了什么：}\\[0.4em]
+\textbf{下一个最小实验：}只写一个。\\[0.4em]
+\textbf{问题新版本：}今天之后问题如何被修改？
+\end{templatebox}
+
+研究日志最重要的不是“今天做了几页”，而是保存\concept{问题如何变化、猜想如何被反例修正、证明机制如何逐渐显形}的轨迹。
+
+% =========================================================
+\section{第九部分：阅读论文与学习新理论的七问框架}
+
+学一个理论或读一篇数学论文时，固定回答：
+
+\begin{enumerate}
+  \item \keyword{对象是什么？} 精确定义、典型例子、最小反例分别是什么？
+  \item \keyword{结构是什么？} 哪些结构真正参与核心定理？
+  \item \keyword{合法映射是什么？} 这个领域认为什么叫“保持结构”？
+  \item \keyword{不变量是什么？} 哪些性质用于分类、估计或控制？
+  \item \keyword{标准模型是什么？} 是否有标准形、表示、分解或典型正规形？
+  \item \keyword{核心存在机制是什么？} 构造、紧致性、完备性、不动点、变分、概率方法还是代数机制？
+  \item \keyword{条件为什么需要？} 每个条件在哪一步被用到，删除后出现什么反例？
+\end{enumerate}
+
+如果再进入科研层面，追加三问：
+\begin{enumerate}[resume]
+  \item 当前理论最大的\textbf{边界/瓶颈}在哪里？
+  \item 哪个结论看起来只是技术最优，哪个可能是真正结构最优？
+  \item 如果我要做下一步，最小而有信息量的问题是什么？
+\end{enumerate}
+
+% =========================================================
+\section{第十部分：训练计划——把方法论变成习惯}
+
+\subsection{每做一道重要题：四次通过}
+
+\begin{enumerate}
+  \item \keyword{Solve pass}：完整独立解决。
+  \item \keyword{Compress pass}：只写证明骨架和最终式。
+  \item \keyword{Stress-test pass}：删条件、找边界、构造反例。
+  \item \keyword{Generalize pass}：提出至少一个更一般或更自然的问题。
+\end{enumerate}
+
+\subsection{每学一个定理：五件事}
+
+\begin{enumerate}
+  \item 会准确陈述；
+  \item 知道最典型的例子；
+  \item 知道证明的主机制；
+  \item 知道每个条件的作用；
+  \item 知道去掉关键条件后最简单的失败例子。
+\end{enumerate}
+
+\subsection{每周一次“研究化复盘”}
+
+从本周做过的题或定理中任选一个，回答：
+\begin{itemize}
+  \item 这件事的核心结构是什么？
+  \item 证明中最不可替代的步骤是哪一步？
+  \item 是否能换一个语言重讲？
+  \item 哪个条件最值得尝试削弱？
+  \item 能否设计一个反例说明边界？
+  \item 能否把它推广成一个问题族？
+\end{itemize}
+
+% =========================================================
+\section{第十一部分：最终总图——研究生数学的认知操作系统}
+
+\begin{center}
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[>=Latex,
+ box/.style={draw=deepblue, thick, rounded corners=2mm, align=center, minimum height=1.05cm, text width=4.5cm, font=\small, fill=white, inner sep=6pt},
+ arr/.style={->, thick, deepblue},
+ dasharr/.style={->, thick, dashed}
+]
+\node[box,fill=softblue] (o) at (0,0) {\textbf{对象与定义}\\[0.2em]\small 我到底在研究什么？};
+\node[box] (s) at (5.5,0) {\textbf{结构与映射}\\[0.2em]\small 什么关系真正重要？};
+\node[box] (l) at (11.0,0) {\textbf{选择语言}\\[0.2em]\small 哪种表示最自然？};
+
+\node[box] (g) at (0,-2.3) {\textbf{目标与最终状态}\\[0.2em]\small 什么信息足以结束？};
+\node[box] (t) at (5.5,-2.3) {\textbf{转化与估计}\\[0.2em]\small 怎样降低复杂度？};
+\node[box] (v) at (11.0,-2.3) {\textbf{验证与边界}\\[0.2em]\small 为什么可靠？哪里会失败？};
+
+\node[box,fill=softgray] (p) at (0,-4.6) {\textbf{做题模式}\\[0.2em]\small 给定问题中寻找最短可靠路径};
+\node[box,fill=warm] (r) at (11.0,-4.6) {\textbf{研究模式}\\[0.2em]\small 修改问题与假设直到机制显现};
+\node[box,fill=white,text width=4.8cm] (m) at (5.5,-4.6) {\textbf{元循环}\\[0.2em]\small 反例 · 极端 · 推广 · 抽象 · 再命题};
+
+\draw[arr] (o) -- (s); \draw[arr] (s) -- (l);
+\draw[arr] (g) -- (t); \draw[arr] (t) -- (v);
+\draw[arr] (o) -- (g); \draw[arr] (s) -- (t); \draw[arr] (l) -- (v);
+\draw[arr] (g) -- (p); \draw[arr] (v) -- (r);
+\draw[arr] (p) -- (m); \draw[arr] (m) -- (r);
+
+% Outer loop around right edge to avoid crossing inner nodes
+\draw[dasharr, accent] (r.east) -- ++(0.9,0) |- node[pos=0.25, fill=white, inner sep=3pt, font=\scriptsize\bfseries, text=accent] {新结构反馈} (s.east);
+\draw[dasharr, greenish] (m.north) -- (t.south);
+\end{tikzpicture}%
+}
+\end{center}
+
+\begin{corebox}{一句话总纲}
+\centering
+\Large
+\textbf{数学能力的核心，不是把复杂式子算完，而是把复杂问题持续压缩成结构清楚、语言自然、可证明、可验证的形式。}
+\normalsize
+\end{corebox}
+
+做题训练的是：\textbf{给定目标下如何高效完成这种压缩。}
+
+研究训练的是：\textbf{当目标本身也不确定时，如何通过例子、反例、结构、不变量、估计与抽象，找到值得被证明的正确问题。}
+
+因此，从考研到研究生专业数学，再到真正科研，最应该不断加强的不是“公式库存”，而是以下十项能力：
+
+\begin{enumerate}
+  \item 定义展开能力；
+  \item 结构识别能力；
+  \item 表征与语言切换能力；
+  \item 最终状态预测能力；
+  \item 分解、线性化、对偶和变换能力；
+  \item 估计与稳定性控制能力；
+  \item 不变量与分类能力；
+  \item 条件诊断与反例设计能力；
+  \item 局部—整体与尺度意识；
+  \item 从结论继续生成问题的能力。
+\end{enumerate}
+
+\begin{researchbox}{最后的尺度}
+如果一个人能够快速做出大量标准题，他是熟练的问题解决者；如果他还能解释为什么这条路线自然、哪些条件不可缺、哪里会失败、如何推广，他已经具备较强的数学理解；如果他进一步能够从失败、边界和不同理论之间的相似结构中持续提出新的好问题，并把零散证明组织成可复用理论，那么他才真正开始进入数学研究。
+\end{researchbox}
+
+\vfill
+\begin{center}
+\color{slate}\small
+—— 结束不是得到一个答案，而是知道下一步值得问什么。——
+\end{center}
+
+\end{document}

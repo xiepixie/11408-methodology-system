@@ -1,0 +1,60 @@
+% =====================================================
+% 题型：余弦定理与正弦值选择题 (q_tjw_20260606_18_cosine_rule_sine_angle.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleCosineRuleSineStem}{%
+  在 \(\triangle ABC\) 中，\(\angle ABC = \dfrac{\pi}{4}\)，\(AB = \sqrt{2}\)，\(BC = 3\)，则 \(\sin \angle BAC =\) \hfill （\quad）%
+}
+
+\newcommand{\qTriangleCosineRuleSineOptions}{%
+  \mcoptions[2]
+    {\(\dfrac{\sqrt{10}}{10}\)}
+    {\(\dfrac{\sqrt{10}}{5}\)}
+    {\(\dfrac{3\sqrt{10}}{10}\)}
+    {\(\dfrac{\sqrt{5}}{5}\)}%
+}
+
+\newcommand{\qTriangleCosineRuleSineAnswer}{C}
+
+\newcommand{\qTriangleCosineRuleSineSolution}{%
+  设 \(AC=b\)，由余弦定理得
+  \[
+    b^2
+    = AB^2 + BC^2 - 2 \cdot AB \cdot BC \cos B
+    = 2 + 9 - 2 \cdot \sqrt{2} \cdot 3 \cdot \frac{\sqrt{2}}{2}
+    = 5.
+  \]
+  所以 \(AC=\sqrt{5}\)。
+
+  由正弦定理得
+  \[
+    \frac{\sin A}{BC} = \frac{\sin B}{AC},
+    \qquad
+    \sin A
+    = \frac{BC \sin B}{AC}
+    = \frac{3 \cdot \frac{\sqrt{2}}{2}}{\sqrt{5}}
+    = \frac{3\sqrt{10}}{10}.
+  \]
+  故选 C。%
+}
+
+\newcommand{\qTriangleCosineRuleSineDiagnosis}{%
+  （留白待收集学生作答后补充）%
+}
+
+\newcommand{\qTriangleCosineRuleSineTeachingNotes}{%
+  快讲候选。对应图片中的“已知两边及夹角，先余弦定理求第三边，再正弦定理求角”的基本流程。重点追问学生是否能准确对应 \(AB,BC,AC\) 与角 \(A,B,C\) 的对边关系。%
+}
+
+
+% =====================================================
+% 别名兼容：旧课次宏定义
+% =====================================================
+\newcommand{\qTJWZeroSixEighteenStem}{\qTriangleCosineRuleSineStem}
+\newcommand{\qTJWZeroSixEighteenOptions}{\qTriangleCosineRuleSineOptions}
+\newcommand{\qTJWZeroSixEighteenAnswer}{\qTriangleCosineRuleSineAnswer}
+\newcommand{\qTJWZeroSixEighteenSolution}{\qTriangleCosineRuleSineSolution}
+\newcommand{\qTJWZeroSixEighteenDiagnosis}{\qTriangleCosineRuleSineDiagnosis}
+\newcommand{\qTJWZeroSixEighteenTeachingNotes}{\qTriangleCosineRuleSineTeachingNotes}

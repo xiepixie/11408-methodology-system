@@ -1,0 +1,317 @@
+% =====================================================
+% 专题：不等式专题 (questions.tex)
+% =====================================================
+
+% -----------------------------------------------------
+% Q1: 根式单变量整体换元 (Q1)
+% -----------------------------------------------------
+\newcommand{\qOneStem}{求函数 \(f(x) = x + \sqrt{1 - x}\) 的最大值为\blank{1.5cm}}
+\newcommand{\qOneOptions}{\mcoptions[4]{\(1\)}{\(\dfrac{5}{4}\)}{\(\dfrac{9}{8}\)}{\(\sqrt{2}\)}}
+\newcommand{\qOneAnswer}{B}
+\newcommand{\qOneSolution}{%
+  【解题思路】\\
+  本题是一元根式函数求最值问题。最直接的方法是对根式部分进行“整体换元”，将无理函数化归为有理二次函数。\\
+  第一步：观察根式结构为一次型 \(\sqrt{1-x}\)，令 \(t = \sqrt{1-x}\)，注意自变量 \(t\) 的活动范围 \(t \geqslant 0\)；\\
+  第二步：反解出 \(x = 1 - t^2\)，代入原函数化为关于 \(t\) 的二次函数；\\
+  第三步：在限制区间 \(t \in [0, +\infty)\) 内求出二次函数的最大值。\\
+  【解析计算】\\
+  令 \(t = \sqrt{1 - x}\)，因为二次根式非负，所以 \(t \geqslant 0\)。\\
+  由 \(t = \sqrt{1 - x} \implies t^2 = 1 - x \implies x = 1 - t^2\)。\\
+  代入原函数得：\\
+  \(f(x) = 1 - t^2 + t = -t^2 + t + 1\)。\\
+  配方整理得：\\
+  \(f(x) = -\left(t - \dfrac{1}{2}\right)^2 + \dfrac{5}{4}\)。\\
+  因为 \(t = \dfrac{1}{2} \geqslant 0\) 在定义域范围内，\\
+  所以，当 \(t = \dfrac{1}{2}\) 时（此时 \(x = 1 - \left(\dfrac{1}{2}\right)^2 = \dfrac{3}{4}\)），函数取得最大值，最大值为 \(\dfrac{5}{4}\)。\\
+  故选 B。%
+}
+
+% -----------------------------------------------------
+% Q2: 根式单变量三角换元 (Q2)
+% -----------------------------------------------------
+\newcommand{\qTwoStem}{求函数 \(f(x) = x + \sqrt{1 - x^2}\) 的最大值为\blank{1.5cm}}
+\newcommand{\qTwoOptions}{\mcoptions[4]{\(1\)}{\(\sqrt{2}\)}{\(\dfrac{3}{2}\)}{\(2\)}}
+\newcommand{\qTwoAnswer}{B}
+\newcommand{\qTwoSolution}{%
+  【解题思路】\\
+  观察到根式内部为平方差结构 \(\sqrt{1-x^2}\)，其自变量定义域为 \(x \in [-1, 1]\)。\\
+  这种结构极易联想到三角恒等式 \(\sin^2\theta + \cos^2\theta = 1\)。\\
+  第一步：令 \(x = \cos\theta\)，由于 \(x \in [-1, 1]\)，可限制 \(\theta \in [0, \pi]\)；\\
+  第二步：代入根式，由 \(\theta \in [0, \pi]\) 得 \(\sqrt{1-x^2} = \sqrt{1-\cos^2\theta} = \sin\theta\)；\\
+  第三步：利用辅助角公式求出三角函数式的最值。\\
+  【解析计算】\\
+  因为 \(1 - x^2 \geqslant 0 \implies x \in [-1, 1]\)。\\
+  设 \(x = \cos\theta\)，其中 \(\theta \in [0, \pi]\)。\\
+  则 \(\sqrt{1 - x^2} = \sqrt{1 - \cos^2\theta} = \sin\theta\)（因 \(\theta \in [0, \pi]\) 时 \(\sin\theta \geqslant 0\)）。\\
+  代入原式得：\\
+  \(f(x) = \cos\theta + \sin\theta\)。\\
+  利用辅助角公式化简：\\
+  \(f(x) = \sqrt{2}\sin\left(\theta + \dfrac{\pi}{4}\right)\)。\\
+  因为 \(\theta \in [0, \pi] \implies \theta + \dfrac{\pi}{4} \in \left[\dfrac{\pi}{4}, \dfrac{5\pi}{4}\right]\)。\\
+  当 \(\theta + \dfrac{\pi}{4} = \dfrac{\pi}{2} \implies \theta = \dfrac{\pi}{4}\) 时（此时 \(x = \cos\dfrac{\pi}{4} = \dfrac{\sqrt{2}}{2}\)），\\
+  \(\sin\left(\theta + \dfrac{\pi}{4}\right)\) 取得最大值 1。\\
+  所以，函数的最大值为 \(\sqrt{2}\)。\\
+  故选 B。%
+}
+
+% -----------------------------------------------------
+% Q3: 多变量非对称比值消元 (Q3)
+% -----------------------------------------------------
+\newcommand{\qThreeStem}{已知正实数 \(x, y\) 满足 \(x + y = 1\)，则 \(\dfrac{1}{x^2} + \dfrac{4}{y}\) 的最小值为\blank{1.5cm}}
+\newcommand{\qThreeOptions}{\mcoptions[4]{\(9\)}{\(10\)}{\(12\)}{\(16\)}}
+\newcommand{\qThreeAnswer}{C}
+\newcommand{\qThreeSolution}{%
+  【解题思路】\\
+  本题为二元有条件最值问题，且两项分式的阶数不相同（第一项分母为二次，第二项分母为一次）。这属于非对称型多变量不等式。\\
+  核心思路是“齐次化”构造比值，然后通过比值换元将二元问题转化为一元问题。\\
+  第一步：利用 \(x+y=1\)，将两项分子分别乘以相应的齐次多项式，使整式每一项的阶数在分子分母上达到平衡（第一项分子乘二次 \((x+y)^2\)，第二项分子乘一次 \((x+y)\)）；\\
+  第二步：设比值 \(t = \dfrac{y}{x} > 0\)，将原式完全表达为关于 \(t\) 的一元函数；\\
+  第三步：对关于 \(t\) 的一元函数求导求最值。\\
+  【解析计算】\\
+  因为 \(x + y = 1\)，所以有：\\
+  \(\dfrac{1}{x^2} + \dfrac{4}{y} = \dfrac{(x + y)^2}{x^2} + \dfrac{4(x + y)}{y}\)。\\
+  展开分子：\\
+  \(\dfrac{(x+y)^2}{x^2} + \dfrac{4x+4y}{y} = \left(1 + \dfrac{y}{x}\right)^2 + 4\left(\dfrac{x}{y} + 1\right)\)。\\
+  令 \(t = \dfrac{y}{x}\)。因为 \(x > 0, y > 0\)，所以 \(t > 0\)。\\
+  原式可化为关于 \(t\) 的一元函数 \(f(t)\)：\\
+  \(f(t) = (1 + t)^2 + 4\left(\dfrac{1}{t} + 1\right) = t^2 + 2t + 5 + \dfrac{4}{t}\)。\\
+  对 \(f(t)\) 求导得：\\
+  \(f'(t) = 2t + 2 - \dfrac{4}{t^2} = \dfrac{2t^3 + 2t^2 - 4}{t^2} = \dfrac{2(t-1)(t^2 + 2t + 2)}{t^2}\)。\\
+  因为对任意 \(t > 0\)，二次项 \(t^2 + 2t + 2 > 0\) 恒成立。\\
+  令 \(f'(t) = 0 \implies t = 1\)。\\
+  当 \(0 < t < 1\) 时，\(f'(t) < 0\)，\(f(t)\) 单调递减；\\
+  当 \(t > 1\) 时，\(f'(t) > 0\)，\(f(t)\) 单调递增。\\
+  所以，当 \(t = 1\) 时（即 \(x = y = \dfrac{1}{2}\) 时），\(f(t)\) 取得最小值，\\
+  最小值为 \(f(1) = 1^2 + 2 \cdot 1 + 5 + \dfrac{4}{1} = 12\)。\\
+  故选 C。%
+}
+
+% -----------------------------------------------------
+% Q4: 根式转椭圆线性最值 (Q4)
+% -----------------------------------------------------
+\newcommand{\qFourStem}{求函数 \(f(x) = \sqrt{3 - 2x} + \sqrt{3x}\) 的最大值为\blank{1.5cm}}
+\newcommand{\qFourOptions}{\mcoptions[4]{\(\sqrt{6}\)}{\(\dfrac{\sqrt{30}}{2}\)}{\(\sqrt{15}\)}{\(3\)}}
+\newcommand{\qFourAnswer}{B}
+\newcommand{\qFourFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, >=stealth]
+    % Draw grid
+    \draw[color=gridcolor, thin] (-0.5,-0.5) grid (3.2,3.2);
+    % Draw axes
+    \draw[->, thick] (-0.3,0) -- (3.3,0) node[right] {\small \(M\)};
+    \draw[->, thick] (0,-0.3) -- (0,3.3) node[above] {\small \(N\)};
+    \draw (0,0) node[below left] {\small \(O\)};
+    
+    % Draw ellipse quadrant M^2/3 + 2N^2/9 = 1
+    \draw[thick, black, domain=0:90, samples=100] plot ({sqrt(3)*cos(\x)}, {sqrt(4.5)*sin(\x)});
+    \node at (0.1, 0.5) [right] {\scriptsize \(\dfrac{M^2}{3} + \dfrac{2N^2}{9} = 1\)};
+    
+    % Draw tangent point and tangent line M + N = \sqrt{7.5} \approx 2.74
+    \coordinate (P) at (1.095, 1.643);
+    \fill[black] (P) circle (1.5pt) node[above right] {\scriptsize \(P(1.10, 1.64)\)};
+    
+    % Tangent line
+    \draw[blue, thick, domain=0:2.74] plot (\x, {2.74 - \x});
+    \node at (2.4, 0.4) [rotate=-45, color=blue] {\scriptsize \(M+N=\dfrac{\sqrt{30}}{2}\)};
+  \end{tikzpicture}%
+}
+\newcommand{\qFourSolution}{%
+  【解题思路】\\
+  本题是一元根式求最值问题。但由于两根号内部自变量系数不同，直接整体换元会遇到障碍。\\
+  核心套路是：\textbf{双根式换元建立参数方程，将一元根式最值化归为椭圆上的线性规划最值问题}。\\
+  第一步：令 \(M = \sqrt{3 - 2x} \geqslant 0\)，\(N = \sqrt{3x} \geqslant 0\)；\\
+  第二步：消去变量 \(x\)，建立关于 \(M, N\) 的二次椭圆约束方程：\(\dfrac{M^2}{3} + \dfrac{2N^2}{9} = 1\)；\\
+  第三步：在第一象限椭圆弧上，求线性目标函数 \(z = M + N\) 的最大值（利用三角换元或柯西不等式）。\\
+  【解析计算】\\
+  设 \(M = \sqrt{3 - 2x} \geqslant 0\)，\(N = \sqrt{3x} \geqslant 0\)。\\
+  两边平方得：\\
+  \(M^2 = 3 - 2x\)，\(N^2 = 3x \implies x = \dfrac{N^2}{3}\)。\\
+  代入前式消去 \(x\)：\\
+  \(M^2 = 3 - 2\left(\dfrac{N^2}{3}\right) \implies M^2 + \dfrac{2}{3}N^2 = 3\)。\\
+  两边同除以 3 整理为标准椭圆方程：\\
+  \(\dfrac{M^2}{3} + \dfrac{2}{9}N^2 = 1\) （其中 \(M \geqslant 0, N \geqslant 0\)）。\\
+  我们需要求的是目标函数 \(z = M + N\) 的最大值。\\
+  
+  法一（柯西不等式法）：\\
+  由柯西不等式得：\\
+  \((M + N)^2 = \left( \sqrt{3} \cdot \dfrac{M}{\sqrt{3}} + \dfrac{3}{\sqrt{2}} \cdot \dfrac{\sqrt{2}}{3}N \right)^2 \leqslant \left( (\sqrt{3})^2 + \left(\dfrac{3}{\sqrt{2}}\right)^2 \right) \left( \dfrac{M^2}{3} + \dfrac{2}{9}N^2 \right)\)。\\
+  代入椭圆约束等式：\\
+  \((M + N)^2 \leqslant \left( 3 + \dfrac{9}{2} \right) \cdot 1 = \dfrac{15}{2}\)。\\
+  因为 \(M \geqslant 0, N \geqslant 0\)，所以：\\
+  \(M + N \leqslant \sqrt{\dfrac{15}{2}} = \dfrac{\sqrt{30}}{2}\)。\\
+  当且仅当 \(\dfrac{M/ \sqrt{3}}{\sqrt{3}} = \dfrac{\sqrt{2}N/3}{3/\sqrt{2}} \implies \dfrac{M}{3} = \dfrac{2N}{9}\) 时，等号成立。\\
+  
+  法二（三角换元法）：\\
+  根据椭圆参数方程，设：\\
+  \(M = \sqrt{3}\cos\theta\)，\(N = \dfrac{3}{\sqrt{2}}\sin\theta\)，其中 \(\theta \in \left[0, \dfrac{\pi}{2}\right]\)。\\
+  则：\\
+  \(M + N = \sqrt{3}\cos\theta + \dfrac{3}{\sqrt{2}}\sin\theta\)。\\
+  根据辅助角公式，最大值为：\\
+  \(\sqrt{(\sqrt{3})^2 + \left(\dfrac{3}{\sqrt{2}}\right)^2} = \sqrt{3 + \dfrac{9}{2}} = \sqrt{\dfrac{15}{2}} = \dfrac{\sqrt{30}}{2}\)。\\
+  故选 B。%
+}
+
+% -----------------------------------------------------
+% Q5: 高考压轴不等式证明 (Q5)
+% -----------------------------------------------------
+\newcommand{\qFiveStem}{设正数 \(a, b, c\) 满足 \(abc = 8\)。证明：\(1 < \dfrac{1}{\sqrt{1 + a}} + \dfrac{1}{\sqrt{1 + b}} + \dfrac{1}{\sqrt{1 + c}} < 2\)。}
+\newcommand{\qFiveSolution}{%
+  【解题思路】\\
+  本题为高考压轴难度的三元约束不等式证明。直接通分或放缩极难下手。\\
+  核心策略是：\textbf{利用根式换元将不等式解构，并使用反证法构造齐次不等式，通过轮换相消完成论证}。\\
+  第一步：换元。令 \(x = \dfrac{1}{\sqrt{1+a}}\)，\(y = \dfrac{1}{\sqrt{1+b}}\)，\(z = \dfrac{1}{\sqrt{1+c}}\)。注意 \(0 < x, y, z < 1\)，反解出变量关系并将已知约束 \(abc=8\) 翻译为关于 \(x, y, z\) 的乘积恒等式：\(\prod_{cyc} \dfrac{1-x^2}{x^2} = 8\)；\\
+  第二步：反证下界。假设 \(x+y+z \leqslant 1\)，把不齐次的 \(1-x^2\) 用假设条件放缩为齐次式，利用四项均值不等式将三项轮换相乘，导出矛盾；\\
+  第三步：反证上界。假设 \(x+y+z \geqslant 2\)，利用图象及不等式范围放缩，轮换相乘导出矛盾。\\
+  【解析证明】\\
+  证明：\\
+  \textbf{第一步：换元。}\\
+  设 \(x = \dfrac{1}{\sqrt{1+a}}\)，\(y = \dfrac{1}{\sqrt{1+b}}\)，\(z = \dfrac{1}{\sqrt{1+c}}\)。\\
+  因为 \(a, b, c > 0\)，所以 \(0 < x, y, z < 1\)。\\
+  反解得：\(a = \dfrac{1 - x^2}{x^2}\)，\(b = \dfrac{1 - y^2}{y^2}\)，\(c = \dfrac{1 - z^2}{z^2}\)。\\
+  因为 \(abc = 8\)，所以有：\\
+  \(\left(\dfrac{1 - x^2}{x^2}\right)\left(\dfrac{1 - y^2}{y^2}\right)\left(\dfrac{1 - z^2}{z^2}\right) = 8\) \quad (等式 I)。\\
+  原题转化为：在等式 I 的约束下，证明 \(1 < x + y + z < 2\)。\\
+  
+  \textbf{第二步：证明下界 \(x + y + z > 1\)。}\\
+  用反证法。假设 \(s = x + y + z \leqslant 1\)。\\
+  因为 \(s \leqslant 1 \implies s^2 \leqslant 1\)，所以对于 \(x\) 有：\\
+  \(1 - x^2 \geqslant s^2 - x^2 = (x + y + z)^2 - x^2 = (y + z)(2x + y + z)\)。\\
+  因为 \(y^2 + z^2 \geqslant 2yz\)，所以：\\
+  \(s^2 - x^2 = y^2 + z^2 + 2yz + 2xy + 2xz \geqslant 4yz + 2xy + 2xz\)。\\
+  利用四项算术—几何平均值不等式得：\\
+  \(2xy + 2xz + 2yz + 2yz \geqslant 4\sqrt[4]{2xy \cdot 2xz \cdot 2yz \cdot 2yz} = 8\sqrt{x}y^{3/4}z^{3/4}\)。\\
+  所以：\\
+  \(1 - x^2 \geqslant s^2 - x^2 \geqslant 8x^{1/2}y^{3/4}z^{3/4} \implies \dfrac{1 - x^2}{x^2} \geqslant 8x^{-3/2}y^{3/4}z^{3/4}\)。\\
+  同理可得轮换项：\\
+  \(\dfrac{1 - y^2}{y^2} \geqslant 8y^{-3/2}z^{3/4}x^{3/4}\)，\\
+  \(\dfrac{1 - z^2}{z^2} \geqslant 8z^{-3/2}x^{3/4}y^{3/4}\)。\\
+  将这三个轮换不等式相乘，右侧自变量的指数在轮换乘积下相消：\\
+  \(\left(\dfrac{1 - x^2}{x^2}\right)\left(\dfrac{1 - y^2}{y^2}\right)\left(\dfrac{1 - z^2}{z^2}\right) \geqslant 8^3 \cdot x^{(-3/2+3/4+3/4)} y^{(3/4-3/2+3/4)} z^{(3/4+3/4-3/2)} = 512\)。\\
+  但由等式 I 知，左端乘积恒等于 8。\\
+  因为 \(8 \geqslant 512\) 显然矛盾，所以假设不成立。\\
+  故下界 \(x + y + z > 1\) 成立。\\
+  
+  \textbf{第三步：证明上界 \(x + y + z < 2\)。}\\
+  同样用反证法。假设 \(s = x + y + z \geqslant 2\)。\\
+  因为 \(0 < x < 1\)，有 \(1 - x^2 = (1 - x)(1 + x) < 2(1 - x)\)。\\
+  由假设 \(s \geqslant 2 \implies y + z \geqslant 2 - x \implies 1 - x \leqslant y + z - 1\)。\\
+  因为 \(0 < y, z < 1\)，有 \((1 - y)(1 - z) > 0 \implies yz - (y + z - 1) > 0 \implies y + z - 1 < yz\)。\\
+  由此可得：\\
+  \(1 - x < yz \implies 1 - x^2 < 2(1 - x) \leqslant 2(y + z - 1) < 2yz\)。\\
+  所以有：\\
+  \(\dfrac{1 - x^2}{x^2} < \dfrac{2yz}{x^2}\)。\\
+  同理可得轮换项：\\
+  \(\dfrac{1 - y^2}{y^2} < \dfrac{2zx}{y^2}\)，\\
+  \(\dfrac{1 - z^2}{z^2} < \dfrac{2xy}{z^2}\)。\\
+  将这三个轮换不等式相乘：\\
+  \(\left(\dfrac{1 - x^2}{x^2}\right)\left(\dfrac{1 - y^2}{y^2}\right)\left(\dfrac{1 - z^2}{z^2}\right) < \left(\dfrac{2yz}{x^2}\right)\left(\dfrac{2zx}{y^2}\right)\left(\dfrac{2xy}{z^2}\right) = 8\)。\\
+  但这与等式 I 左端乘积等于 8 矛盾。\\
+  所以假设不成立。\\
+  故上界 \(x + y + z < 2\) 成立。\\
+  综上所述，原不等式成立。%
+}
+
+% -----------------------------------------------------
+% Q6: 国际竞赛轮换不等式证明 (Q6)
+% -----------------------------------------------------
+\newcommand{\qSixStem}{设正数 \(a, b, c > 0\)。证明：\(\sqrt{\dfrac{a^2}{a^2 + 8bc}} + \sqrt{\dfrac{b^2}{b^2 + 8ca}} + \sqrt{\dfrac{c^2}{c^2 + 8ab}} \geqslant 1\)。}
+\newcommand{\qSixSolution}{%
+  【解题思路】\\
+  本题为国际数学竞赛（IMO）级别的不等式证明。其根式内含有积的形式，且为循环对称结构。\\
+  本题与上一题高考压轴题共享高度一致的数理结构。\\
+  核心思路是：\textbf{通过换元构造乘积恒等式，再利用反证法结合齐次放缩与指数轮换相消完成证明}。\\
+  【解析证明】\\
+  证明：\\
+  设 \(x = \sqrt{\dfrac{a^2}{a^2 + 8bc}}\)，\(y = \sqrt{\dfrac{b^2}{b^2 + 8ca}}\)，\(z = \sqrt{\dfrac{c^2}{c^2 + 8ab}}\)。\\
+  因为 \(a, b, c > 0\)，显然有 \(0 < x, y, z < 1\)。\\
+  由定义平方整理得：\\
+  \(x^2 = \dfrac{a^2}{a^2 + 8bc} \implies \dfrac{a^2 + 8bc}{a^2} = \dfrac{1}{x^2} \implies \dfrac{1 - x^2}{x^2} = \dfrac{8bc}{a^2}\)。\\
+  同理可得另外两项的轮换关系式：\\
+  \(\dfrac{1 - y^2}{y^2} = \dfrac{8ca}{b^2}\)，\\
+  \(\dfrac{1 - z^2}{z^2} = \dfrac{8ab}{c^2}\)。\\
+  将这三项相乘：\\
+  \(\left(\dfrac{1 - x^2}{x^2}\right)\left(\dfrac{1 - y^2}{y^2}\right)\left(\dfrac{1 - z^2}{z^2}\right) = \left(\dfrac{8bc}{a^2}\right)\left(\dfrac{8ca}{b^2}\right)\left(\dfrac{8ab}{c^2}\right) = 512\) \quad (等式 II)。\\
+  我们需要证明的目标转化为：在等式 II 约束下，证明 \(x + y + z \geqslant 1\)。\\
+  
+  用反证法。假设 \(s = x + y + z < 1\)。\\
+  由前题 Q5 证明下界时的相同放缩，因为 \(s < 1 \implies s^2 < 1\)，所以：\\
+  \(1 - x^2 > s^2 - x^2 = (y + z)(2x + y + z)\)。\\
+  利用均值不等式及四项均值不等式展开：\\
+  \(s^2 - x^2 = y^2 + z^2 + 2yz + 2xy + 2xz \geqslant 4yz + 2xy + 2xz\)。\\
+  由此可得：\\
+  \(2xy + 2xz + 2yz + 2yz \geqslant 8x^{1/2}y^{3/4}z^{3/4}\)。\\
+  所以：\\
+  \(\dfrac{1 - x^2}{x^2} > 8x^{-3/2}y^{3/4}z^{3/4}\)。\\
+  同理可得另外两项轮换放缩式：\\
+  \(\dfrac{1 - y^2}{y^2} > 8y^{-3/2}z^{3/4}x^{3/4}\)，\\
+  \(\dfrac{1 - z^2}{z^2} > 8z^{-3/2}x^{3/4}y^{3/4}\)。\\
+  将这三个轮换不等式相乘，右侧自变量指数在轮换下相消：\\
+  \(\left(\dfrac{1 - x^2}{x^2}\right)\left(\dfrac{1 - y^2}{y^2}\right)\left(\dfrac{1 - z^2}{z^2}\right) > 8^3 \cdot 1 = 512\)。\\
+  但这与等式 II 的左端乘积恒等于 512 矛盾（左端实际应该等于 512，而不是严格大于 512）。\\
+  因为矛盾，所以假设不成立。\\
+  故必有 \(x + y + z \geqslant 1\) 成立。\\
+  即原不等式得证。%
+}
+
+% -----------------------------------------------------
+% Q7: 分类讨论解绝对值不等式 (Q7)
+% -----------------------------------------------------
+\newcommand{\qSevenStem}{解关于 \(x\) 的绝对值不等式：\(|2x - 1| - |x + 2| < 1\)。}
+\newcommand{\qSevenSolution}{%
+  【解题思路】\\
+  本题为经典的含有两个绝对值的代数不等式求解问题。核心解法是“零点分段讨论法”，以绝对值内部式子的零点将实数轴划分为若干区间，分别去掉绝对值符号转化为一元一次不等式组求解，最后求并集。\\
+  第一步：找零点。令 \(2x-1=0 \implies x = \dfrac{1}{2}\)，\(x+2=0 \implies x = -2\)；\\
+  第二步：分段讨论。将实数轴分为三个区间：\(x < -2\)，\(-2 \leqslant x \leqslant \dfrac{1}{2}\)，以及 \(x > \dfrac{1}{2}\)；\\
+  第三步：在各区间内去绝对值，解不等式，求出各区间的解集，最后取并集。\\
+  【解析计算】\\
+  令 \(2x-1=0 \implies x = \dfrac{1}{2}\)，\(x+2=0 \implies x = -2\)。\\
+  分以下三种情况讨论：\\
+  1. 当 \(x < -2\) 时，原不等式去绝对值号得：\\
+  \(-(2x - 1) - [-(x + 2)] < 1 \implies -2x + 1 + x + 2 < 1 \implies -x + 3 < 1 \implies x > 2\)。\\
+  因为 \(x > 2\) 与 \(x < -2\) 无公共部分，此时无解。\\
+  
+  2. 当 \(-2 \leqslant x \leqslant \dfrac{1}{2}\) 时，原不等式去绝对值号得：\\
+  \(-(2x - 1) - (x + 2) < 1 \implies -2x + 1 - x - 2 < 1 \implies -3x - 1 < 1 \implies -3x < 2 \implies x > -\dfrac{2}{3}\)。\\
+  结合条件，得这一段的解为：\(-\dfrac{2}{3} < x \leqslant \dfrac{1}{2}\)。\\
+  
+  3. 当 \(x > \dfrac{1}{2}\) 时，原不等式去绝对值号得：\\
+  \((2x - 1) - (x + 2) < 1 \implies 2x - 1 - x - 2 < 1 \implies x - 3 < 1 \implies x < 4\)。\\
+  结合条件，得这一段的解为：\(\dfrac{1}{2} < x < 4\)。\\
+  
+  综上所述，原不等式的解集为二、三两段解的并集，即：\\
+  \(\left(-\dfrac{2}{3}, 4\right)\)。%
+}
+
+% -----------------------------------------------------
+% Q8: 绝对值三角不等式证明与几何法 (Q8)
+% -----------------------------------------------------
+\newcommand{\qEightStem}{设实数 \(a, b\) 满足 \(|a + b| \leqslant 1\) 且 \(|a - b| \leqslant 1\)。证明：\(|a| + |b| \leqslant 1\)。}
+\newcommand{\qEightSolution}{%
+  【解题思路】\\
+  本题为绝对值不等式性质的综合证明题。由于条件涉及 \(a+b\) 与 \(a-b\)，要证明的目标是单变量绝对值之和 \(|a|+|b|\)。有两种经典的思考维度：\\
+  维度一（代数法）：分析绝对值内部符号。根据 \(ab\) 的符号分类讨论，结合绝对值的定义和已知不等式直接完成放缩。\\
+  维度二（几何法）：数形结合。在直角坐标系下，分析 \(|a+b| \leqslant 1\) 和 \(|a-b| \leqslant 1\) 构成的平面区域，再观察目标 \(|a|+|b| \leqslant 1\) 的区域，发现两者完全等价。\\
+  【解析证明】\\
+  证明：\\
+  \textbf{法一（代数分类法）：}\\
+  根据实数 \(a, b\) 的乘积符号分以下两种情况讨论：\\
+  1. 当 \(ab \geqslant 0\) 时，说明 \(a\) 与 \(b\) 同号（或至少有一个为0）。\\
+  因此恒有 \(|a| + |b| = |a + b|\)。\\
+  因为已知 \(|a + b| \leqslant 1\)，所以有 \(|a| + |b| \leqslant 1\)。\\
+  
+  2. 当 \(ab < 0\) 时，说明 \(a\) 与 \(b\) 异号。\\
+  因此恒有 \(|a| + |b| = |a - b|\)。\\
+  因为已知 \(|a - b| \leqslant 1\)，所以有 \(|a| + |b| \leqslant 1\)。\\
+  
+  综上所述，无论 \(a, b\) 取何值，在已知条件下恒有：\\
+  \(|a| + |b| \leqslant 1\) 成立。\\
+  
+  \textbf{法二（几何法）：}\\
+  在直角坐标系 \(aOb\) 中分析已知条件表示的平面区域：\\
+  \(|a + b| \leqslant 1 \iff -1 \leqslant a + b \leqslant 1\)，这表示夹在两条平行直线 \(a+b=1\) 与 \(a+b=-1\) 之间的带状区域；\\
+  \(|a - b| \leqslant 1 \iff -1 \leqslant a - b \leqslant 1\)，这表示夹在两条平行直线 \(a-b=1\) 与 \(a-b=-1\) 之间的带状区域；\\
+  因此，条件区域是这两个带状区域的交集，它是一个正方形区域，其四个顶点分别为：\\
+  \(A(1, 0)\)，\(B(0, 1)\)，\(C(-1, 0)\)，\(D(0, -1)\)。\\
+  而需要证明的目标 \(|a| + |b| \leqslant 1\)，在平面直角坐标系下表示的区域，恰好也是以这四个点为顶点的正方形区域（包括边界）。\\
+  因此，满足已知条件的所有点 \((a, b)\) 都必然落在目标不等式对应的区域内。\\
+  所以，不等式 \(|a| + |b| \leqslant 1\) 成立。%
+}

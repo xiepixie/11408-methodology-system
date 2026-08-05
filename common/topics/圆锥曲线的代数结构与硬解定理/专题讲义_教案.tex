@@ -1,0 +1,549 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{../../../common/ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 专题讲义：硬解定理与统一代数结构}
+\rhead{\small 符号：直线 $Ax+By+C=0$（系数 $A,B,C$），分母 $D=A^2a^2 \pm B^2b^2$}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\showprompttrue % 教师端激活：显示所有公式填空与默写答案
+
+\newcommand{\conichardkeycard}{%
+  \begin{tcolorbox}[
+    enhanced,
+    colback=gray!2,
+    colframe=black!70,
+    boxrule=0.5pt,
+    arc=1mm,
+    left=0.6em, right=0.6em, top=0.4em, bottom=0.4em,
+    fonttitle=\bfseries\small,
+    title={硬解定理参数与公式速查卡}
+  ]
+    {\footnotesize
+    \textbf{直线一般式}：$Ax + By + C = 0$ \quad （当直线为 $y=kx+m$ 时，$A=k, B=-1, C=m$；当直线为 $x=ty+n$ 时，$A=1, B=-t, C=-n$）．\\
+    \textbf{二次曲线参数}：$a^2, b^2$ 为半轴平方 \quad （椭圆：分母 $D = A^2a^2 + B^2b^2$；双曲线：分母 $D = A^2a^2 - B^2b^2$）．\\
+    \textbf{相交判定条件}：椭圆为 $D > C^2$；双曲线为 $C^2 > D$ 且 $D \neq 0$．\\
+    \textbf{交叉乘积（麻花公式）}：椭圆为 $x_1y_2 + x_2y_1 = \frac{2ABa^2b^2}{D}$；双曲线为 $x_1y_2 + x_2y_1 = -\frac{2ABa^2b^2}{D}$．
+    }
+  \end{tcolorbox}
+  \vspace{0.4em}
+}
+
+\newcommand{\lessoninfo}[2]{%
+  \begin{center}
+    {\LARGE\bfseries #1 \quad (教师备课版)}\par
+    \vspace{0.8em}
+    {\small 授课人：#2 \quad 建议时长：120 分钟}
+  \end{center}
+  \vspace{0.6em}
+}
+
+\begin{document}
+
+\lessoninfo{圆锥曲线的代数结构与硬解定理}{备课组}
+
+\section{备课指导与一轮复习规划}
+
+\begin{teachbox}{本讲课程定位}
+本专题旨在帮助学生突破解析几何大题的“计算关”．解析几何解答题往往是学生得分的瓶颈，其核心难点在于联立方程后的代数化简极其繁琐，极易算错或超时．\\
+本讲通过引入\textbf{“硬解定理”与统一代数结构}，将联立韦达、坐标乘积、斜率之和、向量点积等常见代数结构进行公式化和模块化整理．教学核心在于：
+\begin{enumerate}
+  \item \textbf{算理大统一}：使用一般式直线 $Ax+By+C=0$ 统摄椭圆与双曲线的联立方程，推导统一分母 $D = A^2a^2 \pm B^2b^2$；
+  \item \textbf{代数设法选择}：灵活运用横截式 $x=ty+n$ 和纵截式 $y=kx+m$，在最简代数路径下实现“设而不求”；
+  \item \textbf{得分句规范化}：确保学生在掌握硬解公式的同时，能规范书写“联立、消元、判别式、韦达定理”的完整采分步骤，避免因为“直接写公式”而被阅卷老师扣步骤分．
+\end{enumerate}
+\end{teachbox}
+
+\subsection*{课堂 120 分钟时间分配表}
+\begin{tabularx}{\textwidth}{p{2.2cm}p{3.0cm}X}
+\toprule
+时间段 & 教学环节 & 核心动作与重难点点拨\\
+\midrule
+0--20 分钟 & 板块一：硬解定理推导 & 教师板书推导一般直线与二次曲线联立消元过程，导出分母 $D=A^2a^2 \pm B^2b^2$ 及麻花公式，证明判别式充要条件．\\ \hline
+20--30 分钟 & 板块二：直线设法艺术 & 对比纵截式 $y=kx+m$ 与横截式 $x=ty+n$ 的适用条件，强调对称性选择与特殊位置（斜率不存在等）的判定．\\ \hline
+30--50 分钟 & 例题 1：斜率之和定值 & \textbf{精讲}第 1 题（斜率和定值求定点）．重点讲授利用提取公因式 $2k$ 实现约分简化代数的计算技巧．\\ \hline
+50--62 分钟 & 例题 2：向量数量积 & \textbf{快讲}第 2 题（焦点弦数量积范围）．重点展示横截式设法下直接代入 $x_1x_2$ 硬解公式，分离常数求值值域．\\ \hline
+62--75 分钟 & 例题 3：双曲线中点弦 & \textbf{快讲}第 3 题（双曲线中点与向量关系）．强调双曲线 $b^2 \to -b^2$ 替换，及二次项系数非零（直线不平行于渐近线）的讨论．\\ \hline
+75--98 分钟 & 例题 4：全国乙卷压轴题 & \textbf{精讲}第 4 题（2022年全国乙卷第20题）．讲授如何通过特殊化确定定点 $A(0,-2)$，并运用韦达定理整体作差化简三点共线．\\ \hline
+98--115 分钟 & 例题 5：新高考一卷压轴题 & \textbf{精讲}第 5 题（2020年新高考一卷第22题）．讲授代入硬解一般式直线公式，利用判别式为完全平方式进行因式分解，并结合“直角对直径”几何性质求定值．\\ \hline
+115--120 分钟 & 总结与复盘建议 & 梳理“联立、消元、判别式、韦达”的答卷标准化四步书写套路．\\
+\bottomrule
+\end{tabularx}
+
+\newpage
+
+\section{板块一：硬解定理与统一代数结构（核心板书与公式推导）}
+
+\subsection*{一、硬解定理核心板书内容与推导过程}
+教师应在黑板上完整演示一次一般式直线与椭圆的联立消元过程，帮助学生理解硬解公式的代数来源：
+\begin{enumerate}
+  \item \textbf{椭圆联立方程与消元}：\\
+        设椭圆 $C: \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$，直线 $l: Ax + By + C = 0$ ($B \neq 0$)．\\
+        由直线方程得 $By = -(Ax+C) \implies B^2y^2 = (Ax+C)^2$．\\
+        椭圆方程两边同乘 $a^2b^2$ 得 $b^2x^2 + a^2y^2 = a^2b^2$．\\
+        两边同乘 $B^2$ 得 $b^2B^2x^2 + a^2(B^2y^2) = a^2b^2B^2$．\\
+        代入 $B^2y^2 = (Ax+C)^2$ 展开：
+        \[ b^2B^2x^2 + a^2(A^2x^2 + 2ACx + C^2) = a^2b^2B^2 \]
+        合并同类项整理为关于 $x$ 的一元二次方程：
+        \[ (A^2a^2 + B^2b^2)x^2 + 2ACa^2x + a^2(C^2 - B^2b^2) = 0 \]
+  \item \textbf{统一分母的定义}：\\
+        我们定义\textbf{统一分母}（即一元二次方程的二次项系数）为：
+        \[ D = A^2a^2 + B^2b^2 \]
+  \item \textbf{根与系数的关系（韦达定理）}：\\
+        设 $A(x_1, y_1), B(x_2, y_2)$，则：
+        \[ x_1 + x_2 = -\frac{2ACa^2}{D},\qquad x_1x_2 = \frac{a^2(C^2 - B^2b^2)}{D} \]
+        同理，若消去 $x$ 可得到关于 $y$ 的一元二次方程，其分母同样为 $D$，且：
+        \[ y_1 + y_2 = -\frac{2BCb^2}{D},\qquad y_1y_2 = \frac{b^2(C^2 - A^2a^2)}{D} \]
+  \item \textbf{“麻花公式”的推导}：\\
+        计算交叉乘积项 $x_1y_2 + x_2y_1$：
+        由于 $y_i = -\frac{Ax_i+C}{B}$，则：
+        \[ x_1y_2 + x_2y_1 = -\frac{1}{B}\left[ x_1(Ax_2+C) + x_2(Ax_1+C) \right] = -\frac{1}{B}\left[ 2Ax_1x_2 + C(x_1+x_2) \right] \]
+        代入韦达定理公式：
+        \[ 2Ax_1x_2 + C(x_1+x_2) = 2A\frac{a^2(C^2-B^2b^2)}{D} - C\frac{2ACa^2}{D} = \frac{-2AB^2a^2b^2}{D} \]
+        故得到极其精炼的\textbf{麻花公式}：
+        \[ x_1y_2 + x_2y_1 = \frac{2ABa^2b^2}{D} \]
+  \item \textbf{判别式的超简化判定}：\\
+        由于一元二次方程的判别式 $\Delta_x = (2ACa^2)^2 - 4D \cdot a^2(C^2 - B^2b^2)$，整理后为：
+        \[ \Delta_x = 4a^2B^2b^2(D - C^2) \]
+        在直线与椭圆相交的前提下 ($B \neq 0$)，其相交的充要条件超简化为：
+        \[ D > C^2 \]
+\end{enumerate}
+
+
+\subsection*{附：硬解定理公式大汇总（教师速查版）}
+\begin{enumerate}[label=\arabic*.]
+  \item \textbf{椭圆} $C: \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1$ 与直线 $l: Ax + By + C = 0$ 相交：
+        \begin{itemize}
+          \item 分母：$D = A^2a^2 + B^2b^2$ \qquad (相交充要条件：$D > C^2$)
+          \item $x_1 + x_2 = -\frac{2ACa^2}{D}$, \qquad $x_1x_2 = \frac{a^2(C^2 - B^2b^2)}{D}$
+          \item $y_1 + y_2 = -\frac{2BCb^2}{D}$, \qquad $y_1y_2 = \frac{b^2(C^2 - A^2a^2)}{D}$
+          \item $x_1y_2 + x_2y_1 = \frac{2ABa^2b^2}{D}$
+        \end{itemize}
+  \item \textbf{双曲线} $C: \frac{x^2}{a^2} - \frac{y^2}{b^2} = 1$ 与直线 $l: Ax + By + C = 0$ 相交：
+        \begin{itemize}
+          \item 将椭圆公式中的 $b^2$ 整体替换为 $-b^2$，得到分母：$D = A^2a^2 - B^2b^2$ \quad (非平行渐近线相交条件：$C^2 > D$)
+          \item $x_1 + x_2 = -\frac{2ACa^2}{D}$, \qquad $x_1x_2 = \frac{a^2(C^2 + B^2b^2)}{D}$
+          \item $y_1 + y_2 = \frac{2BCb^2}{D}$, \qquad $y_1y_2 = \frac{-b^2(C^2 - A^2a^2)}{D}$
+          \item $x_1y_2 + x_2y_1 = -\frac{2ABa^2b^2}{D}$
+          \item \textbf{重要易错点}：双曲线的替换规则是\textbf{将 $b^2$ 替换为 $-b^2$，但注意 $b$ 本身不做任何变化}。例如在 $x_1x_2$ 的分子中，原椭圆的 $-B^2b^2$ 替换后变为 $-B^2(-b^2) = +B^2b^2$；而在分母中，$+B^2b^2$ 替换后变为 $-B^2b^2$。
+        \end{itemize}
+\end{enumerate}
+
+\subsection*{二、公式内在规律与记忆口诀}
+
+硬解定理的公式看似繁复，实则具有极强的代数对称性与结构规律．教师在授课时可引导学生通过以下四个维度与口诀进行对比记忆与视觉锁定：
+
+\begin{enumerate}[label=\arabic*.]
+  \item \textbf{分母大一统（“5秒凝视法”记忆分母）} \\
+        硬解公式所有的分母都是一致的，即整个公式系统的代数核心：
+        \[ \text{椭圆}：D = A^2a^2 + B^2b^2 \qquad\qquad \text{双曲线}：D = A^2a^2 - B^2b^2 \]
+        让学生盯着这个结构看 $5$ 秒钟锁定视觉，分母的符号与二次曲线标准方程的符号完全一致（椭圆为 $+$, 双曲线为 $-$）．
+        
+  \item \textbf{求和公式：左右系数与半轴“拼图”} \\
+        对于两根之和的分子结构，是把“自变量对应的半轴平方”与“直线方程中该自变量对应的系数”相乘，前面补 $-2$，最后补常数 $C$：
+        \begin{itemize}
+          \item \textbf{计算 $x_1+x_2$}：对应 $x$ 轴参数，将半轴 $a^2$ 与直线系数 $A$ 拼起来，即：
+                \[ x_1 + x_2 = \frac{-2Aa^2C}{D} \]
+                \textbf{易错警示}：极易把分子的 $A$ 漏掉或错写成 $a^2$！必须反复默念：“分子上的是 $A$ 不是 $a^2$！”
+          \item \textbf{计算 $y_1+y_2$}：对应 $y$ 轴参数，将半轴 $b^2$ 与直线系数 $B$ 拼起来，即：
+                \[ y_1 + y_2 = \frac{-2Bb^2C}{D} \]
+        \end{itemize}
+
+  \item \textbf{乘积公式：“填空法”记忆分子余项} \\
+        乘积项 $x_1x_2$ 和 $y_1y_2$ 的分子具有高度统一的结构： $\square(C^2 - \square)$。记忆时只需掌握如何填补这两个框框：
+        \begin{itemize}
+          \item \textbf{外框（括号前）}：因为算的是哪个维度的积，外框就填该维度在曲线方程分母上的半轴平方（算 $x_1x_2$ 填 $a^2$；算 $y_1y_2$ 填 $b^2$）．
+          \item \textbf{内框（括号内）}：内框填的是“另一维度”在分母中的项（即“余项”），因为已经填过了主轴，所以一定不会填含有主轴的那项：
+                \begin{itemize}
+                  \item 算 $x_1x_2$，外框填 $a^2$，内框不能含有 $a^2$，故填 $B^2b^2$，分子为：$a^2(C^2 - B^2b^2)$；
+                  \item 算 $y_1y_2$，外框填 $b^2$，内框不能含有 $b^2$，故填 $A^2a^2$，分子为：$b^2(C^2 - A^2a^2)$．
+                \end{itemize}
+          \item \textbf{易错警示}：注意括号前的是 $a^2$（或 $b^2$），不是 $A^2a^2$！
+        \end{itemize}
+
+  \item \textbf{交叉乘积（“麻花公式”）的“系数大联缀”} \\
+        对于 $x_1y_2 + x_2y_1$（因为将 $x$ 和 $y$ 交叉缠绕，俗称“麻花公式”），它的分子最容易记：
+        \begin{itemize}
+          \item 分子直接把直线方程和曲线方程里所有不含 $C$ 的系数连缀起来：即直线的 $A, B$ 与曲线的 $a^2, b^2$，在最前面补上系数 $2$。
+          \item 椭圆的麻花公式分子为：$2ABa^2b^2$。
+          \item \textbf{易错警示}：分子是 $2ABa^2b^2$，\textbf{不是} $2A^2B^2a^2b^2$（系数没有平方项）！
+        \end{itemize}
+
+  \item \textbf{判别式 $\Delta$ 的“括号简化”} \\
+        判别式 $\Delta$ 的括号内其实就是“分母减去 $C^2$”：
+        \begin{itemize}
+          \item 椭圆的相交充要条件：$\Delta > 0 \iff D - C^2 > 0 \iff A^2a^2 + B^2b^2 > C^2$．
+          \item 双曲线的相交充要条件：$\Delta > 0 \iff C^2 - D > 0 \iff C^2 > A^2a^2 - B^2b^2$ 且分母 $D \neq 0$．
+        \end{itemize}
+\end{enumerate}
+
+\subsection*{三、如何利用硬解公式“伪装”联立消元过程（反代定理）}
+
+在高考阅卷中，如果学生直接写出“由硬解定理得韦达公式...”，往往会被以“缺少联立消元步骤”为由扣除 $2 \sim 3$ 分．因此，最稳妥的策略是：\textbf{利用硬解定理反推出联立后的一元二次方程，写在卷面上，从而完美“伪装”手动消元的过程}．
+
+\begin{enumerate}[label=\arabic*.]
+  \item \textbf{反代的基本原理}：
+        对于任意一元二次方程 $ax^2 + bx + c = 0$，其韦达定理为：
+        \[ x_1 + x_2 = -\frac{b}{a},\qquad x_1x_2 = \frac{c}{a} \]
+        对比椭圆的硬解公式：
+        \[ x_1 + x_2 = \frac{-2Aa^2C}{A^2a^2 + B^2b^2},\qquad x_1x_2 = \frac{a^2(C^2 - B^2b^2)}{A^2a^2 + B^2b^2} \]
+        我们可以直接对应出二次方程的系数：
+        \[ a = A^2a^2 + B^2b^2,\qquad b = 2Aa^2C,\qquad c = a^2(C^2 - B^2b^2) \]
+        从而直接写出联立消去 $y$ 后的方程：
+        \[ (A^2a^2 + B^2b^2)x^2 + 2Aa^2Cx + a^2(C^2 - B^2b^2) = 0 \]
+        
+  \item \textbf{易错与书写细节}：
+        \begin{itemize}
+          \item \textbf{一定要记得反代联立式}：在具体操作中，我们应该在答题卡上预先留出来写联立方程和判别式的地方。当利用硬解定理推算完成后，一定要记得在预留位置把反代出来的方程以及写判别式补上，千万不可直接跳过联立方程直接写韦达！
+          \item \textbf{判别式简化判定}：判别式 $\Delta$ 实际为 $4a^2B^2b^2(A^2a^2 + B^2b^2 - C^2)$。在卷面书写时，不要写这种复杂的通式形式，直接由反代得到的联立式写出 $\Delta > 0$，最后直接解得相交条件：
+                \[ A^2a^2 + B^2b^2 - C^2 > 0 \]
+          \item \textbf{反代主元顺序与代回规则}：
+                \begin{itemize}
+                  \item 如果设的是\textbf{横截式} $x=ty+n$，主元是 $y$。在书写时，\textbf{$y$ 的韦达公式必须写在 $x$ 的前面}，并且反代出来的联立式也是关于 $y$ 的二次方程，代回计算时要用 $y$ 代替：
+                        \[ (A^2a^2 + B^2b^2)y^2 + 2BCb^2y + b^2(C^2 - A^2a^2) = 0 \]
+                  \item 如果设的是\textbf{纵截式} $y=kx+m$，主元是 $x$。在书写时，\textbf{$x$ 的韦达公式必须写在 $y$ 的前面}，并且反代出来的联立式是关于 $x$ 的二次方程，代回计算时要用 $x$ 代替：
+                        \[ (A^2a^2 + B^2b^2)x^2 + 2Aa^2Cx + a^2(C^2 - B^2b^2) = 0 \]
+                \end{itemize}
+        \end{itemize}
+\end{enumerate}
+
+\newpage
+
+\section{板块二：直线设法的艺术（横截式 vs 纵截式）}
+
+在解答圆锥曲线大题（尤其是第二问）的过程中，合理设置直线方程是控制计算量的第一关。教师应向学生强调，设横截式还是纵截式绝非随心所欲，而是有以下三套相辅相成的判定标准：
+
+\begin{enumerate}[label=\arabic*.]
+  \item \textbf{标准一：防范无穷大，简化极值范围求解（核心算理）} \\
+        若第二问是求取值范围或最值，最终会得到一个以直线的变化参数（$k$ 或 $t$）为自变量的函数 $f(k)$ 或 $f(t)$。
+        \begin{itemize}
+          \item 如果直线设法不当，导致极值在直线“垂直”（斜率不存在）或“水平”（斜率为 $0$）时取得，那么极值点将对应在参数趋于无穷大（$k \to \infty$ 或 $t \to \infty$）处。这在函数解析式中非常难看出，极易导致漏解或求导失败。
+          \item 通过合理选择设法，将“极值位置”转化为参数等于 $0$ 的情况（如横截式下 $t=0$ 表示垂直直线），能让后续的自变量范围落在常规有限区间内，从而大幅降低求极值的门槛。
+        \end{itemize}
+        
+  \item \textbf{标准二：定点定位原则（最直观的决策依据）} \\
+        \begin{itemize}
+          \item 如果已知直线过 $x$ 轴上的定点（如焦点 $F(c,0)$ 或定点 $P(n,0)$），应优先设\textbf{横截式} $x = ty + n$。
+          \item 如果已知直线过 $y$ 轴上的定点（如定点 $P(0,m)$），应优先设\textbf{纵截式} $y = kx + m$。
+          \item 经验表明，定点在哪个轴上就以哪个轴为因变量，能使得联立后的常数项和一次项极其干净，大幅减少消元代数工作量。
+        \end{itemize}
+
+  \item \textbf{标准三：推测定点原则（结合极点极线）} \\
+        在直线过定点问题中，如果能够根据题设几何条件（如对称性、特殊位置等）推测出直线恒过的定点在某个坐标轴上，就应依据标准二，定点在 $x$ 轴设横截式，定点在 $y$ 轴设纵截式。
+\end{enumerate}
+
+在具体操作时，直线的设法必须在第一时间转化为\textbf{一般式直线}再代入硬解公式：
+\begin{itemize}
+  \item \textbf{横截式转换为一般式}：$x = ty + n \implies 1 \cdot x - t \cdot y - n = 0 \implies A = 1, B = -t, C = -n$。
+  \item \textbf{纵截式转换为一般式}：$y = kx + m \implies k \cdot x - 1 \cdot y + m = 0 \implies A = k, B = -1, C = m$。
+\end{itemize}
+
+\begin{theorembox}{纵截式 y=kx+m (一般式 kx-y+m=0)}
+  \textbf{适用场景}：直线的定点在 $y$ 轴上（如 $P(0, m)$）或斜率必然存在（不可能垂直于 $x$ 轴）时．\\
+  \textbf{公式代入}：$A=k, B=-1, C=m$．代入椭圆公式可得：
+  \[ D = k^2a^2 + b^2,\qquad x_1 + x_2 = -\frac{2kma^2}{k^2a^2+b^2},\qquad x_1x_2 = \frac{a^2(m^2-b^2)}{k^2a^2+b^2} \]
+  \[ y_1 + y_2 = \frac{2mb^2}{k^2a^2+b^2},\qquad y_1y_2 = \frac{b^2(m^2-k^2a^2)}{k^2a^2+b^2},\qquad x_1y_2 + x_2y_1 = -\frac{2ka^2b^2}{k^2a^2+b^2} \]
+\end{theorembox}
+
+\begin{theorembox}{横截式 x=ty+n (一般式 x-ty-n=0)}
+  \textbf{适用场景}：直线的定点在 $x$ 轴上（如定点 $P(n, 0)$ 或焦点 $F(c, 0)$）．此时直线可能垂直于 $x$ 轴，设横截式可以直接表示斜率不存在的垂直直线（即 $t=0$ 的情形），从而避免了在联立前对斜率不存在进行单独讨论．\\
+  \textbf{公式代入}：$A=1, B=-t, C=-n$．代入椭圆公式可得：
+  \[ D = a^2 + t^2b^2,\qquad y_1 + y_2 = -\frac{2tnb^2}{a^2+t^2b^2},\qquad y_1y_2 = \frac{b^2(n^2-a^2)}{a^2+t^2b^2} \]
+  \[ x_1 + x_2 = \frac{2na^2}{a^2+t^2b^2},\qquad x_1x_2 = \frac{a^2(n^2-t^2b^2)}{a^2+t^2b^2},\qquad x_1y_2 + x_2y_1 = -\frac{2ta^2b^2}{a^2+t^2b^2} \]
+\end{theorembox}
+
+\begin{warnbox}{特殊位置与斜率存在性讨论}
+  直线的不同设法各自存在无法表示的“特殊直线”，在解答题中必须进行完备性检验，否则会造成漏解或步骤扣分：
+  \begin{enumerate}
+    \item \textbf{纵截式 $y = kx + m$}：该设法假设了直线的斜率 $k$ 存在，\textbf{无法表示垂直于 $x$ 轴的直线}（如 $x = x_0$）。若直线可能垂直于 $x$ 轴，必须在联立前对斜率不存在的特殊情况进行单独讨论与联立验证。
+    \item \textbf{横截式 $x = ty + n$}：该设法的参数 $t$ 的几何意义是直线倾斜角的余切值（$t = \cot\theta = \frac{1}{k}$）。当直线垂直于 $x$ 轴时，$t=0$，方程有意义；但它\textbf{无法表示平行于 $x$ 轴的水平直线}（此时倾斜角为 $0$，余切值 $t$ 不存在）。若直线可能是水平直线，使用横截式时需要对 $t$ 不存在（即斜率为 $0$）的情形进行检验。
+  \end{enumerate}
+\end{warnbox}
+
+\newpage
+
+\section{板块三：典型解答题实战（注重计算过程与板书规范）}
+
+\teachquestionheader{椭圆斜率之和定值求定点}
+\teachvalue{本题考查纵截式 $y=kx+m$ 下的代数运算，训练学生如何规范书写采分步骤，并演示利用提取公因式 $2k$ 实现瞬间化简的计算技巧．}
+\conichardkeycard
+
+{\small \qConicHardEllipseSlopeStem}
+\begin{center}
+  \qConicHardEllipseSlopeFigure
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准解答（可作板书模板）}{
+  解：设直线 $l$ 的方程为 $y = kx + m$．\\
+  因为点 $P(0, -2)$ 不在直线 $l$ 上，所以 $m \neq -2$．\\
+  联立直线与椭圆方程：
+  \[
+  \begin{cases}
+  y = kx + m \\
+  \frac{x^2}{2} + y^2 = 1
+  \end{cases}
+  \]
+  消去 $y$ 整理得关于 $x$ 的一元二次方程：
+  \begin{equation}
+    (2k^2 + 1)x^2 + 4kmx + 2(m^2 - 1) = 0
+  \end{equation}
+  直线与椭圆交于不同的两点 $A(x_1, y_1), B(x_2, y_2)$，\\
+  所以判别式：
+  \[ \Delta = (4km)^2 - 8(2k^2 + 1)(m^2 - 1) > 0 \]
+  化简得 $\Delta = 8(2k^2 - m^2 + 1) > 0$． \quad (采分点 1)\\
+  由韦达定理得：
+  \[ x_1 + x_2 = -\frac{4km}{2k^2 + 1},\qquad x_1x_2 = \frac{2(m^2 - 1)}{2k^2 + 1} \]
+  因为 $k_{PA} + k_{PB} = 0$，且 $x_1x_2 \neq 0$ (即 $m \neq \pm 1$)，\\
+  所以：
+  \[ \frac{y_1 + 2}{x_1} + \frac{y_2 + 2}{x_2} = 0 \]
+  将 $y_1 = kx_1 + m, y_2 = kx_2 + m$ 代入上式中：
+  \[ \frac{kx_1 + m + 2}{x_1} + \frac{kx_2 + m + 2}{x_2} = 0 \]
+  通分并整理分子：
+  \[ (kx_1 + m + 2)x_2 + (kx_2 + m + 2)x_1 = 0 \]
+  \[ 2kx_1x_2 + (m + 2)(x_1 + x_2) = 0 \quad (\text{采分点 2}) \]
+  将韦达定理结果代入：
+  \[ 2k \cdot \frac{2(m^2 - 1)}{2k^2 + 1} + (m + 2) \cdot \left(-\frac{4km}{2k^2 + 1}\right) = 0 \]
+  两边同乘 $\frac{2k^2+1}{4k}$ (此处需说明 $k \neq 0$)：
+  \[ (m^2 - 1) - m(m + 2) = 0 \]
+  \[ m^2 - 1 - m^2 - 2m = 0 \implies -2m - 1 = 0 \]
+  解得 $m = -\frac{1}{2}$． \quad (\text{采分点 3})\\
+  当 $k = 0$ 时，直线为 $y = m$．此时 $A, B$ 关于 $y$ 轴对称，$x_1 + x_2 = 0$，对任意满足 $m^2 < 1$ 的 $m$，均有 $k_{PA} + k_{PB} = 0$，无法唯一确定 $m$ 的值．\\
+  当 $m = -\frac{1}{2}$ 时，代入判别式条件：$2k^2 + 1 > \frac{1}{4}$ 恒成立，符合题意．\\
+  此时直线 $l$ 恒过定点 $(0, -\frac{1}{2})$．
+}
+\switchcolumn
+\teachblock{学生问题诊断}{
+  \errortag{计算失控} 很多学生由于没有提前提公因式 $2k$，在代入韦达定理后，分子展开为 $2k[2(m^2-1)] - 4km(m+2) = 4km^2 - 4k - 4km^2 - 8km = -4k - 8km = -4k(1+2m) = 0$．虽然也能解出 $m=-1/2$，但中间展开项极多，极易丢失负号或常数项．\\
+  \errortag{斜率存在性漏讨论} $k_{PA}, k_{PB}$ 存在隐含有分母不为零，即 $x_1 \neq 0$ 且 $x_2 \neq 0$．教师上课时应提示学生注意这一隐含范围（若 $m=\pm 1$ 则交点在 $y$ 轴上，斜率不存在）．
+}
+\teachblock{课堂处理与追问}{
+  \textbf{板书点拨}：在将韦达定理代入到 $2kx_1x_2 + (m+2)(x_1+x_2) = 0$ 时，我们不需要急于把分母展开。观察两项的系数：一个是 $2k$，一个是 $x_1+x_2$ 里的 $-4km$。它们都包含因式 $2k$！\\
+  直接提取 $2k$ 得到：
+  \[ 2k \left[ x_1x_2 - \frac{2m}{2k^2+1} \cdot \dots \right] \]
+  或者直接在代入后约去非零的 $2k$（当 $k \neq 0$ 时），代数式瞬间化为一元一次方程，计算难度从五星降为一星！
+}
+\remedy{
+  针对计算复杂的学生，本节课后必须要求其将本题重复做 3 遍，直至不画草稿能直接通过公因式法在 2 分钟内算出 $m=-1/2$．
+}
+\end{paracol}
+
+\newpage
+
+\teachquestionheader{过焦点的弦与向量点积范围}
+\teachvalue{本题考查横截式直线 $x=ty+1$ 的设法，展示如何直接通过 $y$ 的二次方程消去 $x$ 的韦达定理，并利用分离常数法快速准确地求出数量积范围．}
+\conichardkeycard
+
+{\small \qConicHardEllipseDotProductStem}
+\begin{center}
+  \qConicHardEllipseDotProductFigure
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准解答（可作板书模板）}{
+  解：由于过点 $F(1, 0)$ 且斜率不为 $0$ 的直线与椭圆交于两点，\\
+  可知直线不垂直于 $y$ 轴，可设直线 $l$ 的方程为 $x = ty + 1$ ($t \in \mathbb{R}$)．\\
+  联立直线与椭圆方程：
+  \[
+  \begin{cases}
+  x = ty + 1 \\
+  \frac{x^2}{4} + \frac{y^2}{3} = 1
+  \end{cases}
+  \]
+  消去 $x$ 整理得关于 $y$ 的一元二次方程：
+  \[ 3(ty + 1)^2 + 4y^2 = 12 \implies (3t^2 + 4)y^2 + 6ty - 9 = 0 \]
+  记录判别式：
+  因为 $3t^2 + 4 > 0$ 且 $\Delta = (6t)^2 - 4(3t^2+4)(-9) = 144(t^2+1) > 0$ 恒成立，\\
+  所以直线与椭圆恒交于两点． \quad (采分点 1)\\
+  设 $A(x_1, y_1), B(x_2, y_2)$，由韦达定理得：
+  \[ y_1 + y_2 = -\frac{6t}{3t^2 + 4},\qquad y_1y_2 = -\frac{9}{3t^2 + 4} \]
+  由于 $x_1 = ty_1 + 1, x_2 = ty_2 + 1$，则有：
+  \[ x_1x_2 = (ty_1 + 1)(ty_2 + 1) = t^2y_1y_2 + t(y_1 + y_2) + 1 \]
+  代入得：
+  \[ x_1x_2 = t^2\left(-\frac{9}{3t^2 + 4}\right) + t\left(-\frac{6t}{3t^2 + 4}\right) + 1 = \frac{4 - 12t^2}{3t^2 + 4} \quad (\text{采分点 2}) \]
+  所以向量数量积为：
+  \[ \vec{OA} \cdot \vec{OB} = x_1x_2 + y_1y_2 = \frac{4 - 12t^2 - 9}{3t^2 + 4} = \frac{-12t^2 - 5}{3t^2 + 4} \]
+  通过分离常数得：
+  \[ \vec{OA} \cdot \vec{OB} = \frac{-4(3t^2+4) + 11}{3t^2+4} = -4 + \frac{11}{3t^2+4} \quad (\text{采分点 3}) \]
+  因为 $t \in \mathbb{R}$，所以 $t^2 \geq 0 \implies 3t^2+4 \geq 4$．\\
+  从而 $0 < \frac{11}{3t^2+4} \leq \frac{11}{4}$．\\
+  所以 $-4 < -4 + \frac{11}{3t^2+4} \leq -\frac{5}{4}$．\\
+  故 $\vec{OA} \cdot \vec{OB}$ 的取值范围为 $[-4, -\frac{5}{4})$．
+}
+\switchcolumn
+\teachblock{学生问题诊断}{
+  \errortag{设法不当导致计算繁琐} 大部分学生习惯设直线为 $y=k(x-1)$．联立后关于 $x$ 的方程为 $(3+4k^2)x^2 - 8k^2x + 4k^2-12 = 0$．数量积 $\vec{OA} \cdot \vec{OB} = x_1x_2 + y_1y_2 = x_1x_2 + k^2(x_1-1)(x_2-1) = (1+k^2)x_1x_2 - k^2(x_1+x_2) + k^2$．代入韦达定理后分子极其复杂，通分极易算错．\\
+  \errortag{单调性与最值范围错误} 在求 $\frac{-12t^2-5}{3t^2+4}$ 的取值范围时，部分学生使用直接求导或忽视了 $t^2 \ge 0$ 的实际范围边界，导致得出 $[-4, -5/4]$（闭区间）或错选．
+}
+\teachblock{课堂处理与追问}{
+  \textbf{追问 1}：既然我们设的是横截式 $x=ty+1$，在计算 $x_1x_2$ 时，除了直接把 $x_i = ty_i+1$ 乘开，我们能否直接套用硬解定理？\\
+  \textbf{解答}：直线 $x-ty-1=0 \implies A=1, B=-t, C=-1$，椭圆 $a^2=4, b^2=3$．\\
+  硬解公式直接给出：
+  \[ x_1x_2 = \frac{a^2(C^2-B^2b^2)}{D} = \frac{4(1-3t^2)}{3t^2+4} \]
+  直接一步到位！这能让学生直观体会到硬解定理在简化代数变形中的显著提速效果。
+}
+\remedy{
+  要求学生熟记横截式下 $x_1x_2$ 与 $y_1y_2$ 的硬解结构，并在课后完成 2 道“向量点积为定值”的变式训练．
+}
+\end{paracol}
+
+\newpage
+
+\teachquestionheader{双曲线中点弦与向量点积}
+\teachvalue{本题考查双曲线下的硬解定理应用．重点指导学生掌握双曲线与椭圆硬解公式的互换规则（$b^2 \to -b^2$），以及双曲线中极易遗漏的“渐近线平行限制条件”（即分母不为 $0$）．}
+\conichardkeycard
+
+{\small \qConicHardHyperbolaMidpointStem}
+\begin{center}
+  \qConicHardHyperbolaMidpointFigure
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准解答（可作板书模板）}{
+  (1) 联立直线 $l: y = kx + 1$ 与双曲线 $C: x^2 - \frac{y^2}{2} = 1$ 的方程：
+  \[
+  \begin{cases}
+  y = kx + 1 \\
+  x^2 - \frac{y^2}{2} = 1
+  \end{cases}
+  \]
+  代入消去 $y$ 整理得关于 $x$ 的一元二次方程：
+  \[ (2 - k^2)x^2 - 2kx - 3 = 0 \]
+  因为直线与双曲线交于不同的两点，所以有：
+  \[
+  \begin{cases}
+  2 - k^2 \neq 0 \\
+  \Delta = (-2k)^2 - 4(2 - k^2)(-3) > 0
+  \end{cases}
+  \]
+  即：
+  \[
+  \begin{cases}
+  k^2 \neq 2 \\
+  4k^2 + 24 - 12k^2 > 0 \implies 8k^2 < 24 \implies k^2 < 3
+  \end{cases}
+  \]
+  故斜率 $k$ 的取值范围为 $(-\sqrt{3}, -\sqrt{2}) \cup (-\sqrt{2}, \sqrt{2}) \cup (\sqrt{2}, \sqrt{3})$． \quad (采分点 1)\\
+
+  (2) 设 $A(x_1, y_1), B(x_2, y_2)$，由 (1) 的一元二次方程得：
+  \[ x_1 + x_2 = \frac{2k}{2 - k^2} \]
+  所以中点 $N$ 的横坐标为：
+  \[ x_N = \frac{x_1 + x_2}{2} = \frac{k}{2 - k^2} \quad (\text{采分点 2}) \]
+  因为点 $N$ 在直线 $y = kx + 1$ 上，所以：
+  \[ y_N = k x_N + 1 = \frac{k^2}{2 - k^2} + 1 = \frac{2}{2 - k^2} \]
+  由 $\vec{OM} = (0, 1)$ 及 $\vec{ON} = (x_N, y_N)$ 得：
+  \[ \vec{OM} \cdot \vec{ON} = 0 \cdot x_N + 1 \cdot y_N = y_N = \frac{2}{2 - k^2} \]
+  因为 $\vec{OM} \cdot \vec{ON} = 2$，所以：
+  \[ \frac{2}{2 - k^2} = 2 \implies 2 - k^2 = 1 \implies k^2 = 1 \]
+  解得 $k = \pm 1$． \quad (\text{采分点 3})\\
+  经检验，$k = \pm 1$ 均在 (1) 所求的取值范围内，符合题意．\\
+  故直线 $l$ 的方程为 $y = x + 1$ 或 $y = -x + 1$．
+}
+\switchcolumn
+\teachblock{学生问题诊断}{
+  \errortag{二次项系数为零漏讨论} 这是双曲线大题最经典的陷阱．很多学生在算判别式时直接写 $\Delta > 0$，完全忽略了二次项系数 $2-k^2 \neq 0$（即直线不能与渐近线平行），导致在第 (1) 问范围中遗漏了 $\pm \sqrt{2}$ 这两个端点，造成失分．\\
+  \errortag{中点纵坐标计算绕远} 许多学生在求得 $x_N = \frac{k}{2-k^2}$ 后，习惯性去代入 $y_1+y_2 = \frac{2BCb^2}{D}$ 的双曲线韦达公式，或者直接通分计算，不仅容易在负号上算错，也浪费了大量时间．
+}
+\teachblock{课堂处理与追问}{
+  \textbf{追问 1}：如果直接利用中点 $N$ 满足直线方程来求 $y_N$，其代数原理是什么？\\
+  \textbf{解答}：因为 $A, B$ 都在直线 $y = kx + 1$ 上，所以 $y_1 = kx_1 + 1$ 且 $y_2 = kx_2 + 1$．将两式相加并除以 $2$ 得 $\frac{y_1+y_2}{2} = k\frac{x_1+x_2}{2} + 1 \implies y_N = k x_N + 1$．这是中点性质的直接体现，避免了算 $y$ 的二次方程，是非常实用的“点线共存式消元”技巧．
+}
+\remedy{
+  针对双曲线大题，必须反复强调“一不平行（二次项系数非零）、二相交（判别式大于零）”的双重判定准则，并作为核心复习项目落实．
+}
+\end{paracol}
+
+\newpage
+
+\teachquestionheader{2022年全国乙卷理科第20题}
+\teachvalue{本题属于压轴题难度．由于点 $P(1, -2)$ 位于椭圆外，直线斜率不能为 $0$，设横截式 $x = t(y+2) + 1$ 能完美统摄所有情况，并通过韦达定理模块化代数消参来证明三点共线．}
+\conichardkeycard
+
+{\small \qConicHardNationalBStem}
+\begin{center}
+  \qConicHardNationalBFigure
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准解答}{
+  \qConicHardNationalBSolution
+}
+\switchcolumn
+\teachblock{学生问题诊断}{
+  \qConicHardNationalBDiagnosis
+}
+\teachblock{课堂处理与教学建议}{
+  \textbf{定点探寻引导}：对于此类直线过定点的题目，一定要培养学生\textbf{“以退为进”的特殊化思维}．\\
+  先设直线 $l$ 垂直于 $x$ 轴，即 $t=0$，此时 $x=1$．代入椭圆方程求出交点坐标，进而写出此时直线 $HN$ 的方程，令 $x=0$ 即可锁定定点 $A(0, -2)$．有了这个定点，在写第二问的证明时就有了清晰的奋斗目标，即只需证明 $H, N, A$ 三点共线（斜率相等），极大地稳定了考场心态．\\
+  \textbf{代数作差技巧}：证明三点共线的等价关系为 $(y_2+2)x_H = (y_1+2)x_2$．在代入 $x_H$ 和 $x_2$ 之后，指导学生作差并按项合并为含 $(y_1+2)(y_2+2)$ 和 $(y_1+y_2)$ 的对称结构，再代入韦达公式。切记一开始就将韦达公式通分代入，那会导致代数项极其繁杂，在限时考试的紧张环境下极易发生计算错误．
+}
+\remedy{
+  本题为高考原题重现，对班级内中等偏上的学生要求必须在草稿纸上独立闭卷把 (2) 问作差化简的步骤写完整，确保代数运算彻底过关．
+}
+\end{paracol}
+
+\newpage
+
+\teachquestionheader{2020年新高考一卷第22题}
+\teachvalue{本题为圆锥曲线与平面几何结合的压轴题．常规解法中关于垂直关系的代数计算极其复杂．本题的核心价值在于展示如何使用\textbf{“一般式直线硬解公式”与“直角对直径的几何轨迹性质”}简化计算的方法．}
+\conichardkeycard
+
+{\small \qConicHardNewGaokaoStem}
+\begin{center}
+  \qConicHardNewGaokaoFigure
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准解答}{
+  \qConicHardNewGaokaoSolution
+}
+\switchcolumn
+\teachblock{学生问题诊断}{
+  \qConicHardNewGaokaoDiagnosis
+}
+\teachblock{一般式直接硬解与几何降维点拨}{
+  \textbf{代数化简：一般式直接代入}：\\
+  本题无需借助复杂的坐标平移．设直线为一般式 $Ax+By+C=0$，直接在原原点对称椭圆 $\frac{x^2}{6}+\frac{y^2}{3}=1$ 下应用硬解公式．垂直条件 $AM \perp AN$ 对应 $\vec{AM} \cdot \vec{AN} = 0$，展开为 $(x_1-2)(x_2-2)+(y_1-1)(y_2-1)=0$。将硬解公式中的四个韦达坐标对称量代入，分子化简为关于 $A, B, C$ 的二次齐次关系式 $4A^2 - B^2 + 3C^2 + 8AC + 2BC = 0$。通过因式分解，利用其判别式 $\Delta_C = 16(A+B)^2$ 为完全平方式的特点，解得 $3C + 2A - B = 0$，直接证明直线恒过定点 $P(\frac{2}{3}, -\frac{1}{3})$，体现了硬解定理在处理一般式直线时的计算优势。\\
+  \textbf{几何降维：直角对直径}：\\
+  在求得直线 $MN$ 恒过定点 $P(\frac{2}{3}, -\frac{1}{3})$ 后，由 $AD \perp MN$，得 $\angle ADP = 90^\circ$，这说明动点 $D$ 必然在以线段 $AP$ 为直径的定圆上运动。因此，只需确定定圆的圆心 $Q$（线段 $AP$ 的中点，其坐标为 $Q(\frac{4}{3}, \frac{1}{3})$），则距离 $|DQ|$ 恒等于圆的半径 $R = \frac{1}{2}|AP| = \frac{2\sqrt{2}}{3}$，完全避免了计算动点 $D$ 的具体坐标。
+}
+\remedy{
+  要求学生在本节课后，必须在“重复本”上将本题的“一般式直接硬解法”和“定圆半径几何法”完整复写一遍，掌握通过一般式因式分解寻找直线定点的代数技巧。
+}
+\end{paracol}
+
+\newpage
+
+\section{本专题备课总结与错因大起底}
+
+\begin{keybox}{硬解定理在解答题中的使用原则（考场保分指南）}
+  虽然硬解定理能极大地缩短计算流程，但学生在考场上直接写出“由硬解定理得 $x_1x_2 = \dots$”极易被阅卷老师以“步骤不完整”为由扣除 2-3 分．因此，必须要求学生在答卷时执行以下\textbf{“硬解定理标准化套路书写四步走”}：
+  \begin{enumerate}
+    \item \textbf{写出联立方程组}：
+          \[ \begin{cases} y = kx + m \\ \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \end{cases} \]
+    \item \textbf{写出消元后的一元二次方程}（使用硬解公式在草稿纸上算好，直接写在答卷上，假装是自己手动代入消元展开的）：
+          \[ (a^2k^2 + b^2)x^2 + 2a^2kmx + a^2(m^2-b^2) = 0 \]
+    \item \textbf{书写判别式与韦达定理}（这也是核心步骤采分点）：
+          \[ \Delta > 0 \implies a^2k^2+b^2 > m^2 \]
+          \[ x_1 + x_2 = -\frac{2a^2km}{a^2k^2+b^2},\qquad x_1x_2 = \frac{a^2(m^2-b^2)}{a^2k^2+b^2} \]
+    \item \textbf{代入几何目标关系式中进行求解}．
+  \end{enumerate}
+  这样书写，既享受了硬解公式的绝对准确和超快速度，又保留了完美的答卷步骤，能拿到满分！
+\end{keybox}
+
+\begin{postproblem}
+  {
+    \item 检查是否写出了联立消元后的一元二次方程？
+    \item 双曲线问题中，是否讨论了二次项系数不为零（与渐近线不平行）的情况？
+    \item 计算中点纵坐标时，是否优先代入直线方程 $y_N = k x_N + m$ 以简化消元？
+    \item 是否熟练运用提取公因式法（如 $2k$ 或 $2t$）简化了韦达定理的代入分式？
+  }
+  {\checkbox 二次项系数判定 \quad \checkbox 渐近线讨论 \quad \checkbox 提取公因式约分 \quad \checkbox 步骤规范化}
+  {1.5cm}
+\end{postproblem}
+
+\end{document}

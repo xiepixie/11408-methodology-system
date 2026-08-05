@@ -1,0 +1,144 @@
+% 难度：★★★ 难题
+\newcommand{\qSolidCircleDihedralVolumeMinStem}{%
+  如图，\(AB\) 是圆 \(O\) 的直径，点 \(C\) 是圆 \(O\) 上的动点，过点 \(A\) 的直线 \(PA\) 垂直于圆 \(O\) 所在的平面。\\
+  （1）证明：\(BC \perp PC\)；\\
+  （2）已知 \(PA = 4\)，\(AB = 6\)，\(\angle AOC = \dfrac{\pi}{3}\)。设点 \(C\) 关于直线 \(AB\) 的对称点为 \(D\)。\\
+  \quad (i) 求二面角 \(C-PB-D\) 的余弦值；\\
+  \quad (ii) 若 \(\triangle PBC\) 及其内部存在点 \(Q\)，使得四面体 \(QPAD\) 与五面体 \(QACBD\) 的体积相等，求 \(|PQ|\) 的最小值。%
+}
+
+\newcommand{\qSolidCircleDihedralVolumeMinFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, line join=round, line cap=round]
+    \draw[dashed, gray] (2,0) arc[start angle=0, end angle=180, x radius=2, y radius=0.7];
+    \draw[thick] (-2,0) arc[start angle=180, end angle=360, x radius=2, y radius=0.7];
+    \coordinate (O) at (0,0);
+    \coordinate (A) at (-2,0);
+    \coordinate (B) at (2,0);
+    \coordinate (C) at (1, -0.606);
+    \coordinate (D) at (1, 0.606);
+    \coordinate (P) at (-2, 3.5);
+    
+    \draw[thick] (A) -- (B);
+    \draw[dashed, thick] (A) -- (D);
+    \draw[thick] (B) -- (D);
+    \draw[thick] (A) -- (C);
+    \draw[thick] (B) -- (C);
+    \draw[dashed, thick] (C) -- (D);
+    \draw[thick] (P) -- (A);
+    \draw[thick] (P) -- (B);
+    \draw[thick] (P) -- (C);
+    \draw[dashed, thick] (P) -- (D);
+    
+    \node[left] at (A) {\(A\)};
+    \node[right] at (B) {\(B\)};
+    \node[below right] at (C) {\(C\)};
+    \node[above right] at (D) {\(D\)};
+    \node[above] at (P) {\(P\)};
+    \node[below] at (O) {\(O\)};
+    \fill (O) circle (1pt);
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidCircleDihedralVolumeMinSolution}{%
+  \textbf{（1）证明：}
+  
+  因为 \(AB\) 是圆 \(O\) 的直径，点 \(C\) 在圆上，
+  由圆周角定理知 \(\angle ACB = 90^\circ\)，即 \(BC \perp AC\)。
+  
+  因为 \(PA \perp\) 圆 \(O\) 所在平面，\(BC \subset\) 圆 \(O\) 所在平面，
+  所以 \(PA \perp BC\)。
+  
+  又 \(PA \cap AC = A\)，且 \(PA, AC \subset\) 平面 \(PAC\)，
+  所以 \(BC \perp\) 平面 \(PAC\)。
+  由于 \(PC \subset\) 平面 \(PAC\)，故 \(BC \perp PC\)。
+
+  \textbf{（2）(i)解：}
+  
+  已知 \(OA = OC = 3\)，\(\angle AOC = \dfrac{\pi}{3}\)，
+  所以 \(\triangle AOC\) 为等边三角形，\(AC = 3\)。
+  
+  在 \(\text{Rt}\triangle ABC\) 中：
+  \[
+    BC = \sqrt{AB^2 - AC^2} = \sqrt{36 - 9} = 3\sqrt{3}.
+  \]
+  由于 \(PA \perp\) 底面，
+  \[
+    PC = \sqrt{16 + 9} = 5, \quad PB = \sqrt{16 + 36} = 2\sqrt{13}.
+  \]
+  
+  由（1）知 \(\triangle PBC\) 是直角三角形。
+  过 \(C\) 作 \(CF \perp PB\) 交 \(PB\) 于 \(F\)，则：
+  \[
+    CF = \frac{PC \cdot BC}{PB} = \frac{15\sqrt{3}}{2\sqrt{13}}.
+  \]
+  
+  因为 \(D\) 是 \(C\) 关于直线 \(AB\) 的对称点，利用空间对称性可得，
+  \(DF \perp PB\) 且 \(DF = CF\)。
+  所以 \(\angle CFD\) 为二面角 \(C-PB-D\) 的平面角。
+  
+  设 \(AB \cap CD = E\)，则 \(E\) 为 \(CD\) 的中点且 \(CE \perp AB\)。
+  在 \(\text{Rt}\triangle ABC\) 中：
+  \[
+    CE = \frac{AC \cdot BC}{AB} = \frac{3\sqrt{3}}{2}.
+  \]
+  
+  又 \(CE \perp PA \implies CE \perp\) 平面 \(PAB \implies CE \perp EF\)。
+  在 \(\text{Rt}\triangle CEF\) 中：
+  \[
+    \sin\angle CFE = \frac{CE}{CF} = \frac{\sqrt{13}}{5}.
+  \]
+  
+  由对称性 \(\angle CFD = 2\angle CFE\)，所以：
+  \[
+    \cos\angle CFD = 1 - 2\sin^2\angle CFE = 1 - 2\left(\frac{13}{25}\right) = -\frac{1}{25}.
+  \]
+  故二面角余弦值为 \(-\dfrac{1}{25}\)。
+
+  \textbf{（2）(ii)解：}
+  
+  由对称性 \(S_{ACBD} = 2S_{\triangle ABD}\)，从而 \(V_{Q-ACBD} = 2V_{Q-ABD}\)。
+  已知条件为 \(V_{Q-PAD} = V_{Q-ACBD}\)，所以：
+  \[
+    V_{Q-PAD} = 2V_{Q-ABD}
+  \]
+  换顶点记法，得到：
+  \[
+    V_{P-ADQ} = 2V_{B-ADQ}
+  \]
+  这两个四面体底面同为 \(\triangle ADQ\)，故 \(P\) 到底面距离是 \(B\) 到底面距离的 \(2\) 倍。
+  
+  设平面 \(ADQ\) 交 \(PB\) 于 \(M\)，则：
+  \[
+    PM : MB = 2 : 1 \implies PM = \frac{2}{3}PB = \frac{4\sqrt{13}}{3}.
+  \]
+  
+  同理 \(S_{ACBD} = 4S_{\triangle ACD} \implies V_{P-ADQ} = 4V_{C-ADQ}\)。
+  设平面 \(ADQ\) 交 \(PC\) 于 \(N\)，则：
+  \[
+    PN : NC = 4 : 1 \implies PN = 4.
+  \]
+  
+  因为 \(Q\) 在平面 \(ADQ\) 与平面 \(PBC\) 的交线上，即 \(Q \in MN\)。
+  又 \(Q\) 在 \(\triangle PBC\) 内部，所以 \(Q\) 在线段 \(MN\) 上。
+  求 \(|PQ|_{\min}\) 即求点 \(P\) 到线段 \(MN\) 的距离 \(h\)。
+  
+  在 \(\triangle PMN\) 中：
+  \[
+    \cos\angle MPN = \cos\angle BPC = \frac{PC}{PB} = \frac{5}{2\sqrt{13}}.
+  \]
+  由余弦定理：
+  \[
+    MN^2 = PM^2 + PN^2 - 2PM \cdot PN \cos\angle MPN = \frac{112}{9} \implies MN = \frac{4\sqrt{7}}{3}.
+  \]
+  由面积比关系：
+  \[
+    S_{\triangle PMN} = \frac{PM}{PB} \cdot \frac{PN}{PC} \cdot S_{\triangle PBC} 
+    = \frac{2}{3} \cdot \frac{4}{5} \cdot \left(\frac{1}{2} \cdot 5 \cdot 3\sqrt{3}\right) = 4\sqrt{3}.
+  \]
+  
+  因为 \(S_{\triangle PMN} = \dfrac{1}{2}MN \cdot h\)，所以：
+  \[
+    h = \frac{2S_{\triangle PMN}}{MN} = \frac{8\sqrt{3}}{\frac{4\sqrt{7}}{3}} = \frac{6\sqrt{21}}{7}.
+  \]
+  故 \(|PQ|\) 最小值为 \(\dfrac{6\sqrt{21}}{7}\)。%
+}

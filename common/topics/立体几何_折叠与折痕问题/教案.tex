@@ -1,0 +1,600 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{../../../common/ipara}
+\tcbuselibrary{breakable}
+\usepackage{multicol}
+\raggedbottom
+
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 高一/高二拔高专题：立体几何折叠与折痕问题}
+\rhead{\small 教师版（不变量、位置关系、距离、最值与轨迹）}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% 自定义卡片与结构环境
+
+\renewcommand{\teacherproblem}[2]{%
+  \teachquestionheader{例题 #1\quad #2}
+}
+
+% 引入外部公共题目宏定义以备用（我们已经录入了公共题）
+\input{../../../common/pool/立体几何/难题/q_solid_folding_rectangle.tex}
+\input{../../../common/pool/立体几何/难题/q_solid_folding_pentagon_min_angle.tex}
+
+\begin{document}
+
+\begin{center}
+  {\zihao{2}\bfseries 拔高专题 \quad 立体几何折叠与折痕问题专题讲义}\\[3mm]
+  {\Large \bfseries 从不变量建立到空间量转化}\\[2mm]
+  {\large 适用：高一/高二一轮复习 / 拔高专题课 / 120 分钟教案}\\[2mm]
+  \rule{0.85\linewidth}{0.5pt}
+\end{center}
+
+\begin{teachbox}{专题设计定位}
+立体几何中的“图形折叠问题”是高考与自主招生的一大高频难点。传统的授课方式往往按照“线面垂直、体积计算、点面距离、轨迹长度”进行机械平铺，导致学生在面对“动态折叠”时产生严重的畏难情绪。\\
+本专题本着\textbf{“折叠 = 绕折痕旋转”}的唯一核心主线，打破常规的板块划分，以\textbf{学生认知门槛}为梯度重新编排，沿以下路径推进教学：\\
+$$\text{折痕} \rightarrow \text{垂足} \rightarrow \text{定长} \rightarrow \text{截面圆弧} \rightarrow \text{空间量转化}$$
+通过六层递进式的认知台阶，使学生建立起由浅入深的逻辑链条，在面对任何折叠题目时，都能利用同一套“不变量”快速破局。
+\end{teachbox}
+
+% ==================== 教学大纲 ====================
+\section{120分钟教学大纲与口诀}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{0.95\linewidth}{>{\bfseries}p{2.2cm} c p{4.5cm} X}
+\toprule
+认知层级 & 建议时间 & 核心教学内容 & 教学目标与关键动作 \\
+\midrule
+核心不变量 & 15min & 折痕、垂足、定长、圆弧 & 掌握旋转模型本质，建立折前与折后守恒量。 \\
+位置证明 & 20min & 垂直不变量的线面垂直转化 & 利用 $\text{折前垂直} \implies \text{折后垂直}$ 构建线面垂直。 \\
+距离转化 & 25min & 中点换点、平行换点与换面 & 避开空间垂线，降维转化回平面计算距离。 \\
+体积最值 & 20min & 高度最大值与垂直临界状态 & 理解体积由高决定，最值发生于折叠面垂直底面时。 \\
+夹角最值 & 20min & 线面角定义与三正弦定理 & 利用 $\tan\theta = \frac{h}{d_{\text{proj}}}$ 或三正弦公式进行代数求导/二次函数最值。 \\
+轨迹圆弧 & 15min & 绕垂足圆弧与弦长角度转化 & 将空间距离范围转化为圆心角，求动点轨迹弧长。 \\
+综合压轴 & 选讲/挑战 & 外接球、动点最值、二面角截面 & 融合前六层模型，作为拔高检验或课后挑战题。 \\
+总结复盘 & 5min & 师生共建决策图与解题口诀 & 提炼核心解题步骤。 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{keybox}{解题口诀}
+  \textbf{先找折痕，再找垂足；定长成圆，空间转平面；距离先换点，最值看高度，角度看投影。}
+\end{keybox}
+
+\newpage
+
+% ==================== 第一层 ====================
+\section{第一层：建立折叠不变量}
+
+\begin{keybox}{核心思维——不变量思维：以静制动}
+折叠题目的千变万化，都是由于面与面之间“角度”在发生变化。但无论角度如何变，以下五大几何量或几何关系在折叠前后\textbf{绝对保持守恒}：
+\begin{enumerate}[label=\arabic*., leftmargin=2em, itemsep=0.1em]
+  \item \textbf{折痕不动}：折痕所在的直线及其线段在空间中的位置与长度恒定。
+  \item \textbf{折痕上的点不动}：折痕上的点是旋转的静止中心或静止轴点。
+  \item \textbf{面内长度与夹角不变}：被折叠图形内部的线段长度、夹角、面积完全保持不变。
+  \item \textbf{垂直折痕的线折后仍垂直}：若折叠前有直线 $l \perp$ 折痕于 $O$，则折后 $l' \perp$ 折痕于 $O$。这是确定旋转面的基础。
+  \item \textbf{动点绕折痕旋转以垂足为圆心}：折起面上的点 $P$ 绕折痕旋转，其轨迹是一个圆或圆弧，圆心即为 $P$ 到折痕的垂足 $O$，半径为 $PO$。
+\end{enumerate}
+\end{keybox}
+
+\par\addvspace{0.4em}{\centering
+\begin{tikzpicture}[scale=0.9, >=stealth, line join=round, line cap=round]
+  % 左图：折叠前
+  \begin{scope}[xshift=0cm, yshift=0cm]
+    \coordinate (B) at (0,0);
+    \coordinate (C) at (2.5,0);
+    \coordinate (D) at (2.5,2.5);
+    \coordinate (A) at (0,2.5);
+    \coordinate (O) at (1.25,1.25);
+    
+    \draw[thick] (A) -- (B) -- (C) -- (D) -- cycle;
+    \draw[thick, dashed, blue] (B) -- (D);
+    \draw[thick, dashed, red] (A) -- (O);
+    
+    \fill (A) circle (1.2pt) node[above left] {\small $A$};
+    \fill (B) circle (1.2pt) node[below left] {\small $B$};
+    \fill (C) circle (1.2pt) node[below right] {\small $C$};
+    \fill (D) circle (1.2pt) node[above right] {\small $D$};
+    \fill (O) circle (1.2pt) node[below right] {\small $O$};
+    
+    \draw[gray, thin] ($(O)!0.1!(A)$) -- ($($(O)!0.1!(A)$) + ($(O)!0.1!(D)$) - (O)$) -- ($(O)!0.1!(D)$);
+    \node[below] at (1.25, -0.2) {\small 折叠前（正方形）};
+  \end{scope}
+
+  \draw[->, very thick, gray] (3.0, 1.25) -- (4.0, 1.25) node[midway, above] {\small 折叠};
+
+  % 右图：折叠后
+  \begin{scope}[xshift=4.8cm, yshift=0cm]
+    \coordinate (B) at (0,0);
+    \coordinate (C) at (2.5,0);
+    \coordinate (D) at (2.9,0.8);
+    \coordinate (O) at (1.45,0.4);
+    \coordinate (P) at (1.1,1.5); % 旋转折起后的 A 点，记为 P
+    
+    \draw[thick] (B) -- (C) -- (D);
+    \draw[thick, dashed, gray!60] (D) -- (B);
+    
+    \draw[thick, blue] (P) -- (B);
+    \draw[thick, blue] (P) -- (D);
+    \draw[thick, dashed, red] (P) -- (O);
+    \draw[thick, dashed, gray!60] (O) -- (C);
+    
+    \fill (B) circle (1.2pt) node[below left] {\small $B$};
+    \fill (C) circle (1.2pt) node[below right] {\small $C$};
+    \fill (D) circle (1.2pt) node[above right] {\small $D$};
+    \fill (O) circle (1.2pt) node[below] {\small $O$};
+    \fill (P) circle (1.2pt) node[above] {\small $P\ (A')$};
+    
+    % 画旋转圆弧轨迹
+    \draw[dashed, red, thin] (O) ++(60:1.1) arc (60:120:1.1);
+    \draw[red, thin] ($(O)!0.08!(P)$) -- ($($(O)!0.08!(P)$) + ($(O)!0.08!(D)$) - (O)$) -- ($(O)!0.08!(D)$);
+    
+    \node[below] at (1.45, -0.2) {\small 折叠后（$PO = AO, PO \perp BD$）};
+  \end{scope}
+\end{tikzpicture}\par}\addvspace{0.4em}
+
+\begin{exbox}{例 1.1}
+在边长为 $2$ 的正方形 $ABCD$ 中，对角线 $AC$ 与 $BD$ 相交于点 $O$，将 $\triangle ABD$ 沿对角线 $BD$ 折起，使得点 $A$ 到达点 $P$ 的位置。
+\begin{enumerate}[label=(\arabic*), leftmargin=2em, itemsep=0.1em]
+  \item 证明：无论折起何种角度，均有 $PO \perp BD$；
+  \item 若折起后 $PC = \sqrt{2}$，求此时线段 $PO$ 的长度以及 $\triangle PBD$ 的面积。
+\end{enumerate}
+\end{exbox}
+
+\begin{paracol}{2}
+\teachblock{标准解答与讲解主线}{
+  \textbf{（1）证明：}\\
+  In折叠前，因为四边形 $ABCD$ 为正方形，所以对角线 $AC \perp BD$。\\
+  因为点 $O$ 是对角线 $AC$ 与 $BD$ 的交点，所以有 $AO \perp BD$。\\
+  当将 $\triangle ABD$ 沿折痕 $BD$ 折起后，由于 $\triangle ABD$ 在旋转过程中其形状与大小保持不变，即 $\triangle PBD \cong \triangle ABD$。\\
+  因此，折叠前的垂直关系在折叠后依然保持不变，即：
+  \[ \boxed{PO \perp BD} \]
+}
+\switchcolumn
+\teachblock{易错分析与教学提示}{
+  \textbf{学生常见误区：}\\
+  初学者往往在图形折起后，直观感觉空间中的某些线段“缩短”了或“变长”了，从而误认为折叠面内部的长度发生了变化。
+}
+\switchcolumn*
+\teachblock{标准解答与讲解主线 (续)}{
+  \textbf{（2）解：}\\
+  因为正方形的边长为 $2$，其对角线长度为：
+  \[ AC = BD = 2\sqrt{2} \]
+  由于对角线互相垂直平分，所以：
+  \[ AO = CO = \frac{1}{2} AC = \sqrt{2} \]
+  由于折叠不变量性质，线段长度保持不变，故折起后有：
+  \[ \boxed{PO = AO = \sqrt{2}} \]
+  在三角形 $\triangle PBD$ 中，底边为折痕 $BD = 2\sqrt{2}$，由（1）可知高线为 $PO = \sqrt{2}$。\\
+  故 $\triangle PBD$ 的面积为：
+  \[ S_{\triangle PBD} = \frac{1}{2} \cdot BD \cdot PO = \frac{1}{2} \cdot 2\sqrt{2} \cdot \sqrt{2} = \boxed{2} \]
+}
+\switchcolumn
+\teachblock{易错分析与教学提示 (续)}{
+  \textbf{启发与提问口径：}\\
+  \begin{itemize}[leftmargin=1.2em, itemsep=0.3em, topsep=0.2em]
+    \item “当我们将这半张纸折起来时，这半张纸本身有没有被扯大或撕裂？没有。它的形状没有任何变化。所以只要是原本就在这半张纸上的线段长度和夹角（如 $PO$ 和 $\angle PBD$），折叠后完全保持原样。”
+    \item “折叠不变量是所有折叠题的‘根’，第一步一定要在图形上把这些不变的长度 and 垂直关系用彩笔标出来。”
+  \end{itemize}
+}
+\end{paracol}
+
+\newpage
+
+% ==================== 第二层 ====================
+\section{第二层：位置关系证明}
+
+\begin{keybox}{核心思维——垂直转化：从平面到空间的跨越}
+折叠题目的几何证明（线面垂直与面面垂直），其核心入口非常固定，即\textbf{“利用折痕两边的垂直不变量构建线面垂直”}。
+标准证明链条如下：
+\[
+\begin{aligned}
+\text{折叠前：} \quad & AO \perp \text{折痕 } BD \\
+\text{折叠后：} \quad & PO \perp \text{折痕 } BD \quad (\text{不变量}) \\
+\text{底面中：} \quad & CO \perp \text{折痕 } BD \quad (\text{底面原有}) \\
+& PO \cap CO = O \quad \Longrightarrow \quad \boxed{BD \perp \text{平面 } POC}
+\end{aligned}
+\]
+这一法则适合于几乎所有的折叠垂直证明。教学重点是让学生明白：\textbf{“寻找垂直于折痕的两条相交线，是解题最天然的突破口”}。
+\end{keybox}
+
+\par\addvspace{0.4em}{\centering
+\begin{tikzpicture}[scale=0.9, >=stealth, line join=round, line cap=round]
+  \coordinate (B) at (0,0);
+  \coordinate (C) at (2.5,0);
+  \coordinate (D) at (2.9,0.8);
+  \coordinate (O) at (1.45,0.4);
+  \coordinate (P) at (1.1,1.5); 
+  
+  \draw[thick] (B) -- (C) -- (D);
+  \draw[thick, dashed, gray!60] (D) -- (B);
+  
+  \draw[thick, blue] (P) -- (B);
+  \draw[thick, blue] (P) -- (D);
+  \draw[thick, dashed, red] (P) -- (O);
+  \draw[thick, dashed, red] (O) -- (C);
+  \draw[thick, dashed, red] (P) -- (C);
+  
+  \fill (B) circle (1.2pt) node[below left] {\small $B$};
+  \fill (C) circle (1.2pt) node[below right] {\small $C$};
+  \fill (D) circle (1.2pt) node[above right] {\small $D$};
+  \fill (O) circle (1.2pt) node[below] {\small $O$};
+  \fill (P) circle (1.2pt) node[above] {\small $P$};
+  
+  % 直角标记
+  \draw[red, thin] ($(O)!0.08!(P)$) -- ($($(O)!0.08!(P)$) + ($(O)!0.08!(D)$) - (O)$) -- ($(O)!0.08!(D)$);
+  \draw[red, thin] ($(O)!0.08!(C)$) -- ($($(O)!0.08!(C)$) + ($(O)!0.08!(D)$) - (O)$) -- ($(O)!0.08!(D)$);
+  
+  \node[below] at (1.45, -0.2) {\small $BD \perp PO$ 且 $BD \perp CO \implies BD \perp$ 平面 $POC$};
+\end{tikzpicture}\par}\addvspace{0.4em}
+
+\begin{exbox}{例 2.1}
+在等腰直角三角形 $ABC$ 中，$\angle A = 90^\circ$，$AB = AC = 2$，$D, E$ 分别为 $AB, AC$ 的中点。将 $\triangle ADE$ 沿折痕 $DE$ 折起，使得点 $A$ 到达点 $P$ 的位置，且点 $P$ 在底面 $BCED$ 上的射影 $H$ 恰好是线段 $BC$ 的中点。记线段 $DE$ 的中点为 $M$。
+\begin{enumerate}[label=(\arabic*), leftmargin=2em, itemsep=0.1em]
+  \item 证明：$DE \perp$ 平面 $PMH$；
+  \item 证明：平面 $PBC \perp$ 平面 $PMH$。
+\end{enumerate}
+\end{exbox}
+
+\begin{paracol}{2}
+\teachblock{标准解答与讲解主线}{
+  \textbf{（1）证明：}\\
+  在折叠前，因为 $\triangle ABC$ 为等腰直角三角形，且 $AB=AC$，点 $D, E$ 分别为 $AB, AC$ 的中点，\\
+  所以 $DE \parallel BC$，且 $\triangle ADE$ 也是等腰直角三角形。\\
+  因为点 $M$ 是 $DE$ 的中点，根据对称性，有 $AM \perp DE$。\\
+  当折起后点 $A$ 到达点 $P$ 的位置，由折叠不变量性质可知：
+  \[ PM \perp DE \quad \text{—— 关系 (1)} \]
+  因为点 $P$ 在底面 $BCED$ 上的射影为 $H$，所以有：
+  \[ PH \perp \text{平面 } BCED \]
+  因为直线 $DE \subset$ 平面 $BCED$，所以有：
+  \[ PH \perp DE \quad \text{—— 关系 (2)} \]
+  在平面 $PMH$ 内，$PM \cap PH = P$，且 $PM, PH$ 是两条相交直线。\\
+  结合关系 (1) 与 (2)，由线面垂直判定定理，可知：
+  \[ \boxed{DE \perp \text{平面 } PMH} \]
+}
+\switchcolumn
+\teachblock{易错分析与教学提示}{
+  \textbf{学生常见误区：}\\
+  证明（1）时，学生容易漏写相交条件 $PM \cap PH = P$。在证明（2）时，容易分不清是“线垂直面”推出“面垂直面”，还是直接用夹角证，写得不够严谨。
+}
+\switchcolumn*
+\teachblock{标准解答与讲解主线 (续)}{
+  \textbf{（2）证明：}\\
+  在折叠前，因为 $DE \parallel BC$，所以折叠后在底面内仍有：
+  \[ DE \parallel BC \]
+  由（1）中已证：$DE \perp$ 平面 $PMH$。\\
+  因为 $DE \parallel BC$，根据平行线垂直于同一平面的性质，可得：
+  \[ BC \perp \text{平面 } PMH \]
+  因为直线 $BC \subset$ 平面 $PBC$，由面面垂直判定定理，可知：
+  \[ \boxed{\text{平面 } PBC \perp \text{平面 } PMH} \]
+}
+\switchcolumn
+\teachblock{易错分析与教学提示 (续)}{
+  \textbf{启发与提问口径：}\\
+  \begin{itemize}[leftmargin=1.2em, itemsep=0.3em, topsep=0.2em]
+    \item “我们想证 $DE \perp$ 平面 $PMH$，需要在平面内找两条和 $DE$ 垂直的相交线。第一条是折叠面里的 $PM$（这是折前就垂直的不变量）；第二条是高度线 $PH$（因为它垂直于整个底面，所以垂直于底面内一切线）。”
+    \item “只要把‘折前垂直’与‘高线垂直’联立起来，线面垂直就必然成立。这是折叠证明题雷打不动的标准套路。”
+  \end{itemize}
+}
+\end{paracol}
+
+\newpage
+
+% ==================== 第三层 ====================
+\section{第三层：距离题}
+
+\begin{keybox}{核心思维——距离转换：化难为易，降维求精}
+在折起后的三维多面体中，要求某个点到平面的距离 $d$，如果直接作空间垂线，垂足往往飘落在空中或某条线上，极难证明和定位。
+我们的通用战术是\textbf{“转换点与面，回原平面计算”}：
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.1em]
+  \item \textbf{利用中点/比例转换点}：若 $M$ 是 $PC$ 的中点，则 $d(M, \text{面}) = \frac{1}{2} d(C, \text{面})$。
+  \item \textbf{利用平行转换点}：若直线 $l \parallel$ 平面 $\alpha$，则 $l$ 上任意点到平面 $\alpha$ 的距离都相等。
+  \item \textbf{利用等体积换底法}：$V = \frac{1}{3} S_1 h_1 = \frac{1}{3} S_2 h_2$，避免直接作高。
+  \item \textbf{利用面面垂直降维}：若平面 $\alpha \perp$ 平面 $\beta$，交线为 $l$，则点 $P \in \alpha$ 到平面 $\beta$ 的距离，直接等于点 $P$ 在平面 $\alpha$ 内到交线 $l$ 的距离。
+\end{enumerate}
+\end{keybox}
+
+\begin{exbox}{例 3.1}
+在边长为 $2$ 的正方形 $ABCD$ 中，点 $O$ 为对角线 $AC$ 与 $BD$ 的交点。现将 $\triangle ABD$ 沿对角线 $BD$ 折起，使得点 $A$ 到达点 $P$ 的位置，且满足 $PC = 2$。若点 $M$ 为线段 $PC$ 的中点，求点 $M$ 到平面 $PBD$ 的距离。
+\end{exbox}
+
+\begin{paracol}{2}
+\teachblock{标准解答与讲解主线}{
+  \textbf{步骤一：转换目标点}\\
+  因为点 $M$ 是线段 $PC$ 的中点，且直线 $PC$ 与平面 $PBD$ 相交于点 $P$。\\
+  根据平行投影与比例关系，点 $M$ 到平面 $PBD$ 的距离等于点 $C$ 到平面 $PBD$ 距离的一半：
+  \[ d(M, \text{平面 } PBD) = \frac{1}{2} d(C, \text{平面 } PBD) \quad \text{—— 关系 (1)} \]
+  
+  \textbf{步骤二：寻找并利用面面垂直降维}\\
+  在折叠前，正方形的对角线互相垂直平分，故有 $AO \perp BD$ 且 $CO \perp BD$。\\
+  折叠后，点 $A$ 到达点 $P$ 处。由折叠不变量，有：
+  \[ PO \perp BD \quad \text{且} \quad CO \perp BD \]
+  又 $PO \cap CO = O$，故有 $BD \perp$ 平面 $POC$。\\
+  因为直线 $BD \subset$ 平面 $PBD$，由面面垂直判定定理，可知：
+  \[ \text{平面 } PBD \perp \text{平面 } POC \]
+  两平面的交线为 $PO$。\\
+  根据面面垂直的性质定理，点 $C$ 到平面 $PBD$ 的距离，即为在平面 $POC$ 内，点 $C$ 到交线 $PO$ 的距离。
+}
+\switchcolumn
+\teachblock{易错分析与教学提示}{
+  \textbf{学生常见误区：}\\
+  学生常常倾向于“哪里有问，就在哪里作图”，直接在空间中去作 $M$ 到平面 $PBD$ 的垂线，导致画出很多多余的干扰线，最后无法进行定量证明。
+}
+\switchcolumn*
+\teachblock{标准解答与讲解主线 (续)}{
+  \textbf{步骤三：在平面三角形 $\triangle POC$ 内计算}\\
+  在正方形 $ABCD$ 中，$AO = CO = \sqrt{2}$，折起后有 $PO = AO = \sqrt{2}$。\\
+  在 $\triangle POC$ 中，已知：
+  \[ PO = \sqrt{2},\quad CO = \sqrt{2},\quad PC = 2 \]
+  因为 $PO^2 + CO^2 = (\sqrt{2})^2 + (\sqrt{2})^2 = 4 = PC^2$，\\
+  根据勾股定理逆定理，可知 $\triangle POC$ 是以 $O$ 为直角的直角三角形。\\
+  因此，在平面 $POC$ 内，点 $C$ 到直角边 $PO$ 的距离，就等于直角边 $CO$ 的长度，即：
+  \[ d(C, \text{平面 } PBD) = CO = \sqrt{2} \]
+  
+  \textbf{步骤四：代回求最终解}\\
+  将此距离代回关系 (1) 中，可得点 $M$ 到平面 $PBD$ 的距离为：
+  \[ d(M, \text{平面 } PBD) = \frac{1}{2} \cdot \sqrt{2} = \boxed{\frac{\sqrt{2}}{2}} \]
+}
+\switchcolumn
+\teachblock{易错分析与教学提示 (续)}{
+  \textbf{启发与提问口径：}\\
+  \begin{itemize}[leftmargin=1.2em, itemsep=0.3em, topsep=0.2em]
+    \item “我们能直接作 $M$ 的垂线吗？在空间里很难确定它落在哪。但是我们发现 $M$ 是 $PC$ 的中点，根据相似比，只要算出端点 $C$ 到平面的距离，除以 2 就可以了。这就是‘换点法’。”
+    \item “要找 $C$ 到平面 $PBD$ 的距离，正好发现对角线截面 $POC$ 垂直于平面 $PBD$。这样我们就把一个‘空间点到面的距离’降维变成了‘平面直角三角形内点到线的距离’，也就是 $CO$ 的长度。计算瞬间就化简了。”
+  \end{itemize}
+}
+\end{paracol}
+
+\newpage
+
+% ==================== 第四层 ====================
+\section{第四层：体积与表面积最值}
+
+\begin{keybox}{核心思维——高度最值与垂直临界}
+三棱锥（四面体）的体积计算公式为：
+\[ V = \frac{1}{3} S_{\text{底}} \cdot h \]
+当底面在折叠过程中形状与面积保持固定时，体积的最大值完全由\textbf{折叠点到底面的高度 $h$} 决定。\\
+由于动点绕折痕做圆周运动，其高度 $h$ 不超过旋转的半径（即折前顶点到折痕的距离）。\\
+因此：
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.1em]
+  \item \textbf{高度最大状态}：当折起面与底面所成的二面角为 $90^\circ$（即\textbf{折起面 $\perp$ 底面}）时，高度 $h$ 达到最大值，此时体积最大。
+  \item \textbf{注意区分}：必须要向学生反复强调，\textbf{“折起面与底面垂直”只是体积最大时的特定最值状态，而不是折起后的普遍状态}。很多同学会在非最值的常规问题中，也想当然地套用面面垂直，导致严重失分。
+\end{enumerate}
+\end{keybox}
+
+\begin{exbox}{例 4.1}
+在等腰直角三角形 $ABC$ 中，$\angle C = 90^\circ$，$AC = BC = 2$，点 $D$ 是斜边 $AB$ 上的一点且满足 $AD = 1$。过点 $D$ 作 $DE \perp AC$ 于点 $E$。现将 $\triangle ADE$ 沿折痕 $DE$ 折起，使得点 $A$ 到达点 $P$ 的位置，构成四棱锥 $P-BCED$。求四棱锥 $P-BCED$ 体积的最大值。
+\end{exbox}
+
+\begin{paracol}{2}
+\teachblock{标准解答与讲解主线}{
+  \textbf{步骤一：求底面梯形 $BCED$ 的面积}\\
+  在等腰 Rt$\triangle ABC$ 中，$AC=BC=2$，故 $\angle A = 45^\circ$。\\
+  因为 $DE \perp AC$，所以在 Rt$\triangle ADE$ 中，$\angle ADE = 45^\circ$，有 $AE = DE$。\\
+  因为斜边段 $AD = 1$，所以：
+  \[ AE = DE = AD \cos 45^\circ = \frac{\sqrt{2}}{2} \]
+  则底面梯形 $BCED$ 的高为：
+  \[ CE = AC - AE = 2 - \frac{\sqrt{2}}{2} \]
+  底面梯形 $BCED$ 的两底边为 $DE = \frac{\sqrt{2}}{2}$ 且 $BC = 2$。\\
+  故底面面积为：
+  \[ S_{BCED} = \frac{1}{2}(DE + BC) \cdot CE = \frac{1}{2}\left(\frac{\sqrt{2}}{2} + 2\right)\left(2 - \frac{\sqrt{2}}{2}\right) \]
+  利用平方差公式：
+  \[ S_{BCED} = \frac{1}{2}\left(2^2 - \left(\frac{\sqrt{2}}{2}\right)^2\right) = \frac{1}{2}\left(4 - \frac{1}{2}\right) = \frac{7}{4} \]
+}
+\switchcolumn
+\teachblock{易错分析与教学提示}{
+  \textbf{学生常见误区：}\\
+  学生容易算错底面面积。另外，部分学生不能理解“折叠面与底面垂直时，高最大”的物理直观。
+}
+\switchcolumn*
+\teachblock{标准解答与讲解主线 (续)}{
+  \textbf{步骤二：分析高度最值}\\
+  折起后，四棱锥 $P-BCED$ 的体积为：
+  \[ V = \frac{1}{3} S_{BCED} \cdot h = \frac{7}{12} h \]
+  其中 $h$ 是顶点 $P$ 到平面 $BCED$ 的距离。\\
+  因为折叠过程是 $\triangle ADE$ 绕折痕 $DE$ 旋转，点 $P$ 的轨迹是以 $E$ 为圆心、$AE$ 为半径的圆弧。\\
+  因此，点 $P$ 到平面 $BCED$ 的最大高度 $h$ 不能超过旋转半径：
+  \[ h \le AE = \frac{\sqrt{2}}{2} \]
+  当且仅当平面 $PDE \perp$ 平面 $BCED$ 时，高度达到最大值 $h_{\max} = \frac{\sqrt{2}}{2}$。
+  
+  \textbf{步骤三：计算最大体积}\\
+  此时体积取得最大值：
+  \[ V_{\max} = \frac{7}{12} \cdot h_{\max} = \frac{7}{12} \cdot \frac{\sqrt{2}}{2} = \boxed{\frac{7\sqrt{2}}{24}} \]
+}
+\switchcolumn
+\teachblock{易错分析与教学提示 (续)}{
+  \textbf{启发与提问口径：}\\
+  \begin{itemize}[leftmargin=1.2em, itemsep=0.3em, topsep=0.2em]
+    \item “点 $P$ 绕着折痕 $DE$ 旋转，它在空间中的高度是不断变化的。就像荡秋千一样，秋千荡到最高点时（也就是秋千架所在平面和地面垂直时），高度才最大。所以 $P$ 到底面的高度最大就是旋转半径 $AE$。此时折叠面和底面恰好垂直。”
+    \item “这一最值状态在选择填空题中是秒杀体积最值的核心技巧。”
+  \end{itemize}
+}
+\end{paracol}
+
+\newpage
+
+% ==================== 第五层 ====================
+\section{第五层：夹角最值}
+
+\begin{keybox}{核心思维——夹角投影与三正弦定理}
+求折叠中的线面角或二面角最值，通常有两大通法：
+\begin{enumerate}[label=\arabic*., leftmargin=2em, itemsep=0.1em]
+  \item \textbf{正切定义法}：$\tan\theta = \frac{h}{d_{\text{proj}}}$。通过建立关于折起参数（如线段长或旋转角）的代数式，将其转化为求代数式的最值问题。
+  \item \textbf{三正弦定理法（跨面投影模型）}：
+    \[ \sin(\text{线面角}) = \sin(\text{二面角}) \cdot \sin(\text{线线角}) \]
+    即：$\sin\alpha = \sin\beta \cdot \sin\theta$。\\
+    若直线在底面内（如 $CD$），且折叠面绕折痕 $BM$ 旋转，二面角为 $\beta$，直线与折痕的夹角为 $\theta$。利用此公式可以\textbf{瞬间避开空间垂线与投影的定位}，直接转化为代数形式，极大降低作图难度。
+\end{enumerate}
+\end{keybox}
+
+\begin{exbox}{例 5.1（山东省实验中学 2025 高一月考真题）}
+  \qSolidFoldingRectangleStem
+  \par\addvspace{0.4em}{\centering
+  \qSolidFoldingRectangleFigure[0.9]
+  \par}\addvspace{0.4em}
+\end{exbox}
+
+\begin{paracol}{2}
+\teachblock{标准解答与讲解主线}{
+  \qSolidFoldingRectangleSolution
+}
+\switchcolumn
+\teachblock{易错分析与教学提示}{
+  \begin{itemize}[leftmargin=1.5em]
+    \qSolidFoldingRectangleTeachingNotes
+  \end{itemize}
+}
+\end{paracol}
+
+\newpage
+
+% ==================== 第六层 ====================
+\section{第六层：动点轨迹}
+
+\begin{keybox}{核心思维——轨迹降维与圆心角转换}
+折叠题目的轨迹问题，其物理本质是\textbf{“动点绕折痕上的垂足做圆周运动，其轨迹为空间中的圆弧”}。
+求解轨迹弧长的核心五步环流如下：
+\[
+\boxed{\text{旋转半径 } R} 
+\rightarrow 
+\boxed{\text{空间距离约束}} 
+\rightarrow 
+\boxed{\text{余弦定理列式}} 
+\rightarrow 
+\boxed{\text{旋转角 } \phi \text{ 范围}} 
+\rightarrow 
+\boxed{\text{弧长 } l = R\phi}
+\]
+解题关键是利用余弦定理，把空间中两个动点的距离（皮）与旋转平面角（骨）连接起来。
+\end{keybox}
+
+\begin{exbox}{例 6.1}
+在边长为 $2$ 的正方形 $ABCD$ 中，点 $O$ 为对角线 $AC$ 与 $BD$ 的交点。现将 $\triangle ABD$ 沿对角线 $BD$ 折起，使得点 $A$ 到达点 $P$ 的位置。在折起过程中，当线段 $PC$ 的长度在 $[\sqrt{2}, \sqrt{6}]$ 范围内时，求点 $P$ 运动的轨迹对应的圆弧长度。
+\end{exbox}
+
+\begin{paracol}{2}
+\teachblock{标准解答与讲解主线}{
+  \textbf{步骤一：确定旋转圆心与半径}\\
+  在折叠前，正方形 $ABCD$ 的对角线互相垂直平分，故 $AO \perp BD$ 且 $CO \perp BD$。\\
+  折叠后，点 $A$ 绕折痕 $BD$ 旋转，旋转圆心为垂足 $O$，旋转半径为：
+  \[ R = PO = AO = \sqrt{2} \]
+  并且 $CO = \sqrt{2}$ 保持恒定。
+  
+  \textbf{步骤二：用余弦定理建立空间距离与旋转角的关系}\\
+  因为 $PO \perp BD$ 且 $CO \perp BD$，所以二面角 $P-BD-C$ 的平面角为 $\phi = \angle POC$。\\
+  在 $\triangle POC$ 中，由余弦定理有：
+  \[ PC^2 = PO^2 + CO^2 - 2 \cdot PO \cdot CO \cos\phi \]
+  代入已知长度 $PO = \sqrt{2}, CO = \sqrt{2}$ 得：
+  \[ PC^2 = 2 + 2 - 2 \cdot \sqrt{2} \cdot \sqrt{2} \cos\phi = 4 - 4\cos\phi \]
+}
+\switchcolumn
+\teachblock{易错分析与教学提示}{
+  \textbf{学生常见误区：}\\
+  学生看到“空间线段 $PC$ 长度范围”时，通常感到无从下手，无法将其转化为角度。他们容易忘记在 $\triangle POC$ 中直接使用余弦定理进行搭桥。
+}
+\switchcolumn*
+\teachblock{标准解答与讲解主线 (续)}{
+  \textbf{步骤三：求旋转角 $\phi$ 的变化范围}\\
+  已知 $PC \in [\sqrt{2}, \sqrt{6}]$，所以 $PC^2 \in [2, 6]$。\\
+  列出不等式组：
+  \[ 2 \le 4 - 4\cos\phi \le 6 \implies -2 \le -4\cos\phi \le 2 \]
+  同除以 $-4$，改变不等号方向：
+  \[ -\frac{1}{2} \le \cos\phi \le \frac{1}{2} \]
+  因为折角 $\phi \in [0, \pi]$，由余弦函数的单调性，可求得旋转角 $\phi$ 的范围为：
+  \[ \phi \in \left[\frac{\pi}{3}, \frac{2\pi}{3}\right] \]
+  
+  \textbf{步骤四：计算圆心角的改变量与弧长}\\
+  旋转对应的圆心角变化量为：
+  \[ \Delta\phi = \frac{2\pi}{3} - \frac{\pi}{3} = \frac{\pi}{3} \]
+  点 $P$ 运动的轨迹是一段圆弧，其半径为 $R = \sqrt{2}$。\\
+  故所求轨迹弧长为：
+  \[ l = R \cdot \Delta\phi = \sqrt{2} \cdot \frac{\pi}{3} = \boxed{\frac{\sqrt{2}\pi}{3}} \]
+}
+\switchcolumn
+\teachblock{易错分析与教学提示 (续)}{
+  \textbf{启发与提问口径：}\\
+  \begin{itemize}[leftmargin=1.2em, itemsep=0.3em, topsep=0.2em]
+    \item “点 $P$ 在天空中绕着 $O$ 旋转，它跟地面上的固定点 $C$ 距离在变化。这两个动点和旋转圆心 $O$ 组成了一个三角形 $\triangle POC$。这个三角形里哪些边是不变的？$PO$ 和 $CO$ 是定长。所以变化的只有夹角 $\phi$。我们用余弦定理就能直接把 $PC$ 的长度变化和夹角变化连起来，求出角度的范围，进而求出圆弧长。”
+  \end{itemize}
+}
+\end{paracol}
+
+\newpage
+
+% ==================== 第七层 ====================
+\section{第七层：综合压轴模型——非标准底面折叠}
+
+\begin{keybox}{核心铺垫——三大进阶模型}
+要解决非标准折叠的综合压轴题，必须熟练掌握以下三个“桥梁”模型：
+\begin{enumerate}[label=\arabic*., leftmargin=2em, itemsep=0.1em]
+  \item \textbf{外接球模型}：直角三角形的外心在斜边中点。若顶点 $P$ 到底面的垂线为 $PH$，则三棱锥的外接球球心 $O$ 必定落在 $PH$ 所在直线上。
+  \item \textbf{球面动点距离范围}：若点 $M$ 在以 $O$ 为球心、$R$ 为半径的球面上运动，空间中一定点 $E$ 到球面上动点 $M$ 的距离取值范围为：$EM \in [|EO-R|, EO+R]$。这是空间版的“三角不等式”。
+  \item \textbf{交线方向与二面角截面}：若 $a \parallel b$ 且 $a \subset \alpha, b \subset \beta$，平面 $\alpha \cap \beta = l$，则交线 $l \parallel a \parallel b$。利用这组平行关系，作垂直于交线 $l$ 的截面，可以将动态二面角转化为截面方向向量的平面夹角。
+\end{enumerate}
+\end{keybox}
+
+\begin{exbox}{例 7.1：直角梯形底面 + 正三角形翻折 + 外接球与二面角最值}
+  \qSolidFoldingPentagonMinAngleStem
+  \par\addvspace{0.4em}{\centering
+  \qSolidFoldingPentagonMinAngleFigure[0.9]
+  \par}\addvspace{0.4em}
+\end{exbox}
+
+\begin{paracol}{2}
+\teachblock{标准解答与讲解主线}{
+  \qSolidFoldingPentagonMinAngleSolution
+}
+\switchcolumn
+\teachblock{易错分析与教学提示}{
+  \begin{itemize}[leftmargin=1.5em]
+    \qSolidFoldingPentagonMinAngleTeachingNotes
+  \end{itemize}
+}
+\end{paracol}
+
+\newpage
+
+% ==================== 决策图 ====================
+\section{总结复盘与解题决策树}
+
+\par\addvspace{0.8em}{\centering
+\begin{tikzpicture}[scale=0.9, >=stealth, 
+    node/.style={rectangle, draw, thick, fill=white, text width=5cm, align=center, minimum height=1cm, rounded corners=3pt},
+    leaf/.style={rectangle, draw, thick, fill=gray!10, text width=4.5cm, align=center, minimum height=0.8cm}]
+    
+    % 主干
+    \node[node] (M1) at (0, 0) {\bfseries 【第一步】寻找折痕与垂足 \\ 确定不变量：折痕 $BD$, 垂足 $O$, 定长 $PO=AO$};
+    
+    % 分支：证明
+    \node[node] (D1) at (-4, -2.5) {\bfseries 【方向 A】证明位置垂直 \\ (线面垂直 / 面面垂直)};
+    \node[leaf] (L1) at (-4, -5.0) {利用不变量垂直 $PO \perp BD$ 结合底面垂直 $CO \perp BD$ 证明 $BD \perp$ 平面 $POC$。};
+    
+    % 分支：距离
+    \node[node] (D2) at (2, -2.5) {\bfseries 【方向 B】求解空间距离 \\ (点到平面距离 $d$)};
+    \node[leaf] (L2) at (2, -5.0) {中点比例换点、平行线换点；利用 $PBD \perp POC$ 将空间高度降维转化为平面直角三角形高。};
+    
+    % 分支：最值与轨迹
+    \node[node] (D3) at (8, -2.5) {\bfseries 【方向 C】最值与轨迹问题 \\ (体积最大 / 夹角最值 / 弧长)};
+    \node[leaf] (L3) at (8, -5.0) {体积最大时面面垂直（高最大）；夹角最值用三正弦或正切；轨迹在截面用余弦定理转为圆心角。};
+    
+    % 连线
+    \draw[->, thick] (M1) -| (D1);
+    \draw[->, thick] (M1) -- (D2);
+    \draw[->, thick] (M1) -| (D3);
+    
+    \draw[->, thick] (D1) -- (L1);
+    \draw[->, thick] (D2) -- (L2);
+    \draw[->, thick] (D3) -- (L3);
+\end{tikzpicture}\par}\addvspace{0.8em}
+
+\begin{keybox}{解题终极思维}
+  \begin{itemize}[leftmargin=1.5em]
+    \item \textbf{先看折痕}：抓静止轴。
+    \item \textbf{再作垂线}：定旋转圆心 $O$ 和半径 $R$。
+    \item \textbf{降维平面}：所有距离与角度，一定要找对角面（如 $\triangle POC$）或旋转截面，把三维的旋转动点问题降维拉平到平面内求解。
+  \end{itemize}
+\end{keybox}
+
+\end{document}

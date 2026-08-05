@@ -1,0 +1,68 @@
+% =====================================================
+% 题型：函数最值与参数范围选择题 (q_func_max_val_parameter.tex)
+% 知识板块：导数、最值
+% 主思维：最值模型分析
+% 副思维：函数思维、边界与端点检验、充分必要
+% 错因标签：只证最大值小于等于1，忽略存在点取等
+% 讲义用途：恒成立/最值系列
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qFuncMaxValParameterStem}{已知函数 \(f(x) = \dfrac{x + 2}{e^x + a}\) 的最大值为 \(1\)，则 \(a = \hfill （\quad）\)}
+
+\newcommand{\qFuncMaxValParameterOptions}{%
+  \mcoptions[4]{\(\dfrac{1}{2}\)}{\(1\)}{\(\dfrac{3}{2}\)}{\(2\)}%
+}
+
+\newcommand{\qFuncMaxValParameterAnswer}{B}
+
+\newcommand{\qFuncMaxValParameterSolution}{%
+  \textbf{【解题思路】}\par
+  本题为导数求最值与确定参数的综合应用题。第一步，求出函数 \(f(x)\) 的导数；第二步，利用“若可导函数在 \(x = x_0\) 处取得极值/最值，则必有 \(f'(x_0) = 0\)”，联立最值条件 \(f(x_0) = 1\) 与极值条件 \(f'(x_0) = 0\)，消去参数 \(a\) 求得极值点 \(x_0\)；第三步，回代求得 \(a\) 并验证极值点。\par\vspace{0.4em}
+
+  \textbf{【解析计算】}\par
+  已知函数为 \(f(x) = \dfrac{x + 2}{e^x + a}\)，对其求导得：
+  \[
+    \begin{aligned}
+      f'(x) &= \frac{(e^x + a) - (x + 2)e^x}{(e^x + a)^2} \\[0.4em]
+            &= \frac{a - (x + 1)e^x}{(e^x + a)^2}.
+    \end{aligned}
+  \]
+  设函数在 \(x = x_0\) 处取得最大值 \(1\)，则同时满足极值与最值条件：
+  \begin{enumerate}[leftmargin=2em, itemsep=0.3em, topsep=0.3em]
+    \item 极值点导数为 \(0\)：
+      \[
+        f'(x_0) = 0 \implies a = (x_0 + 1)e^{x_0};
+      \]
+    \item 最大值为 \(1\)：
+      \[
+        f(x_0) = 1 \implies \frac{x_0 + 2}{e^{x_0} + a} = 1 \implies a = x_0 + 2 - e^{x_0}.
+      \]
+  \end{enumerate}
+  联立两式消去参数 \(a\)，可得：
+  \[
+    \begin{aligned}
+      (x_0 + 1)e^{x_0} &= x_0 + 2 - e^{x_0} \\[0.3em]
+      \implies (x_0 + 2)e^{x_0} &= x_0 + 2 \\[0.3em]
+      \implies (x_0 + 2)(e^{x_0} - 1) &= 0.
+    \end{aligned}
+  \]
+  解得：\(x_0 = -2\) 或 \(x_0 = 0\)。\par\vspace{0.3em}
+
+  \begin{enumerate}[leftmargin=2em, label=(\arabic*), itemsep=0.3em, topsep=0.3em]
+    \item 若 \(x_0 = -2\)，代入求得 \(a = (-2 + 1)e^{-2} = -e^{-2} < 0\)，此时分母在某处可能为零且与选项不符，舍去；
+    \item 若 \(x_0 = 0\)，代入求得 \(a = (0 + 1)e^0 = 1\)。
+  \end{enumerate}
+
+  当 \(a = 1\) 时，分母 \(e^x + 1 > 0\) 恒成立，验证知 \(f(x)\) 在 \(x = 0\) 处确实取得最大值 \(1\)。\par\vspace{0.2em}
+
+  故选 \textbf{B}。%
+}
+
+\newcommand{\qFuncMaxValParameterDiagnosis}{%
+  学生在对商的求导法则进行计算时容易出现符号混乱，特别是在合并分子时漏掉括号。此外，部分学生面对两个方程联立时可能感到无从下手，需要掌握消元（消去参数 \(a\)）的解题策略。特别要注意，“最大值为1”蕴含充分与必要两个方面，不仅要求函数值小于等于1，还必须保证有取等点。%
+}
+
+\newcommand{\qFuncMaxValParameterTeachingNotes}{%
+  本题是一道精妙的导数选填题。解题突破口在于“最值点”的双重性质——即函数值等于最值，且在该点导数（极值点）为 0。联立消元是常见的代数变形技巧，讲评时应重点拆解这一联立过程。%
+}

@@ -1,0 +1,162 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[student]{../../../common/ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 刘亚博 01 第三次月考学案}
+\rhead{\small 数学一对一}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\sessionformulas}{%
+  \arrayrulecolor{rulecolor}
+  \begin{tabularx}{\textwidth}{p{4.2cm}X}
+  \toprule[1.2pt]
+  相等向量 & 判断顺序：先看方向是否 \fblank[1.8cm]{相同}，再看长度是否 \fblank[1.8cm]{相等}。反方向线段不能算相等向量。\\ \hline
+  向量交点参数 & 若 \(P\in AM\)，设 \(\vec{AP}=\fblank[3.2cm]{\lambda\vec{AM}}\)；若 \(P\in BN\)，再写出 \(P\) 在 \(BN\) 上的表达式，最后分别比较 \(\vec a\) 的系数和 \(\vec b\) 的系数。\\ \hline
+  向量夹角 & 求 \(\angle BPM\) 时，两条向量必须都从点 \fblank[1.5cm]{\(P\)} 出发；\(\cos\theta=\fblank[4.2cm]{\displaystyle\frac{\vec u\cdot\vec v}{|\vec u||\vec v|}}\)。\\ \hline
+  线面角 & 线面角中，\(\sin\theta=\fblank[3.4cm]{\displaystyle\frac{\text{点到平面距离}}{\text{原线段长}}}\)，\(\cos\theta=\fblank[3.4cm]{\displaystyle\frac{\text{射影长}}{\text{原线段长}}}\)。\\ \hline
+  截面识别 & 若 \(\vec{D_1P}=\fblank[1.6cm]{\frac34}\vec{D_1B_1}\)，则 \(P\in\fblank[2cm]{D_1B_1}\)，截面变为 \fblank[2.6cm]{\(\triangle CB_1D_1\)}。\\ \hline
+  正弦双解 & 若 \(C\in(0,\pi)\) 且 \(\sin C=\frac12\)，则 \(C=\fblank[2cm]{30^\circ}\) 或 \(\fblank[2cm]{150^\circ}\)。\\ \hline
+  角平分线最值 & 由面积拆分得到倒数约束：\(\fblank[3.4cm]{\displaystyle\frac1a+\frac1c}=\dfrac{\sqrt3}{2}\)，再用基本不等式，等号条件要检查。\\ \hline
+  海伦公式起点 & 证明海伦公式先写 \(S=\fblank[2.8cm]{\frac12ab\sin C}\)，再用 \(\cos C=\fblank[3.8cm]{\displaystyle\frac{a^2+b^2-c^2}{2ab}}\)。\\
+  \bottomrule[1.2pt]
+  \end{tabularx}
+}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 第三次月考数学学案}\\
+  \vspace{0.5em}
+  姓名：刘亚博
+  \quad
+  课次：01
+  \quad
+  日期：\blank{2.6cm}
+\end{center}
+
+\section{公式准备}
+
+\begingroup
+\large
+\renewcommand{\arraystretch}{1.55}
+\linespread{1.35}\selectfont
+\showprompttrue
+\sessionformulas
+\endgroup
+
+\newpage
+
+\section{课堂题目}
+
+\studentproblem{12}
+\sidefigureproblem{0.66}{\qLYBZeroOneTwelveStem}{\qLYBZeroOneTwelveFigure[1.05]}
+\answerblank[4.8cm]{解：}
+\studentthink{
+  \item 请按四类写清：水平方向、竖直方向、对角线 \(AC\)、对角线 \(BD\)，每类各有哪两对相等向量？
+  \item 为什么 \(\vec{AE}=\vec{EC}\)，但 \(\vec{AE}\neq\vec{CE}\)？
+}
+
+\studentproblem{14}
+\sidefigureproblem{0.66}{\qLYBZeroOneFourteenStem}{\qLYBZeroOneFourteenFigure[0.95]}
+\answerblank[4.8cm]{解：}
+\studentthink{
+  \item 外接球半径 \(R\)、底面外接圆半径 \(r\)、棱柱高 \(h\) 的关系是什么？
+  \item 由 \(\sin C=\frac12\) 求内角时，为什么不能只写一个答案？
+}
+
+\newpage
+
+\studentproblem{15}
+\sidefigureproblem{0.62}{\qLYBZeroOneFifteenStem}{\qLYBZeroOneFifteenFigure[1.05]}
+\answerblank[14.4cm]{解：}
+\studentthink{
+  \item 第 (2) 问有没有继续使用第 (1) 问已经求出的 \(\vec{AP}\)？
+  \item 求 \(\angle BPM\) 时，我用的是 \(\vec{PB},\vec{PM}\)，还是方向写反了？
+}
+
+\newpage
+
+\studentproblem{17}
+\sidefigureproblem{0.62}{\qLYBZeroOneSeventeenStem}{\qLYBZeroOneSeventeenFigure[0.92]}
+\answergrid[14.4cm]{解：}
+\studentthink{
+  \item 线面角里，高/斜线对应正弦还是余弦？
+  \item 写二面角时，我有没有说明交线和两个面内的垂线？
+}
+
+\newpage
+
+\studentproblem{13}
+\sidefigureproblem{0.62}{\qLYBZeroOneThirteenStem}{\qLYBZeroOneThirteenFigure[0.95]}
+\answergrid[14.4cm]{解：}
+\studentthink{
+  \item 我是否先证明了 \(P\in D_1B_1\)，再确定截面？
+  \item 截面周长算的是哪三条边？有没有误算成长方体表面折线？
+}
+
+\newpage
+
+\studentproblem{16}
+{\small \qLYBZeroOneSixteenStem}
+\begin{center}
+  \qLYBZeroOneSixteenFigure[1.0]
+\end{center}
+\answerblank[13.8cm]{解：}
+\studentthink{
+  \item 边角化后，我是否明确推出了 \(B=\frac{\pi}{3}\)？
+  \item 最值题最后有没有写等号条件，并检查能否取到？
+}
+
+\newpage
+
+\studentproblem{18}
+{\small \qLYBZeroOneEighteenStem}
+\answerblank[15.8cm]{解：}
+\studentthink{
+  \item 证明两角差余弦公式时，我有没有用数量积的两个表示，而不是循环使用结论？
+  \item 第 (3) 问我有没有写出不等式依据和等号成立条件？
+}
+
+\newpage
+
+\studentproblem{19}
+{\small \qLYBZeroOneNineteenStem}
+\answerblank[15.8cm]{解：}
+\studentthink{
+  \item 海伦公式证明的起点是哪两个公式？
+  \item 第 (3) 问我有没有先连接 \(BD\)，把四边形面积拆成两个三角形面积？
+}
+
+\newpage
+
+\section{公式默写}
+
+\begingroup
+\large
+\renewcommand{\arraystretch}{1.55}
+\linespread{1.35}\selectfont
+\showpromptfalse
+\sessionformulas
+\endgroup
+
+\section{课后重做}
+
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=1.2em]
+  \item 原卷第 \blank{1.2cm} 题：
+  
+  \vspace{0.8cm}
+  
+  \item 原卷第 \blank{1.2cm} 题：
+  
+  \vspace{0.8cm}
+  
+  \item 原卷第 \blank{1.2cm} 题：
+  
+  \vspace{0.8cm}
+\end{enumerate}
+
+\end{document}

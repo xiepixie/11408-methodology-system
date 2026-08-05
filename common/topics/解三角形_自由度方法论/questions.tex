@@ -1,0 +1,486 @@
+% ==============================================================================
+% 专题课：解三角形——自由度方法论 题目与图像宏定义
+% ==============================================================================
+
+% ------------------------------------------------------------------------------
+% 母题一：齐次条件型 (DOF=2, 锁定形状)
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofHomogeneousStem}{%
+在 \(\triangle ABC\) 中，内角 \(A, B, C\) 的对边分别为 \(a, b, c\)。已知 \(b+c=2a\)，且 \(5c\sin B = 6a\sin C\)。
+\begin{enumerate}[label={(\arabic*)}]
+  \item 求三边长之比 \(a:b:c\)；
+  \item 求 \(\cos B\) 的值。
+\end{enumerate}%
+}
+
+\newcommand{\qTriangleDofHomogeneousFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1*0.95, >=stealth]
+  \coordinate (B) at (0, 0);
+  \coordinate (C) at (5.0, 0);
+  \coordinate (A) at (0.5, 3.968);
+  
+  \draw[black, very thick, fill=orange!5] (A) -- (B) -- (C) -- cycle;
+  
+  \fill[black] (A) circle (2pt) node[above] {\small \(A\)};
+  \fill[black] (B) circle (2.5pt) node[below left] {\small \(B\)};
+  \fill[black] (C) circle (2.5pt) node[below right] {\small \(C\)};
+  
+  \node[below=2pt] at ($(B)!0.5!(C)$) {\small \(a = 5k\)};
+  \node[above right=2pt] at ($(A)!0.5!(C)$) {\small \(b = 6k\)};
+  \node[above left=2pt] at ($(A)!0.5!(B)$) {\small \(c = 4k\)};
+  
+  \draw[thick, teal] (0.6,0) arc (0:82.8:0.6);
+  \node[teal] at (40:0.9) {\small \(B\)};
+  
+  \node[draw, rounded corners, fill=white, inner sep=3pt] at (2.5, -1.0) {
+    \small 相似缩放族 (\(\text{DOF}=2\) 锁定三边比 \(5:6:4\))
+  };
+\end{tikzpicture}
+}
+
+\newcommand{\qTriangleDofHomogeneousAnswer}{%
+(1) \(a:b:c = 5:6:4\)；\qquad (2) \(\cos B = \frac{1}{8}\)。
+}
+
+\newcommand{\qTriangleDofHomogeneousSolution}{%
+由正弦定理角化边得 \(5cb = 6ac \implies b = \frac{6}{5}a\)。
+代入 \(b+c=2a\) 得 \(c = \frac{4}{5}a\)。
+故 \(a:b:c = 5:6:4\)。
+由余弦定理 \(\cos B = \frac{a^2+c^2-b^2}{2ac} = \frac{1 + \frac{16}{25} - \frac{36}{25}}{\frac{8}{5}} = \frac{1}{8}\)。
+}
+
+\newcommand{\qTriangleDofHomogeneousDiagnosis}{%
+【错因分析】学生容易看到条件中的 \(a, b, c\) 就急于设具体边长，或者边角混杂化简不下去。没意识到条件 \(b+c=2a\) 与 \(5c\sin B = 6a\sin C\) 均为一次齐次条件，只能确定三角形的“相似形状”（自由度 \(\text{DOF}=2\)），无法解出绝对长度。
+}
+
+\newcommand{\qTriangleDofHomogeneousTeachingNotes}{%
+【教学处理】
+1. \textbf{第一问自问}：本题求 \(\cos B\) 和三边比，是求“形状”还是“大小”？（形状）；
+2. \textbf{第二问自问}：条件齐次还是非齐次？（齐次，整体放大 \(k\) 倍关系仍成立）；
+3. \textbf{坐标选择}：采用“比例坐标”，利用正弦定理将边角混合式 \(5c\sin B = 6a\sin C\) 译为纯边比例 \(5cb = 6ac \implies 5b=6a\)；
+4. \textbf{自由度统计}：2个齐次条件完全锁定形状自由度 \(\text{DOF}=2\)，三边比被死死固定，余弦定理直接代入比值即可闭合解题。
+}
+
+
+% ------------------------------------------------------------------------------
+% 母题二：剩余自由度 1 的范围最值型 (DOF=1, 圆弧滑动)
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofRangeStem}{%
+在 \(\triangle ABC\) 中，角 \(A, B, C\) 的对边分别为 \(a, b, c\)。已知 \(C = \frac{\pi}{3}\)，\(c = \sqrt{3}\)。
+\begin{enumerate}[label={(\arabic*)}]
+  \item 求 \(\triangle ABC\) 外接圆半径 \(R\)；
+  \item 求 \(\triangle ABC\) 的周长 \(L = a+b+c\) 的取值范围，并分析最值取得的几何特征。
+\end{enumerate}%
+}
+
+\newcommand{\qTriangleDofRangeFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1, >=stealth]
+  \coordinate (O) at (0, 0);
+  \coordinate (A) at (-2.2, -0.8);
+  \coordinate (B) at (2.2, -0.8);
+  
+  \draw[very thick, line cap=round] (A) -- (B) node[midway, below=2pt] {\small 定弦 \(c = \sqrt{3}\) (锁定 1 个尺度)};
+  \fill[black] (A) circle (2pt) node[below left] {\small \(A\)};
+  \fill[black] (B) circle (2pt) node[below right] {\small \(B\)};
+  
+  \draw[gray!40, dashed, thick] (O) circle (2.34);
+  \draw[gray!70, ultra thick] (-2.2, -0.8) arc (200:-20:2.34);
+  
+  \coordinate (C1) at (-1.5, 1.8);
+  \draw[blue!70, thick] (A) -- (C1) -- (B);
+  \fill[blue!70] (C1) circle (2pt) node[above left, blue!90] {\small \(C_1\)};
+  
+  \coordinate (Cmax) at (0, 2.34);
+  \draw[red!90!black, ultra thick] (A) -- (Cmax) -- (B);
+  \draw[red!70, dashed, thick] (Cmax) -- (0, -0.8) node[midway, right] {\small 高 \(h_{\mathrm{max}}\)};
+  \fill[red!90!black] (Cmax) circle (2.5pt) node[above, red!90!black] {\small \(C_{\mathrm{max}} (A=B=\frac{\pi}{3})\)};
+  
+  \coordinate (C3) at (1.6, 1.7);
+  \draw[blue!70, thick] (A) -- (C3) -- (B);
+  \fill[blue!70] (C3) circle (2pt) node[above right, blue!90] {\small \(C_3\)};
+  
+  \draw[->, darkgray, ultra thick, domain=-1.3:1.4, variable=\x, samples=30] 
+    plot ({\x}, {sqrt(2.34*2.34 - \x*\x) + 0.25});
+  \node[darkgray, above=3pt] at (0, 2.6) {\small \textbf{顶点 \(C\) 在圆弧滑动轨迹} (\(\text{DOF}=1\), 自变量 \(A \in (0, \frac{2\pi}{3})\))};
+\end{tikzpicture}%
+}
+
+\newcommand{\qTriangleDofRangeAnswer}{%
+(1) \(R = 1\)；\qquad (2) 周长 \(L \in (2\sqrt{3}, 3\sqrt{3}]\)。在 \(A=B=\frac{\pi}{3}\)（等边三角形）时取得最大值 \(3\sqrt{3}\)。
+}
+
+\newcommand{\qTriangleDofRangeSolution}{%
+\begin{aligned}
+\text{(1) 由正弦定理 } \frac{c}{\sin C} = 2R \implies 2R = \frac{\sqrt{3}}{\frac{\sqrt{3}}{2}} = 2 \implies R = 1。\\
+\text{(2) 消元参数化：已知 } C=\frac{\pi}{3}, c=\sqrt{3}, \text{ 尚留自变量 } A \in \left(0, \frac{2\pi}{3}\right)。\\
+a = 2\sin A,\quad b = 2\sin\left(\frac{2\pi}{3} - A\right)。\\
+\text{周长 } L(A) = 2\sin A + 2\sin\left(\frac{2\pi}{3} - A\right) + \sqrt{3} = 2\sqrt{3}\sin\left(A + \frac{\pi}{6}\right) + \sqrt{3}。\\
+\text{当 } A = \frac{\pi}{3} \text{ 时， } L_{\mathrm{max}} = 3\sqrt{3}。 \text{ 当 } A \to 0 \text{ 时， } L \to 2\sqrt{3}。\\
+\text{故周长取值范围为 } (2\sqrt{3}, 3\sqrt{3}]。
+\end{aligned}
+}
+
+\newcommand{\qTriangleDofRangeDiagnosis}{%
+【错因分析】学生往往求出了最值 $3\sqrt{3}$，但漏掉开区间的开端点 $2\sqrt{3}$，根本原因是没有建立“参数 $A$ 的定义域裁剪”意识。
+}
+
+\newcommand{\qTriangleDofRangeTeachingNotes}{%
+【教学处理】
+1. \textbf{结合图像二解释}：定弦 $AB=c$ 与顶角 $C$ 固定后，顶点 $C$ 被约束在定圆弧上滑动；
+2. \textbf{精讲参数化 S.O.P}：选角 $A$ 为自变量，确定 $A$ 的范围 $(0, \frac{2\pi}{3})$，化简为单变量函数；
+3. \textbf{闭合验证}：强调端点取不到因为三角形退化为线段。
+}
+
+
+% ------------------------------------------------------------------------------
+% 母题三：SSA 离散分支母题 (解的个数判定，完美打散高清晰度)
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofSsaBranchStem}{%
+在 \(\triangle ABC\) 中，已知 \(a = \sqrt{3}\)，\(b = 2\)，\(A = 45^\circ\)。
+\begin{enumerate}[label={(\arabic*)}]
+  \item 求 \(\sin B\) 的值；
+  \item 判断 \(\triangle ABC\) 解的个数，并根据几何交点圆弧图给出解释；
+  \item 求 \(c\) 的可能值。
+\end{enumerate}%
+}
+
+\newcommand{\qTriangleDofSsaBranchFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1*0.92, >=stealth]
+  % 顶点与坐标大空间拉开 A(0,0), C(3.2,3.5), H(3.2,0)
+  \coordinate (A) at (0, 0);
+  \coordinate (C) at (3.2, 3.5);
+  
+  % 底射线 AX
+  \draw[very thick, ->] (-1.2, 0) -- (7.2, 0) node[right] {\small 射线 \(AX\)};
+  
+  % 边 AC = b (已知边)
+  \draw[very thick] (A) -- (C) node[midway, above left=4pt] {\small \(b = 2\) (已知边)};
+  \fill[black] (A) circle (2pt) node[left=4pt] {\small \(A(45^\circ)\)};
+  \fill[black] (C) circle (2.5pt) node[above=3pt] {\small \(C\) (圆心)};
+  
+  % 角 A 标记
+  \draw[thick, teal] (0.8, 0) arc (0:47.5:0.8);
+  \node[teal] at (23.7:1.15) {\small \(45^\circ\)};
+  
+  % 垂线高 h = b sin A (垂直下落到 H, 文本放在高线左侧内部空地 midway, left=5pt，绝对不撞右斜边)
+  \coordinate (H) at (3.2, 0);
+  \draw[dashed, darkgray, ultra thick] (C) -- (H) node[midway, left=5pt] {\small \(h = b\sin A = \sqrt{2}\)};
+  \fill[darkgray] (H) circle (2pt) node[below=4pt] {\small \(H\)};
+  % 直角符号
+  \draw[darkgray, thin] ($(H)+(-0.25,0)$) -- ($(H)+(-0.25,0.25)$) -- ($(H)+(0,0.25)$);
+  
+  % 旋转圆规划弧 (以 C 为圆心，半径 R=2.52)
+  \draw[red!80!black, ultra thick, dashed] (C) ++(-52:2.52) arc (-52:-128:2.52);
+  
+  % 双交点 B1, B2 (位于 H 两侧: B1 在 1.5, B2 在 4.9，与 A(0) 和 H(3.2) 均拉开 1.5cm 以上)
+  \coordinate (B1) at (1.5, 0);
+  \coordinate (B2) at (4.9, 0);
+  
+  % 连线 CB1 与 CB2 (CB1 文本在下方偏左，CB2 文本在右上偏外，完全独立)
+  \draw[blue!90!black, ultra thick] (C) -- (B1) node[midway, below left=2pt] {\small \(a=\sqrt{3}\)};
+  \draw[blue!90!black, ultra thick] (C) -- (B2) node[midway, above right=4pt] {\small \(a=\sqrt{3}\)};
+  
+  % 交点 B1 与 B2 标注 (正下方 below=4pt，按 x 坐标 1.5 和 4.9 绝对隔离)
+  \fill[red!90!black] (B1) circle (2.5pt) node[below=4pt, red!90!black] {\small \textbf{\(B_1\) (钝角解)}};
+  \fill[blue!90!black] (B2) circle (2.5pt) node[below=4pt, blue!90!black] {\small \textbf{\(B_2\) (锐角解)}};
+  
+  % 弧线文字标注独立置于下沉层 (y = -1.0, 处于 B1 与 B2 正下方)
+  \node[red!80!black, font=\small] at (3.2, -1.0) {圆规划弧 (半径 \(a = \sqrt{3}\))};
+  
+  % 条件对照判定框放在最下层 (y = -2.1, 保持充分外扩)
+  \node[draw=gray!80, rounded corners=3pt, fill=white, inner sep=5pt] at (3.2, -2.1) {
+    \small \textbf{SSA 分支判定}: \(h=\sqrt{2} < a=\sqrt{3} < b=2 \implies \mathbf{2\text{ 个交点 (双解)}}\)
+  };
+\end{tikzpicture}%
+}
+
+\newcommand{\qTriangleDofSsaBranchAnswer}{%
+(1) \(\sin B = \frac{\sqrt{6}}{3}\)；\qquad (2) 2 个解；\qquad (3) \(c = \sqrt{2} \pm 1\)。
+}
+
+\newcommand{\qTriangleDofSsaBranchSolution}{%
+\begin{aligned}
+\text{(1) 正弦定理 } \sin B = \frac{b\sin A}{a} = \frac{\sqrt{6}}{3}。\\
+\text{(2) 高 } h = b\sin A = \sqrt{2} < a = \sqrt{3} < b = 2\text{。}\\
+\text{结合几何交点图，圆弧与射线 } AX \text{ 交于两点 } B_1, B_2 \implies 2 \text{ 个解。}\\
+\text{(3) 余弦定理 } c^2 - 2\sqrt{2}c + 1 = 0 \implies c = \sqrt{2} \pm 1。
+\end{aligned}
+}
+
+\newcommand{\qTriangleDofSsaBranchDiagnosis}{%
+【错因分析】学生往往只找出锐角 $B$，漏掉钝角分支；或无法直观解释解的个数。
+}
+
+\newcommand{\qTriangleDofSsaBranchTeachingNotes}{%
+【教学处理】
+1. \textbf{讲透 SSA 几何本质}：反三角函数无法唯一确定角；
+2. \textbf{图像三演示}：对比高 $h$、圆半径 $a$ 与边长 $b$ 的几何位置。
+}
+
+
+% ------------------------------------------------------------------------------
+% 母题四：几何结构与自由度传递 (倍长中线与平行四边形恒等式)
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofVectorMedianStem}{%
+在 \(\triangle ABC\) 中，\(b = 4\)，\(c = 3\)，\(AD\) 是 \(BC\) 上的中线，已知中线长 \(AD = m_a = \frac{\sqrt{19}}{2}\)。
+\begin{enumerate}[label={(\arabic*)}]
+  \item 求边长 \(a\) 的值；
+  \item 求 \(\cos A\) 的值；
+  \item 若点 \(G\) 为 \(\triangle ABC\) 的重心，求向量数量积 \(\vec{GA} \cdot \vec{GB}\) 的值。
+\end{enumerate}%
+}
+
+\newcommand{\qTriangleDofVectorMedianFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1, >=stealth]
+  \coordinate (A) at (1.2, 2.8);
+  \coordinate (B) at (0, 0);
+  \coordinate (C) at (4.2, 0);
+  \coordinate (D) at (2.1, 0);
+  \coordinate (E) at (3.0, -2.8);
+  
+  \draw[ultra thick] (A) -- (B) node[midway, above left] {\small \(c=3\)};
+  \draw[ultra thick] (A) -- (C) node[midway, above right] {\small \(b=4\)};
+  \draw[ultra thick] (B) -- (C) node[midway, above=-1pt] {\small \(a\)};
+  
+  \fill[black] (A) circle (2pt) node[above] {\small \(A\)};
+  \fill[black] (B) circle (2pt) node[left] {\small \(B\)};
+  \fill[black] (C) circle (2pt) node[right] {\small \(C\)};
+  
+  \fill[red!90!black] (D) circle (2pt) node[above right] {\small \(D\) (中点)};
+  \draw[red!90!black, ultra thick] (A) -- (D) node[midway, right=1pt] {\small 中线 \(m_a = \frac{\sqrt{19}}{2}\)};
+  
+  \draw[red!70, dashed, ultra thick] (D) -- (E) node[midway, right=1pt] {\small 倍长 \(DE=m_a\)};
+  \fill[red!90!black] (E) circle (2pt) node[below] {\small \(E\)};
+  
+  \draw[gray!60, dashed, thick] (B) -- (E) node[midway, below left] {\small \(b=4\)};
+  \draw[gray!60, dashed, thick] (C) -- (E) node[midway, below right] {\small \(c=3\)};
+  
+  \node[draw, rounded corners, fill=yellow!10, inner sep=4pt] at (2.1, -3.6) {
+    \small \textbf{平行四边形对角线恒等式}: \(2(b^2+c^2) = a^2 + (2m_a)^2 \implies \text{唯一锁定 } a\)
+  };
+\end{tikzpicture}%
+}
+
+\newcommand{\qTriangleDofVectorMedianAnswer}{%
+(1) \(a = 5\)；\qquad (2) \(\cos A = 0\)；\qquad (3) \(\vec{GA} \cdot \vec{GB} = -\frac{2}{9}\)。
+}
+
+\newcommand{\qTriangleDofVectorMedianSolution}{%
+\begin{aligned}
+\text{(1) 平行四边形恒等式： } 2(b^2 + c^2) = a^2 + (2m_a)^2 \implies a = 5。\\
+\text{(2) 余弦定理 } \cos A = \frac{4^2+3^2-5^2}{2 \cdot 4 \cdot 3} = 0 \implies A = 90^\circ。\\
+\text{(3) 重心向量数量积 } \vec{GA} \cdot \vec{GB} = -\frac{2}{9}|\vec{AB}|^2 + \frac{1}{9}|\vec{AC}|^2 = -\frac{2}{9}。
+\end{aligned}
+}
+
+\newcommand{\qTriangleDofVectorMedianDiagnosis}{%
+【错因分析】未看清倍长中线后自由度与平行四边形恒等式的天然联系。
+}
+
+\newcommand{\qTriangleDofVectorMedianTeachingNotes}{%
+【教学处理】
+1. \textbf{结合图像四讲解}：倍长中线对角线平方和关系；
+2. \textbf{自由度传递}：已知 $b,c,m_a$ 锁定 $a$，$\text{DOF}=0$，全等确定。
+}
+
+% ------------------------------------------------------------------------------
+% 图像五：(A,B,R) 外接圆控制模型 TikZ 图像
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofOutcircleFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1*1.05, >=stealth]
+  \coordinate (O) at (0,0);
+  \def\R{2.2}
+  \draw[blue!80!black, thick] (O) circle (\R);
+  
+  \coordinate (A) at (110:\R);
+  \coordinate (B) at (215:\R);
+  \coordinate (C) at (-25:\R);
+  
+  \draw[black, very thick, fill=blue!5] (A) -- (B) -- (C) -- cycle;
+  
+  \draw[red!80!black, dashed, thick] (O) -- (A) node[midway, left=1pt] {\small \(R\)};
+  \draw[red!80!black, dashed, thick] (O) -- (B) node[midway, below left=-1pt] {\small \(R\)};
+  \draw[red!80!black, dashed, thick] (O) -- (C) node[midway, right=1pt] {\small \(R\)};
+  \fill[red!80!black] (O) circle (2pt) node[above right=2pt, red!90!black] {\small 外心 \(O\)};
+  
+  \node[above left] at (A) {\small \(A\)};
+  \node[below left] at (B) {\small \(B\)};
+  \node[below right] at (C) {\small \(C\)};
+  
+  \node[below=3pt] at ($(B)!0.5!(C)$) {\small \(a = 2R\sin A\)};
+  \node[above right=2pt] at ($(A)!0.5!(C)$) {\small \(b = 2R\sin B\)};
+  \node[above left=2pt] at ($(A)!0.5!(B)$) {\small \(c = 2R\sin C\)};
+\end{tikzpicture}
+}
+
+% ------------------------------------------------------------------------------
+% 图像六：(A,B,r) 内切圆控制模型 TikZ 图像
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofIncircleFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1*1.1, >=stealth]
+  \coordinate (A) at (1.8, 3.4);
+  \coordinate (B) at (0, 0);
+  \coordinate (C) at (5.5, 0);
+  
+  \draw[black, very thick, fill=green!5] (A) -- (B) -- (C) -- cycle;
+  
+  \coordinate (I) at (2.161, 1.301);
+  \coordinate (D) at (2.161, 0);
+  \def\r{1.301}
+  
+  \draw[teal!80!black, thick] (I) circle (\r);
+  \fill[teal!80!black] (I) circle (2pt) node[above=4pt, teal!90!black, font=\small] {内心 \(I\)};
+  \draw[teal!80!black, dashed, thick] (I) -- (D) node[midway, right=2pt, font=\small] {\(r\)};
+  
+  \fill[black] (D) circle (1.8pt);
+  \node[below=2pt, font=\small] at (D) {切点 \(D\)};
+  
+  \node[above] at (A) {\small \(A\)};
+  \node[below left] at (B) {\small \(B\)};
+  \node[below right] at (C) {\small \(C\)};
+  
+  \node[below=16pt, font=\small] at ($(B)!0.5!(D)$) {\(r \cot\frac{B}{2}\)};
+  \node[below=16pt, font=\small] at ($(D)!0.5!(C)$) {\(r \cot\frac{C}{2}\)};
+\end{tikzpicture}
+}
+
+% ------------------------------------------------------------------------------
+% 图像七：定面积平行线轨迹模型 TikZ 图像
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofParallellineFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1*1.05, >=stealth]
+  \coordinate (A) at (0,0);
+  \coordinate (B) at (4.5,0);
+  \draw[black, ultra thick] (A) -- (B) node[midway, below] {\small 定底边 \(c\)};
+  \fill[black] (A) circle (2pt) node[below left] {\small \(A\)};
+  \fill[black] (B) circle (2pt) node[below right] {\small \(B\)};
+  
+  \draw[blue!80!black, thick, dashed] (-0.8, 1.8) -- (5.3, 1.8) node[right] {\small 直线 \(l_1: y=h\)};
+  \draw[blue!80!black, thick, dashed] (-0.8, -1.8) -- (5.3, -1.8) node[right] {\small 直线 \(l_2: y=-h\)};
+  
+  \coordinate (C1) at (1.5, 1.8);
+  \coordinate (C2) at (3.5, 1.8);
+  
+  \draw[red!80!black, thick, fill=red!5] (A) -- (C1) -- (B) -- cycle;
+  \draw[purple!80!black, thick, fill=purple!5] (A) -- (C2) -- (B) -- cycle;
+  
+  \fill[red!80!black] (C1) circle (2pt) node[above] {\small \(C_1\)};
+  \fill[purple!80!black] (C2) circle (2pt) node[above] {\small \(C_2\)};
+  
+  \draw[<->, gray!90!black, thick] (4.0, 0) -- (4.0, 1.8) node[midway, right] {\small 定高 \(h = \frac{2S_0}{c}\)};
+\end{tikzpicture}
+}
+
+% ------------------------------------------------------------------------------
+% 图像八：母轨迹一 (定距离 -> 圆) TikZ 图像
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofCircleFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1*1.05, >=stealth]
+  \coordinate (A) at (0,0);
+  \def\r{1.8}
+  \draw[blue!80!black, thick, dashed] (A) circle (\r);
+  \fill[black] (A) circle (2pt) node[below left] {\small 定点 \(A\)};
+  
+  \coordinate (C) at (40:\r);
+  \draw[red!80!black, thick] (A) -- (C) node[midway, above left] {\small \(CA=r\)};
+  \fill[red!80!black] (C) circle (2pt) node[above right] {\small 动点 \(C\)};
+\end{tikzpicture}
+}
+
+% ------------------------------------------------------------------------------
+% 图像九：母轨迹四 (定距离比 -> 阿波罗尼斯圆) TikZ 图像
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofApolloniusFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1*1.05, >=stealth]
+  \coordinate (A) at (-1.5,0);
+  \coordinate (B) at (1.5,0);
+  
+  \draw[black, ultra thick] (A) -- (B) node[midway, below] {\small 定基线 \(AB\)};
+  \fill[black] (A) circle (2pt) node[below left] {\small \(A\)};
+  \fill[black] (B) circle (2pt) node[below right] {\small \(B\)};
+  
+  \coordinate (O_apol) at (2.5, 0);
+  \def\rApol{1.8}
+  \draw[blue!80!black, thick, dashed] (O_apol) circle (\rApol);
+  \fill[blue!80!black] (O_apol) circle (1.5pt) node[below] {\small 圆心};
+  
+  \coordinate (C) at ($(O_apol)+(120:\rApol)$);
+  \draw[red!80!black, thick] (A) -- (C) node[midway, above left] {\small \(CA\)};
+  \draw[red!80!black, thick] (B) -- (C) node[midway, above right] {\small \(CB\)};
+  \fill[red!80!black] (C) circle (2pt) node[above] {\small 动点 \(C\) (\(\frac{CA}{CB}=k\))};
+\end{tikzpicture}
+}
+
+% ------------------------------------------------------------------------------
+% 图像十：母轨迹五 (定距离和 -> 椭圆) TikZ 图像 (打散修好 ext)
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofEllipseFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1*1.05, >=stealth]
+  \coordinate (A) at (-2,0);
+  \coordinate (B) at (2,0);
+  \draw[blue!80!black, thick, dashed] (0,0) ellipse (2.5 and 1.5);
+  
+  \draw[black, ultra thick] (A) -- (B) node[midway, below=3pt] {\small 焦距 \(c=AB\)};
+  \fill[black] (A) circle (2pt) node[below left=2pt] {\small \(A\)};
+  \fill[black] (B) circle (2pt) node[below right=2pt] {\small \(B\)};
+  
+  \coordinate (C) at (42:2.5 and 1.5);
+  \coordinate (Cmax) at (0, 1.5);
+  
+  \draw[red!80!black, thick] (A) -- (C) -- (B) -- cycle;
+  \fill[red!80!black] (C) circle (2pt) node[above right=6pt] {\small 动点 \(C\) (\(CA+CB=L\))};
+  \fill[purple!80!black] (Cmax) circle (2.5pt) node[above=6pt, purple!90!black] {\small 短轴端点 \(C_{\mathrm{max}}\) (最大高)};
+  \draw[purple!80!black, dashed, thick] (0,0) -- (Cmax) node[midway, right=6pt] {\small \(h_{\mathrm{max}}=b_{\text{椭}}\)};
+\end{tikzpicture}
+}
+
+% ------------------------------------------------------------------------------
+% 图像十一：母轨迹六 (定距离差 -> 双曲线) TikZ 图像
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofHyperbolaFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1*1.05, >=stealth]
+  \coordinate (A) at (-2.2,0);
+  \coordinate (B) at (2.2,0);
+  
+  \draw[black, ultra thick] (A) -- (B) node[midway, below] {\small 焦距 \(c=AB\)};
+  \fill[black] (A) circle (2pt) node[below left] {\small \(A\)};
+  \fill[black] (B) circle (2pt) node[below right] {\small \(B\)};
+  
+  \draw[blue!80!black, thick, dashed, domain=-1.4:1.4, variable=\t, samples=40]
+    plot ({1.3*cosh(\t)}, {1.1*sinh(\t)});
+  \draw[blue!80!black, thick, dashed, domain=-1.4:1.4, variable=\t, samples=40]
+    plot ({-1.3*cosh(\t)}, {1.1*sinh(\t)});
+    
+  \coordinate (C) at (2.2, 1.5);
+  \draw[red!80!black, thick] (A) -- (C) -- (B) -- cycle;
+  \fill[red!80!black] (C) circle (2pt) node[above right] {\small 动点 \(C\) (\(|CA-CB|=L\))};
+\end{tikzpicture}
+}
+
+% ------------------------------------------------------------------------------
+% 图像一：自由度相似族膨胀/收缩 TikZ 图像
+% ------------------------------------------------------------------------------
+\newcommand{\qTriangleDofScaleSlideFigure}[1][1.0]{%
+\begin{tikzpicture}[scale=#1*1.0, >=stealth]
+  \coordinate (O) at (0,0);
+  \fill[black] (O) circle (1.8pt) node[below left=2pt, font=\small] {\(O\) (相似中心)};
+  
+  \coordinate (A1) at (1.2, 1.8);
+  \coordinate (B1) at (0.8, 0.4);
+  \coordinate (C1) at (2.4, 0.4);
+  \draw[blue!70!black, thick, fill=blue!5] (A1) -- (B1) -- (C1) -- cycle;
+  
+  \coordinate (A2) at (2.16, 3.24);
+  \coordinate (B2) at (1.44, 0.72);
+  \coordinate (C2) at (4.32, 0.72);
+  \draw[red!80!black, ultra thick, fill=red!3] (A2) -- (B2) -- (C2) -- cycle;
+  
+  \draw[gray!70, dashed, thick] (O) -- (A2);
+  \draw[gray!70, dashed, thick] (O) -- (C2);
+  
+  \draw[->, purple, ultra thick] (A1) -- (A2) node[midway, above left] {\small \textbf{尺度缩放} (\(\text{DOF}=1\))};
+  
+  \node[blue!80!black, font=\small] at (1.5, 1.1) {\(\triangle_1\) (尺度 \(R_1\))};
+  \node[red!80!black, font=\small] at (2.8, 1.8) {\(\triangle_2\) (尺度 \(R_2\))};
+\end{tikzpicture}
+}

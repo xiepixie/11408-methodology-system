@@ -1,0 +1,514 @@
+% =====================================================
+% 卷面表达与逻辑规范模板 - 题目定义文件
+% =====================================================
+
+% =====================================================
+% 一、 开场检测题目
+% =====================================================
+
+% 检测 1：代数分类讨论与退化边界
+\newcommand{\qGeneralCheckOneStem}{已知关于 \(x\) 的不等式 \(ax^2 + 2x + 1 > 0\) 对任意实数 \(x\) 均恒成立，求实数 \(a\) 的取值范围。}
+\newcommand{\qGeneralCheckOneSolution}{%
+  由题意，对任意 \(x \in \mathbb{R}\)，不等式 \(ax^2 + 2x + 1 > 0\) 恒成立。
+  \begin{itemize}[leftmargin=1.5em, itemsep=0em]
+    \item 当 \(a = 0\) 时，不等式为 \(2x + 1 > 0\)，对 \(x \in \mathbb{R}\) 显然不能恒成立，舍去；
+    \item 当 \(a \neq 0\) 时，要使不等式对任意 \(x \in \mathbb{R}\) 恒成立，只需满足条件组：
+    \[
+      \begin{cases}
+        a > 0, \\
+        \Delta = 2^2 - 4a < 0
+      \end{cases}
+      \Rightarrow
+      a > 1.
+    \]
+  \end{itemize}
+  综上所述，实数 \(a\) 的取值范围是 \((1, +\infty)\)。%
+}
+
+% 检测 2：立体几何判定定理前提条件组
+\newcommand{\qGeneralCheckTwoStem}{在三棱锥 \(P-ABC\) 中，已知 \(PA \perp AB\)，且 \(PA \perp AC\)。求证：\(PA \perp \text{平面 } ABC\)。}
+\newcommand{\qGeneralCheckTwoSolution}{%
+  在三棱锥 \(P-ABC\) 中：
+  因为 \(PA \perp AB\)，且 \(PA \perp AC\)，
+  又因为 \(AB \subset \text{平面 } ABC\)，\(AC \subset \text{平面 } ABC\)，
+  且 \(AB \cap AC = A\)，
+  所以由线面垂直判定定理得：
+  \[
+    PA \perp \text{平面 } ABC.
+  \]%
+}
+
+% 检测 3：解三角形正弦定理一角两解
+\newcommand{\qGeneralCheckThreeStem}{在 \(\triangle ABC\) 中，已知 \(a=2\)，\(b=2\sqrt{2}\)，\(A=30^\circ\)，求角 \(B\) 的值。}
+\newcommand{\qGeneralCheckThreeSolution}{%
+  在 \(\triangle ABC\) 中，由正弦定理得：
+  \[
+    \sin B = \frac{b \sin A}{a} = \frac{2\sqrt{2} \times \sin 30^\circ}{2} = \frac{\sqrt{2}}{2}.
+  \]
+  因为 \(0^\circ < B < 180^\circ\)，所以 \(B = 45^\circ\) 或 \(B = 135^\circ\)。
+  进行内角和检验：
+  \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+    \item 当 \(B = 45^\circ\) 时，\(A + B = 75^\circ < 180^\circ\)，符合题意；
+    \item 当 \(B = 135^\circ\) 时，\(A + B = 165^\circ < 180^\circ\)，符合题意。
+  \end{itemize}
+  综上，角 \(B\) 的值为 \(45^\circ\) 或 \(135^\circ\)。%
+}
+
+% 检测 4：导数单调性与区间绑定
+\newcommand{\qGeneralCheckFourStem}{已知函数 \(f(x) = \ln x - ax\)（\(a \in \mathbb{R}\)），求其单调递增区间。}
+\newcommand{\qGeneralCheckFourSolution}{%
+  函数 \(f(x)\) 的定义域为 \((0, +\infty)\)。求导得：
+  \[
+    f'(x) = \frac{1}{x} - a = \frac{1 - ax}{x}.
+  \]
+  \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+    \item 当 \(a \le 0\) 时，对任意 \(x \in (0, +\infty)\)，均有 \(f'(x) > 0\)，故 \(f(x)\) 的单调递增区间为 \((0, +\infty)\)；
+    \item 当 \(a > 0\) 时，令 \(f'(x) > 0\) 得 \(0 < x < \frac{1}{a}\)，故 \(f(x)\) 的单调递增区间为 \(\left(0, \frac{1}{a}\right)\)。
+  \end{itemize}%
+}
+
+% 检测 5：解析几何联立与中点条件
+\newcommand{\qGeneralCheckFiveStem}{已知椭圆 \(C: \frac{x^2}{4} + y^2 = 1\)，过点 \(P(1, 0)\) 的直线 \(l\) 与椭圆 \(C\) 相交于 \(A, B\) 两点。若直线 \(l\) 斜率存在，写出联立方程组并应用韦达定理的步骤。}
+\newcommand{\qGeneralCheckFiveSolution}{%
+  设直线 \(l\) 的方程为 \(y = k(x-1)\)，交点为 \(A(x_1, y_1), B(x_2, y_2)\)。
+  联立方程组：
+  \[
+    \begin{cases}
+      y = k(x-1) \\
+      \frac{x^2}{4} + y^2 = 1
+    \end{cases}
+  \]
+  消去 \(y\) 并整理得：
+  \[
+    (1 + 4k^2)x^2 - 8k^2 x + 4k^2 - 4 = 0.
+  \]
+  因为直线与椭圆相交于两个不同点，且 \(1 + 4k^2 > 0\)，
+  所以判别式 \(\Delta = (-8k^2)^2 - 4(1+4k^2)(4k^2-4) = 16k^2 + 16 > 0\) 恒成立。
+  由韦达定理得：
+  \[
+    x_1 + x_2 = \frac{8k^2}{1+4k^2}, \quad x_1 x_2 = \frac{4k^2-4}{1+4k^2}.
+  \]%
+}
+
+% 检测 6：数列累加法通项
+\newcommand{\qGeneralCheckSixStem}{在数列 \(\{a_n\}\) 中，\(a_1 = 1\)，且当 \(n \ge 2\) 时，\(a_n - a_{n-1} = 2^{n-1}\)。求数列 \(\{a_n\}\) 的通项公式。}
+\newcommand{\qGeneralCheckSixSolution}{%
+  当 \(n \ge 2\) 时，由 \(a_n - a_{n-1} = 2^{n-1}\) 可得：
+  \[
+    a_n - a_1 = \sum_{i=2}^n (a_i - a_{i-1}) = 2^1 + 2^2 + \dots + 2^{n-1} = \frac{2(1 - 2^{n-1})}{1 - 2} = 2^n - 2.
+  \]
+  代入 \(a_1 = 1\) 得：
+  \[
+    a_n = 2^n - 1.
+  \]
+  当 \(n = 1\) 时，\(a_1 = 2^1 - 1 = 1\)，上式成立。
+  综上所述，数列 \(\{a_n\}\) 的通项公式为 \(a_n = 2^n - 1\) (\(n \in \mathbb{N}^*\))。%
+}
+
+% 检测 7：概率事件与独立性
+\newcommand{\qGeneralCheckSevenStem}{甲、乙两人独立参加测试，甲通过的概率为 \(0.6\)，乙通过的概率为 \(0.5\)。求两人中至少有一人通过的概率。}
+\newcommand{\qGeneralCheckSevenSolution}{%
+  设事件 \(A\) 为“甲通过测试”，事件 \(B\) 为“乙通过测试”，事件 \(C\) 为“两人中至少有一人通过测试”。
+  由题意可知，\(P(A) = 0.6, P(B) = 0.5\)。
+  因为甲、乙两人通过测试与否相互独立，所以事件 \(A\) 与 \(B\) 相互独立，
+  从而 \(\bar{A}\) 与 \(\bar{B}\) 也相互独立，且 \(P(\bar{A}) = 1 - 0.6 = 0.4, P(\bar{B}) = 1 - 0.5 = 0.5\)。
+  由于 \(C\) 的对立事件为“两人都未通过”，即 \(\bar{C} = \bar{A}\bar{B}\)，
+  所以 \(P(C) = 1 - P(\bar{A}\bar{B}) = 1 - P(\bar{A})P(\bar{B}) = 1 - 0.4 \times 0.5 = 0.8\)。
+  即两人中至少有一人通过的概率为 \(0.8\)。%
+}
+
+
+% =====================================================
+% 二、 核心例题题目
+% =====================================================
+
+% 例题 1：代数函数轴动区间定分类讨论与综合收尾
+\newcommand{\qGeneralExampleOneStem}{已知函数 \(f(x) = x^2 - 2ax + a^2 - 1\)。若对任意 \(x \in [0, 2]\)，均有 \(f(x) \ge 0\) 恒成立，求实数 \(a\) 的取值范围。}
+\newcommand{\qGeneralExampleOneSolution}{%
+  配方得：\(f(x) = (x - a)^2 - 1\)，其对称轴为 \(x = a\)，开口向上。
+  根据对称轴与区间 \([0, 2]\) 的位置关系，分以下三种情况讨论：
+  \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+    \item 当 \(a \le 0\) 时，\(f(x)\) 在 \([0,2]\) 上单调递增，最小值为 \(f(0) = a^2 - 1\)。由 \(a^2 - 1 \ge 0\) 且 \(a \le 0\)，解得 \(a \le -1\)；
+    \item 当 \(0 < a < 2\) 时，最小值为 \(f(a) = -1\)。由 \(-1 \ge 0\) 无解，此分支无解；
+    \item 当 \(a \ge 2\) 时，\(f(x)\) 在 \([0,2]\) 上单调递减，最小值为 \(f(2) = a^2 - 4a + 3\)。由 \(a^2 - 4a + 3 \ge 0\) 且 \(a \ge 2\)，解得 \(a \ge 3\)。
+  \end{itemize}
+  综上所述，实数 \(a\) 的取值范围是 \((-\infty, -1] \cup [3, +\infty)\)。%
+}
+
+% 例题 2：立体几何逻辑链与条件组书写规范
+\newcommand{\qGeneralExampleTwoStem}{在正四棱锥 \(P-ABCD\) 中，底面是边长为 2 的正方形 \(ABCD\)，高 \(PO = 2\)，其中 \(O\) 为底面正方形的中心。\\
+(1) 求证：\(BD \perp \text{平面 } PAC\)；\\
+(2) 求证：\(\text{平面 } PBD \perp \text{平面 } PAC\)。}
+\newcommand{\qGeneralExampleTwoSolution}{%
+  (1) 因为底面 \(ABCD\) 是正方形，且对角线交于 \(O\)，所以 \(BD \perp AC\)。\\
+  因为 \(PO \perp \text{平面 } ABCD\)，且 \(BD \subset \text{平面 } ABCD\)，所以 \(PO \perp BD\)。\\
+  因为
+  \[
+    \begin{cases}
+      BD \perp AC, \\
+      BD \perp PO, \\
+      AC \cap PO = O, \\
+      AC, PO \subset \text{平面 } PAC
+    \end{cases}
+  \]
+  所以由线面垂直判定定理得：\(BD \perp \text{平面 } PAC\)。\\
+  (2) 因为 \(BD \perp \text{平面 } PAC\)，且 \(BD \subset \text{平面 } PBD\)，
+  所以由面面垂直判定定理得：\(\text{平面 } PBD \perp \text{平面 } PAC\)。%
+}
+
+% 例题 3：解三角形多定理融合与代数变形
+\newcommand{\qGeneralExampleThreeStem}{在 \(\triangle ABC\) 中，角 \(A, B, C\) 对应的边分别为 \(a, b, c\)。已知 \(\sin^2 A + \sin^2 B - \sin^2 C = \sin A \sin B\)。\\
+(1) 求角 \(C\) 的值；\\
+(2) 若 \(c = \sqrt{7}\)，且 \(a+b = 5\)，求 \(\triangle ABC\) 的面积 \(S\)。}
+\newcommand{\qGeneralExampleThreeSolution}{%
+  (1) 设 \(\triangle ABC\) 外接圆半径为 \(R\)。由正弦定理，已知等式可化为：
+  \[
+    a^2 + b^2 - c^2 = ab.
+  \]
+  由余弦定理得：
+  \[
+    \cos C = \frac{a^2 + b^2 - c^2}{2ab} = \frac{ab}{2ab} = \frac{1}{2}.
+  \]
+  因为 \(0 < C < \pi\)，且余弦函数在 \((0,\pi)\) 上单调递减，所以：
+  \[
+    C = \frac{\pi}{3} \quad (\text{或 } 60^\circ).
+  \]
+  (2) 由余弦定理得：
+  \[
+    c^2 = a^2 + b^2 - 2ab \cos C = (a+b)^2 - 3ab.
+  \]
+  代入 \(c = \sqrt{7}\)，\(a+b = 5\) 及 \(C = \frac{\pi}{3}\) 得：
+  \[
+    7 = 25 - 3ab \Rightarrow ab = 6.
+  \]
+  因此，\(\triangle ABC\) 的面积为：
+  \[
+    S = \frac{1}{2} ab \sin C = \frac{1}{2} \times 6 \times \sin \frac{\pi}{3} = \frac{3\sqrt{3}}{2}.
+  \]%
+}
+
+% 例题 4：导数单调区间与零点判定
+\newcommand{\qGeneralExampleFourStem}{已知函数 \(f(x) = a \ln x - \frac{1}{2} x^2 - x\)（\(a \in \mathbb{R}\)），讨论函数 \(f(x)\) 的单调区间。}
+\newcommand{\qGeneralExampleFourSolution}{%
+  函数 \(f(x)\) 的定义域为 \((0, +\infty)\)。求导得：
+  \[
+    f'(x) = \frac{a}{x} - x - 1 = \frac{-x^2 - x + a}{x}.
+  \]
+  令 \(g(x) = -x^2 - x + a\)，在 \(x \in (0, +\infty)\) 内：
+  \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+    \item 当 \(a \le 0\) 时，对于任意 \(x > 0\)，\(g(x) = -x^2 - x + a < 0\)，则 \(f'(x) < 0\)，
+      故 \(f(x)\) 在 \((0, +\infty)\) 上单调递减。
+    \item 当 \(a > 0\) 时，令 \(g(x) = 0\)，解得 \(x = \frac{-1 \pm \sqrt{1+4a}}{2}\)。
+      因为 \(a > 0\)，所以 \(\sqrt{1+4a} > 1\)，
+      所以方程 \(g(x) = 0\) 有唯一正根 \(x_0 = \frac{-1 + \sqrt{1+4a}}{2}\)。
+      当 \(x \in (0, x_0)\) 时，\(f'(x) > 0\)；当 \(x \in (x_0, +\infty)\) 时，\(f'(x) < 0\)。
+      故 \(f(x)\) 在 \(\left(0, x_0\right)\) 上单调递增，在 \(\left(x_0, +\infty\right)\) 上单调递减。
+  \end{itemize}
+  综上所述：
+  当 \(a \le 0\) 时，\(f(x)\) 的单调递减区间为 \((0, +\infty)\)，无单调递增区间；
+  当 \(a > 0\) 时，\(f(x)\) 的单调递增区间为 \(\left(0, \frac{-1 + \sqrt{1+4a}}{2}\right)\)，单调递减区间为 \(\left(\frac{-1 + \sqrt{1+4a}}{2}, +\infty\right)\)。%
+}
+
+% 例题 5：解析几何“五步式”规范
+\newcommand{\qGeneralExampleFiveStem}{已知椭圆 \(C: \frac{x^2}{4} + y^2 = 1\)。过点 \(M(1, 0)\) 的直线 \(l\) 与椭圆 \(C\) 交于 \(A, B\) 两点。若线段 \(AB\) 的弦长 \(|AB| = \frac{8}{5}\)，求直线 \(l\) 的方程。}
+\newcommand{\qGeneralExampleFiveSolution}{%
+  \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+    \item 当直线 \(l\) 的斜率不存在时，直线方程为 \(x = 1\)。
+      代入 \(\frac{x^2}{4} + y^2 = 1\) 得 \(y = \pm \frac{\sqrt{3}}{2}\)，
+      此时弦长 \(|AB| = \sqrt{3} \neq \frac{8}{5}\)，不合题意；
+    \item 当直线 \(l\) 的斜率存在时，设其方程为 \(y = k(x-1)\)，设交点为 \(A(x_1, y_1), B(x_2, y_2)\)。
+      联立方程组：
+      \[
+        \begin{cases}
+          y = k(x-1) \\
+          \frac{x^2}{4} + y^2 = 1
+        \end{cases}
+        \Rightarrow
+        (1 + 4k^2)x^2 - 8k^2 x + 4k^2 - 4 = 0.
+      \]
+      因为直线与椭圆相交于两个不同点，且 \(1 + 4k^2 \neq 0\)，
+      所以判别式 \(\Delta = 64k^4 - 4(1+4k^2)(4k^2-4) = 16k^2 + 16 > 0\) 恒成立。
+      由韦达定理得：
+      \[
+        x_1 + x_2 = \frac{8k^2}{1+4k^2}, \quad x_1 x_2 = \frac{4k^2-4}{1+4k^2}.
+      \]
+      由弦长公式可得：
+      \[
+        |AB| = \sqrt{1+k^2} |x_1 - x_2| = \sqrt{1+k^2} \sqrt{(x_1+x_2)^2 - 4x_1x_2} = \frac{4(1+k^2)}{1+4k^2}.
+      \]
+      令 \(\frac{4(1+k^2)}{1+4k^2} = \frac{8}{5}\)，解得 \(k^2 = 1 \Rightarrow k = \pm 1\)。
+  \end{itemize}
+  综上所述，直线 \(l\) 的方程为 \(x - y - 1 = 0\) 或 \(x + y - 1 = 0\)。%
+}
+
+% 例题 6：数列累加与错位相减
+\newcommand{\qGeneralExampleSixStem}{已知数列 \(\{a_n\}\) 的前 \(n\) 项和为 \(S_n\)，满足 \(S_n = 2a_n - 2\)。\\
+(1) 求数列 \(\{a_n\}\) 的通项公式；\\
+(2) 设 \(b_n = (2n-1)a_n\)，求数列 \(\{b_n\}\) 的前 \(n\) 项和 \(T_n\)。}
+\newcommand{\qGeneralExampleSixSolution}{%
+  (1) 因为 \(S_n = 2a_n - 2\)，
+  当 \(n = 1\) 时，\(a_1 = 2a_1 - 2 \Rightarrow a_1 = 2\)；
+  当 \(n \ge 2\) 时，由 \(S_n = 2a_n - 2\) 和 \(S_{n-1} = 2a_{n-1} - 2\)，
+  两式相减得：\(a_n = 2a_n - 2a_{n-1} \Rightarrow a_n = 2a_{n-1}\) (\(n \ge 2\))。
+  因为 \(a_1 = 2 \neq 0\)，所以 \(\frac{a_n}{a_{n-1}} = 2\)。
+  故数列 \(\{a_n\}\) 是以首项为 2，公比为 2 的等比数列，其通项为 \(a_n = 2^n\)。\\
+  (2) 由 (1) 知 \(b_n = (2n-1)2^n\)，所以：
+  \[
+    T_n = 1 \cdot 2^1 + 3 \cdot 2^2 + 5 \cdot 2^3 + \dots + (2n-1)2^n \quad (\text{I})
+  \]
+  两边乘以公比 2 得：
+  \[
+    2T_n = 1 \cdot 2^2 + 3 \cdot 2^3 + 5 \cdot 2^4 + \dots + (2n-1)2^{n+1} \quad (\text{II})
+  \]
+  由 (\text{I}) - (\text{II}) 得：
+  \[
+    -T_n = 2 + 2 \cdot 2^2 + 2 \cdot 2^3 + \dots + 2 \cdot 2^n - (2n-1)2^{n+1}.
+  \]
+  
+  化简整理得：
+  \[
+  \begin{aligned}
+    -T_n &= 2 + 2 \cdot \frac{4(1-2^{n-1})}{1-2} - (2n-1)2^{n+1} \\
+    &= 2 + 2^{n+2} - 8 - (2n-1)2^{n+1} \\
+    &= (3-2n)2^{n+1} - 6.
+  \end{aligned}
+  \]
+  
+  所以
+  \[ T_n = (2n-3)2^{n+1} + 6. \]%
+}
+
+% 例题 7：概率统计事件与期望
+\newcommand{\qGeneralExampleSevenStem}{某射击运动员每次射击击中目标的概率为 \(0.6\)，且每次射击相互独立。该运动员进行 3 次射击。\\
+(1) 设事件 \(A\) 为“前 2 次至少击中 1 次”，求 \(P(A)\)；\\
+(2) 设随机变量 \(X\) 为 3 次射击中击中目标的次数，求 \(X\) 的分布列和数学期望。}
+\newcommand{\qGeneralExampleSevenSolution}{%
+  (1) 设第 \(i\) 次射击击中目标为事件 \(A_i\) (\(i=1, 2, 3\))。
+  由题意可知，事件 \(A_1, A_2, A_3\) 相互独立，且 \(P(A_i) = 0.6, P(\bar{A}_i) = 0.4\)。
+  事件 \(A\) 的对立事件为“前 2 次都未击中”，即 \(\bar{A} = \bar{A}_1\bar{A}_2\)。
+  因为事件 \(A_1\) 与 \(A_2\) 相互独立，所以 \(\bar{A}_1\) 与 \(\bar{A}_2\) 相互独立。
+  则：
+  \[
+    P(A) = 1 - P(\bar{A}_1\bar{A}_2) = 1 - P(\bar{A}_1)P(\bar{A}_2) = 1 - 0.4 \times 0.4 = 0.84.
+  \]
+  (2) 随机变量 \(X\) 的所有可能取值为 \(0, 1, 2, 3\)。
+  由于每次射击击中目标的概率均为 \(0.6\)，且每次射击相互独立，
+  所以 \(X\) 服从二项分布，即 \(X \sim B(3, 0.6)\)。
+  计算各概率：
+  \[
+    P(X=0) = C_3^0 \times 0.6^0 \times 0.4^3 = 0.064,
+  \]
+  \[
+    P(X=1) = C_3^1 \times 0.6^1 \times 0.4^2 = 0.288,
+  \]
+  \[
+    P(X=2) = C_3^2 \times 0.6^2 \times 0.4^1 = 0.432,
+  \]
+  \[
+    P(X=3) = C_3^3 \times 0.6^3 \times 0.4^0 = 0.216.
+  \]
+  所以 \(X\) 的分布列为：
+  \begin{center}
+    \begin{tabular}{c|cccc}
+      \hline
+      \(X\) & 0 & 1 & 2 & 3 \\ \hline
+      \(P\) & 0.064 & 0.288 & 0.432 & 0.216 \\ \hline
+    \end{tabular}
+  \end{center}
+  故数学期望为：
+  \[
+    E(X) = 3 \times 0.6 = 1.8.
+  \]%
+}
+
+
+% =====================================================
+% 三、 低分纠偏练习素材
+% =====================================================
+
+% 坏答案 1：代数退化忽视
+\newcommand{\qBadAlgebraWriteup}{%
+  要使不等式 \(ax^2+2x+1>0\) 恒成立，只需二次方程无交点，即：\\
+  \(\Delta = 2^2 - 4a < 0 \Rightarrow 4 - 4a < 0 \Rightarrow a > 1\)。\\
+  故 \(a\) 的范围是 \((1, +\infty)\)。%
+}
+\newcommand{\qBadAlgebraReason}{%
+  (1) \textbf{忽视退化}：未讨论 \(a=0\) 时二次项退化的情形，漏掉步骤分（1分）。\\
+  (2) \textbf{条件缺失}：未声明开口向上条件 \(a>0\)，逻辑不完备。%
+}
+\newcommand{\qBadAlgebraCorrect}{%
+  \begin{itemize}[leftmargin=1.5em, itemsep=0.1em, topsep=0.1em]
+    \item 当 \(a=0\) 时，原式化为 \(2x+1>0\)，在 \(\mathbb{R}\) 上不恒成立，舍去；
+    \item 当 \(a \neq 0\) 时，需满足 \(\begin{cases} a > 0, \\ \Delta = 4-4a < 0 \end{cases} \Rightarrow a > 1\)。
+  \end{itemize}
+  综上所述，\(a\) 的取值范围是 \((1, +\infty)\)。%
+}
+
+% 坏答案 2：立体几何条件缺漏
+\newcommand{\qBadGeometryWriteup}{%
+  因为在三棱锥中 \(PA \perp AB\)，且 \(PA \perp AC\)，\\
+  所以 \(PA \perp \text{平面 } ABC\)。%
+}
+\newcommand{\qBadGeometryReason}{%
+  \textbf{判定定理四要素缺漏}：漏写了“线在面内”（\(AB, AC \subset \text{平面 } ABC\)）及“两线相交”（\(AB \cap AC = A\)）的核心判定依据（扣2分）。%
+}
+\newcommand{\qBadGeometryCorrect}{%
+  因为 \(PA \perp AB\)，\(PA \perp AC\)，\\
+  又因为 \(AB, AC \subset \text{平面 } ABC\)，且满足相交 \(AB \cap AC = A\)，\\
+  由线面垂直判定定理得：\(PA \perp \text{平面 } ABC\)。%
+}
+
+% 坏答案 3：解三角形一角两解漏解
+\newcommand{\qBadTriangleWriteup}{%
+  由正弦定理 \(\sin B = \frac{b\sin A}{a} = \frac{2\sqrt{2}\sin 30^\circ}{2} = \frac{\sqrt{2}}{2}\)。\\
+  因为正弦值为二分之根号二，所以角 \(B\) 为 \(45^\circ\)。%
+}
+\newcommand{\qBadTriangleReason}{%
+  (1) \textbf{漏解}：正弦方程在 \((0, 180^\circ)\) 内有两个解，漏掉钝角解 \(135^\circ\)（扣2分）。\\
+  (2) \textbf{未做检验}：求出多解后，没有通过“内角和小于 \(180^\circ\)”进行合法性排除说明。%
+}
+\newcommand{\qBadTriangleCorrect}{%
+  由正弦定理得：\(\sin B = \frac{b\sin A}{a} = \frac{2\sqrt{2}\sin 30^\circ}{2} = \frac{\sqrt{2}}{2}\)。\\
+  因为 \(0^\circ < B < 180^\circ\)，所以 \(B = 45^\circ\) 或 \(B = 135^\circ\)。\\
+  \begin{itemize}[leftmargin=1.5em, itemsep=0em, topsep=0.1em]
+    \item 当 \(B=45^\circ\) 时，\(A+B=75^\circ < 180^\circ\)，符合题意；
+    \item 当 \(B=135^\circ\) 时，\(A+B=165^\circ < 180^\circ\)，符合题意。
+  \end{itemize}
+  综上，角 \(B\) 的值为 \(45^\circ\) 或 \(135^\circ\)。%
+}
+
+% 坏答案 4：导数区间未绑定与端点忽视
+\newcommand{\qBadDerivativeWriteup}{%
+  \(f'(x) = \frac{a}{x} - x - 1\)。若 \(a \le 0\) 则递减。\\
+  若 \(a > 0\)，令 \(f'(x)=0 \Rightarrow x_0 = \frac{-1+\sqrt{1+4a}}{2}\)。\\
+  所以递增为 \((0, x_0)\)，递减为 \((x_0, +\infty)\)。%
+}
+\newcommand{\qBadDerivativeReason}{%
+  (1) \textbf{未写定义域}：导数大题开头漏写“函数定义域为 \((0, +\infty)\)”（扣1分）。\\
+  (2) \textbf{无区间绑定}：未写明“令 \(f'(x)>0\) 时 \(x\) 的区间”，属于推理失范。\\
+  (3) \textbf{缺少根的正性说明}：没有论证为什么负根被舍去、为何正根 \(x_0 > 0\) 落在定义域内。%
+}
+\newcommand{\qBadDerivativeCorrect}{%
+  函数定义域为 \((0, +\infty)\)。求导 \(f'(x) = \frac{-x^2-x+a}{x}\)。\\
+  当 \(a \le 0\) 时，在 \((0,+\infty)\) 上 \(f'(x) < 0\)，其单调递减区间为 \((0, +\infty)\)；\\
+  当 \(a > 0\) 时，令 \(f'(x)=0\) 在定义域内有唯一正根 \(x_0 = \frac{-1+\sqrt{1+4a}}{2}\)。\\
+  令 \(f'(x) > 0\) 得 \(0 < x < x_0\)；令 \(f'(x) < 0\) 得 \(x > x_0\)。\\
+  所以单调递增区间为 \((0, x_0)\)，单调递减区间为 \((x_0, +\infty)\)。%
+}
+
+% 坏答案 5：解析几何条件不全与斜率忽视
+\newcommand{\qBadAnalyticWriteup}{%
+  设直线为 \(y = k(x-1)\)，联立椭圆方程得 \((1+4k^2)x^2 - 8k^2 x + 4k^2 - 4 = 0\)。\\
+  韦达定理 \(x_1 + x_2 = \frac{8k^2}{1+4k^2}\)，\(x_1 x_2 = \frac{4k^2-4}{1+4k^2}\)。\\
+  弦长 \(|AB| = \frac{4(1+k^2)}{1+4k^2} = \frac{8}{5} \Rightarrow k = \pm 1\)。%
+}
+\newcommand{\qBadAnalyticReason}{%
+  (1) \textbf{漏讨论斜率不存在}：没有对斜率不存在的垂直边界情形进行判定与排除（扣1分）。\\
+  (2) \textbf{未设交点坐标}：韦达中的 \(x_1, x_2\) 凭空出现（扣0.5分）。\\
+  (3) \textbf{漏写判别式}：未注明且未计算 \(\Delta > 0\) 判定相交，逻辑不严密（扣1分）。%
+}
+\newcommand{\qBadAnalyticCorrect}{%
+  当直线斜率不存在时，其方程为 \(x=1\)，代入得 \(y=\pm\frac{\sqrt{3}}{2}\)，弦长为 \(\sqrt{3} \neq \frac{8}{5}\)，不合题意；\\
+  当斜率存在时，设直线 \(y=k(x-1)\)，且设 \(A(x_1, y_1), B(x_2, y_2)\)。\\
+  联立消元得 \((1+4k^2)x^2 - 8k^2 x + 4k^2 - 4 = 0\)。\\
+  因为直线与椭圆交于两点，判别式 \(\Delta = 16k^2 + 16 > 0\) 恒成立。\\
+  由韦达定理得 \(x_1+x_2 = \frac{8k^2}{1+4k^2}, x_1x_2 = \frac{4k^2-4}{1+4k^2}\)。\\
+  代入弦长公式 \(|AB| = \sqrt{1+k^2}|x_1-x_2| = \frac{4(1+k^2)}{1+4k^2} = \frac{8}{5} \Rightarrow k = \pm 1\)。\\
+  综上，直线方程为 \(x-y-1=0\) 或 \(x+y-1=0\)。%
+}
+
+% 坏答案 6：数列范围含混与过程跨步
+\newcommand{\qBadSequenceWriteup}{%
+  因为 \(S_n = 2a_n - 2\)，所以 \(a_n = S_n - S_{n-1} = 2a_n - 2a_{n-1} \Rightarrow a_n = 2a_{n-1}\)。\\
+  所以 \(a_n = 2^n\)。\\
+  \(T_n = 1\cdot 2^1 + 3\cdot 2^2 + \dots + (2n-1)2^n\)，两边乘 2 得 \(2T_n = 1\cdot 2^2 + \dots + (2n-1)2^{n+1}\)。\\
+  两式相减得 \(-T_n = 2^{n+2} - (2n-1)2^{n+1} - 6 \Rightarrow T_n = (2n-3)2^{n+1} + 6\)。%
+}
+\newcommand{\qBadSequenceReason}{%
+  (1) \textbf{无项数限制}：在 \(a_n = S_n - S_{n-1}\) 转换时，未注明 \(n \ge 2\) 的边界条件（扣1分）。\\
+  (2) \textbf{漏回代检验}：未对 \(n = 1\) 的情况进行检验（扣1分）。\\
+  (3) \textbf{错位相减计算跳步}：两式相减的中间项求和没有展示等比数列求和公式代入，极易因计算错误扣步骤分。%
+}
+\newcommand{\qBadSequenceCorrect}{%
+  (1) 因为 \(S_n = 2a_n - 2\)，当 \(n=1\) 时，\(a_1 = 2a_1 - 2 \Rightarrow a_1 = 2\)。\\
+  当 \(n \ge 2\) 时，由 \(S_n - S_{n-1} = 2a_n - 2a_{n-1}\) 得 \(a_n = 2a_{n-1}\)。\\
+  因为 \(a_1 \neq 0\)，所以 \(\frac{a_n}{a_{n-1}} = 2\)。故数列 \(\{a_n\}\) 是首项为 2，公比为 2 的等比数列，\(a_n = 2^n\)。\\
+  当 \(n=1\) 时，\(a_1 = 2^1 = 2\) 满足通项。所以 \(a_n = 2^n\)。\\
+  (2) \(T_n = 1\cdot 2^1 + 3\cdot 2^2 + \dots + (2n-1)2^n\). \\
+  \(2T_n = 1\cdot 2^2 + 3\cdot 2^3 + \dots + (2n-1)2^{n+1}\). \\
+  两式相减得：\(-T_n = 2 + 2\cdot 2^2 + 2\cdot 2^3 + \dots + 2\cdot 2^n - (2n-1)2^{n+1}\) \\
+  \(-T_n = 2 + 2 \cdot \frac{4(1-2^{n-1})}{1-2} - (2n-1)2^{n+1} = (3-2n)2^{n+1} - 6 \Rightarrow T_n = (2n-3)2^{n+1} + 6\)。%
+}
+
+% 坏答案 7：概率模型不明与独立未声明
+\newcommand{\qBadProbabilityWriteup}{%
+  (1) \(P(A) = 1 - 0.4 \times 0.4 = 0.84\)。\\
+  (2) \(X\) 的可能取值为 0, 1, 2, 3。\\
+  \(P(X=0) = 0.4^3 = 0.064\)；\(P(X=1) = C_3^1 \times 0.6 \times 0.4^2 = 0.288\)；\\
+  \(P(X=2) = C_3^2 \times 0.6^2 \times 0.4 = 0.432\)；\(P(X=3) = 0.6^3 = 0.216\)。\\
+  期望为 \(E(X) = 3 \times 0.6 = 1.8\)。%
+}
+\newcommand{\qBadProbabilityReason}{%
+  (1) \textbf{无事件定义}：没有对第 \(i\) 次射击中靶的事件进行定义，直接写数值（扣1分）。\\
+  (2) \textbf{无独立性声明}：未写出“因为事件相互独立，所以乘积成立”，属于严重逻辑缺失（扣1分）。\\
+  (3) \textbf{无模型声明}：使用二项分布期望公式 \(E(X)=np\) 前未写 \(X \sim B(3, 0.6)\) 模型声明。\\
+  (4) \textbf{未以表格形式呈现分布列}。%
+}
+\newcommand{\qBadProbabilityCorrect}{%
+  (1) 设第 \(i\) 次击中目标为事件 \(A_i\) (\(i=1,2,3\))。已知事件 \(A_1, A_2\) 相互独立，且 \(P(A_i)=0.6\)。\\
+  “前 2 次至少击中 1 次”的对立事件为“均未击中”，因为 \(\bar{A}_1\) 与 \(\bar{A}_2\) 相互独立，\\
+  所以 \(P(A) = 1 - P(\bar{A}_1\bar{A}_2) = 1 - P(\bar{A}_1)P(\bar{A}_2) = 1 - 0.4 \times 0.4 = 0.84\)。\\
+  (2) \(X\) 可能取 \(0, 1, 2, 3\)。由题意知，\(X \sim B(3, 0.6)\)。\\
+  \(P(X=0) = C_3^0 \times 0.6^0 \times 0.4^3 = 0.064, P(X=1) = C_3^1 \times 0.6^1 \times 0.4^2 = 0.288\),\\
+  \(P(X=2) = C_3^2 \times 0.6^2 \times 0.4^1 = 0.432, P(X=3) = C_3^3 \times 0.6^3 \times 0.4^0 = 0.216\)。\\
+  \(X\) 的分布列为：\\
+  \begin{tabular}{c|cccc}
+    \hline
+    \(X\) & 0 & 1 & 2 & 3 \\ \hline
+    \(P\) & 0.064 & 0.288 & 0.432 & 0.216 \\ \hline
+  \end{tabular} \\
+  其数学期望为 \(E(X) = 3 \times 0.6 = 1.8\)。%
+}
+
+
+% =====================================================
+% 四th、 公共公式表格定义 (共享于学案与教案)
+% =====================================================
+\newcommand{\topicformulas}{%
+  \arrayrulecolor{rulecolor}%
+  \begin{tabularx}{\textwidth}{p{4.2cm}X}
+  \toprule[1.2pt]
+  分类讨论收尾 & 
+  同一分支内的条件取交集；不同分支结论取并集。最后必须换行书写 \fblank[3.4cm]{综上所述，\dots}。\\ \hline
+  立体几何判定前提 &
+  线面垂直判定必须列齐 \fblank[3.6cm]{两条相交直线}（如 \(AB \cap AC = A\)）以及两条线均在平面内的条件。\\ \hline
+  退化与边界检查 &
+  若二次项系数含参，必须首先对 \fblank[2.8cm]{\(a = 0\)} 的退化情况进行讨论，避免漏解。\\ \hline
+  正弦定理边角转化 &
+  用正弦定理将角化为边时，必须先在卷面上声明 \fblank[3.8cm]{设外接圆半径为 \(R\)}，引入比例常数。\\ \hline
+  余弦定理求角 &
+  余弦函数在 \((0, \pi)\) 内 \fblank[2.4cm]{单调递减}，结合范围 \fblank[2.6cm]{\(0 < C < \pi\)} 唯一确定角的值。\\ \hline
+  三角形存在性检验 &
+  利用正弦定理求出多角时，必须通过 \fblank[4.5cm]{内角和小于 \(180^\circ\)} 检验，排除不合法解。\\ \hline
+  导数单调性区间绑定 &
+  导数符号判定（如 \(f'(x) > 0\)）必须与 \fblank[3.6cm]{具体取值区间} 显式绑定，不能脱离区间空谈单调性。\\ \hline
+  解析几何五步四段式 &
+  解析几何解答题必须呈现清晰步骤：\fblank[4.2cm]{讨论斜率是否存在}、联立消元、判别式与韦达定理。\\ \hline
+  数列边界与回代检验 &
+  利用前 \(n\) 项和求通项时必须写明限制条件 \fblank[2.8cm]{\(n \ge 2\)}，并在最后对 \fblank[2.2cm]{\(n=1\)} 进行回代检验。\\ \hline
+  概率独立性与模型 &
+  利用乘法公式前必须显式声明 \fblank[3.8cm]{事件相互独立}，二项分布求期望前需声明 \fblank[3.0cm]{\(X \sim B(n,p)\)} 分布模型。\\
+  \bottomrule[1.2pt]
+  \end{tabularx}%
+}
+
+% =====================================================
+% 五、 引入公共题库重灾区题目
+% =====================================================
+\input{../../pool/立体几何/中档/q_solid_pyramid_skew_angle.tex}
+\input{../../pool/立体几何/中档/q_solid_cuboid_skew_angle.tex}
+\input{../../pool/立体几何/难题/q_solid_pyramid_point_distance.tex}
+\input{../../pool/解三角形/中档/q_triangle_area_one.tex}
+\input{../../pool/解三角形/中档/q_triangle_identities_one.tex}
+\input{../../pool/解三角形/难题/q_triangle_bisector_min.tex}
+

@@ -1,0 +1,85 @@
+% =====================================================
+% 题型：球的截面半径关系填空题
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qSolidSphereSectionRatioStem}{%
+  圆 $O_1$ 是半径为 $R$ 的球 $O$ 的一个小圆。若圆 $O_1$ 的面积 $S_1$ 与球 $O$ 的表面积 $S$ 的比为 $S_1:S=2:9$，则圆心 $O_1$ 到球心 $O$ 的距离与球半径的比 $OO_1:R=$ \blank{2.5cm}。%
+}
+
+\newcommand{\qSolidSphereSectionRatioFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    \coordinate (O) at (0,0);
+    \coordinate (O1) at (0,0.85);
+    \draw[thick] (O) circle (1.8);
+    \draw[thick] (-1.35,0.85) arc (180:360:1.35 and 0.35);
+    \draw[dashed, thick] (-1.35,0.85) arc (180:0:1.35 and 0.35);
+    \draw[dashed] (O) -- (O1);
+    \draw[thick] (O1) -- (1.35,0.85);
+    \draw[thick] (O) -- (1.2,-1.34);
+    \fill (O) circle (1.2pt) node[below left] {\small $O$};
+    \fill (O1) circle (1.2pt) node[above left] {\small $O_1$};
+    \node[above] at (0.72,0.87) {\small $r$};
+    \node[right] at (0,0.42) {\small $d$};
+    \node[right] at (0.65,-0.65) {\small $R$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidSphereSectionRatioAnswer}{%
+  $\dfrac{1}{3}$%
+}
+
+\newcommand{\qSolidSphereSectionRatioSolution}{%
+  设截面圆半径为 $r$，球心到截面圆圆心的距离为 $d$。
+
+  球的截面模型给出直角三角形关系：
+  \[
+    R^2=r^2+d^2.
+  \]
+
+  由题意，
+  \[
+    \frac{S_1}{S}
+    =
+    \frac{\pi r^2}{4\pi R^2}
+    =
+    \frac{2}{9}.
+  \]
+
+  所以
+  \[
+    \frac{r^2}{R^2}=\frac{8}{9}.
+  \]
+
+  代入 $R^2=r^2+d^2$，得
+  \[
+    \frac{d^2}{R^2}
+    =
+    1-\frac{8}{9}
+    =
+    \frac{1}{9}.
+  \]
+
+  因为 $d>0$，所以
+  \[
+    \frac{OO_1}{R}
+    =
+    \frac{d}{R}
+    =
+    \frac{1}{3}.
+  \]
+}
+
+\newcommand{\qSolidSphereSectionRatioDiagnosis}{%
+  本题用于章节开场，不作为基础题处理。它检验学生是否能把“截面圆面积”和“球表面积”分别翻译成 $\pi r^2$ 与 $4\pi R^2$，再进入 $R^2=r^2+d^2$ 的截面直角三角形。%
+}
+
+\newcommand{\qSolidSphereSectionRatioTeachingNotes}{%
+  \item \textbf{处理方式：快讲到精讲之间。}
+    先让学生口述三个量：球半径 $R$、截面圆半径 $r$、球心到截面距离 $d$。
+  \item \textbf{关键追问：}
+    为什么分母是 $4\pi R^2$，不是 $\pi R^2$？
+  \item \textbf{落实目标：}
+    学生必须形成一句话模型：球的截面问题，本质是球心、截面圆心、截面圆上一点构成直角三角形。
+}

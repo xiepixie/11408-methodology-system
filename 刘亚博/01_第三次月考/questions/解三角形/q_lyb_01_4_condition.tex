@@ -1,0 +1,20 @@
+% =====================================================
+% 题型：三角形边角条件选择题 (q_lyb_01_4_condition.tex)
+% =====================================================
+\newcommand{\qLYBZeroOneFourStem}{在 \(\triangle ABC\) 中，“\(A > B\)”是“\(\sin^3 A > \sin^3 B\)”的 \hfill （\quad）}
+
+\newcommand{\qLYBZeroOneFourOptions}{%
+  \mcoptions[2]{充分不必要条件}{必要不充分条件}{充要条件}{既不充分也不必要条件}%
+}
+
+\newcommand{\qLYBZeroOneFourAnswer}{C}
+
+\newcommand{\qLYBZeroOneFourSolution}{%
+  在 \(\triangle ABC\) 中，由于大角对大边定理，有 \(A > B \iff a > b\)。
+  因为函数 \(y = x^3\) 在 \(\mathbb{R}\) 上单调递增，所以 \(a > b \iff a^3 > b^3\)。
+  根据正弦定理，\(a = 2R\sin A\)，\(b = 2R\sin B\)，其中 \(R\) 为 \(\triangle ABC\) 外接圆半径。
+  因此，\(a^3 > b^3 \iff (2R\sin A)^3 > (2R\sin B)^3 \iff \sin^3 A > \sin^3 B\)。
+  结合以上推导，可得 \(A > B \iff \sin^3 A > \sin^3 B\)。
+  因此，“\(A > B\)”是“\(\sin^3 A > \sin^3 B\)”的充要条件。
+  故选 C。%
+}

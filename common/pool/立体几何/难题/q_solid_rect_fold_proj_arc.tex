@@ -1,0 +1,81 @@
+% 难度：★★★ 难题
+% 知识点：立体几何，折叠问题，动点轨迹，投影
+
+\newcommand{\qSolidRectFoldProjArcStem}{
+在矩形 $ABCD$ 中，$AB=\sqrt{3}$，$AD=1$．点 $E$ 在边 $CD$ 上，现将 $\triangle AED$ 沿 $AE$ 折起，使平面 $AED\perp$ 平面 $ABCE$．当 $E$ 从 $D$ 运动到 $C$ 时，求点 $D$ 在平面 $ABCE$ 上的射影 $K$ 的轨迹长度．
+}
+
+\newcommand{\qSolidRectFoldProjArcOptions}{
+A. $\frac{\sqrt{2}}{2}$ \hfill
+B. $\frac{2\sqrt{2}}{3}$ \hfill
+C. $\frac{\pi}{2}$ \hfill
+D. $\frac{\pi}{3}$
+}
+
+\newcommand{\qSolidRectFoldProjArcFigure}{
+\begin{tikzpicture}[scale=1.5]
+  \coordinate (A) at (0,0);
+  \coordinate (B) at (1.732,0);
+  \coordinate (C) at (1.732,1);
+  \coordinate (D) at (0,1);
+  \coordinate (E) at (0.8,1);
+  
+  \draw (A) -- (B) -- (C) -- (D) -- cycle;
+  \draw[dashed] (A) -- (E);
+  
+  \node[below left] at (A) {$A$};
+  \node[below right] at (B) {$B$};
+  \node[above right] at (C) {$C$};
+  \node[above left] at (D) {$D$};
+  \node[above] at (E) {$E$};
+\end{tikzpicture}
+}
+
+\newcommand{\qSolidRectFoldProjArcAnswer}{
+D
+}
+
+\newcommand{\qSolidRectFoldProjArcSolution}{
+\textbf{【分析】}
+
+在折叠前的平面矩形 $ABCD$ 中，过 $D$ 作 $DK\perp AE$ 于 $K$．
+折叠后，因为平面 $AED\perp$ 平面 $ABCE$，且交线为 $AE$，$DK \subset$ 平面 $AED$ 且 $DK\perp AE$，
+由面面垂直的性质定理可知，$DK\perp$ 平面 $ABCE$．
+所以点 $K$ 即为点 $D$ 在平面 $ABCE$ 上的射影．
+
+这就将空间投影点的轨迹转化为了平面几何中垂足 $K$ 的轨迹问题：
+在平面矩形 $ABCD$ 中，点 $E$ 在线段 $CD$ 上运动，$K$ 为 $D$ 在 $AE$ 上的垂足，求 $K$ 的轨迹长度．
+
+\textbf{【求解】}
+
+在矩形 $ABCD$ 中，$\angle ADE = 90^\circ$．
+因为 $DK \perp AE$，所以 $\angle AKD = 90^\circ$．
+因此，无论 $E$ 在 $CD$ 上如何运动，点 $K$ 始终在以 $AD$ 为直径的圆上运动．
+
+当 $E$ 与 $D$ 重合时，$AE$ 即为 $AD$，$K$ 与 $D$ 重合．
+当 $E$ 与 $C$ 重合时，$AE$ 即为 $AC$，$K$ 为 $D$ 在 $AC$ 上的垂足．
+在 $\text{Rt}\triangle ADC$ 中，$AD=1$，$DC=\sqrt{3}$，
+则 $AC = \sqrt{1^2 + (\sqrt{3})^2} = 2$，
+所以 $\sin\angle CAD = \frac{CD}{AC} = \frac{\sqrt{3}}{2}$，从而 $\angle CAD = \frac{\pi}{3}$．
+
+这说明线段 $AE$ 绕点 $A$ 从 $AD$ 旋转到 $AC$，旋转角为 $\frac{\pi}{3}$．
+点 $K$ 的轨迹是以 $AD$ 中点为圆心，半径为 $r = \frac{1}{2} AD = \frac{1}{2}$ 的圆的一段弧．
+该圆弧对应的圆心角 $\theta = 2\angle CAD = \frac{2\pi}{3}$．
+所以点 $K$ 的轨迹长度为 $l = r\theta = \frac{1}{2} \times \frac{2\pi}{3} = \frac{\pi}{3}$．
+
+故选 D．
+}
+
+\newcommand{\qSolidRectFoldProjArcDiagnosis}{
+\textbf{【学生常见问题】}
+1. \textbf{未建立面面垂直与线面垂直的联系}：无法将空间中“$D$ 的射影 $K$”等价转化为折叠前平面中“$D$ 到 $AE$ 的垂足”．
+2. \textbf{平面轨迹识别困难}：知道 $K$ 是垂足，但想不出“定线段对直角”隐含的圆轨迹，即点 $K$ 在以 $AD$ 为直径的圆上．
+3. \textbf{圆心角计算错误}：容易把圆周角 $\angle CAD=\frac{\pi}{3}$ 直接当成圆心角代入弧长公式，导致算出 $\frac{\pi}{6}$；或者不知道弧对应的圆心角是圆周角的两倍．
+}
+
+\newcommand{\qSolidRectFoldProjArcTeachingNotes}{
+\textbf{【课堂处理建议】}
+1. \textbf{降维打击}：这是典型的“空间问题平面化”模型．提醒学生，当遇到折叠中“一个面垂直另一个面”的条件时，一定要利用面面垂直的性质定理找高线．在此题中，翻折前后 $\triangle ADE$ 内部的边角关系不变，所以 $DK \perp AE$ 这一性质被带到了空间中．
+2. \textbf{经典轨迹复习}：带领学生复习“直角顶点在定线段上运动”的轨迹是圆，即泰勒斯定理的逆定理．这是解析几何与平面几何中的高频考点．
+3. \textbf{画图辅助}：在黑板上画出以 $AD$ 为直径的圆，明确标出圆心 $O$，连接 $OK$，展示 $\angle DOK = 2\angle DAK$，强调圆心角与圆周角的关系，避免学生在最后一步弧长计算上失分．
+}

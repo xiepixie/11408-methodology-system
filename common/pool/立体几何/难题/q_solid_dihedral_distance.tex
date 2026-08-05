@@ -1,0 +1,67 @@
+% =====================================================
+% 题型：空间动点距离与二面角多项选择题 (q_solid_dihedral_distance.tex)
+% 知识板块：立体几何
+% 主思维：数形结合与几何直观
+% 副思维：反例论证方法、卷面表达
+% 错因标签：空间想象直觉误判、法向量方向写错
+% 讲义用途：立几逻辑表达
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidDihedralDistanceStem}{在空间中，\(A, B\) 为两个定点，动点 \(C\) 到直线 \(AB\) 的距离为 \(2\)，动点 \(D\) 到直线 \(AB\) 的距离为 \(1\)。若二面角 \(C-AB-D\) 为 \(60^\circ\)，则 \hfill （\quad）}
+
+\newcommand{\qSolidDihedralDistanceOptions}{%
+  \mcoptions[2]{\(\angle CAD \geqslant 60^\circ\)}{\(CD \geqslant \sqrt{3}\)}{\(当\ AB \perp CD\ 时,\ CD \perp\ 平面\ ABD\)}{\(当\ AB \perp\ 平面\ ACD\ 时,\ AC \perp AD\)}%
+}
+
+\newcommand{\qSolidDihedralDistanceAnswer}{BC}
+
+\newcommand{\qSolidDihedralDistanceSolution}{%
+  【解题思路】\\
+  本题为立体几何综合多选题，最稳妥、直观且严谨的方法是采用空间直角坐标系进行定量计算。第一步，以定直线 \(AB\) 为 \(x\) 轴，定点 \(A\) 为原点建立坐标系；第二步，利用点 \(C, D\) 到 \(x\) 轴的距离以及二面角（即两个法平面的夹角）为 \(60^\circ\) 的条件，设出 \(C, D\) 的坐标，其中引入自由参数 \(m, n\)（分别表示 \(C, D\) 在 \(AB\) 上的投影位置）；第三步，利用坐标计算出向量 \(\vec{AC}, \vec{AD}, \vec{CD}\) 的代数形式，对各个选项逐一展开代数验证。\\
+  【解析计算】\\
+  建立空间直角坐标系，令直线 \(AB\) 为 \(x\) 轴，点 \(A\) 为原点。\\
+  因为点 \(C\) 到直线 \(AB\)（\(x\) 轴）的距离为 \(2\)，故可设点 \(C\) 坐标为：\\
+  \(C = (m, 2, 0)\)。\\
+  因为点 \(D\) 到直线 \(AB\) 的距离为 \(1\)，且二面角 \(C-AB-D\) 为 \(60^\circ\)，这说明在垂直于 \(AB\) 的任意平面（即坐标系中的 \(yz\) 面方向）上，两点投影与原点连线的夹角为 \(60^\circ\)。\\
+  因此，我们可以设点 \(D\) 的坐标为：\\
+  \(D = \left(n, 1\cos 60^\circ, 1\sin 60^\circ\right) = \left(n, \dfrac{1}{2}, \dfrac{\sqrt{3}}{2}\right)\)。\\
+  对于 A 选项：分析 \(\angle CAD\) 是否恒大于等于 \(60^\circ\)。\\
+  向量 \(\vec{AC} = (m, 2, 0)\)，\(\vec{AD} = \left(n, \dfrac{1}{2}, \dfrac{\sqrt{3}}{2}\right)\)。\\
+  我们取 \(m = n = 10\)（即将点 \(C, D\) 的投影移到很远的地方），则此时：\\
+  \(\vec{AC} = (10, 2, 0)\)，\(\vec{AD} = \left(10, \dfrac{1}{2}, \dfrac{\sqrt{3}}{2}\right)\)。\\
+  两向量夹角的余弦值为：\\
+  \(\cos\angle CAD = \dfrac{\vec{AC} \cdot \vec{AD}}{|\vec{AC}| |\vec{AD}|} = \dfrac{10 \cdot 10 + 2 \cdot \frac{1}{2}}{\sqrt{104} \cdot \sqrt{101}} = \dfrac{101}{\sqrt{10504}} \approx 1\)。\\
+  这说明当 \(C, D\) 在 \(AB\) 上的投影足够远时，\(\angle CAD\) 可以趋近于 \(0^\circ\)，不一定大于等于 \(60^\circ\)，故 A 错误；\\
+  对于 B 选项：计算 \(CD\) 的距离。\\
+  向量 \(\vec{CD} = \left(n - m, \dfrac{1}{2} - 2, \dfrac{\sqrt{3}}{2} - 0\right) = \left(n - m, -\dfrac{3}{2}, \dfrac{\sqrt{3}}{2}\right)\)。\\
+  所以：\\
+  \(CD^2 = (n - m)^2 + \left(-\dfrac{3}{2}\right)^2 + \left(\dfrac{\sqrt{3}}{2}\right)^2 = (n - m)^2 + \dfrac{9}{4} + \dfrac{3}{4} = (n - m)^2 + 3\)。\\
+  因为 \((n - m)^2 \geqslant 0\)，所以 \(CD^2 \geqslant 3 \implies CD \geqslant \sqrt{3}\)，故 B 正确；\\
+  对于 C 选项：若 \(AB \perp CD\)。\\
+  因为 \(AB\) 为 \(x\) 轴，所以 \(\vec{CD}\) 的 \(x\) 分量必须为 0，即 \(n - m = 0 \implies n = m\)。\\
+  此时向量为：\\
+  \(\vec{CD} = \left(0, -\dfrac{3}{2}, \dfrac{\sqrt{3}}{2}\right)\)，\(\vec{AD} = \left(m, \dfrac{1}{2}, \dfrac{\sqrt{3}}{2}\right)\)。\\
+  计算两向量的点积：\\
+  \(\vec{CD} \cdot \vec{AD} = 0 \cdot m + \left(-\dfrac{3}{2}\right) \cdot \dfrac{1}{2} + \dfrac{\sqrt{3}}{2} \cdot \dfrac{\sqrt{3}}{2} = -\dfrac{3}{4} + \dfrac{3}{4} = 0\)。\\
+  所以 \(CD \perp AD\)。\\
+  又因为条件已知 \(CD \perp AB\)，且 \(AB \cap AD = A\)，两直线都在平面 \(ABD\) 内，\\
+  因此 \(CD \perp\) 平面 \(ABD\)，故 C 正确；\\
+  对于 D 选项：若 \(AB \perp\) 平面 \(ACD\)。\\
+  这意味着平面 \(ACD\) 必须垂直于 \(x\) 轴，因而点 \(C, D\) 的 \(x\) 坐标必须与原点 \(A\) 的 \(x\) 坐标相同，即 \(m = n = 0\)。\\
+  此时向量为：\\
+  \(\vec{AC} = (0, 2, 0)\)，\(\vec{AD} = \left(0, \dfrac{1}{2}, \dfrac{\sqrt{3}}{2}\right)\)。\\
+  计算点积得：\\
+  \(\vec{AC} \cdot \vec{AD} = 0 + 2 \cdot \dfrac{1}{2} + 0 = 1 \neq 0\)。\\
+  这说明 \(AC\) 与 \(AD\) 不垂直，故 D 错误。\\
+  综上所述，正确的选项为 B、C。\\
+  故选 B、C。%
+}
+
+\newcommand{\qSolidDihedralDistanceDiagnosis}{%
+  立体几何多选题往往逻辑关系复杂，仅凭空间想象容易产生漏判或错判（例如直观想象中很容易将 A 判定为正确）。本题通过建立坐标系，将空间几何关系转化为代数不等式和向量点积，属于难度较大的题目。%
+}
+
+\newcommand{\qSolidDihedralDistanceTeachingNotes}{%
+  这道题是空间坐标法（向量法）解决几何关系选择题的经典案例。授课时应着重讲解如何将“距离为 2 和 1”及“二面角为 60 度”翻译为坐标设法。让学生认识到：几何直觉不够时，代数坐标化是最安全、最确凿的武器。%
+}

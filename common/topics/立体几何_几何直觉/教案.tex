@@ -1,0 +1,1354 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{../../ipara}
+\input{questions.tex}
+
+% =====================================================
+% 页眉页脚设置（教案端）
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 公共专题教案：立体几何的几何直觉与降维思维}
+\rhead{\small 教师版}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 立体几何几何直觉与降维思维专题教案}\\[0.3em]
+  {\large 公共专题课：高一立体几何破局课}\\[0.3em]
+  {\small 课时：120 分钟}
+\end{center}
+
+\section{120 分钟 Workflow 设计}
+
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{p{2.5cm}p{2.2cm}X}
+\toprule
+环节 & 时间 & 教师动作与教学重点 \\
+\midrule
+读图与看图 & 15 分钟 & 讲解空间点线面的相对位置，辨析 $l\subset \alpha$ 与 $l\parallel \alpha$ 的画法差异，训练寻找交线。\\
+辅助线三原则 & 25 分钟 & 剖析辅助线的三大标准动机：线面垂直（找面内相交线）、线面角（作投影垂线）、二面角（找交线作垂线）。\\
+核心例题精讲 & 35 分钟 & 以【石家庄二中 2025 期末题】为例，按照“四步训练法”，一步一停，引导学生口述“几何目标”与“降维平面”。\\
+降维变式训练 & 30 分钟 & 安排针对“等体积法反求高”与“二面角直角三角形”的分层训练，规范学生的几何论证步骤。\\
+课后复盘 & 15 分钟 & 引导学生总结“空间角与距离在哪个直角三角形中解决”，强化几何思维定势。\\
+\bottomrule
+\end{tabularx}
+
+
+\section{高一立体几何教学理念与核心主线}
+
+\begin{teachbox}{高一立体几何三大病灶}
+高一学生在立体几何学习中，最缺的不是计算能力，而是以下三件事：
+\[
+  \boxed{
+  \text{看不懂图}
+  \quad\quad
+  \text{画不出辅助线}
+  \quad\quad
+  \text{不知道空间关系怎么降到平面里}
+  }
+\]
+若在这个阶段过早依赖空间向量，学生会变成“坐标机器”：题能算，但不理解为什么；一旦题目不给标准坐标系，马上卡住。
+\end{teachbox}
+
+\begin{teachbox}{教学核心主线：几何直觉优先}
+高一立体几何的教学必须遵循\textbf{“几何直觉优先”}的原则，核心主线为：
+\[
+  \boxed{
+  \text{画图}
+  \rightarrow
+  \text{识别关系}
+  \rightarrow
+  \text{找垂直/平行}
+  \rightarrow
+  \text{降维成平面图形}
+  \rightarrow
+  \text{再计算}
+  }
+\]
+空间向量暂时作为“验证工具”或“后备武器”，不要作为主菜。
+\end{teachbox}
+
+\subsection*{1. 先练“看图”：点、线、面到底在哪}
+高一学生很多错误来自最基础的空间语言没看清。例如分不清：
+\[ AB\subset \alpha \quad \text{与} \quad AB\parallel \alpha \]
+也会分不清：
+\[ l\perp \alpha \quad \text{与} \quad l\perp m \]
+因此第一阶段要进行大量基础训练：
+\[
+  \boxed{
+  \text{这条线在哪个面内？} \quad
+  \text{两个面交线是谁？} \quad
+  \text{哪两条线共面？} \quad
+  \text{哪两条线异面？}
+  }
+\]
+这些最基本的读图能力，比直接讲二面角公式重要得多。
+
+\subsection*{2. 再练“画图”：辅助线不是凭感觉乱连}
+立体几何作辅助线，核心只有以下三类：
+\begin{enumerate}
+  \item \textbf{证明线面垂直时，寻找面内两条相交线} \\
+    目标：证明 $l \perp \alpha$。作答标准模板为：
+    \[ l\perp a,\quad l\perp b,\quad a,b\subset \alpha,\quad a\cap b=P \quad\Rightarrow\quad l\perp \alpha \]
+    画图时一定要引导学生反问：\textbf{“我能不能在这个面内找到两条相交线？”}
+    \begin{center}
+      \begin{tikzpicture}[scale=1.1, >=stealth, line join=round, line cap=round]
+        \draw[thick] (0,0) -- (3.5,0) -- (4.5,1.2) -- (1,1.2) -- cycle;
+        \node at (0.5, 0.3) {\small $\alpha$};
+        \coordinate (P) at (2.5, 0.6);
+        \coordinate (A) at (1.5, 0.4);
+        \coordinate (B) at (3.5, 0.8);
+        \coordinate (C) at (2.0, 1.0);
+        \coordinate (D) at (3.0, 0.2);
+        \draw[thick, gray!80] (A) -- (B);
+        \node[left] at (A) {\small $a$};
+        \draw[thick, gray!80] (C) -- (D);
+        \node[above right] at (C) {\small $b$};
+        \draw[thick, red, ->] (2.5, -0.6) -- (2.5, 1.8);
+        \node[above] at (2.5, 1.8) {\small $l$};
+        \fill[red] (P) circle (1.2pt) node[below right] {\small $P$};
+        \draw[thin, red] (2.5, 0.75) -- (2.35, 0.72) -- (2.35, 0.57);
+        \draw[thin, red] (2.5, 0.75) -- (2.6, 0.77) -- (2.6, 0.62);
+      \end{tikzpicture}
+      \quad
+      \textit{\small 示意图 1.1：线面垂直判定（线与面内两条相交直线垂直）}
+    \end{center}
+  \item \textbf{寻找线面角时，画投影} \\
+    线面角绝不是凭肉眼视觉直接看出来的，必须是\textbf{斜线和它在平面内的投影所成的角}。
+    因此要训练学生画：\textbf{“点到平面的垂线”}，然后连接垂足，锁定直角三角形。
+    \begin{center}
+      \begin{tikzpicture}[scale=1.2, >=stealth, line join=round, line cap=round]
+        \draw[thick, fill=gray!3] (0,0) -- (4,0) -- (5,1.4) -- (1,1.4) -- cycle;
+        \node at (0.5, 0.3) {\small $\alpha$};
+        \coordinate (A) at (1.5, 0.5);
+        \coordinate (P) at (3.2, 2.0);
+        \coordinate (O) at (3.2, 0.8);
+        \draw[dashed, thick, red] (P) -- (O);
+        \draw[thick, blue] (A) -- (P);
+        \draw[thick, gray] (A) -- (O);
+        \fill (P) circle (1.2pt) node[above right] {\small $P$};
+        \fill[red] (O) circle (1.2pt) node[below] {\small $O$ (垂足)};
+        \fill (A) circle (1.2pt) node[left] {\small $A$ (斜足)};
+        \draw[thin, red] (3.2, 0.95) -- (3.05, 0.9) -- (3.05, 0.75);
+        \draw[thin] (2.0, 0.6) arc (10:35:0.5);
+        \node at (2.2, 0.75) {\small $\theta$};
+      \end{tikzpicture}
+      \quad
+      \textit{\small 示意图 1.2：线面角与投影（高 $PO$ + 投影线 $AO$ 构成直角三角形）}
+    \end{center}
+  \item \textbf{寻找二面角时，先找交线，再作垂线} \\
+    标准流程：\textbf{找交线 $\rightarrow$ 在两个面内分别作交线的垂线 $\rightarrow$ 这两条垂线的夹角即为平面角}。
+    这是高一立体几何的核心直觉。必须让学生反复默念内化：
+    \[ \boxed{\text{二面角不是两个面的“视觉夹角”，而是垂直于交线的两个截线夹角。}} \]
+    \begin{center}
+      \begin{tikzpicture}[scale=1.2, >=stealth, line join=round, line cap=round]
+        \coordinate (O) at (2, 1);
+        \coordinate (L1) at (2, -0.5);
+        \coordinate (L2) at (2, 2.5);
+        \draw[thick, fill=gray!3] (L1) -- (L2) -- (4, 2.8) -- (4, -0.2) -- cycle;
+        \draw[thick, fill=gray!10] (L1) -- (L2) -- (0, 1.8) -- (0, -1.2) -- cycle;
+        \draw[thick, red] (L1) -- (L2);
+        \node[above, red] at (L2) {\small $l$ (交线)};
+        \coordinate (A) at (0.8, 1.5);
+        \coordinate (B) at (3.2, 1.4);
+        \draw[thick, blue] (O) -- (A);
+        \draw[thick, blue] (O) -- (B);
+        \fill (O) circle (1.2pt) node[below right] {\small $O$};
+        \node[above left] at (A) {\small $A$};
+        \node[above right] at (B) {\small $B$};
+        \node at (0.3, 0.3) {\small $\alpha$};
+        \node at (3.7, 0.5) {\small $\beta$};
+        \draw[thin, red] (1.8, 1.1) -- (1.65, 1.22) -- (1.85, 1.35);
+        \draw[thin, red] (2.2, 1.1) -- (2.3, 1.22) -- (2.1, 1.35);
+        \draw[thin] (1.65, 1.15) arc (150:40:0.45);
+        \node at (2.0, 1.5) {\small $\theta$};
+      \end{tikzpicture}
+      \quad
+      \textit{\small 示意图 1.3：二面角的平面角定义（$OA \perp l, OB \perp l \Rightarrow \theta = \angle AOB$）}
+    \end{center}
+\end{enumerate}
+
+\subsection*{3. 高一最该练的不是“空间向量”，而是“降维”}
+立体几何的精髓是：\textbf{把空间问题压到一个平面里解决}。
+\begin{itemize}
+  \item \textbf{线面角}：将“一条线和一个面成角”的空间问题，降维成\textbf{“一个直角三角形里的角”}。
+  \item \textbf{二面角}：将“两个面成角”的空间问题，降维成\textbf{“垂直于交线的截面角”}。
+  \item \textbf{点到面距离}：将“点到平面的距离”的空间问题，降维成\textbf{“垂线段长度（高线）”}。
+  \item \textbf{外接球}：将“球和几何体”的空间问题，降维成\textbf{“球心、底面外心、顶点构成的直角三角形”}。
+\end{itemize}
+
+\subsection*{4. 空间向量的定位与引入时机}
+空间向量可以讲，但要晚一点，且定位要明确：\textbf{当几何图不好找，或者计算角度距离太复杂时，用向量统一翻译}。\par
+先让学生学会几何法（线面角 $=$ 斜线与投影夹角），再告诉他向量法公式：
+\[ \sin\theta = \frac{|\vec{v}\cdot \vec{n}|}{|\vec{v}||\vec{n}|} \]
+这样学生才知道这个公式求出来的是正弦值，而不是死记硬背公式，否则会永远搞不清“线面角为什么用 $\sin$”而“面面角为什么用 $\cos$”。
+\begin{center}
+  \begin{tikzpicture}[scale=1.2, >=stealth, line join=round, line cap=round]
+    % 线面角向量法
+    \draw[thick, fill=gray!3] (0,0) -- (3.5,0) -- (4.5,1.3) -- (1,1.3) -- cycle;
+    \coordinate (A) at (1.5, 0.5);
+    \coordinate (O) at (3.2, 0.7);
+    \coordinate (P) at (3.2, 1.8);
+    \draw[thick, blue] (A) -- (P);
+    \draw[thick, ->, blue, line width=1.1pt] (A) -- ($(A)!0.85!(P)$) node[above left] {\small $\vec{v}$};
+    \draw[dashed, gray] (A) -- (O);
+    \draw[thick, ->, red, line width=1.1pt] (A) -- (1.5, 1.7) node[left] {\small $\vec{n}$};
+    \draw[thin] (1.5, 1.0) arc (90:40:0.5);
+    \node at (1.8, 1.25) {\small $\phi$};
+    \draw[thin] (2.1, 0.58) arc (10:35:0.6);
+    \node at (2.4, 0.72) {\small $\theta$};
+    \node[below] at (2.25, -0.2) {\small (1) 线面角向量关系: $\theta = 90^\circ - \phi$};
+  \end{tikzpicture}
+  \qquad\qquad
+  \begin{tikzpicture}[scale=1.2, >=stealth, line join=round, line cap=round]
+    % 二面角向量法
+    \coordinate (O) at (2, 1);
+    \coordinate (L1) at (2, -0.5);
+    \coordinate (L2) at (2, 2.3);
+    \draw[thick, fill=gray!3] (L1) -- (L2) -- (4, 2.5) -- (4, -0.3) -- cycle;
+    \draw[thick, fill=gray!10] (L1) -- (L2) -- (0, 1.5) -- (0, -1.3) -- cycle;
+    \draw[thick, red] (L1) -- (L2);
+    \draw[thick, ->, blue, line width=1.1pt] (O) -- (1.0, 1.8) node[above left] {\small $\vec{n}_1$};
+    \draw[thick, ->, blue, line width=1.1pt] (O) -- (3.0, 1.8) node[above right] {\small $\vec{n}_2$};
+    \draw[thin] (1.6, 1.32) arc (150:40:0.5);
+    \node at (2.0, 1.65) {\small $\phi$};
+    \node[below] at (2.0, -1.0) {\small (2) 二面角向量关系: $\theta = \phi$ 或 $180^\circ - \phi$};
+  \end{tikzpicture}
+  \par\medskip
+  \textit{\small 示意图 1.4：空间向量求角定义（通过法向量与方向向量的代数投影快速换算）}
+\end{center}
+
+\subsection*{5. 建议高一立体几何排课规划}
+建议高一立体几何排课如下（7 讲）：
+\begin{enumerate}
+  \item \textbf{第 1 讲：空间图形读图与画图} \\
+    主题为“看清点线面”。训练哪些点共面、哪些线共面、哪些线异面、两个面的交线是谁，并规范画出隐藏线与辅助线。本讲不急于证明，重点是“看懂图”。
+  \item \textbf{第 2 讲：平行与垂直的几何判定} \\
+    主题为“证明题的标准规范语言”。重点是四大判定与性质定理。不追求定理的死记硬背，而要讲成标准作答模板（如线面垂直判定三条件书写）。
+  \item \textbf{第 3 讲：线面角与投影直觉} \\
+    主题为“斜线、投影与高”。核心口诀是：\textbf{“高度看正弦，影子看余弦”}。通过大量作垂线画出直角三角形来进行训练。
+  \item \textbf{第 4 讲：二面角与截面直觉} \\
+    主题为“二面角必须找交线”。流程为“交线 $\rightarrow$ 两面内垂线 $\rightarrow$ 平面角”。可与面面垂直结合讲解（二面角为 $90^\circ$ 的情况）。
+  \item \textbf{第 5 讲：距离与体积换底} \\
+    主题为“距离就是垂线，体积可以换底”。训练点到线距离、点到面距离，用体积反求高，以及三棱锥换底。这部分非常适合培养空间转换直觉。
+  \item \textbf{第 6 讲：外接球与常见模型} \\
+    主题为“把球问题压成直角三角形”。只讲高一必要模型（如直棱柱外接球：$R^2 = r^2 + (h/2)^2$），不要一开始堆复杂球模型。
+  \item \textbf{第 7 讲：空间向量作为验证工具} \\
+    主题为“用代数检查空间关系”。只讲最基础的四件事：两向量垂直、两向量平行、求法向量、用法向量求角。强调向量法是翻译工具，而非替代几何理解。
+\end{enumerate}
+
+\subsection*{6. 高一“四步训练法”}
+对于高一学生，每道立体几何题目均应按以下步骤进行规范训练，严禁直接动笔算：
+\begin{enumerate}
+  \item \textbf{先不计算，只标图}：在图中标出已知长度、已知垂直/平行关系、所求夹角或距离，以及关键平面。
+  \item \textbf{再说目标}：明确口述“我要证明什么线面关系”或“我要找哪个二面角的平面角”。
+  \item \textbf{再找降维平面}：明确空间问题最后会落到哪个平面图形（如 $\triangle ABC$ 或 $\triangle AOP$ 或某个截面）中。
+  \item \textbf{最后再计算}：在平面几何图形中进行代数与三角计算。
+\end{enumerate}
+
+\subsection*{7. 核心能力清单与最重要的提醒}
+高一阶段立体几何目标可压缩为五句话：
+\begin{itemize}
+  \item \textbf{会看图}：知道点、线、面的空间位置与交线关系。
+  \item \textbf{会画图}：明白辅助线的作图依据与为什么这样画。
+  \item \textbf{会降维}：能将空间夹角、距离问题压扁到平面中解决。
+  \item \textbf{会证明}：书写出线面、面面关系的标准无扣分作答步骤。
+  \item \textbf{会计算}：在对应的平面图形里熟练运用勾股定理、三角函数和面积体积公式。
+\end{itemize}
+空间向量放在最后：
+\begin{itemize}
+  \item \textbf{会翻译}：必要时用向量把空间几何关系代数化，进行结果验证。
+\end{itemize}
+\textbf{最重要教学提醒}：高一阶段千万不要让学生形成“一看到立体几何就建坐标”的习惯。过早依赖建系代数会损害空间想象力的建立。必须坚持\textbf{“先几何直觉，再向量验证；先知道为什么，再知道怎么算快”}的教学顺序。
+
+\section{开场图感检测}
+
+\teachquestionheader{正方体中的位置与角}
+{\small \qSolidOpeningCubeRelationsStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qSolidOpeningCubeRelationsAnswer}
+\teachblock{标准解答}{\qSolidOpeningCubeRelationsSolution}
+\switchcolumn
+\teachblock{学生问题}{\qSolidOpeningCubeRelationsDiagnosis}
+\teachblock{课堂处理 / 落实建议}{\begin{itemize}[leftmargin=1.5em] \qSolidOpeningCubeRelationsTeachingNotes \end{itemize}}
+\end{paracol}
+
+\par\vspace{1.0em}\noindent{\color{rulecolor}\hrule height 0.4pt}\par\vspace{1.0em}
+
+\teachquestionheader{四棱锥的投影与线面角}
+{\small \qSolidOpeningPyramidProjectionStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qSolidOpeningPyramidProjectionAnswer}
+\teachblock{标准解答}{\qSolidOpeningPyramidProjectionSolution}
+\switchcolumn
+\teachblock{学生问题}{\qSolidOpeningPyramidProjectionDiagnosis}
+\teachblock{课堂处理 / 落实建议}{\begin{itemize}[leftmargin=1.5em] \qSolidOpeningPyramidProjectionTeachingNotes \end{itemize}}
+\end{paracol}
+
+\newpage
+\section{核心例题精解}
+
+本节以“石家庄二中 2025 期末题”为核心载体，落实线面投影对称垂直与体积法降维计算。教学导向如下：
+\begin{itemize}
+  \item \textbf{第一问（空间投影对称垂直）}：侧棱与两邻边等角是典型的投影对称模型。在菱形底面中，侧棱的投影线落在菱形的对角线所在直线上。通过线面垂直的相交性质，证明侧面对角线垂直于对角面，进而得到异面直线垂直的结论。教学中需重点规范线面垂直“相交直线”条件的书写。
+  \item \textbf{第二问（距离体积等架降维）}：求点到面距离时，由于斜棱柱的高和垂足难以直接确定，若直接在空间中寻找垂足将使得几何构型极度复杂。教学中应大力推行“等体积法”，将点 $E$ 到侧面的距离通过侧棱平行关系平移到顶点 $C_1$，进而利用四面体体积相等关系反求高。这避开了垂足定位，是典型的代数降维思想。
+  \item \textbf{第三问（线面角与平面余弦定理收尾）}：线面角求解包含“作、证、算”三步。作图上，确定顶点投影并连线得到射影；逻辑上，证明该角确实为线面所成的直角三角形内角；计算上，利用正弦值在直角三角形中确定斜边 $B_1E = 2\sqrt{2}$。至此，立体几何完全转化为平面几何问题，在平行四边形侧面三角形中，利用平面余弦定理列出方程并求解，极具逻辑的对称美。
+\end{itemize}
+
+\teachquestionheader{石家庄二中 2025 期末压轴题}
+{\small \qSolidShijiazhuangPrismStem}
+\begin{center}
+  \qSolidShijiazhuangPrismFigure[1.8]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qSolidShijiazhuangPrismAnswer}
+\teachblock{标准解答 / 多解法}{\qSolidShijiazhuangPrismSolution}
+\switchcolumn
+\teachblock{学生问题}{\qSolidShijiazhuangPrismDiagnosis}
+\teachblock{课堂处理 / 追问 / 落实建议}{\begin{itemize}[leftmargin=1.5em] \qSolidShijiazhuangPrismTeachingNotes \end{itemize}}
+\end{paracol}
+
+\newpage
+\section{分层降维练习}
+
+\teachquestionheader{三棱锥中垂直与距离（A组）}
+{\small \qSolidPracticePyramidDistStem}
+\begin{center}
+  \qSolidPracticePyramidDistFigure[1.6]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qSolidPracticePyramidDistAnswer}
+\teachblock{标准解答 / 多解法}{\qSolidPracticePyramidDistSolution}
+\switchcolumn
+\teachblock{学生问题}{\qSolidPracticePyramidDistDiagnosis}
+\teachblock{课堂处理 / 落实建议}{\begin{itemize}[leftmargin=1.5em] \qSolidPracticePyramidDistTeachingNotes \end{itemize}}
+\end{paracol}
+
+\par\vspace{1.0em}\noindent{\color{rulecolor}\hrule height 0.4pt}\par\vspace{1.0em}
+
+\teachquestionheader{直三棱柱中线面角与距离（B组）}
+{\small \qSolidPracticePrismAngleStem}
+\begin{center}
+  \qSolidPracticePrismAngleFigure[1.6]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qSolidPracticePrismAngleAnswer}
+\teachblock{标准解答 / 多解法}{\qSolidPracticePrismAngleSolution}
+\switchcolumn
+\teachblock{学生问题}{\qSolidPracticePrismAngleDiagnosis}
+\teachblock{课堂处理 / 落实建议}{\begin{itemize}[leftmargin=1.5em] \qSolidPracticePrismAngleTeachingNotes \end{itemize}}
+\end{paracol}
+
+\newpage
+\teachquestionheader{四棱锥中二面角与垂直（C组）}
+{\small \qSolidPracticePyramidDihedralStem}
+\begin{center}
+  \qSolidPracticePyramidDihedralFigure[1.6]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qSolidPracticePyramidDihedralAnswer}
+\teachblock{标准解答 / 多解法}{\qSolidPracticePyramidDihedralSolution}
+\switchcolumn
+\teachblock{学生问题}{\qSolidPracticePyramidDihedralDiagnosis}
+\teachblock{课堂处理 / 落实建议}{\begin{itemize}[leftmargin=1.5em] \qSolidPracticePyramidDihedralTeachingNotes \end{itemize}}
+\end{paracol}
+
+\par\vspace{1.0em}\noindent{\color{rulecolor}\hrule height 0.4pt}\par\vspace{1.0em}
+
+\teachquestionheader{对棱相等三棱锥与外接球（D组）}
+{\small \qSolidIsoscelesTetrahedronStem}
+\begin{center}
+  \qSolidIsoscelesTetrahedronFigure[1.6]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qSolidIsoscelesTetrahedronAnswer}
+\teachblock{标准解答 / 多解法}{\qSolidIsoscelesTetrahedronSolution}
+\switchcolumn
+\teachblock{学生问题}{\qSolidIsoscelesTetrahedronDiagnosis}
+\teachblock{课堂处理 / 落实建议}{\begin{itemize}[leftmargin=1.5em] \qSolidIsoscelesTetrahedronTeachingNotes \end{itemize}}
+\end{paracol}
+
+\section{课堂总结}
+
+\begin{teachbox}{本讲总结一句话}
+立体几何的几何法，核心是\textbf{“画投影、找交线、利用体积转换距离，最后在直角三角形或平面余弦定理中收尾”}。\\
+当学生遇到复杂图形时，告诉他们：\textbf{“立体几何在画出投影和垂线的那一刻就已经结束了，剩下的只是平面几何的初中勾股定理和高中余弦定理。”} 避开过早建系，让学生体味纯几何逻辑推导的优美，才能真正学好立体几何。
+\end{teachbox}
+
+\section{课后反馈模板}
+
+\begin{teachbox}{给家长/学生的反馈素材}
+本次课训练的主题是“立体几何的几何直觉与降维思维”。\par
+高一阶段的立体几何，核心是不依赖空间向量，通过读图、画出投影高线与辅助线，将空间角和距离降维至平面图形（如直角三角形和平面余弦定理）中解决。\par
+学生在课堂上通过【石家庄二中 2025 期末题】进行了完整训练。第 (1) 问的关键在于辨识等角对称投影；第 (2) 问重点是掌握等体积法转换高度；第 (3) 问则是利用线面角直角三角形和平面余弦定理收尾。这类几何训练不仅能极大提升学生的空间想象力（空间感），也能在不建系的情况下实现极速拿分。
+\end{teachbox}
+
+\section*{附录：立体几何核心知识清单与教学背景}
+
+本部分为立体几何的主干知识梳理，融入了教学背景与重点难点提示，供教师备课与授课时参考。
+
+\subsection*{1. 几何体的结构特征与表面积体积}
+
+\begin{teachbox}{多面体与旋转体结构梳理}
+\textbf{多面体：}
+\begin{itemize}
+  \item \textbf{棱柱}：上下底面平行且全等；侧棱平行；侧面为平行四边形。直棱柱的侧棱垂直于底面，正棱柱底面为正多边形。
+  \item \textbf{棱锥}：底面为多边形，侧面为有公共顶点的三角形。正棱锥底面为正多边形，且顶点投影落在底面中心。
+  \item \textbf{棱台}：由平行于底面的平面截棱锥得到。上下底面平行且相似；侧面为梯形；侧棱延长线交于同一点。
+\end{itemize}
+\textbf{旋转体：}
+\begin{itemize}
+  \item \textbf{圆柱}：矩形绕一边旋转一周。底半径 $r$，高 $h$，母线 $l = h$。侧面积 $S_{\text{侧}} = 2\pi rh$，表面积 $S_{\text{表}} = 2\pi rh + 2\pi r^2$。
+  \item \textbf{圆锥}：直角三角形绕直角腰旋转一周。母线 $l = \sqrt{r^2 + h^2}$。侧面积 $S_{\text{侧}} = \pi rl$，表面积 $S_{\text{表}} = \pi rl + \pi r^2$。
+  \item \textbf{圆台}：直角梯形绕垂直于底边的腰旋转一周。侧面积 $S_{\text{侧}} = \pi(r_1+r_2)l$，表面积 $S_{\text{表}} = \pi(r_1+r_2)l + \pi r_1^2 + \pi r_2^2$。
+  \item \textbf{球}：半圆绕直径旋转一周。体积 $V = \frac{4}{3}\pi R^3$，表面积 $S = 4\pi R^2$。
+\end{itemize}
+\end{teachbox}
+
+\begin{teachbox}{柱、锥、台的体积与斜二测面积关系}
+\begin{itemize}
+  \item \textbf{体积计算}：
+    \[ V_{\text{柱}} = Sh, \quad V_{\text{锥}} = \frac{1}{3}Sh, \quad V_{\text{台}} = \frac{1}{3}h(S_{\text{上}} + S_{\text{下}} + \sqrt{S_{\text{上}}S_{\text{下}}}) \]
+    对于圆台，体积可写为 $V = \frac{1}{3}\pi h(r_1^2 + r_2^2 + r_1 r_2)$。
+  \item \textbf{斜二测画法面积关系}：
+    \[ S_{\text{直观图}} = \frac{\sqrt{2}}{4} S_{\text{原图}} \]
+    \textit{原理解释}：斜二测画法中，平行于 $x$ 轴的长度不变，平行于 $y$ 轴的长度减半且轴间角变为 $45^\circ$，这导致图形的垂直高度投影缩短为原来的 $\frac{\sqrt{2}}{4}$，因而面积以此比例缩小。
+\end{itemize}
+\end{teachbox}
+
+\teachblock{正棱锥与正棱台的“黄金直角三角形”}{
+  正棱锥与正棱台计算中，务必引导学生通过两个直角三角形将空间高度进行转化：
+  \begin{enumerate}
+    \item \textbf{高、侧高、底面边心距的直角三角形}：主要用于求解侧面积或高。在正棱台中，其直角边对应的高、上下底面边心距之差，斜边为侧高。
+    \item \textbf{高、侧棱、底面外接圆半径的直角三角形}：主要用于求解侧棱长或外接球半径。在正棱台中，直角边对应的高、上下底面外接圆半径之差，斜边为侧棱。
+  \end{enumerate}
+}
+
+\subsection*{2. 空间位置关系与平行垂直转化}
+
+\begin{teachbox}{平行关系的转化链条}
+\begin{itemize}
+  \item \textbf{线面平行判定与性质}：
+    \begin{itemize}
+      \item 判定：$l \not\subset \alpha, m \subset \alpha, l \parallel m \Rightarrow l \parallel \alpha$（线线平行 $\rightarrow$ 线面平行）。
+      \item 性质：$l \parallel \alpha, l \subset \beta, \beta \cap \alpha = m \Rightarrow l \parallel m$（线面平行 $\rightarrow$ 线线平行）。
+    \end{itemize}
+  \item \textbf{面面平行判定与性质}：
+    \begin{itemize}
+      \item 判定：$a, b \subset \alpha, a \cap b = P, a \parallel \beta, b \parallel \beta \Rightarrow \alpha \parallel \beta$（线面平行 $\rightarrow$ 面面平行）。
+      \item 性质：$\alpha \parallel \beta, \gamma \cap \alpha = m, \gamma \cap \beta = n \Rightarrow m \parallel n$（面面平行 $\rightarrow$ 线线平行）。
+    \end{itemize}
+\end{itemize}
+\textbf{线线平行的几何来源}：三角形/梯形中位线、平行四边形性质、平行公理的传递性。
+\end{teachbox}
+
+\begin{teachbox}{垂直关系的转化链条}
+\begin{itemize}
+  \item \textbf{线面垂直判定与性质}：
+    \begin{itemize}
+      \item 判定：$a, b \subset \alpha, a \cap b = P, l \perp a, l \perp b \Rightarrow l \perp \alpha$（线线垂直 $\rightarrow$ 线面垂直）。
+      \item 性质：$l \perp \alpha, m \subset \alpha \Rightarrow l \perp m$；若 $a \perp \alpha, b \perp \alpha \Rightarrow a \parallel b$。
+    \end{itemize}
+  \item \textbf{面面垂直判定与性质}：
+    \begin{itemize}
+      \item 判定：$l \subset \beta, l \perp \alpha \Rightarrow \beta \perp \alpha$（线面垂直 $\rightarrow$ 面面垂直）。
+      \item 性质：$\alpha \perp \beta, \alpha \cap \beta = m, l \subset \beta, l \perp m \Rightarrow l \perp \alpha$（面面垂直 $\rightarrow$ 线面垂直）。
+    \end{itemize}
+\end{itemize}
+\textbf{线线垂直的几何来源}：等腰/等边三角形的“三线合一”、直棱柱侧棱垂直底面、勾股定理逆定理、平面几何性质（正方形邻边垂直、菱形对角线垂直）。
+\begin{center}
+  \begin{tikzpicture}[scale=1.25, >=stealth, line join=round, line cap=round]
+    \draw[thick, fill=gray!3] (0,0) -- (4,0) -- (5,1.2) -- (1,1.2) -- cycle;
+    \node at (0.5, 0.3) {\small $\alpha$};
+    \draw[thick, fill=gray!12, opacity=0.85] (1.5, 0.5) -- (4.5, 0.5) -- (4.5, 2.3) -- (1.5, 2.3) -- cycle;
+    \node at (4.2, 2.0) {\small $\beta$};
+    \draw[thick, red, line width=1.1pt] (1.5, 0.5) -- (4.5, 0.5);
+    \node[below] at (3.0, 0.5) {\small $m$ (交线)};
+    \coordinate (O) at (2.5, 0.5);
+    \coordinate (P) at (2.5, 2.0);
+    \draw[thick, blue, line width=1.1pt] (O) -- (P);
+    \node[left, blue] at (P) {\small $l$};
+    \fill (O) circle (1.2pt) node[below right] {\small $O$};
+    \draw[thin, red] (2.5, 0.7) -- (2.7, 0.7) -- (2.7, 0.5);
+    \draw[thin] (2.1, 0.5) arc (180:90:0.4);
+    \node at (1.8, 0.8) {\small $90^\circ$};
+  \end{tikzpicture}
+  \par\medskip
+  \textit{\small 示意图 4.1：面面垂直模型（若 $l \subset \beta$ 且 $l \perp m \Rightarrow l \perp \alpha \Rightarrow \beta \perp \alpha$）}
+\end{center}
+\end{teachbox}
+
+\subsection*{2.3 空间证明的四大平行辅助线技巧}
+
+空间平行的核心是“降维成线线平行”。当直接平行不明显时，常用以下四种辅助线构造手法：
+\begin{enumerate}
+  \item \textbf{方法一：构造中位线（看到中点首选）} \\
+    \textbf{几何直觉}：题中给出两个中点，或一个中点加一个平行四边形（对角线交点即中点）结构。
+    \textbf{经典动作}：在三角形中连接两中点，利用中位线定理直接产生线线平行：
+    \[ E, F \text{ 为两边中点} \implies EF \parallel \text{第三边} \]
+  \item \textbf{方法二：构造平行四边形（利用对边平行且相等）} \\
+    \textbf{几何直觉}：直接寻找平行线无果，需通过补点或连线证明一组对边平行且相等。
+    \textbf{经典动作}：证明 $ME \parallel NF$ 且 $ME = NF \implies MEFN$ 是平行四边形 $\implies EF \parallel MN$。
+  \item \textbf{方法三：构造面面平行（由面面平行转线面平行）} \\
+    \textbf{几何直觉}：要证 $l \parallel \alpha$，可在 $\alpha$ 外构造一个过 $l$ 的辅助平面 $\beta$，证明 $\beta \parallel \alpha$。
+    \textbf{经典动作}：在 $\beta$ 内找到两条相交直线分别平行于 $\alpha$ 内两条相交直线，得出 $\beta \parallel \alpha \implies l \parallel \alpha$。
+  \item \textbf{方法四：重心与分点转移（看到特殊比值 $2:1$）} \\
+    \textbf{几何直觉}：题中出现三等分点或重心。重心是三条中线的交点，将中线按 $2:1$ 分割。
+    \textbf{经典动作}：连接顶点与重心，利用重心的分比性质：
+    \[ AG : GM = 2 : 1 \]
+    再通过平行线或相似三角形，将这一比例转移到其它边上，从而证明平行。
+\end{enumerate}
+
+\subsection*{2.4 空间证明的隐藏垂直辅助线技巧}
+
+异面直线垂直（线线垂直）的核心是“证明线面垂直”。必须在特殊平面图形中主动寻找或构造“垂直来源”：
+\begin{enumerate}
+  \item \textbf{等腰/等边三角形}：底边上的中线即为高线（三线合一），提供隐藏垂直。
+  \item \textbf{菱形与正方形}：对角线互相垂直，即 $AC \perp BD$。
+  \item \textbf{圆与直径}：直径所对的圆周角为 $90^\circ$；或利用垂径定理（过圆心且垂直于弦的直线平分弦）。
+  \item \textbf{直角梯形与等腰梯形}：通过向底边作高，将图形拆解为矩形和直角三角形，利用边长勾股定理逆定理（如 $a^2 + b^2 = c^2$）证出垂直。
+\end{enumerate}
+
+\subsection*{2.5 “逆推顺证”分析法}
+
+在面对第一问证明结论较难、辅助线指向不明显时，采用“逆推顺证”法在草稿阶段寻找突破口：
+\[
+  \boxed{\text{执果索因（草稿逆推）} \implies \text{执因导果（步骤顺证）}}
+\]
+\textbf{草稿逆推流程}：
+\begin{enumerate}
+  \item 假定结论 $FN \perp AD$ 成立；
+  \item 逆推条件：若要 $FN \perp AD$，只需证 $FN \perp \text{平面 } ABCD$；
+  \item 继续逆推：只需证 $FN \perp DC$ 且 $FN \perp BC$；
+  \item 寻找题干：$FN \perp DC$ 已知，只需证 $FN \perp BC$。在平面 $\triangle FCB$ 中，若 $N$ 是 $BC$ 中点，只需证 $FB = FC$（等腰三角形三线合一）；
+  \item 转化为计算：通过已知数据计算 $\triangle FCB$ 是否为等边或等腰三角形。
+\end{enumerate}
+\textbf{步骤顺证要求}：正式答题纸上\textbf{严禁}书写逆推假设，必须严格由因导果。先写边长计算得出 $FB=FC \implies FN \perp BC$，再结合 $FN \perp DC$ 证出线面垂直，最终得出线线垂直。
+
+\subsection*{3. 空间夹角与距离的求法}
+
+\begin{teachbox}{三类空间角总原则：先定义角，再计算角}
+空间角最怕“看着像哪个角就算哪个角”。课堂上必须让学生先完成一句话：
+\[
+  \boxed{\text{我要求的是哪两条线 / 哪条线和哪个面 / 哪两个面之间的角？}}
+\]
+再完成第二句话：
+\[
+  \boxed{\text{这个空间角被降维到了哪个平面图形中？}}
+\]
+只有这两句话说清楚，后面的余弦定理、正弦值、法向量公式才有意义。
+\end{teachbox}
+
+\begin{teachbox}{方法卡一：线线角计算}
+\textbf{定义与范围}：两条异面直线所成角，先把其中一条直线平移到与另一条直线相交，再取两相交直线所成的锐角或直角。
+
+线线角的取值范围为
+\[
+  0^\circ \leq \theta \leq 90^\circ.
+\]
+所以不管向量算出来的夹角是锐角还是钝角，最终的线线角都不能取钝角。
+
+\begin{center}
+  \begin{tikzpicture}[scale=1.35, >=stealth, line join=round, line cap=round]
+    \draw[thick, fill=gray!3] (0,0) -- (4.4,0) -- (5.2,1.1) -- (0.8,1.1) -- cycle;
+    \node at (0.55,0.25) {\small $\alpha$};
+
+    \coordinate (A) at (0.7,0.35);
+    \coordinate (B) at (3.7,0.35);
+    \coordinate (C) at (1.6,2.1);
+    \coordinate (D) at (4.3,1.65);
+    \coordinate (P) at (1.2,0.72);
+    \coordinate (Q) at (3.7,0.72);
+
+    \draw[very thick, blue] (A) -- (B);
+    \node[below, blue] at (2.2,0.35) {\small $l_1$};
+    \draw[very thick, red] (C) -- (D);
+    \node[above, red] at (3.0,1.9) {\small $l_2$};
+
+    \draw[dashed, red, thick] (P) -- (Q);
+    \node[above, red] at (2.35,0.75) {\small $l_2'\parallel l_2$};
+    \fill (P) circle (1.2pt) node[below left] {\small $P$};
+    \draw[thin] (1.75,0.35) arc (0:10:0.55);
+    \node at (1.95,0.52) {\small $\theta$};
+
+    \draw[->, blue, thick] (0.95,0.35) -- (1.8,0.35) node[below] {\scriptsize $\vec{s}_1$};
+    \draw[->, red, thick] (1.35,0.73) -- (2.2,0.73) node[above] {\scriptsize $\vec{s}_2$};
+  \end{tikzpicture}
+  \par\medskip
+  \textit{\small 示意图 4.2：线线角的几何法。把 $l_2$ 平移为 $l_2'$，转化为 $l_1$ 与 $l_2'$ 的相交直线夹角。}
+\end{center}
+
+\textbf{几何法板书流程}：
+\[
+\boxed{
+\text{找平行线}
+\rightarrow
+\text{平移成相交}
+\rightarrow
+\text{进入三角形}
+\rightarrow
+\text{余弦定理或勾股定理求角}
+}
+\]
+若得到的相交直线夹角为钝角，要取其补角作为线线角。
+
+\textbf{向量法}：设两直线的方向向量分别为 $\vec{s}_1,\vec{s}_2$，线线角为 $\theta$，则
+\[
+  \cos\theta
+  =
+  \left|\cos\langle \vec{s}_1,\vec{s}_2\rangle\right|
+  =
+  \frac{|\vec{s}_1\cdot \vec{s}_2|}{|\vec{s}_1|\,|\vec{s}_2|}.
+\]
+这里的绝对值不是装饰，而是因为线线角只取锐角或直角。
+
+\textbf{课堂追问}：如果向量夹角算出 $120^\circ$，线线角是多少？学生必须答出 $60^\circ$，并能说明原因是“异面直线所成角取锐角或直角”。
+\end{teachbox}
+
+\begin{teachbox}{方法卡二：线面角计算}
+\textbf{定义图像}：直线 $l$ 与平面 $\alpha$ 交于点 $Q$。取 $P\in l$，过点 $P$作 $PA\perp\alpha$，垂足为 $A$。连接 $AQ$，则 $AQ$ 是斜线 $PQ$ 在平面 $\alpha$ 内的射影，$\angle PQA$ 就是直线 $l$ 与平面 $\alpha$ 所成的角。
+
+\begin{center}
+  \begin{tikzpicture}[scale=1.4, >=stealth, line join=round, line cap=round]
+    \draw[thick, fill=gray!3] (0,0) -- (5.0,0) -- (6.0,1.45) -- (1.0,1.45) -- cycle;
+    \node at (0.55,0.28) {\small $\alpha$};
+
+    \coordinate (Q) at (1.7,0.55);
+    \coordinate (A) at (4.15,0.82);
+    \coordinate (P) at (4.15,2.75);
+
+    \draw[very thick, blue] (Q) -- (P);
+    \node[above left, blue] at (2.8,1.65) {\small $l$};
+    \draw[dashed, very thick, red] (P) -- (A);
+    \draw[thick, gray!80] (Q) -- (A);
+
+    \fill (Q) circle (1.2pt) node[below left] {\small $Q$};
+    \fill (A) circle (1.2pt) node[below right] {\small $A$};
+    \fill (P) circle (1.2pt) node[above] {\small $P$};
+
+    \draw[thin, red] (4.15,1.03) -- (3.94,0.98) -- (3.94,0.77);
+    \draw[thin] (2.27,0.61) arc (6:38:0.55);
+    \node at (2.45,0.82) {\small $\theta$};
+
+    \node[below] at (2.95,0.62) {\scriptsize 射影 $AQ$};
+    \node[right, red] at (4.15,1.8) {\scriptsize 高 $PA$};
+    \node[above left, blue] at (3.3,2.05) {\scriptsize 斜线 $PQ$};
+  \end{tikzpicture}
+  \par\medskip
+  \textit{\small 示意图 4.3：线面角定义。线面角不是斜线和法线的角，而是斜线和它在平面内射影的角。}
+\end{center}
+
+\textbf{几何法板书流程}：
+\[
+\boxed{
+\text{找斜足 $Q$}
+\rightarrow
+\text{作高 $PA\perp\alpha$}
+\rightarrow
+\text{连射影 $AQ$}
+\rightarrow
+\text{在 Rt$\triangle PQA$ 中算角}
+}
+\]
+
+在直角三角形 $PQA$ 中：
+\[
+  \sin\theta=\frac{PA}{PQ},
+  \qquad
+  \cos\theta=\frac{AQ}{PQ},
+  \qquad
+  \tan\theta=\frac{PA}{AQ}.
+\]
+课堂口诀可以压成一句：\textbf{高度看正弦，影子看余弦}。
+
+\textbf{向量法}：设直线 $l$ 的方向向量为 $\vec{s}$，平面 $\alpha$ 的法向量为 $\vec{n}$，直线与平面所成角为 $\theta$，则
+\[
+  \sin\theta
+  =
+  \left|\cos\langle \vec{s},\vec{n}\rangle\right|
+  =
+  \frac{|\vec{s}\cdot \vec{n}|}{|\vec{s}|\,|\vec{n}|}.
+\]
+注意这里得到的是\textbf{线面角的正弦值}，不是余弦值。因为方向向量 $\vec{s}$ 与法向量 $\vec{n}$ 的夹角，和线面角互余。
+
+\begin{center}
+  \begin{tikzpicture}[scale=1.35, >=stealth, line join=round, line cap=round]
+    \draw[thick, fill=gray!3] (0,0) -- (4.6,0) -- (5.5,1.25) -- (0.9,1.25) -- cycle;
+    \coordinate (Q) at (1.4,0.45);
+    \coordinate (A) at (3.75,0.7);
+    \coordinate (P) at (3.75,2.45);
+    \draw[thick, blue] (Q) -- (P);
+    \draw[dashed, gray] (Q) -- (A);
+    \draw[dashed, red] (P) -- (A);
+    \draw[->, very thick, blue] (Q) -- ($(Q)!0.78!(P)$) node[above left] {\small $\vec{s}$};
+    \draw[->, very thick, red] (Q) -- ($(Q)+(0,1.45)$) node[left] {\small $\vec{n}$};
+    \draw[thin] (1.4,0.98) arc (90:38:0.52);
+    \node at (1.75,1.2) {\small $\phi$};
+    \draw[thin] (1.9,0.5) arc (6:38:0.55);
+    \node at (2.1,0.73) {\small $\theta$};
+    \node[below] at (2.75,-0.08) {\small $\phi+\theta=90^\circ$，所以 $\cos\phi=\sin\theta$};
+  \end{tikzpicture}
+  \par\medskip
+  \textit{\small 示意图 4.4：线面角向量法。方向向量与法向量夹角为 $\phi$，线面角为 $\theta$，两者互余。}
+\end{center}
+
+\textbf{课堂追问}：体积法求出点 $P$ 到平面 $\alpha$ 的距离 $PA$ 后，若题问斜线 $PQ$ 与平面 $\alpha$ 所成角，应该用 $\sin\theta=\frac{PA}{PQ}$，还是 $\cos\theta=\frac{PA}{PQ}$？必须让学生答出“正弦”。
+\end{teachbox}
+
+\begin{teachbox}{方法卡三：二面角计算}
+二面角是高中立体几何中最核心也是最难找的角。这里总结五种最常用的求法：
+
+\teachblock{1. 定义法}{
+  在二面角的公共交线 $l$ 上取一点 $O$，在两个半平面内分别作垂直于交线的射线 $OA, OB$。则 $\angle AOB$ 就是二面角 $\alpha-l-\beta$ 的平面角。
+  主要利用勾股定理或余弦定理，在 $\triangle AOB$ 中解三角形。
+  \[
+    \cos\angle AOB = \frac{OA^2 + OB^2 - AB^2}{2OA \cdot OB}
+  \]
+  \begin{center}
+    \begin{tikzpicture}[scale=1.35, >=stealth, line join=round, line cap=round]
+      \coordinate (O) at (2.0,1.0);
+      \coordinate (L1) at (2.0,-0.5);
+      \coordinate (L2) at (2.0,2.5);
+      \draw[thick, fill=gray!5] (L1) -- (L2) -- (4.5, 2.7) -- (4.5, -0.3) -- cycle;
+      \draw[thick, fill=gray!12] (L1) -- (L2) -- (0.0, 1.8) -- (0.0, -1.2) -- cycle;
+      \draw[very thick, red] (L1) -- (L2);
+      \node[above, red] at (L2) {\small $l$};
+      \node at (4.2, 0.1) {\small $\alpha$};
+      \node at (0.3, -0.8) {\small $\beta$};
+      
+      \coordinate (A) at (3.5, 1.45);
+      \coordinate (B) at (0.8, 1.3);
+      \draw[very thick, blue] (O) -- (A);
+      \draw[very thick, blue] (O) -- (B);
+      \draw[dashed, thick, gray!80] (A) -- (B);
+      \fill (O) circle (1.5pt) node[below right] {\small $O$};
+      \fill (A) circle (1.2pt) node[right] {\small $A$};
+      \fill (B) circle (1.2pt) node[left] {\small $B$};
+      
+      \draw[thin] (1.5, 1.15) arc (160:25:0.5);
+      \node at (2.0, 1.45) {\small $\theta$};
+    \end{tikzpicture}
+    \par\medskip
+    \textit{\small 示意图 4.5.1：二面角定义法。交线上找点，两面内引垂线，连线成三角形求解。}
+  \end{center}
+}
+
+\teachblock{2. 线面角法（定义法进阶）}{
+  将求二面角转化为一条线与一个平面的夹角。
+  设 $P$ 为面 $\beta$ 内的一点，过 $P$ 作交线 $l$ 的垂线 $PA$（垂足为 $A$），过 $P$ 作面 $\alpha$ 的垂线 $PH$（垂足为 $H$）。连接 $AH$，则由三垂线定理知 $AH \perp l$，所以 $\angle PAH$ 即为二面角。
+  此时 $\theta = \angle PAH$ 可以看作是斜线 $PA$ 与平面 $\alpha$ 的线面角。
+  求出点面距（投影的高）$PH$ 和斜边（线 $a$）$PA$ 的长度后，直接求正弦值，再通过同角公式求余弦：
+  \[
+    \sin\theta = \frac{PH}{PA}, \quad \cos\theta = \sqrt{1 - \sin^2\theta}
+  \]
+  \begin{center}
+    \begin{tikzpicture}[scale=1.35, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (2.0,1.0);
+      \coordinate (L1) at (2.0,-0.5);
+      \coordinate (L2) at (2.0,2.5);
+      \draw[thick, fill=gray!5] (L1) -- (L2) -- (4.5, 2.7) -- (4.5, -0.3) -- cycle;
+      \draw[thick, fill=gray!12] (L1) -- (L2) -- (0.0, 1.8) -- (0.0, -1.2) -- cycle;
+      \draw[very thick, red] (L1) -- (L2);
+      \node[above, red] at (L2) {\small $l$};
+      \node at (4.2, 0.1) {\small $\alpha$};
+      \node at (0.3, -0.8) {\small $\beta$};
+      
+      \coordinate (P) at (0.5, 1.5);
+      \coordinate (H) at (2.8, 1.6);
+      
+      \draw[very thick, blue] (P) -- (A);
+      \draw[dashed, thick, red] (P) -- (H);
+      \draw[dashed, thick, gray!80] (A) -- (H);
+      
+      \fill (A) circle (1.5pt) node[below left] {\small $A$};
+      \fill (P) circle (1.5pt) node[left] {\small $P$};
+      \fill (H) circle (1.5pt) node[right] {\small $H$};
+      
+      \draw[thin] (1.4, 1.1) arc (165:30:0.5);
+      \node at (1.9, 1.45) {\small $\theta$};
+    \end{tikzpicture}
+    \par\medskip
+    \textit{\small 示意图 4.5.2：二面角线面角法。利用点面距 $PH$ 除以斜边 $PA$ 求 $\sin\theta$，进而求 $\cos\theta$。}
+  \end{center}
+}
+
+\teachblock{3. 三垂线法}{
+  当图形中存在或容易作线面垂直关系时使用。
+  若 $PO \perp \alpha$（垂足为 $O$），过 $P$ 作交线 $l$ 的垂线 $PA$（垂足为 $A$），连接 $OA$。根据三垂线定理，有 $OA \perp l$。此时 $\angle PAO$ 即为二面角（或其补角）。
+  在直角三角形 $\triangle PAO$ 中求各边长，表示出其三角函数值：
+  \[
+    \tan\theta = \frac{PO}{OA}, \quad \sin\theta = \frac{PO}{PA}, \quad \cos\theta = \frac{OA}{PA}
+  \]
+  \begin{center}
+    \begin{tikzpicture}[scale=1.35, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (2.0,1.0);
+      \coordinate (L1) at (2.0,-0.5);
+      \coordinate (L2) at (2.0,2.5);
+      \draw[thick, fill=gray!5] (L1) -- (L2) -- (4.5, 2.7) -- (4.5, -0.3) -- cycle;
+      \draw[thick, fill=gray!12] (L1) -- (L2) -- (0.0, 1.8) -- (0.0, -1.2) -- cycle;
+      \draw[very thick, red] (L1) -- (L2);
+      \node[above, red] at (L2) {\small $l$};
+      \node at (4.2, 0.1) {\small $\alpha$};
+      \node at (0.3, -0.8) {\small $\beta$};
+      
+      \coordinate (P) at (0.5, 1.5);
+      \coordinate (H) at (2.8, 1.6);
+      
+      \draw[very thick, blue] (P) -- (A);
+      \draw[dashed, thick, red] (P) -- (H);
+      \draw[very thick, blue] (A) -- (H);
+      
+      \fill (A) circle (1.5pt) node[below left] {\small $A$};
+      \fill (P) circle (1.5pt) node[left] {\small $P$};
+      \fill (H) circle (1.5pt) node[right] {\small $O$};
+      
+      \draw[thin] (1.4, 1.1) arc (165:30:0.5);
+      \node at (1.9, 1.45) {\small $\theta$};
+    \end{tikzpicture}
+    \par\medskip
+    \textit{\small 示意图 4.5.3：二面角三垂线法。利用线面垂直 $PO \perp \alpha$ 构造并证明三垂线，从而定位平面角。}
+  \end{center}
+}
+
+\teachblock{4. 面积比法（三垂线法进阶）}{
+  将一维比值推广到二维射影面积。
+  若平面 $\beta$ 内有一个多面体的侧面，其面积为 $S$，它在平面 $\alpha$ 上的射影图形的面积为 $S'$。若这两个图形拥有公共底边（或底边平行于交线），则二面角 $\theta$ 满足：
+  \[
+    \cos\theta = \frac{S'}{S}
+  \]
+  这种方法无需寻找或绘制复杂的二面角平面角，特别适合无法直接作图或交线不完整的立体图形。可多角度求出这两个面积（例如利用海伦公式或常规面积公式），然后相除。
+  \begin{center}
+    \begin{tikzpicture}[scale=1.35, >=stealth, line join=round, line cap=round]
+      \coordinate (L1) at (2.0,-0.5);
+      \coordinate (L2) at (2.0,2.5);
+      \draw[thick, fill=gray!5] (L1) -- (L2) -- (4.5, 2.7) -- (4.5, -0.3) -- cycle;
+      \draw[thick, fill=gray!12] (L1) -- (L2) -- (0.0, 1.8) -- (0.0, -1.2) -- cycle;
+      \draw[very thick, red] (L1) -- (L2);
+      \node[above, red] at (L2) {\small $l$};
+      \node at (4.2, 0.1) {\small $\alpha$};
+      \node at (0.3, -0.8) {\small $\beta$};
+      
+      \coordinate (C) at (2.0, 0.2);
+      \coordinate (D) at (2.0, 1.8);
+      \coordinate (P) at (0.5, 1.2);
+      \coordinate (H) at (2.8, 1.3);
+      
+      \draw[thick, blue] (P) -- (C);
+      \draw[thick, blue] (P) -- (D);
+      \draw[dashed, thick, red] (H) -- (C);
+      \draw[dashed, thick, red] (H) -- (D);
+      \draw[dashed, thick, gray!80] (P) -- (H);
+      
+      \fill (C) circle (1.5pt) node[left] {\small $C$};
+      \fill (D) circle (1.5pt) node[left] {\small $D$};
+      \fill (P) circle (1.5pt) node[left] {\small $P$ ($S$)};
+      \fill (H) circle (1.5pt) node[right] {\small $H$ ($S'$)};
+    \end{tikzpicture}
+    \par\medskip
+    \textit{\small 示意图 4.5.4：二面角面积比法。利用原图 $\triangle PCD$ 面积 $S$ 与平面 $\alpha$ 上的投影 $\triangle HCD$ 面积 $S'$ 的比值求 $\cos\theta$。}
+  \end{center}
+}
+
+\teachblock{5. 空间向量法}{
+  通过代数建系计算求角：
+  \begin{enumerate}
+    \item \textbf{建系表示点与线}：利用图形中两两垂直的三条线作为坐标轴建立空间直角坐标系。写出各个顶点的坐标，进而表示出线段对应的向量。
+    \item \textbf{求两条法向量}：
+      设平面 $\alpha, \beta$ 的法向量分别为 $\vec{n}_1 = (x_1, y_1, z_1)$，$\vec{n}_2 = (x_2, y_2, z_2)$。
+      根据法向量与平面内两条不共线的相交向量垂直的关系，列出方程组：
+      \[
+        \begin{cases}
+          \vec{n} \cdot \vec{u} = 0 \\
+          \vec{n} \cdot \vec{v} = 0
+        \end{cases}
+      \]
+      通过给其中一个变量（如 $x$ 或 $z$）赋予一个简易方便的值（通常为 $1$ 或与分母约分的常数），解出法向量的坐标。法向量整体倍乘不改变方向，要尽量化简。
+    \item \textbf{余弦公式求夹角}：
+      利用法向量的夹角公式：
+      \[
+        \cos\langle \vec{n}_1, \vec{n}_2 \rangle = \frac{\vec{n}_1 \cdot \vec{n}_2}{|\vec{n}_1|\,|\vec{n}_2|}
+      \]
+      \textbf{特别注意正负号}：由于二面角的范围是 $[0, \pi]$，可能为锐角或钝角。而法向量夹角范围是 $[0, \pi]$。
+      在向量法中不能无脑加绝对值。最后必须结合几何图形的开口方向（看两半平面构成的二面角是锐角还是钝角）来判断正负号：若为锐角，余弦值为正；若为钝角，余弦值为负。
+  \end{enumerate}
+  \begin{center}
+    \begin{tikzpicture}[scale=1.35, >=stealth, line join=round, line cap=round]
+      \coordinate (O) at (2.0,1.0);
+      \coordinate (L1) at (2.0,-0.5);
+      \coordinate (L2) at (2.0,2.5);
+      \draw[thick, fill=gray!5] (L1) -- (L2) -- (4.5, 2.7) -- (4.5, -0.3) -- cycle;
+      \draw[thick, fill=gray!12] (L1) -- (L2) -- (0.0, 1.8) -- (0.0, -1.2) -- cycle;
+      \draw[very thick, red] (L1) -- (L2);
+      \node[above, red] at (L2) {\small $l$};
+      \node at (4.2, 0.1) {\small $\alpha$};
+      \node at (0.3, -0.8) {\small $\beta$};
+      
+      \draw[->, very thick, blue] (O) -- (0.75, 1.9) node[above left] {\small $\vec{n}_1$};
+      \draw[->, very thick, blue] (O) -- (3.25, 1.9) node[above right] {\small $\vec{n}_2$};
+      
+      \draw[thin] (1.35, 1.45) arc (140:40:0.5);
+      \node at (2.0, 1.7) {\small $\phi$};
+    \end{tikzpicture}
+    \par\medskip
+    \textit{\small 示意图 4.5.5：二面角空间向量法。通过求两半平面的法向量 $\vec{n}_1,\vec{n}_2$ 的夹角余弦，根据开口方向判断二面角正负。}
+  \end{center}
+}
+
+\textbf{计算习惯}：求法向量时尽量不要让结果保留分数。若求得
+\[
+  \vec{n}=\left(1,\frac12,\frac12\right),
+\]
+可以整体乘以 $2$，改写为
+\[
+  \vec{n}=(2,1,1).
+\]
+法向量整体倍乘不改变方向，却能大幅降低后续计算量。
+
+\textbf{课堂追问}：为什么线线角公式常加绝对值，而二面角公式不能总是加绝对值？标准回答是：线线角规定只取锐角或直角；二面角可能是锐角，也可能是钝角，要按题目和图形判断。
+\end{teachbox}
+
+\begin{teachbox}{距离求法与等体积法降维}
+\begin{itemize}
+  \item \textbf{点面距离}：点到平年的垂线段长度。当垂足极难直接确定时，首选\textbf{等体积法}（换底法）：
+    \[ V_{A-BCD} = V_{B-ACD} \implies \frac{1}{3} S_{\triangle BCD} \cdot h_A = \frac{1}{3} S_{\triangle ACD} \cdot h_B \implies h_A = \frac{S_{\triangle ACD} \cdot h_B}{S_{\triangle BCD}} \]
+  \item \textbf{线面与面面距离}：线平行于面、面平行于面时，均可转化为直线上任意一点（或一个面上任意一点）到另一平面的点面距离求解。
+\end{itemize}
+\end{teachbox}
+
+\subsection*{4. 外接球与内切球的五大核心模型}
+
+\begin{teachbox}{外接球四大模型总结}
+\begin{itemize}
+  \item \textbf{墙角模型（补形法）}：适用于三条棱两两垂直的三棱锥，外接球半径 $R = \frac{1}{2}\sqrt{a^2 + b^2 + c^2}$。
+  \item \textbf{对棱相等模型（嵌入法）}：三棱锥的三组对棱分别相等，可将其嵌入一个长方体中，外接球半径即为长方体体对角线的一半。
+  \item \textbf{柱体/侧棱垂直底面模型}：棱锥有一条侧棱垂直于底面，或者为直三棱柱。球心位于底面外心垂直线上，有关系：
+    \[ R^2 = r^2 + \left(\frac{h}{2}\right)^2 \]
+    （其中 $r$ 为底面外接圆半径，$h$ 为高/侧棱长）。
+  \item \textbf{斗笠模型}：正棱锥或圆锥等轴对称几何体。设高为 $h$，底面外接圆半径为 $r$，球半径为 $R$，由直角三角形勾股关系得：
+    \[ (h - R)^2 + r^2 = R^2 \]
+\end{itemize}
+\end{teachbox}
+
+\begin{teachbox}{内切球两大求法}
+\begin{itemize}
+  \item \textbf{等体积法（分割法）}：适用于任意多面体（尤其是棱锥）。设多面体体积为 $V$，表面积为 $S_{\text{表}}$，内切球半径为 $r$，由分割成小棱锥的体积和可得：
+    \[ V = \frac{1}{3} S_{\text{表}} \cdot r \implies r = \frac{3V}{S_{\text{表}}} \]
+  \item \textbf{最大截面法}：适用于圆锥、圆台等旋转体。圆锥的内切球对应其轴截面等腰三角形的内切圆，其内切圆半径为：
+    \[ r = \frac{2S_{\text{截}}}{C_{\text{截}}} \]
+    （其中 $S_{\text{截}}$ 为轴截面三角形面积，$C_{\text{截}}$ 为其周长）。
+\end{itemize}
+\end{teachbox}
+
+\teachblock{动点轨迹与折叠问题的教学导向}{
+  动点轨迹、折叠问题、球截面等综合问题属于高一立体几何的拔高难点。教学中若学生基础较弱，应优先夯实上述公式、判定定理及外接球柱体/墙角模型。轨迹与折叠问题应侧重于“平面展开”与“翻折前后垂直/长度不变性”的直观引导，不作为短期基础突破的主攻点。
+}
+
+\newpage
+
+\section{常见几何体直观图与画图指南}
+
+作为高一立体几何的“破局课”，引导学生在黑板上或演算纸上画出结构清晰、符合几何透视的直观图，是培养空间几何直觉的首要步骤。以下是四大类、共 13 种常见几何体的规范直观图及画图要点：
+
+\subsection*{1. 棱柱与长方体模型}
+\noindent
+\begin{tabularx}{\textwidth}{XXX}
+  \textbf{（1）(正)三棱柱} & \textbf{（2）(正)四棱柱} & \textbf{（3）长方体} \\
+  \begin{center}
+    \begin{tikzpicture}[scale=1.25, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (-0.9,-0.2);
+      \coordinate (B) at (0.9,-0.5);
+      \coordinate (C) at (0.1,0.5);
+      \coordinate (A1) at (-0.9,1.8);
+      \coordinate (B1) at (0.9,1.5);
+      \coordinate (C1) at (0.1,2.5);
+      \coordinate (D) at ($(A)!0.5!(B)$);
+      \coordinate (D1) at ($(A1)!0.5!(B1)$);
+      
+      \draw[dashed, thick, gray!60] (A) -- (C) -- (B);
+      \draw[dashed, thick, gray!60] (C) -- (C1);
+      \draw[thick] (A) -- (B) -- (B1) -- (A1) -- cycle;
+      \draw[thick] (A1) -- (C1) -- (B1);
+      
+      \fill[green!15, opacity=0.6] (C) -- (D) -- (D1) -- (C1) -- cycle;
+      \draw[dashed, thick, green!70!black] (C) -- (D);
+      \draw[thick, green!70!black] (D) -- (D1) -- (C1);
+      \draw[dashed, thick, green!70!black] (C) -- (C1);
+      
+      \draw[red, thick, ->] (D) -- (1.7,-0.63) node[below right] {\small $x$};
+      \draw[red, thick, ->] (D) -- (0.23,0.85) node[above right] {\small $y$};
+      \draw[red, thick, ->] (D) -- (0,2.1) node[above] {\small $z$};
+      \fill[red] (D) circle (1.2pt);
+      
+      \node[left] at (A) {\small $A$};
+      \node[right] at (B) {\small $B$};
+      \node[above right] at (C) {\small $C$};
+      \node[left] at (A1) {\small $A_1$};
+      \node[right] at (B1) {\small $B_1$};
+      \node[above] at (C1) {\small $C_1$};
+    \end{tikzpicture}
+  \end{center}
+  &
+  \begin{center}
+    \begin{tikzpicture}[scale=1.25, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (1.5,-0.25);
+      \coordinate (D) at (0.5,0.4);
+      \coordinate (C) at (2.0,0.15);
+      \coordinate (A1) at (0,1.6);
+      \coordinate (B1) at (1.5,1.35);
+      \coordinate (D1) at (0.5,2.0);
+      \coordinate (C1) at (2.0,1.75);
+      
+      \draw[dashed, thick, gray!60] (A) -- (D) -- (C);
+      \draw[dashed, thick, gray!60] (D) -- (D1);
+      \draw[thick] (A) -- (B) -- (C) -- (C1) -- (B1) -- (A1) -- cycle;
+      \draw[thick] (B) -- (B1);
+      \draw[thick] (A1) -- (D1) -- (C1);
+      
+      \node[below left] at (A) {\small $A$};
+      \node[below] at (B) {\small $B$};
+      \node[right] at (C) {\small $C$};
+      \node[above right] at (D) {\small $D$};
+      \node[left] at (A1) {\small $A_1$};
+      \node[right] at (B1) {\small $B_1$};
+    \end{tikzpicture}
+  \end{center}
+  &
+  \begin{center}
+    \begin{tikzpicture}[scale=1.25, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (1.8,-0.25);
+      \coordinate (D) at (0.5,0.4);
+      \coordinate (C) at (2.3,0.15);
+      \coordinate (A1) at (0,1.1);
+      \coordinate (B1) at (1.8,0.85);
+      \coordinate (D1) at (0.5,1.5);
+      \coordinate (C1) at (2.3,1.25);
+      
+      \draw[dashed, thick, gray!60] (A) -- (D) -- (C);
+      \draw[dashed, thick, gray!60] (D) -- (D1);
+      \draw[thick] (A) -- (B) -- (C) -- (C1) -- (B1) -- (A1) -- cycle;
+      \draw[thick] (B) -- (B1);
+      \draw[thick] (A1) -- (D1) -- (C1);
+      
+      \node[below left] at (A) {\small $A$};
+      \node[below] at (B) {\small $B$};
+      \node[right] at (C) {\small $C$};
+      \node[above right] at (D) {\small $D$};
+      \node[left] at (A1) {\small $A_1$};
+      \node[right] at (B1) {\small $B_1$};
+    \end{tikzpicture}
+  \end{center}
+  \\
+  \textbf{画法要点}：底面画成扁平的斜二测三角形；侧棱画成垂直向上的等长平行线。绿色面为其中垂面对称面，红线为建系推荐。
+  &
+  \textbf{画法要点}：底面为平行四边形；后、左、下三条被遮挡的棱用虚线表示；高度方向的侧棱平行且等长。
+  &
+  \textbf{画法要点}：侧棱高度较底面较短，后方不可见的三条棱用细虚线表示；确保平行线的倾斜斜率严格一致。
+\end{tabularx}
+
+\subsection*{2. 三棱锥与外接球模型}
+\noindent
+\begin{tabularx}{\textwidth}{XXX}
+  \textbf{（1）(正)三棱锥} & \textbf{（2）正四面体 (嵌入立方体)} & \textbf{（3）对棱相等三棱锥} \\
+  \begin{center}
+    \begin{tikzpicture}[scale=1.25, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (1.6,-0.3);
+      \coordinate (C) at (0.9,0.4);
+      \coordinate (P) at (0.83,1.7);
+      \coordinate (O) at (0.83,0.03);
+      
+      \draw[dashed, thick, gray!60] (A) -- (C) -- (B);
+      \draw[dashed, thick, gray!60] (P) -- (C);
+      \draw[dashed, thick, red] (P) -- (O);
+      
+      \draw[thick] (P) -- (A) -- (B) -- cycle;
+      \draw[thick] (P) -- (B);
+      
+      \fill[red] (O) circle (1.2pt) node[below] {\small $O$};
+      \node[below left] at (A) {\small $A$};
+      \node[below] at (B) {\small $B$};
+      \node[above right] at (C) {\small $C$};
+      \node[above] at (P) {\small $P$};
+    \end{tikzpicture}
+  \end{center}
+  &
+  \begin{center}
+    \begin{tikzpicture}[scale=1.25, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (1.5,-0.25);
+      \coordinate (D) at (0.5,0.4);
+      \coordinate (C) at (2.0,0.15);
+      \coordinate (A1) at (0,1.6);
+      \coordinate (B1) at (1.5,1.35);
+      \coordinate (D1) at (0.5,2.0);
+      \coordinate (C1) at (2.0,1.75);
+      
+      \draw[dashed, gray!45, thin] (A) -- (D);
+      \draw[dashed, gray!45, thin] (C) -- (D);
+      \draw[dashed, gray!45, thin] (D) -- (D1);
+      \draw[gray!45, thin] (A) -- (B) -- (C) -- (C1) -- (B1) -- (A1) -- cycle;
+      \draw[gray!45, thin] (B) -- (B1);
+      \draw[gray!45, thin] (A1) -- (D1) -- (C1);
+      
+      \draw[dashed, thick, black] (A) -- (C);
+      \draw[dashed, thick, black] (A) -- (D1);
+      \draw[dashed, thick, black] (C) -- (D1);
+      \draw[thick, black] (A) -- (B1);
+      \draw[thick, black] (C) -- (B1);
+      \draw[thick, black] (B1) -- (D1);
+      
+      \node[below left] at (A) {\small $A$};
+      \node[right] at (C) {\small $C$};
+      \node[right] at (B1) {\small $B_1$};
+      \node[above] at (D1) {\small $D_1$};
+    \end{tikzpicture}
+  \end{center}
+  &
+  \begin{center}
+    \begin{tikzpicture}[scale=1.25, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (1.8,-0.25);
+      \coordinate (D) at (0.5,0.4);
+      \coordinate (C) at (2.3,0.15);
+      \coordinate (A1) at (0,1.1);
+      \coordinate (B1) at (1.8,0.85);
+      \coordinate (D1) at (0.5,1.5);
+      \coordinate (C1) at (2.3,1.25);
+      
+      \draw[dashed, gray!45, thin] (A) -- (D);
+      \draw[dashed, gray!45, thin] (C) -- (D);
+      \draw[dashed, gray!45, thin] (D) -- (D1);
+      \draw[gray!45, thin] (A) -- (B) -- (C) -- (C1) -- (B1) -- (A1) -- cycle;
+      \draw[gray!45, thin] (B) -- (B1);
+      \draw[gray!45, thin] (A1) -- (D1) -- (C1);
+      
+      \draw[dashed, thick, black] (A) -- (C);
+      \draw[dashed, thick, black] (A) -- (D1);
+      \draw[dashed, thick, black] (C) -- (D1);
+      \draw[thick, black] (A) -- (B1);
+      \draw[thick, black] (C) -- (B1);
+      \draw[thick, black] (B1) -- (D1);
+      
+      \node[below left] at (A) {\small $A$};
+      \node[right] at (C) {\small $C$};
+      \node[right] at (B1) {\small $B_1$};
+      \node[above] at (D1) {\small $D_1$};
+    \end{tikzpicture}
+  \end{center}
+  \\
+  \textbf{画法要点}：底面画成扁平的斜二测三角形；后方不可见侧棱 $PC, AC, BC$ 用虚线，顶点投影落在底面中心 $O$。
+  &
+  \textbf{画法要点}：立方体作为辅助框（浅灰色细线）；连接立方体不共棱的四个顶点，得到的六条面对角线即正四面体的棱。
+  &
+  \textbf{画法要点}：若三棱锥三组对棱分别相等，首选将其嵌入长方体辅助框中。长方体的体对角线即为其外接球直径。
+\end{tabularx}
+
+\subsection*{3. 四棱锥模型}
+\noindent
+\begin{tabularx}{\textwidth}{XXX}
+  \textbf{（1）(正)四棱锥} & \textbf{（2）带墙角的四棱锥} & \textbf{（3）侧面垂直底面的四棱锥} \\
+  \begin{center}
+    \begin{tikzpicture}[scale=1.25, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (1.6,-0.3);
+      \coordinate (D) at (0.6,0.4);
+      \coordinate (C) at (2.2,0.1);
+      \coordinate (P) at (1.1,1.7);
+      \coordinate (O) at (1.1,0.05);
+      
+      \draw[dashed, thick, gray!80] (A) -- (D) -- (C);
+      \draw[dashed, thick, gray!80] (A) -- (C);
+      \draw[dashed, thick, gray!80] (B) -- (D);
+      \draw[dashed, thick, red] (P) -- (O);
+      
+      \draw[thick] (P) -- (A) -- (B) -- (C) -- (P) -- (B);
+      
+      \fill[red] (O) circle (1.2pt) node[below] {\small $O$};
+      \node[below left] at (A) {\small $A$};
+      \node[below] at (B) {\small $B$};
+      \node[right] at (C) {\small $C$};
+      \node[above right] at (D) {\small $D$};
+      \node[above] at (P) {\small $P$};
+    \end{tikzpicture}
+  \end{center}
+  &
+  \begin{center}
+    \begin{tikzpicture}[scale=1.25, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (1.6,-0.3);
+      \coordinate (D) at (0.6,0.4);
+      \coordinate (C) at (2.2,0.1);
+      \coordinate (P) at (0,1.7);
+      
+      \draw[dashed, thick, gray!80] (A) -- (D) -- (C);
+      \draw[dashed, thick, red] (P) -- (D);
+      \draw[dashed, thick, red] (A) -- (C);
+      
+      \draw[thick] (P) -- (A) -- (B) -- (C) -- (P) -- (B);
+      \draw[thick] (P) -- (C);
+      
+      \draw[red, thin] (0, 0.15) -- (0.06, 0.19) -- (0.06, 0.04);
+      \draw[red, thin] (0, 0.15) -- (0.15, 0.12) -- (0.15, -0.03);
+      
+      \node[below left] at (A) {\small $A$};
+      \node[below] at (B) {\small $B$};
+      \node[right] at (C) {\small $C$};
+      \node[above right] at (D) {\small $D$};
+      \node[above] at (P) {\small $P$};
+    \end{tikzpicture}
+  \end{center}
+  &
+  \begin{center}
+    \begin{tikzpicture}[scale=1.25, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (1.7,-0.3);
+      \coordinate (D) at (0.6,0.5);
+      \coordinate (C) at (2.3,0.2);
+      \coordinate (P) at (0.3,1.5);
+      \coordinate (H) at (0.3,0.25);
+      
+      \draw[dashed, thick, gray!60] (A) -- (D) -- (C);
+      \draw[dashed, thick, gray!60] (P) -- (D);
+      \draw[dashed, thick, red] (P) -- (H);
+      
+      \draw[thick] (P) -- (A) -- (B) -- (C) -- (P) -- (B);
+      
+      \fill[red] (H) circle (1.2pt) node[below] {\small $H$};
+      \node[below left] at (A) {\small $A$};
+      \node[below] at (B) {\small $B$};
+      \node[right] at (C) {\small $C$};
+      \node[above right] at (D) {\small $D$};
+      \node[above] at (P) {\small $P$};
+    \end{tikzpicture}
+  \end{center}
+  \\
+  \textbf{画法要点}：底面为平行四边形；连接底面两对角线确定中心 $O$；从 $O$ 垂直向上作高线 $PO$。
+  &
+  \textbf{画法要点}：侧棱 $PA \perp$ 平面 $ABCD$，故 $A$ 点可作为直角坐标系的原点，构成“墙角模型”（$PA, AB, AD$ 两两垂直）。
+  &
+  \textbf{画法要点}：侧面 $PAD$ 垂直于底面，其在交线 $AD$ 中点 $H$ 的垂线即为整个四棱锥的高 $PH$。
+\end{tabularx}
+
+\subsection*{4. 台体与旋转体模型}
+\noindent
+\begin{tabularx}{\textwidth}{XXXX}
+  \textbf{（1）三棱台} & \textbf{（2）四棱台} & \textbf{（3）圆柱} & \textbf{（4）圆锥} \\
+  \begin{center}
+    \begin{tikzpicture}[scale=1.2, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (1.8,-0.2);
+      \coordinate (C) at (0.9,0.4);
+      \coordinate (A1) at (0.48,1.08);
+      \coordinate (B1) at (1.56,0.96);
+      \coordinate (C1) at (1.02,1.32);
+      \coordinate (S) at (1.2,2.7);
+      
+      \draw[dashed, gray!45, thin] (A1) -- (S);
+      \draw[dashed, gray!45, thin] (B1) -- (S);
+      \draw[dashed, gray!45, thin] (C1) -- (S);
+      \fill[gray] (S) circle (1.2pt) node[above] {\small $S$};
+      
+      \draw[dashed, thick, gray!60] (A) -- (C) -- (B);
+      \draw[dashed, thick, gray!60] (A1) -- (C1) -- (B1);
+      \draw[dashed, thick, gray!60] (C) -- (C1);
+      
+      \draw[thick] (A) -- (B) -- (B1) -- (A1) -- cycle;
+      \draw[thick] (B) -- (B1);
+      \draw[thick] (A1) -- (B1);
+      
+      \node[below left] at (A) {\small $A$};
+      \node[above left] at (C) {\small $C$};
+      \node[below] at (B) {\small $B$};
+      \node[left] at (A1) {\small $A_1$};
+      \node[above left] at (C1) {\small $C_1$};
+      \node[right] at (B1) {\small $B_1$};
+    \end{tikzpicture}
+  \end{center}
+  &
+  \begin{center}
+    \begin{tikzpicture}[scale=1.2, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (1.8,-0.3);
+      \coordinate (D) at (0.6,0.4);
+      \coordinate (C) at (2.4,0.1);
+      \coordinate (A1) at (0.48,1.08);
+      \coordinate (B1) at (1.56,0.9);
+      \coordinate (C1) at (1.92,1.14);
+      \coordinate (D1) at (0.84,1.32);
+      \coordinate (S) at (1.2,2.7);
+      
+      \draw[dashed, gray!45, thin] (A1) -- (S);
+      \draw[dashed, gray!45, thin] (B1) -- (S);
+      \draw[dashed, gray!45, thin] (C1) -- (S);
+      \draw[dashed, gray!45, thin] (D1) -- (S);
+      \fill[gray] (S) circle (1.2pt) node[above] {\small $S$};
+      
+      \draw[dashed, thick, gray!60] (A) -- (D) -- (C);
+      \draw[dashed, thick, gray!60] (D) -- (D1);
+      \draw[dashed, thick, gray!60] (A1) -- (D1) -- (C1);
+      
+      \draw[thick] (A) -- (B) -- (C) -- (C1) -- (B1) -- (A1) -- cycle;
+      \draw[thick] (B) -- (B1);
+      
+      \node[below left] at (A) {\small $A$};
+      \node[below] at (B) {\small $B$};
+      \node[right] at (C) {\small $C$};
+      \node[above left] at (D) {\small $D$};
+      \node[left] at (A1) {\small $A_1$};
+      \node[below right] at (B1) {\small $B_1$};
+      \node[right] at (C1) {\small $C_1$};
+      \node[above left] at (D1) {\small $D_1$};
+    \end{tikzpicture}
+  \end{center}
+  &
+  \begin{center}
+    \begin{tikzpicture}[scale=1.2, >=stealth, line join=round, line cap=round]
+      \draw[thick] (-0.8, 0) arc (180:360:0.8 and 0.25);
+      \draw[dashed, thick, gray!60] (-0.8, 0) arc (180:0:0.8 and 0.25);
+      \draw[thick] (0, 1.8) ellipse (0.8 and 0.25);
+      \draw[thick] (-0.8, 0) -- (-0.8, 1.8);
+      \draw[thick] (0.8, 0) -- (0.8, 1.8);
+      \draw[dashed, red] (0, 0) -- (0, 1.8);
+      \fill[red] (0,0) circle (1.1pt) node[below] {\small $O$};
+      \fill[red] (0,1.8) circle (1.1pt) node[above] {\small $O_1$};
+    \end{tikzpicture}
+  \end{center}
+  &
+  \begin{center}
+    \begin{tikzpicture}[scale=1.2, >=stealth, line join=round, line cap=round]
+      \draw[thick] (-0.8, 0) arc (180:360:0.8 and 0.25);
+      \draw[dashed, thick, gray!60] (-0.8, 0) arc (180:0:0.8 and 0.25);
+      \coordinate (S) at (0, 1.8);
+      \coordinate (O) at (0, 0);
+      \draw[thick] (-0.8, 0) -- (S);
+      \draw[thick] (0.8, 0) -- (S);
+      \draw[dashed, red] (S) -- (O);
+      \draw[dashed, red] (O) -- (0.8, 0);
+      \fill[red] (O) circle (1.1pt) node[below] {\small $O$};
+      \fill (S) circle (1.1pt) node[above] {\small $S$};
+    \end{tikzpicture}
+  \end{center}
+  \\
+  \textbf{画法要点}：延长线 $AA_1, BB_1, CC_1$ 精准相交于原顶点 $S$。
+  &
+  \textbf{画法要点}：四条侧棱延长线交于顶点 $S$。上底面平行于下底面。
+  &
+  \textbf{画法要点}：底面用椭圆弧线，前方半部为实线，后半部为虚线。红线为旋转轴。
+  &
+  \textbf{画法要点}：底面为椭圆，红线为高线 $SO$ 与底面半径 $OR$。
+\end{tabularx}
+
+
+\end{document}

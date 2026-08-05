@@ -1,0 +1,66 @@
+% ★★ 中档
+\newcommand{\qConicDefThreeCircleStem}{
+已知 $AB$ 是圆 $x^2 + y^2 = 1$ 的直径，点 $P$ 是圆上异于 $A, B$ 的一点．若 $PA, PB$ 的斜率存在，求 $k_{PA} \cdot k_{PB}$ 的值，并结合平面几何性质解释其数学本质．
+}
+\newcommand{\qConicDefThreeCircleFigure}{
+\begin{tikzpicture}[scale=1, >=stealth]
+  % Axes
+  \draw[->] (-2.5,0) -- (2.5,0) node[right] {$x$};
+  \draw[->] (0,-2.5) -- (0,2.5) node[above] {$y$};
+  \node[below left] at (0,0) {$O$};
+  
+  % Circle
+  \draw[thick] (0,0) circle (2);
+  
+  % Endpoints A, B
+  \coordinate (A) at (-2, 0);
+  \coordinate (B) at (2, 0);
+  \fill (A) circle (1.5pt) node[below left] {$A$};
+  \fill (B) circle (1.5pt) node[below right] {$B$};
+  
+  % Point P
+  \coordinate (P) at (1, 1.732);
+  \fill (P) circle (1.5pt) node[above right] {$P$};
+  
+  % Lines
+  \draw[thick] (P) -- (A);
+  \draw[thick] (P) -- (B);
+  
+  % Right angle mark at P
+  \draw ($(P)!0.18!(A)$) -- ($($(P)!0.18!(A)$) + ($(P)!0.18!(B)$) - (P)$) -- ($(P)!0.18!(B)$);
+\end{tikzpicture}
+}
+\newcommand{\qConicDefThreeCircleAnswer}{
+$k_{PA} \cdot k_{PB} = -1$．其本质为直径所对的圆周角是直角（即 $PA \perp PB$）．
+}
+\newcommand{\qConicDefThreeCircleSolution}{
+由题意，圆 $x^2 + y^2 = 1$ 的直径端点可设定为 $A(-1, 0)$ 和 $B(1, 0)$．\\
+设圆上动点 $P(x_0, y_0)$，因为 $PA, PB$ 的斜率存在，ので $x_0 \neq \pm 1$．\\
+根据斜率公式：
+\[
+k_{PA} = \frac{y_0}{x_0 + 1},\qquad k_{PB} = \frac{y_0}{x_0 - 1}
+\]
+斜率乘积为：
+\[
+k_{PA} \cdot k_{PB} = \frac{y_0^2}{x_0^2 - 1}
+\]
+因为点 $P(x_0, y_0)$ 在圆 $x^2 + y^2 = 1$ 上，所以满足：
+\[
+x_0^2 + y_0^2 = 1 \implies y_0^2 = 1 - x_0^2 = -(x_0^2 - 1)
+\]
+代入斜率积公式中得：
+\[
+k_{PA} \cdot k_{PB} = \frac{-(x_0^2 - 1)}{x_0^2 - 1} = -1
+\]
+【数学本质】\\
+斜率乘积 $k_{PA} \cdot k_{PB} = -1$ 意味着：
+\[
+PA \perp PB \implies \angle APB = 90^\circ
+\]
+这正是初中平面几何中的经典定理：\textbf{直径所对的圆周角是直角}．\\
+第三定义（斜率积为常数）本质上是圆的这一几何性质在椭圆 and 双曲线上的推广．圆可以看作是长短半轴相等（$a=b$）且离心率 $e=0$ 的特殊椭圆，此时斜率乘积定值为 $e^2 - 1 = -1$．
+}
+\newcommand{\qConicDefThreeCircleDiagnosis}{
+\errortag{定点选择错误} 部分同学在解答此题时，没有想到将直径端点特化到坐标轴上（如 $A(-1,0), B(1,0)$）进行代数计算，从而导致设出一般端点后计算过于复杂．\\
+\errortag{几何本质脱节} 多数学生能够算出来为 $-1$，但无法将其与“垂直”以及“直径对直角”建立直观联系，教学时需要重点点拨．
+}

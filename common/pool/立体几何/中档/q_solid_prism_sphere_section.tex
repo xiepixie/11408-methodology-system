@@ -1,0 +1,93 @@
+% =====================================================
+% 题型：直四棱柱侧面截球填空题
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qSolidPrismSphereSectionStem}{%
+  已知直四棱柱 $ABCD-A_1B_1C_1D_1$ 的棱长均为 $2$，$\angle BAD=60^\circ$。以点 $D_1$ 为球心，$\sqrt5$ 为半径的球面与侧面 $BCC_1B_1$ 的交线长为 \blank{2.5cm}。%
+}
+
+\newcommand{\qSolidPrismSphereSectionFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (2.2,0);
+    \coordinate (D) at (0.95,0.75);
+    \coordinate (C) at ($(B)+(D)-(A)$);
+    \coordinate (A1) at (0,2.0);
+    \coordinate (B1) at (2.2,2.0);
+    \coordinate (D1) at (0.95,2.75);
+    \coordinate (C1) at ($(B1)+(D)-(A)$);
+    \coordinate (H) at ($(B1)!0.5!(C1)$);
+
+    \draw[dashed, thick, gray!75] (A) -- (D) -- (C);
+    \draw[dashed, thick, gray!75] (D) -- (D1);
+    \draw[thick] (A) -- (B) -- (C) -- (C1) -- (D1) -- (A1) -- (A);
+    \draw[thick] (A1) -- (B1) -- (C1);
+    \draw[thick] (B) -- (B1);
+
+    \ifteacher
+      \fill[gray!12] (B) -- (C) -- (C1) -- (B1) -- cycle;
+      \draw[dashed, semithick] (D1) -- (H);
+      \draw[thick] (H) ellipse (0.62 and 0.26);
+      \fill (H) circle (1.1pt) node[right] {\small $O_1$};
+    \fi
+
+    \fill (D1) circle (1.2pt);
+    \node[below left] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[right] at (C) {\small $C$};
+    \node[left] at (D) {\small $D$};
+    \node[left] at (A1) {\small $A_1$};
+    \node[above] at (B1) {\small $B_1$};
+    \node[right] at (C1) {\small $C_1$};
+    \node[above] at (D1) {\small $D_1$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidPrismSphereSectionAnswer}{%
+  $2\sqrt2\pi$%
+}
+
+\newcommand{\qSolidPrismSphereSectionSolution}{%
+  侧面 $BCC_1B_1$ 是过直线 $BC$ 且垂直于底面 $ABCD$ 的平面。
+
+  因为四棱柱为直四棱柱，点 $D_1$ 到侧面 $BCC_1B_1$ 的距离，等于底面内点 $D$ 到直线 $BC$ 的距离。
+
+  底面 $ABCD$ 是边长为 $2$、$\angle BAD=60^\circ$ 的菱形。
+  由于 $BC\parallel AD$，所以
+  \[
+    d(D,BC)=2\sin60^\circ=\sqrt3.
+  \]
+
+  设球半径为 $R=\sqrt5$，球面与侧面交成的截面圆半径为 $r$。
+  由球的截面模型，
+  \[
+    R^2=r^2+d^2.
+  \]
+
+  所以
+  \[
+    r^2=5-3=2,\qquad r=\sqrt2.
+  \]
+
+  因此交线是半径为 $\sqrt2$ 的圆，其长度为
+  \[
+    2\pi r=2\sqrt2\pi.
+  \]
+}
+
+\newcommand{\qSolidPrismSphereSectionDiagnosis}{%
+  本题检验学生是否能把空间中的“球面与侧面交线”先识别为圆，再把关键量降维为“球心到平面的距离”。常见错误是直接在侧面图中猜半径，或者把棱长 $2$ 误当作球心到侧面的距离。%
+}
+
+\newcommand{\qSolidPrismSphereSectionTeachingNotes}{%
+  \item \textbf{处理方式：精讲。}
+    它是本章节的标准承上启下题：第一题只会套公式，本题要求先找截面平面与球心距离。
+  \item \textbf{讲解节奏：}
+    先问“交线是什么图形”，再问“圆半径怎么来”，最后问“球心到这个侧面的距离在哪个平面里算”。
+  \item \textbf{关键追问：}
+    为什么 $D_1$ 到侧面 $BCC_1B_1$ 的距离可以转化为 $D$ 到 $BC$ 的距离？
+  \item \textbf{落实目标：}
+    学生要会把直棱柱中的点面距离压到底面二维图形中计算。
+}

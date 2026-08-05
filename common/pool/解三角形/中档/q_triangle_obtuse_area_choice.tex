@@ -1,0 +1,70 @@
+% =====================================================
+% 题型：钝角三角形面积与余弦定理选择题 (q_tjw_20260606_23_obtuse_area_choice.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleObtuseAreaChoiceStem}{%
+  钝角 \(\triangle ABC\) 的面积是 \(\dfrac{1}{2}\)，\(AB = 1\)，\(BC = \sqrt{2}\)，则 \(AC =\) \hfill （\quad）%
+}
+
+\newcommand{\qTriangleObtuseAreaChoiceOptions}{%
+  \mcoptions[4]
+    {\(5\)}
+    {\(\sqrt{5}\)}
+    {\(2\)}
+    {\(1\)}%
+}
+
+\newcommand{\qTriangleObtuseAreaChoiceAnswer}{B}
+
+\newcommand{\qTriangleObtuseAreaChoiceSolution}{%
+  由面积公式得
+  \[
+    S_{\triangle ABC}
+    = \frac{1}{2} \cdot AB \cdot BC \sin B
+    = \frac{1}{2} \cdot 1 \cdot \sqrt{2}\sin B
+    = \frac{1}{2}.
+  \]
+  所以
+  \[
+    \sin B = \frac{\sqrt{2}}{2}.
+  \]
+
+  因为 \(\triangle ABC\) 为钝角三角形，若 \(B=45^\circ\)，由余弦定理得
+  \[
+    AC^2 = 1^2 + (\sqrt{2})^2
+      - 2 \cdot 1 \cdot \sqrt{2}\cdot \frac{\sqrt{2}}{2}
+      = 1,
+  \]
+  此时三边为 \(1,1,\sqrt2\)，是直角三角形，不符合钝角条件。
+
+  所以 \(B=135^\circ\)，\(\cos B=-\dfrac{\sqrt2}{2}\)。
+  由余弦定理得
+  \[
+    AC^2 = 1^2 + (\sqrt{2})^2
+      - 2 \cdot 1 \cdot \sqrt{2}\cdot \left(-\frac{\sqrt{2}}{2}\right)
+      = 5.
+  \]
+  因此 \(AC=\sqrt5\)。
+  故选 B。%
+}
+
+\newcommand{\qTriangleObtuseAreaChoiceDiagnosis}{%
+  （留白待收集学生作答后补充）%
+}
+
+\newcommand{\qTriangleObtuseAreaChoiceTeachingNotes}{%
+  精讲候选。与上一题形成对照：面积先给出正弦值，再由“钝角”筛选角的分支。本题可明确排除 \(B=45^\circ\)，因为会得到直角三角形。%
+}
+
+
+% =====================================================
+% 别名兼容：旧课次宏定义
+% =====================================================
+\newcommand{\qTJWZeroSixTwentyThreeStem}{\qTriangleObtuseAreaChoiceStem}
+\newcommand{\qTJWZeroSixTwentyThreeOptions}{\qTriangleObtuseAreaChoiceOptions}
+\newcommand{\qTJWZeroSixTwentyThreeAnswer}{\qTriangleObtuseAreaChoiceAnswer}
+\newcommand{\qTJWZeroSixTwentyThreeSolution}{\qTriangleObtuseAreaChoiceSolution}
+\newcommand{\qTJWZeroSixTwentyThreeDiagnosis}{\qTriangleObtuseAreaChoiceDiagnosis}
+\newcommand{\qTJWZeroSixTwentyThreeTeachingNotes}{\qTriangleObtuseAreaChoiceTeachingNotes}

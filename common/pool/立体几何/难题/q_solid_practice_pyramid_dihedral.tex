@@ -1,0 +1,98 @@
+% =====================================================
+% 题型：立体几何解答题 (q_solid_practice_pyramid_dihedral.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidPracticePyramidDihedralStem}{%
+  如图，四棱锥 $P-ABCD$ 的底面 $ABCD$ 是边长为 $2$ 的正方形，侧面 $PAD$ 为等边三角形，且平面 $PAD \perp$ 平面 $ABCD$。
+  \begin{enumerate}[label=(\arabic*)]
+    \item 证明：$AB \perp PD$；
+    \item 求二面角 $P-BC-A$ 的余弦值。
+  \end{enumerate}
+}
+
+\newcommand{\qSolidPracticePyramidDihedralFigure}[1][1.3]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (2.2,-0.4);
+    \coordinate (D) at (0.8,0.7);
+    \coordinate (C) at (3.0,0.3);
+    \coordinate (P) at (0.4,1.8);
+    
+    \draw[dashed, thick, gray!80] (A) -- (D) -- (C);
+    \draw[dashed, thick, gray!80] (P) -- (D);
+    \draw[thick] (P) -- (A) -- (B) -- (C) -- (P) -- (B);
+    
+    \ifteacher
+      % 教师端教案专属：高线 PH、中截线 HE 与斜线 PE
+      \coordinate (H) at (0.4,0.35); % AD 中点 H
+      \coordinate (E) at (2.6,-0.05); % BC 中点 E
+      \draw[dashed, thick, gray!60] (P) -- (H);
+      \draw[dashed, thick, gray!60] (H) -- (E);
+      \draw[dashed, thick, gray!60] (P) -- (E);
+      \node[above right] at (H) {\small $H$};
+      \node[below right] at (E) {\small $E$};
+      
+      % 二面角面角 arc at E
+      \draw[thick, gray!80] (E) ++(140:0.4) arc (140:170:0.4);
+      \node[left] at ($(E)+(155:0.55)$) {\small $\theta$};
+    \fi
+    
+    \node[below left] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[right] at (C) {\small $C$};
+    \node[above right] at (D) {\small $D$};
+    \node[above] at (P) {\small $P$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidPracticePyramidDihedralAnswer}{%
+  (1) 见解析； (2) $\dfrac{2\sqrt{7}}{7}$。
+}
+
+\newcommand{\qSolidPracticePyramidDihedralSolution}{%
+  (1) 证明：
+  取 $AD$ 的中点 $H$，连结 $PH$。
+  因为 $\triangle PAD$ 是等边三角形，所以 $PH \perp AD$。
+  因为平面 $PAD \perp$ 平面 $ABCD$，且平面 $PAD \cap$ 平面 $ABCD = AD$，$PH \subset$ 平面 $PAD$，
+  所以 $PH \perp$ 平面 $ABCD$。
+  因为 $AB \subset$ 平面 $ABCD$，所以 $PH \perp AB \implies AB \perp PH$。
+  because底面 $ABCD$ 是正方形，所以 $AB \perp AD$。
+  又因为 $PH \cap AD = H$，且 $PH, AD \subset$ 平面 $PAD$，
+  所以 $AB \perp$ 平面 $PAD$。
+  因为 $PD \subset$ 平面 $PAD$，所以 $AB \perp PD$。
+
+  \medskip
+  (2) 解：
+  由 (1) 知 $PH \perp$ 平面 $ABCD$。
+  取 $BC$ 的中点 $E$，连结 $HE, PE$。
+  在正方形 $ABCD$ 中，因为 $H, E$ 分别为 $AD, BC$ 的中点，
+  所以 $HE \perp BC$，且 $HE = AB = 2$。
+  因为 $PH \perp$ 平面 $ABCD$，且 $BC \subset$ 平面 $ABCD$，
+  所以 $PH \perp BC$。
+  因为 $HE \cap PH = H$，且 $HE, PH \subset$ 平面 $PHE$，
+  所以 $BC \perp$ 平面 $PHE$。
+  因为 $PE \subset$ 平面 $PHE$，所以 $PE \perp BC$。
+  因此，$\angle PEH$ 即为二面角 $P-BC-A$ 的平面角。
+  在 Rt$\triangle PHE$ 中，因为 $PH$ 是边长为 $2$ 的等边三角形 $\triangle PAD$ 的高，
+  所以 $PH = 2 \times \sin 60^\circ = \sqrt{3}$。
+  因为 $PH \perp$ 平面 $ABCD$，且 $HE \subset$ 平面 $ABCD$，所以 $PH \perp HE$。
+  in Rt$\triangle PHE$ 中，$HE = 2$，$PH = \sqrt{3}$，
+  所以 $PE = \sqrt{PH^2 + HE^2} = \sqrt{3 + 2^2} = \sqrt{7}$。
+  因此：
+  \[ \cos \angle PEH = \frac{HE}{PE} = \frac{2}{\sqrt{7}} = \frac{2\sqrt{7}}{7}. \]
+  所以二面角 $P-BC-A$ 的余弦值为 $\dfrac{2\sqrt{7}}{7}$。
+}
+
+\newcommand{\qSolidPracticePyramidDihedralDiagnosis}{%
+  考查面面垂直条件下线面垂直的高线转化，以及二面角平面角的规范作法（找交线、作双垂线）与平面直角三角形降维求解。
+}
+
+\newcommand{\qSolidPracticePyramidDihedralTeachingNotes}{%
+  \item \textbf{重难点提示}：
+    \begin{itemize}
+      \item 第一问：理清“面面垂直 $\rightarrow$ 线面垂直 $\rightarrow$ 线线垂直 $\rightarrow$ 线面垂直”的严密证明链条，相交条件不可漏。
+      \item 第二问：强调二面角的三步画法：找交线 $BC$，在两面内作垂线 $HE, PE$，确定平面角 $\angle PEH$。放入 Rt$\triangle PHE$ 中求解，体验几何降维的快感。
+    \end{itemize}
+}

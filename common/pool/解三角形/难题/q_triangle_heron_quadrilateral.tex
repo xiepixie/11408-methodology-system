@@ -1,0 +1,93 @@
+% =====================================================
+% 题型：三角形面积、海伦公式与四边形面积最值解答题 (q_lyb_01_19_heron_quadrilateral.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qTriangleHeronQuadrilateralStem}{在 \(\triangle ABC\) 中，内角 \(A, B, C\) 的对边分别为 \(a, b, c\)。\\
+(1) 若 \(a = 1\), \(b = 2\), \(c = \sqrt{7}\)，求 \(\triangle ABC\) 的面积;\\
+(2) 设 \(p = \dfrac{1}{2}(a + b + c)\)，证明：\(\triangle ABC\) 的面积 \(S = \sqrt{p(p-a)(p-b)(p-c)}\);\\
+(3) 若平面凸四边形 \(ABCD\) 中，\(AB = BC = AD = 1\), \(CD = 2\)，求四边形 \(ABCD\) 面积的最大值。}
+
+\newcommand{\qTriangleHeronQuadrilateralAnswer}{
+(1) \(\dfrac{\sqrt{3}}{2}\); (2) 见解析; (3) \(\dfrac{3\sqrt{3}}{4}\).
+}
+
+\newcommand{\qTriangleHeronQuadrilateralSolution}{%
+  (1) 解：
+  在 \(\triangle ABC\) 中，由余弦定理可得：
+  \[ \cos C = \frac{a^2 + b^2 - c^2}{2ab} = \frac{1^2 + 2^2 - (\sqrt{7})^2}{2 \cdot 1 \cdot 2} = \frac{1 + 4 - 7}{4} = -\frac{1}{2} \]
+  因为 \(C \in (0, \pi)\)，所以：
+  \[ \sin C = \sqrt{1 - \cos^2 C} = \sqrt{1 - \left(-\frac{1}{2}\right)^2} = \frac{\sqrt{3}}{2} \]
+  因此，\(\triangle ABC\) 的面积为：
+  \[ S = \frac{1}{2}ab\sin C = \frac{1}{2} \cdot 1 \cdot 2 \cdot \frac{\sqrt{3}}{2} = \frac{\sqrt{3}}{2} \]
+  故 \(\triangle ABC\) 的面积为 \(\dfrac{\sqrt{3}}{2}\)。\\
+  
+  (2) 证明：
+  三角形的面积公式为：
+  \[ S = \frac{1}{2}ab\sin C \implies S^2 = \frac{1}{4}a^2b^2\sin^2 C = \frac{1}{4}a^2b^2(1 - \cos^2 C) \]
+  由余弦定理 \(\cos C = \dfrac{a^2 + b^2 - c^2}{2ab}\) 代入上式：
+  \[ S^2 = \frac{1}{4}a^2b^2 \left[ 1 - \left(\frac{a^2 + b^2 - c^2}{2ab}\right)^2 \right] = \frac{1}{4}a^2b^2 \cdot \frac{4a^2b^2 - (a^2+b^2-c^2)^2}{4a^2b^2} \]
+  \[ S^2 = \frac{1}{16} \left[ (2ab)^2 - (a^2+b^2-c^2)^2 \right] \]
+  利用平方差公式展开：
+  \[ S^2 = \frac{1}{16} (2ab + a^2 + b^2 - c^2)(2ab - a^2 - b^2 + c^2) \]
+  \[ S^2 = \frac{1}{16} \left[ (a+b)^2 - c^2 \right] \left[ c^2 - (a-b)^2 \right] \]
+  再次利用平方差公式：
+  \[ S^2 = \frac{1}{16} (a+b+c)(a+b-c)(c+a-b)(c-a+b) \]
+  因为 \(p = \dfrac{a+b+c}{2}\)，所以：
+  \(a+b+c = 2p\), \\
+  \(a+b-c = (a+b+c) - 2c = 2p - 2c = 2(p-c)\), \\
+  \(c+a-b = (a+b+c) - 2b = 2p - 2b = 2(p-b)\), \\
+  \(c-a+b = (a+b+c) - 2a = 2p - 2a = 2(p-a)\)。\\
+  代入上式，得：
+  \[ S^2 = \frac{1}{16} \cdot (2p) \cdot 2(p-c) \cdot 2(p-b) \cdot 2(p-a) = p(p-a)(p-b)(p-c) \]
+  两边开平方根（由于面积 \(S > 0\)）：
+  \[ S = \sqrt{p(p-a)(p-b)(p-c)} \]
+  海伦公式得证。\\
+  
+  (3) 解：
+  本问可作为第 (2) 问的扩展使用。
+  固定四边长的凸四边形中，面积最大时四边形为圆内接四边形。
+  此时可用圆内接四边形面积公式：
+  \[
+    S=\sqrt{(p-a)(p-b)(p-c)(p-d)},
+    \qquad
+    p=\frac{a+b+c+d}{2}.
+  \]
+  这里四边长分别为 \(1,1,1,2\)，所以
+  \[
+    p=\frac{1+1+1+2}{2}=\frac52.
+  \]
+  因此面积最大值为
+  \[
+    \begin{aligned}
+      S_{\max}
+      &=\sqrt{
+        \left(\frac52-1\right)
+        \left(\frac52-1\right)
+        \left(\frac52-1\right)
+        \left(\frac52-2\right)}\\
+      &=\sqrt{\left(\frac32\right)^3\cdot\frac12}
+       =\frac{3\sqrt3}{4}.
+    \end{aligned}
+  \]
+  故四边形 \(ABCD\) 面积的最大值为 \(\dfrac{3\sqrt3}{4}\)。%
+}
+
+\newcommand{\qTriangleHeronQuadrilateralDiagnosis}{%
+  学生第 (1) 问正确。第 (2) 问只写出 \(p-a,p-b,p-c\) 的表达，没有从 \(S=\frac12ab\sin C\) 平方、代入余弦定理并平方差分解到海伦公式。第 (3) 问截图未见完整作答，综合最值转化能力待确认。%
+}
+
+\newcommand{\qTriangleHeronQuadrilateralTeachingNotes}{%
+  精讲。第 (2) 问训练代数证明链；第 (3) 问建议用高中化几何讲法，连接 \(BD\)，把面积拆成两三角形并说明最大状态，避免课堂直接依赖拉格朗日乘数法。%
+}
+
+
+% =====================================================
+% 别名兼容：旧课次宏定义
+% =====================================================
+\newcommand{\qLYBZeroOneNineteenStem}{\qTriangleHeronQuadrilateralStem}
+\newcommand{\qLYBZeroOneNineteenAnswer}{\qTriangleHeronQuadrilateralAnswer}
+\newcommand{\qLYBZeroOneNineteenSolution}{\qTriangleHeronQuadrilateralSolution}
+\newcommand{\qLYBZeroOneNineteenDiagnosis}{\qTriangleHeronQuadrilateralDiagnosis}
+\newcommand{\qLYBZeroOneNineteenTeachingNotes}{\qTriangleHeronQuadrilateralTeachingNotes}

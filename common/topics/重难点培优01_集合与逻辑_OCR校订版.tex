@@ -1,0 +1,3492 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\geometry{margin=2cm}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{calc}
+
+% Define color schema
+\definecolor{brandblue}{rgb}{0.08, 0.35, 0.65}
+\definecolor{lightgray}{gray}{0.95}
+
+% Page styles
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 重难点培优专题讲义}
+\rhead{\small 集合与常用逻辑用语}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Custom boxes
+\newtcolorbox{examplebox}[1]{
+  enhanced,
+  breakable,
+  colback=white,
+  colframe=black,
+  boxrule=1.2pt,
+  arc=0pt,
+  left=12pt, right=12pt, top=10pt, bottom=10pt,
+  fonttitle=\large\bfseries,
+  coltitle=black,
+  attach title to upper,
+  after title={\par\vspace{0.4em}\hrule\vspace{0.4em}},
+  title={#1}
+}
+
+\newtcolorbox{methodbox}[1]{
+  enhanced,
+  breakable,
+  colback=white,
+  colframe=black,
+  boxrule=1pt,
+  arc=0pt,
+  left=10pt, right=10pt, top=8pt, bottom=8pt,
+  fonttitle=\bfseries\color{black},
+  coltitle=black,
+  attach title to upper,
+  after title={\par\vspace{0.4em}\hrule\vspace{0.4em}},
+  title={【技巧通法·提分快招】#1}
+}
+
+\newenvironment{question}[1]{%
+  \par\addvspace{1em}%
+  \noindent\textbf{#1}\par\nobreak
+  \begingroup
+}{%
+  \par\endgroup\addvspace{1em}%
+}
+
+\newcommand{\blank}[1]{\underline{\hspace{#1}}}
+\newcommand{\mcoptions}[5][1]{%
+  \par\vspace{0.35em}%
+  \ifcase#1\or
+    
+
+\begin{enumerate}[label=\Alph*., leftmargin=2.5em, itemsep=0.1em, topsep=0.1em]
+      \item #2 \item #3 \item #4 \item #5
+    \end{enumerate}
+  \or
+    \noindent\begin{tabularx}{\linewidth}{@{}XX@{}}
+      A. #2 & B. #3 \\ C. #4 & D. #5
+    \end{tabularx}%
+  \or
+    \or
+    \noindent\begin{tabularx}{\linewidth}{@{}XXXX@{}}
+      A. #2 & B. #3 & C. #4 & D. #5
+    \end{tabularx}%
+  \fi
+  \par\vspace{0.35em}%
+}
+
+% CTEX settings
+\ctexset{
+  section={
+    format=\normalfont\Large\bfseries\centering,
+    beforeskip=1.5em,
+    afterskip=1em,
+    number=\chinese{section}、
+  },
+  subsection={
+    format=\normalfont\large\bfseries,
+    beforeskip=1.2em,
+    afterskip=0.8em,
+  }
+}
+\begin{document}
+
+\begin{center}
+  \vspace*{0.5cm}
+  {\Huge\bfseries 重难点培优 01：集合、常用逻辑用语及其参数、新定义问题}\par
+  \vspace{0.5cm}
+  {\large 数学一对一辅导专题讲义}\par
+  \vspace{0.8cm}
+\end{center}
+
+\section{重难点培优
+01：集合、常用逻辑用语及其参数、新定义问题}\label{ux91cdux96beux70b9ux57f9ux4f18-01ux96c6ux5408ux5e38ux7528ux903bux8f91ux7528ux8bedux53caux5176ux53c2ux6570ux65b0ux5b9aux4e49ux95eeux9898}
+
+\section{知识重构·重难梳理固根基}\label{ux77e5ux8bc6ux91cdux6784ux91cdux96beux68b3ux7406ux56faux6839ux57fa}
+
+\subsection{知识点 01
+集合常用结论}\label{ux77e5ux8bc6ux70b9-01-ux96c6ux5408ux5e38ux7528ux7ed3ux8bba}
+
+1、常用数集及表示符号
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1667}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+名称
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+自然数集
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+正整数集
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+整数集
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+有理数集
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+实数集
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+记法 & \(\mathbb{N}\) & \(\mathbb{N}^{*}\)或\(\mathbb{N}_{+}\) &
+\(\mathbb{Z}\) & \(\mathbb{Q}\) & \(\mathbb{R}\) \\
+\end{longtable}
+
+2、有限集的子集个数确定
+
+如果集合 A 中含有 n 个元素，则有
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+\item A 的子集的个数有\(2^{n}\)个.
+\item
+  A 的非空子集的个数有\(2^{n}-1\)个.
+\item
+  A 的真子集的个数有\(2^{n}-1\)个.
+\end{enumerate}
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=4]
+\item A 的非空真子集的个数有\(2^{n}-2\)个.
+\end{enumerate}
+
+3、根据集合间的基本关系求参数的值或取值范围
+
+对于两个集合A和B，A或B中含有待定的参数（字母），常采用分类讨论或数形结合的方法：
+
+（1）分类讨论：若\(A \subseteq B\)，在未指明\(A\)非空时，应分为\(A = \emptyset\)和\(A \neq \emptyset\)两种情况来讨论.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 数形结合: 对\(A \neq \emptyset\)这种情况, 在确定参数时,
+  需要借助数轴来完成, 将两个集合在数轴上表示出来,
+  分清端点处是实心点还是空心点, 确定两个集合间的包含关系, 列不等式 (组)
+  求解.
+\end{enumerate}
+
+4、集合的运算性质
+
+(1)\(A \cap A = A, A \cap \emptyset = \emptyset, A \cap B = B \cap A.\)
+
+(2)\(A \cup A = A, A \cup \emptyset = A, A \cup B = B \cup A.\)
+
+(3)\(A \cap (\complement_U A) = \emptyset\),\(A \cup (\complement_U A) = U\),\(\complement_U (\complement_U A) = A\).
+
+(4)\(A \subseteq B \Leftrightarrow A \cap B = A \Leftrightarrow A \cup B = B \Leftrightarrow \complement_U B \subseteq \complement_U A.\)
+
+(5)\(\complement_U(A \cap B) = (\complement_U A) \cup (\complement_U B), \complement_U(A \cup B) = (\complement_U A) \cap (\complement_U B)\).
+
+5、容斥原理：在部分有限集中，我们经常遇到有关集合中元素的个数问题，常用
+Venn 图表示两集合的交、并、补。如果用 card 表示有限集合元素的个数，即
+card（A）表示有限集 A 的元素个数，则有如下结论：
+
+(1)\(\text{card}(A \cup B) = \text{card}(A) + \text{card}(B) - \text{card}(A \cap B)\)
+
+(2)\(\operatorname{card}(A\cup B\cup C)=\operatorname{card}(A)+\operatorname{card}(B)+\operatorname{card}(C)-\operatorname{card}(A\cap B)-\operatorname{card}(A\cap C)-\operatorname{card}(B\cap C)+\operatorname{card}(A\cap B\cap C)\)
+
+\subsection{知识点 02
+集合中的新定义问题}\label{ux77e5ux8bc6ux70b9-02-ux96c6ux5408ux4e2dux7684ux65b0ux5b9aux4e49ux95eeux9898}
+
+1、集合中的新概念问题，往往是通过重新定义相应的集合或重新定义集合中的某个要素，结合集合的知识加以创新，我们还可以利用原有集合的相关知识来解题.
+
+2、集合中的新运算问题是通过创新给出有关集合的一个全新的运算规则。按照新的运算规则，结合数学中原有的运算和运算规则，通过相关的集合或其他知识进行计算或逻辑推理等，从而达到解答的目的。
+
+3、集合中的新性质问题往往是通过创新集合中给定的定义与性质衍生而来的。我们通过可以结合相应的集合概念、关系、运算等相关知识，利用相应的数学思想方法来解答有关的集合的新性质问题。
+
+4、集合新定义问题处理步骤
+
+①找：要抓住新定义的本质------新定义的要素，首先找出新定义有几个要素，少一个都不是``新的定义''哦；然后找出要素分别是什么
+
+②看：看所求是什么？
+
+③代：将已知条件代入新定义的要素
+
+④解：结合数学知识进行解答。
+
+\subsection{知识点 03
+从集合的角度理解充分必要性}\label{ux77e5ux8bc6ux70b9-03-ux4eceux96c6ux5408ux7684ux89d2ux5ea6ux7406ux89e3ux5145ux5206ux5fc5ux8981ux6027}
+
+若条件\(p, q\)以集合的形式出现，即\(A = \{x | p(x)\}\)，\(B = \{x | q(x)\}\)，则由\(A \subseteq B\)可得，\(p\)是\(q\)的充分条件，
+
+（1）若\(A \subsetneq B\)，则 p 是 q 的充分不必要条件；
+
+（2）若\(A \supseteq B\)，则 p 是 q 的必要条件；
+
+（3）若\(A \supsetneq B\)，则\(p\)是\(q\)的必要不充分条件；
+
+（4）若 A=B，则 p 是 q 的充要条件；
+
+（5）若\(A \not\subseteq B\)且\(B \not\subseteq A\)，则\(p\)是\(q\)的既不充分也不必要条件。
+
+充分必要条件判断精髓：小集合推出大集合，小集合是大集合的充分不必要条件，大集合是小集合的必要不充分条件；若两个集合范围一样，就是充要条件的关系；
+
+\section{题型精研·技巧通法提能力}\label{ux9898ux578bux7cbeux7814ux6280ux5de7ux901aux6cd5ux63d0ux80fdux529b}
+
+\subsection{题型 01
+元素与集合关系及其参数问题}\label{ux9898ux578b-01-ux5143ux7d20ux4e0eux96c6ux5408ux5173ux7cfbux53caux5176ux53c2ux6570ux95eeux9898}
+
+\subsubsection{技巧通法·提分快招}\label{ux6280ux5de7ux901aux6cd5ux63d0ux5206ux5febux62db}
+
+\begin{methodbox}{与集合含义及其表示有关的解题技巧}
+  
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+    \item 明确集合的类型，即确定集合是数集、点集，还是其他集合.
+    \item 理清集合中的元素满足的限制条件，确定元素的属性.
+    \item 注意检验集合中的元素是否满足互异性，确定集合元素的个数.
+    \item 理清描述法表示的集合中相关字母变量的取值范围及条件.
+  \end{enumerate}
+\end{methodbox}
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+\item 已知集合\(A = \{x \in \mathbb{Z} \mid |x| < 2\}\)，\(B = \{x \mid x = \frac{a}{b - 2}, a, b \in A\}\)，则集合\(B\)中的元素个数为（）
+\end{enumerate}
+
+A. 5
+
+B. 6
+
+C. 7
+
+D. 8
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+已知集合\(A = \{x \in \mathbb{Z} \mid |x| < 2\} = \{-1,0,1\}\)，根据\(B = \left\{x \mid x = \frac{a}{b-2}, a, b \in A\right\}\)，讨论得出\(B = \left\{-\frac{1}{3}, -\frac{1}{2}, -1,0,1, \frac{1}{2}, \frac{1}{3}\right\}\)，从而得出集合\(B\)中的元素个数.
+
+\textbf{详解：}
+因为集合\(A = \{x \in \mathbb{Z} \mid |x| < 2\} = \{-1,0,1\}\),
+
+又因为\(B = \left\{x\mid x = \frac{a}{b - 2},a,b\in A\right\}\)，则：
+
+当\(a = -1\)时，\(\frac{a}{b - 2}\)的可能取值为\(\frac{1}{3},\frac{1}{2},1,\)
+
+当\(a = 0\)时，\(\frac{a}{b - 2} = 0\)
+
+当\(a = 1\)时,\(\frac{a}{b - 2}\)的可能取值为\(-\frac{1}{3}, -\frac{1}{2}, -1\),
+
+所以\(B = \left\{-\frac{1}{3}, -\frac{1}{2}, -1, 0, 1, \frac{1}{2}, \frac{1}{3}\right\}\),
+
+故集合\(B\)中的元素个数为 7. 故选: C.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 集合\(A = \{(x, y) | x = 4 - 2n, y = 5 - n, n, x, y \in \mathbb{N}\}\)的元素个数为（）
+\end{enumerate}
+
+A. 2
+
+B. 3
+
+C. 6
+
+D. 18
+
+\textbf{答案：}
+B
+
+\textbf{分析：}
+
+根据题意先求出n，进而求出x,y即可.
+
+\textbf{详解：}
+由题意有：\(\left\{\begin{aligned}4-2n&\geq0\\ 5-n&\geq0\end{aligned}\right.\Rightarrow\left\{\begin{aligned}n&\leq2\\ n&\leq5\end{aligned}\right.\Rightarrow n\leq2,\quad\text{又}n\in \mathbb{N},\quad\text{所以}n=0,1,2,\)
+
+所以\(\left\{\begin{aligned}x&=4\\ y&=5\end{aligned}\right.\)或\(\left\{\begin{aligned}x&=2\\ y&=4\end{aligned}\right.\)或\(\left\{\begin{aligned}x&=0\\ y&=3\end{aligned}\right.\)
+
+所以\(A=\{(4,5),(2,4),(0,3)\}\)，所以A中的元素个数为3个，
+
+故选：B.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=3]
+\item （2026·江西·模拟预测）已知集合\(A=\{x\mid x^{2}+mx+9=0\}\)，若\(\{n\}\subseteq A\subseteq\{9,n\}\)，则mn=（）
+\end{enumerate}
+
+A. 10 或 18
+
+B. -10 或 -18
+
+C. 18
+
+D. -18
+
+\textbf{答案：}
+B
+
+\textbf{分析：}
+
+分\(A=\{n\}\)，\(A=\{9,n\}\)两种情况结合题意讨论求解即可.
+
+\textbf{详解：}
+若\(A=\{n\}\)，则方程\(x^{2}+mx+9=0\)只有一个解，
+
+则\(\Delta=m^{2}-36=0\)，得\(m=\pm6\)，
+
+所以\(\left\{\begin{aligned}m=6\\ n=-3\end{aligned}\right.\)或\(\left\{\begin{aligned}m=-6\\ n=3\end{aligned}\right.\)，此时mn=-18，
+
+若\(A=\{9,n\}\)，则方程\(x^{2}+mx+9=0\)有两相异实数解且9是方程\(x^{2}+mx+9=0\)的其中一个解，
+
+则\(9m+90=0\)，得m=-10，
+
+所以方程可化为\(x^{2}-10x+9=0\)，则n=1，mn=-10；
+
+综上，mn = -18 或 -10.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=4]
+\item 设集合\(A = \{1, a, b\}\),\(B = \{a, a^2, ab\}\), 若\(A = B\),
+  则\(a^{2026} - b^{2025}\)的值为 \_\_\_\_.
+\end{enumerate}
+
+\textbf{答案：}
+1
+
+\textbf{分析：}
+
+首先由集合元素的特征得\(a \neq 1\)，再由集合相等分\(a^2 = 1\)和\(ab = 1\)两种情况解得.
+
+\textbf{详解：}
+由集合\(A=\{1,a,b\}\)，\(B=\{a,a^{2},ab\}\)，得\(a\neq1\)，
+
+又因为\(A = B\)，则\(a^2 = 1\)或\(ab = 1\)
+
+当\(a^{2}=1\)时，a=-1，\(A=\{1,-1,b\}\)，\(B=\{-1,1,-b\}\)，
+
+于是\(b = -b\)，得\(b = 0\)，因此\(a^{2026} - b^{2025} = (-1)^{2026} - 0^{2025} = 1;\)
+
+当\(ab = 1\)时，集合\(A = \{1, a, b\}\)，\(B = \{a, a^2, 1\}\)，有\(b = a^2\)，则\(a^3 = 1\)，解得\(a = 1\)与\(a \neq 1\)矛盾，舍去.
+
+因此\(a^{2026}-b^{2025}=1\).
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=5]
+\item （2025·河南·一模）集合\(U = \{m \in \mathbb{N} | 1 \leq m \leq 101\}\)，集合\(M \subseteq U\)，对任意\(x, y \in M\)，有\(x + y \notin M\)，则集合\(M\)中元素个数的最大值是
+  \_\_\_\_.
+\end{enumerate}
+
+\textbf{答案：}
+51
+
+\textbf{分析：}
+
+由题意，要使M中元素的个数最大，则101∈M，再应用抽屉原理及集合的性质分析其它元素与集合M的
+
+关系，确定M的元素个数及集合M的可能情况，即可得.
+
+\textbf{详解：}
+要使M中元素的个数最大，且\(\forall x,y\in M\)，有\(x+y\notin M\)，必有\(101\in M\)，
+
+此时其余元素分组为(1,100)、(2,99)、\ldots、(50,51)，共有50组，
+
+注意每组的两个元素必不能同时出现在集合M（因为它们的和为101），
+
+所以，要使M中元素的个数最大，每组至多能取一个元素，即50组中共取50个元素，
+
+由抽屉原理知，不可能从50组中取51个元素，否则必有两个元素的和为101，不满足\(x + y \notin M\)，
+
+综上，M中元素的个数最大为51个，
+
+如\(M=\{51,52,53,\cdots,101\}\)、\(M=\{1,3,5,7,\cdots,101\}\)均符合，元素个数为\(101-51+1=\frac{101-1}{2}+1=51\).
+
+故答案为：51\subsection{题型 02
+集合间的基本关系及其参数问题}\label{ux9898ux578b-02-ux96c6ux5408ux95f4ux7684ux57faux672cux5173ux7cfbux53caux5176ux53c2ux6570ux95eeux9898}
+
+\subsubsection{技巧通法·提分快招}\label{ux6280ux5de7ux901aux6cd5ux63d0ux5206ux5febux62db-1}
+
+\begin{methodbox}{根据两集合的关系求参数及子集结论}
+  \textbf{1. 根据两集合的关系求参数的方法}
+  
+  已知两个集合之间的关系求参数时，要明确集合中的元素，对含参数的集合是否为空集进行分类讨论，做到不漏解：
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+    \item 若集合中的元素是一一列举的，依据集合间的关系，转化为方程（组）求解，此时注意集合中元素的互异性.
+    \item 若集合表示的是不等式的解集，常依据数轴转化为不等式（组）求解，此时注意检验端点值能否取到.
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \textbf{2. 集合的子集与真子集结论}
+  
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+    \item 若有限集 $A$ 中有 $n$ 个元素，则 $A$ 的子集有 $2^n$ 个，真子集有 $2^n - 1$ 个，非空子集有 $2^n - 1$ 个，非空真子集有 $2^n - 2$ 个.
+    \item 空集是任何集合 $A$ 的子集，是任何非空集合 $B$ 的真子集.
+    \item \(A \subseteq B \Leftrightarrow A \cap B = A \Leftrightarrow A \cup B = B \Leftrightarrow \complement_{\mathbb{R}} B \subseteq \complement_{\mathbb{R}} A.\)
+  \end{enumerate}
+\end{methodbox}
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+\item （2026·陕西·二模）已知集合\(A = \{x|(x - a)(x + 1) \leq 0\}(a > 0), B = \{x \in \mathbb{N} | xt = 2, t \in \mathbb{N}^{*}\}\)，若\(B \subseteq A\)，则实数\(a\)
+\end{enumerate}
+
+的取值范围是（）
+
+A.\([6,+\infty)\)
+
+B.\((6,+\infty)\)
+
+C.\([2,+\infty)\)
+
+D.\((3,+\infty)\)
+
+\textbf{答案：}
+C
+
+\textbf{详解：}
+因为a\textgreater0，
+
+所以\(A = \{x|(x - a)(x + 1)\leq 0\} = [-1,a].\)
+
+因为\(B = \{x \in \mathbb{N} | xt = 2, t \in \mathbb{N}^{*}\} = \{2,1\}\)，且\(B \subseteq A\)
+
+所以\(2 \leq a\)，即实数\(a\)的取值范围是\([2,+\infty)\)。
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item （25-26
+  高三上·湖北武汉·阶段检测）集合\(A = \{1,2\}, B = \{x|x^2 - 3x - 4 < 0, x \in \mathbb{N}\}\)，则满足\(A \subseteq C \subseteq B\)的集合\(C\)的个数为（）
+\end{enumerate}
+
+A. 4
+
+B. 7
+
+C. 15
+
+D. 16
+
+\textbf{答案：}
+A
+
+\textbf{分析：}
+
+解不等式求出集合B，然后根据子集的概念求解.
+
+\textbf{详解：}
+\(B=\{x|x^{2}-3x-4<0,x\in \mathbb{N}\}=\{x|(x+1)(x-4)<0,x\in \mathbb{N}\}=\{x|-1<x<4,x\in \mathbb{N}\}=\{0,1,2,3\}\)，又\(A=\{1,2\}\)，
+
+则满足\(A \subseteq C \subseteq B\)的集合\(C\)有：\(\{1,2\}, \{0,1,2\}, \{1,2,3\}, \{0,1,2,3\}\)，共4个，
+
+故选：A.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=3]
+\item （2026·青海西宁·二模）已知集合\(M = \{x \mid x^2 - ax < 0\}\),\(N = \{x \mid \log_2(x + 1) < 1\}\)，若\(M \subseteq N\)，则实数\(a\)的取值范围是（）
+\end{enumerate}
+
+A.\(-\infty, 1\)
+
+B.\([-1,0]\)
+
+C.\([0,1]\)
+
+D.\([-1, 1]\)
+
+\textbf{答案：}
+D
+
+\textbf{分析：}
+
+先求出集合M, N，再利用集合间的关系，即可求解.
+
+\textbf{详解：}
+由\(\log_{2}(x+1)<1\)，得到0\textless x+1\textless2，解得-1\textless x\textless1，则\(N=(-1,1)\)，又\(M=\{x|x^{2}-ax<0\}=\{x|x(x-a)<0\}\)，
+
+当\(a > 0\)时，\(M = \{x | 0 < x < a\}\)，当\(a = 0\)时，\(M = \emptyset\)，当\(a < 0\)时，\(M = \{x | a < x < 0\}\)，
+
+又\(M \subseteq N\)，当\(a > 0\)时，\(0 < a \leq 1\)，
+
+当\(a < 0\)时，\(-1 \leq a < 0\)
+
+由\(\emptyset\)是任何集合的子集，可得\(a = 0\)满足条件，
+
+综上所述，\(-1 \leq a \leq 1\).
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=4]
+\item 已知\(1 \leq m \leq 10, m \in \mathbb{N}^*\),
+  集合\(M = \left\{x \in \mathbb{N}^* \mid x = \frac{m}{n}, n \in \mathbb{N}^*\right\}\)有
+  8 个子集, 则\(m\)的一个值为 ( )
+\end{enumerate}
+
+A. 4
+
+B. 5
+
+C. 6
+
+D. 7
+
+\textbf{答案：}
+A
+
+\textbf{分析：}
+
+根据已知条件得出集合M中元素的个数，从而得出m的因数个数，即可求出m的值.
+
+\textbf{详解：}
+由题意得集合\(M=\left\{x\in \mathbb{N}^{*}\mid x=\frac{m}{n},n\in \mathbb{N}^{*}\right\}(1\leq m\leq10,m\in \mathbb{N}^{*})\)中有8个子集，
+
+又∵\(2^{3}=8\)，∴集合M中有三个元素，即m有三个正因数，
+
+而在正整数中，恰有 3 个正因数的数是质数的平方，
+
+设p为质数，则\(m=p^{2}\)，此时正因数为1,p,\(p^{2}\)，
+
+∵\(1 \leq m \leq 10, m \in \mathbb{N}^{*}\)，∴\(p^{2} \leq 10\)，则 p = 2 或 3，
+
+∴ m 的值可以为 4 或 9，故 A 正确.
+
+故选：A.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=5]
+\item 已知集合\(M = \{x | x = m + \frac{1}{6}, m \in \mathbb{Z}\}\),\(N = \{x | x = \frac{n}{2} - \frac{1}{3}, n \in \mathbb{Z}\}\),\(P = \{x | x = \frac{p}{2} + \frac{1}{6}, p \in \mathbb{Z}\}\),
+  则\(M\)、\(N\)、\(P\)的关系满足（）
+\end{enumerate}
+
+A.\(M \subseteq N = P\)
+
+B.\(M = N \subseteq P\)
+
+C.\(M \subseteq N \subseteq P\)
+
+D.\(N \subseteq P \subseteq M\)
+
+\textbf{答案：}
+A
+
+\textbf{分析：}
+
+根据给定条件，将集合M,N,P中元素化为统一形式，进而判断各选项.
+
+\textbf{详解：}
+依题意，\(N=\{x|x=\frac{n}{2}-\frac{1}{3},n\in\mathbb{Z}\}=\{x|x=\frac{3n-2}{6},n\in\mathbb{Z}\}=\{x|x=\frac{3(n-1)+1}{6},n\in\mathbb{Z}\}\)
+
+\[
+P = \{x | x = \frac {p}{2} + \frac {1}{6}, p \in \mathbf {Z} \} = \{x | x = \frac {3 p + 1}{6}, p \in \mathbf {Z} \},
+\]
+
+所以对任意\(x \in \mathbb{N}\)，存在\(n \in Z\)使\(x = \frac{3n - 2}{6}\)，
+
+令\(p = n - 1\)，则\(p \in Z\)且\(x = \frac{3(p + 1) - 2}{6} = \frac{3p + 1}{6} \in P\)，所以\(N \subseteq P\).
+
+同理，对任意\(x \in P\)，存在\(p \in Z\)使\(x = \frac{3p + 1}{6}\)，
+
+令\(n = p + 1\)，则\(n\in Z\)且\(x = \frac{3(n - 1) + 1}{6} = \frac{3n - 2}{6}\in N\)，所以\(P\subseteq N\)，综上，\(N = P\)
+
+\[
+M = \{x | x = m + \frac {1}{6}, m \in \mathbf {Z} \} = \{x | x = \frac {3 \cdot 2 m + 1}{6}, m \in \mathbf {Z} \}, \text {则} M \subseteq P,
+\]
+
+所以M,N,P的关系满足\(M\subseteq N=P\).
+
+故选：A
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=6]
+\item （24-25 高三上·河北·开学考试）已知 P, M, N
+  是三个集合，且满足\(P = \{1, 2, 3, 4, 5\}\),\(M \subseteq P\),\(N \subseteq P\)，则满足条件的有序集合对\((M, N)\)的总数是
+  \_\_\_\_。（用数字作答）
+\end{enumerate}
+
+\textbf{答案：}
+1024
+
+\textbf{分析：}
+
+先求出集合P的子集的个数，从而根据题意可得集合M,N的个数，进而可得有序集合对\((M,N)\)的总数.
+
+\textbf{详解：}
+集合\(P = \{1,2,3,4,5\}\)的子集共有\(2^{5} = 32\)个，
+
+因为\(M \subseteq P, N \subseteq P,\)
+
+所以集合M有32种情况，集合N有32种情况，
+
+所以满足条件的有序集合对\((M,N)\)的总数是\(C_{32}^{1}\times C_{32}^{1}=32\times32=1024.\)
+
+故答案为：1024.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=7]
+\item 已知数列\(\{a_{n}\}\)是首项为\(\frac{\pi}{6}\),
+  公差为\(\frac{\pi}{3}\)的等差数列,
+  集合\(S = \{\sin a_{n} \mid n \in \mathbb{N}^{*}\}\),
+  则集合\(S\)的子集个数为 \_\_\_\_.
+\end{enumerate}
+
+\textbf{答案：}
+16
+
+\textbf{分析：}
+
+先根据等差数列的公式得到\(\{a_{n}\}\)的通项，再结合正弦型函数的周期，及集合元素的互异性得到集合S，进而得到集合S的子集个数.
+
+\textbf{详解：}
+由题意得\(a_{n}=\frac{\pi}{6}+\frac{\pi}{3}(n-1)=\frac{\pi}{3}n-\frac{\pi}{6}\)
+
+则\(\sin a_{n}=\sin\left(\frac{\pi}{3}n-\frac{\pi}{6}\right)\)，所以其周期\(T=\frac{2\pi}{\frac{\pi}{3}}=6\)，
+
+又\(\sin a_{1}=\sin\left(\frac{\pi}{3}-\frac{\pi}{6}\right)=\sin\frac{\pi}{6}=\frac{1}{2},\)
+
+\[
+\sin a _ {2} = \sin \left(\frac {\pi}{3} \times 2 - \frac {\pi}{6}\right) = \sin \frac {\pi}{2} = 1,
+\]
+
+\[
+\sin a _ {3} = \sin \left(\frac {\pi}{3} \times 3 - \frac {\pi}{6}\right) = \sin \frac {5 \pi}{6} = \frac {1}{2},
+\]
+
+\[
+\sin a _ {4} = \sin \left(\frac {\pi}{3} \times 4 - \frac {\pi}{6}\right) = \sin \frac {7 \pi}{6} = - \frac {1}{2},
+\]
+
+\(\sin a_{5} = \sin\left(\frac{\pi}{3} \times 5 - \frac{\pi}{6}\right) = \sin\frac{3\pi}{2} = -1,\)
+
+\(\sin a_{6} = \sin\left(\frac{\pi}{3} \times 6 - \frac{\pi}{6}\right) = \sin\frac{11\pi}{6} = -\frac{1}{2}, \quad \cdots\cdots\)
+
+结合集合元素的互异性，得\(S=\left\{-1,-\frac{1}{2},\frac{1}{2},1\right\}\),
+
+即集合 S 有 4 个元素，故集合 S 的子集个数为\(2^{4} = 16\).\subsection{题型 03
+集合的基本运算及其参数问题（交并补）}\label{ux9898ux578b-03-ux96c6ux5408ux7684ux57faux672cux8fd0ux7b97ux53caux5176ux53c2ux6570ux95eeux9898ux4ea4ux5e76ux8865}
+
+\subsubsection{技巧通法·提分快招}\label{ux6280ux5de7ux901aux6cd5ux63d0ux5206ux5febux62db-2}
+
+\begin{methodbox}{利用集合的运算求参数的方法}
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+    \item 与不等式有关的集合，一般利用数轴解决，要注意端点值的取舍.
+    \item 若集合中的元素能一一列举，则一般先用观察法得到集合中元素之间的关系，再列方程（组）求解. 注意：在求出参数后，一定要验证结果（以满足集合中元素的互异性）.
+  \end{enumerate}
+\end{methodbox}
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+\item （2026·黑龙江哈尔滨·模拟预测）已知集合\(A=\left\{x\mid\frac{3-x}{x+2}<0\right\}\)，\(B=\{x\mid y=\ln(4-x)\}\)，则\(\complement_{\mathbb{R}}(A\cap B)=(\quad)\)
+\end{enumerate}
+
+A.\([-2,3]\cup[4,+\infty)\)
+
+B.\((-\infty,3]\cup[4,+\infty)\)
+
+C.\([4,+\infty)\)
+
+D.\([-2,3]\)
+
+\textbf{答案：}
+A
+
+\textbf{分析：}
+
+先通过解分式不等式得到集合
+
+A，再由对数函数的定义域求得集合
+
+B，然后取交集，最后在实数范围内求补集即可得出结果.
+
+\textbf{详解：}
+化简集合A，分式不等式\(\frac{3-x}{x+2}<0\)等价于\((3-x)(x+2)<0\)，
+
+整理得\((x-3)(x+2)>0\),
+
+解得x\textless-2或x\textgreater3，即\(A=(-\infty,-2)\cup(3,+\infty)\),
+
+化简集合B，对数函数\(y = \ln (4 - x)\)要求真数大于0，
+
+即4-x\textgreater0，解得x\textless4，即\(B=(-\infty,4)\)，
+
+\[
+A \cap B = (- \infty , - 2) \cup (3, 4), \complement_{\mathbb{R}} (A \cap B) = [ - 2, 3 ] \cup 4, + \infty).
+\]
+
+故选：A
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 已知\(A = [1, +\infty)\),\(B = \left\{x \in R \mid \frac{1}{2} a \leq x \leq 2a - 1\right\}\),
+  若\(A \cap B \neq \emptyset\), 则实数\(a\)的取值范围是 ( )
+\end{enumerate}
+
+A.\([1,+\infty)\)
+
+B.\(\left[\frac{1}{2},1\right]\)
+
+C.\([\frac{2}{3},+\infty)\)
+
+D.\((1,+\infty)\)
+
+\textbf{答案：}
+A
+
+\textbf{分析：}
+
+通过\(A \cap B \neq \emptyset\)，确定\(a\)满足的不等式，求解即可.
+
+\textbf{详解：}
+\(A \cap B \neq \varnothing,\)
+
+可得\(\left\{\begin{aligned}\frac{1}{2}a&\leq2a-1,\\ 2a&-1\geq1\end{aligned}\right.\)，解得\(a\geq1\)，
+
+即实数\(a\)的取值范围是\([1,+\infty)\)。
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=3]
+\item （2026·重庆·二模）已知集合\(A = \left\{x \mid \left|\log_2 x\right| < 1\right\}\)，\(B = \left\{x \mid \frac{3}{x + 2} > 1\right\}\)，则\(A \cap B = (\quad)\)
+\end{enumerate}
+
+\(\left(\frac{1}{2},2\right)\)
+
+C.\(\left(-2,\frac{1}{2}\right)\)
+
+B.\((1,2)\)
+
+D.\(\left(\frac{1}{2},1\right)\)
+
+\textbf{答案：}
+D
+
+\textbf{详解：}
+不等式\(|\log_{2}x|<1\)，即\(-1<\log_{2}x<1\)，即\(\log_{2}\frac{1}{2}<\log_{2}x<\log_{2}2\)，
+
+解得\(\frac{1}{2}<x<2\)，故\(A=\left(\frac{1}{2},2\right)\),
+
+不等式\(\frac{3}{x+2}>1\)可化为\(\frac{-x+1}{x+2}>0\)，即\((-x+1)(x+2)>0\)，
+
+解得\(-2 < x < 1\)，故\(B = (-2,1)\)
+
+所以\(A \cap B = \left(\frac{1}{2}, 1\right)\).
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=4]
+\item （24-25
+  高三上·辽宁·期中）已知集合\(U\)为全集，集合\(M \cap N \neq \emptyset\)，\(M \cup N \neq U\)，则（）
+\end{enumerate}
+
+A.\(M \cup (\complement_U N) \subseteq M\)
+
+B.\(M \cap (\complement_U N) = M\)
+
+C.\(\complement_U(M \cup N) \supseteq (\complement_UN)\)
+
+D.\(\complement_U(M \cap N) \supseteq (\complement_UM)\)
+
+\textbf{答案：}
+D
+
+\textbf{分析：}
+
+取\(N \subseteq M\)，可得出\(M \cup (\complement_U N) = U\)，可判断
+
+A 选项；取\(M \subseteq N\)，可判断 B
+
+选项；根据\(\complement_U(M \cup N) = (\complement_U M) \cap (\complement_U N)\)，可判断 C
+
+选项；根据\(\complement_U(M \cap N) = (\complement_U M) \cup (\complement_U N)\)，可判断 D 选项。
+
+\textbf{详解：}
+对于 A 选项，因为\(M \cap N \neq \varnothing\)，则 M、N
+
+均不为空集，
+
+因为\(M \cup N \neq U\)，所以，当\(N \subseteq M\)时，则\(M \cup (\complement_U N) = U\)，
+
+又因为M为U的真子集，A错；
+
+对于 B 选项，若\(M \subseteq N\)，则\(M \cap (\complement_UN) = \varnothing\)，B
+
+错；
+
+对于 C 选项，因为\(\complement_U(M \cup N) = (\complement_UM) \cap (\complement_UN)\),
+
+所以，\(\complement_U(M \cup N) \subseteq (\complement_UN)\)，C 错：
+
+对于 D
+
+选项，因为\(\complement_U(M \cap N) = (\complement_UM) \cup (\complement_UN)\)，所以，\(\complement_U(M \cap N) \supseteq (\complement_UM)\)，D
+
+对.
+
+故选：D.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=5]
+\item （25-26
+  高三下·湖北随州·阶段检测）已知集合\(A = \{x \mid 2x + 1 < 5\}\)，\(B = \{x \mid x(x + a)^2 > 0\}\)。若\(A \cup B = R\)，则实
+\end{enumerate}
+
+数\(a\)的取值范围是（）
+
+A. \([-2, +\infty)\)
+
+B. \((-2, +\infty)\)
+
+C. \([0, +\infty)\)
+
+D. \((0, +\infty)\)
+
+\textbf{答案：}
+B
+
+\textbf{分析：}
+
+先化简集合\(A = \{x | x < 2\}\)，再分析\(B = \{x | x(x + a)^2 > 0\}\)，利用\((x + a)^2 > 0\)的性质，得\(B = \{x | x > 0\)且\(x \neq -a\} (a \neq 0)\)或\(B = \{x | x > 0\} (a = 0)\)，要使\(A \cup B = R\)，需保证\(B\)补上\(A\)未覆盖的部分且无遗漏，因此关键是让唯一的``漏洞点''\(x = -a\)落在\(A\)内，即\(-a < 2\)，解得\(a > -2\).
+
+\textbf{详解：}
+\(A=\{x|2x+1<5\}=\{x|x<2\}\),
+
+①当a=0时，\(B=\{x|x\cdot x^{2}>0\}=\{x|x>0\}\),
+
+此时\(A \cup B = \{x | x < 2\} \cup \{x | x > 0\} = R\)，满足条件.
+
+②当\(a \neq 0\)时，\((x + a)^{2} > 0\)对所有\(x \neq -a\)成立，所以\(B = \{x | x > 0 \text{ 且 } x \neq -a\}\),
+
+要使\(A \cup B = R\)，需要\(-a < 2\)（否则\(-a\)会是一个不在\(A \cup B\)中的点），即\(a > -2\).
+
+综上，a的取值范围是\((-2,+\infty)\).
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=6]
+\item （2026·安徽合肥·模拟预测）为了丰富学生的课余生活，促进学生全面发展，某校开设了劳动实践、研学参观、AI技术培训3类拓展课程。高三某班学生共有32人报名参加拓展课程，其中有10人报名参加劳动实践，有18人报名参加研学参观，有14人报名参加AI技术培训，同时报名参加劳动实践和研学参观的有4人，同时报名参加研学参观和AI技术培训的有5人，只参加AI技术培训的人数为（）
+\end{enumerate}
+
+A. 5
+
+B. 6
+
+C. 8
+
+D. 10
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+使用三集合容斥原理，通过韦恩图划分各部分人数，设三类都参加的人数为\(x\)、只参加劳动实践和\(\mathrm{AI}\)培训的人数为\(y\)，根据总人数列方程化简得\(y = 1\)，再结合\(\mathrm{AI}\)培训的总人数，算出只参加\(\mathrm{AI}\)培训的人数.
+
+\textbf{详解：}
+设3类课程全参加的有x人，同时只参加劳动实践和\(AI\)技术培训的有y人，列出韦恩图，则\((6-y)+(4-x)+x+y+(9+x)+(5-x)+(9-y)=32\)，
+
+可得y=1，则只参加\(_{AI}\)技术培训的人数为9-y=8人.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=7]
+\item （多选题）（2026·四川成都·模拟预测）已知集合\(A = \{(x, y) | x + ay + 2a = 0\}\)，\(B = \{(x, y) | ax + ay - 1 = 0\}\)，则下列结论正确的是（）
+\end{enumerate}
+
+A.
+当\(a = -1\)时，\(A\cap B=\left\{\left(\frac12,-\frac32\right)\right\}\)
+
+B.\(\forall a \in R, A \neq \emptyset\)
+
+C. 当且仅当\(a = 1\)时，\(A \cap B = \varnothing\)
+
+D.\(\exists a \in R\), 使得\(A = B\)
+
+\textbf{答案：}
+AB
+
+\textbf{分析：}
+
+求直线交点坐标判断 A；利用直线方程分析判断
+
+B；利用空集的定义，结合直线平行求解判断 C；利用两
+
+求直线重合分析求解 D.
+
+\textbf{详解：}
+对于 A，当 a = -1
+
+时，则\(A = \{(x, y) | x - y - 2 = 0\}\)，\(B = \{(x, y) | x + y + 1 = 0\}\)，
+
+由\(\left\{\begin{aligned}x-y-2&=0\\ x+y+1&=0\end{aligned}\right.\)，解得\(\left\{\begin{aligned}x&=\frac{1}{2}\\ y&=-\frac{3}{2}\end{aligned}\right.\)，因此\(A\cap B=\left\{(\frac{1}{2},-\frac{3}{2})\right\}\)，A正确；
+
+对于
+
+B，直线\(x + ay + 2a = 0\)过定点\((0, -2)\)，\(A = \{(x, y) | x + ay + 2a = 0\}\)
+
+表示直线\(x + ay + 2a = 0\)上所有的点，因此\(\forall a \in \mathbb{R}, A \neq \emptyset\)，B正确；
+
+对于 C，\(A \cap B = \varnothing\)，若\(B = \varnothing\)，则 a =
+
+0；若\(B \neq \varnothing\)，则直线\(x + ay + 2a = 0\)
+
+与直线\(ax + ay - 1 = 0\)平行，且\(a \neq 0\)，于是\(\frac{1}{a} = \frac{a}{a} \neq \frac{2a}{-1}\)，解得
+
+a = 1，
+
+因此当\(a = 0\)或\(a = 1\)时，\(A \cap B = \varnothing\)，C错误；
+
+对于 D，若 A = B，由选项 C
+
+知\(a \neq 0\)，且\(\frac{1}{a} = \frac{a}{a} = \frac{2a}{-1}\)，无解，D
+
+错误.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=8]
+\item 已知集合\(A = \{x \mid \frac{x + 2}{x - 2} \leq 0\}\),\(B = \{x \mid \log_2 x \geq a\}\),
+  若\(B\cup \complement_{\mathbb{R}}A=\complement_{\mathbb{R}}A\), 则实数\(a\)的取值范围是
+  \_\_\_\_.
+\end{enumerate}
+
+\textbf{答案：}
+\([1,+\infty)\)
+
+\textbf{分析：}
+
+通过解不等式化简集合\(A, B\)，利用集合间的关系可求实数\(a\)的取值范围.
+
+\textbf{详解：}
+∵不等式\(\frac{x+2}{x-2}\leq0\)等价于\(\left\{\begin{aligned}(x+2)(x-2)&\leq0,\\ x-2&\neq0\end{aligned}\right.\)
+
+∴不等式的解集为\(\{x|-2\leq x<2\}\)，即\(A=\{x|-2\leq x<2\}\)，
+
+\(\therefore \complement_{\mathbb{R}}A = \{x|x < -2 \text{或} x \geq 2\}\).
+
+由\(\log_{2}x\geq a\)得，\(x\geq2^{a}\)，故\(B=\{x|x\geq2^{a}\}\)，
+
+\[
+\because B \cup \complement_{\mathbb{R}} A = \complement_{\mathbb{R}} A, \therefore B \subseteq \complement_{\mathbb{R}} A,
+\]
+
+\(\therefore 2^{a} \geq 2\)，解得\(a \geq 1\)，即实数\(a\)的取值范围是\([1,+\infty)\)。
+
+故答案为：\([1,+\infty)\)。
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=9]
+\item （2026·安徽合肥一模）已知集合\(A = \{x \mid x^2 + px + q = 0\}\)，\(B = \{x \mid qx^2 + px + 1 = 0\}\)，同时满足\(A \cap B \neq \emptyset\)，\(A \cap (\complement_{\mathbb{R}}B) = \{-2\}\)，则\(A \cup B =\)\_\_\_\_.
+\end{enumerate}
+
+\textbf{答案：}
+\(\left\{1,-\frac{1}{2},-2\right\}\)或\(\left\{-1,-\frac{1}{2},-2\right\}\)
+
+\textbf{分析：}
+
+易知\(x_0 \in A\)，则\(\frac{1}{x_0} \in B\)，即集合\(A, B\)中的元素互为倒数，由题意可求出集合\(A\)，进而确定集合\(B\)，根据并集的运算即可求出答案.
+
+\textbf{详解：}
+设\(x_0 \in A\)，若\(x_0 = 0\)，又\(-2 \in A\)，故\(p = 2, q = 0\)，此时\(B = \{x | 2x + 1 = 0\} = \left\{-\frac{1}{2}\right\}\)，与已知矛盾，故\(x_0 \neq 0\)，所以\(x_0^2 + px_0 + q = 0\)，得\(q\left(\frac{1}{x_0}\right)^2 + p \cdot \frac{1}{x_0} + 1 = 0\)，所以\(\frac{1}{x_0} \in B\)
+
+即集合 A, B 中的元素互为倒数，
+
+因为\(A \cap B \neq \emptyset\)
+
+所以存在\(x_0 \in A\)，使得\(\frac{1}{x_0} \in B\)且\(x_0 = \frac{1}{x_0}\)，解得\(x_0 = \pm 1\)
+
+又因为\(A \cap \complement_{\mathbb{R}}B = \{-2\}\),
+
+所以\(A = \{1, -2\}\)或\(A = \{-1, -2\}\), 若\(A = \{1, -2\}\),
+
+则\(B = \left\{1, -\frac{1}{2}\right\}\),
+
+则\(A \cup B = \left\{1, -\frac{1}{2}, -2\right\}\);
+
+若\(A = \{-1, -2\}\), 则\(B = \left\{-1, -\frac{1}{2}\right\}\),
+
+则\(A \cup B = \left\{-1, -\frac{1}{2}, -2\right\}\).
+
+综上所述,\(A \cup B = \left\{1, -\frac{1}{2}, -2\right\}\)或\(\left\{-1, -\frac{1}{2}, -2\right\}\).\subsection{题型 04
+充分必要条件及其参数问题}\label{ux9898ux578b-04-ux5145ux5206ux5fc5ux8981ux6761ux4ef6ux53caux5176ux53c2ux6570ux95eeux9898}
+
+\subsubsection{技巧通法·提分快招}\label{ux6280ux5de7ux901aux6cd5ux63d0ux5206ux5febux62db-3}
+
+\begin{methodbox}{充分必要条件的判断与参数问题求解}
+  \textbf{1. 充分必要条件的集合法判断}
+  
+  设命题 $p, q$ 对应的解集分别为 $A=\{x \mid p(x)\}$, $B=\{x \mid q(x)\}$：
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+    \item 若 $A \subseteq B$，则 $p$ 是 $q$ 的充分条件.
+    \item 若 $B \subseteq A$，则 $p$ 是 $q$ 的必要条件.
+    \item 若 $A \subsetneq B$，则 $p$ 是 $q$ 的充分不必要条件.
+    \item 若 $B \subsetneq A$，则 $p$ 是 $q$ 的必要不充分条件.
+    \item 若 $A \not\subseteq B$ 且 $B \not\subseteq A$，则 $p$ 是 $q$ 的既不充分也不必要条件.
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \textbf{2. 充分必要条件中的参数问题}
+  
+  根据充分、必要关系求解参数范围时，一般步骤为：
+  
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+    \item 根据题意理清命题之间的推出关系（如 $p \Rightarrow q$ 或 $q \Rightarrow p$）；
+    \item 将推出关系转化为解集之间的包含关系（如 $A \subseteq B$ 或 $B \subseteq A$）；
+    \item 结合数轴等几何直观，构建关于参数的不等式（组）求解，注意端点值是否能取到.
+  \end{enumerate}
+\end{methodbox}
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+\item 已知直线\(l_{1}: ax + y - 1 = 0, l_{2}: (3a - 2)x + ay - 2 = 0\)，则\(l_{1} // l_{2}\)的充要条件是（）
+\end{enumerate}
+
+A.\(a = \frac{1}{3}\)
+
+B.\(a = 1\)
+
+C.\(a = 2\)
+
+D.\(a = 1\)或 2
+
+\textbf{答案：}
+B
+
+\textbf{分析：}
+
+根据两直线平行的充要条件列出满足题意的方程或不等式解出即可.
+
+\textbf{详解：}
+由\(l_{1}:ax+y-1=0,l_{2}:(3a-2)x+ay-2=0,\)
+
+则\(A_{1}=a,B_{1}=1,C_{1}=-1,A_{2}=3a-2,B_{2}=a,C_{2}=-2,\)
+
+由\(l_{1}//l_{2}\Leftrightarrow\left\{\begin{aligned}A_{1}B_{2}&=A_{2}B_{1}\\ A_{1}C_{2}&\neq A_{2}C_{1}\end{aligned}\right.\Leftrightarrow\left\{\begin{aligned}a\times a&=(3a-2)\times1\\ a\times(-2)&\neq(3a-2)\times(-1)\end{aligned}\right.\)
+
+\[
+\Leftrightarrow \left\{ \begin{array}{l l} a ^ {2} - 3 a + 2 = 0 \\ a \neq 2 \end{array} \right. \Leftrightarrow \left\{ \begin{array}{l l} a = 2 \text {或} a = 1 \\ a \neq 2 \end{array} \right., \text {解得:} a = 1.
+\]
+
+故选：B
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item ``\(a^{3}<b^{3}\)''是``\(2026^{a}<2026^{b}<1\)''成立的（）
+\end{enumerate}
+
+A. 充分不必要条件
+
+B. 必要不充分条件
+
+C. 充要条件
+
+D. 既不充分也不必要条件
+
+\textbf{答案：}
+B
+
+\textbf{详解：}
+因为幂函数\(y = x^{3}\)在定义域R上单调递增，由\(a^{3} < b^{3}\)可得a
+
+\textless{} b，
+
+因为指数函数\(y = 2026^{x}\)在定义域 R
+
+上单调递增，由\(2026^{a} < 2026^{b} < 1\)可得\(a < b < 0\)，
+
+所以由\(a^3 < b^3\)推不出\(2026^a < 2026^b < 1\)，即充分性不成立；
+
+由\(2026^a < 2026^b < 1\)可推出\(a^3 < b^3\)，即必要性成立。
+
+所以``\(a^3 < b^3\)''是``\(2026^a < 2026^b < 1\)''成立的必要不充分条件。
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=3]
+\item （25-26 高三下·云南昭通·期中）``0 \textless{} a \textless{}
+  1''是``函数\(f(x) = x^{a} + b\)在\((0, +\infty)\)上单调递增''的（）
+\end{enumerate}
+
+A. 充分不必要条件
+
+B. 必要不充分条件
+
+C. 充要条件
+
+D. 既不充分也不必要条件
+
+\textbf{答案：}
+A
+
+\textbf{详解：}
+由幂函数的性质可知，当0\textless a\textless1时，函数\(f(x)=x^{a}+b\)在\((0,+\infty)\)上单调递增；
+
+若函数\(f(x)=x^{a}+b\)在\((0,+\infty)\)上单调递增，则a\textgreater0，不能推出0\textless a\textless1.
+
+所以``0 \textless{} a \textless{}
+
+1''是``函数\(f(x) = x^{a} + b\)在\((0, +\infty)\)上单调递增''的充分不必要条件.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=4]
+\item （2026·江苏扬州·三模）已知单位向量\(\vec{a}\)，\(\vec{b}\)，则\(\left|\vec{a}+\vec{b}\right|=2\)是``存在实数\(\lambda\)，使得\(\vec{b}=\lambda\vec{a}\)''的（）.
+\end{enumerate}
+
+A. 充分不必要条件
+
+B. 必要不充分条件
+
+C. 充要条件
+
+D. 既不充分也不必要条件
+
+\textbf{答案：}
+A
+
+\textbf{详解：}
+已知\(\vec{a},\vec{b}\)是单位向量，故\(|\vec{a}|=|\vec{b}|=1\).
+
+对\(|\vec{a} + \vec{b}| = 2\)两边平方得\(|\vec{a} + \vec{b}|^2 = |\vec{a}|^2 + 2\vec{a} \cdot \vec{b} + |\vec{b}|^2 = 4,\)
+
+代入\(|\vec{a}| = |\vec{b}| = 1\)，解得\(\vec{a} \cdot \vec{b} = 1\)
+
+由点积定义得\(\vec{a} \cdot \vec{b} = |\vec{a}||\vec{b}|\cos \theta = \cos \theta = 1\)（\(\theta\)为两向量夹角），
+
+得\(\theta = 0\)，即\(\vec{a},\vec{b}\)同向共线，存在\(\lambda = 1\)使\(\vec{b} = \lambda \vec{a}\)，充分性成立；
+
+若存在\(\lambda\)使\(\vec{b} = \lambda \vec{a}\)，由\(|\vec{b}| = |\lambda||\vec{a}| = |\lambda| = 1\)
+
+得\(\lambda = \pm 1\)。当\(\lambda = -1\)时，\(\vec{b} = -\vec{a}\)，此时\(|\vec{a} + \vec{b}| = |\vec{0}| = 0 \neq 2\)，必要性不成立。
+
+因此\(|\vec{a} + \vec{b}| = 2\)是``存在实数\(\lambda\)，使得\(\vec{b} = \lambda \vec{a}\)''的充分不必要条件.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=5]
+\item （2026·福建福州·三模）记\(S_{n}\)为等比数列\(\{a_{n}\}\)的前n项和，设甲：\(S_{1},S_{3},S_{2}\)为等差数列，乙：\(a_{2},a_{4},a_{3}\)为等差数列，则（）
+\end{enumerate}
+
+A. 甲是乙的充分条件但不是必要条件
+
+B. 甲是乙的必要条件但不是充分条件
+
+C. 甲是乙的充要条件
+
+D. 甲既不是乙的充分条件也不是乙的必要条件
+
+\textbf{答案：}
+A
+
+\textbf{分析：}
+
+根据等差性质、等比数列的性质，结合充分条件、必要条件的概念求解判断即可.
+
+\textbf{详解：}
+设等比数列\(\{a_{n}\}\)的公比为\(q(q\neq0)\)，首项为\(a_{1}(a_{1}\neq0)\).
+
+甲：\(S_{1} = a_{1}\)，\(S_{2} = a_{1} + a_{2} = a_{1} + a_{1}q\)，\(S_{3} = a_{1} + a_{2} + a_{3} = a_{1} + a_{1}q + a_{1}q^{2}\)
+
+因为\(S_{1},S_{3},S_{2}\)为等差数列，所以\(2S_{3}=S_{1}+S_{2}\)，即\(2(a_{1}+a_{1}q+a_{1}q^{2})=a_{1}+(a_{1}+a_{1}q)\)，
+
+整理得\(2q^{2}+q=0\)，即\(q(2q+1)=0\)，所以\(q=-\frac{1}{2}\).
+
+因为\(a_{2}, a_{4}, a_{3}\)为等差数列，所以\(2a_{4} = a_{2} + a_{3}\)，即\(2a_{1}q^{3} = a_{1}q + a_{1}q^{2}\)，整理得\(2q^{2} - q - 1 = 0\)，即\((2q + 1)(q - 1) = 0\)，解得\(q = -\frac{1}{2}\)或\(q = 1\)。
+
+所以若甲成立，乙一定成立，故甲是乙的充分条件；
+
+若乙成立，甲不一定成立，故甲不是乙的必要条件；
+
+综上，甲是乙的充分不必要条件。
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=6]
+\item 已知\(p: A = \{x \mid -1 \leq x < 3\}\),\(q: B = \{x \mid ax + 1 \leq 0\}\),
+  若\(\neg p\)是\(q\)的必要不充分条件, 则实数\(a\)的取值范围是 ( )
+\end{enumerate}
+
+A. -1 \textless{} a \textless{} 2
+
+B.\(-1 < a < \frac{3}{2}\)
+
+C.\(-\frac{1}{3} \leq a < 1\)
+
+D.\(-\frac{1}{3} \leq a < \frac{3}{2}\)
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+根据\(\neg p\)是\(q\)的必要不充分条件，可得\(B\)是\(\complement_{\mathbb{R}} A\)的真子集，再分\(a = 0\)，\(a > 0\)和\(a < 0\)三种情况讨论，求出集合\(B\)，根据集合的包含关系即可得解.
+
+\textbf{详解：}
+由\(p:A=\{x\mid-1\leq x<3\}\)，得\(\neg p:\complement_{\mathbb{R}}A=\{x\mid x<-1或x\geq3\}\)，
+
+因为\(\neg p\)是\(q\)的必要不充分条件，
+
+所以B是\(\complement_{\mathbb{R}}A\)的真子集，
+
+当\(a = 0\)时，\(B = \emptyset\)，符合题意；
+
+当\(a > 0\)时，\(B = \left\{x \mid x \leq -\frac{1}{a}\right\}\)，
+
+因为B是\(\complement_{\mathbb{R}}A\)的真子集，所以\(\left\{\begin{aligned}a&>0\\ -\frac{1}{a}&<-1\end{aligned}\right.\)，解得0\textless a\textless1；
+
+当\(a < 0\)时，\(B = \left\{x \mid x \geq -\frac{1}{a}\right\}\)，
+
+因为B是\(\complement_{\mathbb{R}}A\)的真子集，所以\(\left\{\begin{aligned}a&<0\\ -\frac{1}{a}&\geq3\end{aligned}\right.\)，解得\(-\frac{1}{3}\leq a<0\)，
+
+综上所述，实数\(a\)的取值范围是\(-\frac{1}{3} \leq a < 1\).
+
+故选：C.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=7]
+\item （25-26
+  高三上·上海嘉定·阶段检测）已知\(\alpha:2^{x}+\log_{2}x\leq2\)，\(\beta: x \leq m\)，若\(\alpha\)是\(\beta\)的充分条件，则实数
+  m 的取值范围是（）
+\end{enumerate}
+
+A.\(m <   1\)
+
+B.\(m \leq 1\)
+
+C.\(m > 1\)
+
+D.\(m \geq 1\)
+
+\textbf{答案：}
+D
+
+\textbf{分析：}
+
+根据指数函数以及对数函数的单调性，可求解不等式，即可将充分条件转化为集合的包含关系进行求解.
+
+\textbf{详解：}
+由于\(y = 2^{x}\)，\(y = \log_{2}x\)均为\((0, +\infty)\)内的单调递增函数，
+
+故函数\(y = 2^{x} + \log_{2}x\)为\((0, +\infty)\)内的单调递增函数，由于当\(x = 1\)时，\(2^{1} + \log_{2}1 = 2\)，
+
+故不等式\(2^{x}+ \log_{2}x \leq 2\)的解为\(0 < x \leq 1\),
+
+由于\(\alpha\)是\(\beta\)的充分条件，所以\(\{x|0 < x \leq 1\} \subseteq \{x|x \leq m\}\)，故\(m \geq 1\)
+
+故选：D\subsection{题型 05
+全称量词与存在量词及其参数问题}\label{ux9898ux578b-05-ux5168ux79f0ux91cfux8bcdux4e0eux5b58ux5728ux91cfux8bcdux53caux5176ux53c2ux6570ux95eeux9898}
+
+\subsubsection{技巧通法·提分快招}\label{ux6280ux5de7ux901aux6cd5ux63d0ux5206ux5febux62db-4}
+
+\begin{methodbox}{含量词命题的真假判定与参数范围求解}
+  \textbf{1. 全称量词与存在量词命题真假判定的技巧}
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+    \item \textbf{全称量词命题}（$\forall x \in M, p(x)$）：
+    要判定其为真，必须对限定集合 $M$ 中的每个元素 $x$ 验证 $p(x)$ 成立；要判定其为假，只需在 $M$ 中找到一个反例 $x_0$，使得 $p(x_0)$ 不成立即可.
+    \item \textbf{存在量词命题}（$\exists x \in M, p(x)$）：
+    要判定其为真，只需在限定集合 $M$ 中找到一个元素 $x_0$ 使得 $p(x_0)$ 成立即可；否则，该存在量词命题就是假命题.
+  \end{enumerate}
+
+  \vspace{0.5em}
+  \textbf{2. 利用含量词的命题真假求解参数范围的技巧}
+  
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+    \item 含参数的\textbf{全称量词命题为真}时，常转化为\textbf{不等式恒成立}问题处理，一般通过参变分离或函数最值解决，即 $a \ge f(x) \iff a \ge f(x)_{\max}$，或 $a \le f(x) \iff a \le f(x)_{\min}$.
+    \item 含参数的\textbf{存在量词命题为真}时，常转化为\textbf{方程或不等式有解}问题处理，一般通过函数值域或判别式解决，即存在 $x \in M$ 使得 $a \ge f(x) \iff a \ge f(x)_{\min}$.
+    \item 当直接求解参数范围较复杂时，可以根据“原命题与其否定真假相反”的性质，转化为求其否定命题为假或为真的反面求解.
+  \end{enumerate}
+\end{methodbox}
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+\item （2026·广西崇左·二模）已知命题\(p: \forall x < 2, \frac{1}{x-1} > 1\)，命题\(q: \exists x < 0, x^2 = -x\)，则（）
+\end{enumerate}
+
+A.\(p\)和\(q\)都是真命题
+
+B.\(\neg p\)和\(q\)都是真命题
+
+C.\(p\)和\(\neg q\)都是真命题
+
+D.\(\neg p\)和\(\neg q\)都是真命题
+
+\textbf{答案：}
+B
+
+\textbf{详解：}
+由\(\frac{1}{x - 1} > 1\)，得\(\frac{1}{x - 1} - 1 > 0\)，即\(\frac{x - 2}{x - 1} < 0\)，解得\(1 < x < 2\).
+
+方法二：由\(\frac{1}{x - 1} > 1\)，得\(\left\{ \begin{array}{l} x - 1 > 0 \\ 1 > x - 1 \end{array} \right.\)或\(\left\{ \begin{array}{l} x - 1 < 0 \\ 1 < x - 1 \end{array} \right.\)
+
+解得\(1 < x < 2\).
+
+所以p是假命题，\(\neg p\)是真命题.
+
+当\(x = -1\)时，\(x^{2} = -x\)显然成立，所以\(q\)是真命题，\(\neg q\)是假命题.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 下列命题为真命题的是（）
+\end{enumerate}
+
+A.\(\exists x \in \mathbb{R}, \ln (x^2 + 1) < 0\)
+
+B.\(\forall x > 2, 2x > x^{2}\)
+
+C.\(\exists \alpha, \beta \in \mathbb{R}, \sin (\alpha - \beta) = \sin \alpha - \sin \beta\)
+
+D.\(\forall x\in (0,\pi),\sin x > \cos x\)
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+对每个选项逐一分析，找出特例或者反例验证选项即可.
+
+\textbf{详解：}
+选项 A:
+
+要使\(\ln(x^{2}+1)<0\)，则需要\(0<x^{2}+1<1\)，而\(x^{2}+1\geq1\)，所以为假命题；选项
+
+B: 所有，可找反例，取特殊值 x=3\textgreater2，代入得
+
+6\textgreater9，此时\(2x>x^{2}\)不成立，所以为假命题；
+
+选项 C: 存在, 符合即可, 取\(\alpha = \beta = 0\),
+
+代入得\(\sin(0 - 0) = \sin 0 - \sin 0\)成立, 所以为真命题; 选项 D: 所有,
+
+可找反例, 取特殊值\(x = \frac{\pi}{6} \in (0, \pi)\),
+
+代入得\(\sin\frac{\pi}{6} = \frac{1}{2}\),\(\cos\frac{\pi}{6} = \frac{\sqrt{3}}{2}\),
+
+此时\(\sin x > \cos x\)不成立, 所以为假命题; 故选: C.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=3]
+\item （2026·甘肃张掖·模拟预测）命题\(p\)：``\(\exists x \in R\)，使得不等式\(ax^2 + 2ax + 2 < 0\)成立''为假命题，则实数\(a\)的取值范围为（）
+\end{enumerate}
+
+A. $(0, 4]$
+
+B. $[2, 4)$
+
+C. $(1, 2)$
+
+D. $[0, 2]$
+
+\textbf{答案：}
+D
+
+\textbf{分析：}
+
+题意说明\(\neg p\)：\(\forall x\in R\)，\(ax^{2} + 2ax + 2 \geq 0\)恒成立''是真命题，然后对\(a\)分类讨论可得.
+
+\textbf{详解：}
+命题\(p\)：``\(\exists x \in R\)，使得不等式\(ax^2 + 2ax + 2 < 0\)成立''为假命题，则命题\(\neg p\)：``\(\forall x \in R\)，\(ax^2 + 2ax + 2 \geq 0\)恒成立''是真命题，
+
+a = 0 时，不等式为\(2 \geq 0\)恒成立，满足题意，
+
+\(a \neq 0\)时，则\(\left\{ \begin{array}{l} a > 0 \\ \Delta = 4a^2 - 8a \leq 0 \end{array} \right.\)，解得\(0 < a \leq 2\)
+
+综上，a的范围是{[}0,2{]}.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=4]
+\item 若命题``\(\forall x \in [1,4], x^2 - 4x - m \neq 0\)''是假命题，则实数\(m\)的取值范围是（）
+\end{enumerate}
+
+A.\([-4,0]\)
+
+B.\([-4, -3]\)
+
+C.\((- \infty, -4)\)
+
+D.\((-4, +\infty)\)
+
+\textbf{答案：}
+A
+
+\textbf{详解：}
+原全称命题``\(\forall x \in [1,4], x^{2} - 4x - m \neq 0\)''为假命题，
+
+则其否定``\(\exists x \in [1,4], x^2 - 4x - m = 0\)''为真命题，即方程\(m = x^2 - 4x\)在\(x \in [1,4]\)上有解，\(m\)的取值范围就是函数\(f(x) = x^2 - 4x\)在\([1,4]\)上的值域.
+
+\(f(x) = x^{2} - 4x = (x - 2)^{2} - 4\)，这是开口向上，对称轴为\(x = 2\)的二次函数，\(x\in [1,4]\)
+
+则最小值在\(x = 2\)处取得：\(f(2) = -4\)；最大值在端点\(x = 4\)处取得：\(f(4) = 0\)
+
+因此\(f(x)\)的值域为\([-4,0]\)，即\(m \in [-4,0]\).
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=5]
+\item 命题``\(\exists x \in R\)，使\(4x^{2} + (a - 2)x + \frac{1}{4} \leq 0\)''是假命题的必要不充分条件是（）
+\end{enumerate}
+
+A.\(\{a|0 < a < 1\}\)
+
+B.\(\{a|0\leq a\leq 4\}\)
+
+C.\(\{a|a\geq 4\}\)
+
+D.\(\{a|0 < a < 4\}\)
+
+\textbf{答案：}
+B
+
+\textbf{分析：}
+
+先根据命题为假命题求出a的范围，再根据选项和必要不充分条件的判断确定答案.
+
+\textbf{详解：}
+\(\because \exists x \in R\)，使\(4x^{2} + (a - 2)x + \frac{1}{4} \leq 0\)是假命题，
+
+即``\(\forall x \in R, 4x^{2} + (a - 2)x + \frac{1}{4} > 0\)''是真命题，
+
+\[
+\therefore \Delta = (a - 2) ^ {2} - 4 \times 4 \times \frac {1}{4} = a ^ {2} - 4 a = a (a - 4) <   0, \therefore 0 <   a <   4.
+\]
+
+即命题``\(\exists x \in R\)，使\(4x^{2} + (a - 2)x + \frac{1}{4} \leq 0\)''是假命题等价于\(a \in \{a | 0 < a < 4\}\),
+
+设有集合\(I\)，命题\(p: a \in \{a | 0 < a < 4\}\)，命题\(p\)的必要不充分条件为命题\(q: a \in I\)，则命题\(p \Rightarrow q\)，而\(q\)不能\(\Rightarrow p\)，
+
+集合\(\{a\mid0<a<4\}\)是集合I的真子集，选项B中集合\(\{a\mid0\leq a\leq4\}\)满足要求.
+
+∴选项 B 正确.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=6]
+\item 已知命题\(p: \exists x \in [1,2], 2x - 2 + m > 0\)，命题\(q: \forall x \in [1,3]\)，不等式\(mx \geq x^2 + 4\)恒成立，若\(p\)和\(q\)有且仅有一个正确，则实数\(m\)的取值范围为（）
+\end{enumerate}
+
+A.\(\left(-\frac{2}{3},5\right)\)
+
+B.\(\left(-2,-\frac{2}{3}\right)\)
+
+C.\(\left(-2,-\frac{2}{3}\right)\cup(0,5)\)
+
+D.\((-2,5)\)
+
+\textbf{答案：}
+D
+
+\textbf{详解：}
+对于命题p，\(m > -2x + 2\)在\(x \in [1,2]\)上有解，而\(y = -2x + 2\)为减函数，
+
+所以当x=2时，\((-2x+2)_{\min}\)，解得m\textgreater-2。
+
+对于命题\(q\)，\(\forall x \in [1,3]\)不等式\(mx \geq x^2 + 4\)恒成立，可化为\(m \geq x + \frac{4}{x}\)在\(x \in [1,3]\)上恒成立.
+
+又\(y = x + \frac{4}{x}\)在(1,2)上单调递减，在(2,3)上单调递增，
+
+当\(x = 1\)时\(y = 5\)，当\(x = 3\)时，\(y = 3 + \frac{4}{3} < 5\)，所以\(\left(x + \frac{4}{x}\right)_{max}\)，所以\(m \geq 5\).
+
+\(p\)和\(q\)有且仅有一个正确，只有两种情况：
+
+①p真q假，此时\(\left\{\begin{aligned}m&>-2\\ m&<5\end{aligned}\right.\)，解得-2\textless m\textless5；
+
+②p假q真，此时\(\left\{\begin{aligned}m&\leq-2\\ m&\geq5\end{aligned}\right.\)，则\(m\in\varnothing\).
+
+综上，\(m \in (-2,5)\).\subsection{题型 06
+集合中新定义问题}\label{ux9898ux578b-06-ux96c6ux5408ux4e2dux65b0ux5b9aux4e49ux95eeux9898}
+
+\subsubsection{技巧通法·提分快招}\label{ux6280ux5de7ux901aux6cd5ux63d0ux5206ux5febux62db-5}
+
+\begin{methodbox}{以集合为背景的新定义问题的解题关键}
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+    \item \textbf{准确转化}：解决新定义问题时，首要的是读懂新定义的本质数学含义。紧扣题目给定的条件与操作规则进行推导，切忌将新定义与已知的类似概念或运算习惯混淆.
+    \item \textbf{方法选取}：由于新定义命题通常考查抽象逻辑思维，解题时可以灵活使用特值检验（如取特殊集合、特殊数值）进行快速排除筛选，或采用一般性的逻辑证明及集合间的包含关系进行严密推理.
+  \end{enumerate}
+\end{methodbox}
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+\item （2026·河南开封·二模）定义集合\(A - B = \{x | x \in A \text{ 且 } x \notin B\}\)，已知集合\(A = \{1, a\}\)，\(B = \{2, b\}\)，若\(A - B = \{1\}\)，则下列一定成立的是（）
+\end{enumerate}
+
+A.\(a = 2\)
+
+B.\(b \neq  1\)
+
+C.\(A \cap B = \{2\}\)
+
+D.\(B - A = \{2\}\)
+
+\textbf{答案：}
+B
+
+\textbf{详解：}
+因为集合\(A - B = \{x|x \in A \text{ 且 } x \notin B\}\)，集合\(A = \{1, a\}\)，集合\(B = \{2, b\}\)，\(A - B = \{1\}\)，
+
+所以\(1 \in A\)且\(1 \notin B, a \in B, b \neq 1, b \neq 2,\)
+
+选项 A: 因为\(a \in B\),
+
+所以\(a = 2\)或者\(a = b\)(且满足集合元素的互异性);
+
+选项 B: 因为\(1 \notin B\)且\(B = \{2, b\}\)，所以\(b \neq 1\)一定成立；
+
+选项 C: 当 a = b = 3
+
+时，集合\(A = \{1,3\}\)，集合\(B = \{2,3\}\)，\(A \cap B = \{3\}\)，C
+
+错误；
+
+选项 D: 当 a = 2, b = 3
+
+时，集合\(A = \{1, 2\}\)，集合\(B = \{2, 3\}\)，\(B-A=\{3\}\)，D 错误.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item （2025·江西·模拟预测）中国剩余定理又称``孙子剩余定理''，它是中国古代史上最有创造性的成就之一，其中``韩信点兵''``物不知数''等问题的解法在数论中有相应的推广，数论中的\(a \equiv b (\bmod n)\)形式表示\(a\)和\(b\)除以\(n\)的余数相同。已知集合\(A, B, C\)满足\(A = \{n | n \equiv 2 (\bmod 3), n \in \mathbb{N}^*\}\)，\(B = \{m | m \equiv 1 (\bmod 4), m \in \mathbb{N}^*\}\)，\(C = A \cap B\)。对于集合\(C\)中的任意一个元素\(c\)，下列结论错误的是（）
+\end{enumerate}
+
+A.\(c \equiv 2 (\text{mod } 3)\)
+
+B.\(c \equiv 1 (\text{mod } 4)\)
+
+C.\(c \equiv 5 (\text{mod } 7)\)
+
+D.\(c \equiv 5 (\text{mod} 12)\)
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+根据同余的定义式, 分别求出集合\(A, B\)中元素满足的式子,
+
+进而得到集合\(C\), 再利用同余的定义式检验 ABD 选项,
+
+最后取特殊值\(c = 17\), 检验 C 选项.
+
+\textbf{详解：}
+因\(A=\{n|n\equiv2(\text{mod }3),n\in \mathbb{N}^{*}\}\)，则\(n=3k_{1}-1,k_{1}\in N^{*}\)
+
+因\(B=\{m|m\equiv1(\text{mod }4),m\in \mathbb{N}^{*}\}\)，则\(m=4k_{2}-3,k_{2}\in N^{*}\)
+
+又\(n = 3(k_{1} + 2) - 7, k_{1} \in N^{*}\),\(m = 4(k_{2} + 1) - 7, k_{2} \in N^{*}\),
+
+则\(C = \{c_p | c_p = 12p - 7, p \in \mathbb{N}^*\}\)
+
+又\(c_{p}=12p-7=3(4p-3)+2\)，则\(c\equiv2(\text{mod}3)\)，故A正确；
+
+\(c_{p} = 12p - 7 = 4(3p - 2) + 1\)，则\(c\equiv 1(\mathrm{mod}4)\)，故B正确；
+
+\(c_{p} = 12p - 7 = 12(p - 1) + 5\)，则\(c\equiv 5(\mathrm{mod}12)\)，故D正确；
+
+不妨取\(c=17\)，不满足\(c\equiv5(\bmod7)\)，故C错误.
+
+故选：C.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=3]
+\item （25-26
+  高三上·四川·阶段检测）我们定义：一个集合的``极差''为该集合最大元素与最小元素的差值。则集合\(A = \left\{\frac{1}{a} + 2b \mid 1 \leq b \leq a \leq 2\right\}\)的极差为（
+  ）
+\end{enumerate}
+
+A.\(\frac{1}{2}\)
+
+B. 1
+
+C.\(\frac{3}{2}\)
+
+D. 2
+
+\textbf{答案：}
+D
+
+\textbf{分析：}
+
+利用不等式的性质与导数求得函数单调性从而得到最大、最小值即可得.
+
+\textbf{详解：}
+由\(1 \leq b \leq a \leq 2\)，则\(\frac{1}{a} + 2b \leq \frac{1}{a} + 2a\)
+
+令\(f(x)=2x+\frac{1}{x},\quad x\in[1,2]\)，则\(f'(x)=2-\frac{1}{x^{2}}=\frac{2x^{2}-1}{x^{2}}>0,\)
+
+则\(f(x)\)在\([1,2]\)上单调递增，则\(f_{\max}=f(2)=\frac92\)
+
+故\(\frac{1}{a}+2b\leq\frac{1}{a}+2a\leq\frac{9}{2}\)，当且仅当a=b=2时取等，
+
+即\(\max\left(\frac1a+2b\right)=\frac92\);
+
+由\(1 \leq b \leq a \leq 2\)，则\(\left(\frac{1}{a}\right)\frac{1}{2min}\)，\((2b)_{min}\)，
+
+则\(\min\left(\frac1a+2b\right)=\frac12+2=\frac52\)，当且仅当\(a = 2\)，\(b = 1\)时取等；
+
+故\(A = \left\{\frac{1}{a} + 2b \mid 1 \leq b \leq a \leq 2\right\}\)的极差为\(\frac{9}{2} - \frac{5}{2} = 2\)。
+
+故选：D.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=4]
+\item （25-26
+  高三上·山东临沂·期中）置换是抽象代数的一种基本变换，对于有序数组\(M: \{m_1, m_2, m_3\}\)，有序数组\(N: \{n_1, n_2, n_3\}\)，定义``间距置换''：\(n_1 = |m_1 - m_2|\)，\(n_2 = |m_2 - m_3|\)，\(n_3 = |m_3 - m_1|\).
+  已知有序数组\(T: \{x, y, z\}\)，经过一次``间距置换''后得到新的有序数组\(S: \{a, 3, b\} (a \leq b)\)，且\(S\)中所有数之和为
+  2026，则\(a = (\quad)\)
+\end{enumerate}
+
+A. 1004
+
+B. 1007
+
+C. 1010
+
+D. 1013
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+本题通过分析数组元素的大小关系，结合绝对值的运算求解参数.
+
+\textbf{详解：}
+由``间距置换''定义，得\(a = |x - y|\)，\(3 = |y - z|\)，\(b = |z - x|\).
+
+由\(a+3+b=2026\)，得\(a+b=2023\).
+
+因\(a \leq b\)且\(|y - z| = 3 \neq 0\)，故\(x > y > z\)或\(x < y < z\).
+
+若\(x > y > z\)，则\(a = x - y\)，\(3 = y - z\)，\(b = x - z\)
+
+于是\(a+3+b=2(x-z)=2026\),
+
+得x-z=1013，即b=1013，故a=2023-1013=1010.
+
+若\(x < y < z\)，同理可得\(a = 1010\).
+
+综上所述，a的值为1010.
+
+故选：C.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=5]
+\item （多选题）群的概念由数学家伽罗瓦在 19 世纪 30
+  年代开创，群论虽起源于对代数多项式方程的研究，但在量子力学、晶体结构学等其他学科中也有十分广泛的应用。设\(G\)是一个非空集合，``\(\circ\)''是一个适用于\(G\)中元素的运算，若同时满足以下四个条件，则称\(G\)对``\(\circ\)''构成一个群：（1）封闭性，即若\(a, b \in G\)，则存在唯一确定的\(c \in G\)，使得\(c = a \circ b\)；（2）结合律成立，即对\(G\)中任意元素\(a, b, c\)都有\((a\circ b)\circ c = a\circ(b\circ c)\)；（3）单位元存在，即存在\(e \in G\)，对任意\(a \in G\)，满足\(a\circ e = e\circ a = a\)，则\(e\)称为单位元；（4）逆元存在，即任意\(a \in G\)，存在\(b \in G\)，使得\(a\circ b = b\circ a = e\)，则称\(a\)与\(b\)互为逆元。根据以上信息，下列说法中错误的是（）
+\end{enumerate}
+
+A.\(G = \{-1,1\}\)关于数的乘法构成群
+
+B.\(G = \{-1,1\}\)关于数的加法构成群
+
+C.\(G = \{2m|m\in \mathbb{Z}\}\)和\(G = \{\sqrt{2} m + \sqrt{3} n\mid m,n\in \mathbb{Z}\}\)均关于数的加法构成群
+
+D.\(G = \left\{x \mid x = \frac{1}{k}, k \in Z, k \neq 0\right\} \cup \{x \mid x = m, m \in Z, m \neq 0\}\)关于数的乘法构成群
+
+\textbf{答案：}
+BD
+
+\textbf{分析：}
+
+由集合新定义中``乘法结合律''可判断 A；由集合新定义可判断
+
+B、D；由集合新定义中``群''的概念可判断 C.
+
+\textbf{详解：}
+对于
+
+A，\(\forall a, b \in G\)，有\(a \times b \in G\)，且满足\((a \times b) \times c = a \times (b \times c)\)（乘法结合律）；
+
+\(\exists e = 1 \in G\)，使得\(\forall a \in G\)，有\(1 \times a = a \times 1 = a\)；
+
+\(\forall a \in G, \exists a \in G\)，有\(a \times a = a \times a = 1\)，即\(G = \{-1, 1\}\)关于数的乘法构成群，故
+
+A 正确；
+
+对于
+
+B，因为\(a = 1 \in G\)，且\(b = -1 \in G\)，但\(a + b = 0 \notin G\)，故
+
+B 错误；
+
+对于 C，若\(G = \{2m \mid m \in Z\}\)，即 G 为所有偶数组成的集合，
+
+\(\forall a, b \in G\)，有\(a + b \in G\)，且满足\((a + b) + c = a + (b + c)\)（加法结合律），
+
+\(\exists e = 0 \in G\)，使得\(\forall a \in G\)，有\(0 + a = a + 0 = a\);
+
+\(\forall a \in G, \exists -a \in G\)，有\(a + (-a) = (-a) + a = 0\)，故\(G = \{2m \mid m \in \mathbb{Z}\}\)关于数的加法构成群；
+
+若\(G = \{\sqrt{2}m + \sqrt{3}n \mid m, n \in \mathbb{Z}\}\)，设\(a = \sqrt{2}m_1 + \sqrt{3}n_1, b = \sqrt{2}m_2 + \sqrt{3}n_2 \in G, (m_1, n_1, m_2, n_2 \in \mathbb{Z})\)，则\(a + b = \sqrt{2}(m_1 + m_2) + \sqrt{3}(n_1 + n_2) \in G\)，
+
+且对\(\forall a, b, c \in G\)满足\((a + b) + c = a + (b + c)\),
+
+当\(m = n = 0\)时，\(\sqrt{2} m + \sqrt{3} n = 0\)，满足\(e = 0\)
+
+\(\forall a = \sqrt{2} m + \sqrt{3} n \in G, \exists b = -\sqrt{2} m - \sqrt{3} n \in G,\)使\(a + b = b + a = 0\)
+
+故\(G=\{\sqrt{2m}+\sqrt{3n}\mid m,n\in\mathbb{Z}\}\)关于数的加法构成群，故C正确；
+
+对于
+
+D，因为\(a = \frac{1}{2} \in G\)，且\(b = 3 \in G\)，但\(a \times b = \frac{1}{2} \times 3 = \frac{3}{2} \notin G\)，故
+
+D 错误.
+
+故选：BD.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=6]
+\item （2024·安徽马鞍山·三模）已知 S 是全体复数集 C
+  的一个非空子集，如果\(\forall x, y \in S\)，总有\(x + y, x - y, x \cdot y \in S\)，则称
+  S 是数环．设 F 是数环，如果①F
+  内含有一个非零复数；②\(\forall x, y \in F\)且\(y \neq 0\)，有\(\frac{x}{y} \in F\)，则称
+  F 是数域．由定义知有理数集 Q 是数域．
+\end{enumerate}
+
+(1)求元素个数最小的数环\(\tilde{S}\);
+
+(2)证明：记\(Q(\sqrt{3})=\{a+\sqrt{3}b|a,b\in Q\}\)，证明：\(Q(\sqrt{3})\)是数域；
+
+(3)若\(F_{1},F_{2}\)是数域，判断\(F_{1}\cup F_{2}\)是否是数域，请说明理由.
+
+\textbf{答案：}
+(1)\{0\}
+
+(2)证明见详解
+
+(3)\(F_{1} \cup F_{2}\)不一定是数域，证明见详解
+
+\textbf{分析：}
+
+（1）根据题意分析可知\(\tilde{S}\)中至少有一个元素\(a \in C\)，分\(a = 0\)和\(a \neq 0\)两种情况，结合题意分析证明；
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 根据题中数环和数域的定义分析证明;
+\item
+  举特例, 取\(F_{1} = Q(\sqrt{3}), F_{2} = Q(\sqrt{2})\), 举例数列即可.
+\end{enumerate}
+
+\textbf{详解：}
+（1）因为\(\tilde{S}\)为数环，可知\(\tilde{S}\)不是空集，即\(\tilde{S}\)中至少有一个元素\(a \in C\)若\(a = 0\)，则\(0 + 0 = 0 - 0 = 0 \times 0 = 0 \in S\)，可知\(\{0\}\)为数环；
+
+若\(a \neq 0\)，则\(a - a = 0\)，可知\(\tilde{S}\)中不止一个元素，不是元素个数最小的数环；
+
+综上所述：元素个数最小的数环为\(S = \{0\}\)
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 设\(x = a + \sqrt{3} b, y = c + \sqrt{3} d, a, b, c, d \in Q\)，可知\(x, y \in Q(\sqrt{3})\)，则有：
+\end{enumerate}
+
+\[
+x + y = (a + \sqrt {3} b) + (c + \sqrt {3} d) = (a + c) + \sqrt {3} (b + d),
+\]
+
+\[
+x - y = (a + \sqrt {3} b) - (c + \sqrt {3} d) = (a - c) + \sqrt {3} (b - d),
+\]
+
+\[
+x \cdot y = (a + \sqrt {3} b) (c + \sqrt {3} d) = (a c + 3 b d) + \sqrt {3} (a d + b c),
+\]
+
+因为\(a, b, c, d \in Q\)，则\(a+c,b+d,a-c,b-d,ac+3bd,ad+bc\in\mathbb Q\)，可知\(x + y, x - y, x \cdot y \in Q(\sqrt{3})\)，所以\(Q(\sqrt{3})\)是数环；若\(y\neq0\)，满足①；若\(y \neq 0\)，则\(\frac{x}{y}=\frac{a+\sqrt3b}{c+\sqrt3d} = \frac{(a + \sqrt{3}b)(c - \sqrt{3}d)}{(c + \sqrt{3}d)(c - \sqrt{3}d)} = \frac{ac - 3bd}{c^2 - 3d^2} + \sqrt{3}\frac{bc - ad}{c^2 - 3d^2}\)，因为\(a, b, c, d \in Q\)，则\(\frac{ac - 3bd}{c^2 - 3d^2}, \frac{bc - ad}{c^2 - 3d^2} \in Q\)，可知\(\frac{x}{y} \in Q(\sqrt{3})\)，满足②；综上所述：\(Q(\sqrt{3})\)是数域。
+
+（3）不一定是数域，理由如下：
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+\item 若\(F_{1} = Q, F_{2} = R\)，显然\(F_{1}, F_{2}\)均为数域，且\(F_{1} \cup F_{2} = R\)是数域；
+\item
+  设\(x = a + \sqrt{2}b, y = c + \sqrt{2}d, a, b, c, d \in Q\)，可知\(x, y \in Q(\sqrt{2})\)，则有：
+\end{enumerate}
+
+\[
+x + y = (a + \sqrt {2} b) + (c + \sqrt {2} d) = (a + c) + \sqrt {2} (b + d),
+\]
+
+\[
+x - y = (a + \sqrt {2} b) - (c + \sqrt {2} d) = (a - c) + \sqrt {2} (b - d),
+\]
+
+\[
+x \cdot y = (a + \sqrt {2} b) (c + \sqrt {2} d) = (a c + 2 b d) + \sqrt {2} (a d + b c),
+\]
+
+因为\(a, b, c, d \in Q\)，则\(a+c,b+d,a-c,b-d,ac+3bd,ad+bc\in\mathbb Q\)
+
+可知\(x + y, x - y, x \cdot y \in Q(\sqrt{2})\)，所以\(Q(\sqrt{2})\)是数环；
+
+若\(y\neq0\)，则满足①；
+
+若\(y \neq 0\)，则\(\frac{a + \sqrt{2}b}{y} = \frac{(a + \sqrt{2}b)(c - \sqrt{2}d)}{c + \sqrt{2}d} = \frac{ac - 2bd}{c^2 - 2d^2} + \sqrt{2}\frac{bc - ad}{c^2 - 2d^2}\),
+
+因为\(a, b, c, d \in Q\)，则\(\frac{ac - 2bd}{c^2 - 2d^2}, \frac{bc - ad}{c^2 - 2d^2} \in Q\)
+
+可知\(\frac{x}{y} \in Q(\sqrt{2})\)，满足②；
+
+综上所述：\(Q(\sqrt{2})\)是数域.
+
+例如：\(F_{1}=Q(\sqrt{3}),F_{2}=Q(\sqrt{2})\)，例如\(1+\sqrt{3}\in Q(\sqrt{3}),1+\sqrt{2}\in Q(\sqrt{2})\)，
+
+但\(1 + \sqrt{3} + 1 + \sqrt{2} = 2 + \sqrt{3} + \sqrt{2} \notin F_1 \cup F_2\),
+
+所以\(F_{1}\cup F_{2}\)不是数域;
+
+综上所述：\(F_{1} \cup F_{2}\)不一定是数域.
+
+\textbf{点睛：}
+方法点睛：与集合的新定义有关的问题的求解策略：
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+\item 通过给出一个新的集合的定义，或约定一种新的运算，或给出几个新模型来创设新问题的情景，要求在阅读理解的基础上，依据题目提供的信息，联系所学的知识和方法，实现知识与方法的迁移，达到灵活解题的目的；
+\end{enumerate}
+
+2.遇到新定义问题，应耐心读题，分析新定义的特点，弄清新定义的性质，按新定义的要求，``照章办事''，逐条分析、运算、验证，使得问题得以解决.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=7]
+\item （25-26
+  高三上·江西南昌·阶段检测）对于给定的闭区间\(D_{n}(n \in \mathbb{N}^{*})\)，现将按如下规则构造的区间列\(\{E_{n}\}\)称为\(\{D_{n}\}\)的``就近隔离区间列''：
+\end{enumerate}
+
+\begin{enumerate}[label=(\roman*), leftmargin=*]
+\item 确定\(E_{1}\)，取\(E_{1}=D_{1}\);
+\item
+  确定\(E_{2}\)，若\(D_{2}\)与\(E_{1}\)的交集为空集，则\(E_{2}=D_{2}\)，否则判断\(D_{3}\)与\(E_{1}\)的交集是否为空集，若为空集，则\(E_{2}=D_{3}\)
+\end{enumerate}
+
+若\(D_{3}\)与\(E_{1}\)的交集仍不为空集，则继续判断\(D_{4}\)与\(E_{1}\)的交集是否为空；以此类推，直到找到与\(E_{1}\)不相交的区间作为\(E_{2}\)，设\(E_{2}=D_{c_{1}}\)；
+
+\begin{enumerate}[label=(\roman*), leftmargin=*, start=3]
+\item 确定\(E_{3}\), 若\(D_{c_{1}+1}\)与\(E_{2}\)的交集为空集,
+  则\(E_{3} = D_{c_{1}+1}\),
+  否则判断\(D_{c_{1}+2}\)与\(E_{2}\)的交集是否为空集, 若为空集,
+  则\(E_{3} = D_{c_{1}+2}, \cdots\), 以此类推, 直到找到\(E_{3}\),
+  设\(E_{3} = D_{c_{2}}\);
+\item
+  依照 (ii) (iii) 的方法依次确定\(E_{4}, E_{5}, \cdots, E_{n}\).
+\end{enumerate}
+
+已知数列\(\{a_{n}\}\)满足\(a_{1}=4,a_{5}=4a_{1},a_{n+2}=2a_{n+1}-a_{n}\)，区间\(D_{n}=[a_{n},2a_{n}],\{E_{n}\}\)是\(\{D_{n}\}\)的``就近隔离区间列''.
+
+(1)求\(\{a_{n}\}\)的通项公式及\(E_{2},E_{3}\).
+
+(2)证明：\(\forall n\in \mathbb{N}^{*},\exists k\in \mathbb{N}^{*},3\cdot 2^{n}\in E_{k}.\)
+
+(3)设t是给定的正整数，求集合\(\{4^{k}\mid4^{k}\in E_{n},k\in \mathbb{N}^{*},n\leq t\}\)中的元素之和\(S(t)\).
+
+\textbf{答案：}
+(1)\(a_n=3n+1\)，\(E_2=[10,20]\)，\(E_3=[22,44]\)；
+
+(2)证明见解析；
+
+(3)\(S(t)=\begin{cases}\dfrac{4^{(t+3)/2}-4}{3},&t\text{为奇数},\\[
+4pt]\dfrac{4^{(t+4)/2}-4}{3},&t\text{为偶数}.\end{cases}\)
+\textbf{分析：}
+（1）根据给定的递推公式，结合等差中项的意义求出通项公式，再求出\(D_{1},D_{2},D_{3},\cdots,D_{7}\)即可得\(E_{2},E_{3}\).
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 令\(E_n = D_{b_n}\)，利用``就近隔离区间列''的定义探求得\(E_{n+1} = D_{2b_n+1}\)，求出数列\(\{b_n\}\)的通项，再比较大小即可得证.
+\end{enumerate}
+（3）按\(t\)的奇偶分类确定\(k\)的最大取值，再利用等比数列前\(n\)项和公式求出\(S(t)\).
+\textbf{详解：}
+（1）由\(a_{n+2}=2a_{n+1}-a_{n}\)，得\(a_{n}+a_{n+2}=2a_{n+1}\)，则\(\{a_{n}\}\)是等差数列，
+设\(\{a_{n}\}\)的公差为d，则\(4d=a_{5}-a_{1}=3a_{1}=12\)，解得d=3，
+所以\(a_{n}=a_{1}+(n-1)d=3n+1\),
+\[
+D _ {1} = [ 4, 8 ], D _ {2} = [ 7, 1 4 ], D _ {3} = [ 1 0, 2 0 ], D _ {4} = [ 1 3, 2 6 ], D _ {5} = [ 1 6, 3 2 ], D _ {6} = [ 1 9, 3 8 ], D _ {7} = [ 2 2, 4 4 ],
+\]
+
+所以\(E_{1}=D_{1}=[4,8],E_{2}=D_{3}=[10,20],E_{3}=D_{7}=[22,44].\)
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 设\(E_{n}=D_{b_{n}}\)，则\(b_{1}=1\)，
+\end{enumerate}
+
+设\(m \in \mathbb{N}^{*}, m > b_{n}\)且\(E_{n} \cap D_{m} = \emptyset\)，则\([a_{b_{n}}, 2a_{b_{n}}] \cap [a_{m}, 2a_{m}] = \emptyset\)
+
+即\([3b_{n} + 1,6b_{n} + 2]\cap [3m + 1,6m + 2] = \emptyset ,\)
+
+于是\(3m + 1 > 6b_{n} + 2\)，即\(m > 2b_{n} + \frac{1}{3}\)
+
+而\(m \in \mathbb{N}^{*}\)，则\(m \geq 2b_{n} + 1\)，由\(E_{n}\)的定义知，\(E_{n+1}=D_{2b_n+1}\)，
+
+即\(b_{n+1}=2b_{n}+1\)，则\(b_{n+1}+1=2(b_{n}+1)\)，
+
+因此\(\{b_n + 1\}\)是首项为2，公比为2的等比数列，\(b_n + 1 = 2^n\)，即\(b_n = 2^n - 1\)
+
+则\(E_{n}=D_{2^{n}-1}=[3\cdot2^{n}-2,3\cdot2^{n+1}-4]\),
+
+而\(3 \cdot 2^{n} - 2 < 3 \cdot 2^{n} < 3 \cdot 2^{n+1} - 4\),
+
+所以\(\forall n\in \mathbb{N}^{*},\exists k\in \mathbb{N}^{*},3\cdot 2^{n}\in E_{k}\)
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=3]
+\item 由\(4^{k} \in E_{n}\),
+  得\(3 \cdot 2^{n} - 2 \leq 2^{2k} \leq 3 \cdot 2^{n+1} - 4\),
+\end{enumerate}
+
+当\(n = 1\)时，\(4 \leq 2^{2k} \leq 8\)，解得\(k = 1\)；
+
+当\(n \geq 2\)时，\(2^{n+1} = 2 \cdot 2^n < 3 \cdot 2^n - 2\)，\(2^{n+2} - (3 \cdot 2^n - 2) = 2^n + 2 > 0\)
+
+\[
+2 ^ {n + 2} - (3 \cdot 2 ^ {n + 1} - 4) = 4 - 2 ^ {n + 1} <   0, 2 ^ {n + 3} = 4 \cdot 2 ^ {n + 1} > 3 \cdot 2 ^ {n + 1} - 4,
+\]
+
+即\(2^{n+1} < 3 \cdot 2^n - 2 < 2^{n+2} < 3 \cdot 2^{n+1} - 4 < 2^{n+3}\)，则\(2k = n + 2\)
+
+当\(n \geq 2\)时，若\(n\)为奇数，则正整数\(k\)不存在；若\(n\)为偶数，则\(k = \frac{n + 2}{2}\)，
+
+因此，当\(t\)为奇数时，\(S(t)=4+4^2+\cdots+4^{(t+1)/2}=\dfrac{4^{(t+3)/2}-4}{3}\)；当\(t\)为偶数时，\(S(t)=4+4^2+\cdots+4^{(t+2)/2}=\dfrac{4^{(t+4)/2}-4}{3}\)。
+
+\section{实战检测·分层突破验成效}\label{ux5b9eux6218ux68c0ux6d4bux5206ux5c42ux7a81ux7834ux9a8cux6210ux6548}
+
+\subsection{重难知识巩固}\label{ux91cdux96beux77e5ux8bc6ux5de9ux56fa}
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+\item （2026·湖南郴州·三模）已知集合\(A=\{x\in \mathbb{N}\mid x^{2}-7x-18<0\},B=\left\{x\mid y=\ln\frac{3-x}{3+x}\right\}\)，则\(A\cap B=(\quad)\)
+\end{enumerate}
+
+A.\((-2,9)\)
+
+B.\((-2,3)\)
+
+C.\(\{0,1,2\}\)
+
+D.\(\{1,2\}\)
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+解不等式求得集合A，求函数的定义域求得集合B，进而求得\(A \cap B\).
+
+\textbf{详解：}
+对于集合\(A\)，\(x^{2} - 7x - 18 = (x - 9)(x + 2) <   0\Rightarrow -2 <   x <   9,\)
+
+所以\(A=\{0,1,2,3,4,5,6,7,8\}\).
+
+对于集合\(B\)，\(\frac{3 - x}{3 + x} >0\Rightarrow (3 - x)(3 + x) > 0\Rightarrow -3 <   x <   3,\)
+
+所以\(B=\{x\mid-3<x<3\}\).
+
+所以\(A \cap B = \{0,1,2\}\).
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item (2025·陕西安康·模拟预测)
+  已知集合\(A = \left\{x \mid \frac{x - 1}{x^3} \leq 0\right\}\),\(B = \{x \mid x \geq a\}\),
+  若\(A \cap B = A\), 则实数\(a\)的取值范围是 ( )
+\end{enumerate}
+
+A.\([0, +\infty)\)
+
+B.\((0, +\infty)\)
+
+C.\((-∞,0]\)
+
+D.\((-∞,0)\)
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+先解一元二次不等式求解集合A，再根据集合间的关系得出参数范围即可.
+
+\textbf{详解：}
+因为\(A=\left\{x\left|\frac{x-1}{x^{3}}\leq0\right.\right\}=\left\{x\left|\frac{x-1}{x}\leq0\right.\right\}=\{x|0<x\leq1\}\),
+
+\(A \cap B = A\)，所以\(A \subseteq B\)，所以\(a \leq 0\)。
+
+故选：C.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=3]
+\item （2026·广西南宁·三模）下列命题为真命题的是（）
+\end{enumerate}
+
+A.
+命题\(p: \forall x \in R, x^2 > 0\)，则命题\(p\)的否定是：\(\forall x \in R, x^2 \leq 0\)
+
+B. ``\(\alpha > 1\)''是``\(\frac{1}{\alpha} < 1\)''的充分不必要条件
+
+C.
+方程\(x^{2} - 4x + a = 0\)的两根都大于1的充要条件是\(1 < a \leq 4\)D.\(0 < k < 4\)是关于\(x\)的不等式\(kx^{2} - kx + 1 > 0\)对一切实数\(x\)恒成立的充要条件
+
+\textbf{答案：}
+B
+
+\textbf{分析：}
+
+对于 A，根据全称量词的命题的否定要求判断；对于
+
+B，利用不等式的性质与举反例说明即可；对于
+
+C，利用三个二次的关系，数形结合列不等式求解即可判断；对于 D，根据参数 k
+
+的取值分类讨论，并结合图象列不等式求解即得.
+
+\textbf{详解：}
+对于 A，因含全称量词的命题的否定需要改变量词，否定结论，
+
+故命题\(p: \forall x \in R, x^2 > 0\)的否定是：\(\exists x \in R, x^2 \leq 0\)，故A错误；
+
+对于
+
+B，由\(a > 1\)可得\(\frac{1}{a} < 1\)；但\(a = -1\)时，满足\(\frac{1}{a} < 1\)，却得不到\(a > 1\)
+
+故``a \textgreater{} 1''是``\(\frac{1}{a} < 1\)''的充分不必要条件，故 B
+
+正确；
+
+对于 C，设\(f(x)=x^{2}-4x+a\)，则方程\(x^{2}-4x+a=0\)的两根都大于 1
+
+等价于：
+
+\(\left\{ \begin{array}{l} -\frac{-4}{2} > 1 \\ \Delta = 16 - 4a \geq 0, \\ f(1) = a - 3 > 0 \end{array} \right.\)解得\(3 < a \leq 4\)，故C错误；
+
+对于 D，对于 x 的不等式\(kx^{2}-kx+1>0\)，当 k=0 时，不等式
+
+1\textgreater0 恒成立，
+
+当\(k \neq 0\)时，不等式\(kx^{2} - kx + 1 > 0\)对一切实数\(x\)恒成立等价于\(\left\{ \begin{array}{l} k > 0 \\ \Delta = k^{2} - 4k < 0 \end{array} \right.\)，解得\(0 < k < 4\).
+
+综上可得，\(0 \leq k < 4\)是关于\(x\)的不等式\(kx^{2} - kx + 1 > 0\)对一切实数\(x\)恒成立的充要条件，故
+
+D 错误.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=4]
+\item （25-26
+  高三上·河南·阶段检测）已知\(a\)为实数，\(p: \exists x \in (0, +\infty), ax^2 - x + 1 \leq 0; q: f(x) = x^2 - 2ax\)在\((0, +\infty)\)上单调递增，则\(p\)是\(q\)的（）
+\end{enumerate}
+
+A. 充分不必要条件
+
+B. 必要不充分条件
+
+C. 充要条件
+
+D. 既不充分也不必要条件
+
+\textbf{答案：}
+B
+
+\textbf{分析：}
+
+由命题为真分别求出a的范围，再根据充分条件、必要条件的概念求解.
+
+\textbf{详解：}
+由p知，\(a<\frac{x-1}{x^{2}}=-\frac{1}{x^{2}}+\frac{1}{x}=-\left(\frac{1}{x}-\frac{1}{2}\right)^{2}+\frac{1}{4}\)在\((0,+\infty)\)上有解，
+
+所以\(a\leq\frac14\)；
+
+因为\(f(x)=x^{2}-2ax\)的对称轴方程为x=a，由q知，\(a\leq0\)，
+
+因为\(a\leq\frac14\)不能推出\(a\leq0\)，而\(a\leq0\Rightarrow a\leq\frac14\)，
+
+所以 p 是 q 的必要不充分条件，
+
+故选：B
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=5]
+\item 已知命题\(p: \exists x \in (-\infty, 0], a = 2^x\);
+  命题\(q: \forall x \in [1, 2], x^2 - ax + 2 \geq 0\),
+  若\(p\)为假命题,\(q\)为真命题, 则实数\(a\)的取值范围为 ( )
+\end{enumerate}
+
+A. 1,3
+
+B.\(-∞,0∪1,3\)
+
+C.\(1,2\sqrt{2}\)
+
+D.\((-\infty,0]\cup(1,2\sqrt2]\)
+
+\textbf{答案：}
+D
+
+\textbf{详解：}
+当\(x \in (-\infty, 0]\)时，\(2^x \in (0, 1]\)，
+
+因为\(p\)为假命题,
+
+所以\(a > 1\)或\(a \leq 0\),\(\forall x \in [1,2], x^2 - ax + 2 \geq 0\),
+
+则\(a \leq x + \frac{2}{x}\)在\([1,2]\)上恒成立,
+
+又当\(x + \frac{2}{x} \geq 2\sqrt{x \cdot \frac{2}{x}} = 2\sqrt{2}\),
+
+当且仅当\(x = \sqrt{2}\)时取得等号, 因为\(q\)为真命题,
+
+所以\(a \leq 2\sqrt{2}\),
+
+所以实数\(a\)的取值范围为\((-\infty,0]\cup(1,2\sqrt2]\)。
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=6]
+\item 设集合\(A = \{1, a, b\}\),\(B = \{a, a^2, ab\}\), 若\(A = B\),
+  则\(a^{2023} + b^{2023}\)的值为 ( )
+\end{enumerate}
+
+A.0
+
+B.-1
+
+C.-2
+
+D.0 或 -1
+
+\textbf{答案：}
+B
+
+\textbf{分析：}
+
+首先由\(A = B\)知两集合元素完全相同, 而\(1 \in A\),
+
+故\(1\)必属于\(B\), 从而\(a, a^2, ab\)中必有一个等于\(1\),
+
+结合互异性排除\(a = 1\)后, 分\(a^2 = 1\)与\(ab = 1\)两类讨论,
+
+每一类下将\(B\)表达为具体元素, 并与\(A = \{1, a, b\}\)逐项对照,
+
+利用元素相等关系及互异性消去变量、检验合理性,
+
+最终得出符合所有条件的实数对.
+
+\textbf{详解：}
+由题意,
+
+根据集合元素的互异性可知,\(a \neq 1, b \neq 1, a \neq b\),
+
+因为\(A = B\), 所以\(1 \in B\), 又因为\(a \neq 1\),
+
+所以\(a^2 = 1\)或\(ab = 1\), 若\(a^2 = 1\), 则\(a = -1\),
+
+此时\(A = \{1, -1, b\}\),\(B = \{-1, 1, -b\}\), 因为\(A = B\),
+
+所以\(b = -b\), 解得\(b = 0\),
+
+此时\(A = \{1, -1, 0\}\),\(B = \{-1, 1, 0\}\), 满足题意; 若\(ab = 1\),
+
+则\(b = \frac{1}{a}\),
+
+此时\(A = \{1, a, \frac{1}{a}\}\),\(B = \{a, a^2, 1\}\), 因为\(A = B\),
+
+所以\(a^2 = \frac{1}{a}\), 即\(a^3 = 1\),
+
+又因为\(a \in R\)且\(a \neq 1\), 所以此种情况无解;
+
+综上所述,\(a = -1, b = 0\),
+
+所以\(a^{2023} + b^{2023} = (-1)^{2023} + 0^{2023} = -1 + 0 = -1\).
+
+故选：B。
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=7]
+\item （25-26 高三下·上海·阶段检测)
+  已知集合\(A = \{(x, y) | y = \sin x\}\),\(B = \{(x, y) | y = x\}\),
+  则\(A \cap B\)的子集个数为 ( )
+\end{enumerate}
+
+A.8
+
+B.6
+
+C.4
+
+D.2
+
+\textbf{答案：}
+D
+
+\textbf{分析：}
+
+构造函数\(f(x) = x - \sin x\),
+
+借助导数计算可得该函数有且仅有一个零点,
+
+即可得\(A \cap B\)中有且仅有一个元素, 即可得\(A \cap B\)的子集个数.
+
+\textbf{详解：}
+令\(f(x) = x - \sin x\), 则\(f'(x) = 1 - \cos x \geq 0\),
+
+故\(f(x)\)在\(R\)上单调递增, 又\(f(0) = 0 - \sin 0 = 0\),
+
+故\(f(x) = x - \sin x\)有且仅有一个零点,
+
+即\(y = \sin x\)图象与\(y = x\)图象有且仅有一个交点,
+
+即\(A \cap B\)中有且仅有一个元素, 故\(A \cap B\)的子集个数为\(2\)。
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=8]
+\item （2026·江苏·二模）
+  已知\(a>0,b>0,0<c<1\)，则``\(a^c<b^c<1\)''是``\(c^b<c^a<1\)''的（ ）A.
+  充分不必要条件
+\end{enumerate}
+
+B.必要不充分条件
+
+C.充要条件
+
+D.既不充分也不必要条件【答案】A【详解】由\(y = x^c\)且\(0 < c < 1\)在\((0, +\infty)\)上单调递增,\(a > 0, b > 0\),
+
+若\(a^c < b^c < 1\)，则\(0 < a < b < 1\)，
+
+由\(y=c^{x}\)且 0\textless c\textless1
+在\((0,+\infty)\)上单调递减，a\textgreater0, b\textgreater0,
+
+若\(c^{b}<c^{a}<1\)，则b\textgreater a\textgreater0，
+
+显然\(0 < a < b < 1\)可推出\(b > a > 0\)，反之不一定成立，
+
+综上，``\(a^{c}<b^{c}<1\)''是``\(c^{b}<c^{a}<1\)''的充分不必要条件.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=9]
+\item 若``\(1 + \frac{1}{2 - x} \leq 0\)''是``(\(x - a\))\(^2 < 4\)''的一个充分不必要条件，则实数\(a\)的取值范围为（）
+\end{enumerate}
+
+A.\(\{a | a \leq 4\}\)
+
+B.\(\{a|1\leq a\leq 4\}\)
+
+C.\(\{a|1 < a < 4\}\)
+
+D.\(\{a|1 < a \leq 4\}\)
+
+\textbf{答案：}
+D
+
+\textbf{分析：}
+
+首先求出两个不等式的解集，然后根据充分不必要条件的定义求出实数\(a\)的取值范围.
+
+\textbf{详解：}
+由题意可得\(1+\frac{1}{2-x}\leq0\Rightarrow(x-a)^{2}<4\)，且\((x-a)^{2}<4 \not\Rightarrow 1+\frac{1}{2-x}\leq0\)
+
+又\(1 + \frac{1}{2 - x}\leq 0\Leftrightarrow \frac{3 - x}{2 - x}\leq 0\)
+
+\[
+\Leftrightarrow \left\{ \begin{array}{l} (x - 2) (x - 3) \leq 0, \\ x - 2 \neq 0 \end{array} \right. \Leftrightarrow 2 <   x \leq 3,
+\]
+
+\[
+(x - a) ^ {2} <   4 \Leftrightarrow - 2 <   x - a <   2 \Leftrightarrow a - 2 <   x <   a + 2,
+\]
+
+则\(\left\{\begin{aligned}a-2&\leq2,\\ 3&<a+2,\end{aligned}\right.\)解得\(1<a\leq4,\)
+
+故选：D.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=10]
+\item 已知集合\(U = \{(x, y) | x, y \in R\}\)，集合\(A = \{(x, y) | 0 < x < 2, 0 < y < 1\}\)，集合\(B = \{(x, y) | y \leq x\}\)，则以下元素属于集合\(A \cap (\complement_U B)\)的是（）
+\end{enumerate}
+
+A.\(\left(\frac{1}{4},1\right)\)
+
+B.\(\left(\frac{1}{2},\frac{1}{4}\right)\)
+
+C.\(\left(\frac{1}{4},\frac{1}{2}\right)\)
+
+D.\(\left(\frac{3}{4},\frac{1}{2}\right)\)
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+根据集合的运算求得\(A\cap(\complement_U B)\)，各选项逐个验证即可.
+
+\textbf{详解：}
+由题意，\(\complement_UB=\{(x,y)\mid y>x\}\),
+
+又\(A=\{(x,y)\mid0<x<2,0<y<1\}\)，则\(A\cap(\complement_UB)=\{(x,y)\mid 0<x<2,\ 0<y<1,\ y>x\}\)
+
+对于
+
+A，元素\(\left(\frac{1}{4},1\right)\)不符合0\textless y\textless1，所以\(\left(\frac{1}{4},1\right)\)不属于\(A\cap(\complement_U B)\)，故
+
+A 错误；
+
+对于 B，元素\(\left(\frac{1}{2},\frac{1}{4}\right)\)不符合 y
+
+\textgreater{}
+
+x，所以\(\left(\frac{1}{2},\frac{1}{4}\right)\)不属于\(A\cap(\complement_U B)\)，故
+
+B 错误；
+
+对于
+
+C，元素\(\left(\frac{1}{4},\frac{1}{2}\right)\)符合条件，所以\(\left(\frac{1}{4},\frac{1}{2}\right)\)属于\(A\cap(\complement_U B)\)，故
+
+C 正确；
+
+对于 D，元素\(\left(\frac{3}{4},\frac{1}{2}\right)\)不符合 y
+
+\textgreater{}
+
+x，所以\(\left(\frac{3}{4},\frac{1}{2}\right)\)不属于\(A\cap(\complement_U B)\)，故
+
+D 错误.
+
+故选：C.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=11]
+\item 《南京照相馆》、《浪浪山小妖怪》、《长安的荔枝》位列2025年我国暑期档票房前三名.高一（1）班共有28名同学，有15人观看了《南京照相馆》，有8人观看了《浪浪山小妖怪》，有14人观看了《长安的荔枝》，有3人同时观看了《南京照相馆》和《浪浪山小妖怪》，有3人同时观看了《南京照相馆》和《长安的荔枝》，没有人同时观看三部电影.只观看了《长安的荔枝》的人数为（）
+\end{enumerate}
+
+A. 6 人
+
+B. 7 人
+
+C. 8 人
+
+D. 9 人
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+根据给定条件，利用容斥原理，结合韦恩图列式求解.
+
+\textbf{详解：}
+不妨将观看了《南京照相馆》、《浪浪山小妖怪》、《长安的荔枝》的同学分别用集合A,B,C表示，设同时观看了《浪浪山小妖怪》和《长安的荔枝》有x人，
+
+在相应的位置填上数字，则\(9+3+3+(8-3-x)+x+(14-3-x)=28\)，解得 x=3，
+
+因此同时观看了《浪浪山小妖怪》和《长安的荔枝》有3人，
+
+所以只观看了《长安的荔枝》的人数为14-3-3=8人.
+
+故选：C
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=12]
+\item 已知全集为U，集合M，N满足M ⊆ N ⊆ U，则下列运算结果为U的是（）.
+\end{enumerate}
+
+A.\(M \cup N\)
+
+B.\((\complement_U N) \cup (\complement_U M)\)
+
+C.\(M \cup (\complement_U N)\)
+
+D.\(N \cup (\complement_U M)\)
+
+\textbf{答案：}
+D
+
+\textbf{分析：}
+
+根据集合间的基本关系及集合的基本运算，借助 Venn
+
+图即可求解.
+
+\textbf{详解：}
+由\(M \subseteq N \subseteq U\)得当\(N \subsetneqq U\)时，\(M \cup N = N \subsetneqq U\)，故选项
+
+A 不正确；
+
+\((\complement_U N) \cup (\complement_U M) = \complement_U(M \cap N) = \complement_U M,\)当\(M \neq \emptyset\)时，\(\complement_U M \subsetneq U,\)故选项
+
+B 不正确；
+
+当\(M \subsetneq N\)时，\(M \cup (\complement_U N) \subsetneq U\)，故选项 C
+
+不正确；
+
+因为\(M \subseteq N \subseteq U\)，所以\(N \cup (\complement_U M) = U\)，故选项 D
+
+正确.
+
+故选：D.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=13]
+\item （2026·河南·模拟预测）已知\(p: \exists x \in (0, +\infty)\)，\(4^x - a \cdot 2^x + 1 \leq 0\)，\(q: f(x) = -x^2 + 2ax\)在\((- \infty, 2)\)上单调递增，则\(p\)是\(q\)的（）
+\end{enumerate}
+
+A. 充分不必要条件
+
+B. 必要不充分条件
+
+C. 充要条件
+
+D. 既不充分也不必要条件
+
+\textbf{答案：}
+A
+
+\textbf{分析：}
+
+对于\(p\)，通过分离参数由基本不等式求出另一侧的取值范围进而得到\(a\)的范围，对于\(q\)，通过二次函数单调性得到\(a\)的范围，通过两个范围的推出关系即可求解.
+
+\textbf{详解：}
+\(p:\exists x\in(0,+\infty),\quad4^{x}-a\cdot2^{x}+1\leq0\)，所以\(a\geq2^{x}+2^{-x}\)在\((0,+\infty)\)上有解，
+
+\(2^{x} + 2^{-x} \geq 2\)，当且仅当 x = 0
+
+时等号成立，所以等号取不到，即\(2^{x} + 2^{-x} > 2\)，所以 a
+
+\textgreater{} 2.
+
+对于\(q: f(x)\)图象的对称轴为直线\(x = a\)，所以\(f(x)\)的递增区间是\((- \infty, a)\)，
+
+故当\(f(x)\)在\((-∞,2)\)上单调递增时，\(a≥2\).
+
+因为小范围可以推出大范围，大范围推不出小范围，所以p是q的充分不必要条件.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=14]
+\item （2024·北京朝阳·模拟预测）已知集合\(U = \{1,2,3,4\}\)，若集合\(A\)、\(B\)满足：\(A \subseteq B \subseteq U\)，则集合对\((A,B)\)共有（）个。
+\end{enumerate}
+
+A. 36
+
+B. 48
+
+C. 64
+
+D. 81
+
+\textbf{答案：}
+D
+
+\textbf{分析：}
+
+利用子集的意义分类讨论可求得集合对\((A,B)\)的个数.
+
+\textbf{详解：}
+因为\(B \subseteq U, U = \{1,2,3,4\}\),
+
+当\(B = \emptyset\)时，又\(A \subseteq B\)，故\(A = \emptyset\)，
+
+当集合\(B\)中有一个元素时，又\(A \subseteq B\)，这样的集合对有\(C_4^1 \times 2^1 = 8\)
+
+当集合\(B\)中有两个元素时，又\(A \subseteq B\)，这样的集合对有\(C_4^2 \times 2^2 = 24\)
+
+当集合\(B\)中有三个元素时，又\(A \subseteq B\)，这样的集合对有\(C_4^3 \times 2^3 = 32\)
+
+当集合\(B\)中有四个元素时，又\(A \subseteq B\)，这样的集合对有\(C_4^4 \times 2^4 = 16\)
+
+所以集合对\((A,B)\)共有\(16 + 32 + 24 + 8 + 1 = 81\)
+
+故选：D.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=15]
+\item （2026·山东聊城·三模）记等差数列\(\{a_{n}\}\)的前n项和为\(S_{n}\)，则``\(\{a_{n}\}\)的公差为2''是``\(\{S_{n}-n^{2}\}\)为等差数列''的（）
+\end{enumerate}
+
+A. 充分不必要条件
+
+B. 必要不充分条件
+
+C. 充要条件
+
+D. 既不充分也不必要条件
+
+\textbf{答案：}
+C
+
+\textbf{详解：}
+若\(\{a_{n}\}\)的公差d=2，则\(S_{n}=na_{1}+\frac{n(n-1)\times2}{2}=na_{1}+n^{2}-n\)，故\(S_{n}-n^{2}=(a_{1}-1)n\)，
+
+记\(b_{n}=S_{n}-n^{2}\)，则\(b_{n+1}-b_{n}=(a_{1}-1)(n+1)-(a_{1}-1)n=a_{1}-1\)为常数，故\(\{S_{n}-n^{2}\}\)是等差数列，充分性成立；
+
+若\(\{S_{n}-n^{-2}\}\)为等差数列，则\(b_{n+1}-b_{n}=[S_{n+1}-(n+1)^{2}]-[S_{n}-n^{2}]=a_{n+1}-2n-1\)为常数，而\(a_{n+1}=a_{1}+nd\)，故\(b_{n+1}-b_{n}=(d-2)n+(a_{1}-1)=\)常数，故d-2=0，即d=2，必要性成立，
+
+因此``\(\{a_{n}\}\)的公差为2''是``\(\{S_{n}-n^{2}\}\)为等差数列''的充要条件.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=16]
+\item （2026·山东临沂·二模）已知集合\(A = \{x|\sin x = 0\}\)，\(B = \{x|\cos x = 1\}\)，则（）
+\end{enumerate}
+
+A.\(\forall x_{0}\in A,x_{0}\in B\)
+
+B.\(\exists x_0\in B,x_0\notin A\)
+
+C.\(\forall x_{1}, x_{2} \in A, x_{1} + x_{2} \in B\)
+
+D.\(\forall x_{1}, x_{2} \in B, x_{1} + x_{2} \in A\)
+
+\textbf{答案：}
+D
+
+\textbf{详解：}
+对于集合\(A = \{x \mid \sin x = 0\}\)，根据正弦函数的性质，\(\sin x = 0\)时，\(x = k\pi, k \in \mathbb{Z}\)，所以\(A=\{x\mid x=k\pi,\ k\in\mathbb Z\}\)。
+
+对于集合\(B=\{x\mid\cos x=1\}\)，根据余弦函数的性质，\(\cos x = 1\)时，\(x = 2k\pi, k \in \mathbb{Z}\)，所以\(B = \{x \mid x = 2k\pi, k \in \mathbb{Z}\}\)。
+
+选项 A: 集合\(A=\{x\mid x=k\pi,\ k\in\mathbb Z\}\),
+
+集合\(B = \{x \mid x = 2k\pi, k \in \mathbb{Z}\}\),
+
+集合\(B\)中的元素是集合\(A\)中\(k\)为偶数时的元素, 即\(B \subsetneq A\).
+
+定式是\(x_{0} \in A\)，但如当\(k = 1\)时，\(x_{0} = \pi \in A\)，但\(\pi \notin B\)，所以选项
+
+A 错误。选项
+
+B：因为\(B \subsetneq A\)，所以对于任意\(x_{0} \in B\)，都有\(x_{0} \in A\)，不存在\(x_{0} \in B\)，使得\(x_{0} \notin A\)，选项
+
+B 错误。选项
+
+C：已知\(A=\{x\mid x=k\pi,\ k\in\mathbb Z\}\)，任取\(x_{1}, x_{2} \in A\)，设\(x_{1} = k_{1}\pi\)，\(x_{2} = k_{2}\pi\)，\(k_{1}, k_{2} \in \mathbb{Z}\)，则\(x_{1} + x_{2} = k_{1}\pi + k_{2}\pi = (k_{1} + k_{2})\pi\)。
+
+当\(k_{1} + k_{2}\)为奇数时，\(x_{1} + x_{2} \notin B\)，例如\(k_{1} = 1\)，\(k_{2} = 2\)，\(x_{1} + x_{2} = 3\pi \notin B\)，选项
+
+C 错误。选项
+
+D：已知\(B = \{x \mid x = 2k\pi, k \in \mathbb{Z}\}\)，任取\(x_{1}, x_{2} \in B\)，设\(x_{1} = 2k_{1}\pi\)，\(x_{2} = 2k_{2}\pi\)，\(k_{1}, k_{2} \in \mathbb{Z}\)，则\(x_{1} + x_{2} = 2k_{1}\pi + 2k_{2}\pi = 2(k_{1} + k_{2})\pi\)。
+
+因为\(k_{1}, k_{2} \in \mathbb{Z}\)，所以\(k_{1} + k_{2} \in \mathbb{Z}\)，那么\(x_{1} + x_{2} = 2(k_{1} + k_{2})\pi\)满足\(\sin(x_{1} + x_{2}) = 0\)，即\(x_{1} + x_{2} \in A\)，选项
+
+D 正确。
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=17]
+\item （25-26
+  高三上·上海·期中）已知集合\(M = \{x \in \mathbb{N} | 1 \leq x \leq 16\}\)，\(A = \{x_{1}, x_{2}, x_{3}\} \subseteq M\)，若\(\frac{x_{1} + 2x_{2} + 3x_{3}}{3} \in \mathbb{Z}\)，则满足条件的集合\(A\)个数为（）
+\end{enumerate}
+
+A. 408
+
+B. 409
+
+C. 410
+
+D. 411
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+由题意得\(x_{1}, x_{2}\)除以 3 的余数相同，按照除以 3
+
+所得余数进行分类讨论，结合组合数求解即可.
+
+\textbf{详解：}
+\(M=\{x\in \mathbb{N}|1\leq x\leq16\}\)，\(A=\{x_{1},x_{2},x_{3}\}\subseteq M\)且\(\frac{x_{1}+2x_{2}+3x_{3}}{3}\in Z\)
+
+\(\because \frac{x_1 + 2x_2 + 3x_3}{3} \in Z, \therefore x_1 + 2x_2\)能被
+
+3 整除，\(\therefore x_1, x_2\)除以 3 的余数相同，
+
+\[
+M = \{x \mid 1 \leq x \leq 1 6, x \in \mathbb{N} \} = \{1, 2, 3, 4, 5, 6, 7, 8, 9, 1 0, 1 1, 1 2, 1 3, 1 4, 1 5, 1 6 \},
+\]
+
+集合\(\{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16\}\)的元素中，
+
+能被 3 整除的整数有 3,6,9,12,15,
+
+被 3 除余 1 的整数有 1,4,7,10,13,16,
+
+被 3 除余 2 的整数有 2,5,8,11,14,
+
+当\(x_{1}, x_{2}\)都被3整除时，则\(x_{1}, x_{2}, x_{3}\)从被3整除的5个数中选取3个，
+
+或\(x_{1}, x_{2}\)可从被3整除的5个数中选取2个，\(x_{3}\)从其余11个数中选择，
+
+\(\therefore A\)的个数为\(C_5^3 + C_5^2 \times 11 = 120\),
+
+当\(x_{1}, x_{2}\)被3除余1时，则\(x_{1}, x_{2}, x_{3}\)从被3除余1的6个数中选取3个，
+
+或\(x_{1}, x_{2}\)可从被3除余1的6个数中选取2个，\(x_{3}\)从其余10个数中选择，
+
+\(\therefore A\)的个数为\(C_6^3 + C_6^2 \times 10 = 170\),
+
+当\(x_{1}, x_{2}\)被3除余2时，则\(x_{1}, x_{2}, x_{3}\)从被3除余2的5个数中选取3个，或\(x_{1}, x_{2}\)可从被3除余2的5个数中选取2个，\(x_{3}\)从其余11个数中选择，
+
+\(\therefore A\)的个数为\(C_5^3+C_5^2\times11=120\)
+
+∴满足条件的集合A共有120+170+120=410个.
+
+故选：C.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=18]
+\item （2025 高三·北京·专题练习）对于数集A，B，它们的 Descartes
+  积\(A \times B = \{(x, y) | x \in A, y \in B\}\)，则下列选项错误的是（）
+\end{enumerate}
+
+A.\(A \times B = B \times A\)
+
+B. 若\(A \subseteq C\)，则\((A \times B) \subseteq (C \times B)\)
+
+C.\(A \times (B \cap C) = (A \times B) \cap (A \times C)\)
+
+D. 集合\(\{0\} \times \mathbb{R}\)表示\(y\)轴所在直线
+
+\textbf{答案：}
+A
+
+\textbf{分析：}
+
+根据集合的新定义及点坐标的性质，结合集合的交运算、包含关系判断各项的正误.
+
+\textbf{详解：}
+由\(A \times B = \{(x, y) | x \in A, y \in B\}\)表示数集\(A\)中的数表示横坐标，数集\(B\)中的数表示纵坐标，组成的点的全体，故\(A \times B \neq B \times A\)，A
+
+错；
+
+若\(A \subseteq C\)，因为点集中来自集合\(A\)的横坐标值一定在集合\(C\)中，且纵坐标值都来自集合\(B\)，则\((A \times B) \subseteq (C \times B)\)，B
+
+正确；
+
+\[
+A \times (B \cap C) = \{(x, y) | x \in A, y \in (B \cap C) \},
+\]
+
+\[
+(A \times B) \cap (A \times C) = \{(x, y) | x \in A, y \in B \} \cap \{(x, y) | x \in A, y \in C \},
+\]
+
+则\(A \times (B \cap C) = (A \times B) \cap (A \times C)\)，C 正确；
+
+集合\(\{0\} \times R\)表示横坐标为0的点集，即为\(y\)轴所在直线，D正确.
+
+故选：A
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=19]
+\item （2026·北京朝阳·一模）已知函数\(f(x) = e^{x - 1}\)，\(g(x) = \sqrt{|x|}\)，则（）
+\end{enumerate}
+
+A.\(\forall x\in (-\infty ,0),f(x) > g(x)\)
+
+B.\(\forall x\in (0,1),f(x) > g(x)\)
+
+C.\(\exists x\in (0,1),f(x) <   g(x)\)
+
+D.\(\exists x\in (1, + \infty),f(x) <   g(x)\)
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+A.由\(x \in (-\infty, 0)\)时，\(f(x)\)，\(g(x)\)的值域判断；
+
+B.C.由\(x \in (0, 1)\)时，令\(h(x) = f(x) - g(x) = e^{x-1} - \sqrt{x}\)，用导数法判断；
+
+D.由\(x \in (1, +\infty)\)时，令\(n(x) = f(x) - g(x) = e^{x-1} - \sqrt{x}\)，用导数法判断.
+
+\textbf{详解：}
+当\(x \in (-\infty, 0)\)时，\(f(x) = e^{x-1} \in \left(0, \frac{1}{e}\right)\)，\(g(x) = \sqrt{-x} \in (0, +\infty)\)，所以\(\exists x \in (-\infty, 0)\)，\(f(x) \leq g(x)\)，故
+
+A 错误；
+
+\(x \in (0,1)\)时，令\(h(x) = f(x) - g(x) = e^{x - 1} - \sqrt{x}\)，则\(h'(x) = e^{x - 1} - \frac{1}{2\sqrt{x}}\)
+
+令\(m(x)=e^{x-1}-\frac{1}{2\sqrt{x}}\)，则\(m'(x)=e^{x-1}+\frac{1}{4\sqrt{x^{3}}}>0\)，所以\(m(x)\)在\((0,1)\)上递增，
+
+又\(m(1) = 1 - \frac{1}{2} = \frac{1}{2} \geq 0\)，\(m\left(\frac{1}{2}\right) = \frac{1}{\sqrt{e}} - \frac{\sqrt{2}}{2} < 0\)，所以\(\exists x_0 \in \left(\frac{1}{2}, 1\right)\)，有\(m(x_0) = 0\)
+
+即\(h'(x_0) = 0\)，当\(x \in (0, x_0)\)时，\(h'(x) < 0\)，\(h(x)\)递减；当\(x \in (x_0, 1)\)时，\(h'(x) > 0\)，\(h(x)\)递增；
+
+又\(h(0)=\frac{1}{e}>0,h(1)=0\)，则\(h(x_{0})<0\)，即\(\exists x\in(0,1)\)，\(f(x)<g(x)\)，故C正确；B错误；
+
+\(x \in (1, +\infty)\)时，令\(n(x) = f(x) - g(x) = e^{x-1} - \sqrt{x}\)，则\(n'(x) = e^{x-1} - \frac{1}{2\sqrt{x}}\)，易知\(n'(x)\)在\((1, +\infty)\)上递增，则\(n'(x) > n'(1) = \frac{1}{2} > 0\)，则\(n(x)\)在\((1, +\infty)\)上递增，所以\(n(x) > n(1) = 0\)，即\(f(x) > g(x)\)恒成立，故
+
+D 错误.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=20]
+\item （25-26
+  高三上·山东青岛·期中）已知函数\(y = f(x)\)的定义域为\(\mathbb{R}\)，对于正实数\(a\)，定义集合\(M_a = \{x | f(x + a) = f(x)\}\)，则（）
+\end{enumerate}
+
+A. 若\(f(x) = x\)，则对于任意正实数\(a\)，集合\(M_a\)中有无限多个元素
+
+B. 若\(f(x) = x^{2} + x + 1\)，则\(M_{a}\)中可能含有2个元素
+
+C. 若\(f(x) = \sin x\)，则\(M_{a} = \emptyset\)
+
+D.
+若\(f(x)=\begin{cases}x+2,&x<0,\\\sqrt{x},&x\geq0,\end{cases}\)且\(M_a\neq\emptyset\)，则\(a\in\left[\frac74,4\right)\)
+
+\textbf{答案：}
+D
+
+\textbf{分析：}
+
+根据\(M_{a}\)的定义分别列方程，探究解的情况.
+
+\textbf{详解：}
+A 选项：\(f(x)=x\)，即得\(x+a=x\)，解得
+
+a=0，不满足题意，即\(M_{a}=\varnothing\)，A 选项错误；
+
+B 选项:\(f(x) = x^{2} + x + 1\),
+
+即得\((x + a)^{2} + (x + a) + 1 = x^{2} + x + 1, a > 0\),
+
+化简可得\(2ax + a^{2} + a = 0\)，即\(x = -\frac{a + 1}{2}\)，即集合\(M_{a}\)中只有1个元素，B选项错误；
+
+C 选项:\(f(x) = \sin x\), 则\(\sin (x + a) = \sin x\), 当\(a = 2\pi\)时,
+
+方程有无数个解, 即\(M_a \neq \emptyset\), C 选项错误;
+
+D
+
+选项：由\(f(x) = \begin{cases} x + 2, & x < 0 \\ \sqrt{x}, & x \geq 0 \end{cases}\)，则函数\(f(x)\)在\((- \infty, 0)\)和\((0, +\infty)\)上分别单调递增，
+
+由\(a > 0\)可知，若\(x + a < 0\)或\(x \geq 0\)时，二者显然不可能同时成立，则方程无解，满足\(M_{a} = \emptyset\)
+
+若\(x < 0, x + a \geq 0\)时，\(f(x + a) = f(x)\)，即\(\sqrt{x + a} = x + 2\)有解，
+
+设\(t=\sqrt{x+a}\in[0,\sqrt a)\)，则\(x = t^2 - a\)，即\(t^2 - t + (2 - a) = 0\)有解，
+
+则\(\Delta = (-1)^2 - 4(2 - a) \geq 0\)，即\(a \geq \frac{7}{4}\)，
+
+且方程\(t^{2}-t+(2-a)=0\)的解为\(t_{1}=\frac{1-\sqrt{4a-7}}{2},\quad t_{2}=\frac{1+\sqrt{4a-7}}{2},\)
+
+所以\(t_1=\frac{1-\sqrt{4a-7}}2\in[0,\sqrt a)\)或\(t_2=\frac{1+\sqrt{4a-7}}2\in[0,\sqrt a)\),
+
+解得\(\frac{7}{4} \leq a \leq 2\)或\(\frac{7}{4} \leq a < 4\),
+
+综上所述，\(a\in\left[\frac74,4\right)\),
+
+故选：D.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=21]
+\item 设集合\(X\)是实数集\(R\)的子集, 如果\(x_0 \in R\)满足:
+  对任意\(a > 0\), 都存在\(x \in X\), 使得\(0 < |x - x_0| < a\),
+  称\(x_0\)为集合\(X\)的聚点, 则在下列集合中, 以 0 为聚点的集合有 ( )
+\end{enumerate}
+
+①\(\{x \mid x \in R, x \neq 0\}\)
+
+②\(\{x \mid x \in Z, x \neq 0\}\)
+
+③\(\left\{x\mid x=\frac{1}{n},n\in \mathbb{N}^{*}\right\}\)
+
+④\(\left\{x\mid x=\frac{n}{n+1},n\in \mathbb{N}^{*}\right\}\)
+
+A. ①②
+
+B. ①③
+
+C. ②③
+
+D. ①③④
+
+\textbf{答案：}
+B
+
+\textbf{分析：}
+
+根据聚点的含义，一一判断各集合是否满足聚点定义，即可判断答案.
+
+\textbf{详解：}
+对于①\(\{x\mid x\in R,x\neq0\}\)，对任意\(a>0\)，都存在\(x=\frac{a}{2}\)
+
+使得\(0 < |x - 0| = \frac{a}{2} < a\)，故0是集合\(\{x \mid x \in R, x \neq 0\}\)的聚点；
+
+对于②\(\{x\mid x\in Z,x\neq0\}\)，取a=0.5，此时对于任意\(x\in\{x\mid x\in Z,x\neq0\}\)
+
+都有\(|x-0|\geq1\)，即0\textless\textbar x-0\textbar\textless0.5不可能成立，故0不是集合\(\{x\mid x\in Z,x\neq0\}\)的聚点；
+
+对于③\(\left\{x\mid x=\frac{1}{n},n\in \mathbb{N}^{*}\right\}\)，对任意a\textgreater0，都存在\(n>\frac{1}{a}\)，即\(\frac{1}{n}<a\)，
+
+使得\(0 < |x - 0| < \frac{1}{n} < a\)，故 0
+
+是集合\(\left\{x \mid x = \frac{1}{n}, n \in \mathbb{N}^{*}\right\}\)的聚点；
+
+对于④\(\left\{x\mid x=\frac{n}{n+1},n\in\mathbb{N}^*\right\}\)，\(\frac{n}{n+1}=1-\frac{1}{n+1}\)，即\(\frac{n}{n+1}\)随
+
+n 的增大而增大，
+
+故\(\frac{n}{n+1}\)的最小值为\(\frac{1}{1+1}=\frac{1}{2}\)，故当\(a<\frac{1}{2}\)时，不存在
+
+x，使得\(0<|x-0|<a\)，
+
+故 0
+
+不是集合\(\left\{x\mid x=\frac{n}{n+1},n\in\mathbb{N}^*\right\}\)的聚点；
+
+故选：B
+
+\textbf{点睛：}
+关键点点睛：解答本题的关键是理解聚点的含义，判断所给集合是否满足聚点定义.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=22]
+\item （25-26
+  高三上·上海·阶段检测）设集合\(S\)，\(T\)中元素均为正整数，且至少有两个元素，若\(S\)，\(T\)满足：①对于任意\(x\)，\(y \in S\)，若\(x \neq y\)，都有\(xy \in T\)；②对于任意\(x\)，\(y \in T\)，若\(x < y\)，则\(\frac{y}{x} \in S\)。则关于下面两个命题，说法正确的是（）
+\end{enumerate}
+
+命题α：若 S 有 3 个元素，则 S ∪ T 有 4 个元素.
+
+命题\(\beta\)：若 S 有 4 个元素，则\(S \cup T\)有 7 个元素.
+
+A.\(\alpha\)是真命题，\(\beta\)是真命题
+
+B.\(\alpha\)是真命题，\(\beta\)是假命题
+
+C.\(\alpha\)是假命题，\(\beta\)是真命题
+
+D.\(\alpha\)是假命题，\(\beta\)是假命题
+
+\textbf{答案：}
+C
+
+\textbf{分析：}
+
+分别给出具体的集合 S 和集合
+
+T，利用排除法排除假命题，然后证明命题的正确性即可.
+
+\textbf{详解：}
+若取 \(S=\{2,4,8\}\)，则由规则①知，任意两个不同元素的乘积均在 $T$ 中，故得 \(T=\{8,16,32\}\)，此时 \(S\cup T=\{2,4,8,16,32\}\)，包含 5 个元素，与命题 \(\alpha\) 的结论（4个元素）矛盾，故命题 \(\alpha\) 是假命题；
+
+若取 \(S=\{2,4,8,16\}\)，则两两不同元素之积组成 \(T=\{8,16,32,64,128\}\)，此时 \(S\cup T=\{2,4,8,16,32,64,128\}\)，包含 7 个元素，则命题 \(\beta\) 可能是真命题.
+
+下面我们来证明命题 \(\beta\) 的正确性：
+
+设集合 \(S=\{p_{1},p_{2},p_{3},p_{4}\}\)，且满足 \(p_{1}<p_{2}<p_{3}<p_{4}\)，其中 \(p_i \in \mathbb{N}^*\).
+
+根据规则①，\(S\) 中任意两个不同元素的乘积均在 $T$ 中：
+
+因为 \(p_{1}<p_{4}\)，且 \(p_{1}p_{2}, p_{2}p_{4} \in T\)，显然有 \(p_{1}p_{2} < p_{2}p_{4}\).
+
+由规则②，由于 \(p_{1}p_{2}, p_{2}p_{4} \in T\)，它们的商必须在 $S$ 中，即：
+
+\[
+\frac{p_{2}p_{4}}{p_{1}p_{2}} = \frac{p_{4}}{p_{1}} \in S.
+\]
+
+同理可得：
+
+- 因为 \(p_1p_2 < p_1p_4\) 且两两在 $T$ 中，商为 \(\frac{p_4}{p_2} \in S\);
+
+- 因为 \(p_1p_3 < p_1p_4\) 且两两在 $T$ 中，商为 \(\frac{p_4}{p_3} \in S\);
+
+- 因为 \(p_1p_2 < p_1p_3\) 且两两在 $T$ 中，商为 \(\frac{p_3}{p_2} \in S\);
+
+- 因为 \(p_1p_3 < p_2p_3\) 且两两在 $T$ 中，商为 \(\frac{p_2}{p_1} \in S\).
+
+分类讨论如下：
+
+1. 若 \(p_{1}=1\)，则 \(p_{2}\geq 2\).
+
+此时 \(\frac{p_{3}}{p_{2}} \in S\). 因为 \(p_2 \ge 2\)，所以 \(1 < \frac{p_3}{p_2} < p_3\)，即 \(p_1 < \frac{p_3}{p_2} < p_3\).
+
+由于 \(S\) 中处于 \(p_1\) 与 \(p_3\) 之间的元素只有 \(p_2\)，故必须有 \(\frac{p_{3}}{p_{2}}=p_{2}\)，即 \(p_{3}=p_{2}^{2}\).
+
+同理，\(\frac{p_{4}}{p_{3}} \in S\) 且 \(\frac{p_{4}}{p_{2}} \in S\).
+
+因为 \(p_1 = 1 < \frac{p_4}{p_3} < \frac{p_4}{p_2} < p_4\)，所以在 \(p_1\) 与 \(p_4\) 之间有两个不同的元素，它们只能是 \(p_2\) 和 \(p_3\).
+
+按大小顺序，必定有 \(\frac{p_4}{p_3} = p_2\) 且 \(\frac{p_4}{p_2} = p_3\).
+
+代入 \(p_3 = p_2^2\) 得 \(p_4 = p_2 p_3 = p_2^3\).
+
+此时 \(S=\{1,p_{2},p_{2}^{2},p_{2}^{3}\}\).
+
+但此时由规则①可知，\(p_2^2, p_2^3 \in S \implies p_2^5 \in T\)，且 \(1, p_2 \in S \implies p_2 \in T\).
+
+由于 \(p_2 < p_2^5\)，由规则②，它们的商为 \(\frac{p_2^5}{p_2} = p_2^4 \in S\)，这与 \(S=\{1,p_{2},p_{2}^{2},p_{2}^{3}\}\) 矛盾.
+
+因此 \(p_1 = 1\) 的情况不成立.
+
+2. 若 \(p_{1}\geq 2\).
+
+此时 \(\frac{p_{2}}{p_{1}} \in S\). 由于 \(p_1 \ge 2\)，所以 \(\frac{p_2}{p_1} < p_2\).
+
+辅助推理知：S中比 \(p_2\) 小的非零正整数元素只有 \(p_1\)，故必须有 \(\frac{p_2}{p_1} = p_1\)，即 \(p_2 = p_1^2\).
+
+接下来，\(\frac{p_3}{p_1} \in S\). 由于 \(p_1 < \frac{p_3}{p_1} < p_3\)，所以 \(\frac{p_3}{p_1}\) 只能是处于 \(p_1\) 和 \(p_3\) 之间的元素，即 \(\frac{p_3}{p_1} = p_2 = p_1^2\)，解得 \(p_3 = p_1^3\).
+
+同理，\(\frac{p_4}{p_1} \in S\). 由于 \(p_2 < \frac{p_4}{p_1} < p_4\)，所以 \(\frac{p_4}{p_1}\) 只能是处于 \(p_2\) 和 \(p_4\) 之间的元素，即 \(\frac{p_4}{p_1} = p_3 = p_1^3\)，解得 \(p_4 = p_1^4\).
+
+故 \(S = \{p_1, p_1^2, p_1^3, p_1^4\}\).
+
+此时，由两两不同元素乘积组成的 $T$ 集合为：
+
+\[
+T = \{p_1^3, p_1^4, p_1^5, p_1^6, p_1^7\}.
+\]
+
+容易验证，对任意的 \(x, y \in T\ \ (x < y)\)，由于 \(x, y\) 均为 $p_1$ 的幂次且商的次数在 $1$ 到 $4$ 之间，其商必定在 \(S = \{p_1, p_1^2, p_1^3, p_1^4\}\) 中，符合规则②.
+
+此时，\(S \cup T = \{p_1, p_1^2, p_1^3, p_1^4, p_1^5, p_1^6, p_1^7\}\)，共有 7 个元素，命题 \(\beta\) 是真命题.
+
+综上所述，\(\alpha\) 是假命题，\(\beta\) 是真命题.
+
+故选：C
+
+故选：C
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=23]
+\item （2025·湖南长沙·三模）已知数列\(\{b_n\}\)，\(b_n \in \mathbb{N}^*\)，记集合\(A = \{t | t = \frac{b_m}{b_k}, k < m\}\)的元素个数为\(|A|\).
+\end{enumerate}
+
+(1)若\(\{b_n\}\)为 1, 2, 4, 8, 12，写出集合\(A\)，并求\(|A|\)的值；
+
+(2)若\(\{b_n\}\)为 1, 3, a, b，且\(|A| = 3\)，求\(\{b_n\}\)和集合\(A\)；
+
+(3)若数列\(\{b_n\}\)项数为\(r\)，满足\(b_{n + 1} > b_n(n = 1,2,\dots ,r - 1)\)，求证：``\(|A| = r - 1\)''的充要条件是``\(\{b_n\}\)为等比数列''.
+
+\textbf{答案：}
+(1)\(A=\{\frac{3}{2},2,3,4,6,8,12\},\quad|A|=7;\)
+
+(2)\(A=\{3,9,27\}\);
+
+(3)证明见解析.
+
+\textbf{分析：}
+
+（1）根据给定的定义，计算出所有\(\frac{b_{m}}{b_{k}}, k < m\)即可.
+
+（2）结合集合的性质，可得\(\frac{a}{3}=\frac{b}{a}=3\)，解出即可.
+
+（3）根据给定的定义，分别证明命题成立的充分条件和必要条件即可.
+
+\textbf{详解：}
+（1）由于 \(\{b_n\}\) 为 1, 2, 4, 8, 12，按照定义，我们要计算所有满足 \(k < m\) 的 \(\frac{b_m}{b_k}\)：
+
+- 当 \(b_m = 2\) 时，\(b_k = 1 \implies 2\);
+
+- 当 \(b_m = 4\) 时，\(b_k \in \{1, 2\} \implies 4, 2\);
+
+- 当 \(b_m = 8\) 时，\(b_k \in \{1, 2, 4\} \implies 8, 4, 2\);
+
+- 当 \(b_m = 12\) 时，\(b_k \in \{1, 2, 4, 8\} \implies 12, 6, 3, \frac{3}{2}\).
+
+对上述得到的所有值去重，可得集合 \(A = \left\{\frac{3}{2}, 2, 3, 4, 6, 8, 12\right\}\)，因此元素个数 \(|A| = 7\).
+
+（2）由 \(\{b_n\}\) 为 1, 3, \(a\), \(b\)，且数列递增，故 \(1 < 3 < a < b\).
+
+此时集合 $A$ 中的元素是由 \(\frac{b_m}{b_k}\ \ (k < m)\) 组成，显然 \(\frac{3}{1} = 3\), \(\frac{a}{1} = a\), \(\frac{b}{1} = b\) 均属于 $A$.
+
+因为 \(3 < a < b\)，这三个元素是互不相同的.
+
+又已知 \(|A| = 3\)，因此集合 $A$ 只能是 \(A = \{3, a, b\}\).
+
+注意到 \(\frac{a}{3}\) 也必须属于 $A$.
+
+因为 \(a > 3\)，所以 \(0 < \frac{a}{3} < a\). 在 \(A = \{3, a, b\}\) 中，比 \(a\) 小的非零元素只有 \(3\)（因为 \(b > a\)），故必须有 \(\frac{a}{3} = 3 \implies a = 9\).
+
+此时 \(A = \{3, 9, b\}\).
+
+同理，\(\frac{b}{a} = \frac{b}{9}\) 也必须属于 $A$.
+
+因为 \(b > a = 9\)，所以 \(0 < \frac{b}{9} < b\).
+
+在 \(A = \{3, 9, b\}\) 中，比 \(b\) 小的非零元素只有 \(3\) 和 \(9\).
+
+- 若 \(\frac{b}{9} = 9 \implies b = 81\)，此时计算 \(\frac{b}{3} = 27\)，但 \(27 \notin A = \{3, 9, 81\}\)，矛盾；
+
+- 若 \(\frac{b}{9} = 3 \implies b = 27\)，此时有 \(\frac{b}{3} = 9 \in A\)，\(\frac{b}{a} = 3 \in A\)，符合题意.
+
+所以，\(\{b_n\}\) 为 1, 3, 9, 27，集合 \(A = \{3, 9, 27\}\).
+
+（3）证明如下：
+
+**充分性**：若 \(\{b_n\}\) 是递增的等比数列，设其公比为 \(q\ \ (q > 1)\)，
+
+则对任意 \(k < m\)，有 \(\frac{b_m}{b_k} = q^{m-k}\).
+
+因为 \(1 \le m - k \le r - 1\)，所以集合 \(A = \{q, q^2, q^3, \dots, q^{r-1}\}\)，其元素个数为 \(|A| = r - 1\). 充分性成立.
+
+**必要性**：若 \(\{b_n\}\) 是递增数列（即 \(b_1 < b_2 < \dots < b_r\)）且 \(|A| = r - 1\).
+
+because \(b_1 < b_2 < \dots < b_r\)，我们可以写出以下的 \(r - 1\) 个互不相同的比值：
+
+\[
+\frac{b_2}{b_1} < \frac{b_3}{b_1} < \frac{b_4}{b_1} < \dots < \frac{b_r}{b_1}.
+\]
+
+由于这 \(r - 1\) 个比值均属于 $A$，且已知 \(|A| = r - 1\)，所以这 \(r - 1\) 个数正好是 $A$ 中的所有元素，即：
+
+\[
+A = \left\{\frac{b_2}{b_1}, \frac{b_3}{b_1}, \dots, \frac{b_r}{b_1}\right\}.
+\]
+
+现在考虑另外一组比值：\(\frac{b_3}{b_2} < \frac{b_4}{b_2} < \dots < \frac{b_r}{b_2}\)，这 \(r - 2\) 个数也是 $A$ 中的元素.
+
+因为 \(b_2 > b_1\)，所以对任意的 \(j \ge 3\)，均有 \(\frac{b_j}{b_2} < \frac{b_j}{b_1}\)，因此有：
+
+\[
+\frac{b_3}{b_2} < \frac{b_4}{b_2} < \dots < \frac{b_r}{b_2} < \frac{b_r}{b_1}.
+\]
+
+由此可见，\(\frac{b_3}{b_2}, \frac{b_4}{b_2}, \dots, \frac{b_r}{b_2}\) 是 $A$ 中共计 \(r - 2\) 个且均小于 \(\frac{b_r}{b_1}\) 的数.
+
+而在 \(A = \left\{\frac{b_2}{b_1}, \frac{b_3}{b_1}, \dots, \frac{b_r}{b_1}\right\}\) 中，小于 \(\frac{b_r}{b_1}\) 的元素也恰好有 \(r - 2\) 个，即 \(\frac{b_2}{b_1}, \frac{b_3}{b_1}, \dots, \frac{b_{r-1}}{b_1}\).
+
+因为两组数都是从小到大排列的，所以它们对应相等：
+
+\[
+\frac{b_{j}}{b_2} = \frac{b_{j-1}}{b_1} \quad (j = 3, 4, \dots, r).
+\]
+
+由此可得 \(\frac{b_j}{b_{j-1}} = \frac{b_2}{b_1}\) 对所有 \(j = 3, 4, \dots, r\) 成立.
+
+这说明数列 \(\{b_n\}\) 的相邻项之比为常数 \(\frac{b_2}{b_1}\)，因此数列 \(\{b_n\}\) 是等比数列. 必要性成立.
+
+综上，``\(|A|=r-1\)''的充要条件是``\(\{b_{n}\}\)为等比数列''.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=24]
+\item （24-25
+  高三下·浙江·开学考试）定义：\(A \backslash x\)为在集合A中去掉一个元素x后得到的集合；\(S(A)\)为集合A中的所有元素之和。已知由n个正整数组成的集合\(A = \{a_1, a_2, \cdots, a_n\} (n \in \mathbb{N}^*, n \geq 3)\)，若对于\(\forall a_i \in A (i = 1, 2, \ldots, n)\)，都存在两个集合B,
+  C，使得\(A \backslash a_i = B \cup C, B \cap C = \emptyset\)，且\(S(B) = S(C)\)，就称集合A为``完美集''。
+\end{enumerate}
+
+(1)若\(A=\{1,2,3,5,6\}\)，判断A是否为``完美集''，并说明理由；
+
+(2)若集合\(A = \{a_{1}, a_{2}, \cdots, a_{n}\} (n \in \mathbb{N}^{*}, n \geq 3)\)是``完美集''，证明：\(n\)是奇数；
+
+(3)若集合\(A=\{a_{1},a_{2},\cdots,a_{n}\}(n\in \mathbb{N}^{*},n\geq3)\)是``完美集''，且A中所有元素从小到大排序后能构成一个等差数列，则称A为``等差完美集''。已知集合\(A=\{a_{1},a_{2},\cdots,a_{n}\}(n\in \mathbb{N}^{*},n\geq3)\)是``等差完美集''，求n的最小值。
+
+\textbf{答案：}
+(1)不是；理由见解析
+
+(2)证明见解析
+
+(3)7
+
+\textbf{分析：}
+
+（1）根据``完美集''的定义即可判断；
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 由\(S(A) - a_{i} = S(B) + S(C) = 2S(B)\)是偶数，所以\(S(A)\)与\(a_{i}\)必定同奇同偶.再分奇数偶数讨论；
+\end{enumerate}
+
+（3）先假设最小值为\(n = 3, n = 5\)，推出矛盾，再求当\(n = 7\)时成立即可.
+
+\textbf{详解：}
+（1）\{1,2,3,5,6\}不是``完美集''，
+
+因为去掉 2 时，\(\{1,3,5,6\}\)不是``完美集''，
+
+因为去掉 2 时，\(\{1,3,5,6\}\)所有元素和为
+
+15，无法拆分为两个和相等的集合；
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 记\(S(A)\)为集合\(A\)中的所有元素之和，\(S(A) - a_i = S(B) + S(C) = 2S(B)\)是偶数，
+\end{enumerate}
+
+所以\(S(A)\)与\(a_{i}\)必定同奇同偶.
+
+当\(S(A)\)为奇数时，\(a_{i}\)也是奇数，\(S(A)\)是奇数个奇数相加，故n是奇数：
+
+当\(S(A)\)为偶数时，\(a_{i}\)也是偶数，设\(a_{i}=2b_{i}\)，则\(\{b_{1},b_{2},\cdots,b_{n}\}\)也是``完美集''，
+
+重复上述操作有限次，便可得各项均为奇数的``完美集''，此时集合元素个数是奇数；
+
+所以得证：
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=3]
+\item n最小值是7.
+\end{enumerate}
+
+设\(\{a_{n}\}\)是等差数列，\(A=\{a_{1},a_{2},\cdots,a_{n}\}\).
+
+当n=3时，去掉\(a_{1}\)时，\(a_{2}\neq a_{3}\)，不成立：
+
+当n=5时，\(A=\{a_{1},a_{2},a_{3},a_{4},a_{5}\}\)，不妨设\(a_{1}<a_{2}<a_{3}<a_{4}<a_{5}\)
+
+去掉\(a_{2}\)，假设\(\{a_1,a_3,a_4,a_5\}\)可以拆分成两个交为空且和相等的集合，
+
+则有两种情况：
+
+①\(a_{1}+a_{5}=a_{3}+a_{4}\)，因为\(a_{1}+a_{5}=a_{2}+a_{4}=2a_{3},\therefore a_{2}=a_{3}\)，这与\(a_{2}<a_{3}\)矛盾；
+
+②\(a_{1}+a_{3}+a_{4}=a_{5}\)，因为\(a_{2}+a_{5}=a_{3}+a_{4},\therefore a_{2}=-a_{1}\)，这与\(a_{n}\)均为正整数矛盾，故假设不成立：
+
+故\(n \geq 7\)，下证n的最小值为7.
+
+当n=7时，构造\(A=\{1,3,5,7,9,11,13\}\)（写出一个即可），\(S(A)=49\).
+
+去掉1,\(S(B)=(49-1)\div2=24\),\(B=\{3,5,7,9\}\),\(C=\{11,13\}\);
+
+去掉3,\(S(B)=(49-3)\div2=23\),\(B=\{1,9,13\}\),\(C=\{5,7,11\}\);
+
+去掉5,\(S(B)=(49-5)\div2=22\),\(B=\{1,3,7,11\}\),\(C=\{9,13\}\);
+
+去掉7,\(S(B)=(49-7)\div2=21\),\(B=\{1,9,11\}\),\(C=\{3,5,13\}\);
+
+同理去掉9,\(S(B)=20\),\(B=\{1,3,5,11\}\),\(C=\{7,13\}\);
+
+去掉11,\(S(B)=19\),\(B=\{1,5,13\}\),\(C=\{3,7,9\}\);
+
+去掉13,\(S(B)=18\),\(B=\{1,3,5,9\}\),\(C=\{7,11\}\);
+
+所以，\(A=\{1,3,5,7,9,11,13\}\)是``等差完美集''.
+
+综上所述，n的最小值为7.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*]
+\item 已知\(f(x) = m(x - 2m)(x + m + 3), g(x) = 3^x - 3\)，若命题``\(\forall x \in R, f(x) < 0\)或\(g(x) < 0\)''为真命题，则\(m\)的取值范围是（）
+\end{enumerate}
+
+A.\(\left(-4,\frac{1}{2}\right)\)
+
+B.\((-4,0)\)
+
+C.\(\left(0, \frac{1}{2}\right)\)
+
+D.\(\left(-\frac{1}{2},0\right)\)
+
+\textbf{答案：}
+B
+
+\textbf{分析：}
+
+从\(g(x)=3^{x}-3<0\)作为题目切入点，分段讨论 x
+
+的取值范围，结合命题的真假列出相应不等式，最后综合即可得答案.
+
+\textbf{详解：}
+\(g(x)=3^{x}-3<0\), 解得
+
+x\textless1，此时无论\(f(x)\)取何值，均符合题意；
+
+当\(x = 1\)时，\(g(x) = 3^x - 3 = 0\)，只需\(f(1) = m(1 - 2m)(4 + m) < 0\)
+
+解得\(m > \frac{1}{2}\)或\(-4 < m < 0\);
+
+当\(x > 1\)时，\(g(x) = 3^x - 3 > 0\)，由题中条件，只需\(f(x) < 0\)对于\(x \in (1, +\infty)\)恒成立，
+
+当\(m = 0\)时，\(f(x) = 0\)不符合题意；
+
+当\(m > 0\)时，\(f(x) = m(x - 2m)(x + m + 3)\)图象为开口向上的抛物线，
+
+不能满足\(f(x) < 0\)对\(x \in (1, +\infty)\)恒成立，不符合题意；
+
+当\(m < 0\)时，\(f(x) = 0\)的2个根为\(x_{1} = 2m, x_{2} = -m - 3\)
+
+需\(\left\{\begin{aligned}x_{1}&=2m\leqslant1\\ x_{2}&=-m-3\leqslant1\end{aligned}\right.\)，∴\(\left\{\begin{aligned}m&\leqslant\frac{1}{2}\\ m&\geqslant-4\end{aligned}\right.\)，结合m\textless0，可得\(-4\leqslant m<0\)，
+
+综合上述可知m的取值范围是\((-4,0)\),
+
+故选：B.
+
+\textbf{点睛：}
+将\(g(x)<0\)作为题目的切入点，根据命题的真假分类讨论x的范围分类讨论求解；
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item （2026·北京西城·二模）已知正方体 W 和平面\(\alpha\)，则``正方体 W 的 8
+  个顶点中存在 6
+  个到平面\(\alpha\)的距离相等''是``平面\(\alpha\)将正方体 W
+  分成体积相等的两部分''的（）
+\end{enumerate}
+
+A. 充分不必要条件
+
+B. 必要不充分条件
+
+C. 充要条件
+
+D. 既不充分也不必要条件
+
+\textbf{答案：}
+D
+
+\textbf{分析：}
+
+根据给定条件，利用充分条件、必要条件的定义，结合正方体的结构特征推理判断.
+
+\textbf{详解：}
+我们可以通过构造反例来判断充分性与必要性：
+
+\begin{enumerate}[label=(\arabic*), leftmargin=*]
+  \item \textbf{充分性不成立}：
+  设正方体 $W$ 的棱长为 2，建立空间直角坐标系，使顶点分别为 $(\pm 1, \pm 1, \pm 1)$，其中心为 $O(0, 0, 0)$.
+  取平面 $\alpha$ 的方程为 $x + y = 1$. 容易求得正方体各个顶点到该平面的距离为 $\frac{|x + y - 1|}{\sqrt{2}}$.
+  计算 8 个顶点到平面 $\alpha$ 的距离分别为：
+  - 对于 $(1, 1, 1)$ 和 $(1, 1, -1)$，距离为 $\frac{|1 + 1 - 1|}{\sqrt{2}} = \frac{1}{\sqrt{2}}$；
+  - 对于 $(1, -1, 1)$, $(1, -1, -1)$, $(-1, 1, 1)$, $(-1, 1, -1)$，距离为 $\frac{|1 - 1 - 1|}{\sqrt{2}} = \frac{1}{\sqrt{2}}$；
+  - 对于 $(-1, -1, 1)$ 和 $(-1, -1, -1)$，距离为 $\frac{|-1 - 1 - 1|}{\sqrt{2}} = \frac{3}{\sqrt{2}}$.
+  因此，正方体 $W$ 的 8 个顶点中，恰有 6 个顶点到平面 $\alpha$ 的距离相等（均为 $\frac{1}{\sqrt{2}}$）.
+  但由于平面 $x + y = 1$ 不过正方体的中心 $O(0, 0, 0)$，它将正方体分割成的两部分体积不相等. 
+  因此，“正方体 $W$ 的 8 个顶点中存在 6 个到平面 $\alpha$ 的距离相等”推不出“平面 $\alpha$ 平分正方体体积”，充分性不成立.
+
+  \item \textbf{必要性不成立}：
+  因为正方体关于中心 $O$ 是中心对称的，所以平面 $\alpha$ 将正方体 $W$ 分成体积相等的两部分的充要条件是平面 $\alpha$ 经过正方体的中心 $O$.
+  若取平面 $\alpha$ 为正方体的某个对称面（如平面 $z = 0$），则该平面过中心 $O$，满足平分体积的要求.
+  但此时正方体的 8 个顶点到平面 $z = 0$ 的距离均为 $1$，即到平面距离相等的顶点个数为 8，而不是 6.
+  因此，“平面 $\alpha$ 平分正方体体积”推不出“存在 6 个顶点到平面距离相等”，必要性不成立.
+\end{enumerate}
+综上所述，“正方体 W 的 8 个顶点中存在 6 个到平面\(\alpha\)的距离相等”是“平面\(\alpha\)将正方体 W 分成体积相等的两部分”的既不充分也不必要条件.
+故选：D
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=3]
+\item （2026·北京昌平·二模）设\(a \in R\)，函数\(f(x) = \begin{cases} ax^2 - 2x + 1, & x \leq a \\ ax + 1, & x > a \end{cases}\)有最大值的一个充分不必要条件是（）
+\end{enumerate}
+
+A.\(a \in \left[-1, -\frac{1}{2}\right]\)
+
+B.\(a \in \left[-\frac{1}{2}, 0\right]\)
+
+C.\(a \in [-1,0)\)
+
+D.\(a \in [-2,0)\)
+
+\textbf{答案：}
+A
+
+\textbf{分析：}
+
+先求出函数\(f(x)\)有最大值的充要条件，再判断哪个选项是其充分不必要条件.
+
+\textbf{详解：}
+当\(a=0\)时，\(f(x)=\begin{cases}-2x+1,&x\leq0,\\1,&x>0.\end{cases}\)当\(x\to-\infty\)时\(f(x)\to+\infty\)，故无最大值。
+
+当\(a > 0\)时：\(x > a\)时，\(f(x) = ax + 1\)单调递增，当\(x\to +\infty\)时，\(f(x)\rightarrow +\infty\)，无最大值.
+
+当\(a < 0\)时：\(x > a\)时，\(f(x) = ax + 1\)单调递减，故\(f(x) < a^2 + 1\)
+
+\(x \leq a\)时，\(f(x) = ax^2 - 2x + 1\)，开口向下，对称轴为\(x = \frac{1}{a} < 0\).
+
+若\(\frac{1}{a} \leq a\)时，即\(-1 \leq a < 0\)时，\(f(x)\)在\((-\infty,a]\)上的最大值为\(f\left(\frac{1}{a}\right) = 1 - \frac{1}{a}\),
+
+则\(1-\frac{1}{a}\geq a^{2}+1\)，解得-1\(\leq a<0\);
+
+若\(\frac{1}{a} > a\)时，即\(a < -1\)时，\(f(x)\)在\((-\infty,a]\)上单调递增，最大值为\(f(a) = a^3 - 2a + 1\)
+
+则\(a^{3}-2a+1\geq a^{2}+1\)即\(a(a-2)(a+1)\geq0\)，因为a\textless0，a\textless-1，不等式无解，函数此时无最大值；
+
+综上\(f(x)=\left\{\begin{aligned}ax^{2}-2x+1,x&\leq a\\ ax+1,x&>a\end{aligned}\right.\)有最大值的充要条件为\(-1\leq a<0.\)
+
+因为\(\left[-1,-\frac12\right]\subsetneq[-1,0)\),
+
+所以\(f(x)=\left\{\begin{aligned}ax^{2}-2x+1,x&\leq a\\ ax+1,x&>a\end{aligned}\right.\)有最大值的一个充分不必要条件是\(\left[-1,-\frac{1}{2}\right]\).
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=4]
+\item （25-26
+  高三上·上海宝山·阶段检测）已知集合\(M = \{(x, y) \mid y = f(x)\}\)，若对于任意\((x, y) \in M\)，总存在与之相应的\((x', y') \in M\)（其中\(x \neq x'\)），使得\(|xx' + yy'| = \sqrt{x^2 + y^2} \cdot \sqrt{(x')^2 + (y')^2}\)成立，则称集合\(M\)是``Ω集合''。下列为``Ω
+\end{enumerate}
+
+集合''的有（）个
+
+①\(M=\left\{(x,y)\mid y=\frac{1}{x}\right\}\)
+
+②\(M=\{(x,y)\mid y=e^{x}-3\}\)
+
+③\(M=\{(x,y)\mid y=\cos x\}\)
+
+④\(M=\{(x,y)\mid y=x^{3}\}\)
+
+A. 1
+
+B. 2
+
+C. 3
+
+D. 4
+
+\textbf{答案：}
+B
+
+\textbf{分析：}
+
+根据题意，函数\(y = \frac{1}{x} (x \neq 0)\)和\(y = x^3\)为奇函数，根据``Ω集合''的定义易知若\(A(x, y)\)，存在\(B(-x, -y)\)时，使得\(|xx' + yy'| = \sqrt{x^2 + y^2} \cdot \sqrt{(x')^2 + (y')^2}\)成立，即可判断①④；
+
+对于②③可举例判断.
+
+\textbf{详解：}
+设\(A(x,y),B(x',y')\),
+
+因为\(|xx' + yy'| = \sqrt{x^2 + y^2} \cdot \sqrt{(x')^2 + (y')^2}\),
+
+平方整理得\(2xyx'y' = x^{2}y'^{2} + x'^{2}y^{2}\)，即\((xy' - x'y)^{2} = 0\)，所以\(xy' - x'y = 0\)，
+
+即\(\overrightarrow{OA} \parallel \overrightarrow{OB}\)，即A,O,B三点共线，
+
+所以集合M要为``Ω集合''，
+
+则集合M上任取一点\(A(x,y)\)，直线OA与曲线有另一个交点\(B(x',y')\)，
+
+对于①，函数\(y = \frac{1}{x} (x \neq 0)\)，为奇函数，
+
+所以若\(A(x,y)\)，存在\(B(-x,-y)\)时，使得\(xy'-x'y=(-y)-(-x)y=0\)，
+
+即\(\left| {xx}^{\prime } + {yy}^{\prime }\right|  = \sqrt{{x}^{2} + {y}^{2}} \cdot  \sqrt{{\left( x\right) }^{2} + {\left( y\right) }^{2}}\),所以①是``Ω集合''；
+
+对于②，当点\(A(0, -2) \in M\)，此时直线\(OA\)的方程为\(x = 0\)与曲线只有一个交点\(A\)，故②不是``\(\Omega\)集合''；
+
+对于③，易知\(A(0,1) \in M\)，此时直线\(OA\)的方程为\(x = 0\)与曲线只有一个交点\(A\)，故③不是``\(\Omega\)集合''；
+
+对于④，函数\(y = x^3\)是\(\mathbb{R}\)上的奇函数，
+
+所以若\(A(x,y)\)，存在\(B(-x, - y)\)时，使得\(xy^{\prime} - x^{\prime}y = x(-y) - (-x)y = 0,\)
+
+即\(\left| {xx}^{\prime } + {yy}^{\prime }\right|  = \sqrt{{x}^{2} + {y}^{2}} \cdot  \sqrt{{\left( x\right) }^{2} + {\left( y\right) }^{2}}\),所以④是``Ω集合''；
+
+故选：B.
+
+5.（多选题）(2026·福建厦门·模拟预测)已知\(A_{1}, A_{2}, \ldots, A_{n}, \ldots\)均为有限实数集，记\(A_{n}\)中的最大元素为\(x_{n}, \forall n \in \mathbb{N}^{*}\)，\(A_{n+1} = A_{n} \cup \{a + x_{n} | a \in A_{n}\}\)，若\(A_{1} = \{-2, 3\}\)，则（）
+
+A.\(A_{2} = \{-2,1,3,6\}\)
+
+B.\(x_{7} = 384\)
+
+C.\(A_{8}\)中所有元素的平均数为 191
+
+D.\(A_{6}\)中所有元素的和为 3008
+
+\textbf{答案：}
+ACD
+
+\textbf{分析：}
+
+抓住集合构造的递推规律：最大元素\(x_{n+1}=2x_{n}\)，直接得到\(\{x_{n}\}\)的等比通项；
+
+集合元素个数\(|A_{n+1}|=2|A_{n}|\)，结合元素和的递推关系\(S_{n+1}=S_{n}+(S_{n}+x_{n}\cdot|A_{n}|)\)，推导出\(S_{n}\)的通项，再逐一验证选项即可.
+
+\textbf{详解：}
+选项 A，已知\(A_{1}=\{-2,3\}\)，最大元素\(x_{1}=3\)，
+
+根据定义\(A_{2}=\{a+x_{1}|a\in A_{1}\}=\{-2+3,3+3\}=\{1,6\}\),
+
+则\(A_{2}=A_{1}\cup\{1,6\}=\{-2,1,3,6\}\)，A正确；
+
+选项
+
+B，由\(A_{n+1}\)的构造，\(A_{n}\)的最大元素是\(x_{n}\)，则\(\{a + x_{n}\}\)的最大元素是\(x_{n} + x_{n} = 2x_{n}\)，因此\(x_{n+1} = 2x_{n}\)，即\(\{x_{n}\}\)是首项为\(x_{1} = 3\)，公比为
+
+2 的等比数列：\(x_{n} = 3 \cdot 2^{n-1}\)。当 n = 7
+
+时，\(x_{7} = 3 \cdot 2^{7-1} = 192 \neq 384\)，B 错误；
+
+设\(S_{n}\)为\(A_{n}\)所有元素之和，则\(S_{1}=-2+3=1\)，因为\(A_{2}=A_{1}\cup\{a+x_{1}\}\)，
+
+所以\(S_{2}=S_{1}+(S_{1}+2x_{1})=1+(1+2\times3)=8\)．一般地，\(S_{n+1}=S_{n}+(S_{n}+x_{n}\cdot|A_{n}|)\)，其中\(|A_{n}|\)是\(A_{n}\)的元素个数．由构造可知，\(|A_{n+1}|=2|A_{n}|\)（即每次新增元素与原集合无重复），因为\(|A_{1}|=2\)，故\(|A_{n}|=2^{n}\)．
+
+结合\(x_{n}=3\cdot2^{n-1}\)，递推得：\(S_{n+1}=2S_{n}+3\cdot2^{n-1}\cdot2^{n}=2S_{n}+3\cdot2^{2n-1}\)
+
+等式两边同除以\(2^{n + 1}\)得\(\frac{S_{n + 1}}{2^{n + 1}} = \frac{S_n}{2^n} +3\cdot 2^{n - 2}\).令\(b_{n} = \frac{S_{n}}{2^{n}}\)，则\(b_{n + 1} - b_n = 3\cdot 2^{n - 2},b_1 = \frac{S_1}{2^1} = \frac{1}{2},\)
+
+累加法求\(b_{n}=b_{1}+\sum_{k=1}^{n-1}\quad(b_{k+1}-b_{k})=\frac{1}{2}+\sum_{k=1}^{n-1}\quad3\cdot2^{k-2}=\frac{1}{2}+\frac{3}{2}\sum_{k=1}^{n-1}\quad2^{k-1}=3\cdot2^{n-2}-1,\)
+
+则\(S_{n}=b_{n}\cdot2^{n}=3\cdot4^{n-1}-2^{n}\)
+
+选项 C，当 n=8
+
+时，均值为\(\frac{S_{8}}{|A_{8}|}=\frac{3\cdot4^{8-1}-2^{8}}{2^{8}}=191\)，C
+
+正确；
+
+选项 D，当 n = 6 时，\(S_{6} = 3 \cdot 4^{6-1} - 2^{6} = 3008\)，D 正确.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=6]
+\item (2026·河南许昌·三模) 已知\(a_1 = -1, a_2 = 7, a_3 = 11, a_4 = 13\),
+  若\(\{a_i + a_j \mid 1 \leq i < j \leq 4\} = \{b_i + b_j \mid 1 \leq i < j \leq 4\}\)且\(b_1 < b_2 < b_3 < b_4\),
+  则\(b_1 =\)\_\_\_\_.
+\end{enumerate}
+
+\textbf{答案：}
+-1或2
+
+\textbf{分析：}
+
+已知四个递增数两两之和构成集合\(\{6,10,12,18,20,24\}\),
+
+根据大小关系可确定最小两数和为 6、最小与第三数和为 10、最大两数和为
+
+24、第二与最大数和为 20, 再分第二与第三数和为 12 或 18 两种情况,
+
+分别联立前三个和力的方程, 通过整体代入求出\(b_{1}\)的两个可能取值.
+
+\textbf{详解：}
+由题意知\(\{a_i+a_j\mid1\leq i<j\leq4\}=\{6,10,12,18,20,24\}\).
+
+满足\(\{a_i+a_j\mid 1\leq i<j\leq4\}=\{b_i+b_j\mid 1\leq i<j\leq4\}\)，因为\(b_{1} < b_{2} < b_{3} < b_{4}\)
+
+则必有\(b_{1}+b_{2}=6,b_{1}+b_{3}=10,b_{3}+b_{4}=24,b_{2}+b_{4}=20.\)
+
+若\(b_{2}+b_{3}=12,b_{1}+b_{4}=18\)，联立\(\left\{\begin{aligned}b_{1}+b_{2}&=6\\ b_{1}+b_{3}&=10\\ b_{2}+b_{3}&=12\end{aligned}\right.\)，两式相加得\(2b_{1}+b_{2}+b_{3}=16\)，
+
+代入\(b_{2}+b_{3}=12\)得\(2b_{1}=4\)，解得\(b_{1}=2\).
+
+若\(b_{2}+b_{3}=18,b_{1}+b_{4}=12\)，联立\(\left\{\begin{aligned}b_{1}+b_{2}&=6\\ b_{1}+b_{3}&=10\\ b_{2}+b_{3}&=18\end{aligned}\right.\)，两式相加得\(2b_{1}+b_{2}+b_{3}=16\)，
+
+代入\(b_{2}+b_{3}=18\)得\(2b_{1}=-2\), 解得\(b_{1}=-1\).
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=7]
+\item （25-26
+  高三下·江苏扬州·阶段检测）设集合\(M = \{x \mid 1 \leq x \leq 100, x \in \mathbb{N}\}\)，若对于满足\(A \subseteq M\)的任意\(k\)个元素的集合\(A = \{a_1, a_2, \cdots, a_k\}\)，都存在\(a_i, a_j \in A (i \neq j)\)使得\(\frac{a_i}{a_j} \in \left[\frac{1}{3}, 3\right]\)，则\(k\)的最小值是
+  \_\_\_\_.
+\end{enumerate}
+
+\textbf{答案：}
+5
+
+\textbf{分析：}
+
+设集合\(B=\{a_{1},a_{2},\cdots,a_{n}\}\)，对于任意\(a_{i}\)，\(a_{j}\in B(i\neq j)\)，\(\frac{a_{i}}{a_{j}}\notin\left[\frac{1}{3},3\right]\)，计算出此时n的最大值即可得到k的最小值.
+
+\textbf{详解：}
+解：根据题意，\(M=\{x|1\leq x\leq100,x\in \mathbb{N}\}\)
+
+设集合\(B = \{a_{1}, a_{2}, \cdots, a_{n}\}, (a_{1} < a_{2} < \cdots < a_{n}), a_{n} \in M\)，对于任意\(a_{i}, a_{j} \in B (i \neq j)\)，\(\frac{a_{i}}{a_{j}} \notin \left[\frac{1}{3}, 3\right]\)，现计算此时\(n\)的最大值，要使\(n\)最大，则数列的增长速度应该尽可能的慢，首先尽可能小，所以\(a_{1} = 1\)，则\(a_{i+1}\)应该是满足\(a_{i+1} > 3a_{i}\)的最小整数，故\(a_{i+1} = 3a_{i} + 1, i \geq 1\)，\(\therefore a_{i+1} + \frac{1}{2} = 3(a_{i} + \frac{1}{2})\)，则数列\(\left\{a_{n} + \frac{1}{2}\right\}\)是首项为\(a_{1} + \frac{1}{2} = \frac{3}{2}\)，公比为3的等比数列，所以\(a_{n} + \frac{1}{2} = \frac{3}{2} \times 3^{n-1}\)，\(a_{n} = \frac{3^{n}}{2} - \frac{1}{2} \leq 100\)，即\(3^{n} \leq 201\)，又\(3^{4} = 81, 3^{5} = 243\)且\(n \in \mathbb{N}^{*}\)，\(\therefore n\)的最大值为4，例如\(B = \{1,4,13,40\}\)，则\(k\)的最小值是5.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=8]
+\item （2026·山东·模拟预测）对于集合\(S\)，定义\(S + S = \{a + b | a, b \in S\}\)，若\(S \cap (S + S) = \emptyset\)，则称\(S\)为理想集。例如，\(\{1,2\}\)不是理想集，而\(\{1,3\}\)是理想集。
+\end{enumerate}
+
+(1)判断下列集合是否为理想集，不需要说明理由；
+
+①\{1,4\}; ②\{1,4,10,13\}; ③\{4,5,6,7,8\}.
+
+(2)若存在n个非空理想集\(S_{1}\)，\(S_{2}\)，\ldots，\(S_{n}\)，且\(S_{i}\cap S_{j}=\emptyset(1\leq i<j\leq n)\)，使得\(S_{1}\cup S_{2}\cup\cdots\cup S_{n}=\{1,2,\cdots,k\}(k\geq n)\)，则称k是n可分的，记\(a_{n}=\max\{k|k是n可分的\}\).
+
+\begin{enumerate}[label=(\roman*), leftmargin=*]
+\item 证明:\(a_{3} \geq 13\);
+\item
+  证明:\(\frac{1}{a_1} + \frac{1}{a_2} + \cdots + \frac{1}{a_n} < \frac{11}{8}\).
+\end{enumerate}
+
+\textbf{答案：}
+(1)集合①②是理想集，③不是理想集
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 
+
+\begin{enumerate}
+  \def\labelenumii{(\roman{enumii})}
+  \item
+    证明见解析; (ii) 证明见解析
+  \end{enumerate}
+\end{enumerate}
+
+\textbf{分析：}
+
+（1）根据理想集定义，计算每个集合对应的\(S + S\)，再判断\(S\)与\(S + S\)是否无公共元素即可；
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item (i): 构造出 3 个两两不交的非空理想集,
+  使得它们的并集为\(\{1,2,\ldots,13\}\)即可;
+\end{enumerate}
+
+(ii)：结合题意推导\(a_{n}\)的取值规律，得到\(\frac{1}{a_{n}^{2}}\)的放缩方式，再结合裂项相消原理求和证明不等式.
+
+\textbf{详解：}
+（1）根据理想集定义：S为理想集当且仅当\(S \cap (S + S) = \emptyset\)，其中\(S + S = \{a + b \mid a, b \in S\}\)，
+
+①
+
+集合\(\{1,4\}\)：计算得\(S + S = \{1 + 1,1 + 4,4 + 4\} = \{2,5,8\}\)，\(S\cap (S + S) = \{1,4\} \cap \{2,5,8\} = \emptyset\)
+
+因此\(\{1,4\}\)是理想集，
+
+②集合\{1,4,10,13\}：计算得：\(S + S = \{2,5,8,11,14,17,20,23,26\}\)，\(S \cap (S + S) = \{1,4,10,13\} \cap\)
+
+\[
+\{2, 5, 8, 1 1, 1 4, 1 7, 2 0, 2 3, 2 6 \} = \emptyset ,
+\]
+
+因此\(\{1,4,10,13\}\)是理想集.
+
+③
+
+集合\(\{4,5,6,7,8\}\)：因为\(4+4=8\)，故\(8\in S\)且\(8\in S+S\)，\(S\cap(S+S)\supseteq\{8\}\neq\varnothing\)，
+
+因此\(\{4,5,6,7,8\}\)不是理想集.
+
+所以集合①②是理想集，③不是理想集.
+
+\begin{enumerate}[label=\arabic*., leftmargin=*, start=2]
+\item 
+
+\begin{enumerate}
+  \def\labelenumii{(\roman{enumii})}
+  \item
+    构造集合\(S_{1} = \{1,4,10,13\}\),\(S_{2} = \{2,3,11,12\}\),\(S_{3} = \{5,6,7,8,9\}\),
+  \end{enumerate}
+\end{enumerate}
+
+\(S_{1} + S_{1} = \{2, 5, 8, 11, 14, 17, 20, 23, 26\}\)，无公共元素，是理想集；
+
+\(S_{2} + S_{2} = \{4, 5, 6, 13, 14, 15, 22, 23, 24\}\)，无公共元素，是理想集；
+
+\(S_{3}\)中最小两元素和为\(5 + 5 = 10 > 9 = \max S_{3}\)，故\(S_{3} \cap (S_{3} + S_{3}) = \varnothing\)，是理想集，
+
+且\(S_{i} \cap S_{j} = \varnothing (1 \leq i < j \leq 3)\)，\(S_{1} \cup S_{2} \cup S_{3} = \{1, 2, \cdots, 13\}\),
+
+所以13是3可分的，故\(a_{3} \geq 13\).
+
+\begin{enumerate}[label=(\roman*), leftmargin=*, start=2]
+\item 若存在 n
+  个非空理想集\(S_{1}, S_{2}, \ldots, S_{n}\)，且\(S_{i} \cap S_{j} = \varnothing (1 \leq i < j \leq n)\)，使得\(S_{1} \cup S_{2} \cup \cdots \cup S_{n} = \{1, 2, \cdots, k\} (k \geq n)\)，则对于\(1 \leq i \leq n\)，取\(T_{i} = S_{i} \cup (S_{i} + \{2k + 1\})\)，
+\end{enumerate}
+
+其中\(S_{i}+\{2k+1\}\)表示将集合\(S_{i}\)中每个数都加上\(2k+1\)后所得的新集合.
+
+取\(T_{n+1}=\{k+1,k+2,\cdots,2k+1\}\)，此时存在\(n+1\)个非空理想集\(T_{1},\quad T_{2},\quad\ldots,\quad T_{n+1}\)
+
+且\(T_{i}\cap T_{j}=\varnothing(1\leq i<j\leq n+1)\)，使得\(T_{1}\cup T_{2}\cup\cdots\cup T_{n+1}=\{1,2,\cdots,3k+1\}\).
+
+设\(a_{n}=k\)，则有\(a_{n+1}\geq3k+1=3a_{n}+1\)，
+
+则\(a_{n+1}+\frac{1}{2}\geq3\left(a_{n}+\frac{1}{2}\right)\)，又\(a_{1}=1\)，
+
+于是当\(n\geq2\)时，\(a_{n}+\frac{1}{2}\geq3\left(a_{n-1}+\frac{1}{2}\right)\geq3^{2}\left(a_{n-2}+\frac{1}{2}\right)\geq\cdots\geq3^{n-1}\left(a_{1}+\frac{1}{2}\right)=\frac{3^{n}}{2},\)
+
+故\(a_{n}\geq\frac{3^{n}-1}{2}\)，当n=1时，\(a_{1}\geq\frac{3^{1}-1}{2}\)依然成立，所以\(a_{n}\geq\frac{3^{n}-1}{2}\)
+
+于是\(\frac{1}{a_{n}}\leq\frac{2}{3^{n}-1}=\frac{2(3^{n+1}-1)}{(3^{n}-1)(3^{n+1}-1)}<\frac{2\cdot3^{n+1}}{(3^{n}-1)(3^{n+1}-1)}=3\left(\frac{1}{3^{n}-1}-\frac{1}{3^{n+1}-1}\right)\),
+
+当n=1时，\(\frac{1}{a_{1}}=1<\frac{11}{8}\)成立；
+
+当\(n \geq 2\)时，\(\frac{1}{a_1} + \frac{1}{a_2} + \cdots + \frac{1}{a_n} < 1 + \sum_{k=2}^{n} 3\left(\frac{1}{3^k - 1} - \frac{1}{3^{k+1} - 1}\right) = 1 + \frac{3}{8} - \frac{3}{3^{n+1} - 1} < \frac{11}{8}\).
+
+综上所述，\(\frac{1}{a_{1}}+\frac{1}{a_{2}}+\cdots+\frac{1}{a_{n}}<\frac{11}{8}.\)
+
+\end{document}

@@ -1,0 +1,148 @@
+% 难度：★★★
+% 知识点：立体几何、折叠问题、线面垂直、外接球、二面角最值
+
+\newcommand{\qSolidFoldingPentagonMinAngleStem}{
+在凸五边形 $ABCDE$ 中，$\angle EAC = \angle DCA = \frac{\pi}{2}$，$AE = 2CD = 4$，$\triangle ABC$ 是边长为 $2\sqrt{3}$ 的正三角形。点 $F, H$ 分别为 $ED, AD$ 的中点。将 $\triangle ABC$ 沿 $AC$ 翻折，点 $B$ 到空间点 $P$。
+\begin{enumerate}[label=(\arabic*)]
+  \item 若 $PH \perp$ 平面 $ACDE$，求：
+  \begin{enumerate}[label=\textcircled{\arabic*}]
+    \item 直线 $PA$ 与 $CF$ 所成的角；
+    \item 三棱锥 $P-ACD$ 的外接球为球 $O$，$M$ 为球面上一动点，求 $EM$ 的取值范围。
+  \end{enumerate}
+  \item 在翻折过程中，设平面 $PCD$ 与平面 $PAE$ 的交线为 $l$，求二面角 $A-l-C$ 的最小值。
+\end{enumerate}
+}
+
+\newcommand{\qSolidFoldingPentagonMinAngleFigure}[1][1]{
+\begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+  % 2D 平面图
+  \begin{scope}[xshift=0cm, yshift=0cm]
+    \coordinate (A) at (0,0);
+    \coordinate (C) at (3.464,0);
+    \coordinate (E) at (0,4);
+    \coordinate (D) at (3.464,2);
+    \coordinate (B) at (1.732,-3);
+    \coordinate (H) at (1.732,1);
+    \coordinate (F) at (1.732,3);
+    
+    \draw[thick] (B) -- (C) -- (D) -- (E) -- (A) -- cycle;
+    \draw[thick] (A) -- (C);
+    \draw[thin, dashed] (A) -- (D);
+    \draw[thin, dashed] (C) -- (F);
+    
+    \fill (A) circle (1.2pt) node[left] {$A$};
+    \fill (C) circle (1.2pt) node[right] {$C$};
+    \fill (E) circle (1.2pt) node[left] {$E$};
+    \fill (D) circle (1.2pt) node[right] {$D$};
+    \fill (B) circle (1.2pt) node[below] {$B$};
+    \fill (H) circle (1.2pt) node[below right] {$H$};
+    \fill (F) circle (1.2pt) node[above right] {$F$};
+    \node[below] at (1.732,-3.5) {\small 翻折前平面图};
+  \end{scope}
+
+  % 3D 折叠图
+  \begin{scope}[xshift=5.5cm, yshift=-1.0cm]
+    \coordinate (A) at (0,0);
+    \coordinate (C) at (3.5,0);
+    \coordinate (E) at (1.2,1.6);
+    \coordinate (D) at (4.1,0.8);
+    
+    \coordinate (H) at (2.05,0.4); % AD 中点
+    \coordinate (F) at (2.65,1.2); % ED 中点
+    \coordinate (P) at (2.05, 3.5); % P在 H 正上方
+    
+    % 实线
+    \draw[thick] (A) -- (C) -- (D);
+    \draw[thick] (P) -- (A);
+    \draw[thick] (P) -- (C);
+    \draw[thick] (P) -- (D);
+    
+    % 虚线
+    \draw[thick, dashed] (A) -- (E) -- (D);
+    \draw[thick, dashed] (P) -- (E);
+    \draw[thin, dashed] (A) -- (D);
+    \draw[thin, dashed] (P) -- (H);
+    \draw[thin, dashed] (C) -- (F);
+    
+    % 垂直标记
+    \draw[thin] ($(H)!0.08!(P)$) -- ($($(H)!0.08!(P)$) + ($(H)!0.1!(A)$) - (H)$) -- ($(H)!0.1!(A)$);
+    
+    \fill (A) circle (1.2pt) node[below left] {$A$};
+    \fill (C) circle (1.2pt) node[below] {$C$};
+    \fill (E) circle (1.2pt) node[left] {$E$};
+    \fill (D) circle (1.2pt) node[right] {$D$};
+    \fill (P) circle (1.2pt) node[above] {$P$};
+    \fill (H) circle (1.2pt) node[below] {$H$};
+    \fill (F) circle (1.2pt) node[above right] {$F$};
+    \node[below] at (2,-0.5) {\small 翻折后三维图};
+  \end{scope}
+\end{tikzpicture}
+}
+
+\newcommand{\qSolidFoldingPentagonMinAngleAnswer}{
+(1) \textcircled{1} $\frac{\pi}{2}$ \quad \textcircled{2} $[\sqrt{2}, 4\sqrt{2}]$ \quad (2) $\frac{\pi}{3}$
+}
+
+\newcommand{\qSolidFoldingPentagonMinAngleSolution}{
+\textbf{（1）} \textcircled{1} \textbf{求 $PA$ 与 $CF$ 所成角：}\\
+因为 $AE \perp AC$，$CD \perp AC$，所以 $AE \parallel CD$。\\
+又 $AC = 2\sqrt{3}, AE = 4, CD = 2$，所以 $ACDE$ 是直角梯形。\\
+设 $G$ 为 $AC$ 的中点，则 $AG = CG = \sqrt{3}$。\\
+因为 $F$ 是 $ED$ 的中点，根据直角梯形中位线性质，$F$ 在 $AC$ 上的射影为 $G$，且 $GF = \frac{AE+CD}{2} = 3$。\\
+因为 $H$ 是 $AD$ 的中点，$H$ 在 $AC$ 上的射影也是 $G$，且 $GH = \frac{CD}{2} = 1$。\\
+在平面 $ACDE$ 内，$\overrightarrow{AH} = \overrightarrow{AG} + \overrightarrow{GH}$，$\overrightarrow{CF} = \overrightarrow{CG} + \overrightarrow{GF}$。\\
+由于 $AG \perp GH$，$CG \perp GF$，且 $\overrightarrow{AG}$ 与 $\overrightarrow{CG}$ 方向相反，可得：
+\[
+\overrightarrow{AH} \cdot \overrightarrow{CF} = \overrightarrow{GH} \cdot \overrightarrow{GF} - |\overrightarrow{AG}| \cdot |\overrightarrow{CG}| = 1 \times 3 - \sqrt{3} \times \sqrt{3} = 0
+\]
+所以 $AH \perp CF$。\\
+又因为 $PH \perp$ 平面 $ACDE$，$CF \subset$ 平面 $ACDE$，所以 $PH \perp CF$。\\
+因为 $AH \cap PH = H$，所以 $CF \perp$ 平面 $APH$。\\
+因为 $PA \subset$ 平面 $APH$，所以 $CF \perp PA$。\\
+故 $PA$ 与 $CF$ 所成角为 $\frac{\pi}{2}$。
+
+\textcircled{2} \textbf{求 $EM$ 的取值范围：}\\
+因为 $AC \perp CD$，$AC = 2\sqrt{3}, CD = 2$，所以 $AD = \sqrt{12+4} = 4$。\\
+所以 $\triangle ACD$ 是直角三角形，其外接圆圆心为斜边 $AD$ 的中点 $H$。\\
+因为 $PH \perp$ 平面 $ACDE$，所以三棱锥 $P-ACD$ 的外接球球心 $O$ 必在直线 $PH$ 上。\\
+设 $OH = t$。在 $\triangle PAH$ 中，$PA = 2\sqrt{3}, AH = 2$，则 $PH = \sqrt{PA^2 - AH^2} = 2\sqrt{2}$。\\
+由球心性质 $OA = OP$，有：
+\[
+AH^2 + OH^2 = (PH - OH)^2 \implies 4 + t^2 = (2\sqrt{2} - t)^2
+\]
+解得 $t = \frac{1}{\sqrt{2}}$。即球半径 $R = OA = \sqrt{4 + \frac{1}{2}} = \frac{3}{\sqrt{2}}$。\\
+在平面 $ACDE$ 内，建立以 $A$ 为原点，$AC$ 为 $x$ 轴的直角坐标系，则 $A(0,0)$，$E(0,4)$，$D(2\sqrt{3}, 2)$，所以 $H(\sqrt{3}, 1)$。\\
+所以 $EH^2 = (\sqrt{3} - 0)^2 + (1 - 4)^2 = 12$。\\
+在空间中，$OH \perp$ 平面 $ACDE$，所以：
+\[
+EO^2 = EH^2 + OH^2 = 12 + \frac{1}{2} = \frac{25}{2} \implies EO = \frac{5}{\sqrt{2}}
+\]
+点 $M$ 在球面上运动，故 $EM$ 的最大值与最小值分别为：
+\[
+EM_{\max} = EO + R = \frac{5}{\sqrt{2}} + \frac{3}{\sqrt{2}} = 4\sqrt{2}
+\]
+\[
+EM_{\min} = EO - R = \frac{5}{\sqrt{2}} - \frac{3}{\sqrt{2}} = \sqrt{2}
+\]
+故 $EM \in [\sqrt{2}, 4\sqrt{2}]$。
+
+\textbf{（2）求二面角 $A-l-C$ 的最小值：}\\
+因为 $AE \parallel CD$，$AE \subset$ 平面 $PAE$，$CD \subset$ 平面 $PCD$，两平面的交线为 $l$，所以 $l \parallel AE \parallel CD$。\\
+因为 $AC \perp AE$，所以垂直于 $l$ 的截面可以看作由 $AC$ 方向与垂直于平面 $ACDE$ 的法线方向组成。\\
+设 $P$ 到平面 $ACDE$ 的距离为 $h$。设 $G$ 为 $AC$ 的中点，因为 $\triangle PAC$ 是边长为 $2\sqrt{3}$ 的正三角形，所以 $PG = 3$（$P$ 到 $AC$ 的距离恒为 $3$）。在翻折过程中，$0 \le h \le 3$。\\
+在垂直于 $l$ 的截面内，平面 $PAE$ 与平面 $PCD$ 的截线方向向量可分别等效为 $\vec{n}_1 = (\sqrt{3}, h)$ 和 $\vec{n}_2 = (-\sqrt{3}, h)$（以 $G$ 为基准，分别向 $A,C$ 延伸 $\sqrt{3}$ 的水平距离，并有 $h$ 的垂直高度）。\\
+设二面角为 $\omega$，则：
+\[
+\cos\omega = \frac{\vec{n}_1 \cdot \vec{n}_2}{|\vec{n}_1||\vec{n}_2|} = \frac{-\sqrt{3} \cdot \sqrt{3} + h \cdot h}{\sqrt{3+h^2}\sqrt{3+h^2}} = \frac{h^2 - 3}{h^2 + 3}
+\]
+函数 $f(h) = \frac{h^2 - 3}{h^2 + 3} = 1 - \frac{6}{h^2 + 3}$ 在 $h \in [0, 3]$ 上随 $h$ 增大而增大。\\
+所以当 $h$ 取得最大值 $h=3$（即平面 $PAC \perp$ 平面 $ACDE$）时，$\cos\omega$ 取得最大值 $\frac{9-3}{9+3} = \frac{1}{2}$。\\
+由于 $\omega \in (0, \pi)$，$\cos\omega$ 越大，$\omega$ 越小。\\
+故 $\omega_{\min} = \frac{\pi}{3}$。即二面角 $A-l-C$ 的最小值为 $\frac{\pi}{3}$。
+}
+
+\newcommand{\qSolidFoldingPentagonMinAngleTeachingNotes}{
+\item \textbf{结构洞察}：本题的核心在于抓住不变量和几何结构。一是 $AE \parallel CD \implies l \parallel AE \parallel CD$ 的平行模型，从而将二面角转化为一个关于高度 $h$ 的代数最值问题。
+\item \textbf{降维打击}：第一问中 $\overrightarrow{AH} \cdot \overrightarrow{CF} = 0$ 利用平面向量非常巧妙，避开了复杂的空间建系建坐标。建议在教案中引导学生观察 $F, H$ 投影到 $AC$ 上都在同一点 $G$。
+\item \textbf{二面角的最值}：可以作为“建系与向量法”的进阶拔高。把截面上的方向向量抽离出来：$\vec{v}_1 = (\sqrt{3}, h)$ 和 $\vec{v}_2 = (-\sqrt{3}, h)$，利用 $\cos\omega = \frac{\vec{v}_1 \cdot \vec{v}_2}{|\vec{v}_1||\vec{v}_2|}$ 分析函数单调性。
+}

@@ -1,0 +1,278 @@
+% =====================================================
+% 三角函数_公式推导与几何直观 题目与图形定义
+% =====================================================
+
+% ─────────────────────────────────────────────────────
+% 一、TikZ 图形定义
+% ─────────────────────────────────────────────────────
+
+% 1. 诱导公式的单位圆对称图
+\newcommand{\qTrigInductionFigure}[1][1.0]{
+  \begin{tikzpicture}[scale=#1, >=stealth, thick]
+    % 坐标轴
+    \draw[->] (-2.3,0) -- (2.3,0) node[below] {$x$};
+    \draw[->] (0,-2.3) -- (0,2.3) node[left] {$y$};
+    \node[below left] at (0,0) {$O$};
+    
+    % 单位圆 (放大半径到 1.8)
+    \draw[dashed, color=gray!60] (0,0) circle (1.8);
+    \node[below right] at (1.8,0) {$1$};
+    
+    % 角 alpha = 30 度
+    \coordinate (O) at (0,0);
+    \coordinate (P1) at (30:1.8);
+    \draw[line width=1.1pt] (O) -- (P1);
+    \draw[fill=black] (P1) circle (1.5pt) node[above right] {$P_1(x,y)$};
+    \draw[thin] (0:0.5) arc (0:30:0.5);
+    \node at (15:0.7) {$\alpha$};
+    
+    % 角 pi/2 + alpha = 120 度
+    \coordinate (P2) at (120:1.8);
+    \draw[line width=1.1pt] (O) -- (P2);
+    \draw[fill=black] (P2) circle (1.5pt) node[above left] {$P_2(-y,x)$};
+    \draw[thin] (0:0.8) arc (0:120:0.8);
+    \node at (60:1.0) {$\frac{\pi}{2}+\alpha$};
+    
+    % 辅助投影线 (更淡更细的虚线)
+    \draw[dashed, color=gray!50, thin] (P1) -- (P1 |- O);
+    \draw[dashed, color=gray!50, thin] (P1) -- (P1 -| O);
+    \draw[dashed, color=gray!50, thin] (P2) -- (P2 |- O);
+    \draw[dashed, color=gray!50, thin] (P2) -- (P2 -| O);
+    
+    % 直角标记于 O 处，连接 P1 和 P2 之间
+    \draw[color=gray!50, thin] ($(O)!0.15!(P1)$) -- ($($(O)!0.15!(P1)$) + ($(O)!0.15!(P2)$)$) -- ($(O)!0.15!(P2)$);
+  \end{tikzpicture}
+}
+
+% 2. 旋转坐标系法图
+\newcommand{\qTrigRotationFigure}[1][1.2]{
+  \begin{tikzpicture}[scale=#1, >=stealth, thick]
+    % 坐标轴
+    \draw[->] (-2.5,0) -- (2.5,0) node[below] {$x$};
+    \draw[->] (0,-2.5) -- (0,2.5) node[left] {$y$};
+    \node[below left] at (0,0) {$O$};
+    
+    % 单位圆 (放大半径到 2.0)
+    \draw[dashed, color=gray!60] (0,0) circle (2.0);
+    
+    % 定义基底角 alpha = 20度，beta = 50度，总角 = 70度
+    \coordinate (O) at (0,0);
+    \coordinate (E1) at (20:2.0);
+    \coordinate (E2) at (110:2.0);
+    \coordinate (Q) at (70:2.0);
+    
+    % 画基底向量
+    \draw[->, line width=1.1pt, color=black] (O) -- (E1) node[above right] {$\mathbf{e}_1$};
+    \draw[->, line width=1.1pt, color=black] (O) -- (E2) node[above left] {$\mathbf{e}_2$};
+    
+    % 基底垂直直角符号
+    \draw[color=gray!60, thin] ($(O)!0.12!(E1)$) -- ($($(O)!0.12!(E1)$) + ($(O)!0.12!(E2)$)$) -- ($(O)!0.12!(E2)$);
+    
+    % 画向量 OQ
+    \draw[->, line width=1.3pt, color=black] (O) -- (Q) node[above right] {$Q$};
+    \draw[fill=black] (Q) circle (1.5pt);
+    
+    % 作新系下的投影垂线
+    \coordinate (H1) at ($(O)!(Q)!(E1)$);
+    \coordinate (H2) at ($(O)!(Q)!(E2)$);
+    \draw[dashed, color=gray!60, thin] (Q) -- (H1);
+    \draw[dashed, color=gray!60, thin] (Q) -- (H2);
+    
+    % 在投影垂足处标注分量长度
+    \draw[fill=black] (H1) circle (1pt);
+    \draw[fill=black] (H2) circle (1pt);
+    \node[below right, scale=0.85] at (H1) {$\cos\beta$};
+    \node[left, scale=0.85] at (H2) {$\sin\beta$};
+    
+    % 错开的角弧标注
+    % alpha (0° to 20°), 半径 0.5
+    \draw[thin] (0:0.5) arc (0:20:0.5);
+    \node at (10:0.7) [scale=0.8] {$\alpha$};
+    
+    % beta (20° to 70°), 半径 0.9
+    \draw[thin] (20:0.9) arc (20:70:0.9);
+    \node at (45:1.1) [scale=0.8] {$\beta$};
+    
+    % alpha+beta (0° to 70°), 半径 1.4
+    \draw[thin, color=gray] (0:1.4) arc (0:70:1.4);
+    \node at (35:1.6) [color=gray, scale=0.8] {$\alpha+\beta$};
+  \end{tikzpicture}
+}
+
+% 3. 点积法图
+\newcommand{\qTrigDotProductFigure}[1][1.2]{
+  \begin{tikzpicture}[scale=#1, >=stealth, thick]
+    % 坐标轴
+    \draw[->] (-2.5,0) -- (2.5,0) node[below] {$x$};
+    \draw[->] (0,-2.5) -- (0,2.5) node[left] {$y$};
+    \node[below left] at (0,0) {$O$};
+    
+    % 单位圆 (放大半径到 2.0)
+    \draw[dashed, color=gray!60] (0,0) circle (2.0);
+    
+    % 向量 u 和 v，角度分别为 alpha = 70 度，beta = 20 度
+    \coordinate (O) at (0,0);
+    \coordinate (U) at (70:2.0);
+    \coordinate (V) at (20:2.0);
+    
+    \draw[->, line width=1.2pt] (O) -- (U) node[above right] {$\mathbf{u}(\cos\alpha,\sin\alpha)$};
+    \draw[->, line width=1.2pt] (O) -- (V) node[right] {$\mathbf{v}(\cos\beta,\sin\beta)$};
+    \draw[fill=black] (U) circle (1.2pt);
+    \draw[fill=black] (V) circle (1.2pt);
+    
+    % 角 beta (0° to 20°), 半径 0.5
+    \draw[thin] (0:0.5) arc (0:20:0.5);
+    \node at (10:0.7) [scale=0.8] {$\beta$};
+    
+    % 角 alpha (0° to 70°), 半径 1.0
+    \draw[thin, color=gray] (0:1.0) arc (0:70:1.0);
+    \node at (45:1.25) [color=gray, scale=0.8] {$\alpha$};
+    
+    % 夹角 alpha - beta (20° to 70°), 半径 1.5
+    \draw[thin] (20:1.5) arc (20:70:1.5);
+    \node at (45:1.75) [scale=0.8] {$\alpha-\beta$};
+  \end{tikzpicture}
+}
+
+% 4. 衍生公式逻辑树图
+\newcommand{\qTrigFormulaTreeFigure}[1][1.0]{
+  \begin{tikzpicture}[scale=#1, >=stealth, 
+    box/.style={draw, rectangle, rounded corners=2pt, inner sep=5pt, text width=3.8cm, align=center, thick, fill=white}
+  ]
+    % 节点定义
+    \node[box] (sum) at (0, 0) {\textbf{两角和差公式} \\ $\sin(\alpha\pm\beta)$, $\cos(\alpha\pm\beta)$};
+    
+    \node[box] (double) at (-2.8, -1.8) {\textbf{二倍角公式} \\ 令 $\beta = \alpha$};
+    \node[box] (product) at (2.8, -1.8) {\textbf{积化和差公式} \\ 两式相加/相减消元};
+    
+    \node[box] (half) at (-2.8, -3.6) {\textbf{半角与降幂公式} \\ 移项与角换元 $x = \frac{\alpha}{2}$};
+    \node[box] (sumtoprod) at (2.8, -3.6) {\textbf{和差化积公式} \\ 均值与半差换元};
+    
+    % 连接线
+    \draw[->, thick] (sum) -- (double);
+    \draw[->, thick] (sum) -- (product);
+    \draw[->, thick] (double) -- (half);
+    \draw[->, thick] (product) -- (sumtoprod);
+  \end{tikzpicture}
+}
+
+
+% 5. 辅助角公式的几何投影图
+\newcommand{\qTrigAuxiliaryFigure}[1][1.2]{
+  \begin{tikzpicture}[scale=#1, >=stealth, thick]
+    % 坐标轴
+    \draw[->] (-0.5,0) -- (2.5,0) node[below] {$x$};
+    \draw[->] (0,-0.5) -- (0,2.0) node[left] {$y$};
+    \node[below left] at (0,0) {$O$};
+    
+    % 点 P(1.6, 1.2)
+    \coordinate (O) at (0,0);
+    \coordinate (P) at (1.6, 1.2);
+    
+    \draw[->, line width=1.2pt] (O) -- (P) node[above right] {$P(a,b)$};
+    \draw[fill=black] (P) circle (1.5pt);
+    
+    % 投影垂线
+    \draw[dashed, color=gray!60] (P) -- (1.6, 0) node[below] {$a$};
+    \draw[dashed, color=gray!60] (P) -- (0, 1.2) node[left] {$b$};
+    
+    % 斜边长标示
+    \node[above left, scale=0.85] at (0.8, 0.6) {$\sqrt{a^2+b^2}$};
+    
+    % 夹角 phi 弧度 (约 36.87 度)
+    \draw[thin] (0:0.5) arc (0:36.87:0.5);
+    \node at (18.4:0.75) {$\varphi$};
+  \end{tikzpicture}
+}
+
+% 6. 万能公式直角三角形记忆图
+\newcommand{\qTrigUniversalFigure}[1][1.2]{
+  \begin{tikzpicture}[scale=#1, >=stealth, thick]
+    % 直角三角形顶点
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (2.4,0);
+    \coordinate (C) at (2.4,1.8);
+    
+    % 绘制三角形
+    \draw (A) -- (B) -- (C) -- cycle;
+    
+    % 标出直角符号
+    \draw[thin] (2.2,0) -- (2.2,0.2) -- (2.4,0.2);
+    
+    % 标出三边长 (t = \tan\frac{\alpha}{2})
+    \node[below] at (1.2,0) {$1-t^2$};
+    \node[right] at (2.4,0.9) {$2t$};
+    \node[above left] at (1.2,0.9) {$1+t^2$};
+    
+    % 标出角 alpha
+    \draw[thin] (0:0.5) arc (0:36.87:0.5);
+    \node at (18.4:0.8) {$\alpha$};
+    
+    % 旁注说明
+    \node[below right, text width=3cm, scale=0.8] at (0,-0.4) {注: $t = \tan\frac{\alpha}{2}$};
+  \end{tikzpicture}
+}
+
+
+% ─────────────────────────────────────────────────────
+% 二、例题题干定义
+% ─────────────────────────────────────────────────────
+
+% 例题 1: 诱导公式的几何直观
+\newcommand{\qTrigInductionStem}{
+  借助单位圆的对称性，推导诱导公式 $\sin\left(\frac{\pi}{2}+\alpha\right) = \cos\alpha$ 与 $\cos\left(\frac{\pi}{2}+\alpha\right) = -\sin\alpha$ 的几何直观，并说明口诀“奇变偶不变，符号看象限”中各个词的数学物理意义。
+}
+
+% 例题 2: 两角和差公式的推导
+\newcommand{\qTrigAdditionDerivationStem}{
+  试分别使用“旋转直角坐标系法”与“向量点积法”推导两角和与差的三角公式：
+  \begin{enumerate}[label=(\arabic*), leftmargin=2em]
+    \item 旋转直角坐标系法：以 $\mathbf{e}_1 = (\cos\alpha, \sin\alpha)$ 与 $\mathbf{e}_2 = (-\sin\alpha, \cos\alpha)$ 为新轴，推导 $\cos(\alpha+\beta)$ 与 $\sin(\alpha+\beta)$。
+    \item 向量点积法：在标准直角坐标系中，通过计算单位向量 $\mathbf{u}=(\cos\alpha,\sin\alpha)$ 与 $\mathbf{v}=(\cos\beta,\sin\beta)$ 的点积，推导 $\cos(\alpha-\beta)$。
+  \end{enumerate}
+}
+
+% 例题 3: 二倍角、半角与降幂公式的推导
+\newcommand{\qTrigDoubleHalfStem}{
+  以两角和差公式为源头，依次完成下列衍生公式的推导，并指出它们在简化三角恒等式时的不同侧重点：
+  \begin{enumerate}[label=(\arabic*), leftmargin=2em]
+    \item 令 $\beta = \alpha$，推导正弦、余弦、正切的二倍角公式。
+    \item 利用余弦二倍角公式，推导正弦和余弦的降幂公式。
+    \item 通过角换元 $x = \frac{\alpha}{2}$，推导正弦、余弦、正切的半角公式。
+  \end{enumerate}
+}
+
+% 例题 4: 积化和差与和差化积公式的推导
+\newcommand{\qTrigProductSumStem}{
+  利用两角和差公式的对称性，完成积化和差与和差化积公式的推导：
+  \begin{enumerate}[label=(\arabic*), leftmargin=2em]
+    \item 将和角公式与差角公式相加或相减，推导四个积化和差公式。
+    \item 引入平均角与半差角换元 $x = \alpha+\beta$，$y = \alpha-\beta$，推导四个和差化积公式。
+  \end{enumerate}
+}
+
+% 例题 5: 辅助角公式的几何意义与代数推导
+\newcommand{\qTrigAuxiliaryStem}{
+  试推导高中阶段最常用的三角变形工具——辅助角公式 $a\sin x + b\cos x = \sqrt{a^2+b^2}\sin(x+\varphi)$（其中 $a,b$ 不同时为 0），并说明辅助角 $\varphi$ 的代数定义与几何确定方法。
+}
+
+% 例题 6: 万能公式与同角三角函数的基本关系
+\newcommand{\qTrigUniversalStem}{
+  探究万能公式（以半角正切 $t = \tan\frac{\alpha}{2}$ 表示 $\sin\alpha, \cos\alpha, \tan\alpha$）的代数与几何推导：
+  \begin{enumerate}[label=(\arabic*), leftmargin=2em]
+    \item 利用二倍角与同角平方关系 $\sin^2\frac{\alpha}{2}+\cos^2\frac{\alpha}{2}=1$，从代数上推导这三个公式。
+    \item 借助“万能直角三角形”图，说明该公式的几何快速记忆机制。
+    \item 延伸推导同角倒数平方关系式 $\frac{1}{\cos^2\theta} = 1 + \tan^2\theta$，并说明其在求导及化简中的妙用。
+  \end{enumerate}
+}
+
+
+% ─────────────────────────────────────────────────────
+% 三、别名映射（兼容模板与 topic_generator 骨架）
+% ─────────────────────────────────────────────────────
+\newcommand{\qOneStem}{\qTrigInductionStem}
+\newcommand{\qTwoStem}{\qTrigAdditionDerivationStem}
+\newcommand{\qThreeStem}{\qTrigDoubleHalfStem}
+\newcommand{\qFourStem}{\qTrigProductSumStem}
+\newcommand{\qFiveStem}{\qTrigAuxiliaryStem}
+\newcommand{\qSixStem}{\qTrigUniversalStem}

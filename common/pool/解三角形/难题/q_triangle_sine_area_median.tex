@@ -1,0 +1,86 @@
+% 难度：★★★ 难题
+\newcommand{\qTriangleSineAreaMedianStem}{%
+  在 \(\triangle ABC\) 中，已知 \(a \cos C + \sqrt{3} c \sin A = b + 2c\)。\\
+  （1）求角 \(A\) 的大小；\\
+  （2）设 \(D\) 为边 \(BC\) 上一点，且满足 \(AD = 1\)。\\
+  \quad (i) 若 \(AB = 2\)，\(AB \perp AD\)，求 \(AC\) 的长；\\
+  \quad (ii) 若 \(BD = DC\)，求 \(BC\) 的取值范围。%
+}
+
+\newcommand{\qTriangleSineAreaMedianSolution}{%
+  \textbf{（1）解：}
+  
+  由正弦定理将边化为角：
+  \[
+    \sin A \cos C + \sqrt{3} \sin C \sin A = \sin B + 2 \sin C
+  \]
+  因为 \(\sin B = \sin(A+C) = \sin A \cos C + \cos A \sin C\)，
+  
+  代入原式化简得：
+  \[
+    \sqrt{3} \sin A \sin C = \cos A \sin C + 2 \sin C
+  \]
+  因为在 \(\triangle ABC\) 中 \(\sin C > 0\)，两边同除以 \(\sin C\)，得：
+  \[
+    \sqrt{3} \sin A - \cos A = 2
+  \]
+  提取辅助角：
+  \[
+    2\left(\frac{\sqrt{3}}{2} \sin A - \frac{1}{2} \cos A\right) = 2 \implies \sin(A - 30^\circ) = 1
+  \]
+  又 \(A \in (0^\circ, 180^\circ)\)，解得 \(A = 120^\circ\)。
+
+  \textbf{（2）(i)解：}
+  
+  已知 \(c = 2\)，\(AD = 1\)，角 \(A\) 为 \(120^\circ\)。
+  因为 \(AB \perp AD\)，所以 \(\angle DAB = 90^\circ\)，从而 \(\angle DAC = 30^\circ\)。
+  
+  利用面积分割：
+  \[
+    S_{\triangle ABC} = S_{\triangle ABD} + S_{\triangle ADC}
+  \]
+  展开得：
+  \[
+    \frac{1}{2}bc \sin 120^\circ = \frac{1}{2}c \cdot AD \cdot \sin 90^\circ + \frac{1}{2}b \cdot AD \cdot \sin 30^\circ
+  \]
+  代入已知数据：
+  \[
+    \frac{1}{2} \cdot b \cdot 2 \cdot \frac{\sqrt{3}}{2} = \frac{1}{2} \cdot 2 \cdot 1 \cdot 1 + \frac{1}{2} \cdot b \cdot 1 \cdot \frac{1}{2}
+  \]
+  化简得 \(\dfrac{\sqrt{3}}{2}b = 1 + \dfrac{1}{4}b\)，
+  
+  解得 \(b = \dfrac{8\sqrt{3} + 4}{11}\)。即 \(AC\) 的长为 \(\dfrac{8\sqrt{3} + 4}{11}\)。
+
+  \textbf{（2）(ii)解：}
+  
+  因为 \(BD = DC\)，\(AD\) 为中线。利用向量加法法则：
+  \[
+    \overrightarrow{AD} = \frac{1}{2}(\overrightarrow{AB} + \overrightarrow{AC})
+  \]
+  两边平方：
+  \[
+    \overrightarrow{AD}^2 = \frac{1}{4}\left(\overrightarrow{AB}^2 + \overrightarrow{AC}^2 + 2\overrightarrow{AB} \cdot \overrightarrow{AC}\right)
+  \]
+  展开后得到：
+  \[
+    1 = \frac{1}{4}(c^2 + b^2 + 2bc \cos 120^\circ) \implies b^2 + c^2 - bc = 4 \quad \text{（式1）}
+  \]
+  
+  在 \(\triangle ABC\) 中由余弦定理：
+  \[
+    a^2 = b^2 + c^2 - 2bc \cos 120^\circ = b^2 + c^2 + bc \quad \text{（式2）}
+  \]
+  由（式1）得 \(b^2 + c^2 = 4 + bc\)，代入（式2）得 \(a^2 = 4 + 2bc\)。
+  
+  根据基本不等式：
+  \[
+    b^2 + c^2 \ge 2bc
+  \]
+  （当且仅当 \(b=c\) 时取等号），
+  所以 \(4 + bc \ge 2bc \implies bc \le 4\)。
+  又因为 \(bc > 0\)，所以 \(bc \in (0, 4]\)。
+  
+  从而 \(a^2 = 4 + 2bc \in (4, 12]\)，
+  开方得 \(a \in (2, 2\sqrt{3}]\)。
+  所以 \(BC\) 的取值范围为 \((2, 2\sqrt{3}]\)。%
+}

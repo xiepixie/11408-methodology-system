@@ -1,0 +1,122 @@
+% =====================================================
+% 题型：立体几何解答题 (q_solid_practice_isosceles_tetrahedron.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidIsoscelesTetrahedronStem}{%
+  已知在三棱锥 $A-BCD$ 中，其三组对棱分别相等，即 $AB = CD = \sqrt{5}$，$AC = BD = \sqrt{10}$，$AD = BC = \sqrt{13}$。
+  \begin{enumerate}[label=(\arabic*)]
+    \item 证明：以该三棱锥的四个顶点为顶点，可以构造一个长方体，使得该三棱锥的所有棱均为长方体的面对角线；
+    \item 求该三棱锥 $A-BCD$ 的体积；
+    \item 求该三棱锥外接球的表面积。
+  \end{enumerate}%
+}
+
+\newcommand{\qSolidIsoscelesTetrahedronFigure}[1][1.3]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    % 长方体顶点坐标
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (2.2,-0.4);
+    \coordinate (D) at (0.8,0.6);
+    \coordinate (C) at (3.0,0.2);
+    
+    \coordinate (A1) at (0,2.2);
+    \coordinate (B1) at (2.2,1.8);
+    \coordinate (D1) at (0.8,2.8);
+    \coordinate (C1) at (3.0,2.4);
+    
+    % 1. 先用细虚线/细淡实线画长方体辅助框
+    \draw[dashed, gray!50, thin] (A) -- (D);
+    \draw[dashed, gray!50, thin] (C) -- (D);
+    \draw[dashed, gray!50, thin] (D) -- (D1);
+    
+    \draw[gray!50, thin] (A) -- (B) -- (C) -- (C1) -- (B1) -- (A1) -- cycle;
+    \draw[gray!50, thin] (B) -- (B1);
+    \draw[gray!50, thin] (A1) -- (D1) -- (C1);
+    
+    % 2. 绘制嵌入的对棱相等三棱锥 A-C-B1-D1
+    % 隐藏的棱 (dashed, thick)
+    \draw[dashed, thick, black] (A) -- (C);
+    \draw[dashed, thick, black] (A) -- (D1);
+    \draw[dashed, thick, black] (C) -- (D1);
+    
+    % 可见的棱 (solid, thick)
+    \draw[thick, black] (A) -- (B1);
+    \draw[thick, black] (C) -- (B1);
+    \draw[thick, black] (B1) -- (D1);
+    
+    % 顶点标记 (对棱相等三棱锥的四个顶点为 A, C, B1, D1)
+    \node[below left] at (A) {\small $A$};
+    \node[below] at (B) {\small \color{gray}$B$};
+    \node[right] at (C) {\small $C$};
+    \node[above right] at (D) {\small \color{gray}$D$};
+    \node[left] at (A1) {\small \color{gray}$A_1$};
+    \node[right] at (B1) {\small $B_1$};
+    \node[above] at (D1) {\small $D_1$};
+    \node[above right] at (C1) {\small \color{gray}$C_1$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidIsoscelesTetrahedronAnswer}{%
+  (1) 见解析； (2) $2$； (3) $14\pi$。
+}
+
+\newcommand{\qSolidIsoscelesTetrahedronSolution}{%
+  (1) 证明：
+  设长方体的三条棱长分别为 $x, y, z$。
+  由于三棱锥的顶点可以作为长方体不共棱的四个顶点，则该三棱锥的六条棱刚好对应长方体六个面的面对角线。
+  因此，我们可以列出方程组：
+  \[
+  \begin{cases}
+    x^2 + y^2 = 5 \\
+    y^2 + z^2 = 10 \\
+    z^2 + x^2 = 13
+  \end{cases}
+  \]
+  三式相加，得 $2(x^2 + y^2 + z^2) = 5 + 10 + 13 = 28$，即 $x^2 + y^2 + z^2 = 14$。
+  解得：
+  \[
+  \begin{cases}
+    z^2 = 14 - 5 = 9 \implies z = 3 \\
+    x^2 = 14 - 10 = 4 \implies x = 2 \\
+    y^2 = 14 - 13 = 1 \implies y = 1
+  \end{cases}
+  \]
+  因为方程组存在唯一正实数解 $x=2, y=1, z=3$，
+  所以可以构造一个棱长分别为 $2, 1, 3$ 的长方体，使得该三棱锥的所有棱均成为该长方体的面对角线。
+  
+  \medskip
+  (2) 解：
+  设构造出的长方体体积为 $V_{\text{长方体}} = xyz = 2 \times 1 \times 3 = 6$。
+  对棱相等三棱锥的体积 $V$ 可以通过“割补法”求得。
+  长方体切掉四个角上的直角三棱锥后，即可得到该三棱锥。
+  每个角上的直角三棱锥体积为：
+  \[ V_{\text{角}} = \frac{1}{6}xyz = \frac{1}{6} \times 6 = 1. \]
+  共有 $4$ 个这样的直角三棱锥，因此：
+  \[ V = V_{\text{长方体}} - 4 V_{\text{角}} = 6 - 4 \times 1 = 2. \]
+  所以三棱锥 $A-BCD$ 的体积为 $2$。
+
+  \medskip
+  (3) 解：
+  由于对棱相等三棱锥嵌入在长方体中，其四个顶点均在长方体的顶点上，
+  因此三棱锥的外接球与该长方体的外接球是同一个球。
+  设外接球的半径为 $R$。长方体的体对角线长即为球的直径 $2R$：
+  \[ (2R)^2 = x^2 + y^2 + z^2 = 14 \implies R^2 = \frac{14}{4} = \frac{7}{2}. \]
+  所以外接球的表面积为：
+  \[ S = 4\pi R^2 = 4\pi \times \frac{7}{2} = 14\pi. \]
+  所以该三棱锥外接球的表面积为 $14\pi$。
+}
+
+\newcommand{\qSolidIsoscelesTetrahedronDiagnosis}{%
+  考查“对棱相等三棱锥”通过“长方体嵌入法（割补法）”进行空间降维与模型转化的几何直觉，是避免复杂空间向量计算的经典几何范例。
+}
+
+\newcommand{\qSolidIsoscelesTetrahedronTeachingNotes}{%
+  \item \textbf{重难点提示}：
+    \begin{itemize}
+      \item 核心思想：遇到“对棱相等”的三棱锥，首选“长方体嵌入法”。
+      \item 体积计算：利用“割补法”，三棱锥体积为长方体体积的 $\dfrac{1}{3}$（即 $V = xyz - 4 \times \dfrac{1}{6}xyz = \dfrac{1}{3}xyz$），这个比例公式必须让学生记住。
+      \item 外接球问题：三棱锥外接球即长方体外接球，直接利用体对角线公式 $4R^2 = x^2 + y^2 + z^2$ 求解，非常直观高效。
+    \end{itemize}
+}

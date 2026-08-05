@@ -1,0 +1,131 @@
+% =====================================================
+% 题型：球直径约束下三棱锥体积选择题
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidPyramidDiameterVolumeStem}{%
+  已知三棱锥 $S-ABC$ 的所有顶点都在球 $O$ 的表面上，$\triangle ABC$ 是边长为 $1$ 的正三角形，$SC$ 为球 $O$ 的直径，且 $SC=2$，则此三棱锥的体积为%
+}
+
+\newcommand{\qSolidPyramidDiameterVolumeOptions}{%
+  \mcoptions[4]{$\dfrac{1}{4}$}{$\dfrac{\sqrt2}{4}$}{$\dfrac{\sqrt2}{6}$}{$\dfrac{\sqrt2}{12}$}%
+}
+
+\newcommand{\qSolidPyramidDiameterVolumeFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    \coordinate (C) at (0,0);
+    \coordinate (A) at (2.0,-0.35);
+    \coordinate (B) at (1.05,0.95);
+    \coordinate (S) at (1.45,2.65);
+    \coordinate (H) at (1.15,0.22);
+
+    \draw[dashed, thick, gray!75] (C) -- (B);
+    \draw[thick] (C) -- (A) -- (B);
+    \draw[thick] (S) -- (A);
+    \draw[thick] (S) -- (B);
+    \draw[dashed, thick] (S) -- (C);
+
+    \ifteacher
+      \draw[dashed, semithick, gray] (S) -- (H);
+      \fill (H) circle (1.1pt) node[below] {\small $H$};
+    \fi
+
+    \node[below left] at (C) {\small $C$};
+    \node[below right] at (A) {\small $A$};
+    \node[right] at (B) {\small $B$};
+    \node[above] at (S) {\small $S$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidPyramidDiameterVolumeAnswer}{%
+  C%
+}
+
+\newcommand{\qSolidPyramidDiameterVolumeSolution}{%
+  因为 $SC$ 是球的直径，且 $A,B$ 都在球面上，
+  所以
+  \[
+    SA\perp AC,\qquad SB\perp BC.
+  \]
+
+  又 $SC=2$，$AC=BC=1$，在直角三角形 $SAC$ 与 $SBC$ 中，
+  \[
+    SA=SB=\sqrt{SC^2-AC^2}=\sqrt3.
+  \]
+
+  下面求点 $S$ 到平面 $ABC$ 的距离。
+  设 $H$ 是 $S$ 在平面 $ABC$ 内的射影。
+  由于 $SA=SB$，所以 $H$ 在 $AB$ 的垂直平分线上；
+  又因为 $SC=2$ 且 $AC=BC=1$，可用坐标快速定位高度。
+
+  取平面 $ABC$ 为 $xy$ 平面，令
+  \[
+    C(0,0,0),\quad A(1,0,0),\quad B\left(\frac12,\frac{\sqrt3}{2},0\right).
+  \]
+
+  设 $S(x,y,z)$。
+  由
+  \[
+    SC^2=4,\quad SA^2=3,\quad SB^2=3
+  \]
+  得
+  \[
+    x^2+y^2+z^2=4,
+  \]
+  \[
+    (x-1)^2+y^2+z^2=3,
+  \]
+  \[
+    \left(x-\frac12\right)^2+\left(y-\frac{\sqrt3}{2}\right)^2+z^2=3.
+  \]
+
+  前两式相减得 $x=1$。
+  再与第三式相减，得
+  \[
+    x+\sqrt3y=2,
+  \]
+  所以 $y=\dfrac{1}{\sqrt3}$。
+
+  因此
+  \[
+    z^2
+    =
+    4-1-\frac13
+    =
+    \frac{8}{3},
+    \qquad
+    z=\frac{2\sqrt6}{3}.
+  \]
+
+  底面 $\triangle ABC$ 的面积为
+  \[
+    S_{\triangle ABC}=\frac{\sqrt3}{4}.
+  \]
+
+  所以三棱锥体积为
+  \[
+    V
+    =
+    \frac13\cdot \frac{\sqrt3}{4}\cdot \frac{2\sqrt6}{3}
+    =
+    \frac{\sqrt2}{6}.
+  \]
+
+  故选 C。
+}
+
+\newcommand{\qSolidPyramidDiameterVolumeDiagnosis}{%
+  本题不是单纯的球截面套公式，而是“直径所对圆周角为直角”的空间版本。学生若只知道球心截面公式，容易不知道如何从 $SC$ 是直径推出 $SA\perp AC$、$SB\perp BC$，也容易把求体积的关键误判为求球心位置。%
+}
+
+\newcommand{\qSolidPyramidDiameterVolumeTeachingNotes}{%
+  \item \textbf{处理方式：精讲压轴。}
+    放在章节末尾，用来把“球的直径性质”和“三棱锥体积”连接起来。
+  \item \textbf{讲解节奏：}
+    先用球直径性质得到两个直角三角形，再求侧棱长，最后选择坐标法只服务于求高。
+  \item \textbf{关键追问：}
+    为什么 $SC$ 是直径时，$\angle SAC$ 与 $\angle SBC$ 都是直角？
+  \item \textbf{落实目标：}
+    学生要明确：坐标法不是替代几何理解，而是在已经读出几何约束后，用来稳稳求出高度。
+}

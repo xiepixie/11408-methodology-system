@@ -1,0 +1,92 @@
+% =====================================================
+% 题型：球内接圆柱侧面积最值填空题 (2011 四川 理 15)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidSphereInscribedCylinderMaxAreaStem}{%
+  如图，半径为 $R$ 的球 $O$ 中有一内接圆柱。当圆柱的侧面积最大时，球的表面积与该圆柱的侧面积之差是 \blank{2.5cm}.%
+}
+
+\newcommand{\qSolidSphereInscribedCylinderMaxAreaFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    \coordinate (O) at (0,0);
+    \coordinate (T) at (0,0.85);
+    \coordinate (P) at (1.2,0.85);
+
+    \draw[thick] (O) circle (1.5);
+    \draw[thick] (-1.2,0.85) arc (180:360:1.2 and 0.25);
+    \draw[dashed] (1.2,0.85) arc (0:180:1.2 and 0.25);
+    \draw[thick] (-1.2,-0.85) arc (180:360:1.2 and 0.25);
+    \draw[dashed] (1.2,-0.85) arc (0:180:1.2 and 0.25);
+    \draw[thick] (-1.2,0.85) -- (-1.2,-0.85);
+    \draw[thick] (1.2,0.85) -- (1.2,-0.85);
+
+    \draw[dashed, semithick, gray] (O) -- (P);
+    \ifteacher
+      \draw[dashed, semithick, gray] (O) -- (T);
+      \draw[dashed, semithick, gray] (T) -- (P);
+      \node[left] at ($(O)!0.5!(T)$) {\small $\frac h2$};
+      \node[above] at ($(T)!0.5!(P)$) {\small $r$};
+    \fi
+
+    \fill (O) circle (1.2pt) node[left] {\small $O$};
+    \node[right] at ($(O)!0.5!(P)$) {\small $R$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidSphereInscribedCylinderMaxAreaAnswer}{$2\pi R^2$}
+
+\newcommand{\qSolidSphereInscribedCylinderMaxAreaSolution}{%
+  设内接圆柱底面半径为 $r$，高为 $h$。
+  由轴截面模型可得
+  \[
+    r^2+\left(\frac h2\right)^2=R^2.
+  \]
+
+  令 $x=\dfrac h2$，则 $r^2=R^2-x^2$。
+  圆柱侧面积为
+  \[
+    S_{\text{侧}}=2\pi rh=4\pi x\sqrt{R^2-x^2}.
+  \]
+
+  要使 $S_{\text{侧}}$ 最大，只需使
+  \[
+    x^2(R^2-x^2)
+  \]
+  最大。
+  由基本不等式，
+  \[
+    x^2(R^2-x^2)
+    \le
+    \left(\frac{x^2+R^2-x^2}{2}\right)^2
+    =
+    \frac{R^4}{4},
+  \]
+  等号当且仅当 $x^2=R^2-x^2$，即 $x=\dfrac{R}{\sqrt2}$ 时成立。
+
+  此时
+  \[
+    S_{\text{侧},\max}
+    =
+    4\pi\cdot\frac{R}{\sqrt2}\cdot\frac{R}{\sqrt2}
+    =
+    2\pi R^2.
+  \]
+
+  球的表面积为 $4\pi R^2$，所以所求差为
+  \[
+    4\pi R^2-2\pi R^2=2\pi R^2.
+  \]%
+}
+
+\newcommand{\qSolidSphereInscribedCylinderMaxAreaDiagnosis}{%
+  本题核心不是记结论，而是把空间最值转成平面截面中的两个变量关系。学生若直接猜“最大时高等于直径”或“半径越大越好”，说明还没有建立半径与半高互相制约的模型。%
+}
+
+\newcommand{\qSolidSphereInscribedCylinderMaxAreaTeachingNotes}{%
+  \item \textbf{精讲候选}：适合放在圆柱内接球模型之后，训练“建模 + 最值”的完整链条。
+  \item \textbf{关键追问}：侧面积 $2\pi rh$ 中，$r$ 和 $h$ 能不能同时最大？为什么？
+  \item \textbf{落实建议}：要求学生亲手画轴截面，并把 $h$ 改写成 $2x$，避免公式中反复出现 $\frac h2$。
+}
+

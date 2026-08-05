@@ -1,0 +1,124 @@
+% 难度：★★★ 难题
+% 知识点：立体几何、平行关系、截面面积
+
+\newcommand{\qSolidPrismParallelSectionAreaStem}{%
+已知正三棱柱 $ABC-A_1B_1C_1$ 的底面边长为 $4$，侧棱长为 $6$，$M,N$ 分别为 $BB_1,CC_1$ 的中点。若点 $P$ 是三棱柱内部及其表面上的动点，且 $MP\parallel \text{平面 }AB_1N$，则动点 $P$ 的轨迹面积为 \blank{2cm}。
+}
+
+\newcommand{\qSolidPrismParallelSectionAreaOptions}{%
+A. $5\sqrt{3}$ \hfill B. $5$ \hfill C. $\sqrt{39}$ \hfill D. $\sqrt{26}$
+}
+
+\newcommand{\qSolidPrismParallelSectionAreaFigure}[1][1]{%
+\begin{tikzpicture}[scale=#1, line join=round, line cap=round, >=stealth]
+  % Define coordinates
+  \coordinate (A) at (0,0);
+  \coordinate (B) at (-1.5,-1);
+  \coordinate (C) at (2,-1);
+  \coordinate (A1) at (0,3.5);
+  \coordinate (B1) at (-1.5,2.5);
+  \coordinate (C1) at (2,2.5);
+  
+  \coordinate (M) at ($(B)!0.5!(B1)$);
+  \coordinate (N) at ($(C)!0.5!(C1)$);
+
+  % Draw visible edges
+  \draw[thick] (B) -- (C) -- (C1) -- (A1) -- (B1) -- cycle;
+  \draw[thick] (B1) -- (C1);
+  
+  % Draw hidden edges
+  \draw[thick, dashed, gray] (A) -- (B);
+  \draw[thick, dashed, gray] (A) -- (C);
+  \draw[thick, dashed, gray] (A) -- (A1);
+  
+  % Points M, N
+  \fill (M) circle (1.5pt) node[left] {$M$};
+  \fill (N) circle (1.5pt) node[right] {$N$};
+
+  % Labels
+  \node[above] at (A1) {$A_1$};
+  \node[left] at (B1) {$B_1$};
+  \node[right] at (C1) {$C_1$};
+  \node[above left] at (A) {$A$};
+  \node[left] at (B) {$B$};
+  \node[right] at (C) {$C$};
+
+  \ifteacher
+    % Draw cross section MTC
+    \coordinate (T) at ($(A)!0.5!(B)$);
+    
+    \fill[blue!10, opacity=0.6] (M) -- (C) -- (T) -- cycle;
+    \draw[dashed, blue, thick] (M) -- (T) -- (C);
+    \draw[thick, blue] (M) -- (C);
+    
+    \fill (T) circle (1.5pt) node[left] {$T$};
+    
+    % Draw plane AB1N
+    \draw[dashed, red, thick] (A) -- (B1);
+    \draw[dashed, red, thick] (A) -- (N);
+    \draw[thick, red] (B1) -- (N);
+  \fi
+\end{tikzpicture}
+}
+
+\newcommand{\qSolidPrismParallelSectionAreaAnswer}{%
+C
+}
+
+\newcommand{\qSolidPrismParallelSectionAreaSolution}{%
+\textbf{法一（几何综合法）：}
+由于动点 $P$ 满足 $MP \parallel \text{平面 }AB_1N$，故 $P$ 的轨迹必定是过点 $M$ 且平行于平面 $AB_1N$ 的平面与三棱柱的截面。
+我们在三棱柱表面寻找与平面 $AB_1N$ 平行的平面：
+（1）在侧面 $ABB_1A_1$ 中，过 $M$ 作 $MT \parallel B_1A$ 交 $AB$ 于 $T$。因为 $M$ 是 $BB_1$ 的中点，所以 $T$ 必为 $AB$ 的中点。
+（2）在侧面 $BCC_1B_1$ 中，连接 $MC$。由 $M, N$ 分别是 $BB_1, CC_1$ 中点可知，$\vec{B_1N} = \vec{B_1C_1} + \vec{C_1N} = \vec{BC} + \frac{1}{2}\vec{C_1C}$。
+而 $\vec{MC} = \vec{MB} + \vec{BC} = \frac{1}{2}\vec{B_1B} + \vec{BC}$。
+由于 $\vec{B_1B} = \vec{C_1C}$，所以 $\vec{B_1N} = \vec{MC}$，即 $MC \parallel B_1N$。
+（3）因为 $MT \parallel B_1A$，$MC \parallel B_1N$，且 $MT \cap MC = M$，$B_1A \cap B_1N = B_1$，
+所以平面 $MTC \parallel \text{平面 }AB_1N$。
+故动点 $P$ 的轨迹就是截面 $\triangle MTC$。
+
+计算 $\triangle MTC$ 的面积：
+已知底面是边长为 $4$ 的正三角形，侧棱长为 $6$。
+在 $\triangle TBC$ 中，$TB = 2, BC = 4, \angle TBC = 60^\circ$。
+由余弦定理：$TC = \sqrt{2^2 + 4^2 - 2 \times 2 \times 4 \times \cos 60^\circ} = \sqrt{4 + 16 - 8} = 2\sqrt{3}$。
+在 $\text{Rt}\triangle TBM$ 中，$TB = 2, BM = 3 \Rightarrow TM = \sqrt{2^2 + 3^2} = \sqrt{13}$。
+在 $\text{Rt}\triangle CBM$ 中，$CB = 4, BM = 3 \Rightarrow CM = \sqrt{4^2 + 3^2} = 5$。
+观察三边长发现：$TM^2 + TC^2 = 13 + 12 = 25 = CM^2$。
+所以 $\triangle MTC$ 是以 $\angle MTC = 90^\circ$ 为直角的直角三角形。
+面积 $S = \frac{1}{2} \times TM \times TC = \frac{1}{2} \times \sqrt{13} \times 2\sqrt{3} = \sqrt{39}$。
+
+\textbf{法二（空间向量法）：}
+以 $AB$ 中点 $O$ 为原点，$OB$ 所在直线为 $x$ 轴，$OC$ 所在直线为 $y$ 轴，平行于侧棱向上的方向为 $z$ 轴，建立空间直角坐标系。
+则 $B(2, 0, 0)$，$A(-2, 0, 0)$，$C(0, 2\sqrt{3}, 0)$。
+因为侧棱长为 $6$，所以 $A_1(-2, 0, 6)$，$B_1(2, 0, 6)$。
+$M$ 为 $BB_1$ 中点，则 $M(2, 0, 3)$。
+$N$ 为 $CC_1$ 中点，则 $N(0, 2\sqrt{3}, 3)$。
+求平面 $AB_1N$ 的法向量：
+$\vec{AB_1} = (4, 0, 6)$，$\vec{AN} = (2, 2\sqrt{3}, 3)$。
+设法向量为 $\vec{n} = (x, y, z)$，得 $\begin{cases} 4x + 6z = 0 \\ 2x + 2\sqrt{3}y + 3z = 0 \end{cases}$。
+取 $z = 2$，得 $x = -3, y = 0$，即 $\vec{n} = (-3, 0, 2)$。
+过点 $M(2, 0, 3)$ 且平行于平面 $AB_1N$ 的平面 $\alpha$ 的方程为：
+$-3(x - 2) + 0 + 2(z - 3) = 0 \Rightarrow -3x + 2z = 0$。
+联立底面方程 $z=0$，得 $x=0$。结合底面图形范围，交线段端点为 $T(0,0,0)$ 和 $C(0, 2\sqrt{3}, 0)$。
+故截面为 $\triangle MTC$，其余计算同法一。
+}
+
+\newcommand{\qSolidPrismParallelSectionAreaDiagnosis}{%
+\teachblock{学生问题}
+1. \textbf{截面找不到}：无法将“$MP \parallel \text{平面}AB_1N$”转化为过 $M$ 点且与该平面平行的截面；
+2. \textbf{交点不会求}：不会利用平面的性质或空间向量去求截面多边形的各个顶点；
+3. \textbf{面积计算繁琐}：算出三边长后没有意识到是直角三角形，硬套海伦公式导致计算出错。
+}
+
+\newcommand{\qSolidPrismParallelSectionAreaTeachingNotes}{%
+\teachblock{课堂处理}
+1. \textbf{核心模型建立}：向学生强调，“点线平行”、“点面平行”等动点轨迹问题，本质上就是求解**平行截面**；
+2. \textbf{找截面法一（几何法）}：过 $M$ 找两条与平面 $AB_1N$ 平行的相交直线。
+\begin{itemize}
+    \item 在侧面 $ABB_1A_1$ 内，过 $M$ 作 $MT \parallel B_1A$ 交 $AB$ 于 $T$，由于 $M$ 为 $BB_1$ 中点，故 $T$ 为 $AB$ 中点；
+    \item 在侧面 $BCC_1B_1$ 内，过 $M$ 作 $MC \parallel B_1N$ （因为 $\vec{B_1N}$ 相当于向右走 $BC$、向下走半条侧棱，从 $M$ 同样操作刚好到达 $C$）；
+    \item 从而平面 $MTC \parallel \text{平面 }AB_1N$，截面即为 $\triangle MTC$。
+\end{itemize}
+3. \textbf{找截面法二（坐标法，推荐）}：建系求出法向量 $\vec{n}$，直接写出截面方程 $3x+2z=0$，联立各面方程秒杀截面顶点，降低对空间想象力的极高要求；
+4. \textbf{提醒检查}：求出三角形边长后，养成先看一眼平方和的习惯，不要盲目算余弦定理或海伦公式。
+}

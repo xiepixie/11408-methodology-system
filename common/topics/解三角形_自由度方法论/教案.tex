@@ -1,0 +1,687 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{../../../common/ipara}
+\input{questions.tex}
+\usetikzlibrary{positioning}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 解三角形\_自由度方法论 完全教案}
+\rhead{\small 数学一对一培优}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 解三角形：双分类体系与结构化解题 完全教案}\\
+  \vspace{0.5em}
+  时长：120 分钟
+\end{center}
+
+\section{教学框架、双分类体系与符号规范}
+
+\teachblock{一、 常用数学符号及其几何含义规范}{%
+向学生明确说明各数学符号的准确几何含义：
+\begin{itemize}[itemsep=0.2em]
+  \item \(A, B, C\)：\quad 三角形的三个内角，取值区间为 \((0,\pi)\)，满足 \(A+B+C = \pi\)；
+  \item \(a, b, c\)：\quad 角 \(A, B, C\) 所对的三条对边长；
+  \item \(R\)：\quad 三角形外接圆半径，代表整体大小的“外接圆尺度自由度”；
+  \item \(r\)：\quad 三角形内切圆半径，代表整体大小的“内切圆尺度自由度”；
+  \item \(p\)：\quad 三角形半周长，定义为 \(p = \frac{a+b+c}{2}\)；\(2p = a+b+c\) 为周长；
+  \item \(m_a\)：\quad 边 \(a\) 上的中线长；\(h_a = b\sin C = c\sin B\) 为边 \(a\) 上的高线长；
+  \item \(\text{DOF}\)：\quad 自由度（Degree of Freedom），指完全确定三角形几何状态所需最少独立变量数。
+\end{itemize}
+}
+
+\teachblock{二、 双分类体系：操作层与结构层的并重}{%
+解三角形教学必须同时建立两套分类体系，二者分工明确：
+\begin{itemize}[itemsep=0.3em]
+  \item \textbf{第一套：按“已知量组合”分类（操作层）}：\\
+    解答“题目给了哪些条件，\textbf{我应该从哪条定理开始}”；
+  \item \textbf{第二套：按“自由度（2个形状 + 1个尺度）”分类（结构层）}：\\
+    解答“\textbf{为什么这些条件足以唯一确定三角形}”的几何物理本质。
+\end{itemize}
+}
+
+\begin{center}
+\qTriangleDofScaleSlideFigure[0.9]
+\end{center}
+
+\teachblock{三、 三层教学架构}{%
+\begin{enumerate}[label=\arabic*., itemsep=0.3em]
+  \item \textbf{第一层（操作层）}：看条件选工具（余弦先上 / 正弦到底 / 分支讨论）；
+  \item \textbf{第二层（结构层）}：识别条件在限制形状、尺度还是两者兼有；
+  \item \textbf{第三层（坐标层）}：主动选择最自然的坐标系 \((a,b,c)\)、\((A,B,R)\) 或 \((A,B,r)\)。
+\end{enumerate}
+}
+
+\newpage
+
+\section{第一套分类：按已知量组合分类 (操作层入口)}
+
+每一类已知量组合均明确【已知量是什么】与【目标要求什么】，指导起手第一步公式。
+
+\vspace{0.5em}
+
+\teachblock{1. SSS 型（已知三边）}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{已知量}：三条边长 \(a, b, c\)；
+  \item \textbf{目标要求}：三个内角 \(A, B, C\)，或面积 \(S\)，或判断三角形形状（锐/直/钝角）；
+  \item \textbf{起手公式}：余弦定理求角：
+    \[
+    \cos A = \frac{b^2+c^2-a^2}{2bc}, \qquad S = \sqrt{p(p-a)(p-b)(p-c)} \quad (\text{海伦公式})
+    \]
+  \item \textbf{解题口诀}：\textit{三边求角，余弦当家}。
+\end{itemize}
+}
+
+\vspace{0.3em}
+
+\teachblock{2. SAS 型（已知两边及夹角）}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{已知量}：两条边长 \(b, c\) 及其夹角 \(A\)；
+  \item \textbf{目标要求}：第三条边长 \(a\)，或剩余内角 \(B, C\)；
+  \item \textbf{起手公式}：先用余弦定理求第三边 \(a\)：
+    \[
+    a = \sqrt{b^2+c^2-2bc\cos A}
+    \]
+    再用正弦定理求剩余角：\(\sin B = \frac{b\sin A}{a}\)；
+  \item \textbf{解题口诀}：\textit{两边夹角，余弦先上}。
+\end{itemize}
+}
+
+\vspace{0.3em}
+
+\teachblock{3. ASA / AAS 型（已知两角及一边）}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{已知量}：两个内角 \(A, B\) 及任意一条边长（如 \(a\)）；
+  \item \textbf{目标要求}：第三个内角 \(C\)，或剩余两边长 \(b, c\)；
+  \item \textbf{起手公式}：先求第三角 \(C = \pi - A - B\)，再用正弦定理：
+    \[
+    b = \frac{a\sin B}{\sin A}, \qquad c = \frac{a\sin C}{\sin A}
+    \]
+  \item \textbf{解题口诀}：\textit{两角一边，正弦到底}。
+\end{itemize}
+}
+
+\vspace{0.3em}
+
+\teachblock{4. SSA 型（已知两边及其中一边的对角）}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{已知量}：两条边长 \(a, b\) 以及边 \(a\) 的对角 \(A\)（注意：\(A\) 非 \(a,b\) 的夹角）；
+  \item \textbf{目标要求}：内角 \(B\) 的大小，或第三边长 \(c\)，或讨论构成三角形解的个数（0/1/2个）；
+  \item \textbf{起手公式}：用正弦定理求角 \(B\) 的正弦值：
+    \[
+    \sin B = \frac{b\sin A}{a}
+    \]
+    分情况讨论 \(B = \theta\) 或 \(B = \pi - \theta\)（须满足 \(A+B < \pi\)）；
+  \item \textbf{解题口诀}：\textit{两边对角，分支讨论}。
+\end{itemize}
+}
+
+\vspace{0.3em}
+
+\teachblock{5. AAA 型（已知三个角）}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{已知量}：三个内角 \(A, B, C\)（满足 \(A+B+C = \pi\)）；
+  \item \textbf{目标要求}：三边长度比例 \(a : b : c\)；
+  \item \textbf{起手公式}：由正弦定理得 \(a : b : c = \sin A : \sin B : \sin C\)（缺尺度量，不能求具体边长）；
+  \item \textbf{解题口诀}：\textit{三角已知，只有形状}。
+\end{itemize}
+}
+
+\newpage
+
+\section{第二套分类：按自由度与自然坐标分类 (结构层)}
+
+一个三角形在几何上被\textbf{2 个形状自由度 \((A,B)\)} 和 \textbf{1 个尺度自由度 \(\lambda\)} 完全决定：
+\[
+\boxed{\text{三角形} = \text{形状自由度 }(A,B) + \text{尺度自由度 }\lambda}
+\]
+
+\subsection{\((A,B,R)\) 外接圆坐标系统（最自然坐标系）}
+
+\teachblock{\((A,B,R)\) 坐标系推导}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{已知量}：两个内角 \(A, B\) 与外接圆半径 \(R\)；
+  \item \textbf{目标要求}：第三角 \(C\) 以及三边具体长度 \(a, b, c\)；
+  \item \textbf{计算步骤与公式}：
+    \[
+    C = \pi - A - B
+    \]
+    \[
+    a = 2R\sin A, \qquad b = 2R\sin B, \qquad c = 2R\sin C
+    \]
+\end{itemize}
+}
+
+\begin{center}
+\qTriangleDofOutcircleFigure[0.9]
+\end{center}
+
+\subsection{\((A,B,r)\) 内切圆坐标系统}
+
+\teachblock{\((A,B,r)\) 坐标系求解步骤}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{已知量}：两个内角 \(A, B\) 与内切圆半径 \(r\)；
+  \item \textbf{目标要求}：三边具体长度 \(a, b, c\) 或外接圆半径 \(R\)；
+  \item \textbf{计算步骤与公式}：
+    \[
+    C = \pi - A - B
+    \]
+    由切线段公式直接求三边：
+    \[
+    a = r\left(\cot\frac{B}{2} + \cot\frac{C}{2}\right), \quad
+    b = r\left(\cot\frac{C}{2} + \cot\frac{A}{2}\right), \quad
+    c = r\left(\cot\frac{A}{2} + \cot\frac{B}{2}\right)
+    \]
+    或先求外接圆半径 \(R\)：
+    \[
+    R = \frac{r}{4\sin\frac{A}{2}\sin\frac{B}{2}\sin\frac{C}{2}}
+    \]
+\end{itemize}
+}
+
+\teachblock{核心公式完整推导：\(r = 4R\sin\frac{A}{2}\sin\frac{B}{2}\sin\frac{C}{2}\)}{%
+\textbf{【推导路线一：面积桥梁法】}
+\begin{enumerate}[label=\arabic*., itemsep=0.3em]
+  \item 联立三角形面积公式的两种表达：
+    \[
+    S = rp = \frac{abc}{4R} \implies r = \frac{abc}{4Rp}
+    \]
+  \item 由正弦定理边角互化，将分子 \(abc\) 展开：
+    \[
+    a = 2R\sin A = 4R\sin\frac{A}{2}\cos\frac{A}{2}
+    \]
+    \[
+    abc = 64 R^3 \sin\frac{A}{2}\cos\frac{A}{2} \sin\frac{B}{2}\cos\frac{B}{2} \sin\frac{C}{2}\cos\frac{C}{2}
+    \]
+  \item 将半周长 \(p = \frac{a+b+c}{2} = R(\sin A + \sin B + \sin C)\) 展开：
+    利用三角和恒等式 \(\sin A + \sin B + \sin C = 4\cos\frac{A}{2}\cos\frac{B}{2}\cos\frac{C}{2}\)，得：
+    \[
+    p = 4R\cos\frac{A}{2}\cos\frac{B}{2}\cos\frac{C}{2}
+    \]
+  \item 代入 \(r = \frac{abc}{4Rp}\) 化简：
+    \[
+    r = \frac{64 R^3 \sin\frac{A}{2}\cos\frac{A}{2} \sin\frac{B}{2}\cos\frac{B}{2} \sin\frac{C}{2}\cos\frac{C}{2}}{4R \cdot 4R\cos\frac{A}{2}\cos\frac{B}{2}\cos\frac{C}{2}} = 4R\sin\frac{A}{2}\sin\frac{B}{2}\sin\frac{C}{2}
+    \]
+    两端变形即得：
+    \[
+    \boxed{R = \frac{r}{4\sin\frac{A}{2}\sin\frac{B}{2}\sin\frac{C}{2}}}
+    \]
+\end{enumerate}
+
+\vspace{0.3em}
+\textbf{【推导路线二：切线段与半角余切法】}
+\begin{enumerate}[label=\arabic*., itemsep=0.3em]
+  \item 顶点 \(A\) 引出的切线段长 \(p-a = r\cot\frac{A}{2}\)，故半周长：
+    \[
+    p = (p-a)+(p-b)+(p-c) = r\left(\cot\frac{A}{2} + \cot\frac{B}{2} + \cot\frac{C}{2}\right)
+    \]
+  \item 利用恒等式 \(\cot\frac{A}{2} + \cot\frac{B}{2} + \cot\frac{C}{2} = \cot\frac{A}{2}\cot\frac{B}{2}\cot\frac{C}{2}\)，得：
+    \[
+    p = r \cot\frac{A}{2}\cot\frac{B}{2}\cot\frac{C}{2}
+    \]
+  \item 联立 \(p = 4R\cos\frac{A}{2}\cos\frac{B}{2}\cos\frac{C}{2}\)，约去余弦项即可证毕。
+\end{enumerate}
+}
+
+\begin{center}
+\qTriangleDofIncircleFigure[0.9]
+\end{center}
+
+\newpage
+
+\section{动态几何全景：一条总主线、六大母轨迹与三个综合应用}
+
+\begin{tcolorbox}[colback=yellow!5,colframe=yellow!60!black,arc=2mm,title=\textbf{【运动学总主线法则】}]
+固定底边 \(AB\)，使第三个顶点 \(C\) 在平面中运动。顶点 \(C\) 初始具有 2 个自由度 \((x,y)\)。\\
+每增加 1 个独立的几何约束条件，自由度减 1：
+\[
+\boxed{\text{2 个自由度} - 1 \text{ 个约束} = \text{一条动点轨迹}}
+\]
+\textbf{解题四步法}：
+1. 哪些点/边固定？ \quad 2. 哪个点在动？ \quad 3. 条件能翻译为什么关系？ \quad 4. 对应哪条母轨迹？
+\end{tcolorbox}
+
+\vspace{0.5em}
+
+\subsection{六大核心母轨迹与图像}
+
+\teachblock{母轨迹一：定距离 \(\to\) 圆}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{条件与轨迹}：\(CA = r\)，动点 \(C\) 到定点 \(A\) 的距离固定，轨迹是以 \(A\) 为圆心的圆；
+  \item \textbf{课堂延伸}：定中线长 \(CM = d \to\) 以中点 \(M\) 为圆心的圆。
+\end{itemize}
+}
+
+\begin{center}
+\qTriangleDofCircleFigure[0.9]
+\end{center}
+
+\vspace{0.3em}
+
+\teachblock{母轨迹二：定角 \(\to\) 定圆弧}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{条件与轨迹}：底边 \(AB=c\)，顶角 \(\angle ACB = \theta\) 恒定。由 \(R = \frac{c}{2\sin\theta}\) 恒定，轨迹为经过 \(A,B\) 的定圆弧；
+  \item \textbf{最值位置}：顶点 \(C\) 在圆弧中点（等腰 \(CA=CB\)）时，高度 \(h_c\) 与面积 \(S\) 取最大值。
+\end{itemize}
+}
+
+\begin{center}
+\qTriangleDofRangeFigure[0.85]
+\end{center}
+
+\vspace{0.3em}
+
+\teachblock{母轨迹三：定面积 \(\to\) 平行线}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{条件与轨迹}：底边 \(AB=c\)，面积 \(S_{\triangle ABC} = S_0\) 恒定。由 \(S_0 = \frac{1}{2}c h \implies h = \frac{2S_0}{c}\)；
+  \item \textbf{几何本质}：\textbf{定底定面积就是定高}，轨迹为与 \(AB\) 平行的两条直线（单侧为一条）。
+\end{itemize}
+}
+
+\begin{center}
+\qTriangleDofParallellineFigure[0.85]
+\end{center}
+
+\vspace{0.3em}
+
+\teachblock{母轨迹四：定距离比 \(\to\) 阿波罗尼斯圆}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{条件与轨迹}：底边 \(AB=c\)，边长比 \(\frac{CA}{CB} = k \neq 1\)；\(k=1\) 时为中垂线，\(k\neq 1\) 时轨迹为\textbf{阿波罗尼斯圆}；
+  \item \textbf{推导与澄清}：设 \(A(-d,0), B(d,0), C(x,y)\)，由 \(CA^2 = k^2 CB^2\) 配方即得圆方程。
+    \textit{澄清：\(A=2B\) 不能直接作为边比固定，因为 \(\frac{a}{b}=2\cos B\) 随 \(B\) 变动，非常数！}
+\end{itemize}
+}
+
+\begin{center}
+\qTriangleDofApolloniusFigure[0.85]
+\end{center}
+
+\vspace{0.3em}
+
+\teachblock{母轨迹五：定距离和 \(\to\) 椭圆}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{条件与轨迹}：底边 \(AB=c\)（焦点），两边和 \(CA+CB = L > c\)（或周长 \(2p = AB+CA+CB\) 固定），轨迹为以 \(A,B\) 为焦点的椭圆；
+  \item \textbf{最值位置}：当顶点 \(C\) 位于椭圆短轴端点（等腰 \(CA=CB\)）时，高度 \(h = b_{\text{椭}}\) 最大，面积取最大值。
+\end{itemize}
+}
+
+\begin{center}
+\qTriangleDofEllipseFigure[0.85]
+\end{center}
+
+\vspace{0.3em}
+
+\teachblock{母轨迹六：定距离差 \(\to\) 双曲线}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{条件与轨迹}：底边 \(AB=c\)（焦点），两边差 \(|CA-CB| = L < c\)，轨迹为双曲线。
+    \(|CA-CB|=L\) 对应双曲线两支，\(CA-CB=L\) 仅对应单支。
+\end{itemize}
+}
+
+\begin{center}
+\qTriangleDofHyperbolaFigure[0.85]
+\end{center}
+
+\newpage
+
+\subsection{三个综合应用模型}
+
+\teachblock{综合应用一：SSA 与解的个数 (轨迹相交模型)}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{模型本质}：SSA 不是一条新轨迹，而是\textbf{圆轨迹（\(BC=a\)）与射线轨迹（角 \(A\) 的边）相交几次}！
+  \item \textbf{统一结论}：
+    \[
+    \boxed{\text{解的个数} = \text{约束轨迹的合法交点个数}}
+    \]
+  \item \textbf{判定位置}：设高 \(h = b\sin A\)，当 \(A\) 为锐角时：\(a<h\) 0解，\(a=h\) 1解，\(h<a<b\) 2解，\(a \ge b\) 1解。
+\end{itemize}
+}
+
+\begin{center}
+\qTriangleDofSsaBranchFigure[0.85]
+\end{center}
+
+\vspace{0.5em}
+
+\teachblock{综合应用二：外接圆控制的三角形族}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{定弦定角}：直接对应外接圆圆弧模型，\(R = \frac{c}{2\sin C}\) 恒定；
+  \item \textbf{参数化应用}：已知 \((A,B,R)\)，由 \(a=2R\sin A, b=2R\sin B, c=2R\sin C\) 全盘解出；
+  \item \textbf{外心轨迹}：固定 \(A,B\) 时，\(OA=OB \implies\) 外心 \(O\) 在 \(AB\) 的垂直平分线上。
+\end{itemize}
+}
+
+\begin{center}
+\qTriangleDofOutcircleFigure[0.85]
+\end{center}
+
+\vspace{0.5em}
+
+\teachblock{综合应用三：内切圆控制的三角形族}{%
+\begin{itemize}[itemsep=0.2em]
+  \item \textbf{内心性质}：内心 \(I\) 到三边距离相等且为 \(r\)；
+  \item \textbf{内心轨迹}：固定底边 \(AB\) 和内切圆半径 \(r\) 时，内心到 \(AB\) 距离固定为 \(r\)，故\textbf{内心 \(I\) 在与 \(AB\) 平行、距离为 \(r\) 的直线上}；
+  \item \textbf{顶点轨迹}：固定 \(r\) 与顶角 \(A\) 时，由 \(AI = r\csc\frac{A}{2}\) 恒定，顶点 \(A\) 在以内心 \(I\) 为圆心的定圆上；
+  \item \textbf{切线段坐标}：设 \(x=p-a = r\cot\frac{A}{2}, y=p-b, z=p-c\)，则 \(a=y+z, b=z+x, c=x+y\)。
+\end{itemize}
+}
+
+\begin{center}
+\qTriangleDofIncircleFigure[0.85]
+\end{center}
+
+\newpage
+
+\section{课堂核心母题与讲法}
+
+% ------------------------------------------------------------------------------
+% 母题一
+% ------------------------------------------------------------------------------
+\teacherproblem{例题 1}{齐次型条件与形状锁定 (第 25 题母题变式)}
+
+{\small \qTriangleDofHomogeneousStem}
+
+\begin{center}
+\qTriangleDofHomogeneousFigure[0.9]
+\end{center}
+
+\vspace{0.5em}
+
+\begin{paracol}{2}
+\teachblock{标准解答与得分句}{%
+\textbf{解：}
+(1) 由正弦定理：
+\[
+\sin B = \frac{b}{2R},\quad \sin C = \frac{c}{2R}
+\]
+代入已知条件 \(5c\sin B = 6a\sin C\)：
+\[
+5c \cdot \frac{b}{2R} = 6a \cdot \frac{c}{2R} \implies 5b = 6a \implies b = \frac{6}{5}a
+\]
+代入齐次条件 \(b+c = 2a\)：
+\[
+\frac{6}{5}a + c = 2a \implies c = \frac{4}{5}a
+\]
+故三边长之比为：
+\[
+a : b : c = a : \frac{6}{5}a : \frac{4}{5}a = 5 : 6 : 4
+\]
+\textbf{【得分点：消元表达三边比】}
+
+\vspace{0.3em}
+(2) 由余弦定理：
+\[
+\cos B = \frac{a^2 + c^2 - b^2}{2ac}
+\]
+代入 \(b = \frac{6}{5}a, c = \frac{4}{5}a\) 得：
+\[
+\cos B = \frac{a^2 + \left(\frac{4}{5}a\right)^2 - \left(\frac{6}{5}a\right)^2}{2 \cdot a \cdot \left(\frac{4}{5}a\right)} = \frac{1}{8}
+\]
+\textbf{【得分点：余弦定理求角】}
+}
+
+\switchcolumn
+\teachblock{第 25 题框架代入}{%
+\textbf{处理方式}：\textcolor{red}{\textbf{精讲（25 分钟）}}
+
+\textbf{【第 25 题本质】}：\\
+第 25 题条件 \(b+c=2a\) 与 \(5c\sin B = 6a\sin C\) \textbf{完全齐次}。
+
+无法求具体边长，本质是：\\
+\textbf{利用 2 个独立形状条件，锁定相似类型（\(\text{DOF}=2\)）}。
+
+\textbf{解题链条}：
+\[
+\text{边角混合} \xrightarrow{\text{正弦}} \text{纯边比}
+\]
+\[
+\xrightarrow{b+c=2a} \text{三边比} \xrightarrow{\text{余弦}} \cos B
+\]
+
+\textbf{【课堂追问】}：\\
+若条件改为 \(S = \frac{\sqrt{3}}{4}a^2\)，控制形状还是大小？\\
+（答：两端均二次齐次，只控形状，解出 \(C=60^\circ\)）。
+}
+\end{paracol}
+
+\newpage
+
+% ------------------------------------------------------------------------------
+% 母题二
+% ------------------------------------------------------------------------------
+\teacherproblem{例题 2}{剩余自由度 1 的范围最值型 (第 27 题母题变式)}
+
+{\small \qTriangleDofRangeStem}
+
+\begin{center}
+\qTriangleDofRangeFigure[0.95]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准解答与得分句}{%
+\textbf{解：}
+(1) 由正弦定理：
+\[
+2R = \frac{c}{\sin C} = \frac{\sqrt{3}}{\sin \frac{\pi}{3}} = 2 \implies R = 1
+\]
+\textbf{【得分点：求解 R】}
+
+(2) \textbf{消元参数化 3 步骤}：
+\begin{enumerate}[label=\arabic*., itemsep=0.2em, leftmargin=*]
+  \item \textbf{写目标式}：固定 \(C=\frac{\pi}{3}, c=\sqrt{3}\)。
+    \(a = 2\sin A\)，\(b = 2\sin\left(\frac{2\pi}{3}-A\right)\)。
+    \[
+    \begin{aligned}
+    L(A) &= 2\sin A + 2\sin\left(\frac{2\pi}{3}-A\right) + \sqrt{3}\\
+    &= 2\sqrt{3}\sin\left(A + \frac{\pi}{6}\right) + \sqrt{3}
+    \end{aligned}
+    \]
+  \item \textbf{确定范围}：\(A \in \left(0, \frac{2\pi}{3}\right)\)。
+    \[
+    A + \frac{\pi}{6} \in \left(\frac{\pi}{6}, \frac{5\pi}{6}\right)
+    \]
+  \item \textbf{求最值并检查端点}：\\
+    当 \(A = \frac{\pi}{3}\) 时最大值 \(3\sqrt{3}\)；\\
+    当 \(A \to 0\) 时趋于 \(2\sqrt{3}\)。\\
+    故范围为 \((2\sqrt{3}, 3\sqrt{3}]\)。
+\end{enumerate}
+}
+
+\switchcolumn
+\teachblock{第 27 题框架代入}{%
+\textbf{处理方式}：\textcolor{red}{\textbf{精讲（25 分钟）}}
+
+\textbf{【第 27 题本质】}：\\
+固定角 \(C\) 后，\(A+B\) 固定，三角形还留 \textbf{1 个形状自由度}。
+
+顶点 \(C\) 在定圆弧滑动。目标量化为参数 \(A\) 的单变量函数求最值。
+
+\textbf{【错因诊断】}：\\
+漏掉开区间下界 \(2\sqrt{3}\)，未做自变量定义域裁剪。
+}
+\end{paracol}
+
+\newpage
+
+% ------------------------------------------------------------------------------
+% 母题三
+% ------------------------------------------------------------------------------
+\teacherproblem{例题 3}{SSA 离散分支与解的个数}
+
+{\small \qTriangleDofSsaBranchStem}
+
+\begin{center}
+\qTriangleDofSsaBranchFigure[0.95]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准解答与得分句}{%
+\textbf{解：}
+(1) 正弦定理：
+\[
+\sin B = \frac{b\sin A}{a} = \frac{2 \cdot \frac{\sqrt{2}}{2}}{\sqrt{3}} = \frac{\sqrt{6}}{3}
+\]
+
+(2) 几何高 \(h = b\sin A = \sqrt{2}\)。
+因为：
+\[
+h = \sqrt{2} < a = \sqrt{3} < b = 2
+\]
+由 SSA 划弧交点图，圆弧与射线交于两点 \(B_1, B_2 \implies\) \textbf{2 个解}（钝角解 + 锐角解）。
+
+(3) 余弦定理：
+\[
+a^2 = b^2 + c^2 - 2bc\cos A
+\]
+\[
+3 = 4 + c^2 - 2\sqrt{2}c \implies c^2 - 2\sqrt{2}c + 1 = 0
+\]
+解方程得：
+\[
+c = \sqrt{2} \pm 1
+\]
+}
+
+\switchcolumn
+\teachblock{SSA 离散分支机制}{%
+\textbf{处理方式}：\textcolor{red}{\textbf{精讲（25 分钟）}}
+
+\textbf{【SSA 的本质】}：\\
+反三角函数在 \((0,\pi)\) 内不能唯一确定角：
+\[
+\sin B = k \implies B=\theta
+\]
+\[
+\text{或 } B = \pi-\theta
+\]
+产生几何分支。
+
+\textbf{【追问】}：\\
+若 \(a < h\)、\(a=h\)、\(a \ge b\) 分别有几个解？\\
+（答：0 个、1 个直角、1 个解）。
+}
+\end{paracol}
+
+\newpage
+
+% ------------------------------------------------------------------------------
+% 母题四
+% ------------------------------------------------------------------------------
+\teacherproblem{例题 4}{几何结构与自由度传递 (中线与向量)}
+
+{\small \qTriangleDofVectorMedianStem}
+
+\begin{center}
+\qTriangleDofVectorMedianFigure[0.95]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准解答与得分句}{%
+\textbf{解：}
+(1) 倍长中线 \(AD\) 至 \(E\) 构成平行四边形 \(ABEC\)，对角线 \(AE=2m_a=\sqrt{19}\)，\(BC=a\)。
+由平行四边形恒等式：
+\[
+2(b^2+c^2) = a^2 + (2m_a)^2
+\]
+\[
+2(25) = a^2 + 19 \implies a = 5
+\]
+
+(2) 余弦定理：
+\[
+\cos A = \frac{4^2+3^2-5^2}{2 \cdot 4 \cdot 3} = 0 \implies A = 90^\circ
+\]
+
+(3) 重心向量分解：
+\[
+\vec{GA} = -\frac{1}{3}(\vec{AB}+\vec{AC})
+\]
+\[
+\vec{GB} = \frac{2}{3}\vec{AB}-\frac{1}{3}\vec{AC}
+\]
+因 \(A=90^\circ \implies \vec{AB} \cdot \vec{AC} = 0\)：
+\[
+\begin{aligned}
+\vec{GA} \cdot \vec{GB} &= -\frac{2}{9}|\vec{AB}|^2 + \frac{1}{9}|\vec{AC}|^2 \\
+&= -\frac{2}{9}(9) + \frac{1}{9}(16) = -\frac{2}{9}
+\end{aligned}
+\]
+}
+
+\switchcolumn
+\teachblock{自由度分析与课后落实}{%
+\textbf{处理方式}：\textcolor{red}{\textbf{精讲（20 分钟）}}
+
+\textbf{【自由度传递】}：\\
+中线长 \(m_a\) 与三边 \((a,b,c)\) 在平行四边形恒等式中完全锁定。
+
+已知 \(b,c,m_a\) 即可锁定 \(a\)，全等确立 (\(\text{DOF}=0\))。
+}
+\end{paracol}
+
+\newpage
+
+\section{五大题型压缩与方法论总图}
+
+\begin{tcolorbox}[colback=white,colframe=gray!80,arc=2mm,title=\textbf{解三角形五大基本题型压缩}]
+\begin{enumerate}[label=\arabic*., itemsep=0.3em]
+  \item \textbf{第一类：确定型}（目标：唯一解三角形。SSS, SAS, ASA, AAS，判断闭合条件）；
+  \item \textbf{第二类：边角翻译型}（核心动作：利用正弦/余弦定理统一成全边或全角）；
+  \item \textbf{第三类：存在性与解的个数}（核心检查：两边之和大于第三边、角和小于 \(\pi\)、SSA 两支、锐钝角限制）；
+  \item \textbf{第四类：范围最值型}（核心逻辑：固定若干自由度 \(\to\) 剩 1 个参数 \(\to\) 确定区间 \(\to\) 单变量最值）；
+  \item \textbf{第五类：恒等式与关系证明}（目标：证明关系，路线：全边化或全角化，切忌长期边角混杂）。
+\end{enumerate}
+\end{tcolorbox}
+
+\vspace{0.8em}
+
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[scale=1.0, >=stealth]
+  % 样式定义
+  \tikzstyle{topnode} = [draw=blue!80!black, thick, rounded corners=3pt, fill=blue!8, align=center, font=\small, inner sep=6pt, minimum height=1.1cm]
+  \tikzstyle{midnode} = [draw=yellow!80!black, thick, rounded corners=3pt, fill=yellow!25, align=center, font=\small\bfseries, inner sep=6pt, minimum height=1.0cm]
+  \tikzstyle{outnode} = [draw=green!80!black, thick, rounded corners=3pt, fill=green!8, align=center, font=\footnotesize, inner sep=5pt, minimum height=1.2cm]
+
+  % 第一层：三个核心步骤 (横向大间距拉开: -5.6, 0, 5.6)
+  \node[topnode, text width=3.8cm] (step1) at (-5.6, 0) {\textbf{1. 读题识别条件} \\ 判断控制“形状”还是“尺度”};
+  \node[topnode, text width=3.8cm] (step2) at (0, 0) {\textbf{2. 选择坐标系统} \\ 边 / 角 / 比例坐标};
+  \node[topnode, text width=3.8cm] (step3) at (5.6, 0) {\textbf{3. 三大发动机翻译} \\ 正弦 / 余弦 / 面积公式};
+  
+  % 第一层横向连接线
+  \draw[->, ultra thick, blue!80!black] (step1) -- (step2);
+  \draw[->, ultra thick, blue!80!black] (step2) -- (step3);
+
+  % 第二层：统计剩余自由度 (位于中心下方 y = -2.2)
+  \node[midnode, text width=5.2cm] (step4) at (0, -2.2) {\textbf{4. 统计剩余自由度 (DOF)}};
+  
+  \draw[->, ultra thick, blue!80!black] (step2) -- (step4);
+  \draw[->, ultra thick, blue!80!black] (step1) |- (-2.8, -1.1) -| (step4);
+  \draw[->, ultra thick, blue!80!black] (step3) |- (2.8, -1.1) -| (step4);
+
+  % 第三层：四个分支结果 (横向拉开: -6.0, -2.0, 2.0, 6.0; y = -4.6)
+  \node[outnode, text width=3.5cm] (out1) at (-6.0, -4.6) {\textbf{0 个自由度 (\(\text{DOF}=0\))} \\ 直接方程闭合求值 (唯一解)};
+  \node[outnode, text width=3.5cm] (out2) at (-2.0, -4.6) {\textbf{1 个自由度 (\(\text{DOF}=1\))} \\ 消元参数化求范围/最值};
+  \node[outnode, text width=3.5cm] (out3) at (2.0, -4.6) {\textbf{离散双分支 (SSA)} \\ 轨迹相交讨论 0/1/2 解};
+  \node[outnode, text width=3.5cm] (out4) at (6.0, -4.6) {\textbf{\(\text{DOF} > 1\) (条件不足)} \\ 只能求比例或恒等证明};
+
+  % 从第二层指向第三层四分支
+  \draw[->, thick, green!60!black] (step4) -- (out1);
+  \draw[->, thick, green!60!black] (step4) -- (out2);
+  \draw[->, thick, green!60!black] (step4) -- (out3);
+  \draw[->, thick, green!60!black] (step4) -- (out4);
+\end{tikzpicture}%
+}
+\end{center}
+
+\vspace{0.8em}
+
+\begin{tcolorbox}[colback=yellow!5,colframe=yellow!60!black,arc=2mm,title=\textbf{【整章统一结论】}]
+\textit{全等条件（SSS, SAS, ASA, AAS）告诉我们题目“给了什么”；自由度与圆半径参数化（\((A,B,R)\) 与 \((A,B,r)\)）则告诉我们这些条件“为什么足够”，以及如何把复杂综合题统一到“一条总主线 + 六种母轨迹 + 三个综合应用”的框架中。}
+\end{tcolorbox}
+
+\end{document}

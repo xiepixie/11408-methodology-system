@@ -1,0 +1,52 @@
+% =====================================================
+% 题型：立体几何多结论选择题 (q1_solid_mc.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qOneStem}{如图，\(AB\) 是 \(\odot O\) 的直径，\(PA \perp \text{平面 } \odot O\)，\(C\) 是圆周上不同于 \(A,B\) 的任意一点，则}
+
+\newcommand{\qOneOptions}{%
+  \mcoptions[1]{
+    若 $D$ 为 $BC$ 的中点，则 $OD \parallel$ 平面 $PAC$
+  }{
+    平面 $PAC \perp$ 平面 $PBC$
+  }{
+    点 $A$ 到平面 $PBC$ 的距离小于 $\frac{1}{2} PC$
+  }{
+    $PB$ 为三棱锥 $P-ABC$ 外接球的直径
+  }%
+}
+
+\newcommand{\qOneFigure}[1][1.2]{%
+  \begin{tikzpicture}[scale=#1, >=stealth]
+    \coordinate (O) at (1.2, 0);
+    \coordinate (A) at (0, 0);
+    \coordinate (B) at (2.4, 0);
+    \coordinate (P) at (0, 1.8);
+    \coordinate (C) at (0.7, 0.25);
+    \coordinate (O1) at (1.2, 1.8);
+    \coordinate (Ctop) at (0.7, 2.05);
+    
+    \draw[thick] (2.4,0) arc (0:-180:1.2 and 0.35);
+    \draw[dashed] (2.4,0) arc (0:180:1.2 and 0.35);
+    
+    \draw[dashed] (1.2,1.8) ellipse (1.2 and 0.35);
+    \draw[dashed] (2.4,0) -- (2.4,1.8);
+    \draw[dashed] (O) -- (O1);
+    \draw[dashed] (C) -- (Ctop);
+    
+    \draw[thick] (P) -- (A);
+    \draw[thick] (P) -- (B);
+    \draw[thick, dashed] (P) -- (C);
+    \draw[thick, dashed] (A) -- (C);
+    \draw[thick, dashed] (C) -- (B);
+    \draw[thick] (A) -- (B);
+    
+    \node[left] at (A) {\small $A$};
+    \node[right] at (B) {\small $B$};
+    \node[above left] at (P) {\small $P$};
+    \node[below] at (O) {\small $O$};
+    \node[below right] at (C) {\small $C$};
+  \end{tikzpicture}%
+}

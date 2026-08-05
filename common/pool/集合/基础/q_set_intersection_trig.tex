@@ -1,0 +1,42 @@
+% =====================================================
+% 题型：三角函数与集合交集选择题 (q_set_intersection_trig.tex)
+% 知识板块：集合、三角值
+% 主思维：交并集运算方法
+% 副思维：特殊值试探、定义域优先
+% 错因标签：诱导公式符号判定错误
+% 讲义用途：集合逻辑入门
+% =====================================================
+% 难度：★ (基础)
+% =====================================================
+\newcommand{\qSetIntersectionTrigStem}{已知集合 \(A = \left\{\sin\dfrac{7\pi}{6}, \cos\dfrac{5\pi}{3}, \tan\dfrac{5\pi}{4}\right\}\), \(B = \left\{-\dfrac{\sqrt{3}}{2}, -\dfrac{1}{2}, 1\right\}\), 则 \(A \cap B = \hfill （\quad）\)}
+
+\newcommand{\qSetIntersectionTrigOptions}{%
+  \mcoptions[2]{\(\left\{-\dfrac{\sqrt{3}}{2}, -\dfrac{1}{2}\right\}\)}{\(\left\{-\dfrac{\sqrt{3}}{2}, 1\right\}\)}{\(\left\{-\dfrac{1}{2}, 1\right\}\)}{\(\left\{-\dfrac{\sqrt{3}}{2}, -\dfrac{1}{2}, 1\right\}\)}%
+}
+
+\newcommand{\qSetIntersectionTrigAnswer}{C}
+
+\newcommand{\qSetIntersectionTrigSolution}{%
+  【解题思路】\\
+  本题为三角函数求值与集合交集运算的结合。第一步，利用诱导公式和特殊角的三角函数值，分别求出集合 \(A\) 中各元素的值，从而写出集合 \(A\) 的具体元素形式；第二步，对照集合 \(B\)，求出两集合的公共元素即可。\\
+  【解析计算】\\
+  首先计算集合 \(A\) 中的三个三角函数值：\\
+  \(\sin\dfrac{7\pi}{6} = \sin\left(\pi + \dfrac{\pi}{6}\right) = -\sin\dfrac{\pi}{6} = -\dfrac{1}{2}\)；\\
+  \(\cos\dfrac{5\pi}{3} = \cos\left(2\pi - \dfrac{\pi}{3}\right) = \cos\dfrac{\pi}{3} = \dfrac{1}{2}\)；\\
+  \(\tan\dfrac{5\pi}{4} = \tan\left(\pi + \dfrac{\pi}{4}\right) = \tan\dfrac{\pi}{4} = 1\)。\\
+  由此可得：\\
+  \(A = \left\{-\dfrac{1}{2}, \dfrac{1}{2}, 1\right\}\)。\\
+  又已知：\\
+  \(B = \left\{-\dfrac{\sqrt{3}}{2}, -\dfrac{1}{2}, 1\right\}\)。\\
+  取两集合的交集（即寻找公共元素）：\\
+  \(A \cap B = \left\{-\dfrac{1}{2}, 1\right\}\)。\\
+  故选 C。%
+}
+
+\newcommand{\qSetIntersectionTrigDiagnosis}{%
+  学生容易在诱导公式的符号处犯错（如将 \(\sin\dfrac{7\pi}{6}\) 错算成 \(\dfrac{1}{2}\)，或将 \(\cos\dfrac{5\pi}{3}\) 错算成 \(-\dfrac{1}{2}\)）。诱导公式口诀“奇变偶不变，符号看象限”的落实要扎实。%
+}
+
+\newcommand{\qSetIntersectionTrigTeachingNotes}{%
+  可作为课前微测题，检查诱导公式的掌握熟练度。讲授时要求学生明确写出各三角函数的象限，避免凭直觉心算导致计算性丢分。%
+}

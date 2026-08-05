@@ -1,0 +1,1953 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{../../../common/ipara}
+\input{questions.tex}
+
+% =====================================================
+% 页眉页脚设置（教案端）
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 刘亚博 01 第三次月考错题教案}
+\rhead{\small 120 分钟一对一}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\sphereModelFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.86, >=stealth, line join=round, line cap=round]
+      \coordinate (O) at (0,1.45);
+      \coordinate (O0) at (0,0);
+      \coordinate (T) at (0,2.9);
+      \coordinate (A) at (2.15,0);
+      \coordinate (B) at (-1.35,0);
+      \draw[gray!55, dashed] (O) circle (2.6);
+      \draw[fill=gray!8, draw=black] (-2.25,-0.28) -- (2.25,-0.28) -- (2.75,0.28) -- (-1.75,0.28) -- cycle;
+      \draw[dashed] (O0) ellipse (2.15 and 0.42);
+      \draw[gray!65, dashed] (T) ellipse (1.55 and 0.32);
+      \draw[gray!65] (-1.55,2.9) -- (B);
+      \draw[gray!65] (1.55,2.9) -- (A);
+      \draw[thick] (O0) -- (A) node[midway, below] {\small \(r\)};
+      \draw[thick] (O) -- (O0) node[midway, left] {\small \(h/2\)};
+      \draw[very thick] (O) -- (A) node[midway, above right] {\small \(R\)};
+      \draw[thick, dashed] (O) -- (T) node[midway, right] {\small \(h/2\)};
+      \draw (0,0.2) -- (0.2,0.2) -- (0.2,0);
+      \fill (O) circle (1.4pt) node[above left] {\small \(O\)};
+      \fill (O0) circle (1.3pt) node[below left] {\small \(O_0\)};
+      \fill (A) circle (1.3pt) node[right] {\small \(A\)};
+    \end{tikzpicture}
+  \end{center}
+}
+\newcommand{\linePlaneAngleFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.92, >=stealth, line join=round, line cap=round]
+      \coordinate (H) at (0,0);
+      \coordinate (P) at (3,0);
+      \coordinate (A) at (3,1.65);
+      \draw[fill=gray!9, draw=black] (-0.7,-0.38) -- (3.9,-0.38) -- (4.55,0.45) -- (-0.05,0.45) -- cycle;
+      \node[gray!70] at (4.15,0.18) {\small \(\alpha\)};
+      \draw[very thick] (A) -- (H) node[midway, above left] {\small \(AH\)};
+      \draw[thick] (H) -- (P) node[midway, below] {\small \(HP\)};
+      \draw[thick, dashed] (A) -- (P) node[midway, right] {\small \(AP\)};
+      \draw (P) ++(0,0.24) -- ++(-0.24,0) -- ++(0,-0.24);
+      \draw[->] (H) +(0.72,0) arc[start angle=0,end angle=29,radius=0.72];
+      \node at (0.93,0.18) {\small \(\theta\)};
+      \fill (H) circle (1.2pt) node[below left] {\small \(H\)};
+      \fill (P) circle (1.2pt) node[below] {\small \(P\)};
+      \fill (A) circle (1.2pt) node[above] {\small \(A\)};
+    \end{tikzpicture}
+  \end{center}
+}
+\newcommand{\dihedralAngleFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.9, >=stealth, line join=round, line cap=round]
+      \coordinate (O) at (0,0);
+      \coordinate (L1) at (-2.75,0);
+      \coordinate (L2) at (2.75,0);
+      \coordinate (A) at (-0.15,1.65);
+      \coordinate (B) at (1.78,1.03);
+      \draw[fill=gray!8, draw=black] (L1) -- (L2) -- (2.1,-1.05) -- (-3.3,-1.05) -- cycle;
+      \node[gray!70] at (-2.65,-0.72) {\small 平面 \(\alpha\)};
+      \draw[fill=gray!16, draw=black, opacity=0.92] (L1) -- (L2) -- (2.18,1.2) -- (-3.32,1.2) -- cycle;
+      \node[gray!70] at (-2.65,0.86) {\small 平面 \(\beta\)};
+      \draw[very thick] (L1) -- (L2) node[right] {\small \(l\)};
+      \fill (O) circle (1.4pt) node[below right] {\small \(O\)};
+      \draw[very thick, ->] (O) -- (A) node[above] {\small \(A\)};
+      \draw[very thick, ->] (O) -- (B) node[right] {\small \(B\)};
+      \draw[thin] ($(O)!0.22!(A)$) -- ++(0.17,0.04) -- ++(0.03,-0.2);
+      \draw[thin] ($(O)!0.2!(B)$) -- ++(0.12,-0.14) -- ++(-0.16,-0.08);
+      \draw[->] (O) +(0.64,0.37) arc[start angle=30,end angle=83,radius=0.74];
+      \node at (0.74,0.82) {\small \(\phi=\angle AOB\)};
+    \end{tikzpicture}
+  \end{center}
+}
+\newcommand{\sectionTriangleFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.92, >=stealth, line join=round, line cap=round]
+      \coordinate (A)  at (0,0);
+      \coordinate (B)  at (3.2,0);
+      \coordinate (D)  at (0.82,0.52);
+      \coordinate (A1) at (0,1.72);
+      \coordinate (C)  at ($(B)+(D)$);
+      \coordinate (B1) at ($(B)+(A1)$);
+      \coordinate (C1) at ($(C)+(A1)$);
+      \coordinate (D1) at ($(D)+(A1)$);
+      \coordinate (P) at ($(D1)!0.75!(B1)$);
+      \draw[dashed, gray!70] (A) -- (D) -- (C);
+      \draw[dashed, gray!70] (D) -- (D1);
+      \fill[blue!13, opacity=0.9] (D1) -- (B1) -- (C) -- cycle;
+      \draw[dashed, very thick, blue!80] (D1) -- (C);
+      \draw[very thick, blue!80] (D1) -- (B1) -- (C);
+      \draw[thick] (A) -- (B) -- (C) -- (C1) -- (D1) -- (A1) -- cycle;
+      \draw[thick] (B) -- (B1) -- (C1);
+      \draw[thick] (A1) -- (B1);
+      \draw[very thick, red!70] (D1) -- (B1);
+      \draw[red!70, thick] (A1) -- (P);
+      \fill[red!70] (P) circle (1.5pt) node[above] {\small \(P\)};
+      \node[blue!80] at (2.25,1.25) {\small \(\triangle CB_1D_1\)};
+      \foreach \p/\pos in {A/below left,B/below,C/right,A1/left,B1/above right,C1/right,D1/above left} {
+        \fill (\p) circle (1.1pt) node[\pos] {\small \(\p\)};
+      }
+    \end{tikzpicture}
+  \end{center}
+}
+\newcommand{\quadrilateralSplitFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.92, >=stealth, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (1.2,1.3);
+      \coordinate (C) at (2.4,0.1);
+      \coordinate (D) at (0.4,-1.2);
+      \fill[blue!8] (A) -- (B) -- (D) -- cycle;
+      \fill[green!10] (B) -- (C) -- (D) -- cycle;
+      \draw[thick] (A) -- (B) -- (C) -- (D) -- cycle;
+      \draw[very thick, dashed, blue!80] (B) -- (D) node[midway, right] {\small \(BD\)};
+      \foreach \p/\pos in {A/left,B/above,C/right,D/below} {
+        \fill (\p) circle (1.2pt) node[\pos] {\small \(\p\)};
+      }
+      \node at (0.55,-0.25) {\tiny \(\triangle ABD\)};
+      \node at (1.65,0.05) {\tiny \(\triangle BCD\)};
+    \end{tikzpicture}
+  \end{center}
+}
+\newcommand{\qTwelveTeacherKey}{%
+  判断相等向量只看两件事：
+  \[
+    \text{方向相同}
+    \quad+\quad
+    \text{长度相等}.
+  \]
+  本题一定要按方向分类列清，
+  不能只凭肉眼找到一两对就停止。\par
+  \textbf{第一类：水平方向。}
+  \[
+    \vec{AB}=\vec{DC},
+    \qquad
+    \vec{BA}=\vec{CD}.
+  \]
+  这里是 \(2\) 对。\par
+  \textbf{第二类：竖直方向。}
+  \[
+    \vec{AD}=\vec{BC},
+    \qquad
+    \vec{DA}=\vec{CB}.
+  \]
+  这里是 \(2\) 对。\par
+  \textbf{第三类：对角线 \(AC\) 被 \(E\) 平分。}
+  \[
+    \vec{AE}=\vec{EC},
+    \qquad
+    \vec{CE}=\vec{EA}.
+  \]
+  这里是 \(2\) 对。\par
+  \textbf{第四类：对角线 \(BD\) 被 \(E\) 平分。}
+  \[
+    \vec{DE}=\vec{EB},
+    \qquad
+    \vec{ED}=\vec{BE}.
+  \]
+  这里是 \(2\) 对。\par
+  所以相等向量共有：
+  \[
+    2+2+2+2=8
+  \]
+  对。\par
+  重点提醒：
+  \[
+    \vec{AE}=\vec{EC},
+    \qquad
+    \vec{AE}\ne\vec{CE}.
+  \]
+  因为 \(\vec{CE}\) 与 \(\vec{AE}\) 方向相反。
+}
+\newcommand{\qFourteenTeacherKey}{%
+  设直三棱柱底面外接圆半径为 \(r\)，
+  高为 \(h\)，外接球半径为 \(R\)。\par
+  直三棱柱的外接球与底面三角形共用同一个外心投影。
+  球心在上下两个底面外心连线的中点。\par
+  因此有模型公式：
+  \[
+    R^2=r^2+\left(\frac h2\right)^2.
+  \]
+  由题意：
+  \[
+    2AB=AA_1=2.
+  \]
+  所以：
+  \[
+    AB=1,
+    \qquad
+    h=AA_1=2.
+  \]
+  外接球表面积为 \(8\pi\)，故：
+  \[
+    4\pi R^2=8\pi
+    \Rightarrow R^2=2.
+  \]
+  将 \(R^2=2,h=2\) 代入模型：
+  \[
+    2=r^2+\left(\frac22\right)^2
+    =r^2+1.
+  \]
+  因此：
+  \[
+    r^2=1
+    \Rightarrow r=1.
+  \]
+  在底面 \(\triangle ABC\) 中，
+  其外接圆半径为 \(r=1\)。\par
+  由正弦定理的外接圆形式：
+  \[
+    \frac{AB}{\sin C}=2r.
+  \]
+  代入 \(AB=1,r=1\)，得：
+  \[
+    \frac1{\sin C}=2.
+  \]
+  即：
+  \[
+    \sin C=\frac12.
+  \]
+  注意 \(C\) 是三角形内角，
+  所以：
+  \[
+    C\in(0,\pi).
+  \]
+  在这个范围内：
+  \[
+    C=30^\circ
+    \quad\text{或}\quad
+    C=150^\circ.
+  \]
+}
+\newcommand{\qFifteenTeacherKey}{%
+  \textbf{解法一：参数交点。}\par
+  因为 \(M\) 是 \(BC\) 的中点，且
+  \(\vec{AB}=\vec a,\vec{AC}=\vec b\)，
+  所以：
+  \[
+    \begin{aligned}
+      \vec{AM}
+      &=\frac12(\vec{AB}+\vec{AC})\\
+      &=\frac12(\vec a+\vec b).
+    \end{aligned}
+  \]
+  由于 \(P\in AM\)，设：
+  \[
+    \begin{aligned}
+      \vec{AP}
+      &=\lambda\vec{AM}\\
+      &=\frac{\lambda}{2}(\vec a+\vec b).
+    \end{aligned}
+  \]
+  又因为：
+  \[
+    2\vec{AN}=\vec{NC}.
+  \]
+  所以 \(AN:NC=1:2\)，即：
+  \[
+    \vec{AN}
+    =\frac13\vec{AC}
+    =\frac13\vec b.
+  \]
+  由于 \(P\in BN\)，可设：
+  \[
+    \begin{aligned}
+      \vec{AP}
+      &=\mu\vec{AB}+(1-\mu)\vec{AN}\\
+      &=\mu\vec a+\frac{1-\mu}{3}\vec b.
+    \end{aligned}
+  \]
+  根据平面向量基本定理，
+  基底 \(\vec a,\vec b\) 的系数唯一。\par
+  因此：
+  \[
+    \begin{cases}
+      \lambda/2=\mu,\\
+      \lambda/2=(1-\mu)/3
+    \end{cases}
+  \]
+  两式右端相等，得：
+  \[
+    \mu=\frac{1-\mu}{3}
+    \Rightarrow
+    3\mu=1-\mu
+    \Rightarrow
+    \mu=\frac14.
+  \]
+  所以：
+  \[
+    \lambda=2\mu=\frac12.
+  \]
+  所以：
+  \[
+    \vec{AP}
+    =\frac14\vec a+\frac14\vec b.
+  \]
+  于是：
+  \[
+    \begin{aligned}
+      \vec{BP}
+      &=\vec{AP}-\vec{AB}\\
+      &=\left(\frac14\vec a+\frac14\vec b\right)-\vec a\\
+      &=-\frac34\vec a+\frac14\vec b.
+    \end{aligned}
+  \]
+  \textbf{解法二：夹角计算。}\par
+  第 (2) 问要求 \(\angle BPM\)。\par
+  角的顶点是 \(P\)，所以两边向量必须从 \(P\) 出发：
+  \[
+    \vec{PB}
+    \quad\text{和}\quad
+    \vec{PM}.
+  \]
+  由第 (1) 问：
+  \[
+    \vec{PB}
+    =-\vec{BP}
+    =\frac34\vec a-\frac14\vec b.
+  \]
+  又：
+  \[
+    \begin{aligned}
+      \vec{PM}
+      &=\vec{AM}-\vec{AP}\\
+      &=\frac12(\vec a+\vec b)
+        -\left(\frac14\vec a+\frac14\vec b\right)\\
+      &=\frac14\vec a+\frac14\vec b.
+    \end{aligned}
+  \]
+  已知：
+  \[
+    |\vec a|=2,
+    \qquad
+    |\vec b|=3,
+    \qquad
+    \angle BAC=\frac\pi3.
+  \]
+  所以：
+  \[
+    \vec a\cdot\vec b
+    =|\vec a|\,|\vec b|\cos\frac\pi3
+    =2\cdot3\cdot\frac12
+    =3.
+  \]
+  先算 \(\vec{PM}\) 的模：
+  \[
+    \begin{aligned}
+      |\vec{PM}|^2
+      &=\left|\frac14(\vec a+\vec b)\right|^2\\
+      &=\frac1{16}
+        (|\vec a|^2+2\vec a\cdot\vec b+|\vec b|^2)\\
+      &=\frac1{16}(4+6+9)\\
+      &=\frac{19}{16}.
+    \end{aligned}
+  \]
+  因此：
+  \[
+    |\vec{PM}|=\frac{\sqrt{19}}4.
+  \]
+  再算 \(\vec{PB}\) 的模：
+  \[
+    \begin{aligned}
+      |\vec{PB}|^2
+      &=\left|\frac14(3\vec a-\vec b)\right|^2\\
+      &=\frac1{16}
+        (9|\vec a|^2-6\vec a\cdot\vec b+|\vec b|^2)\\
+      &=\frac1{16}(36-18+9)\\
+      &=\frac{27}{16}.
+    \end{aligned}
+  \]
+  因此：
+  \[
+    |\vec{PB}|=\frac{3\sqrt3}{4}.
+  \]
+  再算数量积：
+  \[
+    \begin{aligned}
+      \vec{PM}\cdot\vec{PB}
+      &=
+      \left(\frac14\vec a+\frac14\vec b\right)
+      \cdot
+      \left(\frac34\vec a-\frac14\vec b\right)\\
+      &=\frac1{16}
+        (3|\vec a|^2+2\vec a\cdot\vec b-|\vec b|^2)\\
+      &=\frac1{16}(12+6-9)\\
+      &=\frac9{16}.
+    \end{aligned}
+  \]
+  设 \(\angle BPM=\theta\)，则：
+  因此：
+  \[
+    \begin{aligned}
+      \cos\theta
+      &=
+      \frac{\vec{PM}\cdot\vec{PB}}
+           {|\vec{PM}|\,|\vec{PB}|}\\
+      &=
+      \frac{9/16}
+           {(\sqrt{19}/4)(3\sqrt3/4)}\\
+      &=\frac3{\sqrt{57}}
+       =\frac{\sqrt{57}}{19}.
+    \end{aligned}
+  \]
+  因 \(\theta\in(0,\pi)\)，所以：
+  \[
+    \begin{aligned}
+      \sin\angle BPM
+      &=\sqrt{1-\cos^2\theta}\\
+      &=\sqrt{1-\frac{57}{361}}\\
+      &=\sqrt{\frac{304}{361}}\\
+      &=\frac{4\sqrt{19}}{19}.
+    \end{aligned}
+  \]
+}
+\newcommand{\qSeventeenTeacherKey}{%
+  以 \(D\) 为坐标原点，
+  \(DA,DC,DD_1\) 所在直线分别为
+  \(x,y,z\) 轴建立空间直角坐标系。\par
+  设正方体棱长为 \(1\)，则：
+  \[
+    \begin{gathered}
+      D(0,0,0),\quad
+      A(1,0,0),\quad
+      B(1,1,0),\\
+      C(0,1,0),\quad
+      A_1(1,0,1),\quad
+      B_1(1,1,1),\\
+      C_1(0,1,1).
+    \end{gathered}
+  \]
+  \textbf{第 (1) 问：证明垂直。}\par
+  有：
+  \[
+    \vec{A_1C_1}=(-1,1,0),
+    \quad
+    \vec{B_1D}=(-1,-1,-1).
+  \]
+  计算数量积：
+  \[
+    \begin{aligned}
+      \vec{A_1C_1}\cdot\vec{B_1D}
+      &=(-1)(-1)+1(-1)+0(-1)\\
+      &=1-1+0\\
+      &=0.
+    \end{aligned}
+  \]
+  因为两向量均非零，且数量积为 \(0\)，
+  所以：
+  \[
+    A_1C_1\perp B_1D.
+  \]
+  \textbf{第 (2) 问：线面角。}\par
+  设平面 \(A_1C_1B\) 的法向量为：
+  \[
+    \vec n=(x,y,z).
+  \]
+  平面内取两条不共线向量：
+  \[
+    \vec{BA_1}=(0,-1,1),
+    \qquad
+    \vec{BC_1}=(-1,0,1).
+  \]
+  由法向量垂直于平面内两向量：
+  \[
+    \begin{cases}
+      \vec n\cdot\vec{BA_1}=0,\\
+      \vec n\cdot\vec{BC_1}=0
+    \end{cases}
+  \]
+  得：
+  \[
+    \begin{cases}
+      -y+z=0,\\
+      -x+z=0.
+    \end{cases}
+  \]
+  所以 \(x=y=z\)，可取：
+  \[
+    \vec n=(1,1,1).
+  \]
+  直线 \(A_1B_1\) 的方向向量为：
+  \[
+    \vec{A_1B_1}=(0,1,0).
+  \]
+  设 \(A_1B_1\) 与平面 \(A_1C_1B\)
+  所成角为 \(\theta\)。\par
+  直线与平面的夹角满足：
+  \[
+    \sin\theta
+    =\frac{|\vec{A_1B_1}\cdot\vec n|}
+           {|\vec{A_1B_1}|\,|\vec n|}
+    =\frac1{\sqrt3}.
+  \]
+  题目问余弦值，因此：
+  \[
+    \cos\theta
+    =\sqrt{1-\frac13}
+    =\frac{\sqrt6}{3}.
+  \]
+  \textbf{第 (3) 问：二面角。}\par
+  底面 \(ABCD\) 的一个法向量为：
+  \[
+    \vec m=(0,0,1).
+  \]
+  平面 \(A_1C_1B\) 的法向量仍可取：
+  \[
+    \vec n=(1,1,1).
+  \]
+  设两平面所成二面角为 \(\phi\)。\par
+  两平面夹角可由法向量夹角求出：
+  \[
+    \cos\phi
+    =\frac{|\vec n\cdot\vec m|}
+           {|\vec n|\,|\vec m|}
+    =\frac1{\sqrt3}.
+  \]
+  因此：
+  \[
+    \sin\phi
+    =\sqrt{1-\frac13}
+    =\frac{\sqrt6}{3}.
+  \]
+}
+\newcommand{\qEighteenTeacherKey}{%
+  \textbf{第 (1) 问：单位圆与数量积证明。}\par
+  在平面直角坐标系中，
+  以原点 \(O\) 为圆心作单位圆。\par
+  设角 \(\alpha,\beta\) 的终边与单位圆分别交于两点，
+  对应单位向量为：
+  \[
+    \vec u=(\cos\alpha,\sin\alpha),
+    \quad
+    \vec v=(\cos\beta,\sin\beta).
+  \]
+  从坐标表示数量积：
+  \[
+    \vec u\cdot\vec v
+    =\cos\alpha\cos\beta
+     +\sin\alpha\sin\beta.
+  \]
+  从几何定义表示数量积：
+  \[
+    \begin{aligned}
+      \vec u\cdot\vec v
+      &=|\vec u|\,|\vec v|\cos\langle\vec u,\vec v\rangle\\
+      &=1\cdot1\cdot\cos(\alpha-\beta)\\
+      &=\cos(\alpha-\beta).
+    \end{aligned}
+  \]
+  两个表达式表示同一个数量积，
+  因而：
+  \[
+    \cos(\alpha-\beta)
+    =
+    \cos\alpha\cos\beta
+    +\sin\alpha\sin\beta.
+  \]
+  \textbf{第 (2) 问：结构化加减。}\par
+  由两角和差公式：
+  \[
+    \begin{aligned}
+      \cos(\alpha-\beta)
+      &=\cos\alpha\cos\beta
+        +\sin\alpha\sin\beta
+        =\frac35,\\
+      \cos(\alpha+\beta)
+      &=\cos\alpha\cos\beta
+        -\sin\alpha\sin\beta
+        =\frac15.
+    \end{aligned}
+  \]
+  两式相加：
+  \[
+    \begin{aligned}
+      2\cos\alpha\cos\beta
+      &=\frac45,\\
+      \cos\alpha\cos\beta
+      &=\frac25.
+    \end{aligned}
+  \]
+  两式相减：
+  \[
+    \begin{aligned}
+      2\sin\alpha\sin\beta
+      &=\frac25,\\
+      \sin\alpha\sin\beta
+      &=\frac15.
+    \end{aligned}
+  \]
+  因此：
+  \[
+    \tan\alpha\tan\beta
+    =
+    \frac{\sin\alpha\sin\beta}
+         {\cos\alpha\cos\beta}
+    =
+    \frac{1/5}{2/5}
+    =
+    \frac12.
+  \]
+  \textbf{第 (3) 问：三角形中余弦和最值。}\par
+  在 \(\triangle ABC\) 中：
+  \[
+    A+B+C=\pi.
+  \]
+  所以：
+  \[
+    C=\pi-(A+B).
+  \]
+  由和差化积：
+  \[
+    \cos A+\cos B
+    =
+    2\cos\frac{A+B}{2}
+     \cos\frac{A-B}{2}.
+  \]
+  又：
+  \[
+    \cos\frac{A+B}{2}
+    =
+    \cos\frac{\pi-C}{2}
+    =
+    \sin\frac C2.
+  \]
+  且：
+  \[
+    \cos C
+    =
+    1-2\sin^2\frac C2.
+  \]
+  因此：
+  \[
+    \begin{aligned}
+      \cos A+\cos B+\cos C
+      &=
+      2\sin\frac C2
+      \cos\frac{A-B}{2}
+      +1-2\sin^2\frac C2.
+    \end{aligned}
+  \]
+  因为：
+  \[
+    \cos\frac{A-B}{2}\le1,
+    \qquad
+    \sin\frac C2>0,
+  \]
+  所以：
+  \[
+    \begin{aligned}
+      \cos A+\cos B+\cos C
+      &\le
+      2\sin\frac C2
+      +1-2\sin^2\frac C2\\
+      &=
+      -2\left(\sin\frac C2-\frac12\right)^2
+      +\frac32\\
+      &\le \frac32.
+    \end{aligned}
+  \]
+  等号成立需要同时满足：
+  \[
+    \cos\frac{A-B}{2}=1,
+    \qquad
+    \sin\frac C2=\frac12.
+  \]
+  即：
+  \[
+    A=B,
+    \qquad
+    C=\frac\pi3.
+  \]
+  结合 \(A+B+C=\pi\)，得：
+  \[
+    A=B=C=\frac\pi3.
+  \]
+  所以最大值为：
+  \[
+    \frac32.
+  \]
+}
+\newcommand{\qThirteenTeacherKey}{%
+  以 \(A\) 为原点，
+  \(AB,AD,AA_1\) 所在射线分别为
+  \(x,y,z\) 轴正方向，
+  建立空间直角坐标系。\par
+  由题意：
+  \[
+    AD=AA_1=2,
+    \qquad
+    AB=4.
+  \]
+  所以：
+  \[
+    \begin{gathered}
+      A(0,0,0),\quad
+      B(4,0,0),\quad
+      D(0,2,0),\\
+      C(4,2,0),\quad
+      A_1(0,0,2),\quad
+      B_1(4,0,2),\\
+      D_1(0,2,2).
+    \end{gathered}
+  \]
+  根据：
+  \[
+    \vec{A_1P}
+    =
+    \frac34\vec{AB}
+    +
+    \frac14\vec{A_1D_1},
+  \]
+  且：
+  \[
+    \vec{AB}=(4,0,0),
+    \qquad
+    \vec{A_1D_1}=(0,2,0).
+  \]
+  所以：
+  \[
+    \begin{aligned}
+      \vec{A_1P}
+      &=
+      \frac34(4,0,0)
+      +
+      \frac14(0,2,0)\\
+      &=(3,\tfrac12,0).
+    \end{aligned}
+  \]
+  因此：
+  \[
+    P(3,\tfrac12,2).
+  \]
+  接下来判断 \(P\) 在上底面的位置。\par
+  计算：
+  \[
+    \begin{aligned}
+      \vec{D_1P}
+      &=(3,-\tfrac32,0),\\
+      \vec{D_1B_1}
+      &=(4,-2,0).
+    \end{aligned}
+  \]
+  于是：
+  \[
+    \vec{D_1P}
+    =
+    \frac34\vec{D_1B_1}.
+  \]
+  所以：
+  \[
+    P\in D_1B_1.
+  \]
+  这是本题第一关键点。\par
+  因为 \(P\) 已在线段 \(D_1B_1\) 上，
+  过 \(C,D_1,P\) 的平面
+  就是过 \(C,D_1,B_1\) 的平面。\par
+  因此截面为：
+  \[
+    \triangle CB_1D_1.
+  \]
+  再计算截面三边：
+  \[
+    \begin{aligned}
+      B_1D_1
+      &=
+      \sqrt{(4-0)^2+(0-2)^2+(2-2)^2}\\
+      &=2\sqrt5,\\
+      D_1C
+      &=
+      \sqrt{(0-4)^2+(2-2)^2+(2-0)^2}\\
+      &=2\sqrt5,\\
+      CB_1
+      &=
+      \sqrt{(4-4)^2+(2-0)^2+(0-2)^2}\\
+      &=2\sqrt2.
+    \end{aligned}
+  \]
+  所以截面周长为：
+  \[
+    \begin{aligned}
+      L
+      &=B_1D_1+D_1C+CB_1\\
+      &=2\sqrt5+2\sqrt5+2\sqrt2\\
+      &=4\sqrt5+2\sqrt2.
+    \end{aligned}
+  \]
+}
+\newcommand{\qSixteenTeacherKey}{%
+  \textbf{第 (1) 问：角平分线定理。}\par
+  由：
+  \[
+    \vec{AD}=\frac15\vec{AC},
+  \]
+  得：
+  \[
+    AD=\frac15AC,
+    \qquad
+    AD:DC=1:4.
+  \]
+  因 \(BD\) 是 \(\angle B\) 的角平分线，
+  由角平分线定理：
+  \[
+    \frac{AB}{BC}
+    =
+    \frac{AD}{DC}
+    =
+    \frac14.
+  \]
+  即：
+  \[
+    \frac ca=\frac14.
+  \]
+  由正弦定理：
+  \[
+    \frac{\sin A}{\sin C}
+    =
+    \frac ac
+    =
+    4.
+  \]
+  所以：
+  \[
+    \sin A:\sin C=4.
+  \]
+  \textbf{第 (2) 问：边角化定角。}\par
+  已知：
+  \[
+    b\cos C+\sqrt3b\sin C=a+c.
+  \]
+  由正弦定理边角化：
+  \[
+    \begin{aligned}
+      \sin B\cos C
+      +\sqrt3\sin B\sin C
+      &=
+      \sin A+\sin C.
+    \end{aligned}
+  \]
+  又：
+  \[
+    A=\pi-(B+C),
+    \qquad
+    \sin A=\sin(B+C).
+  \]
+  因此：
+  \[
+    \sin A
+    =
+    \sin B\cos C+\cos B\sin C.
+  \]
+  代入并整理：
+  \[
+    \sqrt3\sin B\sin C
+    =
+    \cos B\sin C+\sin C.
+  \]
+  因 \(\sin C>0\)，两边同除以 \(\sin C\)，得：
+  \[
+    \sqrt3\sin B-\cos B=1.
+  \]
+  化为辅助角：
+  \[
+    2\sin\left(B-\frac\pi6\right)=1.
+  \]
+  即：
+  \[
+    \sin\left(B-\frac\pi6\right)=\frac12.
+  \]
+  结合 \(B\in(0,\pi)\)，得：
+  \[
+    B=\frac\pi3.
+  \]
+  \textbf{第 (2) 问：角平分线给倒数约束。}\par
+  由面积关系：
+  \[
+    S_{\triangle ABC}
+    =
+    S_{\triangle ABD}
+    +
+    S_{\triangle CBD}.
+  \]
+  即：
+  \[
+    \frac12ac\sin B
+    =
+    \frac12c\cdot BD\sin\frac B2
+    +
+    \frac12a\cdot BD\sin\frac B2.
+  \]
+  代入：
+  \[
+    B=\frac\pi3,\quad
+    BD=2,\quad
+    \sin B=\frac{\sqrt3}{2},\quad
+    \sin\frac B2=\frac12.
+  \]
+  得：
+  \[
+    \frac{\sqrt3}{4}ac
+    =
+    \frac12(a+c).
+  \]
+  整理：
+  \[
+    \frac{\sqrt3}{2}ac=a+c.
+  \]
+  两边除以 \(ac\)：
+  \[
+    \frac1a+\frac1c=\frac{\sqrt3}{2}.
+  \]
+  \textbf{第 (2) 问：基本不等式求最小值。}\par
+  由倒数约束：
+  \[
+    1
+    =
+    \frac2{\sqrt3}
+    \left(\frac1a+\frac1c\right).
+  \]
+  因此：
+  \[
+    \begin{aligned}
+      c+9a
+      &=(c+9a)
+        \frac2{\sqrt3}
+        \left(\frac1a+\frac1c\right)\\
+      &=
+      \frac2{\sqrt3}
+      \left(
+        \frac ca+1+9+\frac{9a}{c}
+      \right)\\
+      &=
+      \frac2{\sqrt3}
+      \left(
+        10+\frac ca+\frac{9a}{c}
+      \right).
+    \end{aligned}
+  \]
+  由基本不等式：
+  \[
+    \frac ca+\frac{9a}{c}
+    \ge
+    2\sqrt{\frac ca\cdot\frac{9a}{c}}
+    =
+    6.
+  \]
+  所以：
+  \[
+    c+9a
+    \ge
+    \frac2{\sqrt3}(10+6)
+    =
+    \frac{32\sqrt3}{3}.
+  \]
+  等号成立当且仅当：
+  \[
+    \frac ca=\frac{9a}{c}
+    \Rightarrow
+    c=3a.
+  \]
+  此时与倒数约束相容，
+  因而最小值可以取到。\par
+  最小值为：
+  \[
+    \frac{32\sqrt3}{3}.
+  \]
+}
+\newcommand{\qNineteenTeacherKey}{%
+  \textbf{第 (1) 问：余弦定理求面积。}\par
+  由余弦定理：
+  \[
+    \begin{aligned}
+      \cos C
+      &=
+      \frac{a^2+b^2-c^2}{2ab}\\
+      &=
+      \frac{1^2+2^2-(\sqrt7)^2}
+           {2\cdot1\cdot2}\\
+      &=-\frac12.
+    \end{aligned}
+  \]
+  因 \(C\in(0,\pi)\)，所以：
+  \[
+    \sin C
+    =
+    \sqrt{1-\cos^2C}
+    =
+    \frac{\sqrt3}{2}.
+  \]
+  因此：
+  \[
+    \begin{aligned}
+      S
+      &=
+      \frac12ab\sin C\\
+      &=
+      \frac12\cdot1\cdot2\cdot\frac{\sqrt3}{2}\\
+      &=
+      \frac{\sqrt3}{2}.
+    \end{aligned}
+  \]
+  \textbf{第 (2) 问：海伦公式证明。}\par
+  从三角形面积公式出发：
+  \[
+    S=\frac12ab\sin C.
+  \]
+  两边平方：
+  \[
+    \begin{aligned}
+      S^2
+      &=
+      \frac14a^2b^2\sin^2C\\
+      &=
+      \frac14a^2b^2(1-\cos^2C).
+    \end{aligned}
+  \]
+  由余弦定理：
+  \[
+    \cos C
+    =
+    \frac{a^2+b^2-c^2}{2ab}.
+  \]
+  代入上式：
+  \[
+    \begin{aligned}
+      S^2
+      &=
+      \frac14a^2b^2
+      \left[
+        1-
+        \left(
+          \frac{a^2+b^2-c^2}{2ab}
+        \right)^2
+      \right]\\
+      &=
+      \frac1{16}
+      \left[
+        (2ab)^2-(a^2+b^2-c^2)^2
+      \right].
+    \end{aligned}
+  \]
+  使用平方差公式：
+  \[
+    \begin{aligned}
+      S^2
+      &=
+      \frac1{16}
+      \bigl(2ab+a^2+b^2-c^2\bigr)\\
+      &\quad\cdot
+      \bigl(2ab-a^2-b^2+c^2\bigr)\\
+      &=
+      \frac1{16}
+      \bigl((a+b)^2-c^2\bigr)
+      \bigl(c^2-(a-b)^2\bigr)\\
+      &=
+      \frac1{16}
+      (a+b+c)(a+b-c)\\
+      &\quad\cdot
+      (c+a-b)(c-a+b).
+    \end{aligned}
+  \]
+  因：
+  \[
+    p=\frac{a+b+c}{2},
+  \]
+  所以：
+  \[
+    \begin{aligned}
+      a+b+c&=2p,\\
+      a+b-c&=2(p-c),\\
+      c+a-b&=2(p-b),\\
+      c-a+b&=2(p-a).
+    \end{aligned}
+  \]
+  代入：
+  \[
+    S^2=p(p-a)(p-b)(p-c).
+  \]
+  因 \(S>0\)，得：
+  \[
+    S=\sqrt{p(p-a)(p-b)(p-c)}.
+  \]
+  \textbf{第 (3) 问：四边形面积最大值。}\par
+  先连接 \(BD\)，把四边形面积转化为两个三角形面积之和：
+  \[
+    S_{ABCD}
+    =
+    S_{\triangle ABD}
+    +
+    S_{\triangle BCD}.
+  \]
+  设：
+  \[
+    BD=x.
+  \]
+  因为 \(\triangle ABD\) 的三边为：
+  \[
+    AB=AD=1,\qquad BD=x,
+  \]
+  所以 \(1<x<2\)。\par
+  其中 \(\triangle ABD\) 是腰长为 \(1\) 的等腰三角形，
+  底边为 \(x\)，高为：
+  \[
+    \sqrt{1-\left(\frac x2\right)^2}.
+  \]
+  因此：
+  \[
+    \begin{aligned}
+      S_{\triangle ABD}
+      &=
+      \frac12\cdot x\cdot
+      \sqrt{1-\left(\frac x2\right)^2}\\
+      &=
+      \frac14x\sqrt{4-x^2}.
+    \end{aligned}
+  \]
+  再看 \(\triangle BCD\)，三边为：
+  \[
+    BC=1,\qquad CD=2,\qquad BD=x.
+  \]
+  由海伦公式，令
+  \[
+    p=\frac{1+2+x}{2}
+    =
+    \frac{x+3}{2}.
+  \]
+  则：
+  \[
+    \begin{aligned}
+      S_{\triangle BCD}
+      &=
+      \sqrt{p(p-1)(p-2)(p-x)}\\
+      &=
+      \frac14
+      \sqrt{(x+3)(x+1)(x-1)(3-x)}\\
+      &=
+      \frac14
+      \sqrt{(x^2-1)(9-x^2)}.
+    \end{aligned}
+  \]
+  因此四边形面积为：
+  \[
+    S(x)
+    =
+    \frac14
+    \left[
+      x\sqrt{4-x^2}
+      +
+      \sqrt{(x^2-1)(9-x^2)}
+    \right],
+    \qquad
+    1<x<2.
+  \]
+  为了看清最大值，令：
+  \[
+    t=x^2,
+    \qquad
+    1<t<4.
+  \]
+  记：
+  \[
+    F(t)=4S(x)
+    =
+    \sqrt{t(4-t)}
+    +
+    \sqrt{(t-1)(9-t)}.
+  \]
+  对 \(t\) 求导，得到：
+  \[
+    F'(t)
+    =
+    \frac{2-t}{\sqrt{t(4-t)}}
+    +
+    \frac{5-t}{\sqrt{(t-1)(9-t)}}.
+  \]
+  当 \(1<t\le2\) 时，
+  两项都非负，
+  所以 \(F(t)\) 单调递增。\par
+  当 \(2<t<4\) 时，
+  令 \(F'(t)=0\)，等价于：
+  \[
+    \frac{5-t}{\sqrt{(t-1)(9-t)}}
+    =
+    \frac{t-2}{\sqrt{t(4-t)}}.
+  \]
+  两边平方并整理：
+  \[
+    (5-t)^2t(4-t)
+    =
+    (t-2)^2(t-1)(9-t).
+  \]
+  化简得：
+  \[
+    t=3.
+  \]
+  且 \(F'(t)\) 在 \(t=3\) 前为正、
+  在 \(t=3\) 后为负，
+  所以最大值在：
+  \[
+    t=3,
+    \qquad
+    x=\sqrt3
+  \]
+  处取得。\par
+  此时：
+  \[
+    \begin{aligned}
+      S_{\max}
+      &=
+      \frac14
+      \left[
+        \sqrt{3(4-3)}
+        +
+        \sqrt{(3-1)(9-3)}
+      \right]\\
+      &=
+      \frac14(\sqrt3+2\sqrt3)\\
+      &=
+      \frac{3\sqrt3}{4}.
+    \end{aligned}
+  \]
+  这条推导的意义是：
+  四边形面积最大不是凭感觉发生在“最圆”的状态，
+  而是由共同对角线 \(BD\) 调节两个三角形面积，
+  最后在 \(BD=\sqrt3\) 时达到平衡。\par
+  \textbf{补充视角。}
+  若学生接受圆内接四边形面积公式，
+  本题也可看作固定四边长面积最大时的圆内接情形：
+  \[
+    S
+    =
+    \sqrt{(p-a)(p-b)(p-c)(p-d)},
+    \qquad
+    p=\frac{a+b+c+d}{2}.
+  \]
+  此时四边长分别为：
+  \[
+    1,\quad1,\quad1,\quad2.
+  \]
+  所以：
+  \[
+    p=\frac{1+1+1+2}{2}
+    =
+    \frac52.
+  \]
+  代入公式：
+  \[
+    \begin{aligned}
+      S_{\max}
+      &=
+      \sqrt{
+        \left(\frac52-1\right)
+        \left(\frac52-1\right)
+        \left(\frac52-1\right)
+        \left(\frac52-2\right)}\\
+      &=
+      \sqrt{
+        \left(\frac32\right)^3
+        \cdot
+        \frac12}\\
+      &=
+      \frac{3\sqrt3}{4}.
+    \end{aligned}
+  \]
+  故四边形面积最大值为：
+  \[
+    \frac{3\sqrt3}{4}.
+  \]
+}
+\setlength{\emergencystretch}{2em}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 第三次月考错题教案}\\
+  \vspace{0.5em}
+  {\large 学生：刘亚博\quad 年级：高一\quad 科目：数学一对一}
+\end{center}
+
+\section{课次目标与时间安排}
+
+\textbf{【学生情况】}
+\begin{itemize}[label=\(\circ\), leftmargin=1.5em, itemsep=0.1em]
+  \item 最近排名上升明显，具备继续冲高的基础。
+  \item 本次暴露的问题不是单纯不会基础公式，而是综合题中“流程不稳、证明不完整、空间角概念混淆”。
+  \item 课堂重点放在规范化流程，而不是机械刷完全部试卷。
+\end{itemize}
+
+\vspace{0.6em}
+\textbf{【120 分钟安排】}\par
+\begingroup
+\small
+\begin{tabularx}{\textwidth}{p{2.1cm}p{3.2cm}X}
+\toprule
+时间 & 内容 & 目标 \\
+\midrule
+0--10 分钟 & 第 12、14 题快讲 & 纠正漏数、漏解，建立订正警觉 \\
+10--30 分钟 & 第 15 题 & 固定向量交点参数法，纠正前后参数不一致 \\
+30--55 分钟 & 第 17 题 & 统一线面角、二面角、空间垂直表达 \\
+55--75 分钟 & 第 13 题 & 建立截面题“定点-定面-算边”流程 \\
+75--95 分钟 & 第 16 题 & 边角化、角平分线关系、基本不等式链条 \\
+95--115 分钟 & 第 18 题 & 公式证明和三角形最值证明严谨性 \\
+115--120 分钟 & 第 19 题布置复练 & 海伦公式证明与四边形面积最值课后补写 \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\section{学生核心诊断}
+
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.3em]
+  \item \textbf{向量题会启动，但不稳。}第 15 题已能用参数法推进，但第 (2) 问又改用错误的 \(\vec{AP}\)，说明“用已求结论继续算”的习惯不足。
+  \item \textbf{空间角正弦余弦混淆。}第 17 题把线面角中高/斜线当成余弦，需要强行建立模型。
+  \item \textbf{截面题缺少第一步。}第 13 题没有先判断 \(P\) 的位置和截面形状，直接算导致错误。
+  \item \textbf{证明题知道结论但缺桥。}第 18、19 题能写出部分结论，但缺严密证明链。
+  \item \textbf{漏解漏分类。}第 12、14 题体现出“只取眼前一个答案”的习惯。
+\end{enumerate}
+
+\section{本课掌握清单}
+
+\textbf{【必须掌握】}\par
+\begingroup
+\small
+\begin{tabularx}{\textwidth}{p{2.2cm}p{3.2cm}X}
+\toprule
+题目 & 能力目标 & 得分公式或得分句 \\
+\midrule
+12、14 & 快速纠偏 & 相等向量必须同时满足方向相同、长度相等；由 \(\sin C\) 求三角形内角时检查 \(C\in(0,\pi)\)。\\
+15 & 向量交点与夹角 & \(P\in AM\Rightarrow \vec{AP}=\lambda\vec{AM}\)；角 \(\angle BPM\) 必须用从 \(P\) 出发的 \(\vec{PB},\vec{PM}\)。\\
+17 & 空间角 & 线面角中 \(\sin\theta=\dfrac{\text{高}}{\text{斜线}}\)，\(\cos\theta=\dfrac{\text{射影}}{\text{斜线}}\)；二面角要写清交线和两面内垂线。\\
+13 & 截面识别 & 先由向量确定 \(P\) 的位置，再判定 \(P,D_1,B_1\) 共线；截面确定后只算截面边长。\\
+16 & 解三角形最值链 & 正弦定理边角化，角平分线关系，倒数约束，基本不等式及等号条件。\\
+18、19 & 证明链 & 公式证明要从定义或基础公式出发；最值题必须给出不等式依据和等号状态。\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\vspace{0.6em}
+\textbf{【可扩展但不抢主线】}\par
+\begin{itemize}[label=\(\circ\), leftmargin=1.5em, itemsep=0.2em]
+  \item 第 14 题扩展直棱柱外接球模型：
+  \[
+    R^2=r_{\text{底}}^2+\left(\frac{h}{2}\right)^2.
+  \]
+  只需让学生记住模型来源，不展开复杂证明。
+  \item 第 17 题可对比坐标法与几何法，但本次优先修正“正弦/余弦对应关系”。
+  \item 第 18、19 题可扩展证明方法，但课堂主线是把关键得分句补完整，不追求炫技。
+\end{itemize}
+
+\section{备课补充：公式来源与数学素养}
+
+\textbf{【相等向量：向量不是线段，是平移量】}\par
+相等向量只比较“方向”和“长度”，不比较位置。\par
+可以给学生一句直观解释：
+向量描述的是从一个点“移动到另一个点”的方式，
+不是这条线段画在纸上的位置。\par
+所以：
+\[
+  \vec{AB}=\vec{DC}
+\]
+表示从 \(A\) 到 \(B\) 的移动，
+和从 \(D\) 到 \(C\) 的移动完全一样。\par
+但：
+\[
+  \vec{AB}\ne\vec{BA},
+\]
+因为方向反了。\par
+这也是第 12 题最容易漏的点：
+学生看到线段长度相等，
+但忘记“箭头方向”才是向量的灵魂。
+
+\vspace{0.6em}
+\textbf{【直棱柱外接球：把空间问题压成一个直角三角形】}\par
+第 14 题的模型：
+\[
+  R^2=r^2+\left(\frac h2\right)^2
+\]
+本质就是勾股定理。\par
+\sphereModelFigure
+图中只抓一个直角三角形：
+底面外心到顶点是 \(r\)，
+球心到底面外心是 \(\frac h2\)，
+球心到顶点是 \(R\)。\par
+底面外心到任一底面顶点距离是 \(r\)，
+球心到这个底面的竖直距离是 \(\frac h2\)，
+球心到顶点的距离就是外接球半径 \(R\)。\par
+课堂可以画一个“球心--底面外心--底面顶点”的直角三角形。
+学生只要看到这个三角形，
+公式就不需要死记。
+
+\vspace{0.6em}
+\textbf{【正弦双解：同一个高度对应两个角】}\par
+在三角形内角范围 \(C\in(0,\pi)\) 内，
+\[
+  \sin C=\frac12
+\]
+有两个角：
+\[
+  C=30^\circ
+  \quad\text{或}\quad
+  C=150^\circ.
+\]
+可以从单位圆解释：
+正弦看的是纵坐标，
+第一象限和第二象限可以有同一个纵坐标。\par
+这能帮助学生理解：
+“正弦值相同”不等于“角相同”。
+
+\vspace{0.6em}
+\textbf{【向量交点参数法：其实是在做坐标唯一性】}\par
+第 15 题的核心不是算参数，
+而是同一个点 \(P\) 用两条线分别表达。\par
+一边来自：
+\[
+  P\in AM,
+  \qquad
+  \vec{AP}=\lambda\vec{AM}.
+\]
+另一边来自：
+\[
+  P\in BN.
+\]
+两种表达写成 \(\vec a,\vec b\) 的组合后，
+比较系数，是因为平面向量基本定理保证：
+一组基底下的坐标表示唯一。\par
+这和解析几何里“同一个点坐标不能前后不一致”是同一件事。
+
+\vspace{0.6em}
+\textbf{【线面角：正弦是高度比，余弦是投影比】}\par
+第 17 题要给学生建立“影子模型”。\par
+一条斜线和一个平面成角 \(\theta\)，
+把斜线投影到平面上：
+\linePlaneAngleFigure
+\[
+  \sin\theta
+  =
+  \frac{\text{点到平面距离}}{\text{斜线长}},
+  \qquad
+  \cos\theta
+  =
+  \frac{\text{投影长}}{\text{斜线长}}.
+\]
+学生把高/斜线当成余弦，
+就是把“高度”和“影子”混了。\par
+课堂可用一句话记：
+“离开平面的高度看正弦，落在平面上的影子看余弦。”
+
+\vspace{0.6em}
+\textbf{【二面角：先找交线，再在两个面内作垂线】}\par
+二面角不是随便找两条线的夹角。\par
+\dihedralAngleFigure
+规范定义是：
+先找到两个平面的交线，
+再在两个半平面内分别作垂直于交线的射线，
+这两条射线的夹角才是二面角。\par
+如果学生只写“这个角就是二面角”，
+得分风险很大；
+必须补一句“二者都垂直于交线”。
+
+\vspace{0.6em}
+\textbf{【截面题：先定面，再算边】}\par
+第 13 题的数学素养点是：
+空间几何不能急着算长度，
+必须先确定“到底截出来的是哪个平面图形”。\par
+\sectionTriangleFigure
+本题第一关键句：
+\[
+  \vec{D_1P}
+  =
+  \frac34\vec{D_1B_1}
+  \Rightarrow
+  P\in D_1B_1.
+\]
+有了这句，截面才确定为：
+\[
+  \triangle CB_1D_1.
+\]
+否则后面算得再认真，
+也可能是在算错误图形。
+
+\vspace{0.6em}
+\textbf{【基本不等式：平均分配时最优】}\par
+第 16 题中的基本不等式：
+\[
+  x+y\ge 2\sqrt{xy}
+\]
+可以解释成：
+当两个正数乘积固定时，
+它们越接近，和越小。\par
+这背后是一种很重要的最值思想：
+极值往往出现在“平衡状态”。\par
+所以等号条件不是附属品，
+而是告诉我们“最优状态长什么样”。
+
+\vspace{0.6em}
+\textbf{【海伦公式：把角消掉，只用三边求面积】}\par
+第 19 题的海伦公式：
+\[
+  S=\sqrt{p(p-a)(p-b)(p-c)}
+\]
+最有意思的地方是：
+三角形面积本来常用
+\[
+  S=\frac12ab\sin C,
+\]
+但这个公式里有角。\par
+海伦公式通过余弦定理把角消掉，
+最后只保留三边。
+这体现了数学中的“消元”思想。\par
+\quadrilateralSplitFigure
+第 (3) 问连接 \(BD\) 的意义，
+就是把一个不熟悉的四边形面积，
+拆成两个熟悉的三角形面积：
+\[
+  S_{ABCD}
+  =
+  S_{\triangle ABD}
+  +
+  S_{\triangle BCD}.
+\]
+可以顺带告诉学生：
+很多经典公式并不是为了炫技，
+而是为了把不方便测量的量消掉，
+换成更容易获得的数据。
+
+\newpage
+
+\section{快讲订正}
+
+\teacherproblem{12}{相等向量计数}
+
+{\small \qLYBZeroOneTwelveStem}
+\begin{center}
+  \qLYBZeroOneTwelveFigure[1.1]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qLYBZeroOneTwelveAnswer}
+\teachblock{标准解答}{\qTwelveTeacherKey}
+
+\switchcolumn
+\teachblock{学生问题}{
+  学生作答约为 \(2\) 对。\par
+  这说明他只捕捉到局部相等关系，
+  没有按方向完整分类。\par
+  主要问题是：
+  对“有向线段表示的向量”理解不够。\par
+  容易漏掉反方向向量，
+  也容易漏掉被中点分出的半向量。
+}
+\teachblock{课堂处理}{
+  快讲订正。\par
+  让学生按四类重新数：
+  水平、竖直、对角线 \(AC\)、对角线 \(BD\)。\par
+  目标不是多算一遍，
+  而是形成“不重不漏”的分类习惯。
+}
+\teachblock{追问}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item \(\vec{AB}\) 和 \(\vec{CD}\) 为什么不相等？
+    \item 为什么 \(\vec{AE}=\vec{EC}\)，但 \(\vec{AE}\neq\vec{CE}\)？
+  \end{enumerate}
+}
+\teachblock{学案思考对应}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 要求学生按四类亲口列出八对：水平 2 对、竖直 2 对、对角线 \(AC\) 2 对、对角线 \(BD\) 2 对。
+    \item 让学生指出“长度相等但方向相反”的线段，强化相等向量的两个条件。
+  \end{enumerate}
+}
+\end{paracol}
+
+\vspace{1em}
+\teacherproblem{14}{直三棱柱外接球}
+
+{\small \qLYBZeroOneFourteenStem}
+\begin{center}
+  \qLYBZeroOneFourteenFigure[1.0]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qLYBZeroOneFourteenAnswer}
+\teachblock{标准解答}{\qFourteenTeacherKey}
+
+\switchcolumn
+\teachblock{学生问题}{
+  学生求出一个角后收住了。\par
+  漏掉 \(C\in(0,\pi)\) 下
+  \(\sin C=\frac12\) 的双解。\par
+  本质问题不是外接球公式，
+  而是由正弦值反求三角形内角时
+  没有检查角的范围。
+}
+\teachblock{课堂处理}{
+  快讲。\par
+  先确认外接球模型能理解：
+  球心在上下底面外心连线中点。\par
+  再强调收尾：
+  正弦值对应两个可能内角。\par
+  让学生口答：
+  “为什么 \(30^\circ\) 和 \(150^\circ\) 都能作为三角形内角？”
+}
+\teachblock{得分公式}{
+  \[
+    \begin{aligned}
+      4\pi R^2&=8\pi \Rightarrow R^2=2,\\
+      R^2&=r^2+\left(\frac{h}{2}\right)^2,\\
+      \frac{AB}{\sin C}&=2r.
+    \end{aligned}
+  \]
+  关键收尾：\(C\in(0,\pi)\)，所以 \(\sin C=\frac12\) 有两个内角解。
+}
+\teachblock{追问}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item \(\sin C=\frac12\) 时，为什么三角形内角不一定只有 \(30^\circ\)？
+    \item 什么情况下由余弦值求角不会有这个双解问题？
+  \end{enumerate}
+}
+\teachblock{学案思考对应}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 让学生复述 \(R,r,h\) 的关系，并说明球心位置。
+    \item 追问正弦双解：为什么 \(30^\circ\) 与 \(150^\circ\) 都符合内角范围。
+  \end{enumerate}
+}
+\end{paracol}
+
+\newpage
+
+\section{核心题一：向量交点与夹角}
+
+\teacherproblem{15}{平面向量三角形交点}
+
+{\small \qLYBZeroOneFifteenStem}
+\begin{center}
+  \qLYBZeroOneFifteenFigure[1.0]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qLYBZeroOneFifteenAnswer}
+\teachblock{标准解答}{\qFifteenTeacherKey}
+
+\switchcolumn
+\teachblock{学生问题}{
+  第 (1) 问基本接近正确结论。\par
+  第 (2) 问出现前后参数不一致。\par
+  前面已得到：
+  \[
+    \vec{AP}
+    =\frac14\vec a+\frac14\vec b.
+  \]
+  后面又误写成：
+  \[
+    \vec{AP}=\frac23\vec{AM}.
+  \]
+  这会导致 \(\vec{PM}\)、数量积、
+  夹角计算全部偏离。\par
+  另有一个隐患：
+  \(\vec{BP}\) 与 \(\vec{PB}\) 方向容易混淆。
+}
+\teachblock{课堂主线}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 先由 \(P\in AM\) 设 \(\vec{AP}=\lambda\vec{AM}\)。
+    \item 再由 \(P\in BN\) 设另一表达式。
+    \item 比较 \(\vec a,\vec b\) 系数，求出唯一交点。
+    \item 第 (2) 问必须使用 \(\vec{PB}\)、\(\vec{PM}\)。
+  \end{enumerate}
+}
+\teachblock{得分点}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 两条直线分别设参数，不能中途更换已求出的 \(\vec{AP}\)。
+    \item 求角时写清顶点：角的两边都从 \(P\) 出发。
+    \item 本题应使用 \(\vec{PB}\) 与 \(\vec{PM}\)。
+    \item 数量积公式要完整写出：
+    \[
+      \cos\theta=\frac{\vec{PB}\cdot\vec{PM}}{|\vec{PB}|\,|\vec{PM}|}.
+    \]
+  \end{enumerate}
+}
+\teachblock{落实建议}{让学生当堂重写第 (2) 问，只允许使用第 (1) 问得到的 \(\vec{AP}\)。}
+\teachblock{学案思考对应}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 对照学生第 (2) 问，检查是否沿用第 (1) 问的 \(\vec{AP}\)。
+    \item 让学生圈出角的顶点 \(P\)，再写 \(\vec{PB},\vec{PM}\)，避免方向写反。
+  \end{enumerate}
+}
+\end{paracol}
+
+\newpage
+
+\section{核心题二：空间角}
+
+\teacherproblem{17}{正方体垂直证明与二面角}
+
+{\small \qLYBZeroOneSeventeenStem}
+\begin{center}
+  \qLYBZeroOneSeventeenFigure[0.95]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qLYBZeroOneSeventeenAnswer}
+\teachblock{标准解答}{\qSeventeenTeacherKey}
+
+\switchcolumn
+\teachblock{学生问题}{
+  第 (1) 问用数量积证明垂直，
+  思路正确。\par
+  第 (2) 问通过体积法求高后，
+  把
+  \[
+    \frac{h}{A_1B_1}
+  \]
+  当作线面角余弦。\par
+  但高与斜线之比对应的是正弦。\par
+  第 (3) 问能构造二面角，
+  但“为什么该角就是二面角”
+  的证明语言不够规范。
+}
+\teachblock{课堂主线}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 第 (1) 问肯定学生用数量积证明垂直的思路。
+    \item 第 (2) 问强调：线面角 \(\sin\theta=\frac{\text{高}}{\text{斜线}}\)。
+    \item 第 (3) 问规范二面角：交线、两面内垂线、夹角。
+  \end{enumerate}
+}
+\teachblock{板书提醒}{
+  \[
+    \begin{aligned}
+      \sin\theta_{\text{线面}}&=\frac{d}{l},\\
+      \cos\theta_{\text{线面}}&=\frac{\text{射影长}}{l}
+    \end{aligned}
+  \]
+  二面角得分句：两条射线分别在两个半平面内，且都垂直于交线，所以它们的夹角就是二面角。
+}
+\teachblock{学案思考对应}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 学生若写高/斜线，要立刻追问这是正弦还是余弦。
+    \item 二面角要求学生口述：交线是哪条，两条垂线分别在哪个面内。
+  \end{enumerate}
+}
+\end{paracol}
+
+\newpage
+
+\section{核心题三：长方体截面}
+
+\teacherproblem{13}{长方体截面周长}
+
+{\small \qLYBZeroOneThirteenStem}
+\begin{center}
+  \qLYBZeroOneThirteenFigure[1.0]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qLYBZeroOneThirteenAnswer}
+\teachblock{关键得分步骤}{\qThirteenTeacherKey}
+
+\switchcolumn
+\teachblock{学生问题}{\qLYBZeroOneThirteenDiagnosis}
+\teachblock{课堂主线}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 建坐标，写出 \(P(3,\frac12,2)\)。
+    \item 判断 \(\vec{D_1P}=\frac34\vec{D_1B_1}\)，所以 \(P\in D_1B_1\)。
+    \item 截面变为 \(\triangle CB_1D_1\)。
+    \item 只算三条边，不算其他空间折线。
+  \end{enumerate}
+}
+\teachblock{落实建议}{让学生先不计算，只画出截面并口述理由。}
+\teachblock{掌握要求}{
+  本题不是计算题，核心是截面识别。
+  先逼学生写：
+  \[
+    \begin{aligned}
+      \vec{D_1P}
+      &=\frac34\vec{D_1B_1}\\
+      &\Rightarrow P\in D_1B_1.
+    \end{aligned}
+  \]
+  这句是第一得分点。
+  没有这句，后面计算容易跑偏。
+}
+\teachblock{学案思考对应}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 若学生先算边长，先打断，要求补出 \(P\in D_1B_1\)。
+    \item 让学生只说截面三边名称：\(CB_1,B_1D_1,D_1C\)。
+  \end{enumerate}
+}
+\end{paracol}
+
+\newpage
+
+\section{综合题：解三角形与证明链}
+
+\teacherproblem{16}{角平分线最值}
+
+{\small \qLYBZeroOneSixteenStem}
+\begin{center}
+  \qLYBZeroOneSixteenFigure[0.9]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qLYBZeroOneSixteenAnswer}
+\teachblock{关键得分步骤}{\qSixteenTeacherKey}
+
+\switchcolumn
+\teachblock{学生问题}{\qLYBZeroOneSixteenDiagnosis}
+\teachblock{课堂主线}{
+边角化推出 \(B=\frac{\pi}{3}\)。\par
+再由角平分线面积关系得到倒数约束。\par
+最后用基本不等式。重点不是计算，而是链条不能断。}
+\teachblock{掌握要求}{
+  必须让学生说清四步：
+  \[
+    \begin{gathered}
+      \text{边角化}
+      \Rightarrow B=\frac{\pi}{3}\\
+      \text{面积关系}
+      \Rightarrow
+      \frac1a+\frac1c=\frac{\sqrt3}{2}\\
+      \text{倒数约束}
+      \Rightarrow
+      \text{基本不等式}
+    \end{gathered}
+  \]
+  等号条件要写，这是最值题收尾得分点。
+}
+\teachblock{学案思考对应}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 检查学生是否能从边角化独立说出 \(B=\frac{\pi}{3}\)。
+    \item 最值收尾必须追问等号条件：为什么 \(c=3a\) 可以取到。
+  \end{enumerate}
+}
+\end{paracol}
+
+\newpage
+
+\teacherproblem{18}{三角恒等变换与最值}
+
+{\small \qLYBZeroOneEighteenStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qLYBZeroOneEighteenAnswer}
+\teachblock{标准解答}{\qEighteenTeacherKey}
+
+\switchcolumn
+\teachblock{学生问题}{
+  第 (2) 问正确，
+  说明学生会做结构化加减。\par
+  第 (1) 问证明两角差余弦公式时
+  不够严谨。\par
+  风险是把待证公式当成已知公式使用。\par
+  第 (3) 问知道最大值是 \(\frac32\)，
+  但证明偏口头化。\par
+  缺少完整的不等式推导和等号条件。
+}
+\teachblock{课堂主线}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 第 (1) 问用单位圆坐标和数量积证明，禁止循环论证。
+    \item 第 (2) 问表扬，说明他会做结构化加减。
+    \item 第 (3) 问补不等式证明，不能只写“等边最大”。
+  \end{enumerate}
+}
+\teachblock{掌握要求}{
+  第 (1) 问用单位圆坐标与数量积证明：
+  \[
+    \begin{aligned}
+      \vec u&=(\cos\alpha,\sin\alpha),\\
+      \vec v&=(\cos\beta,\sin\beta).
+    \end{aligned}
+  \]
+  第 (3) 问必须有不等式依据和等号状态；只写“等边最大”不得满分。
+}
+\teachblock{学案思考对应}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 让学生说明数量积的坐标表示和几何表示分别是什么。
+    \item 第 (3) 问追问不等式来自哪里，等号为何对应等边三角形。
+  \end{enumerate}
+}
+\end{paracol}
+
+\newpage
+
+\teacherproblem{19}{海伦公式与四边形面积}
+
+{\small \qLYBZeroOneNineteenStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qLYBZeroOneNineteenAnswer}
+\teachblock{关键得分步骤}{\qNineteenTeacherKey}
+
+\switchcolumn
+\teachblock{学生问题}{\qLYBZeroOneNineteenDiagnosis}
+\teachblock{课堂处理}{\qLYBZeroOneNineteenTeachingNotes}
+\teachblock{课后任务}{
+  第 (2) 问海伦公式完整证明必须闭卷补写；第 (3) 问不能只记圆内接结论，
+  至少要能复述“连接 \(BD\)、设 \(BD=x\)、写成一个变量面积函数、再求最大值”的推导主线。}
+\teachblock{掌握要求}{
+  海伦公式证明的起点必须是：
+  \[
+    \begin{aligned}
+      S&=\frac12ab\sin C,\\
+      c^2&=a^2+b^2-2ab\cos C.
+    \end{aligned}
+  \]
+  平方、代入、平方差分解是得分链条。\par
+  第 (3) 问的数学直觉不是套公式，
+  而是把四边形面积看成由公共对角线 \(BD\) 控制的两个三角形面积之和。\par
+  课堂至少要让学生说出：
+  \[
+    \begin{aligned}
+      BD&=x,\\
+      S(x)&=
+      S_{\triangle ABD}
+      +S_{\triangle BCD}.
+    \end{aligned}
+  \]
+  最大值来自这个一元函数的平衡点 \(x=\sqrt3\)，
+  不是凭感觉说“圆内接时最大”。
+}
+\teachblock{学案思考对应}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=1.5em]
+    \item 海伦公式证明必须先写 \(S=\frac12ab\sin C\) 和余弦定理。
+    \item 第 (3) 问先问学生为什么要连接 \(BD\)，再让学生尝试用 \(BD=x\) 写出两个三角形面积。
+  \end{enumerate}
+}
+\end{paracol}
+
+\newpage
+
+\section{课后落实}
+
+\textbf{【三天后复练】}
+\begin{enumerate}[label=\arabic*. , leftmargin=2em]
+  \item 第 13 题：必须画出截面，并写出 \(P\in B_1D_1\) 的理由。
+  \item 第 15 题：重做第 (2) 问，只能使用第 (1) 问已求出的 \(\vec{AP}\)。
+  \item 第 17 题：重做第 (2)(3) 问，分别说明所求角对应正弦还是余弦。
+  \item 第 19 题：补写海伦公式完整证明。
+\end{enumerate}
+
+\textbf{【下次跟进】}
+\begin{itemize}[label=\(\circ\), leftmargin=1.5em]
+  \item 若第 15 题仍错，说明向量交点参数法需要单独训练。
+  \item 若第 17 题仍错，下一次先做线面角/二面角专项。
+  \item 若第 18、19 题证明仍不完整，安排“证明链补句”专项训练。
+\end{itemize}
+
+\end{document}

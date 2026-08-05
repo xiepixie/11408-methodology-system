@@ -1,0 +1,861 @@
+% =====================================================
+% 高一数学期末试卷题目与解析 (questions.tex)
+% =====================================================
+
+% --------------------- Q01 ---------------------
+\newcommand{\qOneStem}{若复数 \(z=1-\dfrac{1}{\mathrm{i}}\)（\(\mathrm{i}\) 为虚数单位），则在复平面内，复数 \(z\) 对应的点位于 \hfill （\quad）}
+\newcommand{\qOneOptions}{\mcoptions[4]{第一象限}{第二象限}{第三象限}{第四象限}}
+\newcommand{\qOneAnswer}{A}
+\newcommand{\qOneSolution}{%
+  【解析】\\
+  因为 \(z = 1 - \dfrac{1}{\mathrm{i}} = 1 - \dfrac{\mathrm{i}}{\mathrm{i}^2} = 1 - \dfrac{\mathrm{i}}{-1} = 1 + \mathrm{i}\)。\\
+  复数 \(z\) 对应的点的坐标为 \((1,1)\)，位于第一象限。\\
+  故选 A。%
+}
+\newcommand{\qOneDiagnosis}{\errortag{商的化简错误} 部分学生在处理 \(\dfrac{1}{\mathrm{i}}\) 时，可能漏掉负号或算错 \(\mathrm{i}^2 = -1\)，从而误算为 \(z = 1 - \mathrm{i}\) 导致选 D。}
+\newcommand{\qOneTeachingNotes}{提醒学生直接熟记基础结论：\(\dfrac{1}{\mathrm{i}} = -\mathrm{i}\)，以提高计算速度和准确性。}
+
+% --------------------- Q02 ---------------------
+\newcommand{\qTwoStem}{已知单位向量 \(\boldsymbol{a},\boldsymbol{b}\) 满足 \(\boldsymbol{a} \perp (\boldsymbol{a}+2\boldsymbol{b})\)，则 \(\boldsymbol{a}\) 与 \(\boldsymbol{b}\) 夹角的余弦值为 \hfill （\quad）}
+\newcommand{\qTwoOptions}{\mcoptions[4]{\(-\dfrac{1}{2}\)}{\(0\)}{\(\dfrac{1}{2}\)}{\(\dfrac{\sqrt{3}}{2}\)}}
+\newcommand{\qTwoAnswer}{A}
+\newcommand{\qTwoSolution}{%
+  【解析】\\
+  由 \(\boldsymbol{a} \perp (\boldsymbol{a}+2\boldsymbol{b})\) 得 \(\boldsymbol{a} \cdot (\boldsymbol{a}+2\boldsymbol{b}) = 0\)，\\
+  即 \(\boldsymbol{a}^2 + 2\boldsymbol{a}\cdot\boldsymbol{b} = 0\)。\\
+  因为 \(\boldsymbol{a},\boldsymbol{b}\) 为单位向量，所以 \(\boldsymbol{a}^2 = |\boldsymbol{a}|^2 = 1\)，\(|\boldsymbol{b}| = 1\)。\\
+  代入得 \(1 + 2|\boldsymbol{a}||\boldsymbol{b}|\cos\langle\boldsymbol{a},\boldsymbol{b}\rangle = 1 + 2\cos\langle\boldsymbol{a},\boldsymbol{b}\rangle = 0\)，\\
+  解得 \(\cos\langle\boldsymbol{a},\boldsymbol{b}\rangle = -\dfrac{1}{2}\)。\\
+  故选 A。%
+}
+\newcommand{\qTwoDiagnosis}{\errortag{数量积公式混淆} 易错点在于对向量垂直的充要条件 \(\boldsymbol{a}\cdot\boldsymbol{b}=0\) 记忆模糊，或在展开时忽略了 \(\boldsymbol{a}^2 = |\boldsymbol{a}|^2 = 1\) 的条件。}
+\newcommand{\qTwoTeachingNotes}{强调向量垂直问题第一反应是一律转化为“数量积为 0”，同时注意单位向量隐含的模长为 1。}
+
+% --------------------- Q03 ---------------------
+\newcommand{\qThreeStem}{已知两条不同的直线 \(a,b\)，三个不同的平面 \(\alpha,\beta,\gamma\)，则下列结论正确的是 \hfill （\quad）}
+\newcommand{\qThreeOptions}{%
+  \mcoptions[1]{若 \(a // \beta, a // \alpha\)，则 \(\alpha // \beta\)}%
+  {若 \(\alpha \perp \beta, b \perp \gamma, \beta // \gamma\)，则 \(\alpha \perp b\)}%
+  {若 \(\alpha \perp \beta, \alpha \perp \gamma, \beta \cap \gamma = a\)，则 \(a \perp \alpha\)}%
+  {若 \(a \perp \alpha, b \subset \beta, a \perp b\)，则 \(\alpha \perp \beta\)}%
+}
+\newcommand{\qThreeAnswer}{C}
+\newcommand{\qThreeSolution}{%
+  【解析】\\
+  对于 A：若 \(a // \beta, a // \alpha\)，两个平面 \(\alpha,\beta\) 可能平行，也可能相交，故 A 错误；\\
+  对于 B：若 \(\beta // \gamma, b \perp \gamma\)，则 \(b \perp \beta\)。又 \(\alpha \perp \beta\)，则直线 \(b\) 可能平行于平面 \(\alpha\)，可能在 \(\alpha\) 内，也可能与 \(\alpha\) 斜交或垂直，故 B 错误；\\
+  对于 C：若 \(\alpha \perp \beta, \alpha \perp \gamma\)，且 \(\beta \cap \gamma = a\)，由面面垂直的性质定理可证 \(a \perp \alpha\)，这是标准定理，故 C 正确；\\
+  对于 D：若 \(a \perp \alpha, a \perp b\)，可得 \(b // \alpha\) 或 \(b \subset \alpha\)。又 \(b \subset \beta\)，无法推出 \(\alpha \perp \beta\)，故 D 错误。\\
+  故选 C。%
+}
+\newcommand{\qThreeDiagnosis}{\errortag{空间想象力匮乏} 学生容易在 B 选项和 D 选项中脑补特殊的垂直状态，而忽略了“平行移动”或“线在面内旋转”的动态反例。}
+\newcommand{\qThreeTeachingNotes}{定理辨析小题建议学生使用“长方体模型法”——把直线和平面都放进教室墙角（长方体模型）里寻找反例，可极大地提高判断正确率。}
+
+% --------------------- Q04 ---------------------
+\newcommand{\qFourStem}{已知平面向量 \(\boldsymbol{a}=(5,0),\boldsymbol{b}=(2,-1)\)，则向量 \(\boldsymbol{a}+\boldsymbol{b}\) 在向量 \(\boldsymbol{b}\) 上的投影向量为 \hfill （\quad）}
+\newcommand{\qFourOptions}{\mcoptions[4]{\((6,-3)\)}{\((4,-2)\)}{\((2,-1)\)}{\((5,0)\)}}
+\newcommand{\qFourAnswer}{A}
+\newcommand{\qFourSolution}{%
+  【解析】\\
+  由题意，\(\boldsymbol{a}+\boldsymbol{b} = (5+2, 0-1) = (7,-1)\)。\\
+  又 \(\boldsymbol{b} = (2,-1)\)，所以 \(\boldsymbol{b}^2 = |\boldsymbol{b}|^2 = 2^2 + (-1)^2 = 5\)。\\
+  数量积 \((\boldsymbol{a}+\boldsymbol{b})\cdot\boldsymbol{b} = (7,-1)\cdot(2,-1) = 7\times 2 + (-1)\times(-1) = 15\)。\\
+  根据投影向量的定义，向量 \(\boldsymbol{a}+\boldsymbol{b}\) 在 \(\boldsymbol{b}\) 上的投影向量为：\\
+  \(\dfrac{(\boldsymbol{a}+\boldsymbol{b})\cdot\boldsymbol{b}}{|\boldsymbol{b}|^2}\boldsymbol{b} = \dfrac{15}{5}\boldsymbol{b} = 3\boldsymbol{b} = 3(2,-1) = (6,-3)\)。\\
+  故选 A。%
+}
+\newcommand{\qFourDiagnosis}{\errortag{概念混淆} 容易把“投影”和“投影向量”混淆。前者是一个实数（即投影长度带正负号），后者是一个与共线方向同向或反向 of 向量。若算成投影数 \(3\sqrt{5}\) 会无从选起。}
+\newcommand{\qFourTeachingNotes}{强调公式：向量 \(\boldsymbol{x}\) 在 \(\boldsymbol{y}\) 上的投影为 \(\dfrac{\boldsymbol{x}\cdot\boldsymbol{y}}{|\boldsymbol{y}|}\)（实数）；投影向量为 \(\left(\dfrac{\boldsymbol{x}\cdot\boldsymbol{y}}{|\boldsymbol{y}|^2}\right)\boldsymbol{y}\)（向量）。}
+
+% --------------------- Q05 ---------------------
+\newcommand{\qFiveStem}{风筝起源于春秋时期，是中国传统手工艺的代表，被称为人类最早的飞行器. 如图所示，在一个简易风筝面的示意图中，\(AC\) 垂直平分 \(BD\)，\(E\) 为垂足，\(AC=4AE, CD=\sqrt{13}AE\)，则 \(\tan \angle ADC =\) \hfill （\quad）}
+\newcommand{\qFiveOptions}{\mcoptions[4]{\(-8\)}{\(-\dfrac{4}{7}\)}{\(\dfrac{4}{7}\)}{\(8\)}}
+\newcommand{\qFiveFigure}[1][scale=0.95]{%
+  \begin{tikzpicture}[#1, >=stealth, line cap=round, line join=round]
+    \coordinate (A) at (0, 1.2);
+    \coordinate (B) at (-2.4, 0);
+    \coordinate (C) at (0, -3.6);
+    \coordinate (D) at (2.4, 0);
+    \coordinate (E) at (0, 0);
+    
+    \draw[thick] (A) -- (B) -- (C) -- (D) -- cycle;
+    \draw[thick] (A) -- (C);
+    \draw[thick] (B) -- (D);
+    
+    % 直角符号
+    \draw (0, 0.2) -- (0.2, 0.2) -- (0.2, 0);
+    
+    \fill (A) circle (1.2pt) node[above] {\small $A$};
+    \fill (B) circle (1.2pt) node[left] {\small $B$};
+    \fill (C) circle (1.2pt) node[below] {\small $C$};
+    \fill (D) circle (1.2pt) node[right] {\small $D$};
+    \fill (E) circle (1.2pt) node[below left] {\small $E$};
+  \end{tikzpicture}
+}
+\newcommand{\qFiveAnswer}{D}
+\newcommand{\qFiveSolution}{%
+  【解析】\\
+  设 \(AE=1\)。因为 \(AC=4AE\)，所以 \(AC=4\)，从而 \(EC = AC - AE = 3\)。\\
+  因为 \(CD = \sqrt{13}AE\)，所以 \(CD = \sqrt{13}\)。\\
+  在 Rt\(\triangle CED\) 中，由勾股定理得 \(ED = \sqrt{CD^2 - EC^2} = \sqrt{13 - 3^2} = 2\)。\\
+  由已知 \(AC\) 垂直平分 \(BD\)，所以 \(\angle ADE\) 与 \(\angle CDE\) 均为直角三角形内的锐角。\\
+  在 Rt\(\triangle AED\) 中，\(\tan\angle ADE = \dfrac{AE}{ED} = \dfrac{1}{2}\)；\\
+  在 Rt\(\triangle CED\) 中，\(\tan\angle CDE = \dfrac{EC}{ED} = \dfrac{3}{2}\)。\\
+  因为 \(\angle ADC = \angle ADE + \angle CDE\)，\\
+  由两角和的正切公式得：\\
+  \(\tan\angle ADC = \tan(\angle ADE + \angle CDE) = \dfrac{\tan\angle ADE + \tan\angle CDE}{1 - \tan\angle ADE \cdot \tan\angle CDE}\)\\
+  \(= \dfrac{\dfrac{1}{2} + \dfrac{3}{2}}{1 - \dfrac{1}{2} \times \dfrac{3}{2}} = \dfrac{2}{1 - \dfrac{3}{4}} = \dfrac{2}{\dfrac{1}{4}} = 8\)。\\
+  故选 D。%
+}
+\newcommand{\qFiveDiagnosis}{\errortag{设元障碍} 面对比例条件 \(AC=4AE\) 觉得无从下手。应当引导学生直接“设 \(AE=1\)”进行数值简化计算，避免引入过多字母。}
+\newcommand{\qFiveTeachingNotes}{这是一道平面几何与三角恒等变换的结合小题。计算准确无误，正切值为正说明 \(\angle ADC\) 确实是个锐角。}
+
+% --------------------- Q06 ---------------------
+\newcommand{\qSixStem}{已知一个古典概型的样本空间 \(\Omega\) 和事件 \(A,B\)，满足 \(n(\Omega)=10, n(A)=4, n(B)=3, n(A \cup B)=6\)（\(n\) 表示事件包含的样本点的个数），则下列说法正确的是 \hfill （\quad）}
+\newcommand{\qSixOptions}{\mcoptions[4]{\(P(\overline{B})=\dfrac{3}{10}\)}{\(P(AB)=\dfrac{1}{10}\)}{事件 \(A\) 与事件 \(B\) 互斥}{事件 \(A\) 与事件 \(B\) 独立}}
+\newcommand{\qSixAnswer}{B}
+\newcommand{\qSixSolution}{%
+  【解析】\\
+  由古典概型概率公式可知：\\
+  \(P(A) = \dfrac{n(A)}{n(\Omega)} = \dfrac{4}{10} = 0.4\)，\(P(B) = \dfrac{n(B)}{n(\Omega)} = \dfrac{3}{10} = 0.3\)。\\
+  则 \(P(\overline{B}) = 1 - P(B) = 1 - 0.3 = 0.7 = \dfrac{7}{10}\)，故 A 错误；\\
+  因为 \(n(A \cup B) = n(A) + n(B) - n(A \cap B)\)，\\
+  所以 \(6 = 4 + 3 - n(A \cap B) \implies n(A \cap B) = 1\)。\\
+  so \(P(AB) = P(A \cap B) = \dfrac{1}{10}\)，故 B 正确；\\
+  因为 \(n(A \cap B) = 1 \neq 0\)，即事件 \(A\) 与事件 \(B\) 可以同时发生，故不互斥，C 错误；\\
+  又 \(P(A)P(B) = 0.4 \times 0.3 = 0.12 \neq P(AB) = 0.1\)，所以事件 \(A\) 与事件 \(B\) 不独立，D 错误。\\
+  故选 B。%
+}
+\newcommand{\qSixDiagnosis}{\errortag{互斥与独立混淆} 这是经典错因。学生容易凭直觉认为“不相交就是独立”或把二者等同。需要再次强调：互斥是指不可能同时发生（\(P(AB)=0\)），独立是指概率无影响（\(P(AB)=P(A)P(B)\)）。}
+\newcommand{\qSixTeachingNotes}{通过具体的古典概型计数问题来辨析互斥和独立是最有说服力的方法。让学生列出样本点数，代入公式即可。}
+
+% --------------------- Q07 ---------------------
+\newcommand{\qSevenStem}{某校举行了交通安全知识主题演讲比赛，甲、乙两位同学演讲后，\(6\) 位评委对他们的演讲分别进行打分（满分 \(100\) 分），得到如图所示的统计图，则 \hfill （\quad）}
+\newcommand{\qSevenOptions}{%
+  \mcoptions[1]{甲得分的极差大于乙得分的极差}%
+  {甲得分的中位数小于乙得分的中位数}%
+  {甲得分的上四分位数大于乙得分的上四分位数}%
+  {甲得分的方差大于乙得分的方差}%
+}
+\newcommand{\qSevenFigure}[1][scale=0.85]{%
+  \begin{tikzpicture}[#1, >=stealth]
+    \draw[thick, ->] (0,0) -- (7.5, 0) node[right] {评委编号};
+    \draw[thick, ->] (0,0) -- (0, 5.5) node[above] {分数};
+    
+    % Axis break on Y-axis
+    \draw[thick] (0,0) -- (0,0.4);
+    \draw[thick] (0,0.8) -- (0,5.5);
+    \draw[thick] (-0.15, 0.4) -- (0.15, 0.5) -- (-0.15, 0.7) -- (0.15, 0.8);
+    
+    \node[below left, font=\small] at (0,0) {0};
+    
+    % Y-ticks and grid lines
+    \draw (0, 1.5) -- (-0.1, 1.5) node[left, font=\small] {75};
+    \draw (0, 2.5) -- (-0.1, 2.5) node[left, font=\small] {80};
+    \draw (0, 3.5) -- (-0.1, 3.5) node[left, font=\small] {85};
+    \draw (0, 4.5) -- (-0.1, 4.5) node[left, font=\small] {90};
+    
+    \draw[dashed, gray!40] (0, 1.5) -- (7.0, 1.5);
+    \draw[dashed, gray!40] (0, 2.5) -- (7.0, 2.5);
+    \draw[dashed, gray!40] (0, 3.5) -- (7.0, 3.5);
+    \draw[dashed, gray!40] (0, 4.5) -- (7.0, 4.5);
+    
+    % X-ticks
+    \foreach \x in {1, 2, 3, 4, 5, 6} {
+      \draw (\x, 0) -- (\x, -0.1) node[below, font=\small] {\x};
+    }
+    
+    % Map score to Y-coord
+    \coordinate (A1) at (1, 2.7);
+    \coordinate (A2) at (2, 2.7);
+    \coordinate (A3) at (3, 3.9);
+    \coordinate (A4) at (4, 3.1);
+    \coordinate (A5) at (5, 2.9);
+    \coordinate (A6) at (6, 3.3);
+    
+    \draw[thick] (A1) -- (A2) -- (A3) -- (A4) -- (A5) -- (A6);
+    
+    \foreach \p/\val in {A1/81, A2/81, A3/87, A4/83, A5/82, A6/84} {
+      \fill (\p) circle (2pt);
+      \node[above, font=\small] at (\p) {\val};
+    }
+    
+    % 乙 points
+    \coordinate (B1) at (1, 2.5);
+    \coordinate (B2) at (2, 2.1);
+    \coordinate (B3) at (3, 2.7);
+    \coordinate (B4) at (4, 3.7);
+    \coordinate (B5) at (5, 2.3);
+    \coordinate (B6) at (6, 2.9);
+    
+    \draw[thick, dotted] (B1) -- (B2) -- (B3) -- (B4) -- (B5) -- (B6);
+    
+    \foreach \p/\val in {B1/80, B2/78, B3/81, B4/86, B5/79, B6/82} {
+      \filldraw[fill=white, draw=black, thick] (\p) circle (2.2pt);
+      \node[below, font=\small] at (\p) {\val};
+    }
+    
+    % Legend
+    \draw[thick] (2.0, -0.9) -- (2.8, -0.9) node[right, font=\small] {甲};
+    \fill (2.4, -0.9) circle (2pt);
+    
+    \draw[thick, dotted] (4.2, -0.9) -- (5.0, -0.9) node[right, font=\small] {乙};
+    \filldraw[fill=white, draw=black, thick] (4.6, -0.9) circle (2.2pt);
+  \end{tikzpicture}
+}
+\newcommand{\qSevenAnswer}{C}
+\newcommand{\qSevenSolution}{%
+  【解析】\\
+  首先从折线图中提取甲、乙两人的得分数据：\\
+  甲得分：\(81, 81, 87, 83, 82, 84\)，从小到大排序为：\(81, 81, 82, 83, 84, 87\)；\\
+  乙得分：\(80, 78, 81, 86, 79, 82\)，从小到大排序为：\(78, 79, 80, 81, 82, 86\)。\\
+  下面对各选项进行计算分析：\\
+  对于 A：甲极差为 \(87 - 81 = 6\)，乙极差为 \(86 - 78 = 8\)，甲的极差小于乙，故 A 错误；\\
+  对于 B：甲中位数为 \(\dfrac{82+83}{2} = 82.5\)，乙中位数为 \(\dfrac{80+81}{2} = 80.5\)，甲的中位数大于乙，故 B 错误；\\
+  对于 C：样本容量为 6。计算上四分位数位置 \(6 \times 75\% = 4.5\)，不是整数，所以上四分位数为第 5 个数。\\
+  甲的上四分位数为第 5 个数即 \(84\)；乙的上四分位数为第 5 个数即 \(82\)。\(84 > 82\)，甲大于乙，故 C 正确；\\
+  对于 D：由折线起伏和数值分布可知，甲得分明显更集中，乙得分更分散。\\
+  计算均值：\(\bar{x}_{\text{甲}} = 83\)，\(\bar{x}_{\text{乙}} = 81\)。\\
+  方差：\(s^2_{\text{甲}} = \dfrac{1}{6}[2^2 + 2^2 + 1^2 + 0^2 + 1^2 + 4^2] = \dfrac{26}{6} = 4.33\)；\\
+  \(s^2_{\text{乙}} = \dfrac{1}{6}[1^2 + 3^2 + 0^2 + 5^2 + 2^2 + 1^2] = \dfrac{40}{6} = 6.67\)。\\
+  甲的方差小于乙的方差，故 D 错误。\\
+  故选 C。%
+}
+\newcommand{\qSevenDiagnosis}{\errortag{读图数据抄错} 部分学生在读取折线图时可能将评委 4 乙的得分 \(86\) 和甲的得分 \(83\) 看反。或者对“上四分位数”的 6 项求法不准，导致无法确定是 82 还是 84。}
+\newcommand{\qSevenTeachingNotes}{上四分位数的百分位数算法是高中新教材的必考考点：先用 \(n \times p\%\)，若非整数则向上取整，对应的项就是该分位数。若为整数，则取该项与下一项的平均值。}
+
+% --------------------- Q08 ---------------------
+\newcommand{\qEightStem}{刻画空间弯曲性是空间几何研究的重要内容，我们常用曲率来刻画空间弯曲性，规定：多面体顶点的曲率等于 \(2\pi\) 与多面体在该点的面角之和的差（多面体的面角的角度用弧度制）. 例如：正四面体每个顶点均有 \(3\) 个面角，每个面角均为 \(\dfrac{\pi}{3}\)，则其各个顶点的曲率均为 \(2\pi-3\times\dfrac{\pi}{3}=\pi\). 若正四棱锥 \(S-ABCD\) 的侧面与底面的夹角的正切值为 \(\sqrt{2}\)，则正四棱锥 \(S-ABCD\) 在顶点 \(A\) 处的曲率为 \hfill （\quad）}
+\newcommand{\qEightOptions}{\mcoptions[4]{\(\dfrac{\pi}{3}\)}{\(\pi\)}{\(\dfrac{3\pi}{4}\)}{\(\dfrac{5\pi}{6}\)}}
+\newcommand{\qEightAnswer}{D}
+\newcommand{\qEightSolution}{%
+  【解析】\\
+  在正四棱锥 \(S-ABCD\) 中，底面 \(ABCD\) 是正方形。\\
+  在顶点 \(A\) 处，共有 \(3\) 个面角：底面角 \(\angle BAD\)，以及两个侧面角 \(\angle SAB\) 与 \(\angle SAD\)。\\
+  因为底面为正方形，所以 \(\angle BAD = \dfrac{\pi}{2}\)。由对称性可知，侧面角 \(\angle SAB = \angle SAD\)。\\
+  设底面正方形边长为 \(2\)。设底面中心为 \(O\)，取边 \(AB\) 的中点为 \(E\)，连接 \(SO, OE, SE\)。\\
+  因为 \(SO \perp\) 平面 \(ABCD\)，\(OE \perp AB\)，由三垂线定理知 \(SE \perp AB\)，\\
+  \(\angle SEO\) 就是侧面与底面所成的二面角的平面角。\\
+  已知 \(\tan\angle SEO = \sqrt{2}\)。在 Rt\(\triangle SOE\) 中，\(OE = 1\)，所以高 \(SO = \tan\angle SEO \times OE = \sqrt{2}\)。\\
+  由勾股定理得斜高 \(SE = \sqrt{SO^2 + OE^2} = \sqrt{2 + 1} = \sqrt{3}\)。\\
+  在 Rt\(\triangle SEA\) 中，\(AE = 1\)，所以侧棱长 \(SA = \sqrt{SE^2 + AE^2} = \sqrt{3 + 1} = 2\)。\\
+  在 Rt\(\triangle SEA\) 中，因为 \(\angle SEA = \dfrac{\pi}{2}\)，所以 \(\cos\angle SAE = \dfrac{AE}{SA} = \dfrac{1}{2}\)。\\
+  因为点 E 在线段 AB 上，所以 \(\angle SAB = \angle SAE\)，则 \(\cos\angle SAB = \dfrac{1}{2}\)。\\
+  因为 \(\angle SAB \in (0,\pi)\)，所以 \(\angle SAB = \dfrac{\pi}{3}\)。\\
+  同理 \(\angle SAD = \dfrac{\pi}{3}\)。\\
+  所以在顶点 \(A\) 处的所有面角之和为 \(\angle BAD + \angle SAB + \angle SAD = \dfrac{\pi}{2} + \dfrac{\pi}{3} + \dfrac{\pi}{3} = \dfrac{7\pi}{6}\)。\\
+  根据曲率规定，正四棱锥在顶点 \(A\) 处的曲率为：\\
+  \(2\pi - \dfrac{7\pi}{6} = \dfrac{5\pi}{6}\)。\\
+  故选 D。%
+}
+\newcommand{\qEightDiagnosis}{\errortag{新定义审题不清} 很多学生把“在顶点 A 处的面角”看成“在顶点 S 处的侧面角”，或者算成了侧面与底面的二面角。必须强调面角就是该顶点所在的各个面多边形的内角。}
+\newcommand{\qEightTeachingNotes}{新定义题的关键在于“剥离概念外壳，还原几何本质”。引导学生画出正四棱锥并分别标出底面角与两个侧面三角形的内角，建立斜高、高和底面半径的 Rt\(\triangle\) 关系。}
+
+% --------------------- Q09 ---------------------
+\newcommand{\qNineStem}{已知 \(\mathrm{i}\) 为虚数单位，\(z \in \mathbf{C}\)，以下选项正确的是 \hfill （\quad）}
+\newcommand{\qNineOptions}{%
+  \mcoptions[1]{若 \(z+2\mathrm{i}=2+\mathrm{i}\)，则 \(z\) 的虚部为 \(-1\)}%
+  {若 \(\dfrac{\bar{z}}{z} \in \mathbf{R}\)，则 \(z \in \mathbf{R}\)}%
+  {设 \(z=\dfrac{1}{1+\mathrm{i}}\)，则 \(|z|=\dfrac{\sqrt{2}}{2}\)}%
+  {若 \(1 \leqslant |z| \leqslant 2\)，则 \(z\) 在复平面内所对应的点的集合所构成的图形面积为 \(\pi\)}%
+}
+\newcommand{\qNineAnswer}{AC}
+\newcommand{\qNineSolution}{%
+  【解析】\\
+  对于 A：由 \(z+2\mathrm{i}=2+\mathrm{i}\) 得 \(z=2-\mathrm{i}\)，其虚部为 \(-1\)，故 A 正确；\\
+  对于 B：设 \(z = x + y\mathrm{i}\) (\(x,y \in \mathbf{R}\)) 且 \(z \neq 0\)。\\
+  \(\dfrac{\bar{z}}{z} = \dfrac{x - y\mathrm{i}}{x + y\mathrm{i}} = \dfrac{(x-y\mathrm{i})^2}{x^2+y^2} = \dfrac{x^2-y^2 - 2xy\mathrm{i}}{x^2+y^2}\)。\\
+  若 \(\dfrac{\bar{z}}{z} \in \mathbf{R}\)，则 \(2xy = 0 \implies x=0\) 或 \(y=0\)。\\
+  当 \(y=0\) 时，\(z \in \mathbf{R}\)；当 \(x=0\) 时，\(z\) 为纯虚数。\\
+  例如，若 \(z = \mathrm{i}\)，则 \(\dfrac{\bar{z}}{z} = \dfrac{-\mathrm{i}}{\mathrm{i}} = -1 \in \mathbf{R}\)，但 \(z \notin \mathbf{R}\)，故 B 错误；\\
+  对于 C：\(|z| = \left|\dfrac{1}{1+\mathrm{i}}\right| = \dfrac{1}{|1+\mathrm{i}|} = \dfrac{1}{\sqrt{2}} = \dfrac{\sqrt{2}}{2}\)，故 C 正确；\\
+  对于 D：若 \(1 \leqslant |z| \leqslant 2\)，则 \(z\) 在复平面内对应的点集构成一个圆环（内半径为 1，外半径为 2）。\\
+  其面积为 \(\pi \times 2^2 - \pi \times 1^2 = 3\pi\)，故 D 错误。\\
+  综上所述，正确的选项为 AC。%
+}
+\newcommand{\qNineDiagnosis}{\errortag{纯虚数漏判} B选项是极易错点，学生往往默认为非零实数才能使共轭与自身的商为实数，遗漏了“纯虚数”这一重要反例。D选项中圆环面积公式计算出错（误以为半径差平方为 1）。}
+\newcommand{\qNineTeachingNotes}{复数多选题是新高考必考题型，建议利用特殊值验证法（如代入 \(z=\mathrm{i}\) 检验 B 选项）快速判断真伪，提升选择题效率。}
+
+% --------------------- Q10 ---------------------
+\newcommand{\qTenStem}{下列说法正确的是 \hfill （\quad）}
+\newcommand{\qTenOptions}{%
+  \mcoptions[1]{用简单随机抽样从含有 \(50\) 个个体的总体中抽取一个容量为 \(10\) 的样本，个体 \(m\) 被抽到的概率是 \(0.2\)}%
+  {从 \(2,3,8,9\) 中任取两个不同的数字，分别记为 \(a,b\)，则 \(\log_a b\) 为整数的概率是 \(\dfrac{1}{6}\)}%
+  {从装有 \(3\) 个红球和 \(2\) 个黑球的口袋内任取 \(2\) 个球，至多有一个黑球与至少有一个红球是两个对立的事件}%
+  {若样本数据 \(x_1,x_2,\cdots,x_{10}\) 的标准差为 \(8\)，则数据 \(2x_1-1,2x_2-1,\cdots,2x_{10}-1\) 的标准差为 \(16\)}%
+}
+\newcommand{\qTenAnswer}{ABD}
+\newcommand{\qTenSolution}{%
+  【解析】\\
+  对于 A：每个个体被抽到的概率均为 \(\dfrac{10}{50} = 0.2\)，故 A 正确；\\
+  对于 B：从 \(\{2,3,8,9\}\) 中抽取两个不同数字共计有 \(A_4^2 = 12\) 种可能。\\
+  要使 \(\log_a b\) 为整数，满足条件的数对 \((a,b)\) 有：\\
+  \((2,8)\)（\(\log_2 8 = 3\)）以及 \((3,9)\)（\(\log_3 9 = 2\)），共 2 种。\\
+  所以概率为 \(\dfrac{2}{12} = \dfrac{1}{6}\)，故 B 正确；\\
+  对于 C：从 3 红 2 黑中任取 2 球，所有可能结果为：\(2\)红，\(1\)红\(1\)黑，\(2\)黑。\\
+  “至多一个黑球”包含的事件为：\(2\)红，\(1\)红\(1\)黑；\\
+  “至少一个红球”包含的事件为：\(2\)红，\(1\)红\(1\)黑。\\
+  它们是完全相同的事件，其对立事件为“\(2\)个都是黑球”，故 C 错误；\\
+  对于 D：若数据 \(x_i\) 的标准差为 \(D\)，则 \(kx_i+b\) 的标准差为 \(|k|D\)。\\
+  因此新数据的标准差为 \(2 \times 8 = 16\)，故 D 正确。\\
+  综上所述，正确的选项为 ABD。%
+}
+\newcommand{\qTenDiagnosis}{\errortag{对立事件判定错} C 选项是经典误区。学生容易直观把“至多有……”和“至少有……”看作对立事件，必须让他们列出全集并寻找补集关系来证伪。}
+\newcommand{\qTenTeachingNotes}{提醒学生注意标准差的线性变换公式：\(s_{kx+b} = |k|s_x\)，方差则是 \(s^2_{kx+b} = k^2 s^2_x\)。这一性质在选择填空题中极为高频。}
+
+% --------------------- Q11 ---------------------
+\newcommand{\qElevenStem}{如图，在棱长为 \(1\) 的正方体 \(ABCD-A_1B_1C_1D_1\) 中，点 \(P\) 满足 \(\overrightarrow{BP} = \lambda \overrightarrow{BC} + \mu \overrightarrow{BB_1}\)，其中 \(\lambda \in [0,1], \mu \in [0,1]\)，则 \hfill （\quad）}
+\newcommand{\qElevenOptions}{%
+  \mcoptions[1]{当 \(|AP|=\sqrt{2}\) 时，点 \(P\) 的轨迹长为 \(\dfrac{\pi}{2}\)}%
+  {当 \(\lambda=\dfrac{1}{2}\) 时，有且仅有一个点 \(P\)，使得 \(AP \perp\) 平面 \(A_1BD\)}%
+  {当 \(\mu=\dfrac{1}{2}\) 时，不存在点 \(P\)，使得 \(A_1P // AB\)}%
+  {当 \(\lambda+\mu=\dfrac{1}{2}\) 时，三棱锥 \(P-A_1BD\) 的体积为定值}%
+}
+\newcommand{\qElevenFigure}[1][scale=1.4]{%
+  \begin{tikzpicture}[#1, line join=round, line cap=round]
+    \coordinate (D) at (0,0);
+    \coordinate (C) at (2,0);
+    \coordinate (B) at (2.6, 0.5);
+    \coordinate (A) at (0.6, 0.5);
+    \coordinate (D1) at (0, 2);
+    \coordinate (C1) at (2, 2);
+    \coordinate (B1) at (2.6, 2.5);
+    \coordinate (A1) at (0.6, 2.5);
+    
+    \draw[dashed, gray] (A) -- (D);
+    \draw[dashed, gray] (A) -- (B);
+    \draw[dashed, gray] (A) -- (A1);
+    
+    \draw[thick] (D) -- (C) -- (B);
+    \draw[thick] (D1) -- (C1) -- (B1) -- (A1) -- cycle;
+    \draw[thick] (D) -- (D1);
+    \draw[thick] (C) -- (C1);
+    \draw[thick] (B) -- (B1);
+    
+    % 标出 P 动点在 BCC1B1 上的范围
+    \fill[gray!15, opacity=0.6] (B) -- (C) -- (C1) -- (B1) -- cycle;
+    \draw[dashed, gray] (B) -- (C1);
+    
+    \node[below left] at (D) {$D$};
+    \node[below] at (C) {$C$};
+    \node[below right] at (B) {$B$};
+    \node[left] at (A) {$A$};
+    \node[above left] at (D1) {$D_1$};
+    \node[above] at (C1) {$C_1$};
+    \node[above right] at (B1) {$B_1$};
+    \node[above] at (A1) {$A_1$};
+  \end{tikzpicture}
+}
+\newcommand{\qElevenAnswer}{ACD}
+\newcommand{\qElevenSolution}{%
+  【解析】\\
+  由 \(\overrightarrow{BP} = \lambda \overrightarrow{BC} + \mu \overrightarrow{BB_1}\) 知点 \(P\) 在正方体的侧面 \(BCC_1B_1\) 上移动。\\
+  以 \(B\) 为坐标原点，建立空间直角坐标系 \(B-xyz\)（具体地，\(\overrightarrow{BC}\) 为 \(x\) 轴，\(\overrightarrow{BA}\) 为 \(y\) 轴，\(\overrightarrow{BB_1}\) 为 \(z\) 轴）。\\
+  则 \(B(0,0,0)\)，\(C(1,0,0)\)，\(A(0,1,0)\)，\(B_1(0,0,1)\)，\(P(\lambda, 0, \mu)\)，其中 \(\lambda,\mu \in [0,1]\)。\\
+  对于 A：因为 \(|AP| = \sqrt{\lambda^2 + (0-1)^2 + \mu^2} = \sqrt{\lambda^2 + 1 + \mu^2}\)。\\
+  当 \(|AP| = \sqrt{2}\) 时，\(\lambda^2 + 1 + \mu^2 = 2 \implies \lambda^2 + \mu^2 = 1\)。\\
+  因为 \(\lambda,\mu \in [0,1]\)，所以在侧面内点 \(P\) 的轨迹是以 \(B\) 为圆心、\(1\) 为半径的四分之一圆弧，其弧长为 \(\dfrac{1}{4} \times 2\pi \times 1 = \dfrac{\pi}{2}\)，故 A 正确；\\
+  对于 B：设平面 \(A_1BD\) 的法向量为 \(\boldsymbol{n} = (x,y,z)\)。\\
+  因为 \(A_1(0,1,1)\)，\(D(1,1,0)\)，所以 \(\overrightarrow{BA_1} = (0,1,1)\)，\(\overrightarrow{BD} = (1,1,0)\)。\\
+  由 \(\begin{cases} \boldsymbol{n}\cdot\overrightarrow{BA_1} = y+z = 0 \\ \boldsymbol{n}\cdot\overrightarrow{BD} = x+y = 0 \end{cases}\)，令 \(y=-1\)，得 \(\boldsymbol{n} = (1,-1,1)\)。\\
+  若 \(\lambda = \dfrac{1}{2}\)，则 \(P\left(\dfrac{1}{2}, 0, \mu\right)\)。所以 \(\overrightarrow{AP} = \left(\dfrac{1}{2}, -1, \mu\right)\)。\\
+  若 \(AP \perp\) 平面 \(A_1BD\)，则 \(\overrightarrow{AP} // \boldsymbol{n}\)，即 \(\dfrac{1/2}{1} = \dfrac{-1}{-1} = \dfrac{\mu}{1}\)，\\
+  解得 \(\dfrac{1}{2} = 1\)，矛盾。故不存在点 \(P\) 使得 \(AP \perp\) 平面 \(A_1BD\)，故 B 错误；\\
+  对于 C：若 \(\mu = \dfrac{1}{2}\)，则 \(P\left(\lambda, 0, \dfrac{1}{2}\right)\)。\\
+  因为 \(A_1(0,1,1)\)，所以 \(\overrightarrow{A_1P} = \left(\lambda, -1, -\dfrac{1}{2}\right)\)。\\
+  因为 \(AB // y\) 轴，其方向向量可设为 \(\boldsymbol{v} = (0,-1,0)\)。\\
+  若 \(A_1P // AB\)，则 \(\overrightarrow{A_1P}\) 与 \(\boldsymbol{v}\) 共线，这要求 \(\lambda = 0\) 且 \(-\dfrac{1}{2} = 0\)，显然不可能。\\
+  故不存在点 \(P\) 使得 \(A_1P // AB\)，故 C 正确；\\
+  对于 D：平面 \(A_1BD\) 的方程为 \(x-y+z=0\)。\\
+  对于 \(P(\lambda, 0, \mu)\)，点 \(P\) 到平面 \(A_1BD\) 的距离为 \(d = \dfrac{|\lambda - 0 + \mu|}{\sqrt{1^2 + (-1)^2 + 1^2}} = \dfrac{\lambda+\mu}{\sqrt{3}}\)。\\
+  当 \(\lambda+\mu = \dfrac{1}{2}\) 时，距离 \(d = \dfrac{1}{2\sqrt{3}}\) 为定值。\\
+  因为 \(\triangle A_1BD\) 的面积也是定值，所以三棱锥 \(P-A_1BD\) 的体积为定值，故 D 正确。\\
+  综上所述，正确的选项为 ACD。%
+}
+\newcommand{\qElevenDiagnosis}{\errortag{动态解析失效} 侧面动点问题是三维立体几何与平面解析几何的综合。学生常因无法建立合适的空间直角坐标系而导致定量计算（如法向量与体积判定）全凭感觉盲猜。}
+\newcommand{\qElevenTeachingNotes}{讲解时重点突出空间向量的降维与映射，引导学生观察 \(\overrightarrow{BP} = \lambda \overrightarrow{BC} + \mu \overrightarrow{BB_1}\) 实质上限定了 \(P\) 在侧面平面上，再利用建系解析完成各选项的判断。}
+
+% --------------------- Q12 ---------------------
+\newcommand{\qTwelveStem}{某校高一年级有 \(900\) 名学生，现用比例分配的分层随机抽样方法抽取一个容量为 \(81\) 的样本，其中抽取男生和女生的人数分别为 \(45,36\)，则该校高一年级的女生人数为\blank{2.5cm}.}
+\newcommand{\qTwelveAnswer}{400}
+\newcommand{\qTwelveSolution}{%
+  【解析】\\
+  分层随机抽样中，每层抽取的比例等于该层人数占总体的比例。\\
+  样本中女生比例为 \(\dfrac{36}{81} = \dfrac{4}{9}\)。\\
+  所以该校高一年级女生人数为 \(900 \times \dfrac{4}{9} = 400\)。\\
+  故填 400。%
+}
+\newcommand{\qTwelveDiagnosis}{\errortag{概念不牢} 极少数学生会将比例算反，算成 \(900 \times \dfrac{36}{45} = 720\)，即直接用男女比例代入计算。}
+\newcommand{\qTwelveTeachingNotes}{强调分层抽样核心规律：\(\dfrac{\text{样本层容量}}{\text{样本总容量}} = \dfrac{\text{总体层容量}}{\text{总体总容量}}\)。}
+
+% --------------------- Q13 ---------------------
+\newcommand{\qThirteenStem}{已知一个圆台的上、下底面半径分别为 \(2,4\)，它的侧面展开图扇环的圆心角为 \(90^{\circ}\)，则这个圆台的侧面积为\blank{2.5cm}.}
+\newcommand{\qThirteenAnswer}{\(48\pi\)}
+\newcommand{\qThirteenSolution}{%
+  【解析】\\
+  设圆台侧面展开图（扇环）对应的完整大扇形半径为 \(L\)，截去的小扇形半径为 \(L_1\)。\\
+  则圆台的母线长为 \(l = L - L_1\)。\\
+  根据扇形弧长公式，大弧长为下底面周长：\(L \theta = 2\pi R \implies L \times \dfrac{\pi}{2} = 8\pi \implies L = 16\)；\\
+  小弧长为上底面周长：\(L_1 \theta = 2\pi r \implies L_1 \times \dfrac{\pi}{2} = 4\pi \implies L_1 = 8\).\\
+  所以圆台母线长 \(l = 16 - 8 = 8\)。\\
+  由圆台侧面积公式：\\
+  \(S_{\text{侧}} = \pi(r+R)l = \pi(2+4) \times 8 = 48\pi\)。\\
+  故填 \(48\pi\)。%
+}
+\newcommand{\qThirteenDiagnosis}{\errortag{母线长求错} 容易将弧度制的圆心角 \(90^\circ = \dfrac{\pi}{2}\) 搞错，或者把母线 \(l\) 误当作大扇形半径 \(L\) 代入计算，导致结果大范围偏差。}
+\newcommand{\qThirteenTeachingNotes}{讲解圆台侧面积时，可用扇环面积减法 \(S = \dfrac{1}{2}L^2\theta - \dfrac{1}{2}L_1^2\theta\) 来启发学生理解侧面积公式 \(\pi(r+R)l\) 的几何来源。}
+
+% --------------------- Q14 ---------------------
+\newcommand{\qFourteenStem}{如图，从 \(1\) 开始出发，一次移动是指：从某一格开始只能移动到邻近的一格，并且总是向右或右上或右下移动，而一条移动路线由若干次移动构成，如从 \(1\) 移动到 \(9\)，\(1 \to 2 \to 3 \to 5 \to 7 \to 8 \to 9\) 就是其中一条移动路线. 从 \(1\) 移动到数字 \(n\ (n=2,3,\cdots,9)\) 的不同路线条数记为 \(r_n\)，从 \(1\) 移动到 \(9\) 的事件中，经过数字 \(n\ (n=2,3,\cdots,8)\) 的事件概率记为 \(p_n\). 则 \(r_5 =\) \blank{1.5cm}；\(p_5 =\) \blank{1.5cm}.}
+\newcommand{\qFourteenFigure}[1][scale=0.68]{%
+  \begin{tikzpicture}[#1, x=0.6cm, y=0.52cm]
+    \def\hexpoly{(90:0.6) -- (30:0.6) -- (-30:0.6) -- (-90:0.6) -- (-150:0.6) -- (150:0.6) -- cycle}
+    
+    \begin{scope}[shift={(0,0)}] \draw \hexpoly; \node at (0,0) {\small 1}; \end{scope}
+    \begin{scope}[shift={(1,1)}] \draw \hexpoly; \node at (0,0) {\small 2}; \end{scope}
+    \begin{scope}[shift={(2,0)}] \draw \hexpoly; \node at (0,0) {\small 3}; \end{scope}
+    \begin{scope}[shift={(3,1)}] \draw \hexpoly; \node at (0,0) {\small 4}; \end{scope}
+    \begin{scope}[shift={(4,0)}] \draw \hexpoly; \node at (0,0) {\small 5}; \end{scope}
+    \begin{scope}[shift={(5,1)}] \draw \hexpoly; \node at (0,0) {\small 6}; \end{scope}
+    \begin{scope}[shift={(6,0)}] \draw \hexpoly; \node at (0,0) {\small 7}; \end{scope}
+    \begin{scope}[shift={(7,1)}] \draw \hexpoly; \node at (0,0) {\small 8}; \end{scope}
+    \begin{scope}[shift={(8,0)}] \draw \hexpoly; \node at (0,0) {\small 9}; \end{scope}
+  \end{tikzpicture}
+}
+\newcommand{\qFourteenAnswer}{5；\(\dfrac{25}{34}\)}
+\newcommand{\qFourteenSolution}{%
+  【解析】\\
+  由移动规则可知，从任意一格 \(k\) 只能向右、右上、右下移动到邻近格子。\\
+  对应网格编号可发现：\\
+  从奇数格（如 1）只能移到其紧邻的右上方偶数格（如 2）或右下方奇数格（如 3）；\\
+  从偶数格（如 2）只能移到其紧邻的右下方奇数格（如 3）或右上方偶数格（如 4）。\\
+  因此，从任意格子 \(n\) 开始，下一次只能到达 \(n+1\) 或 \(n+2\) 格。\\
+  这正是典型的斐波那契数列模型！\\
+  设从 1 到达格子 \(n\) 的路线条数为 \(r_n\)。递推关系为 \(r_n = r_{n-1} + r_{n-2}\) (\(n \ge 3\))。\\
+  初值为：\(r_1 = 1\)，\(r_2 = 1\) (即 \(1 \to 2\))。\\
+  逐步计算各项得：\\
+  \(r_3 = r_2 + r_1 = 1 + 1 = 2\)；\\
+  \(r_4 = r_3 + r_2 = 2 + 1 = 3\)；\\
+  \(r_5 = r_4 + r_3 = 3 + 2 = 5\)；\\
+  \(r_6 = r_5 + r_4 = 5 + 3 = 8\)；\\
+  \(r_7 = r_6 + r_5 = 8 + 5 = 13\)；\\
+  \(r_8 = r_7 + r_6 = 13 + 8 = 21\)；\\
+  \(r_9 = r_8 + r_7 = 21 + 13 = 34\)。\\
+  故第一空填 5。\\
+  第二空：在从 1 移动到 9 的所有路线（共 34 条）中，经过数字 5 的路线可分为两部分：\\
+  第一部分：从 1 到 5，共 \(r_5 = 5\) 条路线；\\
+  第二部分：从 5 到 9，根据平移对称性，其条数等于从 1 移动到 5 的条数，即 \(r_{10-5} = r_5 = 5\) 条。\\
+  所以经过 5 到达 9 的总路线数为 \(r_5 \times r_5 = 5 \times 5 = 25\) 条。\\
+  因此，经过数字 5 的概率为 \(p_5 = \dfrac{25}{34}\)。\\
+  故填 5；\(\dfrac{25}{34}\)。%
+}
+\newcommand{\qFourteenDiagnosis}{\errortag{数数漏算} 如果直接用穷举法数数，极容易在算 \(r_9\) 时漏掉某些路径。对于第二空，部分学生可能算成 \(\dfrac{r_5 + r_5}{r_9}\) 误用加法，没有掌握分步乘法原理。}
+\newcommand{\qFourteenTeachingNotes}{本题是一道结合了蜂巢几何网格的斐波那契模型题。讲解时可引导学生写出前几项，观察发现“每一次只可能跳 1 步或 2 步”，从而联想到“爬楼梯”经典数列问题。}
+
+% --------------------- Q15 ---------------------
+\newcommand{\qFifteenStem}{（本小题满分 \(13\) 分）\\
+在 \(\triangle ABC\) 中，角 \(A, B, C\) 的对边分别为 \(a, b, c\)，已知向量 \(\boldsymbol{m}=(\cos A, \cos B), \boldsymbol{n}=(a, 2c-b)\)，且 \(\boldsymbol{m} // \boldsymbol{n}\).\\
+(1) 求角 \(A\) 的大小；\\
+(2) 若 \(a=4\)，求 \(\triangle ABC\) 面积的最大值。}
+\newcommand{\qFifteenAnswer}{见解析}
+\newcommand{\qFifteenSolution}{%
+  【标准解答】\\
+  (1) 因为 \(\boldsymbol{m} // \boldsymbol{n}\)，所以 \(a\cos B - (2c-b)\cos A = 0\)，\\
+  即 \(2c\cos A - b\cos A - a\cos B = 0\)。\hfill (2分)\\
+  由正弦定理 \(\dfrac{a}{\sin A} = \dfrac{b}{\sin B} = \dfrac{c}{\sin C} = 2R\) 代入上式得：\\
+  \(2\sin C\cos A - \sin B\cos A - \sin A\cos B = 0\)，\hfill (4分)\\
+  即 \(2\sin C\cos A - (\sin A\cos B + \cos A\sin B) = 0\)。\\
+  因为 \(\sin A\cos B + \cos A\sin B = \sin(A+B)\)，且在 \(\triangle ABC\) 中 \(A+B = \pi - C\)，\\
+  所以 \(\sin(A+B) = \sin C\)。\\
+  代入上式整理得 \(2\sin C\cos A - \sin C = 0 \implies \sin C(2\cos A - 1) = 0\)。\hfill (6分)\\
+  因为在 \(\triangle ABC\) 中，\(C \in (0,\pi)\)，所以 \(\sin C \neq 0\)。\\
+  所以 \(2\cos A - 1 = 0 \implies \cos A = \dfrac{1}{2}\)。\hfill (7分)\\
+  又因为 \(A \in (0,\pi)\)，所以 \(A = \dfrac{\pi}{3}\)。\hfill (8分)\\
+  
+  (2) 由余弦定理 \(a^2 = b^2 + c^2 - 2bc\cos A\) 及 \(a=4\)，\(A = \dfrac{\pi}{3}\) 得：\\
+  \(16 = b^2 + c^2 - bc\)。\hfill (10分)\\
+  由均值不等式 \(b^2 + c^2 \ge 2bc\)，代入上式得：\\
+  \(16 \ge 2bc - bc = bc\)，当且仅当 \(b=c=4\) 时等号成立。\hfill (11分)\\
+  所以 \(\triangle ABC\) 的面积为：\\
+  \(S_{\triangle ABC} = \dfrac{1}{2}bc\sin A = \dfrac{1}{2}bc\sin\dfrac{\pi}{3} = \dfrac{\sqrt{3}}{4}bc \leqslant \dfrac{\sqrt{3}}{4} \times 16 = 4\sqrt{3}\)。\hfill (12分)\\
+  即 \(\triangle ABC\) 面积的最大值为 \(4\sqrt{3}\)。\hfill (13分)%
+}
+\newcommand{\qFifteenDiagnosis}{\errortag{诱导公式错} 第一问中变形到 \(\sin(A+B) = \sin C\) 时，少数学生误写为 \(-\sin C\)。第二问中，使用余弦定理变形为 \(bc\) 最值时，计算容易粗心。}
+\newcommand{\qFifteenTeachingNotes}{这是一道高频且标准的解三角形解答题。主要训练：1. 向量平行的坐标交叉相乘公式；2. 正弦定理“角化边”或“边化角”；3. 余弦定理结合均值不等式求解积的最值。}
+
+% --------------------- Q16 ---------------------
+\newcommand{\qSixteenStem}{（本小题满分 \(15\) 分）\\
+漳州古城有着上千年的建城史，是国家级闽南文化生态保护区的重要组成部分，并入选首批“中国历史文化街区”. 五一假期来漳州古城旅游的人数创新高，单日客流峰值达 \(20\) 万人次. 为了解游客的旅游体验满意度，某研究性学习小组用问卷调查的方式随机调查了 \(100\) 名游客，该兴趣小组将收集到的游客满意度分值数据（满分 \(100\) 分）分成六段：\([40,50), [50,60), \cdots, [90,100]\)，得到如图所示的频率分布直方图.\\
+(1) 求频率分布直方图中 \(a\) 的值，并估计这 \(100\) 名游客满意度分值的众数和中位数（结果保留整数）；\\
+(2) 已知满意度分值落在 \([70,80)\) 的平均数 \(\bar{z}_1=75\)，方差 \(s_1^2=9\)，在 \([80,90)\) 的平均数为 \(\bar{z}_2=85\)，方差 \(s_2^2=4\)，试求满意度分值在 \([70,90)\) 的平均数 \(\bar{z}\) 和方差 \(s^2\)。}
+\newcommand{\qSixteenFigure}[1][scale=0.95]{%
+  \begin{tikzpicture}[#1, >=stealth]
+    % 坐标轴
+    \draw[thick, ->] (0,0) -- (7.2, 0) node[right, font=\small] {分数};
+    \draw[thick, ->] (0,0) -- (0, 5.6) node[above, font=\small] {频率/组距};
+    
+    % X轴截断 (波浪线)
+    \draw[thick] (0,0) -- (0.3, 0);
+    \draw[thick] (0.3, -0.1) -- (0.4, 0.1) -- (0.5, -0.1) -- (0.6, 0.1);
+    \draw[thick] (0.6, 0) -- (1.2, 0);
+    
+    \node[below left, font=\small] at (0,0) {0};
+    
+    % Y轴刻度 (0.005间隔对应0.8cm，最高a对应4.8cm即0.030)
+    \draw (0, 0.8) -- (-0.08, 0.8) node[left, font=\small] {0.005};
+    \draw (0, 1.6) -- (-0.08, 1.6) node[left, font=\small] {0.010};
+    \draw (0, 2.4) -- (-0.08, 2.4) node[left, font=\small] {0.015};
+    \draw (0, 3.2) -- (-0.08, 3.2) node[left, font=\small] {0.020};
+    \draw (0, 4.0) -- (-0.08, 4.0) node[left, font=\small] {0.025};
+    \draw (0, 4.8) -- (-0.08, 4.8) node[left, font=\small] {$a$};
+    
+    % X轴刻度 (40对应1.2cm, 50对应2.0cm, 60对应2.8cm, 70对应3.6cm, 80对应4.4cm, 90对应5.2cm, 100对应6.0cm)
+    \foreach \x/\val in {1.2/40, 2.0/50, 2.8/60, 3.6/70, 4.4/80, 5.2/90, 6.0/100} {
+      \draw (\x, 0) -- (\x, -0.08);
+      \node[below, font=\small] at (\x, 0) {\val};
+    }
+    
+    % 绘制直方图矩形柱 (宽度为0.8cm对应组距10)
+    % [40, 50] (x: 1.2 to 2.0, height 0.005=0.8cm)
+    \draw (1.2, 0) rectangle (2.0, 0.8);
+    % [50, 60) (x: 2.0 to 2.8, height 0.010=1.6cm)
+    \draw (2.0, 0) rectangle (2.8, 1.6);
+    % [60, 70) (x: 2.8 to 3.6, height 0.010=1.6cm)
+    \draw (2.8, 0) rectangle (3.6, 1.6);
+    % [70, 80] (x: 3.6 to 4.4, height 0.020=3.2cm)
+    \draw (3.6, 0) rectangle (4.4, 3.2);
+    % [80, 90] (x: 4.4 to 5.2, height a=0.030=4.8cm)
+    \draw (4.4, 0) rectangle (5.2, 4.8);
+    % [90, 100] (x: 5.2 to 6.0, height 0.025=4.0cm)
+    \draw (5.2, 0) rectangle (6.0, 4.0);
+    
+    % 水平虚线辅助线
+    \draw[dashed, gray!60] (0, 0.8) -- (1.2, 0.8);
+    \draw[dashed, gray!60] (0, 1.6) -- (2.0, 1.6);
+    \draw[dashed, gray!60] (0, 3.2) -- (3.6, 3.2);
+    \draw[dashed, gray!60] (0, 4.8) -- (4.4, 4.8);
+    \draw[dashed, gray!60] (0, 4.0) -- (5.2, 4.0);
+  \end{tikzpicture}
+}
+\newcommand{\qSixteenAnswer}{见解析}
+\newcommand{\qSixteenSolution}{%
+  【标准解答】\\
+  (1) 由频率分布直方图的所有矩形面积之和为 1，得：\\
+  \(10 \times (0.005 + 0.010 + 0.010 + 0.020 + a + 0.025) = 1\)，\hfill (2分)\\
+  即 \(10 \times (0.070 + a) = 1 \implies 0.070 + a = 0.1 \implies a = 0.030\)。\hfill (4分)\\
+  \textbf{众数估计值：}\\
+  最高的矩形落在 \([80,90)\)，所以众数的估计值为该组的中点值：\\
+  \(\text{众数} = \dfrac{80+90}{2} = 85\)。\hfill (6分)\\
+  \textbf{中位数估计值：}\\
+  前四组的累积频率为 \(10 \times (0.005 + 0.010 + 0.010 + 0.020) = 0.45 < 0.50\)，\\
+  前五组的累积频率为 \(0.45 + 10 \times 0.030 = 0.75 > 0.50\)，\\
+  因此中位数在第五组 \([80,90)\) 内，设中位数为 \(x\)。\\
+  \(0.45 + (x - 80) \times 0.030 = 0.50 \implies (x - 80) \times 0.030 = 0.05 \implies x - 80 \approx 1.67 \implies x \approx 82\)。\\
+  所以估计的中位数为 \(82\)。\hfill (8分)\\
+  
+  (2) 落在 \([70,80)\) 的频率为 \(w_1 = 10 \times 0.020 = 0.20\)；\\
+  落在 \([80,90)\) 的频率为 \(w_2 = 10 \times 0.030 = 0.30\)。\\
+  两者在区间 \([70,90)\) 内的占比即权重分别为：\\
+  \(n_1 = \dfrac{0.20}{0.20+0.30} = 0.4\)，\(n_2 = \dfrac{0.30}{0.20+0.30} = 0.6\)。\hfill (10分)\\
+  所以组合平均数 \(\bar{z}\) 为：\\
+  \(\bar{z} = n_1\bar{z}_1 + n_2\bar{z}_2 = 0.4 \times 75 + 0.6 \times 85 = 81\)。\hfill (12分)\\
+  根据双样本组合方差公式，组合方差 \(s^2\) 为：\\
+  \(s^2 = n_1[s_1^2 + (\bar{z}_1 - \bar{z})^2] + n_2[s_2^2 + (\bar{z}_2 - \bar{z})^2]\)\hfill (13分)\\
+  \(= 0.4 \times [9 + (75-81)^2] + 0.6 \times [4 + (85-81)^2]\)\\
+  \(= 0.4 \times (9 + 36) + 0.6 \times (4 + 16)\)\\
+  \(= 0.4 \times 45 + 0.6 \times 20 = 18 + 12 = 30\)。\\
+  所以满意度分值在 \([70,90)\) 的平均数为 \(81\)，方差为 \(30\)。\hfill (15分)%
+}
+\newcommand{\qSixteenDiagnosis}{\errortag{组合方差公式漏记} 这是最典型错因。很多学生容易把组合方差直接算作两组方差的平均值，即 \(\dfrac{9+4}{2} = 6.5\)，完全遗漏了“由于两组均值不同带来的额外偏差波动项” \((75-80)^2 = 25\)。}
+\newcommand{\qSixteenTeachingNotes}{组合方差计算是新高考新教材的重要增加内容。公式为：\(s^2 = \dfrac{m}{m+n}[s_1^2 + (\bar{x}_1-\bar{x})^2] + \dfrac{n}{m+n}[s_2^2 + (\bar{x}_2-\bar{x})^2]\)。必须要求学生动手推导并默写该公式。}
+
+% --------------------- Q17 ---------------------
+\newcommand{\qSeventeenStem}{（本小题满分 \(15\) 分）\\
+如图所示，直三棱柱 \(ABC-A_1B_1C_1\) 的所有棱长均相等，点 \(D\) 为 \(B_1C\) 的中点，点 \(E\) 为 \(A_1C_1\) 的中点.\\
+(1) 求证：\(DE // \text{平面 } AA_1B_1B\)；\\
+(2) 若三棱锥 \(B-CDE\) 的体积为 \(\dfrac{\sqrt{3}}{6}\)，求该三棱柱的外接球表面积。}
+\newcommand{\qSeventeenFigure}[1][scale=1.45]{%
+  \begin{tikzpicture}[#1, line join=round, line cap=round]
+    % 定义顶点
+    \coordinate (A) at (0,2);
+    \coordinate (B) at (2,2.2);
+    \coordinate (C) at (1.5,1);
+    \coordinate (A1) at (0,0);
+    \coordinate (B1) at (2,0.2);
+    \coordinate (C1) at (1.5,-1);
+    
+    % 计算中点
+    \coordinate (D) at (1.75, 0.6); % B1C中点
+    \coordinate (E) at (0.75, -0.5); % A1C1中点
+    
+    % 绘制实线棱
+    \draw (A) -- (B) -- (C) -- cycle;
+    \draw (A) -- (A1);
+    \draw (B) -- (B1);
+    \draw (C) -- (C1);
+    \draw (B1) -- (C1);
+    \draw (A1) -- (C1);
+    \draw (A) -- (D);
+    \draw (B) -- (D);
+    \draw (C) -- (E);
+    \draw (D) -- (E);
+    
+    % 绘制虚线棱
+    \draw[dashed, gray] (A1) -- (B1);
+    \draw[dashed, gray] (A) -- (C1);
+    \draw[dashed, gray] (B1) -- (C);
+    \draw[dashed, gray] (B) -- (E);
+    
+    % 标注顶点
+    \node[above left] at (A) {$A$};
+    \node[above right] at (B) {$B$};
+    \node[below right] at (C) {$C$};
+    \node[left] at (A1) {$A_1$};
+    \node[right] at (B1) {$B_1$};
+    \node[below] at (C1) {$C_1$};
+    \node[right] at (D) {$D$};
+    \node[left] at (E) {$E$};
+  \end{tikzpicture}
+}
+\newcommand{\qSeventeenAnswer}{见解析}
+\newcommand{\qSeventeenSolution}{%
+  【标准解答】\\
+  (1) 证明：连接 \(A_1B\)，在直三棱柱 \(ABC-A_1B_1C_1\) 中，侧面 \(AA_1B_1B\) 是平行四边形。\\
+  连接 \(AB_1\)，则 \(AB_1\) 与 \(A_1B\) 交于其中点，记为 \(F\)。\\
+  又 \(D\) 为 \(B_1C\) 的中点，在 \(\triangle AB_1C\) 中，\\
+  \(FD\) 是 \(\triangle AB_1C\) 中以 \(AC\) 为底的中位线，\\
+  所以 \(FD // AC\)，且 \(FD = \dfrac{1}{2}AC\)。\hfill (3分)\\
+  because \(E\) 是 \(A_1C_1\) 的中点，且直三棱柱中 \(AC // A_1C_1\) 且 \(AC = A_1C_1\)，\\
+  所以 \(A_1E // AC\)，且 \(A_1E = \dfrac{1}{2}AC\)。\\
+  因此 \(FD // A_1E\) 且 \(FD = A_1E\)。\\
+  所以四边形 \(A_1EDF\) 是平行四边形。\hfill (5分)\\
+  所以 \(DE // A_1F\)。\\
+  因为 \(A_1F \subset \text{平面 } AA_1B_1B\)，且 \(DE \not\subset \text{平面 } AA_1B_1B\)，\\
+  所以 \(DE // \text{平面 } AA_1B_1B\)。\hfill (7分)\\
+  
+  (2) 设直三棱柱的棱长均为 \(a\)。\\
+  以 \(A_1\) 为原点，建立空间直角坐标系。设 \(A_1(0,0,0)\)，\(B_1(a,0,0)\)，\\
+  \(C_1\left(\dfrac{a}{2}, \dfrac{\sqrt{3}}{2}a, 0\right)\)。\\
+  因为是直三棱柱，有 \(A(0,0,a)\)，\(B(a,0,a)\)，\(C\left(\dfrac{a}{2}, \dfrac{\sqrt{3}}{2}a, a\right)\)。\\
+  由中点坐标公式：\\
+  \(D\) 为 \(B_1C\) 中点 \(\implies D\left(\dfrac{3}{4}a, \dfrac{\sqrt{3}}{4}a, \dfrac{1}{2}a\right)\)；\\
+  \(E\) 为 \(A_1C_1\) 中点 \(\implies E\left(\dfrac{1}{4}a, \dfrac{\sqrt{3}}{4}a, 0\right)\)。\hfill (9分)\\
+  计算向量：\(\overrightarrow{EB} = \left(\dfrac{3}{4}a, -\dfrac{\sqrt{3}}{4}a, a\right)\)，\(\overrightarrow{EC} = \left(\dfrac{1}{4}a, \dfrac{\sqrt{3}}{4}a, a\right)\)，\(\overrightarrow{ED} = \left(\dfrac{1}{2}a, 0, \dfrac{1}{2}a\right)\)。\\
+  设平面 \(CDE\) 的法向量为 \(\boldsymbol{n} = (x,y,z)\)。\\
+  由 \(\begin{cases} \boldsymbol{n}\cdot\overrightarrow{EC} = \dfrac{1}{4}ax + \dfrac{\sqrt{3}}{4}ay + az = 0 \\ \boldsymbol{n}\cdot\overrightarrow{ED} = \dfrac{1}{2}ax + \dfrac{1}{2}az = 0 \end{cases}\)，\\
+  解得：\(x = -z\)，\(y = -\sqrt{3}z\)。\\
+  令 \(z = -1\)，得 \(\boldsymbol{n} = (1, \sqrt{3}, -1)\)。\hfill (11分)\\
+  三棱锥 \(B-CDE\) 的高即为 \(\overrightarrow{EB}\) 在 \(\boldsymbol{n}\) 上的投影高度：\\
+  \(h = \dfrac{|\overrightarrow{EB}\cdot\boldsymbol{n}|}{|\boldsymbol{n}|} = \dfrac{\left|\dfrac{3}{4}a - \dfrac{3}{4}a - a\right|}{\sqrt{1+3+1}} = \dfrac{a}{\sqrt{5}}\)。\\
+  平面 \(CDE\) 内，\(\overrightarrow{EC}\cdot\overrightarrow{ED} = \dfrac{1}{8}a^2 + \dfrac{1}{2}a^2 = \dfrac{5}{8}a^2\)。\\
+  \(| \overrightarrow{EC} | = \sqrt{\dfrac{1}{16}a^2 + \dfrac{3}{16}a^2 + a^2} = \dfrac{\sqrt{5}}{2}a\)，\(|\overrightarrow{ED}| = \dfrac{\sqrt{2}}{2}a\)。\\
+  故 \(\cos\angle CED = \dfrac{5/8}{\sqrt{10}/4} = \dfrac{\sqrt{10}}{4} \implies \sin\angle CED = \dfrac{\sqrt{6}}{4}\)。\\
+  所以 \(\triangle CDE\) 的面积为 \(S = \dfrac{1}{2}|\overrightarrow{EC}||\overrightarrow{ED}|\sin\angle CED = \dfrac{1}{2} \times \dfrac{\sqrt{5}}{2}a \times \dfrac{\sqrt{2}}{2}a \times \dfrac{\sqrt{6}}{4} = \dfrac{\sqrt{15}}{16}a^2\)。\\
+  故体积为：\\
+  \(V_{B-CDE} = \dfrac{1}{3} S \cdot h = \dfrac{1}{3} \times \dfrac{\sqrt{15}}{16}a^2 \times \dfrac{a}{\sqrt{5}} = \dfrac{\sqrt{3}}{48}a^3\)。\hfill (12分)\\
+  已知 \(V_{B-CDE} = \dfrac{\sqrt{3}}{6}\)，所以 \(\dfrac{\sqrt{3}}{48}a^3 = \dfrac{\sqrt{3}}{6} \implies a^3 = 8 \implies a = 2\)。\hfill (13分)%\\
+  直三棱柱外接球半径满足：\(R^2 = r^2 + d^2\)，\\
+  其中 \(r\) 为底面正三角形外接圆半径 \(r = \dfrac{a}{\sqrt{3}} = \dfrac{2}{\sqrt{3}}\)；\\
+  \(d\) 为高的一半 \(d = \dfrac{a}{2} = 1\)。\\
+  所以 \(R^2 = \dfrac{4}{3} + 1 = \dfrac{7}{3}\)。\\
+  所以外接球表面积为：\\
+  \(S = 4\pi R^2 = 4\pi \times \dfrac{7}{3} = \dfrac{28\pi}{3}\)。\hfill (15分)%
+}
+\newcommand{\qSeventeenDiagnosis}{\errortag{线面平行条件漏写} 第一问几何法证明中，学生常漏掉关键的线不在面内 \(DE \not\subset \text{平面 } AA_1B_1B\) 这一采分点。第二问体积算错或外接球半径公式记错。}
+\newcommand{\qSeventeenTeachingNotes}{强调立体几何中“直棱柱外接球”的统一解法模型：棱柱外接球中心是上下底面外接圆心连线的中点，球半径满足 \(R^2 = r_{\text{底}}^2 + \left(\dfrac{h}{2}\right)^2\)。}
+
+% --------------------- Q18 ---------------------
+\newcommand{\qEighteenTree}{%
+  \begin{tikzpicture}[>=stealth, font=\small,
+    level 1/.style={sibling distance=8.0cm, level distance=1.2cm},
+    level 2/.style={sibling distance=5.0cm, level distance=1.2cm},
+    level 3/.style={sibling distance=3.6cm, level distance=1.2cm},
+    level 4/.style={sibling distance=2.5cm, level distance=1.2cm}]
+    
+    \node (root) [draw, rounded corners] {\(A\)对\(B\)}
+      child { node [draw, rounded corners] {\(B\)对\(C\) \((0,1,0)\)}
+        child { node [draw, rounded corners, fill=gray!15] {\textbf{\(B\)获胜 \((0,2,0)\)}}
+          edge from parent node[left, font=\scriptsize] {\(p_3\)}
+        }
+        child { node [draw, rounded corners] {\(C\)对\(A\) \((0,1,1)\)}
+          child { node [draw, rounded corners] {\(C\)获胜 \((0,1,2)\)}
+            edge from parent node[left, font=\scriptsize] {\(1-p_2\)}
+          }
+          child { node [draw, rounded corners] {\(A\)对\(B\) \((1,1,1)\)}
+            child { node [draw, rounded corners, fill=gray!15] {\textbf{\(B\)获胜 \((1,2,1)\)}}
+              edge from parent node[left, font=\scriptsize] {\(1-p_1\)}
+            }
+            child { node [draw, rounded corners] {\(A\)获胜 \((2,1,1)\)}
+              edge from parent node[right, font=\scriptsize] {\(p_1\)}
+            }
+            edge from parent node[right, font=\scriptsize] {\(p_2\)}
+          }
+          edge from parent node[right, font=\scriptsize] {\(1-p_3\)}
+        }
+        edge from parent node[left, font=\scriptsize] {\(1-p_1\)}
+      }
+      child { node [draw, rounded corners] {\(A\)对\(C\) \((1,0,0)\)}
+        child { node [draw, rounded corners] {\(A\)获胜 \((2,0,0)\)}
+          edge from parent node[left, font=\scriptsize] {\(p_2\)}
+        }
+        child { node [draw, rounded corners] {\(C\)对\(B\) \((1,0,1)\)}
+          child { node [draw, rounded corners] {\(C\)获胜 \((1,0,2)\)}
+            edge from parent node[left, font=\scriptsize] {\(1-p_3\)}
+          }
+          child { node [draw, rounded corners] {\(B\)对\(A\) \((1,1,1)\)}
+            child { node [draw, rounded corners, fill=gray!15] {\textbf{\(B\)获胜 \((1,2,1)\)}}
+              edge from parent node[left, font=\scriptsize] {\(1-p_1\)}
+            }
+            child { node [draw, rounded corners] {\(A\)获胜 \((2,1,1)\)}
+              edge from parent node[right, font=\scriptsize] {\(p_1\)}
+            }
+            edge from parent node[right, font=\scriptsize] {\(p_3\)}
+          }
+          edge from parent node[right, font=\scriptsize] {\(1-p_2\)}
+        }
+        edge from parent node[right, font=\scriptsize] {\(p_1\)}
+      };
+  \end{tikzpicture}
+}
+\newcommand{\qEighteenStem}{（本小题满分 \(17\) 分）\\
+某校举行围棋比赛，甲、乙、丙三个人通过初赛，进入决赛. 已知甲与乙比赛时，甲获胜的概率为 \(p_1\)，甲与丙比赛时，甲获胜的概率为 \(p_2\)，乙与丙比赛时，乙获胜的概率为 \(p_3\). 其中，\(p_1, p_2, p_3 \in (0,1)\)，且每局比赛相互独立.\\
+决赛规则如下：首先通过抽签的形式确定甲、乙两人进行第一局比赛，丙轮空；第一局比赛结束后，胜利者和丙进行比赛，失败者轮空，以此类推，每局比赛的胜利者跟本局比赛轮空者进行下一局比赛，每场比赛胜者积 \(1\) 分，负者积 \(0\) 分，首先累计到 \(2\) 分者获得比赛胜利，比赛结束.\\
+(1) 假设 \(p_1=p_2=p_3=0.6\).\\
+(i) 求“两局结束比赛且乙获胜”的概率；\\
+(ii) 求比赛结束时乙获胜的概率；\\
+(2) 若 \(p_1+p_3 < 1\)，假设乙第一局出场，且乙获得了指定首次比赛对手的权利，为获得比赛的胜利，试分析乙的最优指定策略.}
+\newcommand{\qEighteenAnswer}{见解析}
+\newcommand{\qEighteenSolution}{%
+  【标准解答】\\
+  (1) 设甲、乙、丙分别记为 A, B, C。\\
+  (i) “两局结束比赛且乙获胜”，必须第一局乙胜甲，且第二局乙胜丙。\\
+  第一局乙胜甲的概率为 \(1 - p_1 = 1 - 0.6 = 0.4\)；\hfill (2分)\\
+  第二局乙胜丙的概率为 \(p_3 = 0.6\)。\\
+  因为每局独立，所以两局结束且乙获胜的概率为：\\
+  \(P_0 = 0.4 \times 0.6 = 0.24\)。\hfill (4分)\\
+  
+  (ii) 比赛的所有走势可绘制成博弈树。乙最终获胜的路径仅有以下三条：\\
+  路径 1：第 1 局乙胜甲，第 2 局乙胜丙（两局结束）。\\
+  概率为 \(P_1 = (1-p_1)p_3 = 0.4 \times 0.6 = 0.24\)。\hfill (6分)\\
+  路径 2：第 1 局乙胜甲，第 2 局丙胜乙，第 3 局甲胜丙，第 4 局乙胜甲。\\
+  此时得分情况为：第 1 局后乙得 1 分；第 2 局后丙得 1 分；第 3 局后甲得 1 分；第 4 局后乙得 2 分获胜。\\
+  概率为 \(P_2 = (1-p_1)(1-p_3)p_2(1-p_1) = 0.4 \times (1-0.6) \times 0.6 \times 0.4 = 0.0384\)。\hfill (8分)\\
+  路径 3：第 1 局甲胜乙，第 2 局丙胜甲，第 3 局乙胜丙，第 4 局乙胜甲。\\
+  此时得分情况为：第 1 局后甲得 1 分；第 2 局后丙得 1 分；第 3 局后乙得 1 分；第 4 局后乙得 2 分获胜。\\
+  概率为 \(P_3 = p_1(1-p_2)p_3(1-p_1) = 0.6 \times (1-0.6) \times 0.6 \times 0.4 = 0.0576\)。\hfill (10分)\\
+  除了这三条路径外，若其他玩家达到 2 分则乙失败。\\
+  所以比赛结束时乙获胜的概率为：\\
+  \(P(\text{乙胜}) = P_1 + P_2 + P_3 = 0.24 + 0.0384 + 0.0576 = 0.336\)。\hfill (12分)\\
+  
+  (2) 乙第一局出场，有两种策略：\\
+  \textbf{策略 1：指定甲作为第一局对手}。\\
+  此时第一局为乙对战甲。由第 (ii) 问的概率通路展开式可知，乙获胜的概率为：\\
+  \(P_1 = (1-p_1)p_3 + (1-p_1)^2(1-p_3)p_2 + p_1(1-p_1)(1-p_2)p_3\)。\hfill (13分)\\
+  \textbf{策略 2：指定丙作为第一局对手}。\\
+  此时第一局为乙对战丙，即将策略 1 中甲和丙的角色互换（即将涉及甲获胜率 \(p_1\) 变为丙获胜率 \(1-p_3\)，甲丙对决 \(p_2\) 变为丙甲对决 \(1-p_2\)，乙对丙的胜率 \(p_3\) 变为乙对甲的胜率 \(1-p_1\)）。\\
+  因此，只需将 \(P_1\) 表达式中的 \(1-p_1\) 替换为 \(p_3\)，\(p_3\) 替换为 \(1-p_1\)，即可得策略 2 下乙获胜的概率为：\\
+  \(P_2 = p_3(1-p_1) + p_1(1-p_2)p_3^2 + p_2(1-p_1)(1-p_3)p_3\)。\hfill (15分)\\
+  作差比较：\\
+  \(P_1 - P_2 = [ (1-p_1)^2(1-p_3)p_2 - p_2(1-p_1)(1-p_3)p_3 ] + [ p_1(1-p_1)(1-p_2)p_3 - p_1(1-p_2)p_3^2 ]\)\\
+  \(= p_2(1-p_1)(1-p_3)[ (1-p_1) - p_3 ] + p_1(1-p_2)p_3[ (1-p_1) - p_3 ]\)\\
+  \(= [ (1-p_1) - p_3 ] \cdot [ p_2(1-p_1)(1-p_3) + p_1(1-p_2)p_3 ]\)\\
+  \(= (1-p_1-p_3)[ p_1 p_3 + p_2(1-p_1-p_3) ]\)。\\
+  因为已知 \(p_1+p_3 < 1\)，所以 \(1-p_1 - p_3 > 0\)。\\
+  又因为 \(p_1, p_2, p_3 \in (0,1)\)，所以 \(p_1 p_3 + p_2(1-p_1-p_3) > 0\)。\hfill (16分)\\
+  所以 \(P_1 - P_2 > 0\)，即 \(P_1 > P_2\)。\\
+  故为了获得比赛的胜利，乙的最优指定策略是\textbf{第一局指定甲进行比赛}。\hfill (17分)%
+}
+\newcommand{\qEighteenDiagnosis}{\errortag{概率通路径遗漏} 该题难点在于画出比赛走势树状图。许多学生可能漏算第 4 局（全员得 1 分的情况），或者在第二问作差变形时未能提取出公因式 \((1-p_1-p_3)\) 导致无法判断符号。}
+\newcommand{\qEighteenTeachingNotes}{强调多局博弈问题的解题思路：1. 列表或画出决策树；2. 准确写出每个节点的得分；3. 代数作差法判断不等式方向。}
+
+% --------------------- Q19 ---------------------
+\newcommand{\qNineteenStem}{（本小题满分 \(17\) 分）\\
+如图，四棱锥 \(P-ABCD\) 的底面是边长为 \(2\sqrt{3}\) 的菱形，\(\angle BAD=\dfrac{\pi}{3}\)，平面 \(PAC \perp \text{平面 } ABCD\)，\(PD \perp AB\).\\
+(1) 证明：\(PB=PD\)；\\
+(2) 设直线 \(CP\) 与平面 \(ABCD\) 所成角为 \(\dfrac{\pi}{4}\). 若点 \(M\) 为棱 \(CP\) 上的动点（不包括端点），求二面角 \(A-BM-C\) 的正弦值的最小值。}
+\newcommand{\qNineteenFigure}[1][scale=1.2]{%
+  \begin{tikzpicture}[#1, line join=round, line cap=round]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (1.5,-0.8);
+    \coordinate (C) at (3.5,0);
+    \coordinate (D) at (2,0.8);
+    \coordinate (P) at (1,2.5);
+    \coordinate (M) at (2.25, 1.25);
+    
+    \draw[thick] (P) -- (A);
+    \draw[thick] (P) -- (B);
+    \draw[thick] (P) -- (C);
+    \draw[thick] (A) -- (B) -- (C);
+    \draw[thick] (B) -- (M);
+    
+    \draw[dashed, gray] (A) -- (D) -- (C);
+    \draw[dashed, gray] (P) -- (D);
+    \draw[dashed, gray] (A) -- (C); 
+    \draw[dashed, gray] (B) -- (D); 
+    
+    \node[left] at (A) {$A$};
+    \node[below] at (B) {$B$};
+    \node[right] at (C) {$C$};
+    \node[right] at (D) {$D$};
+    \node[above] at (P) {$P$};
+    \node[right] at (M) {$M$};
+  \end{tikzpicture}
+}
+\newcommand{\qNineteenAnswer}{见解析}
+\newcommand{\qNineteenSolution}{%
+  【标准解答】\\
+  (1) 证明：设 \(AC \cap BD = O\)。\\
+  因为底面 \(ABCD\) 为菱形，所以 \(AC \perp BD\)，且 \(O\) 为 \(BD\) 的中点。\hfill (2分)\\
+  因为平面 \(PAC \perp\) 平面 \(ABCD\)，且平面 \(PAC \cap\) 平面 \(ABCD = AC\)，\\
+  \(BD \subset\) 平面 \(ABCD\)，且 \(BD \perp AC\)，\\
+  所以 \(BD \perp\) 平面 \(PAC\)。\hfill (4分)\\
+  在平面 \(PAC\) 内，过 \(P\) 作 \(PH \perp AC\) 于 \(H\)，则 \(PH \perp\) 平面 \(ABCD\)。\\
+  以 \(O\) 为原点，\(OB, OC\) 所在直线分别为 \(x\) 轴、\(y\) 轴，过 \(O\) 且平行于 \(HP\) 的直线为 \(z\) 轴，建立空间直角坐标系 \(O-xyz\)。\hfill (6分)\\
+  因为菱形边长为 \(2\sqrt{3}\)，\(\angle BAD = \dfrac{\pi}{3}\)，\\
+  所以 \(\triangle ABD\) 是边长为 \(2\sqrt{3}\) 的等边三角形，\\
+  所以 \(BD = 2\sqrt{3}\)，从而 \(OB = OD = \sqrt{3}\)，\\
+  而对角线 \(AC = 2 OA = 2 \times 2\sqrt{3} \times \dfrac{\sqrt{3}}{2} = 6\)，即 \(OA = OC = 3\)。\\
+  可得各点坐标为：\\
+  \(O(0,0,0)\)，\(B(\sqrt{3},0,0)\)，\(D(-\sqrt{3},0,0)\)，\(A(0,-3,0)\)，\(C(0,3,0)\)。\\
+  因为平面 \(PAC\) 为 \(yOz\) 平面，设 \(P(0, y_0, z_0)\) （其中 \(z_0 > 0\)）。\\
+  所以 \(\overrightarrow{PD} = (-\sqrt{3}, -y_0, -z_0)\)，\(\overrightarrow{AB} = (\sqrt{3}, 3, 0)\)。\hfill (8分)\\
+  因为 \(PD \perp AB\)，所以 \(\overrightarrow{PD} \cdot \overrightarrow{AB} = -\sqrt{3} \times \sqrt{3} - 3y_0 = 0 \implies y_0 = -1\)。\\
+  所以 \(P(0, -1, z_0)\)。\\
+  此时，\(PB = \sqrt{(-\sqrt{3})^2 + (-1)^2 + z_0^2} = \sqrt{4+z_0^2}\)，\\
+  \(PD = \sqrt{(\sqrt{3})^2 + (-1)^2 + z_0^2} = \sqrt{4+z_0^2}\)。\\
+  所以 \(PB = PD\)。\hfill (10分)\\
+  
+  (2) 因为 \(PH \perp\) 平面 \(ABCD\)，所以点 \(P(0,-1,z_0)\) 在底面的投影为 \(H(0,-1,0)\)。\\
+  连接 \(CH\)。直线 \(CP\) 与底面所成的角为 \(\angle PCH\)。\\
+  由已知 \(\angle PCH = \dfrac{\pi}{4}\)，所以在 Rt\(\triangle PHC\) 中，\(PH = CH\)。\\
+  因为 \(C(0,3,0)\)，\(H(0,-1,0)\)，所以 \(CH = 3 - (-1) = 4\)。\\
+  所以 \(z_0 = PH = 4\)。可得 \(P(0,-1,4)\)。\hfill (12分)\\
+  点 \(M\) 在棱 \(CP\) 上，设 \(\overrightarrow{CM} = t \overrightarrow{CP}\) (\(t \in (0,1)\))。\\
+  因为 \(\overrightarrow{CP} = (0,-4,4)\)，所以 \(\overrightarrow{CM} = (0, -4t, 4t)\)。\\
+  得 \(M(0, 3-4t, 4t)\)。\\
+  因为 \(A(0,-3,0)\)，\(B(\sqrt{3},0,0)\)，\(C(0,3,0)\)。\\
+  设平面 \(BCM\)（即平面 \(BCP\)）的法向量为 \(\boldsymbol{n}_1 = (x_1, y_1, z_1)\)。\\
+  \(\overrightarrow{CB} = (\sqrt{3}, -3, 0)\)，\(\overrightarrow{CP} = (0, -4, 4)\)。\\
+  由 \(\begin{cases} \boldsymbol{n}_1 \cdot \overrightarrow{CB} = \sqrt{3}x_1 - 3y_1 = 0 \\ \boldsymbol{n}_1 \cdot \overrightarrow{CP} = -4y_1 + 4z_1 = 0 \end{cases}\)，令 \(y_1 = 1\)，得 \(\boldsymbol{n}_1 = (\sqrt{3}, 1, 1)\)。\\
+  设平面 \(ABM\) 的法向量为 \(\boldsymbol{n}_2 = (x_2, y_2, z_2)\)。\\
+  \(\overrightarrow{AB} = (\sqrt{3}, 3, 0)\)，\(\overrightarrow{AM} = (0, 6-4t, 4t)\)。\\
+  由 \(\begin{cases} \boldsymbol{n}_2 \cdot \overrightarrow{AB} = \sqrt{3}x_2 + 3y_2 = 0 \\ \boldsymbol{n}_2 \cdot \overrightarrow{AM} = (6-4t)y_2 + 4tz_2 = 0 \end{cases}\)，\\
+  令 \(y_2 = 2t\)，得 \(x_2 = -2\sqrt{3}t\)，\(z_2 = 2t-3\)。\\
+  所以 \(\boldsymbol{n}_2 = (-2\sqrt{3}t, 2t, 2t-3)\)。\hfill (14分)\\
+  设二面角 \(A-BM-C\) 的平面角为 \(\theta\)。\\
+  \(\cos^2\theta = \dfrac{(\boldsymbol{n}_1 \cdot \boldsymbol{n}_2)^2}{|\boldsymbol{n}_1|^2 |\boldsymbol{n}_2|^2} = \dfrac{[-6t + 2t + 2t - 3]^2}{5 \cdot [12t^2 + 4t^2 + (2t-3)^2]} = \dfrac{(2t+3)^2}{5(20t^2-12t+9)}\)。\\
+  设 \(u = 2t+3\)，因为 \(t \in (0,1)\)，所以 \(u \in (3,5)\)。\\
+  把上式分母用 \(u\) 表示：\(2t = u-3\)，\\
+  \(20t^2 - 12t + 9 = 5(2t)^2 - 6(2t) + 9 = 5(u-3)^2 - 6(u-3) + 9 = 5u^2 - 36u + 72\)。\\
+  所以 \(\cos^2\theta = \dfrac{u^2}{5(5u^2-36u+72)} = \dfrac{1}{5 \left(5 - \dfrac{36}{u} + \dfrac{72}{u^2}\right)}\)。\\
+  令 \(v = \dfrac{1}{u} \in \left(\dfrac{1}{5}, \dfrac{1}{3}\right)\)。\\
+  设二次函数 \(g(v) = 72v^2 - 36v + 5\)，其对称轴为 \(v = \dfrac{36}{2 \times 72} = \dfrac{1}{4} \in \left(\dfrac{1}{5}, \dfrac{1}{3}\right)\)。\\
+  所以在 \(v = \dfrac{1}{4}\) 时，\(g(v)\) 取得最小值，最小值为：\\
+  \(g\left(\dfrac{1}{4}\right) = 72 \times \dfrac{1}{16} - 36 \times \dfrac{1}{4} + 5 = 4.5 - 9 + 5 = \dfrac{1}{2}\)。\\
+  此时 \(\cos^2\theta\) 取得最大值，最大值为 \(\dfrac{1}{5 \times \dfrac{1}{2}} = \dfrac{2}{5}\)。\hfill (16分)\\
+  so \(\sin^2\theta = 1 - \cos^2\theta \geqslant 1 - \dfrac{2}{5} = \dfrac{3}{5}\)。\\
+  因为 \(\theta \in [0,\pi]\)，所以 \(\sin\theta \geqslant \dfrac{\sqrt{15}}{5}\)。\\
+  所以二面角 \(A-BM-C\) 的正弦值的最小值为 \(\dfrac{\sqrt{15}}{5}\)（此时 \(t = \dfrac{1}{2}\)，即 \(M\) 为棱 \(CP\) 的中点）。\hfill (17分)%
+}
+\newcommand{\qNineteenDiagnosis}{\errortag{线垂直面定理用错} 第一问中，学生容易直接在没有说明的情况下，就把底面对角线垂直当线面垂直用，遗漏了“相交”和“线在面内”的说明。第二问求法向量及二面角最值代数运算极其容易卡壳。}
+\newcommand{\qNineteenTeachingNotes}{此题是典型的新高考立体几何压轴题，重点考查：1. 空间向量建系法；2. 动点坐标的单变量参数化；3. 运用二次函数配方法解决二面角正弦/余弦的最值问题。}

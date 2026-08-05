@@ -1,0 +1,104 @@
+% =====================================================
+% 题型：解三角形面积与边长解答题 (q_tjw_20260606_13_triangle_area.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleAreaOneStem}{%
+  在 \(\triangle ABC\) 中，角 \(A, B, C\) 的对边分别为 \(a, b, c\)，且 \(a \cos B = c + b \cos 2A\)。\\
+  (1) 求 \(A\)；\\
+  (2) 若 \(D\) 为 \(BC\) 的中点，\(AD = 3\)，\(\triangle ABC\) 的面积为 \(3\sqrt{3}\)，求 \(a\)。%
+}
+
+\newcommand{\qTriangleAreaOneAnswer}{%
+  (1) \(A = \dfrac{\pi}{3}\)；(2) \(a = 2\sqrt{3}\)。%
+}
+
+\newcommand{\qTriangleAreaOneSolution}{%
+  (1) 解：因为 $a \cos B = c + b \cos 2A$，
+  
+  由正弦定理 $\dfrac{a}{\sin A} = \dfrac{b}{\sin B} = \dfrac{c}{\sin C}$，可得
+  \[ \sin A \cos B = \sin C + \sin B \cos 2A. \]
+  
+  因为在 $\triangle ABC$ 中，$\sin C = \sin(A+B) = \sin A \cos B + \cos A \sin B$，
+  
+  代入上式化简得
+  \[ \cos A \sin B + \sin B \cos 2A = 0. \]
+  
+  即
+  \[ \sin B (\cos A + \cos 2A) = 0. \]
+  
+  因为 $B \in (0, \pi)$，所以 $\sin B > 0$，
+  
+  从而有
+  \[ \cos A + \cos 2A = 0. \]
+  
+  由二倍角公式 $\cos 2A = 2\cos^2 A - 1$，代入上式得
+  \[ 2\cos^2 A + \cos A - 1 = 0, \]
+  
+  即
+  \[ (2\cos A - 1)(\cos A + 1) = 0. \]
+  
+  因为 $A \in (0, \pi)$，所以 $\cos A \in (-1, 1)$，即 $\cos A + 1 \neq 0$，
+  
+  故
+  \[ \cos A = \frac{1}{2}, \]
+  
+  解得
+  \[ A = \frac{\pi}{3}. \]
+  
+  (2) 解：因为 $\triangle ABC$ 的面积为 $3\sqrt{3}$，
+  
+  所以
+  \[ S = \frac{1}{2}bc\sin A = 3\sqrt{3}, \]
+  
+  即
+  \[ \frac{1}{2}bc\sin\frac{\pi}{3} = \frac{\sqrt{3}}{4}bc = 3\sqrt{3}, \]
+  
+  解得
+  \[ bc = 12. \]
+  
+  因为 $D$ 为 $BC$ 的中点，由向量加法可得 $\overrightarrow{AD} = \frac{1}{2}(\overrightarrow{AB} + \overrightarrow{AC})$，
+  
+  两边平方得
+  \[ \overrightarrow{AD}^2 = \frac{1}{4}(\overrightarrow{AB}^2 + \overrightarrow{AC}^2 + 2\overrightarrow{AB}\cdot\overrightarrow{AC}), \]
+  
+  即
+  \[ AD^2 = \frac{1}{4}(c^2 + b^2 + 2bc\cos A). \]
+  
+  代入 $AD = 3, \cos A = \frac{1}{2}$，得
+  \[ 9 = \frac{1}{4}(b^2 + c^2 + bc), \]
+  
+  所以
+  \[ b^2 + c^2 + bc = 36. \]
+  
+  将 $bc = 12$ 代入，得
+  \[ b^2 + c^2 = 24. \]
+  
+  在 $\triangle ABC$ 中，由余弦定理得
+  \[ a^2 = b^2 + c^2 - 2bc\cos A, \]
+  
+  代入数据得
+  \[ a^2 = 24 - 2 \times 12 \times \frac{1}{2} = 12. \]
+  
+  因为 $a > 0$，所以
+  \[ a = 2\sqrt{3}. \]
+}
+
+\newcommand{\qTriangleAreaOneDiagnosis}{%
+  （留白待收集学生作答后补充）%
+}
+
+\newcommand{\qTriangleAreaOneTeachingNotes}{%
+  精讲。第(1)问考察边角互化及和差角公式，重点提示 \(\sin C = \sin(A+B)\) 的展开；第(2)问考察中线长公式或向量平方求模，以及面积公式与余弦定理的结合使用。%
+}
+
+
+% =====================================================
+% 别名兼容：旧课次宏定义
+% =====================================================
+\newcommand{\qTJWZeroSixThirteenStem}{\qTriangleAreaOneStem}
+\newcommand{\qTJWZeroSixThirteenAnswer}{\qTriangleAreaOneAnswer}
+\newcommand{\qTJWZeroSixThirteenSolution}{\qTriangleAreaOneSolution}
+\newcommand{\qTJWZeroSixThirteenDiagnosis}{\qTriangleAreaOneDiagnosis}
+\newcommand{\qTJWZeroSixThirteenTeachingNotes}{\qTriangleAreaOneTeachingNotes}

@@ -1,0 +1,86 @@
+% ★★★ 难题
+
+\newcommand{\qSolidSquareDoubleFoldPropStem}{
+在正方形 $ABCD$ 中，点 $E,F$ 分别为边 $BC,AD$ 的中点。将 $\triangle ABF$ 沿 $BF$ 所在直线进行翻折，将 $\triangle CDE$ 沿 $DE$ 所在直线进行翻折。在翻折过程中（翻折角在 $(0,\pi)$ 之间），下列说法正确的是 \blank{2cm}
+}
+
+\newcommand{\qSolidSquareDoubleFoldPropOptions}{
+A. 点 $A$ 与点 $C$ 在某一位置可能重合 \\
+B. 点 $A$ 与点 $C$ 的最大距离为 $\sqrt{3}AB$ \\
+C. 直线 $AB$ 与直线 $CD$ 可能垂直 \\
+D. 直线 $AF$ 与直线 $CE$ 可能垂直
+}
+
+\newcommand{\qSolidSquareDoubleFoldPropFigure}[1][1]{
+\begin{tikzpicture}[scale=#1, x={(-0.5cm,-0.4cm)}, y={(1cm,0cm)}, z={(0cm,1cm)}]
+    \coordinate (B) at (-1, -1, 0);
+    \coordinate (C) at (1, -1, 0);
+    \coordinate (D) at (1, 1, 0);
+    \coordinate (A) at (-1, 1, 0);
+    \coordinate (E) at (0, -1, 0);
+    \coordinate (F) at (0, 1, 0);
+    
+    \draw[dashed, gray] (A) -- (B) -- (E);
+    \draw[dashed, gray] (A) -- (F);
+    \draw[dashed, gray] (C) -- (D) -- (F);
+    \draw[dashed, gray] (C) -- (E);
+    
+    \draw (B) -- (E) -- (D) -- (F) -- cycle;
+    
+    \coordinate (A1) at (-0.6, 0.8, 0.77);
+    \coordinate (C1) at (0.76, -0.88, 0.63);
+    
+    \draw (F) -- (A1) -- (B);
+    \draw (D) -- (C1) -- (E);
+    
+    \node[above] at (A1) {$A'$};
+    \node[right] at (C1) {$C'$};
+    \node[left] at (B) {$B$};
+    \node[below] at (E) {$E$};
+    \node[above] at (D) {$D$};
+    \node[above] at (F) {$F$};
+\end{tikzpicture}
+}
+
+\newcommand{\qSolidSquareDoubleFoldPropAnswer}{
+D
+}
+
+\newcommand{\qSolidSquareDoubleFoldPropSolution}{
+以正方形的中心为坐标原点 $O$，设边长为 $2$ 建立空间直角坐标系，使得 $BC$ 和 $AD$ 分别平行于 $y$ 轴。
+令 $A(-1,1,0), B(-1,-1,0), C(1,-1,0), D(1,1,0)$，则中点为 $E(0,-1,0), F(0,1,0)$。
+折痕分别为直线 $BF$ 和直线 $DE$，易得直线 $BF$ 在 $xy$ 平面内的方程为 $y=2x+1$。
+点 $A(-1,1,0)$ 到 $BF$ 的投影点为 $P\left(-\frac{1}{5}, \frac{3}{5}, 0\right)$，点 $A$ 到 $BF$ 的距离为 $\frac{2}{\sqrt{5}}$。
+设 $\triangle ABF$ 翻折角为 $\alpha \in (0,\pi)$，翻折后的点 $A'$ 的坐标可参数化为：
+$$ A' = \left(-\frac{1}{5} - \frac{4}{5}\cos\alpha, \frac{3}{5} + \frac{2}{5}\cos\alpha, \frac{2}{\sqrt{5}}\sin\alpha\right) $$
+同理设 $\triangle CDE$ 翻折角为 $\beta \in (0,\pi)$，由于中心对称关系，点 $C$ 翻折后 $C'$ 的坐标为：
+$$ C' = \left(\frac{1}{5} + \frac{4}{5}\cos\beta, -\frac{3}{5} - \frac{2}{5}\cos\beta, \frac{2}{\sqrt{5}}\sin\beta\right) $$
+
+分别验证四个选项：
+\begin{itemize}
+    \item \textbf{A选项：} 若 $A', C'$ 重合，则两者的 $x,y$ 坐标必须对应相等。由 $x$ 坐标相等得 $\cos\alpha+\cos\beta=-\frac{1}{2}$，由 $y$ 坐标相等得 $\cos\alpha+\cos\beta=-3$，产生矛盾。故两点不可能重合，A错。
+    \item \textbf{B选项：} 计算空间距离 $|A'C'|^2$，化简可得 $|A'C'|^2 = \frac{4}{5}\left[4+2\cos(\alpha+\beta)+2\cos\alpha+2\cos\beta\right]$。利用三角换元或基本不等式可知其最大值为 $8$（当 $\alpha=\beta=0$ 时取到）。即 $|A'C'|_{\max} = \sqrt{8} = 2\sqrt{2} = \sqrt{2}AB \neq \sqrt{3}AB$，B错。
+    \item \textbf{C选项：} 考查两直线方向向量内积 $\vec{BA'} \cdot \vec{DC'} = \frac{4}{5}[-4-\cos(\alpha+\beta)]$。因为 $\cos(\alpha+\beta) \geqslant -1$，故点积最大值为 $-\frac{12}{5} < 0$，两向量夹角始终为钝角，不可能垂直，C错。
+    \item \textbf{D选项：} 计算 $\vec{FA'} = \left(-\frac{1}{5}-\frac{4}{5}\cos\alpha, -\frac{2}{5}+\frac{2}{5}\cos\alpha, \frac{2}{\sqrt{5}}\sin\alpha\right)$，$\vec{EC'} = \left(\frac{1}{5}+\frac{4}{5}\cos\beta, \frac{2}{5}-\frac{2}{5}\cos\beta, \frac{2}{\sqrt{5}}\sin\beta\right)$。
+    两者作内积，化简可得 $\vec{FA'} \cdot \vec{EC'} = \frac{1}{5}\left[-1 - 4\cos(\alpha+\beta)\right]$。
+    当 $\cos(\alpha+\beta) = -\frac{1}{4}$ 时，内积恰好为 $0$。因为 $-\frac{1}{4} \in [-1,1]$，所以存在合法的翻折角使得两向量垂直，即直线 $AF$ 与直线 $CE$ 可能垂直，D正确。
+\end{itemize}
+综上，正确答案为 D。
+}
+
+\newcommand{\qSolidSquareDoubleFoldPropDiagnosis}{
+\textbf{学生常见问题：}
+\begin{itemize}
+    \item \textbf{多动点缺乏参数化手段}：对于双折叠这种存在两个独立自由度的动态问题，如果不使用空间向量，很难凭空间直觉判断两直线的垂直关系。
+    \item \textbf{建系不佳}：建系时若不选取中心作为原点，表达式对称性会大打折扣，计算易出错。
+\end{itemize}
+}
+
+\newcommand{\qSolidSquareDoubleFoldPropTeachingNotes}{
+\textbf{课堂处理与追问：}
+\begin{itemize}
+    \item \textbf{计算铺垫}：这道题是利用向量代数“降维打击”空间想象的极致案例。要求学生完整推导 $A'$ 的轨迹圆参数方程，这是解析几何在立体几何中的迁移。
+    \item \textbf{追问 1}：如果只翻折一侧，点 $A'$ 的轨迹是什么？（空间中的一段圆弧）
+    \item \textbf{追问 2}：式子 $\cos(\alpha+\beta) = -1/4$ 说明什么？（翻折的过程不是唯一的，而是存在无数对 $(\alpha, \beta)$ 满足该条件）。
+\end{itemize}
+}

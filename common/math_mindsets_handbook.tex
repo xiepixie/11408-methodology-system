@@ -1,0 +1,820 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[student]{ipara}
+\tcbuselibrary{skins,breakable}
+\usepackage{multicol}
+\usepackage{longtable}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\usepackage{amsthm}
+
+% =====================================================
+% 重复引入防重载保护 (Input Guard)
+% =====================================================
+\makeatletter
+\newcommand{\loadedfiles}{}
+\let\oldinput\input
+\renewcommand{\input}[1]{%
+  \edef\temp@args{{#1}{\loadedfiles}}%
+  \expandafter\check@loaded\temp@args
+  \ifin@
+  \else
+    \g@addto@macro\loadedfiles{#1,}%
+    \oldinput{#1}%
+  \fi
+}
+\newcommand{\check@loaded}[2]{\in@{#1}{#2}}
+\makeatother
+
+% =====================================================
+% TikZ 几何直观图示宏包（高清黑白印刷级）
+% =====================================================
+\newcommand{\sineLawFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.88, line join=round, line cap=round]
+      \coordinate (O) at (0,0);
+      \coordinate (A) at (210:2.0);
+      \coordinate (B) at (330:2.0);
+      \coordinate (C) at (80:2.0);
+      \draw[gray!65, thick] (O) circle (2.0);
+      \draw[very thick] (A)--(B)--(C)--cycle;
+      \draw[dashed, gray!70] (O)--(A) (O)--(B) (O)--(C);
+      \fill (O) circle (1.2pt) node[right] {\small \(O\)};
+      \foreach \p/\pos in {A/below left,B/below right,C/above} {
+        \fill (\p) circle (1.2pt) node[\pos] {\small \(\p\)};
+      }
+      \node[below] at ($(A)!0.5!(B)$) {\small \(c\)};
+      \node[right] at ($(B)!0.5!(C)$) {\small \(a\)};
+      \node[left] at ($(C)!0.5!(A)$) {\small \(b\)};
+      \node at (0,-2.35) {\small\textbf{图 1 外接圆半径 \(R\) 与正弦定理}};
+    \end{tikzpicture}
+  \end{center}
+}
+
+\newcommand{\cosineLawFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.92, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (3.2,0);
+      \coordinate (C) at (0.9,1.65);
+      \draw[very thick] (A)--(B)--(C)--cycle;
+      \node[below] at (A) {\small \(A\)};
+      \node[below] at (B) {\small \(B\)};
+      \node[above] at (C) {\small \(C\)};
+      \node[below] at ($(A)!0.5!(B)$) {\small \(c\)};
+      \node[right] at ($(B)!0.5!(C)$) {\small \(a\)};
+      \node[left] at ($(C)!0.5!(A)$) {\small \(b\)};
+      \draw[->] (A) +(0.55,0) arc[start angle=0,end angle=61,radius=0.55];
+      \node at (0.66,0.27) {\small \(A\)};
+      \node at (1.6,-0.4) {\small\textbf{图 2 余弦定理三边一角关系}};
+    \end{tikzpicture}
+  \end{center}
+}
+
+\newcommand{\freedomFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.92, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (3.1,0);
+      \coordinate (C) at (1.05,1.65);
+      \draw[very thick] (A)--(B)--(C)--cycle;
+      \node[below] at (A) {\small \(A\)};
+      \node[below] at (B) {\small \(B\)};
+      \node[above] at (C) {\small \(C\)};
+      \node[below] at ($(A)!0.5!(B)$) {\small \(c\)};
+      \node[right] at ($(B)!0.5!(C)$) {\small \(a\)};
+      \node[left] at ($(C)!0.5!(A)$) {\small \(b\)};
+      \draw[->] (A) +(0.55,0) arc[start angle=0,end angle=58,radius=0.55];
+      \draw[->] (B) +(-0.55,0) arc[start angle=180,end angle=142,radius=0.55];
+      \draw[->] (C) +(-0.24,-0.48) arc[start angle=242,end angle=305,radius=0.52];
+      \node at (0.72,0.25) {\small \(A\)};
+      \node at (2.48,0.22) {\small \(B\)};
+      \node at (1.05,1.05) {\small \(C\)};
+    \end{tikzpicture}
+  \end{center}
+}
+
+\newcommand{\axisSphereModelFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=1.0, >=stealth, line join=round, line cap=round]
+      \coordinate (O) at (0,0);
+      \coordinate (T) at (0,1.0);
+      \coordinate (P) at (1.55,1.0);
+      \draw[thick] (O) circle (1.85);
+      \draw[thick] (-1.55,1.0) arc (180:360:1.55 and 0.28);
+      \draw[dashed] (1.55,1.0) arc (0:180:1.55 and 0.28);
+      \draw[thick] (-1.55,-1.0) arc (180:360:1.55 and 0.28);
+      \draw[dashed] (1.55,-1.0) arc (0:180:1.55 and 0.28);
+      \draw[thick] (-1.55,1.0) -- (-1.55,-1.0);
+      \draw[thick] (1.55,1.0) -- (1.55,-1.0);
+      \draw[dashed, semithick, gray] (O) -- (T);
+      \draw[dashed, semithick, gray] (T) -- (P);
+      \draw[dashed, semithick, gray] (O) -- (P);
+      \draw[thin] (T) ++(0.18,0) -- ++(0, -0.18) -- ++(-0.18,0);
+      \fill (O) circle (1.2pt) node[left] {\small $O$};
+      \fill (T) circle (1.1pt) node[left] {\small $O_1$};
+      \fill (P) circle (1.1pt);
+      \node[left] at ($(O)!0.5!(T)$) {\small $d$};
+      \node[above] at ($(T)!0.5!(P)$) {\small $r$};
+      \node[right] at ($(O)!0.5!(P)$) {\small $R$};
+      \node[below] at (0,-2.15) {\small\textbf{图 3 核心轴心截面：$R^2=r^2+d^2$}};
+    \end{tikzpicture}
+  \end{center}
+}
+
+\newcommand{\insphereVolumeFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.95, >=stealth, line join=round, line cap=round]
+      \coordinate (P) at (0,2.0);
+      \coordinate (A) at (-1.7,-0.6);
+      \coordinate (B) at (1.7,-0.6);
+      \coordinate (C) at (0.55,0.35);
+      \coordinate (O) at (0,0.15);
+      \draw[dashed, thick, gray!75] (A) -- (C) -- (B);
+      \draw[thick] (P) -- (A) -- (B) -- cycle;
+      \draw[thick] (P) -- (C);
+      \draw[gray, thick] (O) circle (0.42);
+      \draw[dashed, gray] (O) -- (-0.45,0.65);
+      \node[right] at (O) {\small $O$};
+      \node[left] at (-0.42,0.52) {\small $r$};
+      \node[above] at (P) {\small $P$};
+      \node[left] at (A) {\small $A$};
+      \node[below] at (B) {\small $B$};
+      \node[right] at (C) {\small $C$};
+      \node[below] at (0,-1.0) {\small\textbf{图 4 内切球等体积法：$V=\frac13S_{\text{表}}r$}};
+    \end{tikzpicture}
+  \end{center}
+}
+
+\newcommand{\reviewMapFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[>=stealth, line join=round, line cap=round]
+      \node[draw, thick, rounded corners=1mm, minimum width=2.7cm, minimum height=0.8cm] (A) at (0,0) {\small 识别图形};
+      \node[draw, thick, rounded corners=1mm, minimum width=2.7cm, minimum height=0.8cm] (B) at (3.4,0) {\small 确定点线面};
+      \node[draw, thick, rounded corners=1mm, minimum width=2.7cm, minimum height=0.8cm] (C) at (6.8,0) {\small 找平行垂直};
+      \node[draw, thick, rounded corners=1mm, minimum width=2.7cm, minimum height=0.8cm] (D) at (1.7,-1.35) {\small 转化到平面};
+      \node[draw, thick, rounded corners=1mm, minimum width=2.7cm, minimum height=0.8cm] (E) at (5.1,-1.35) {\small 建系计算};
+      \draw[->, thick] (A) -- (B);
+      \draw[->, thick] (B) -- (C);
+      \draw[->, thick] (B) -- (D);
+      \draw[->, thick] (C) -- (E);
+      \draw[->, thick] (D) -- (E);
+    \end{tikzpicture}
+  \end{center}
+}
+
+% =====================================================
+% 页眉页脚高级配置 (结合 zref-lastpage)
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{black!70}\textbf{高中数学核心方法与典型例题解析 · 学生手册}}
+\rhead{\small\color{black!70}\leftmark}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% =====================================================
+% 引入公共题库试题
+% =====================================================
+\input{pool/解析几何/基础/q_hyperbola_eccentricity.tex}
+\input{pool/函数与图象/中档/q_func_max_val_parameter.tex}
+\input{pool/解析几何/难题/q_conic_circle_chords.tex}
+\input{pool/数列/难题/q_seq_max_ratio.tex}
+\input{pool/函数与图象/难题/q_func_subset_relation.tex}
+\input{pool/立体几何/中档/q_solid_prism_distance.tex}
+\input{pool/立体几何/难题/q_solid_cube_perpendicular.tex}
+
+\begin{document}
+
+% =====================================================
+% 精排封面：金字塔认知模型与视觉表达
+% =====================================================
+\begin{center}
+  \vspace*{1.2cm}
+  {\Huge\bfseries 高中数学核心方法与典型例题解析}
+  
+  \vspace{0.8em}
+  {\Large\bfseries\color{gray} --- 教师备课与学生自学精排手册}
+  
+  \vspace{0.6em}
+  {\color{rulecolor}\hrule height 1.0pt}
+  
+  \vspace{1.8cm}
+  \begin{tikzpicture}[scale=1.0, >=stealth]
+    % 金字塔梯形层
+    \fill[gray!20, draw=black, thick] (0, 6.0) -- (-0.5, 4.5) -- (0.5, 4.5) -- cycle;
+    \fill[gray!14, draw=black, thick] (-0.5, 4.5) -- (0.5, 4.5) -- (1.0, 3.0) -- (-1.0, 3.0) -- cycle;
+    \fill[gray!8,  draw=black, thick] (-1.0, 3.0) -- (1.0, 3.0) -- (1.5, 1.5) -- (-1.5, 1.5) -- cycle;
+    \fill[gray!3,  draw=black, thick] (-1.5, 1.5) -- (1.5, 1.5) -- (2.0, 0) -- (-2.0, 0) -- cycle;
+    
+    \node[font=\small\bfseries] at (0, 5.15) {I};
+    \node[font=\small\bfseries] at (0, 3.75) {II};
+    \node[font=\small\bfseries] at (0, 2.25) {III};
+    \node[font=\small\bfseries] at (0, 0.75) {IV};
+    
+    % 右侧标注
+    \fill[black] (0.25, 5.25) circle (1.5pt);
+    \draw[thick, gray!80] (0.25, 5.25) -- (2.0, 5.25);
+    \node[right, align=left, font=\small] at (2.1, 5.25) {
+      \textbf{第一层：直觉与试探}\\
+      函数思维、图像辅助方法\\
+      数形结合、特殊值试探
+    };
+    
+    % 左侧标注
+    \fill[black] (-0.75, 3.75) circle (1.5pt);
+    \draw[thick, gray!80] (-0.75, 3.75) -- (-2.0, 3.75);
+    \node[left, align=right, font=\small] at (-2.1, 3.75) {
+      \textbf{第二层：方法与建模}\\
+      最值模型分析、分类讨论、整体代换\\
+      等价转化、逆向推导方法、结构归纳
+    };
+    
+    % 右侧标注
+    \fill[black] (1.25, 2.25) circle (1.5pt);
+    \draw[thick, gray!80] (1.25, 2.25) -- (2.0, 2.25);
+    \node[right, align=left, font=\small] at (2.1, 2.25) {
+      \textbf{第三层：逻辑与边界}\\
+      充分必要、反例与边界与端点检验\\
+      交并集运算方法、定义域优先
+    };
+    
+    % 左侧标注
+    \fill[black] (-1.75, 0.75) circle (1.5pt);
+    \draw[thick, gray!80] (-1.75, 0.75) -- (-2.0, 0.75);
+    \node[left, align=right, font=\small] at (-2.1, 0.75) {
+      \textbf{第四层：底层核心方法 (基本框架)}\\
+      化归与转化方法\\
+      卷面书写规范\\
+      {\footnotesize （未知化已知，采分点闭环呈现）}
+    };
+  \end{tikzpicture}
+  
+  \vspace{2.2cm}
+  {\large\bfseries 高中数学教研组\quad 编著}
+  
+  \vspace{0.5cm}
+  {\large 2026 年 8 月}
+\end{center}
+
+\newpage
+
+% =====================================================
+% 前言
+% =====================================================
+\section*{前言：为什么要建立 17 大核心方法？}
+在高中数学的学习中，很多同学常常陷入“刷题无数却收效甚微”的境地。其根本原因在于：\textbf{只关注了题目的知识点表面，而没有掌握解题的基本方法与逻辑。}
+
+本手册将这 17 种核心方法进行直观释义，并结合最新的高考真题进行深度解剖，帮助同学们理解并应用这些方法，提升考场解题效率与规范度。
+
+\newpage
+
+% =====================================================
+% 第一部分：直观释义对照表
+% =====================================================
+\section{十七大核心方法与直观释义对照表}
+
+\begingroup
+\renewcommand{\arraystretch}{1.5}
+\linespread{1.3}\selectfont
+\arrayrulecolor{rulecolor}
+\begin{longtable}{clp{13.2cm}}
+\toprule[1.2pt]
+\textbf{序号} & \textbf{核心数学方法} & \textbf{直观释义} \\
+\midrule
+\endhead
+1 & \textbf{函数思维} & 把式子看成会流动、变化的关系。 \\ \hline
+2 & \textbf{定义域约束方法} & 动笔前先问“能不能取”？（根号、分母、底数、真数）。 \\ \hline
+3 & \textbf{图像辅助方法} & 代数问题用画图表示（方程是交点，不等式是上下）。 \\ \hline
+4 & \textbf{最值模型分析} & 恒成立卡“最坏情况”，有解寻找“最好机会”。 \\ \hline
+5 & \textbf{分类讨论方法} & 因为对称轴滑动或系数退化，不能一刀切，要分路通行。 \\ \hline
+6 & \textbf{等价转化方法} & 变形时注意前后双向推出，防止丢解和产生增解。 \\ \hline
+7 & \textbf{数形结合与几何直观} & 代数算不动就换几何图（斜率、距离、绝对值、对称性）。 \\ \hline
+8 & \textbf{整体换元方法} & 抓大结构不盲目展开，寻找“超级结构块”换元降维。 \\ \hline
+9 & \textbf{逆向推导方法} & 正向不好做，就从目标倒推充分条件（“要证此，只需彼”）。 \\ \hline
+10 & \textbf{边界与端点检验} & 回代验证：等号到底能不能取？边界点做最终检验。 \\ \hline
+11 & \textbf{交并集运算方法} & 一条路走到底（且）取交集，多条路分头走（或）求并集。 \\ \hline
+12 & \textbf{特殊值验证方法} & 压轴选择填空没头绪？先代入特殊点或特殊图形找走势。 \\ \hline
+13 & \textbf{反例论证方法} & 否定一个恒成立命题，只需举出一个有效反例。 \\ \hline
+14 & \textbf{充分必要条件分析} & 别把条件用反；必要条件只是入场券，充要条件才是锁死钥匙。 \\ \hline
+15 & \textbf{结构归纳与套用} & 不纠结单题，归纳一类问题的解题母版与通法。 \\ \hline
+16 & \textbf{化归与转化方法} & 把不会做的变成会做的，把不熟悉的结构变成做过的结构。 \\ \hline
+17 & \textbf{卷面书写规范} & 数学卷面是答题得分的保护伞。采用三层书写与六步法。 \\
+\bottomrule[1.2pt]
+\end{longtable}
+\endgroup
+
+\newpage
+
+% =====================================================
+% 第二部分：真题穿插解析（采用 lessonbriefbox 高对比度黑白框）
+% =====================================================
+\section{核心思维在最新真题中的深度解剖}
+
+\subsection{方法 2：定义域约束方法}
+\mindsetcard{定义域优先}{第一步必看限制，回归概念本源}{在触碰任何复杂的代数式变形或几何公式之前，第一步必须回归概念的数学定义本源。}
+
+\subsubsection*{【典型应用案例】2026 年全国高考数学真题第 12 题}
+\begin{lessonbriefbox}{题目}
+  \qHyperbolaEccentricityStem
+\end{lessonbriefbox}
+
+\qHyperbolaEccentricitySolution
+
+\newpage
+
+\subsection{方法 4：最值模型分析}
+\mindsetcard{最值模型分析}{恒成立卡最坏，极值点处取等}{面对“恒成立”或者“存在最值”的问题，核心思维是化无理为有理，将不等式恒成立转化为求函数的最值。}
+
+\subsubsection*{【典型应用案例】2026 年全国高考数学真题第 6 题}
+\begin{lessonbriefbox}{题目}
+  \qFuncMaxValParameterStem\par\vspace{0.4em}
+  \qFuncMaxValParameterOptions
+\end{lessonbriefbox}
+
+\qFuncMaxValParameterSolution
+
+\newpage
+
+\subsection{方法 7：数形结合与几何直观}
+\mindsetcard{数形结合与几何直观}{方程是交点，距离是弦长}{对于圆与直线的相交弦长问题，强行用韦达定理联立往往计算量庞大。利用几何直观（半径、弦心距）最快。}
+
+\subsubsection*{【典型应用案例】2026 年全国高考数学真题第 11 题}
+\begin{lessonbriefbox}{题目}
+  \sidefigureproblem{0.65}{%
+    \qConicCircleChordsStem\par\vspace{0.4em}%
+    \qConicCircleChordsOptions%
+  }{%
+    \qConicCircleChordsFigure[0.85]%
+  }
+\end{lessonbriefbox}
+
+\qConicCircleChordsSolution
+
+\newpage
+
+\subsection{方法 10：边界与端点检验}
+\mindsetcard{边界与端点检验}{边界必须检验，多块重叠防爆}{在求最值或公比最大值时，分析函数的单调性只能给出理论上的最值位置。我们必须将边界下标代回原数列中进行实际配对验证。}
+
+\subsubsection*{【典型应用案例】2026 年全国高考数学真题第 14 题}
+\begin{lessonbriefbox}{题目}
+  \qSeqMaxRatioStem
+\end{lessonbriefbox}
+
+\qSeqMaxRatioSolution
+
+\newpage
+
+\subsection{思维 14 \& 16：充分必要与化归与转化方法}
+\mindsetcard{充分必要与化归转化}{翻译抽象集合，构造中介引理}{对于新定义压轴题，第一步是将抽象的集合包含关系翻译为具体的函数值大小不等式。}
+
+\subsubsection*{【典型应用案例】2026 年全国高考数学真题第 19 题}
+\begin{lessonbriefbox}{题目}
+  \qFuncSubsetRelationStem
+\end{lessonbriefbox}
+
+\qFuncSubsetRelationSolution
+
+\newpage
+
+\subsection{方法 17：卷面书写规范}
+\mindsetcard{卷面书写规范}{设限联推算综，逻辑无懈可击}{解答题的卷面必须遵循“设、限、联、推、算、综”的万能六步法，利用明确的逻辑连接词，确保每一个采分点都清晰呈现。}
+
+\subsubsection*{【典型应用案例】2026 年全国高考数学真题第 15 题}
+\begin{lessonbriefbox}{题目}
+  \sidefigureproblem{0.65}{\qSolidPrismDistanceStem}{\qSolidPrismDistanceFigure[1.0]}
+\end{lessonbriefbox}
+
+\qSolidPrismDistanceSolution
+
+\newpage
+
+% =====================================================
+% 第三部分：新增公共专题知识方法与思维决策母版
+% =====================================================
+\section{核心专题知识方法与思维决策母版}
+
+\subsection{专题一：不等式结构换元与消元方法}
+
+\begin{theorembox}{一、均值不等式链 (AGM Chain)}
+设 $a, b > 0$，则有：
+\[
+  \frac{2}{\dfrac{1}{a}+\dfrac{1}{b}} \leqslant \sqrt{ab} \leqslant \frac{a+b}{2} \leqslant \sqrt{\frac{a^2+b^2}{2}}
+\]
+即：\textbf{调和平均 $\leqslant$ 几何平均 $\leqslant$ 算术平均 $\leqslant$ 平方平均}（简记：调几算方）。\\
+等号当且仅当 $a = b$ 时成立。
+\end{theorembox}
+
+\begin{theorembox}{二、柯西不等式 (Cauchy-Schwarz)}
+对任意实数 $a_i, b_i$，恒有：
+\[
+  (a_1^2 + a_2^2)(b_1^2 + b_2^2) \geqslant (a_1b_1 + a_2b_2)^2
+\]
+等号当且仅当 $a_1b_2 = a_2b_1$ 时成立。
+\end{theorembox}
+
+\begin{keybox}{解题核心思维：4大结构换元技巧}
+\begin{enumerate}
+  \item \textbf{根式整体换元}：对于形如 $x + \sqrt{1-x}$ 的结构，令整个根式 $t = \sqrt{1-x} \geqslant 0$，化无理为有理二次函数。
+  \item \textbf{三角代换}：遇到 $x^2 + y^2 = R^2$ 结构，令 $x = R\cos\theta, y = R\sin\theta$；遇到 $1 - x^2$ 结构，令 $x = \cos\theta, \theta \in [0, \pi]$。
+  \item \textbf{齐次化比值代换}：若 $x+y=1$，对于非对称分式求最值，用一阶或二阶齐次化构造，设 $t = \dfrac{y}{x} > 0$，将多元问题降维为一元导数问题。
+  \item \textbf{线性最值几何转化}：将代数最值转换为切线、圆、斜率等几何临界位置。
+\end{enumerate}
+\end{keybox}
+
+\problemheader{经典例题一：比值消元}
+{\small 已知正实数 $x, y$ 满足 $x + y = 1$，求 $\dfrac{1}{x^2} + \dfrac{4}{y}$ 的最小值。}
+\answerblank[4.5cm]{解：}
+\postproblem{
+  \item 此题两个分式分母的阶数不一致，直接通分或用均值不等式很难处理。我们能把分子“齐次化”吗？
+  \item 如果利用 $1 = x+y$ 去配凑分子，设 $t = \dfrac{y}{x}$，能否成功将二元最值转化为关于 $t$ 的一元函数最值？
+}{
+  \checkbox 掌握了齐次化比值代换 \quad
+  \checkbox 能够独立完成消元计算
+}{1.2cm}
+
+\newpage
+
+\subsection{专题二：特殊值与估算突破}
+
+\begin{theorembox}{一、常见估算常数基础}
+在比较大小和选填题中，以下数值是快速卡边界的利器：
+\begin{center}
+\arrayrulecolor{rulecolor}
+\begin{tabularx}{0.85\textwidth}{XXXX}
+\toprule[1.1pt]
+\(\sqrt{2} \approx 1.414\) & \(\sqrt{3} \approx 1.732\) & \(\sqrt{5} \approx 2.236\) & \(\sqrt{10} \approx 3.162\) \\ \hline
+\(\ln 2 \approx 0.693\) & \(\ln 3 \approx 1.098\) & \(\ln 5 \approx 1.609\) & \(e \approx 2.718\) \\
+\bottomrule[1.1pt]
+\end{tabularx}
+\end{center}
+\end{theorembox}
+
+\begin{theorembox}{二、三大估算方法}
+\begin{enumerate}
+  \item \textbf{乘法拆加法}：利用对数性质将大数分解，如 \(\ln 6 = \ln 2 + \ln 3 \approx 1.791\)。
+  \item \textbf{平方比较法}：当两个根式接近时，通过平方或作差平方比较大小。
+  \item \textbf{泰勒公式放缩（切线法）}：利用常用不等式 \(\ln x \leqslant x - 1\) 和 \(e^x \geqslant x + 1\) 进行快速定性分析。
+\end{enumerate}
+\end{theorembox}
+
+\begin{keybox}{特殊值试探的“合法性校验”}
+使用特殊值排除选项时，必须确保所代入的特殊数值或图形\textbf{不违背题干的任何约束条件}。
+\begin{itemize}
+  \item 例：代入的三角形必须满足大边对大角或三角形三边关系；
+  \item 代入的参数值必须落在定义域 and 给定范围内。
+\end{itemize}
+\end{keybox}
+
+\problemheader{经典例题二：特殊值卡边界}
+{\small 若过点 $(a,b)$ 可以作曲线 $y = e^x$ 的两条切线，则实数 $a, b$ 满足的关系式为哪一个？}
+\answerblank[3.5cm]{解：}
+\postproblem{
+  \item 本题若直接联立切线方程并利用判别式或方程解的个数，代数推导较为繁琐。
+  \item 我们能选一个极其特殊的点，例如 $(0,0)$、$(1,0)$ 或 $(2,0)$ 来快速排除不满足条件的选项吗？
+}{
+  \checkbox 掌握了特殊值试探的基本思路 \quad
+  \checkbox 理解了切线个数与曲线凹凸性边界
+}{1.2cm}
+
+\newpage
+
+\subsection{专题三：立体几何直觉与球的模型}
+
+\begin{theorembox}{一、空间夹角四大定理}
+\begin{enumerate}
+  \item \textbf{三余弦定理（最小角定理）}：设平面内一条直线与斜线在平面内的射影夹角为 $\theta_1$，斜线与平面所成的角为 $\theta_2$，斜线与该直线的夹角为 $\theta$，则恒有：
+  \[
+    \cos\theta = \cos\theta_1 \cos\theta_2
+  \]
+  \item \textbf{三正弦定理（最大角定理）}：\(\sin\theta_2 = \sin\theta \sin\phi\)（其中 $\phi$ 为平面夹角）。
+  \item \textbf{三夹角定理}：用于直接求解二面角的余弦关系。
+  \item \textbf{三射线定理}：从同一点出发的三条射线，其余弦满足固定乘积或线性加和关系。
+\end{enumerate}
+\end{theorembox}
+
+\begin{theorembox}{二、外接球半径核心三模型}
+\begin{enumerate}
+  \item \textbf{墙角模型（三条两两垂直的棱）}：设同一个顶点出发的三条棱两两垂直，长分别为 $a, b, c$，则外接球半径满足：
+  \[
+    (2R)^2 = a^2 + b^2 + c^2
+  \]
+  \item \textbf{对棱相等模型（等腰四面体）}：若三棱锥的对棱两两相等，长分别为 $a, b, c$，可将其补形为长方体。外接球半径满足：
+  \[
+    R = \sqrt{\frac{a^2+b^2+c^2}{8}}
+  \]
+  \item \textbf{直棱柱模型（轴心法）}：设直三棱柱的底面外接圆半径为 $r$，高为 $h$，则外接球半径为：
+  \[
+    R^2 = r^2 + \left(\frac{h}{2}\right)^2
+  \]
+\end{enumerate}
+\end{theorembox}
+
+\begin{theorembox}{三、内切球与球截面关系}
+\begin{itemize}
+  \item \textbf{内切球等体积法}：对任意多面体，若内切球半径为 $r$，体积为 $V$，表面积为 $S_{\text{表}}$，则恒有：
+  \[
+    V = \frac{1}{3} S_{\text{表}} r \implies r = \frac{3V}{S_{\text{表}}}
+  \]
+  \item \textbf{球的截面圆性质}：球心到截面圆圆心的距离为 $d$，球半径为 $R$，截面圆半径为 $r$，则：
+  \[
+    R^2 = r^2 + d^2
+  \]
+\end{itemize}
+\end{theorembox}
+
+\problemheader{经典例题三：球的模型应用}
+\sidefigureproblem{0.65}{在正方体 $ABCD-A_1B_1C_1D_1$ 中，三棱锥 $A_1-B_1CD_1$ 的四个顶点都在同一个球面上。若正方体棱长为 2，求该球的表面积与三棱锥的体积。}{
+  \begin{tikzpicture}[scale=0.9, line join=round, line cap=round]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (1.5,-0.5);
+    \coordinate (D) at (0.8,0.6);
+    \coordinate (C) at (2.3,0.1);
+    \coordinate (A1) at (0,1.5);
+    \coordinate (B1) at (1.5,1.0);
+    \coordinate (D1) at (0.8,2.1);
+    \coordinate (C1) at (2.3,1.6);
+    \draw[dashed] (A) -- (D) (C) -- (D) (D) -- (D1);
+    \draw[dashed, thick, gray] (A1) -- (D1) (D1) -- (C) (B1) -- (D1);
+    \draw[thick] (A) -- (B) -- (C) -- (C1) -- (D1) -- (A1) -- cycle;
+    \draw[thick] (A1) -- (B1) -- (C1) (B) -- (B1);
+    \draw[thick, red] (A1) -- (C) (A1) -- (B1) (B1) -- (C);
+    \foreach \p/\pos in {A/below,B/below,C/right,D/above,A1/left,B1/below,C1/right,D1/above} {
+      \fill (\p) circle (1.0pt) node[\pos] {\scriptsize \(\p\)};
+    }
+  \end{tikzpicture}
+}
+\answerblank[3.5cm]{解：}
+\postproblem{
+  \item 三棱锥 $A_1-B_1CD_1$ 的四个顶点是否恰好也是正方体的顶点？它们的外接球和正方体的外接球有何关系？
+  \item 补形法在此题中是如何把复杂的空间三棱锥模型，瞬间简化为长方体对角线外接球模型的？
+}{
+  \checkbox 理解了补形法的几何原理 \quad
+  \checkbox 掌握了外接球半径模型计算
+}{1.2cm}
+
+\newpage
+
+\subsection{专题四：解三角形定理选择与边角互化}
+
+\begin{theorembox}{一、正弦定理与余弦定理选择指南}
+遇到三角形问题，根据已知条件的类型快速确定解题路径：
+\begin{center}
+\arrayrulecolor{rulecolor}
+\begin{tabularx}{\textwidth}{p{3.2cm}p{4.0cm}X}
+\toprule[1.1pt]
+\textbf{已知条件类型} & \textbf{首选定理} & \textbf{公式骨架} \\
+\midrule
+已知两角及一边 & 正弦定理 & \(\dfrac{a}{\sin A} = \dfrac{b}{\sin B} = \dfrac{c}{\sin C}\) \\ \hline
+已知两边及夹角 & 余弦定理 & \(c^2 = a^2 + b^2 - 2ab\cos C\) \\ \hline
+已知三边关系 & 余弦定理变式 & \(\cos C = \dfrac{a^2 + b^2 - c^2}{2ab}\) \\ \hline
+已知两边及其中一边对角 & 正弦定理 & \(\sin B = \dfrac{b\sin A}{a}\) \\
+\bottomrule[1.1pt]
+\end{tabularx}
+\end{center}
+\end{theorembox}
+
+\begin{theorembox}{二、边角互化的两大决策方向}
+\begin{enumerate}
+  \item \textbf{化角为边（代数路线）}：利用正弦定理 \(a = 2R\sin A\) 将角转换为长度。适合已知条件中含有较多边的乘积或平方和结构。
+  \item \textbf{化边为角（三角路线）}：将所有长度化为正弦，利用三角恒等变换（两角和差、二倍角、辅助角公式）化简。适合式子中含有较多内角的正弦、余弦混合加减结构。
+\end{enumerate}
+\end{theorembox}
+
+\problemheader{经典例题四：边角互化与范围}
+{\small 在 \(\triangle ABC\) 中，已知 \(2b\cos C = 2a - c\)，求角 \(B\) 的大小；若 \(b = \sqrt{3}\)，求 \(\triangle ABC\) 面积的最大值。}
+\answerblank[4.0cm]{解：}
+\postproblem{
+  \item 第一问中式子既有边又有角，化边为角还是化角为边更简便？试一试用正弦定理将边化为角。
+  \item 第二问在已知 $b$ 和角 $B$ 的情况下，面积 $S = \dfrac{1}{2}ac\sin B$。我们可以联立余弦定理 $b^2 = a^2+c^2-ac\cos B$ 并使用均值不等式求出 $ac$ 的范围吗？
+}{
+  \checkbox 熟练应用正/余弦定理进行边角互化 \quad
+  \checkbox 掌握面积最大值的均值不等式求解
+}{1.2cm}
+
+\newpage
+
+\subsection{专题五：卷面表达与规范书写}
+
+\begin{theorembox}{一、大题采分“六步法”}
+在解答题的步骤呈现中，必须体现完整的逻辑链条，避免跨步过大被扣步骤分：
+\begin{enumerate}
+  \item \textbf{设}：清晰定义解题中引入的新变量、几何法建系中的坐标轴及坐标。
+  \item \textbf{限}：写出变量的范围或约束（如换元后 $t \geqslant 0$，导数单调区间两端开闭）。
+  \item \textbf{联}：写出建立方程的依据定理名称（如“由余弦定理得”，“联立直线与椭圆方程得”）。
+  \item \textbf{推}：写出关键变形的逻辑因果词（因为……所以……，等价于……）。
+  \item \textbf{算}：呈现关键计算结果（如联立后的判别式 $\Delta$，韦达定理 $x_1+x_2$ 的表达式）。
+  \item \textbf{综}：给出最终的文字结论句（如“综上所述，实数 $a$ 的取值范围为……”）。
+\end{enumerate}
+\end{theorembox}
+
+\begin{theorembox}{二、两大高频表达细节规范}
+\begin{itemize}
+  \item \textbf{立体几何判定定理“条件组”规范}：\\
+  证明线面垂直时，相交线条件必须写齐。标准的四步采分结构为：
+  \[
+    \text{因为 } 
+    \begin{cases}
+      b \subset \alpha, c \subset \alpha \\
+      b \cap c = P \\
+      a \perp b, a \perp c
+    \end{cases}
+    \text{，所以 } a \perp \alpha.
+  \]
+  \item \textbf{导数单调性“表格/文字描述”规范}：\\
+  求导后必须写齐令 $f'(x) > 0$ 和 $f'(x) < 0$ 的过程，单调区间一律用逗号或文字“和”连接，\textbf{严禁使用并集符号 $\cup$}。
+\end{itemize}
+\end{theorembox}
+
+\newpage
+
+% =====================================================
+% 第四部分：最终式思想与重复本系统训练
+% =====================================================
+\section{最终式思想与重复本系统训练}
+
+\subsection{最终式思想的定义与核心逻辑}
+
+\mindsetcard{最终式思想}{预判链路，以终为始}{%
+  所谓“最终式”，是指题目最终必须出现的、能直接推出目标结论的关键表达式。
+  在计算前，对命题逻辑、计算链路和目标形式进行精准预判，从而做到：
+  \begin{enumerate}
+    \item \textbf{不算也知道怎么算}：看清包装下的核心数学模型与计算终点。
+    \item \textbf{知道这样算一定可以}：理清推导与化简的因果链条，保证计算方向的绝对正确。
+  \end{enumerate}
+}
+
+在实战中，我们通常按照以下五步决策流程来运用最终式思想：
+\begin{enumerate}
+  \item \textbf{读目标}：明确题目要求的是角、边、比值、范围，还是定值、定点。
+  \item \textbf{预测最终式}：预判目标形式，例如求角 $A$ 预测最终式为 $\cos A = \text{常数}$，求比值预测最终式为一元方程等。
+  \item \textbf{选择转化工具}：在三角中选择正/余弦定理，在解析几何中选择联立、韦达定理或点差法。
+  \item \textbf{压缩运算链路}：跳过繁琐的算术展开，只保留关键的变形步骤与公式骨架。
+  \item \textbf{检验目标结构}：确认最终得到的表达式是否已与参数无关，或是否已锁定目标结论。
+\end{enumerate}
+
+\subsection{最终式思想在三角函数第一问中的体现}
+
+三角大题的第一问如果难度较高，往往是在“包装”上做文章。最终式思想要求我们从复杂的“包装”中快速识别最终目标，并遵循以下两条核心路径：
+\begin{itemize}
+  \item \textbf{统一边角与纯边化}：若题目求角或边，第一步应优先将式子中的 $\sin A, \sin B, \sin C$ 利用正弦定理转化为边 $a, b, c$。
+  \item \textbf{余弦定理锁定最终式}：将所有的三角函数项化为纯边式后，再使用余弦定理将边长关系翻译为角。例如，将复杂恒等式整理为 $b^2+c^2-a^2 = bc$，即可直接得出 $\cos A = \frac{1}{2}$，从而求得 $A = \frac{\pi}{3}$。
+\end{itemize}
+
+\subsection{与解析几何的衔接}
+
+解析几何的压轴题往往运算量巨大，其本质也是“最终式处理”的战场：
+\begin{itemize}
+  \item \textbf{目标形式暗示计算路径}：定值、定点、定直线等题目中，最终式必然是不含动参的常数或固定关系。这一目标形式倒推我们去设计消元和联立的步骤。
+  \item \textbf{运算技巧决定速度，最终式思想决定方向}：在联立与韦达定理展开前，必须知道展开后要整理出怎样的形式（如对称式、齐次式）。如果不清楚最终式的结构，运算极易在中途失控。
+\end{itemize}
+
+\subsection{重复本的作用与选题标准}
+
+\begin{keybox}{重复本系统训练法则}
+  \textbf{重复本不是普通的错题本}，它的核心作用不是记录错误的答案，而是通过多轮重复建立对流程和计算的熟练感，训练\textbf{“运算链路闪回”}能力——即看到题目，脑海中能瞬间闪回出“先算什么、后算什么、最终算到哪里”的完整计算链路。
+\end{keybox}
+
+\textbf{重复本选题标准：}
+\begin{enumerate}
+  \item \textbf{包装吓人}：表面看似复杂、新颖，但拆开包装后属于常规套路。
+  \item \textbf{流程常规但自己不熟}：解题套路已知，但自己动笔时反应较慢或容易卡壳。
+  \item \textbf{运算链路长、运算量大}：需要多步变形，易产生计算失误，值得反复训练“算感”。
+  \item \textbf{含关键运算技巧}：如分离常数、比值换元、整体换元、消根号等技巧。
+\end{enumerate}
+
+\subsection{最终式思想典型方法与技巧}
+
+\begin{theorembox}{方法一：三角纯边化}
+  当三角形条件中混合了边与角时，优先使用正弦定理将所有角化为边，构建纯边关系，再使用余弦定理求解。\\
+  \textbf{核心链路}：复杂三角式 $\Longrightarrow$ 正弦定理化边 $\Longrightarrow$ 余弦定理识角 $\Longrightarrow$ 得到角或边长关系。
+\end{theorembox}
+
+\begin{theorembox}{方法二：分离常数}
+  在三角或解析几何中处理复杂分式时，利用分离常数减少变量个数或简化分子。\\
+  \textbf{公式模版}：$\dfrac{x-a}{x-b} = 1 + \dfrac{b-a}{x-b}$。在两项相加时，可转化为：
+  \[
+    \frac{x_1-a}{x_1-b} + \frac{x_2-a}{x_2-b} = 2 + (b-a)\left(\frac{1}{x_1-b} + \frac{1}{x_2-b}\right)
+  \]
+  配合韦达定理，能极大减少直接通分的运算量。
+\end{theorembox}
+
+\begin{theorembox}{方法三：比值换元}
+  若题目要求边长比（如 $\frac{b}{c}$）的范围，或者式子中出现齐次结构，可设 $t = \frac{b}{c}$，将多元问题转化为一元函数。\\
+  \textbf{经典变形}：利用正弦定理：
+  \[
+    \frac{b}{c} = \frac{\sin B}{\sin C} = \frac{\sin(A+C)}{\sin C} = \sin A \cot C + \cos A
+  \]
+  把“边长比”转化为“角函数”求范围。
+\end{theorembox}
+
+\begin{theorembox}{方法四：整体换元}
+  当题目要求一个复杂的整体表达式（如 $a-c$ 或两个角的差）时，不应拆散硬算，而应直接将目标整体设为一个新变量 $t$ 或 $\theta$，反推关于该变量的一元方程。
+\end{theorembox}
+
+\begin{theorembox}{方法五：消根号构造整系数方程}
+  若题目中含有整数条件或特定无理数（如特殊的三角函数值），可通过移项、平方逐步消去根号，构造其对应的整系数代数方程。\\
+  \textbf{示例}：已知 $x_0 = \cos 75^\circ = \dfrac{\sqrt{6}-\sqrt{2}}{4}$，求关于 $x_0$ 的整系数方程。\\
+  解：由 $4x_0 = \sqrt{6}-\sqrt{2}$，两边平方得 $16x_0^2 = 8 - 4\sqrt{3}$，整理得 $4x_0^2 - 2 = -\sqrt{3}$。再次平方得 $(4x_0^2-2)^2 = 3$，即 $16x_0^4 - 16x_0^2 + 1 = 0$。
+\end{theorembox}
+
+\begin{theorembox}{方法六：角平分线定理与 Stewart 定理}
+  在解三角形中，若涉及角平分线 $AD$，可结合角平分线定理 $\dfrac{BD}{DC} = \dfrac{c}{b}$ 及角平分线长度公式：
+  \[
+    AD^2 = AB \cdot AC - BD \cdot DC = bc - BD \cdot DC
+  \]
+  快速建立边长方程。若为一般线段，则使用 Stewart 定理建立关系。
+\end{theorembox}
+
+\begin{theorembox}{方法七：正切式整体处理}
+  当题目涉及多个角的关系且包含正切值乘积或平方时，引入辅助角。设目标角 $\alpha = \angle AOC$，辅助角 $\beta = \angle BOC$，将其他相关角表示为 $\alpha \pm \beta$，利用正切和差公式：
+  \[
+    \tan(\alpha+\beta)\tan(\alpha-\beta) = \frac{\tan^2\alpha - \tan^2\beta}{1 - \tan^2\alpha\tan^2\beta}
+  \]
+  构建含 $\tan^2\alpha$ 和 $\tan^2\beta$ 的方程，再消去辅助变量 $\beta$ 求解目标。
+\end{theorembox}
+
+\newpage
+
+% =====================================================
+% 第五部分：考场解题思路分析流程图
+% =====================================================
+\section{考场解题思路分析流程图}
+
+当你在考场上面对一道题目卡壳、算不下去或找不到思路时，请立即启动以下\textbf{解题步骤流程图}进行思维扫描与平移转化：
+
+\vspace{1.0cm}
+
+\begin{center}
+  \resizebox{0.95\textwidth}{!}{%
+    \begin{tikzpicture}[
+      node distance=1.1cm and 1.2cm,
+      every node/.style={draw, thick, rectangle, rounded corners=4pt, align=center, inner sep=7pt, fill=white, font=\small},
+      arrow/.style={-latex, thick}
+    ]
+      % Node 1: Stage 1
+      \node (stage1) [fill=gray!10, text width=7.5cm] {%
+        \textbf{【第一阶段：面对新题】}\\[0.2em]
+        立即写出定义域与变量限制条件（定义域优先与边界意识）
+      };
+
+      % Node 2: Stage 2 Decision
+      \node (stage2) [below=of stage1, fill=gray!5, text width=7.5cm] {%
+        \textbf{【第二阶段：双轨路径决策】}\\[0.2em]
+        根据题目特征，决定解题突破主路径
+      };
+
+      % Branch Left: Geom
+      \node (geom) [below left=1.8cm and -0.2cm of stage2, text width=4.8cm] {%
+        \textbf{【形之径：图像几何化】}\\[0.3em]
+        1. 尝试把代数式画成图像\\[0.2em]
+        2. 翻译为斜率、距离或绝对值\\[0.2em]
+        3. 寻找几何对称与切线临界
+      };
+
+      % Branch Right: Alg
+      \node (alg) [below right=1.8cm and -0.2cm of stage2, text width=4.8cm] {%
+        \textbf{【数之径：代数结构化】}\\[0.3em]
+        1. 寻找超级结构块整体代换\\[0.2em]
+        2. 检查变形过程的等价防爆\\[0.2em]
+        3. 轴动区间定启动分类讨论
+      };
+
+      % Node 3: Stage 3 Check
+      \node (stage3) [below=5.0cm of stage2, text width=7.2cm] {%
+        \textbf{【第三阶段：临界与边界检验】}\\[0.2em]
+        1. 极值点与最值取等条件是否真实存在？\\[0.2em]
+        2. 边界等号端点是否需要代回题干验证？
+      };
+
+      % Node 4: Stage 4 Write
+      \node (stage4) [below=of stage3, fill=gray!10, text width=7.5cm] {%
+        \textbf{【第四阶段：规范卷面书写】}\\[0.2em]
+        严格按照“设、限、联、推、算、综”六步法\\[0.2em]
+        三层书写（公式骨架 + 短逻辑词串联 + 临界解释）
+      };
+
+      % Node 5: End
+      \node (end) [below=of stage4, fill=black, text=white, text width=4.2cm] {%
+        \textbf{规范步骤，完成解答}
+      };
+
+      % Connectors
+      \draw[arrow] (stage1) -- (stage2);
+
+      \draw[arrow] (stage2.south) -- ++(0,-0.9) -| (geom.north)
+        node[pos=0.25, fill=white, inner sep=3pt, font=\small\bfseries] {形之径（几何）};
+      \draw[arrow] (stage2.south) -- ++(0,-0.9) -| (alg.north)
+        node[pos=0.25, fill=white, inner sep=3pt, font=\small\bfseries] {数之径（代数）};
+
+      \draw[arrow] (geom.south) |- (stage3.west);
+      \draw[arrow] (alg.south) |- (stage3.east);
+
+      \draw[arrow] (stage3) -- (stage4);
+      \draw[arrow] (stage4) -- (end);
+    \end{tikzpicture}%
+  }
+\end{center}
+
+\end{document}

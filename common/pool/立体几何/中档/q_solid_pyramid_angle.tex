@@ -1,0 +1,89 @@
+% =====================================================
+% 题型：四棱锥面面垂直与线面角解答题 (q_tjw_20260606_17_pyramid_angle.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qSolidPyramidAngleStem}{%
+  如图，在四棱锥 \(P - ABCD\) 中，\(AB \parallel CD\)，且 \(\angle BAP = \angle CDP = 90^\circ\)。\\
+  (1) 证明：平面 \(PAB \perp\) 平面 \(PAD\)；\\
+  (2) 若 \(PA = PD = AB = DC\)，\(\angle APD = 90^\circ\)，且四棱锥 \(P - ABCD\) 的体积为 \(\dfrac{8}{3}\)，求 \(PB\) 与平面 \(ABCD\) 所成的线面角的大小。%
+}
+
+\newcommand{\qSolidPyramidAngleFigure}[1][1.5]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    % Coordinates
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (3,-0.5);
+    \coordinate (D) at (1,1);
+    \coordinate (C) at (4,0.5);
+    \coordinate (P) at (0.5, 2.5);
+
+    % Hidden lines
+    \draw[dashed, thick, gray!80] (A) -- (D) -- (C);
+    \draw[dashed, thick, gray!80] (P) -- (D);
+
+    % Visible edges
+    \draw[thick] (P) -- (A) -- (B) -- (C) -- cycle;
+    \draw[thick] (P) -- (B);
+
+    % Nodes
+    \node[below left] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[right] at (C) {\small $C$};
+    \node[left] at (D) {\small $D$};
+    \node[above] at (P) {\small $P$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidPyramidAngleAnswer}{%
+  (1) 见解析；(2) \(\dfrac{\pi}{6}\)。%
+}
+
+\newcommand{\qSolidPyramidAngleSolution}{%
+  (1) 证明：因为 \(\angle BAP = \angle CDP = 90^\circ\)，所以 \(AB \perp PA\)，\(CD \perp PD\)。\\
+  又因为 \(AB \parallel CD\)，所以 \(AB \perp PD\)。\\
+  因为 \(PA \subset\) 平面 \(PAD\)，\(PD \subset\) 平面 \(PAD\)，且 \(PA \cap PD = P\)，\\
+  所以 \(AB \perp\) 平面 \(PAD\)。\\
+  又因为 \(AB \subset\) 平面 \(PAB\)，\\
+  所以平面 \(PAB \perp\) 平面 \(PAD\)。\\
+  
+  (2) 解：设 \(PA = PD = AB = DC = a (a>0)\)。\\
+  在 \(\triangle PAD\) 中，\(\angle APD = 90^\circ\)，所以 \(AD = \sqrt{PA^2+PD^2} = \sqrt{2}a\)。\\
+  由 (1) 知，\(AB \perp\) 平面 \(PAD\)，所以 \(AB \perp AD\)。\\
+  又 \(AB \parallel CD\)，\(AB = DC\)，所以四边形 \(ABCD\) 为平行四边形；又 \(AB \perp AD\)，所以四边形 \(ABCD\) 为矩形。\\
+  底面 \(ABCD\) 的面积 \(S = AB \times AD = a \times \sqrt{2}a = \sqrt{2}a^2\)。\\
+  取 \(AD\) 的中点 \(H\)，连接 \(PH\)。\\
+  因为 \(PA = PD\)，所以 \(PH \perp AD\)。\\
+  由 (1) 的证明过程可知 \(AB \perp\) 平面 \(PAD\)。又 \(AB \subset\) 平面 \(ABCD\)，所以平面 \(ABCD \perp\) 平面 \(PAD\)。且两平面交线为 \(AD\)，\\
+  所以 \(PH \perp\) 平面 \(ABCD\)，即 \(PH\) 为四棱锥的高。\\
+  在 \(\mathrm{Rt}\triangle PHD\) 中，\(PH = \dfrac{1}{2}AD = \dfrac{\sqrt{2}}{2}a\)。\\
+  四棱锥 \(P-ABCD\) 的体积 \(V = \dfrac{1}{3} S \times PH = \dfrac{1}{3} \times \sqrt{2}a^2 \times \dfrac{\sqrt{2}}{2}a = \dfrac{1}{3}a^3\)。\\
+  因为 \(V = \dfrac{8}{3}\)，所以 \(\dfrac{1}{3}a^3 = \dfrac{8}{3}\)，解得 \(a = 2\)。\\
+  于是 \(AB = 2\)，\(AD = 2\sqrt{2}\)，\(PH = \sqrt{2}\)。\\
+  因为 \(PH \perp\) 平面 \(ABCD\)，所以 \(\angle PBH\) 即为 \(PB\) 与平面 \(ABCD\) 所成的角。\\
+  在矩形 \(ABCD\) 中，\(H\) 为 \(AD\) 中点，所以在 \(\mathrm{Rt}\triangle HAB\) 中，\\
+  \(HB = \sqrt{HA^2 + AB^2} = \sqrt{(\sqrt{2})^2 + 2^2} = \sqrt{2 + 4} = \sqrt{6}\)。\\
+  在 \(\mathrm{Rt}\triangle PHB\) 中，\(\tan \angle PBH = \dfrac{PH}{HB} = \dfrac{\sqrt{2}}{\sqrt{6}} = \dfrac{\sqrt{3}}{3}\)。\\
+  所以 \(\angle PBH = \dfrac{\pi}{6}\)（或 \(30^\circ\)）。\\
+  即 \(PB\) 与平面 \(ABCD\) 所成的线面角的大小为 \(\dfrac{\pi}{6}\)。%
+}
+
+\newcommand{\qSolidPyramidAngleDiagnosis}{%
+  （留白待收集学生作答后补充）%
+}
+
+\newcommand{\qSolidPyramidAngleTeachingNotes}{%
+  快讲/精讲。考查基本的线面垂直判定定理推导面面垂直，以及通过体积建立关于棱长的方程，最后在直角三角形中求线面角。%
+}
+
+
+% =====================================================
+% 别名兼容：旧课次宏定义
+% =====================================================
+\newcommand{\qTJWZeroSixSeventeenStem}{\qSolidPyramidAngleStem}
+\newcommand{\qTJWZeroSixSeventeenFigure}[1][1.2]{\qSolidPyramidAngleFigure[#1]}
+\newcommand{\qTJWZeroSixSeventeenAnswer}{\qSolidPyramidAngleAnswer}
+\newcommand{\qTJWZeroSixSeventeenSolution}{\qSolidPyramidAngleSolution}
+\newcommand{\qTJWZeroSixSeventeenDiagnosis}{\qSolidPyramidAngleDiagnosis}
+\newcommand{\qTJWZeroSixSeventeenTeachingNotes}{\qSolidPyramidAngleTeachingNotes}

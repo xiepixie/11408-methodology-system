@@ -1,0 +1,36 @@
+% =====================================================
+% 题型：立体几何填空题 (q_solid_opening_cube_relations.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qSolidOpeningCubeRelationsStem}{%
+  在正方体 $ABCD-A_1B_1C_1D_1$ 中：
+  \begin{enumerate}[label=(\arabic*)]
+    \item 直线 $A_1C_1$ 与平面 $BB_1D_1D$ 的相对位置关系是：\blank{3cm}；
+    \item 平面 $A_1BD$ 与平面 $C_1BD$ 的交线是：\blank{3cm}；
+    \item 直线 $AB_1$ 与 $CC_1$ 所成的角大小为：\blank{3cm}。
+  \end{enumerate}
+}
+
+\newcommand{\qSolidOpeningCubeRelationsAnswer}{%
+  (1) 垂直； (2) $BD$； (3) $45^\circ$。
+}
+
+\newcommand{\qSolidOpeningCubeRelationsSolution}{%
+  (1) 垂直。因为在正方体中，对角面 $BB_1D_1D$ 对应的底面对角线为 $BD$。由于 $A_1C_1 \parallel AC$，$AC \perp BD$ 且 $AC \perp DD_1$，得 $AC \perp$ 平面 $BB_1D_1D$，故 $A_1C_1 \perp$ 平面 $BB_1D_1D$。\\
+  (2) $BD$。因为两平面的交线必须由两个平面内的公共点决定，点 $B$ 和点 $D$ 均在两平面内，故交线为直线 $BD$。\\
+  (3) $45^\circ$。因为 $CC_1 \parallel BB_1$，所以异面直线 $AB_1$ 与 $CC_1$ 所成的角即为直线 $AB_1$ 与 $BB_1$ 所成的角。在 Rt$\triangle ABB_1$ 中，$AB=BB_1$，故该角为 $45^\circ$。
+}
+
+\newcommand{\qSolidOpeningCubeRelationsDiagnosis}{%
+  考查学生对正方体中线线、线面位置关系及异面直线所成角的读图和直观判定能力。
+}
+
+\newcommand{\qSolidOpeningCubeRelationsTeachingNotes}{%
+  \item \textbf{重难点提示}：
+    \begin{itemize}
+      \item 第一问：引导学生看到对角线 $A_1C_1$ 垂直于底面的一条对角线和侧棱，即可利用线面垂直判定。
+      \item 第三问：平移异面直线，锁定在直角三角形 $\triangle ABB_1$ 中求解。
+    \end{itemize}
+}

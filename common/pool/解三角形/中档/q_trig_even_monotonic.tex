@@ -1,0 +1,49 @@
+% =====================================================
+% 题型：三角函数性质与单调性填空题 (q_trig_even_monotonic.tex)
+% 知识板块：三角函数性质
+% 主思维：函数思维
+% 副思维：分类讨论、边界、充分必要
+% 错因标签：偶函数条件不完整、未排除 theta = pi/2
+% 讲义用途：三角函数图像性质
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTrigEvenMonotonicStem}{已知 \(f(x) = 2\sin(ax + \theta) \ (a \in \mathbb{Z}, 0 \leqslant \theta < 2\pi)\) 是偶函数，\(f(x)\) 在区间 \(\left(0, \dfrac{\pi}{2}\right)\) 单调递增。则 \(\theta = \blank{3cm}\)，\(f\left(\dfrac{2\pi}{3}\right) = \blank{3cm}\)。}
+
+\newcommand{\qTrigEvenMonotonicAnswer}{\(\theta = \dfrac{3\pi}{2}\)，\(1\)}
+
+\newcommand{\qTrigEvenMonotonicSolution}{%
+  【解题思路】\\
+  本题为三角函数奇偶性与单调性分析的填空题。第一步，由偶函数的定义得出 \(f(-x) = f(x)\)，利用展开式化简得到关于 \(\theta\) 的三角方程，解出符合取值范围的 \(\theta\) 的候选值；第二步，结合区间 \(\left(0, \dfrac{\pi}{2}\right)\) 内单调递增的特征对候选值进行排除与选择，并确定参数 \(a\) 的可能取值；第三步，将求得的 \(\theta\) 和参数代入函数，求出对应的特殊角函数值。\\
+  【解析计算】\\
+  因为函数 \(f(x) = 2\sin(ax + \theta)\) 是偶函数，所以有 \(f(-x) = f(x)\)，即：\\
+  \(2\sin(-ax + \theta) = 2\sin(ax + \theta) \implies \sin(\theta - ax) = \sin(\theta + ax)\)。\\
+  利用正弦的和差角公式展开得：\\
+  \(\sin\theta\cos ax - \cos\theta\sin ax = \sin\theta\cos ax + \cos\theta\sin ax\)。\\
+  两边消去共同项，得：\\
+  \(2\cos\theta\sin ax = 0\)。\\
+  由于函数在区间 \(\left(0, \dfrac{\pi}{2}\right)\) 上单调递增，故参数 \(a \neq 0\)，函数项 \(\sin ax\) 不恒为 \(0\)。\\
+  所以必须有：\\
+  \(\cos\theta = 0\)。\\
+  又已知 \(0 \leqslant \theta < 2\pi\)，解得：\\
+  \(\theta = \dfrac{\pi}{2}\) 或 \(\theta = \dfrac{3\pi}{2}\)。\\
+  现在我们检查单调性：\\
+  (1) 若 \(\theta = \dfrac{\pi}{2}\)，则函数为 \(f(x) = 2\sin\left(ax + \dfrac{\pi}{2}\right) = 2\cos ax\)。\\
+  因为任取 \(a \in \mathbb{Z}^*\)，\(f(x)\) 在 \(x = 0\) 附近均处于局部最大值，当自变量从 \(0\) 增大时，函数值必定减小，不可能在 \(\left(0, \dfrac{\pi}{2}\right)\) 上单调递增，故此情况舍去。\\
+  (2) 若 \(\theta = \dfrac{3\pi}{2}\)，则函数为 \(f(x) = 2\sin\left(ax + \dfrac{3\pi}{2}\right) = -2\cos ax\)。\\
+  要使其在区间 \(\left(0, \dfrac{\pi}{2}\right)\) 内单调递增，可以通过调整参数 \(a\) 实现（例如取 \(|a| = 1\) 均能满足单调增条件，倾角取负值也同理）。\\
+  因此，\(\theta = \dfrac{3\pi}{2}\)。\\
+  下面计算 \(f\left(\dfrac{2\pi}{3}\right)\) 的值：\\
+  \(f\left(\dfrac{2\pi}{3}\right) = -2\cos\left(a \cdot \dfrac{2\pi}{3}\right)\)。\\
+  当 \(|a| = 1\) 时：\\
+  \(f\left(\dfrac{2\pi}{3}\right) = -2\cos\dfrac{2\pi}{3} = -2 \cdot \left(-\dfrac{1}{2}\right) = 1\)。\\
+  故第一空填 \(\dfrac{3\pi}{2}\)，第二空填 \(1\)。%
+}
+
+\newcommand{\qTrigEvenMonotonicDiagnosis}{%
+  学生容易根据奇偶性得出 \(\theta = \dfrac{\pi}{2}\) 或 \(\dfrac{3\pi}{2}\) 之后，无法继续利用“单调递增”排除错误的分支。理解 \(\cos ax\) 在 0 点附近的极大值特征是排除 \(\theta = \dfrac{\pi}{2}\) 的简捷途径。%
+}
+
+\newcommand{\qTrigEvenMonotonicTeachingNotes}{%
+  此题考查三角函数的图像变换。讲评时应梳理正弦偶函数的形式特征——即相位 \(\theta\) 必取 \(\dfrac{\pi}{2} + k\pi\)。在做单调性排查时，可指导学生代入 \(a=1\) 画出余弦曲线的示意图，辅助建立数形结合的直觉。%
+}

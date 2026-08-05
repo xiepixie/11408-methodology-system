@@ -1,0 +1,1452 @@
+\documentclass[11pt,a4paper]{ctexart}
+
+% ============================================================
+% 高中数学问题解决方法论 · 学生训练手册 v3.0
+% 核心原则：一套正典框架 + 工具挂载 + 场景视图
+% ============================================================
+
+\usepackage[left=1.75cm,right=1.75cm,top=1.9cm,bottom=1.9cm]{geometry}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+\usepackage{ragged2e}
+\usepackage{multicol}
+
+\hypersetup{colorlinks=false,pdfborder={0 0 0}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.25em}
+\setlist{nosep,leftmargin=2em}
+\renewcommand{\arraystretch}{1.32}
+
+\definecolor{ink}{RGB}{35,35,35}
+\definecolor{lightgray}{RGB}{247,247,247}
+\definecolor{midgray}{RGB}{115,115,115}
+
+\newtcolorbox{corebox}[1]{
+  breakable,colback=lightgray,colframe=ink,boxrule=0.9pt,arc=1mm,
+  title=\textbf{#1},fonttitle=\bfseries,borderline west={2.4pt}{0pt}{ink}}
+\newtcolorbox{decisionbox}[1]{
+  breakable,colback=white,colframe=black!70,boxrule=0.8pt,arc=1mm,
+  title=\textbf{决策卡｜#1},fonttitle=\bfseries}
+\newtcolorbox{warningbox}[1]{
+  breakable,colback=black!2,colframe=black!50,boxrule=0.7pt,arc=1mm,
+  title=\textbf{易错警报｜#1},fonttitle=\bfseries}
+\newtcolorbox{trainingbox}[1]{
+  breakable,colback=white,colframe=black!45,boxrule=0.7pt,arc=1mm,
+  title=\textbf{训练动作｜#1},fonttitle=\bfseries}
+\newtcolorbox{examplebox}[1]{
+  breakable,colback=white,colframe=black!65,boxrule=0.8pt,arc=1mm,
+  title=\textbf{真题案例｜#1},fonttitle=\bfseries}
+\newtcolorbox{resultbox}[1]{
+  breakable,colback=black!3,colframe=black!70,boxrule=0.8pt,arc=1mm,
+  title=\textbf{结论｜#1},fonttitle=\bfseries}
+
+\newcommand{\trigger}[1]{\textbf{触发信号：}#1}
+\newcommand{\goal}[1]{\textbf{目标状态：}#1}
+\newcommand{\risk}[1]{\textbf{主要风险：}#1}
+\newcommand{\rollback}[1]{\textbf{回退信号：}#1}
+\newcommand{\checkbox}{$\square$}
+
+% =====================================================
+% 精排几何直观图示（前实后虚、标签避让、无重叠碰撞）
+% =====================================================
+\newcommand{\sineLawFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.92,line join=round,line cap=round]
+      \coordinate (O) at (0,0);
+      \coordinate (A) at (205:2.0);
+      \coordinate (B) at (335:2.0);
+      \coordinate (C) at (75:2.0);
+      \draw[black!60,thick] (O) circle (2.0);
+      \draw[very thick,black!90] (A)--(B)--(C)--cycle;
+      \draw[dashed,thick,gray!65] (O)--(A) (O)--(B) (O)--(C);
+      \fill (O) circle (1.5pt) node[below right=1pt,font=\small] {$O$};
+      \fill (A) circle (1.5pt) node[below left,font=\small\bfseries] {$A$};
+      \fill (B) circle (1.5pt) node[below right,font=\small\bfseries] {$B$};
+      \fill (C) circle (1.5pt) node[above,font=\small\bfseries] {$C$};
+      \node[below=2pt] at ($(A)!0.5!(B)$) {\small $c$};
+      \node[right=2pt] at ($(B)!0.5!(C)$) {\small $a$};
+      \node[left=2pt] at ($(C)!0.5!(A)$) {\small $b$};
+      \node[below=4pt] at (0,-2.1) {\small\textbf{外接圆半径与正弦定理：$\frac{a}{\sin A}=2R$}};
+    \end{tikzpicture}
+  \end{center}}
+
+\newcommand{\cosineLawFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.95,line join=round,line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (3.4,0);
+      \coordinate (C) at (1.0,1.8);
+      \draw[very thick,black!90] (A)--(B)--(C)--cycle;
+      \node[below left,font=\small\bfseries] at (A) {$A$};
+      \node[below right,font=\small\bfseries] at (B) {$B$};
+      \node[above,font=\small\bfseries] at (C) {$C$};
+      \node[below=2pt] at ($(A)!0.5!(B)$) {\small $c$};
+      \node[above right=1pt] at ($(B)!0.5!(C)$) {\small $a$};
+      \node[above left=1pt] at ($(C)!0.5!(A)$) {\small $b$};
+      \draw[thick,->,black!75] (A) +(0.6,0) arc[start angle=0,end angle=60,radius=0.6];
+      \node at (0.8,0.32) {\small $A$};
+      \node[below=4pt] at (1.7,-0.4) {\small\textbf{余弦定理：$a^2=b^2+c^2-2bc\cos A$}};
+    \end{tikzpicture}
+  \end{center}}
+
+\newcommand{\axisSphereModelFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=1.0,>=stealth,line join=round,line cap=round]
+      \coordinate (O) at (0,0);
+      \coordinate (O1) at (0,1.1);
+      \coordinate (P) at (1.55,1.1);
+      \draw[very thick,black!80] (O) circle (1.9);
+      \draw[thick,black!70] (0,1.1) ellipse (1.55 and 0.30);
+      \draw[dashed,thick,gray!60] (-1.55,-1.1) arc (180:0:1.55 and 0.30);
+      \draw[thick,black!70] (-1.55,-1.1) arc (180:360:1.55 and 0.30);
+      \draw[thick,black!85] (-1.55,1.1)--(-1.55,-1.1);
+      \draw[thick,black!85] (1.55,1.1)--(1.55,-1.1);
+      \draw[dashed,thick,black!80] (O)--(O1) node[midway,left,font=\small] {$d$};
+      \draw[dashed,thick,black!80] (O1)--(P) node[midway,above,font=\small] {$r$};
+      \draw[thick,black!90] (O)--(P) node[midway,below right=1pt,font=\small] {$R$};
+      \draw[thin] (O1) ++(0.16,0) -- ++(0,-0.16) -- ++(-0.16,0);
+      \fill (O) circle (1.5pt) node[below left=2pt,font=\small\bfseries] {$O$};
+      \fill (O1) circle (1.5pt) node[below left=2pt,font=\small\bfseries] {$O_1$};
+      \fill (P) circle (1.5pt) node[above right=2pt,font=\small\bfseries] {$P$};
+      \node[below=4pt] at (0,-2.15) {\small\textbf{直棱柱外接球轴心截面：$R^2=r^2+d^2$}};
+    \end{tikzpicture}
+  \end{center}}
+
+\newcommand{\insphereVolumeFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=1.0,>=stealth,line join=round,line cap=round]
+      \coordinate (P) at (0, 2.3);
+      \coordinate (A) at (-2.0, -0.7);
+      \coordinate (B) at (2.0, -0.7);
+      \coordinate (C) at (0.8, 0.55);
+      \coordinate (O) at (0, 0.35);
+      \coordinate (H) at (-0.45, 0.85);
+
+      \draw[dashed,thick,gray!65] (A)--(C)--(B) (P)--(C);
+      \draw[very thick,black!90] (P)--(A)--(B)--cycle;
+
+      \draw[very thick,black!80] (O) circle (0.68);
+      \draw[gray!60,dashed,thick] (O) ellipse (0.68 and 0.20);
+
+      \fill (O) circle (1.8pt) node[below right=2pt,font=\small\bfseries] {$O$};
+      \draw[thick,black!85,->] (O)--(H) node[midway,above left=1pt,font=\small] {$r$};
+
+      \node[above=2pt,font=\small\bfseries] at (P) {$P$};
+      \node[below left=2pt,font=\small\bfseries] at (A) {$A$};
+      \node[below right=2pt,font=\small\bfseries] at (B) {$B$};
+      \node[right=2pt,font=\small\bfseries] at (C) {$C$};
+
+      \node[below=4pt] at (0,-1.05) {\small\textbf{内切球等体积法模型：$V=\frac{1}{3}S_{\text{表}}r$}};
+    \end{tikzpicture}
+  \end{center}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\textbf{高中数学问题解决方法论}}
+\rhead{\small 学生训练手册 v3.0}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+% ============================================================
+% 封面
+% ============================================================
+\begin{titlepage}
+\begin{center}
+\vspace*{1.3cm}
+
+{\Huge\bfseries 高中数学问题解决方法论}\par
+\vspace{0.7em}
+{\Large\bfseries —— 从陌生问题到可解决结构的考场决策系统}\par
+\vspace{0.9em}
+{\large 学生训练手册 · 第三版}\par
+
+\vspace{1.3cm}
+\rule{0.88\textwidth}{0.8pt}\par
+\vspace{1.3cm}
+
+\begin{tikzpicture}[
+ node distance=0.62cm,
+ every node/.style={draw,rounded corners=2pt,minimum height=0.78cm,
+ align=center,font=\small,inner xsep=9pt,text width=8.6cm},
+ arrow/.style={-{Latex[length=2.1mm]},thick}
+]
+\node (a) {\textbf{1 读目标}\quad 到什么结果，题目就已经解决？};
+\node (b) [below=of a] {\textbf{2 扫初始约束}\quad 定义域 / 非零 / 范围 / 存在性 / 变量类型};
+\node (c) [below=of b] {\textbf{3 选表征}\quad 函数 / 方程 / 图像 / 几何 / 向量 / 概率模型};
+\node (d) [below=of c] {\textbf{4 搜路径}\quad 正推 / 逆推 / 分类 / 特殊值 / 构造 / 反例};
+\node (e) [below=of d] {\textbf{5 做转化}\quad 降维 / 换元 / 消元 / 对称 / 齐次 / 数形转换};
+\node (f) [below=of e] {\textbf{6 验结果}\quad 新约束 / 端点 / 取等 / 增漏解 / 实际存在性};
+\node (g) [below=of f] {\textbf{7 写闭环}\quad 只写足以支撑结论的完整逻辑链};
+\draw[arrow] (a)--(b);
+\draw[arrow] (b)--(c);
+\draw[arrow] (c)--(d);
+\draw[arrow] (d)--(e);
+\draw[arrow] (e)--(f);
+\draw[arrow] (f)--(g);
+\draw[arrow,dashed] (e.east) -- ++(2.2,0) |- node[pos=0.28,right,draw=none,text width=3.2cm]
+{越算越复杂\\回到表征或路径} (c.east);
+\end{tikzpicture}
+
+\vfill
+{\large\bfseries 高中数学教研使用稿}\par
+\vspace{0.35cm}
+{\large 2026 年 8 月}\par
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section*{前言：这本手册只教一套系统}
+\addcontentsline{toc}{section}{前言：这本手册只教一套系统}
+
+很多同学做题时真正缺少的，并不是又一条公式，而是一个更基础的能力：
+\textbf{面对陌生题，知道下一步应该思考什么；发现路线失效时，知道应该退回哪里。}
+
+高中数学题目外观变化很大，但解题过程可以统一理解为：
+\textbf{把当前问题连续转化为更熟悉、更低维、更可判定的问题，直到获得足以推出结论的目标状态。}
+
+\begin{corebox}{全书唯一总纲}
+高中数学问题解决的核心，是
+\[
+\boxed{\text{把陌生问题连续转化为熟悉问题，并始终控制转化的目标、合法性与边界。}}
+\]
+\end{corebox}
+
+这句话是全书的\textbf{元原则}；七阶段循环是它的\textbf{可执行版本}。
+本书后面出现的“卷面六检查”“重复本六字段”“考场救援卡”，都只是这套七阶段系统在特定场景下的视图，
+\textbf{不是新的解题流程。}
+
+近年的高考命题越来越强调现场思考、基本原理、结构化知识和“多想少算”。
+这意味着，仅靠记忆题型名称或二级结论越来越不稳。
+本手册因此不追求“再收集一百个技巧”，而追求四件事：
+\begin{enumerate}
+  \item 能预测\textbf{做到哪里就够了}；
+  \item 能判断\textbf{当前用什么语言最简单}；
+  \item 能控制\textbf{每次转化是否仍然合法}；
+  \item 能尽早识别\textbf{这条路线已经不值得继续}。
+\end{enumerate}
+
+\begin{warningbox}{不要背“七步口令”}
+七阶段不是要求你在草稿纸上逐项写七句话。
+熟练以后，很多动作会在几秒内完成。
+真正要训练的是：当题目变陌生时，这七个问题仍然能把你从“无从下手”带回可执行状态。
+\end{warningbox}
+
+% ============================================================
+\section{第一章：化归——所有方法背后的总原则}
+
+\subsection{什么叫化归}
+
+“化归”不是某一个具体招式，而是所有具体方法共同做的一件事：
+\[
+\text{当前难处理的对象}
+\longrightarrow
+\text{更熟悉、更低维、更容易判定的对象}.
+\]
+
+例如：
+\begin{itemize}
+  \item 根数问题 $\rightarrow$ 图像交点问题；
+  \item 恒成立问题 $\rightarrow$ 最值问题；
+  \item 边角混合 $\rightarrow$ 统一成边或统一成角；
+  \item 两个交点的复杂表达式 $\rightarrow$ 根与系数的对称式；
+  \item 空间角 $\rightarrow$ 向量数量积或核心截面；
+  \item 新定义 $\rightarrow$ 逐字翻译成旧的方程、不等式或元素关系。
+\end{itemize}
+
+\subsection{一次好转化必须同时满足三个条件}
+
+\begin{longtable}{p{2.2cm}p{5.2cm}p{7.2cm}}
+\toprule
+\textbf{控制轴} & \textbf{必须回答的问题} & \textbf{典型失误}\\
+\midrule
+目标 & 这一步是否让问题更接近结束条件？ & 为了“能算”而展开，算了很多却离目标更远\\ \hline
+合法性 & 这一步是等价、单向推出，还是需要补条件？ & 平方增解、除以可能为零的式子、换元忘范围\\ \hline
+边界 & 候选结果是否真的能在原题中取得？ & 理论极值取不到、端点不属于、几何对象不存在\\
+\bottomrule
+\end{longtable}
+
+\begin{corebox}{评价一步计算的标准}
+不要只问“这一步算得对不对”，还要问：
+\[
+\boxed{\text{它是否有效地减少了自由度、暴露了结构，或推进了目标？}}
+\]
+\end{corebox}
+
+% ============================================================
+\section{第二章：唯一正典——七阶段决策循环}
+
+\subsection{为什么顺序固定为“目标—初始约束—表征”}
+
+本书统一采用：
+\[
+\boxed{
+\text{读目标}
+\rightarrow
+\text{扫初始约束}
+\rightarrow
+\text{选表征}
+\rightarrow
+\text{搜路径}
+\rightarrow
+\text{做转化}
+\rightarrow
+\text{验结果}
+\rightarrow
+\text{写闭环}}
+\]
+
+先读目标，是因为没有终点就无法判断哪条路更短。
+
+第二步只扫描\textbf{原题已经存在的硬约束}：
+定义域、非零条件、变量范围、参数类型、几何存在性等。
+它们会直接排除一些不合法的表征和操作。
+
+但合法性不是第二步做完就结束。
+\textbf{第五步每产生一次新变量、新方程或新分类，都要同步维护新产生的约束；第六步再统一回到原题验证。}
+
+\subsection{七阶段操作表}
+
+\begin{longtable}{p{1.25cm}p{2.4cm}p{6.0cm}p{5.2cm}}
+\toprule
+\textbf{阶段} & \textbf{动作} & \textbf{必须回答的问题} & \textbf{典型错误}\\
+\midrule
+1 & 读目标 & 最终要角、边、范围、定值、个数、存在性，还是证明？ & 一看到条件就展开\\ \hline
+2 & 扫初始约束 & 哪些量不能乱取？哪些对象必须存在？ & 忘定义域、非零、整数性、三角形条件\\ \hline
+3 & 选表征 & 用函数、方程、图像、几何、向量还是概率语言最接近目标？ & 默认只用最熟悉的代数硬算\\ \hline
+4 & 搜路径 & 正推还是逆推？要不要分类、特殊值、构造或反例？ & 把第一条想到的路线当唯一路线\\ \hline
+5 & 做转化 & 怎样降维、换元、消元、整体化、对称化、参数化？ & 过早展开，破坏结构\\ \hline
+6 & 验结果 & 新范围、端点、等号、增漏解、原题存在性都成立吗？ & “算出来”就停止\\ \hline
+7 & 写闭环 & 哪几步是结论成立不可缺少的依据？ & 跳关键逻辑，或堆无效文字\\
+\bottomrule
+\end{longtable}
+
+\subsection{阶段 1：读目标——先决定“做到哪里就够了”}
+
+\begin{decisionbox}{目标状态句式}
+先完成一句话：
+\[
+\boxed{\text{如果我能得到 \underline{\hspace{4cm}}，这道题就结束。}}
+\]
+\end{decisionbox}
+
+目标状态不是答案本身，而是\textbf{已经足以推出答案的关键结果}。
+
+例如：
+\begin{itemize}
+  \item 求角：得到 $\cos A=k$，并能唯一确定 $A$；
+  \item 求参数范围：得到一元函数在明确区间上的最值条件；
+  \item 求定值：所有动参数消失；
+  \item 求交点个数：转成两个图像的交点个数或一个函数的零点个数；
+  \item 证明垂直：落到数量积为 $0$ 或一个标准几何判定；
+  \item 证明存在：构造出对象，并验证全部约束。
+\end{itemize}
+
+\subsection{阶段 2：扫初始约束——先知道什么不能做}
+
+常见硬约束：
+\begin{multicols}{2}
+\begin{itemize}
+  \item 分母 $\neq0$；
+  \item 偶次根式被开方数 $\ge0$；
+  \item 对数真数 $>0$；
+  \item 三角形边长 $>0$ 且满足三角不等式；
+  \item 椭圆、双曲线参数满足定义条件；
+  \item 概率在 $[0,1]$；
+  \item 整数、正整数、自然数条件；
+  \item 几何中的点、线、面确实存在且位置关系可实现。
+\end{itemize}
+\end{multicols}
+
+\begin{warningbox}{“扫约束”不是抄定义域}
+你不需要把所有显然条件都抄到卷面上。
+它的作用首先是\textbf{控制决策}：哪些除法不能做、哪些换元要带范围、哪些极值点可能不可取。
+\end{warningbox}
+
+\subsection{阶段 3：选表征——同一个关系可以有不同语言}
+
+\textbf{“选表征”（即选择用哪种数学语言描述问题）}是区分硬算与高手解题的关键步骤。
+同一个数学关系，用函数、方程、图像、几何还是向量语言表述，其计算难度相差数倍。
+
+\begin{longtable}{p{3cm}p{5.4cm}p{6.6cm}}
+\toprule
+\textbf{表征} & \textbf{特别擅长处理} & \textbf{触发信号}\\
+\midrule
+函数 & 变化、单调、最值、零点、恒成立 & “随 $x$ 变化”“最大/最小”“任意 $x$”\\ \hline
+方程/不等式 & 精确求值、范围、存在条件 & “解”“满足”“至少一个根”\\ \hline
+图像 & 根数、交点、参数平移、线性规划 & 交点个数、绝对值、可行域\\ \hline
+几何 & 距离、角、圆、切线、投影 & 大量坐标计算但图形关系明显\\ \hline
+向量 & 垂直、夹角、共线、空间统一计算 & 建系自然、几何判定可转数量积\\ \hline
+概率模型 & 随机过程、分类计数、分布 & 多轮随机、独立/条件、随机变量\\
+\bottomrule
+\end{longtable}
+
+\subsection{阶段 4：搜路径——不是“想技巧”，而是搜索短链}
+
+优先问：
+\begin{enumerate}
+  \item \textbf{正推：}题设能直接推出什么强结构？
+  \item \textbf{逆推：}要得到目标，前一步最自然是什么？
+  \item \textbf{分类：}是否因为符号、退化、区间位置而必须分支？
+  \item \textbf{特殊值：}能否排除、猜测或构造反例？
+  \item \textbf{构造：}证明存在时，能否从目标倒推对象？
+\end{enumerate}
+
+\subsection{阶段 5：做转化——优先改变结构，不优先增加计算}
+
+高频结构动作：
+\begin{itemize}
+  \item 整体换元：把反复出现的复杂块看成一个变量；
+  \item 比值换元：齐次问题令 $t=y/x$ 或 $x/y$；
+  \item 参数化：圆、椭图、直线上的点用一个参数描述；
+  \item 消元：围绕目标消掉不需要的变量；
+  \item 对称化：把两个根、两个交点压成和与积；
+  \item 数形转换：把代数最值解释为距离、投影、切线；
+  \item 降维：空间问题压到核心截面，多变量压到一元函数。
+\end{itemize}
+
+\subsection{阶段 6：验结果——候选答案不是最终答案}
+
+必须警惕：
+\begin{itemize}
+  \item 平方、开方产生增解；
+  \item 除以变量式漏掉零值情形；
+  \item 换元后的值域比“形式上”更小；
+  \item 导数找到的理论最值点不属于原区间；
+  \item 等号条件不能同时满足；
+  \item 几何构型在候选参数下退化。
+\end{itemize}
+
+\subsection{阶段 7：写闭环——只保留不可缺少的依据}
+
+高质量答案的标准不是“写得多”，而是：
+\[
+\boxed{\text{每一个关键结论有依据；每一个最终答案回到原题；没有无效展开。}}
+\]
+
+% ============================================================
+\section{第三章：目标状态库——以终为始，但不往答案上凑}
+
+\begin{longtable}{p{3cm}p{5.6cm}p{6.5cm}}
+\toprule
+\textbf{题目目标} & \textbf{常见目标状态} & \textbf{常暗示的桥梁}\\
+\midrule
+求角 & $\cos A=k$、$\sin A=k$ 且角范围已知 & 余弦定理、正弦定理、数量积\\ \hline
+求长度/比值 & 目标量只含一个自由参数或直接为常数 & 相似、正余弦定理、齐次化\\ \hline
+求参数范围 & $g(t)\ge0$ 或 $m\le \min g(t)$ 等 & 定义域 + 最值 + 判别式\\ \hline
+求根数 & $F(x)=0$ 的零点个数 & 图像、单调性、极值、参数平移\\ \hline
+求定值 & 动参数全部消失 & 对称式、韦达、分离常数、消元\\ \hline
+定点/定直线 & 方程中动参数被分离并消去 & 恒等系数、特殊位置猜测后证明\\ \hline
+证明垂直 & $\vec a\cdot\vec b=0$ 或标准判定 & 向量、射影、线面垂直判定\\ \hline
+证明平行 & 方向向量成比例或标准几何判定 & 向量、共面结构、平面平行判定\\ \hline
+证明存在 & 构造对象 + 验证全部条件 & 逆推构造，再正向验证\\ \hline
+否定全称命题 & 找到一个满足前提但不满足结论的对象 & 特殊值、边界值、反例\\
+\bottomrule
+\end{longtable}
+
+\begin{warningbox}{目标状态不是固定模板}
+“求角就化成余弦”“解析几何就用韦达”都可能错。
+目标状态只规定\textbf{终点需要什么信息}，并不规定你必须走哪条路线。
+\end{warningbox}
+
+% ============================================================
+\section{第四章：工具系统——工具必须挂在决策节点上}
+
+本章不再把方法编号当成 17 个平级“招式”。
+旧编号只保留作检索索引；真正重要的是它们在系统中负责什么。
+
+\subsection{A. 约束与逻辑控制工具}
+
+\begin{longtable}{p{2cm}p{3.3cm}p{5.3cm}p{4.8cm}}
+\toprule
+\textbf{索引} & \textbf{工具} & \textbf{什么时候调用} & \textbf{主要风险}\\
+\midrule
+M02 & 定义域与可行域 & 根式、分母、对数、换元、几何长度 & 只记原变量范围，忘新变量范围\\ \hline
+M06 & 等价转化 & 平方、开方、乘除变量式、取倒数 & 把单向推出写成等价\\ \hline
+M11 & 交并集与逻辑连接 & “且/同时”“或/至少一个” & 交并方向混淆\\ \hline
+M14 & 充分必要条件 & 命题、集合、反推、存在性 & 必要条件误作充分条件\\
+\bottomrule
+\end{longtable}
+
+\subsection{B. 表征工具}
+
+\begin{longtable}{p{2cm}p{3.3cm}p{5.3cm}p{4.8cm}}
+\toprule
+M01 & 函数思维 & 变化、根数、单调、最值、恒成立 & 把可直接处理的问题过度函数化\\ \hline
+M03 & 图像辅助 & 根数、参数移动、交点、可行域 & 图像只作猜测却当成证明\\ \hline
+M07 & 数形转换 & 距离、斜率、绝对值、圆、线性最值 & “看起来像”代替严格对应\\
+\bottomrule
+\end{longtable}
+
+\subsection{C. 路径搜索工具}
+
+\begin{longtable}{p{2cm}p{3.3cm}p{5.3cm}p{4.8cm}}
+\toprule
+M05 & 分类讨论 & 符号变化、次数退化、分段、位置变化 & 分类不互斥或不穷尽\\ \hline
+M09 & 逆向推导 & 证明、构造、目标形式清晰 & 反推只得到必要条件\\ \hline
+M12 & 特殊值试探 & 选择填空、猜想、边界、真假判断 & 用少数样本代替一般证明\\ \hline
+M13 & 反例论证 & 否定全称命题、检验猜想 & 反例不满足题设前提\\
+\bottomrule
+\end{longtable}
+
+\begin{corebox}{特殊值的三种合法用途}
+\begin{enumerate}
+  \item \textbf{排除：}一个合法特殊值即可排除与它冲突的选项；
+  \item \textbf{试探：}用小规模计算寻找结构或猜想；
+  \item \textbf{反例：}若目标是否定全称命题，一个合法反例本身就是完整论证。
+\end{enumerate}
+但要证明“对所有对象都成立”，不能只靠若干特殊值。
+\end{corebox}
+
+\subsection{D. 结构转化工具}
+
+\begin{longtable}{p{2cm}p{3.3cm}p{5.3cm}p{4.8cm}}
+\toprule
+M08 & 整体换元 & 重复复杂块、根式组合、对称组合 & 忘换元值域或可逆性\\ \hline
+T01 & 比值/齐次化 & 目标是比值，或条件允许同比缩放 & 分母可能为零\\ \hline
+T02 & 对称式/韦达 & 两根、两交点、定值问题 & 过早求根导致运算爆炸\\ \hline
+T03 & 参数化 & 圆、椭圆、直线、固定约束 & 参数范围遗漏\\ \hline
+T04 & 投影/距离化 & 线性最值、角、点线关系 & 几何对应没证明\\ \hline
+T05 & 核心截面/降维 & 球、圆锥、棱锥、空间角 & 截面选择没有包含关键对象\\
+\bottomrule
+\end{longtable}
+
+\subsection{E. 验证与输出工具}
+
+\begin{longtable}{p{2cm}p{3.3cm}p{5.3cm}p{4.8cm}}
+\toprule
+M10 & 边界与端点检验 & 闭区间、离散下标、最大整数、等号条件 & 理论可取不等于原题可取\\ \hline
+M17 & 卷面表达 & 解答题、证明题、参数范围题 & 模板化堆字\\
+\bottomrule
+\end{longtable}
+
+\begin{resultbox}{“结构识别与迁移”与“化归”的新定位}
+\textbf{结构识别与迁移}不再是独立的局部工具，而是训练后形成的综合能力，对应第九章的重复训练系统。
+
+\textbf{化归与转化}不再是某一个具体招式，而是全书总原则，已升格置于第一章作为元原则。
+\end{resultbox}
+
+% ============================================================
+\section{第五章：真实高考题——完整演示七阶段如何运行}
+
+\subsection{案例一：三角形——目标状态决定“化边还是化角”}
+
+\begin{examplebox}{2024 年新课标 I 卷第 15 题（题意重述）}
+在 $\triangle ABC$ 中，边 $a,b,c$ 分别对应角 $A,B,C$。
+已知
+\[
+\sin C=\sqrt2\cos B,\qquad
+a^2+b^2-c^2=\sqrt2\,ab.
+\]
+第一问求 $B$；第二问在已知面积为 $3+\sqrt3$ 时求 $c$。
+\end{examplebox}
+
+\textbf{1 读目标。}
+第一问要角 $B$。只要得到 $\cos B$ 或 $\sin B$ 的确定值，并结合 $0<B<\pi$，题目就结束。
+
+\textbf{2 扫初始约束。}
+三角形内角均在 $(0,\pi)$，边长均为正。
+
+\textbf{3 选表征。}
+第二个条件是三边平方关系，明显接近余弦定理；先把它解释成角最短。
+
+由余弦定理
+\[
+c^2=a^2+b^2-2ab\cos C,
+\]
+所以
+\[
+a^2+b^2-c^2=2ab\cos C.
+\]
+与题设比较得
+\[
+2ab\cos C=\sqrt2\,ab.
+\]
+因 $ab>0$，
+\[
+\cos C=\frac{\sqrt2}{2},
+\qquad C=\frac{\pi}{4}.
+\]
+
+\textbf{4 搜路径。}
+现在第一条件已经变成
+\[
+\frac{\sqrt2}{2}=\sqrt2\cos B,
+\]
+于是
+\[
+\cos B=\frac12.
+\]
+
+\textbf{5 做转化。}
+结合 $B\in(0,\pi)$，
+\[
+\boxed{B=\frac{\pi}{3}}.
+\]
+
+第二问中
+\[
+A=\pi-B-C=\frac{5\pi}{12}.
+\]
+利用正弦定理，把三边统一写为
+\[
+a=k\sin A,\quad b=k\sin B,\quad c=k\sin C.
+\]
+面积条件
+\[
+S=\frac12ab\sin C=3+\sqrt3
+\]
+给出尺度 $k$，最终得到
+\[
+c^2=8,\qquad
+\boxed{c=2\sqrt2}.
+\]
+
+\textbf{6 验结果。}
+三个角均在 $(0,\pi)$，边长为正，面积条件可满足。
+
+\textbf{7 写闭环。}
+卷面上真正不可少的是：
+余弦定理 $\rightarrow C$；
+第一条件 $\rightarrow B$；
+正弦定理统一尺度 $\rightarrow$ 面积条件 $\rightarrow c$。
+
+\begin{trainingbox}{这题真正值得记住什么}
+不是“边角混合先化边”。
+而是：
+\[
+\boxed{\text{目标是求角}\Rightarrow\text{优先寻找能直接锁定该角的三角函数值。}}
+\]
+\end{trainingbox}
+
+% ------------------------------------------------------------
+\subsection{案例二：双曲线——先预测目标状态，再决定算什么}
+
+\begin{examplebox}{2024 年新课标 I 卷第 12 题（题意重述）}
+双曲线
+\[
+C:\frac{x^2}{a^2}-\frac{y^2}{b^2}=1,\qquad a,b>0
+\]
+左右焦点为 $F_1,F_2$。过右焦点作竖直线与双曲线交于 $A,B$。
+已知 $|F_1A|=13,\ |AB|=10$，求离心率。
+\end{examplebox}
+
+\textbf{1 读目标。}
+离心率
+\[
+e=\frac ca.
+\]
+所以目标状态不是“把 $a,b,c$ 全部求出来”，而是获得 $c/a$。
+
+\textbf{2 扫初始约束。}
+\[
+a>0,\quad b>0,\quad c^2=a^2+b^2.
+\]
+
+\textbf{3 选表征。}
+焦点的横坐标就是 $c$。
+把 $x=c$ 代入双曲线：
+\[
+\frac{c^2}{a^2}-\frac{y^2}{b^2}=1.
+\]
+利用 $c^2-a^2=b^2$，
+\[
+\frac{y^2}{b^2}=\frac{b^2}{a^2},
+\qquad |y|=\frac{b^2}{a}.
+\]
+故
+\[
+|AB|=\frac{2b^2}{a}=10
+\Rightarrow
+b^2=5a.
+\]
+
+\textbf{4--5 搜路径并转化。}
+取
+\[
+A=\left(c,\frac{b^2}{a}\right),
+\quad F_1=(-c,0).
+\]
+由距离公式
+\[
+|F_1A|^2
+=4c^2+\frac{b^4}{a^2}
+=169.
+\]
+代入 $b^2=5a$ 与 $c^2=a^2+b^2$：
+\[
+4(a^2+5a)+25=169,
+\]
+即
+\[
+a^2+5a-36=0.
+\]
+因 $a>0$，
+\[
+a=4,\quad b^2=20,\quad c=6.
+\]
+所以
+\[
+\boxed{e=\frac{3}{2}}.
+\]
+
+\textbf{6 验结果。}
+$a,b,c$ 均满足双曲线定义条件，且 $c>a>0$。
+
+\begin{trainingbox}{最重要的决策}
+题目问的是 $e=c/a$。
+如果一开始把所有点坐标、距离全部一般化，计算会更长；
+先利用“过焦点的竖直弦”这一结构，能迅速得到 $b^2/a$。
+\end{trainingbox}
+
+% ------------------------------------------------------------
+\subsection{案例三：线性规划——代数约束换成几何区域}
+
+\begin{examplebox}{2024 年全国甲卷第 3 题（题意重述）}
+实数 $x,y$ 满足
+\[
+\begin{cases}
+4x-3y-3\ge0,\\
+x-2y-2\le0,\\
+2x+6y-9\le0,
+\end{cases}
+\]
+求 $z=x-5y$ 的最小值。
+\end{examplebox}
+
+\textbf{1 读目标。}
+目标是线性式 $x-5y$ 的最小值。
+
+\textbf{2 扫初始约束。}
+可行点必须同时满足三个半平面条件。
+
+\textbf{3 选表征。}
+如果继续纯代数消元，会不断处理三个不等式；
+而三条一次不等式天然对应平面上的三个半平面。
+因此切换到\textbf{可行域 + 平行直线}。
+
+三条边界线两两交于
+\[
+(0,-1),\qquad
+\left(\frac32,1\right),\qquad
+\left(3,\frac12\right).
+\]
+三个点均满足原约束，因此构成可行三角形。
+
+线性函数在凸多边形上的极值出现在顶点。
+计算
+\[
+z(0,-1)=5,
+\]
+\[
+z\left(\frac32,1\right)=-\frac72,
+\]
+\[
+z\left(3,\frac12\right)=\frac12.
+\]
+故
+\[
+\boxed{z_{\min}=-\frac72}.
+\]
+
+\begin{trainingbox}{表征切换的判断}
+看到“多个一次不等式 + 一次目标函数”，
+不是因为课本说“这是线性规划”才画图；
+而是因为几何表征把“同时满足三个约束”直接变成一个区域，
+把最值变成“平行直线移动到最后接触的位置”。
+\end{trainingbox}
+
+% ------------------------------------------------------------
+\subsection{案例四：公切线——逆推比正面联立更短}
+
+\begin{examplebox}{2024 年新课标 I 卷第 13 题（题意重述）}
+曲线
+\[
+y=e^x+x
+\]
+在点 $(0,1)$ 的切线，同时也是
+\[
+y=\ln(x+1)+a
+\]
+的一条切线。求参数 $a$。
+\end{examplebox}
+
+\textbf{1 读目标。}
+只要求 $a$。
+目标状态可以预测为：找到第二条曲线上的切点，使它的切线等于第一条已知切线。
+
+\textbf{2 扫初始约束。}
+第二条曲线要求 $x>-1$。
+
+\textbf{3 选表征。}
+这里“切线”最自然的语言是：
+\[
+\text{切点函数值}+\text{切点导数}.
+\]
+
+第一条曲线
+\[
+g(x)=e^x+x,\qquad g'(x)=e^x+1.
+\]
+在 $x=0$：
+\[
+g(0)=1,\qquad g'(0)=2.
+\]
+故已知切线为
+\[
+y=2x+1.
+\]
+
+\textbf{4 逆向搜索。}
+第二条曲线若与它相切，切点处斜率必须为 $2$。
+设
+\[
+h(x)=\ln(x+1)+a,\qquad h'(x)=\frac1{x+1}.
+\]
+令
+\[
+\frac1{x+1}=2,
+\]
+得
+\[
+x=-\frac12,
+\]
+且满足 $x>-1$。
+
+\textbf{5--6 转化与验证。}
+公切线在 $x=-1/2$ 处的纵坐标为
+\[
+2\left(-\frac12\right)+1=0.
+\]
+所以
+\[
+\ln\frac12+a=0,
+\]
+从而
+\[
+\boxed{a=\ln2}.
+\]
+
+\begin{trainingbox}{逆向推导的正确用法}
+逆推不是“从答案往回凑”。
+这里是从\textbf{切线相同}这个目标，逆推出两个必要且可验证的条件：
+斜率相同、切点落在同一直线上。
+随后再正向验证。
+\end{trainingbox}
+
+% ------------------------------------------------------------
+\subsection{案例五：椭圆——用参数描述“另一个交点”，避免完整求根}
+
+\begin{examplebox}{2024 年新课标 I 卷第 16 题（题意重述）}
+椭圆
+\[
+C:\frac{x^2}{a^2}+\frac{y^2}{b^2}=1,\qquad a>b>0
+\]
+经过
+\[
+A(0,3),\qquad P\left(3,\frac32\right).
+\]
+第一问求离心率。
+第二问：过 $P$ 的直线再次交椭圆于 $B$，且
+$\triangle ABP$ 面积为 $9$，求该直线。
+\end{examplebox}
+
+\textbf{第一问。}
+由 $A(0,3)$ 在椭圆上，
+\[
+b^2=9.
+\]
+代入 $P$：
+\[
+\frac9{a^2}+\frac{(3/2)^2}{9}=1
+\Rightarrow
+\frac9{a^2}+\frac14=1,
+\]
+故
+\[
+a^2=12,\qquad c^2=a^2-b^2=3.
+\]
+所以
+\[
+\boxed{e=\frac12}.
+\]
+
+\textbf{第二问：先看目标。}
+目标是“直线方程”，因此最终只需确定斜率。
+
+设非竖直直线方向为 $(1,k)$，把另一个交点写成
+\[
+B=P+t(1,k).
+\]
+这比先写 $y=kx+m$ 再用求根公式求 $B$ 更接近目标：
+$t$ 只是“从 $P$ 沿直线走多远”。
+
+代入椭圆
+\[
+\frac{x^2}{12}+\frac{y^2}{9}=1.
+\]
+由于 $P$ 本来就在椭圆上，代入后必有一个根 $t=0$；
+另一个根直接化为
+\[
+t=-\frac{6(2k+3)}{4k^2+3}.
+\]
+
+面积用向量行列式：
+\[
+S_{\triangle ABP}
+=\frac12\left|\det(\overrightarrow{PA},\overrightarrow{PB})\right|.
+\]
+其中
+\[
+\overrightarrow{PA}=\left(-3,\frac32\right),
+\qquad
+\overrightarrow{PB}=t(1,k).
+\]
+所以
+\[
+9=
+\frac{|t|}{2}
+\left| -3k-\frac32\right|.
+\]
+平方并化简可得
+\[
+(2k-3)(2k-1)(12k^2+8k+9)=0.
+\]
+后二次因式无实根，因此
+\[
+k=\frac32
+\quad\text{或}\quad
+k=\frac12.
+\]
+对应
+\[
+\boxed{3x-2y-6=0}
+\]
+或
+\[
+\boxed{x-2y=0}.
+\]
+
+\textbf{验证。}
+还应检查竖直线 $x=3$：其另一交点与 $P$ 关于 $x$ 轴对称，
+代入面积可知不满足面积为 $9$，故没有漏解。
+
+\begin{trainingbox}{这题的结构压缩}
+\[
+\text{“另一个交点”}
+\rightarrow
+P+t(1,k)
+\rightarrow
+\text{利用已知根 }t=0
+\rightarrow
+\text{面积只留下 }k.
+\]
+关键不是“算得快”，而是从一开始就只保留目标变量。
+\end{trainingbox}
+
+% ------------------------------------------------------------
+\subsection{案例六：定义域优先——扫描硬约束锁定区间，换元降维破除复杂求导}
+
+\begin{examplebox}{定义域优先典例（指对与根式结合）}
+已知函数
+\[
+f(x) = \ln(x-1) + \sqrt{2-x} + ax.
+\]
+（1）当 $a=0$ 时，求 $f(x)$ 的定义域及在定义域上的最大值；\\
+（2）若对任意 $x$ 恒有 $f(x) \le 1 + 2a$，求实数 $a$ 的取值范围。
+\end{examplebox}
+
+\textbf{1 读目标。}
+第一问目标是求定义域与最大值；第二问目标是确定参数 $a$ 的合法范围，可转化为最值与参数讨论。
+
+\textbf{2 扫初始约束（定义域优先！）。}
+看到对数 $\ln(x-1)$ 与偶次根式 $\sqrt{2-x}$，\textbf{绝不盲目直接求导！}
+先建立约束组：
+\[
+\begin{cases}
+x - 1 > 0,\\
+2 - x \ge 0,
+\end{cases}
+\implies
+\boxed{1 < x \le 2}.
+\]
+这在第 2 阶段就将原问题由全实数域降维到\textbf{狭窄半开半闭区间 $(1,2]$}。
+
+\textbf{3 选表征与对比。}
+若忽略定义域直接盲目求导：
+\[
+f'(x) = \frac{1}{x-1} - \frac{1}{2\sqrt{2-x}} + a,
+\]
+通分后分母同时含有一次式与无理根式，极难分析导数零点与符号，极易陷入运算爆炸。
+
+\textbf{4--5 搜路径与做转化（整体换元）。}
+鉴于 $x \in (1, 2]$，注意到根式 $\sqrt{2-x}$ 是复杂性的源头。
+令
+\[
+t = \sqrt{2-x} \in [0, 1),
+\]
+则 $x = 2 - t^2$，且 $x - 1 = 1 - t^2$。
+换元后，$f(x)$ 直接化为一元式 $h(t)$：
+\[
+h(t) = \ln(1-t^2) + t + a(2-t^2), \qquad t \in [0, 1).
+\]
+此时对 $h(t)$ 求导：
+\[
+h'(t) = \frac{-2t}{1-t^2} + 1 - 2at.
+\]
+当 $t \neq 0$ 时，可提取 $t$ 写为：
+\[
+h'(t) = t \left[ \frac{-2}{1-t^2} + \frac{1}{t} - 2a \right] \quad (t \neq 0).
+\]
+当 $t=0$ 时，直接代入原导数式得 $h'(0) = 1 > 0$，不影响单调性分析（此处的严谨性防止了在模仿时随意除以可能为零的变量）。
+第一问 $a=0$ 时：
+\[
+h'(t) = \frac{1 - 2t - t^2}{1-t^2}.
+\]
+在 $t \in [0, 1)$ 上，$1-t^2 > 0$，令 $1 - 2t - t^2 = 0$ 解得唯一驻点
+\[
+t_0 = \sqrt{2} - 1 \in [0, 1).
+\]
+当 $t \in [0, t_0)$ 时 $h'(t) > 0$，当 $t \in (t_0, 1)$ 时 $h'(t) < 0$。
+故 $h(t)$ 在 $t = \sqrt{2}-1$ 处取得最大值：
+\[
+h(\sqrt{2}-1) = \ln(2\sqrt{2}-2) + \sqrt{2}-1.
+\]
+
+\textbf{6 验结果。}
+换元后新变量 $t \in [0, 1)$ 范围精确，极值点 $t_0 \in [0, 1)$ 确实在原定义域对应的区间内，无增删解。
+
+\textbf{7 写闭环。}
+卷面上不可缺少的核心点：
+定义域 $1 < x \le 2 \rightarrow$ 换元 $t = \sqrt{2-x} \in [0,1) \rightarrow h(t)$ 求导驻点 $\rightarrow$ 最大值。
+
+\begin{trainingbox}{定义域优先的巨大威力}
+这不是技巧差异，而是决策顺序差异：
+\[
+\boxed{\text{盲目求导 }\Rightarrow\text{ 根式分母运算爆炸}\quad\mathbf{vs}\quad\text{扫定义域 }\Rightarrow\text{ 换元降维极简求导}}
+\]
+先扫初始约束，能从源头阻止无效且复杂的代数计算。
+\end{trainingbox}
+
+% ============================================================
+\section{第六章：六大专题的稳定决策路线}
+
+本章不是“题型大全”，而是展示不同知识模块怎样挂载到同一套七阶段系统。
+
+\subsection{专题一：函数与导数}
+
+\trigger{恒成立、零点个数、单调、极值、切线、参数。}
+
+\goal{把问题压成一个明确区间上的符号、最值或零点结构。}
+
+稳定路线：
+\begin{enumerate}
+  \item 先写定义域与参数角色；
+  \item 判断目标是“函数值”“导数符号”还是“根数”；
+  \item 能整体判断符号时，不要急着求全部零点；
+  \item 参数恒成立优先转成最坏情况；
+  \item 切线问题同时控制“点在曲线上”和“斜率相同”。
+\end{enumerate}
+
+\rollback{导数方程越来越高次；为了求一个范围却开始求所有精确根；忽略定义域端点。}
+
+\subsection{专题二：解三角形}
+
+\trigger{边角混合、面积、求角、边长关系。}
+
+\goal{选择一种更接近终点的统一语言。}
+
+\begin{multicols}{2}
+\sineLawFigure
+\cosineLawFigure
+\end{multicols}
+
+\begin{corebox}{不要规定“永远化边”或“永远化角”}
+\begin{itemize}
+  \item 求角且出现三边平方关系：余弦定理通常很近；
+  \item 角的和差、范围、恒等式明显：统一成角可能更短；
+  \item 面积 $S=\frac12bc\sin A$ 是边与角之间的重要桥梁；
+  \item 最后必须验证所得角与边能构成真实三角形。
+\end{itemize}
+\end{corebox}
+
+\subsection{专题三：解析几何}
+
+\trigger{两交点、定值、定点、弦、面积、距离、斜率。}
+
+稳定顺序：
+\begin{enumerate}
+  \item 先确定最终要消掉哪些动参数；
+  \item 只在需要时设一般直线；
+  \item 两交点问题优先看对称式和韦达，不优先求根；
+  \item 面积可尝试“底 $\times$ 高”或向量行列式；
+  \item 大量坐标运算出现时，检查几何意义能否缩短计算。
+\end{enumerate}
+
+常用压缩：
+\[
+\frac{x-a}{x-b}=1+\frac{b-a}{x-b}.
+\]
+若出现两个根，常把复杂表达式压成
+\[
+x_1+x_2,\qquad x_1x_2
+\]
+或它们的有理组合。
+
+\subsection{专题四：立体几何}
+
+\trigger{线线角、线面角、二面角、垂直、球、距离。}
+
+三条稳健路线：
+\begin{enumerate}
+  \item \textbf{定义对象落地：}先找到真正表示角或距离的对象；
+  \item \textbf{向量化：}建系自然时，用方向向量和法向量统一处理；
+  \item \textbf{核心截面：}球、圆锥、棱锥优先寻找包含球心、轴线、垂线的平面。
+\end{enumerate}
+
+\begin{multicols}{2}
+\axisSphereModelFigure
+\insphereVolumeFigure
+\end{multicols}
+
+\begin{corebox}{外接球的三个高频模型}
+\begin{enumerate}
+  \item 三条共顶点棱两两垂直，长为 $a,b,c$：
+  \[
+  (2R)^2=a^2+b^2+c^2.
+  \]
+  \item 三组对棱分别相等为 $a,b,c$ 的四面体，可补成长方体：
+  \[
+  R=\sqrt{\frac{a^2+b^2+c^2}{8}}.
+  \]
+  \item 直棱柱底面外接圆半径 $r$、高 $h$：
+  \[
+  R^2=r^2+\left(\frac h2\right)^2.
+  \]
+\end{enumerate}
+\end{corebox}
+
+若多面体有内切球，半径为 $r$、体积为 $V$、总表面积为 $S$，
+则
+\[
+V=\frac13Sr.
+\]
+
+\subsection{专题五：数列与新定义}
+
+\trigger{新定义、递推、整除、周期、删项、构造。}
+
+最重要的第一步不是套数列公式，而是：
+\[
+\boxed{\text{把新定义逐字翻译成一个可以判断真假的旧命题。}}
+\]
+
+建议流程：
+\begin{enumerate}
+  \item 用最小规模 $n=1,2,3$ 做合法试探；
+  \item 记录不变量：和、差、奇偶、模、位置关系；
+  \item 猜出结构后，区分“发现规律”和“证明规律”；
+  \item 需要归纳时，明确归纳假设到底支持下一步哪一部分。
+\end{enumerate}
+
+\subsection{专题六：概率与统计}
+
+\trigger{多轮随机、无放回、条件概率、分布列、期望、正态。}
+
+优先检查：
+\begin{enumerate}
+  \item 基本样本是否等可能；
+  \item 能否用对称性、补事件减少分类；
+  \item 随机变量取值是否完整；
+  \item 条件概率的分母事件是否正确；
+  \item 多轮过程是独立、条件独立，还是状态会变化。
+\end{enumerate}
+
+\begin{warningbox}{概率最常见的隐性错误}
+“每轮看起来一样”不等于独立。
+无放回抽取后，下一轮的样本空间已经改变。
+\end{warningbox}
+
+% ============================================================
+\section{第七章：失败信号与回退——高手不是每次都第一步选对}
+
+\begin{corebox}{五类强失败信号}
+\begin{enumerate}
+  \item 展开以后变量越来越多，目标结构却没有更清楚；
+  \item 连续多行计算仍看不到可消元、对称、齐次或单调结构；
+  \item 为推进不得不反复平方、反复分类、不断引入临时变量；
+  \item 图形关系明显，却在长篇联立坐标；
+  \item 求定值时动参数越来越多且没有消失趋势。
+\end{enumerate}
+\end{corebox}
+
+发现失败后不要问“还能不能继续算”，而依次回退：
+
+\[
+\boxed{
+\text{做转化}
+\rightarrow
+\text{搜路径}
+\rightarrow
+\text{选表征}
+}
+\]
+
+如果仍无法推进，再回到：
+\[
+\boxed{\text{我到底需要什么目标状态？}}
+\]
+
+\begin{warningbox}{不要把“换方法”理解成随机重开}
+正确回退要带着失败信息：
+“代数联立变量太多”说明应检查几何表征；
+“求根公式太长”说明应检查韦达/对称式；
+“分类爆炸”说明应寻找统一参数或更强不变量。
+\end{warningbox}
+
+% ============================================================
+\section{第八章：卷面表达——“设、限、联、推、算、综”只是输出检查}
+
+这六个字不是第二套解题流程，而是第七阶段“写闭环”的检查表。
+
+\begin{longtable}{p{1.6cm}p{4.2cm}p{9.0cm}}
+\toprule
+设 & 对象定义 & 新变量、坐标系、参数、点线对象是否定义清楚？\\ \hline
+限 & 合法范围 & 定义域、换元范围、端点、非零条件是否需要显式写出？\\ \hline
+联 & 关键依据 & 方程来自哪个定理、定义或几何关系？\\ \hline
+推 & 逻辑方向 & 是等价还是推出？分类是否穷尽？\\ \hline
+算 & 采分结果 & 判别式、韦达式、导数符号、关键长度是否出现？\\ \hline
+综 & 回到原题 & 最终是否回到原变量、原范围、原命题？\\
+\bottomrule
+\end{longtable}
+
+\begin{warningbox}{六检查不是六段作文}
+简单题可能只需显式写其中三四项；
+复杂题也可能重复“联—推—算”。
+它只负责检查逻辑闭环，不负责制造统一格式。
+\end{warningbox}
+
+两个高频书写细节：
+\begin{itemize}
+  \item 线面垂直若使用“垂直于平面内两条相交直线”判定，必须写清两直线在平面内且相交；
+  \item 多个不相连的单调区间应分别表述，不要用并集符号把它们伪装成一个区间。
+\end{itemize}
+
+% ============================================================
+\section{第九章：结构识别与迁移——重复本不是收藏错题}
+
+\subsection{真正要形成的能力}
+
+结构识别与迁移不是“方法 15”，而是长期训练以后产生的结果：
+
+\[
+\boxed{
+\text{题目特征}
+\rightarrow
+\text{目标状态}
+\rightarrow
+\text{优先表征/路径}
+\rightarrow
+\text{关键转化}
+\rightarrow
+\text{验证点}}
+\]
+
+\subsection{一题只记录六个字段}
+
+\begin{longtable}{p{2.6cm}p{11.8cm}}
+\toprule
+题目特征 & 不抄全文，只写“边角混合 + 求角”“两交点 + 定值”“参数恒成立”等结构标签\\ \hline
+目标状态 & 做到什么就够，如 $\cos B=k$、消去动参、转成一元最值\\ \hline
+第一反应 & 定义域、图像、韦达、向量、逆推、分类等优先决策\\ \hline
+关键转化 & 真正改变难度的那一步，而不是全部运算\\ \hline
+失败信号 & 当时为什么卡：过早展开、表征错、漏范围、分类失控\\ \hline
+最终校验 & 端点、取等、增漏解、实际存在性、回代\\
+\bottomrule
+\end{longtable}
+
+\subsection{三轮训练}
+
+\begin{enumerate}
+  \item \textbf{完整解决：}当天或首次学习时，允许参考解析，但必须自己标出关键转化；
+  \item \textbf{路径召回：}隔 2--3 天，只看题目，先不算，口述目标状态与关键节点；
+  \item \textbf{限时重建：}约 7--14 天后完整独立重做，比较路线是否更短、更稳。
+\end{enumerate}
+
+间隔只是默认建议，可按个人遗忘速度调整。
+
+\begin{trainingbox}{真正“掌握”的判据}
+不是“解析我看懂了”，而是隔一段时间重新见到题目时，
+在大量计算开始以前，能恢复出大致的结构链。
+\end{trainingbox}
+
+\subsection{哪些题值得进重复本}
+
+优先收录：
+\begin{enumerate}
+  \item 包装陌生，但拆开后是高频结构；
+  \item 方法会，第一反应却慢；
+  \item 有一个明显改变难度的关键转化；
+  \item 同一种错误已经重复出现；
+  \item 能代表一类“触发信号 $\rightarrow$ 决策”的母题。
+\end{enumerate}
+
+% ============================================================
+\section{第十章：考场救援——仍然只用同一套七阶段}
+
+\begin{center}
+\begin{tikzpicture}[
+ node distance=0.72cm,
+ every node/.style={draw,rounded corners=2pt,align=center,font=\small,
+ text width=10.0cm,minimum height=0.72cm},
+ arrow/.style={-{Latex[length=2mm]},thick}
+]
+\node (a) {\textbf{1 读目标}\quad 我到底需要得到什么，题目才算结束？};
+\node (b) [below=of a] {\textbf{2 扫初始约束}\quad 有没有范围、非零、存在性、整数性在限制我？};
+\node (c) [below=of b] {\textbf{3 选表征}\quad 当前这门“语言”是不是让问题变简单？};
+\node (d) [below=of c] {\textbf{4 搜路径}\quad 正推不动，能否逆推、分类、试小值、构造？};
+\node (e) [below=of d] {\textbf{5 做关键转化}\quad 只做能降维、消元、暴露结构的计算};
+\node (f) [below=of e] {\textbf{6 验结果}\quad 候选值真的属于原题吗？};
+\node (g) [below=of f] {\textbf{7 写闭环}\quad 先拿到已经确定的采分点};
+\draw[arrow] (a)--(b);
+\draw[arrow] (b)--(c);
+\draw[arrow] (c)--(d);
+\draw[arrow] (d)--(e);
+\draw[arrow] (e)--(f);
+\draw[arrow] (f)--(g);
+\end{tikzpicture}
+\end{center}
+
+\begin{corebox}{卡壳时最有价值的三个问题}
+\begin{enumerate}
+  \item 我是不是不知道\textbf{终点长什么样}？
+  \item 我是不是正在用\textbf{错误的语言}描述问题？
+  \item 我现在的计算有没有\textbf{减少自由度}？
+\end{enumerate}
+\end{corebox}
+
+如果答案连续是否定的，就回退。
+考场里最大的浪费，往往不是某一步算慢，而是在错误表征上高速计算。
+
+% ============================================================
+\section{第十一章：一页自检——按使用频率分层}
+
+\subsection{每题 20 秒：四问}
+
+\begin{enumerate}
+  \item 这题真正是什么结构？
+  \item 最终做到什么就够？
+  \item 真正改变难度的是哪一步？
+  \item 最容易漏掉的条件是什么？
+\end{enumerate}
+
+\subsection{典型错题：六字段}
+
+使用第九章的重复本六字段，不需要每道普通题都填。
+
+\subsection{周复盘：十问}
+
+\begin{enumerate}
+  \item 我能一句话说出题目结构，而不只是章节名吗？
+  \item 我知道目标状态是什么吗？
+  \item 第一条路线的触发信号是什么？
+  \item 有没有更自然的函数、图像、几何或向量表征？
+  \item 原题硬约束是否完整？
+  \item 哪一步只是推出，哪一步真正等价？
+  \item 新转化是否产生了新范围？
+  \item 如果走错，最早在哪一步应当发现？
+  \item 卷面是否包含关键依据而没有无效废话？
+  \item 一周后我真正希望记住哪条结构链？
+\end{enumerate}
+
+% ============================================================
+\section{附录 A：学生速查卡}
+
+\begin{corebox}{唯一七阶段}
+\[
+\boxed{
+\text{目标}
+\rightarrow
+\text{初始约束}
+\rightarrow
+\text{表征}
+\rightarrow
+\text{路径}
+\rightarrow
+\text{转化}
+\rightarrow
+\text{验证}
+\rightarrow
+\text{表达}}
+\]
+\end{corebox}
+
+\begin{longtable}{p{2.5cm}p{5.4cm}p{6.6cm}}
+\toprule
+\textbf{看到什么} & \textbf{优先想到} & \textbf{一定别忘}\\
+\midrule
+恒成立/任意 $x$ & 最坏情况、最值 & 定义域与等号能否取到\\ \hline
+两交点 + 定值 & 韦达、对称式 & 不要急着求两个根\\ \hline
+边角混合 & 目标决定统一语言 & 三角形角与边的可行性\\ \hline
+多个一次约束 & 可行域、图像 & 边界是否包含\\ \hline
+空间角/垂直 & 向量或核心截面 & 判定条件写全\\ \hline
+新定义 & 逐字翻译 + 小规模试探 & 猜想之后必须证明\\ \hline
+证明不存在/不恒真 & 反例、边界 & 反例必须满足前提\\ \hline
+越算越复杂 & 回退表征/路径 & 不要把错误路线算熟练\\
+\bottomrule
+\end{longtable}
+
+% ============================================================
+\section{附录 B：真题来源与使用说明}
+
+本手册中的高考案例均按公开真题资料核对年份、卷别和题号。
+为突出方法论训练，正文采用“题意重述 + 保留核心数学条件”的方式，
+解析均重新推导，不照搬网络解析。
+
+主要案例：
+\begin{itemize}
+  \item 2024 年普通高等学校招生全国统一考试，新课标 I 卷数学：第 12、13、15、16、18 题；
+  \item 2024 年普通高等学校招生全国统一考试，全国甲卷数学：第 3 题。
+\end{itemize}
+
+命题方向参考：
+\begin{itemize}
+  \item 教育部教育考试院：《优化试卷结构设计，突出思维能力考查——2024 年高考数学全国卷试题评析》；
+  \item 《2025 年高考数学全国卷试题评析》；
+  \item 教育部教育考试院数学专家：《锚定教考衔接，强化思维考查——2026 年高考数学试题评析》。
+\end{itemize}
+
+\begin{corebox}{最后一句}
+不要把“做过”当成“会做”，也不要把“会算”当成“会解决问题”。
+
+真正稳定的能力是：
+\[
+\boxed{
+\text{面对陌生包装}
+\Rightarrow
+\text{预测目标}
+\Rightarrow
+\text{选对语言}
+\Rightarrow
+\text{做合法转化}
+\Rightarrow
+\text{及时回退}
+\Rightarrow
+\text{验证并闭环}}
+\]
+这不是第二套流程，而是对唯一七阶段系统的自然语言解释。
+\end{corebox}
+
+\end{document}

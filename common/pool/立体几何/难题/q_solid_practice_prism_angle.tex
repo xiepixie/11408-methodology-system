@@ -1,0 +1,97 @@
+% =====================================================
+% 题型：立体几何解答题 (q_solid_practice_prism_angle.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidPracticePrismAngleStem}{%
+  如图，在直三棱柱 $ABC-A_1B_1C_1$ 中，$\angle ACB = 90^\circ$，$AC = BC = AA_1 = 2$。
+  \begin{enumerate}[label=(\arabic*)]
+    \item 求直线 $A_1C$ 与平面 $BB_1C_1C$ 所成角的大小；
+    \item 求点 $A$ 到平面 $A_1BC$ 的距离。
+  \end{enumerate}
+}
+
+\newcommand{\qSolidPracticePrismAngleFigure}[1][1.2]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    \coordinate (A) at (0,0);
+    \coordinate (C) at (1.5,0.6);
+    \coordinate (B) at (2.5,-0.2);
+    \coordinate (A1) at (0,2.0);
+    \coordinate (C1) at (1.5,2.6);
+    \coordinate (B1) at (2.5,1.8);
+    
+    \draw[dashed, thick, gray!80] (A) -- (C) -- (B);
+    \draw[dashed, thick, gray!80] (C) -- (C1);
+    \draw[dashed, thick, blue] (A1) -- (C);
+    
+    \draw[thick] (A) -- (B) -- (B1) -- (A1) -- cycle;
+    \draw[thick] (A1) -- (C1) -- (B1);
+    \ifteacher
+      % 教师端教案专属：高线 AH0 与线面角 theta
+      \coordinate (H0) at ($(A1)!0.5!(C)$);
+      \draw[dashed, thick, gray!60] (A) -- (H0);
+      \fill[gray] (H0) circle (1.2pt) node[right] {\small $H_0$};
+      
+      \draw[dashed, thick, gray!60] (A1) -- (C1);
+      \draw[thick, gray!80] (C) ++(90:0.4) arc (90:137:0.4);
+      \node[above] at ($(C)+(115:0.5)$) {\small $\theta$};
+    \fi
+    
+    \node[left] at (A) {\small $A$};
+    \node[above right] at (C) {\small $C$};
+    \node[below] at (B) {\small $B$};
+    \node[left] at (A1) {\small $A_1$};
+    \node[above] at (C1) {\small $C_1$};
+    \node[right] at (B1) {\small $B_1$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidPracticePrismAngleAnswer}{%
+  (1) $45^\circ$； (2) $\sqrt{2}$。
+}
+
+\newcommand{\qSolidPracticePrismAngleSolution}{%
+  (1) 解：
+  因为在直三棱柱 $ABC-A_1B_1C_1$ 中，侧棱 $A_1A \perp$ 平面 $ABC$。
+  因为 $AC, BC \subset$ 平面 $ABC$，所以 $A_1A \perp AC$。
+  因为 $\angle ACB = 90^\circ \implies AC \perp BC$。
+  又因为 \(A_1A \parallel C_1C\)，所以 \(AC \perp C_1C\)。\\
+  由 \(AC \perp BC\)，\(AC \perp C_1C\)，且 \(BC \cap C_1C = C\)，\\
+  所以 \(AC \perp\) 平面 \(BB_1C_1C\)。\\
+  因为 \(A_1C_1 \parallel AC\)，所以 \(A_1C_1 \perp\) 平面 \(BB_1C_1C\)。\\
+  故直线 $A_1C$ 在平面 $BB_1C_1C$ 内的投影（射影）是 $CC_1$。
+  直线 $A_1C$ 与平面 $BB_1C_1C$ 所成的角即为 $\angle A_1CC_1$。
+  在 Rt$\triangle A_1C_1C$ 中，$A_1C_1 = AC = 2$，高 $CC_1 = AA_1 = 2$。
+  所以 $\tan \angle A_1CC_1 = \frac{A_1C_1}{CC_1} = 1 \implies \angle A_1CC_1 = 45^\circ$。
+  即直线 $A_1C$ 与平面 $BB_1C_1C$ 所成角为 $45^\circ$。
+
+  \medskip
+  (2) 解：
+  设点 $A$ 到平面 $A_1BC$ 的距离为 $d$。
+  利用三棱锥的体积等体积法：
+  $V_{A-A_1BC} = V_{A_1-ABC}$。
+  所以 $\frac{1}{3} S_{\triangle A_1BC} \times d = \frac{1}{3} S_{\triangle ABC} \times A_1A$。
+  在底面 Rt$\triangle ABC$ 中，面积 $S_{\triangle ABC} = \frac{1}{2} AC \times BC = \frac{1}{2} \times 2 \times 2 = 2$。
+  高 $A_1A = 2$。
+  因为 $AC \perp BC$ 且 $A_1A \perp BC \implies BC \perp$ 平面 $A_1AC$。
+  因为 $A_1C \subset$ 平面 $A_1AC$，所以 $BC \perp A_1C$。
+  在 Rt$\triangle A_1AC$ 中，$A_1C = \sqrt{A_1A^2 + AC^2} = \sqrt{2^2 + 2^2} = 2\sqrt{2}$。
+  所以 $\triangle A_1BC$ 是以 $A_1C$ 为底、以 $BC$ 为高的直角三角形：
+  \[ S_{\triangle A_1BC} = \frac{1}{2} A_1C \times BC = \frac{1}{2} \times 2\sqrt{2} \times 2 = 2\sqrt{2}. \]
+  代入体积等式：
+  \[ 2\sqrt{2} \times d = 2 \times 2 \implies d = \frac{4}{2\sqrt{2}} = \sqrt{2}. \]
+  所以点 $A$ 到平面 $A_1BC$ 的距离为 $\sqrt{2}$。
+}
+
+\newcommand{\qSolidPracticePrismAngleDiagnosis}{%
+  考查直三棱柱中利用线面垂直判定寻找斜线投影射影求线面角，以及通过三棱锥体积等体积法（换底法）反求点到面距离。
+}
+
+\newcommand{\qSolidPracticePrismAngleTeachingNotes}{%
+  \item \textbf{重难点提示}：
+    \begin{itemize}
+      \item 第一问：指出 $A_1C_1 \parallel AC$ 是把问题平移并证明线面垂直的关键。
+      \item 第二问：求点到面距离时，体积等体积法是极其高效的手段，先证三棱锥侧面为直角三角形以求其面积。
+    \end{itemize}
+}

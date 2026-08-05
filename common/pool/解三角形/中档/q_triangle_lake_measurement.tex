@@ -1,0 +1,149 @@
+% =====================================================
+% 题型：解三角形实际测量问题填空题 (q_triangle_lake_measurement.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleLakeMeasurementStem}{某学习小组为了测量湖中两小岛 \(C, D\) 间的距离，在岸边选取了相距 \(2\text{ km}\) 的 \(A, B\) 两点，满足 \(A, B, C, D\) 在同一平面内，测得 \(\angle DAC=60^\circ\)，\(\angle CAB=45^\circ\)，\(\angle DBA=30^\circ\)，\(\angle DBC=60^\circ\)，则 \(CD=\)\underline{\qquad}\(\text{ km}\)。}
+
+\newcommand{\qTriangleLakeMeasurementAnswer}{\(\sqrt{6}\)}
+
+\newcommand{\qTriangleLakeMeasurementFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, line join=round, line cap=round, >=stealth]
+    % Coordinates
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (3,0);
+    \coordinate (C) at (3,3);
+    \coordinate (D) at (-0.55,2.05);
+    
+    % Draw lake shading
+    \fill[gray!10] (-1.5,0.2) .. controls (-0.5,1.5) and (-1,3.5) .. (1,3.5)
+                  .. controls (2.5,3.5) and (3.5,4) .. (4,3.2)
+                  .. controls (4.5,2.2) and (3.8,1.2) .. (3.3,0.5)
+                  -- (3,0) -- (0,0) -- cycle;
+                  
+    % Draw shoreline
+    \draw[very thick] (-1.5,0.2) -- (A) -- (B) -- (3.5,0);
+    \node[below] at (1.5, -0.1) {\small 湖岸};
+    
+    % Draw lines
+    \draw[thick] (A) -- (C);
+    \draw[thick] (A) -- (D);
+    \draw[thick] (B) -- (C);
+    \draw[thick] (B) -- (D);
+    \draw[thick, dashed, red] (C) -- (D);
+    
+    % Nodes
+    \fill (A) circle (1.5pt) node[below] {\small \(A\)};
+    \fill (B) circle (1.5pt) node[below] {\small \(B\)};
+    \fill (C) circle (1.5pt) node[above right] {\small \(C\)};
+    \fill (D) circle (1.5pt) node[above left] {\small \(D\)};
+    
+    % Angle arcs
+    \draw (0.4,0) arc[start angle=0, end angle=45, radius=0.4];
+    \node at (0.65,0.2) {\small \(45^\circ\)};
+    
+    \draw (0.3,0.3) arc[start angle=45, end angle=105, radius=0.42];
+    \node at (0.15,0.65) {\small \(60^\circ\)};
+    
+    \draw (2.5,0) arc[start angle=180, end angle=150, radius=0.5];
+    \node at (2.2,0.25) {\small \(30^\circ\)};
+    
+    \draw (2.6,0.23) arc[start angle=150, end angle=90, radius=0.46];
+    \node at (2.8,0.6) {\small \(60^\circ\)};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qTriangleLakeMeasurementSolution}{%
+  【解析方法一：平面直角坐标系法】
+  以 \(A\) 为原点，\(AB\) 所在直线为 \(x\) 轴建立平面直角坐标系，设 \(AB = 2\)（单位：\(\text{km}\)）。
+  则有 \(A(0,0)\)，\(B(2,0)\)。
+  
+  首先求点 \(C\) 的坐标。
+  因为 \(\angle CAB = 45^\circ\)，所以直线 \(AC\) 的斜率为 \(\tan 45^\circ = 1\)，
+  其方程为：
+  \[
+    AC: \quad y = x.
+  \]
+  由于 \(\angle DBA = 30^\circ\)，\(\angle DBC = 60^\circ\)，且射线 \(BD, BC\) 在直线 \(AB\) 的同侧，
+  得 \(\angle CBA = \angle DBA + \angle DBC = 30^\circ + 60^\circ = 90^\circ\)。
+  这说明 \(BC \perp AB\)，因此直线 \(BC\) 的方程为：
+  \[
+    BC: \quad x = 2.
+  \]
+  联联立 \(AC\) 与 \(BC\) 的方程可解得：
+  \[
+    C(2,2).
+  \]
+  
+  接下来求点 \(D\) 的坐标。
+  因为 \(\angle DBA = 30^\circ\)，向量 \(\overrightarrow{BA}\) 的方向为水平向左，
+  故射线 \(BD\) 的方向角为 \(180^\circ - 30^\circ = 150^\circ\)。
+  其参数方程可写为（\(t_1 > 0\)）：
+  \[
+    \begin{cases}
+      x = 2 + t_1 \cos 150^\circ = 2 - \dfrac{\sqrt{3}}{2} t_1 \\[6pt]
+      y = t_1 \sin 150^\circ = \dfrac{1}{2} t_1
+    \end{cases}
+  \]
+  又 \(\angle CAB = 45^\circ\)，\(\angle DAC = 60^\circ\)，得射线 \(AD\) 的方向角为 \(45^\circ + 60^\circ = 105^\circ\)。
+  其参数方程为（\(t_2 > 0\)）：
+  \[
+    \begin{cases}
+      x = t_2 \cos 105^\circ \\[6pt]
+      y = t_2 \sin 105^\circ
+    \end{cases}
+  \]
+  联立 \(x, y\) 的表达式，可解得 \(D\) 点坐标为：
+  \[
+    D\left(\frac{1-\sqrt{3}}{2}, \frac{1+\sqrt{3}}{2}\right).
+  \]
+  
+  最后计算距离 \(CD\)：
+  \[
+    CD^2 = \left(2 - \frac{1-\sqrt{3}}{2}\right)^2 + \left(2 - \frac{1+\sqrt{3}}{2}\right)^2 = \left(\frac{3+\sqrt{3}}{2}\right)^2 + \left(\frac{3-\sqrt{3}}{2}\right)^2.
+  \]
+  展开可得：
+  \[
+    CD^2 = \frac{(9 + 6\sqrt{3} + 3) + (9 - 6\sqrt{3} + 3)}{4} = \frac{24}{4} = 6.
+  \]
+  所以，\(CD = \sqrt{6}\text{ km}\)。
+  
+  【解析方法二：正弦定理与余弦定理几何法】
+  在 \(\triangle ABC\) 中，由 \(\angle CAB = 45^\circ\)，\(\angle CBA = 90^\circ\)，
+  可得 \(\triangle ABC\) 为等腰直角三角形，且 \(AB = 2\)。
+  因此有：
+  \[
+    AC = \sqrt{2} AB = 2\sqrt{2}.
+  \]
+  
+  在 \(\triangle ABD\) 中，由 \(\angle DAB = \angle DAC + \angle CAB = 60^\circ + 45^\circ = 105^\circ\)，
+  且 \(\angle DBA = 30^\circ\)，
+  可得：
+  \[
+    \angle ADB = 180^\circ - (105^\circ + 30^\circ) = 45^\circ.
+  \]
+  根据正弦定理 \(\dfrac{AD}{\sin\angle DBA} = \dfrac{AB}{\sin\angle ADB}\)，代入可得：
+  \[
+    \frac{AD}{\sin 30^\circ} = \frac{2}{\sin 45^\circ} \implies AD = \frac{2 \cdot \frac{1}{2}}{\frac{\sqrt{2}}{2}} = \sqrt{2}.
+  \]
+  
+  在 \(\triangle ACD\) 中，已知 \(AD = \sqrt{2}\)，\(AC = 2\sqrt{2}\)，且它们之间的夹角 \(\angle DAC = 60^\circ\)。
+  由余弦定理：
+  \[
+    CD^2 = AD^2 + AC^2 - 2 AD \cdot AC \cos\angle DAC.
+  \]
+  代入数据计算：
+  \[
+    CD^2 = (\sqrt{2})^2 + (2\sqrt{2})^2 - 2 \cdot \sqrt{2} \cdot 2\sqrt{2} \cos 60^\circ = 2 + 8 - 8 \cdot \frac{1}{2} = 6.
+  \]
+  因此，\(CD = \sqrt{6}\text{ km}\)。
+}
+
+% =====================================================
+% 别名兼容定义
+% =====================================================
+\newcommand{\qTJWTriangleLakeMeasurementStem}{\qTriangleLakeMeasurementStem}
+\newcommand{\qTJWTriangleLakeMeasurementAnswer}{\qTriangleLakeMeasurementAnswer}
+\newcommand{\qTJWTriangleLakeMeasurementFigure}{\qTriangleLakeMeasurementFigure}
+\newcommand{\qTJWTriangleLakeMeasurementSolution}{\qTriangleLakeMeasurementSolution}

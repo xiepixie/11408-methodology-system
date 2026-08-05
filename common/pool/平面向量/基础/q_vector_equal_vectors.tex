@@ -1,0 +1,61 @@
+% =====================================================
+% 题型：矩形内相等向量对数填空题 (q_lyb_01_12_equal_vectors.tex)
+% =====================================================
+% =====================================================
+% 难度：★ (基础)
+% =====================================================
+\newcommand{\qVectorEqualVectorsStem}{如图，在矩形 \(ABCD\) 中，\(AC \cap BD = E\)，在以 \(A, B, C, D, E\) 中不同两点为起点和终点的所有有向线段表示的向量中，相等的向量共有 \underline{\hspace{2.5cm}} 对。}
+
+\newcommand{\qVectorEqualVectorsFigure}[1][1.5]{%
+  \begin{tikzpicture}[scale=#1, >=stealth]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (2.0,0);
+    \coordinate (C) at (2.0,1.4);
+    \coordinate (D) at (0,1.4);
+    \coordinate (E) at (1.0,0.7);
+    
+    \draw[thick] (A) -- (B) -- (C) -- (D) -- cycle;
+    \draw[thick] (A) -- (C);
+    \draw[thick] (B) -- (D);
+    
+    \node[below left] at (A) {\small $A$};
+    \node[below right] at (B) {\small $B$};
+    \node[above right] at (C) {\small $C$};
+    \node[above left] at (D) {\small $D$};
+    \node[below] at (E) {\small $E$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qVectorEqualVectorsAnswer}{8}
+
+\newcommand{\qVectorEqualVectorsSolution}{%
+  在以 \(A, B, C, D, E\) 为起点和终点的有向线段表示的向量中，相等的向量对可以根据边和平行关系分类讨论：
+  \begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.1em]
+    \item \textbf{水平方向边向量}：由于 \(AB \parallel CD\) 且 \(AB = CD\)，向量 \(\vec{AB} = \vec{DC}\) 是一对相等向量，其相反方向 \(\vec{BA} = \vec{CD}\) 是另一对相等向量，共计 2 对；
+    \item \textbf{竖直方向边向量}：由于 \(AD \parallel BC\) 且 \(AD = BC\)，向量 \(\vec{AD} = \vec{BC}\) 是一对相等向量，其相反方向 \(\vec{DA} = \vec{CB}\) 是另一对相等向量，共计 2 对；
+    \item \textbf{半对角线向量}：在矩形中，对角线交点 \(E\) 为对角线 \(AC\) 和 \(BD\) 的中点。
+      对于对角线 \(AC\)：因为 \(AE = EC\)，所以有 \(\vec{AE} = \vec{EC}\) 是一对，其相反方向 \(\vec{CE} = \vec{EA}\) 是另一对，共 2 对；
+      对于对角线 \(BD\)：因为 \(DE = EB\)，所以有 \(\vec{DE} = \vec{EB}\) 是一对，其相反方向 \(\vec{ED} = \vec{BE}\) 是另一对，共 2 对。
+  \end{enumerate}
+  综上所述，相等的向量共有 \(2 + 2 + 2 + 2 = 8\) 对。
+  故填 8。%
+}
+
+\newcommand{\qVectorEqualVectorsDiagnosis}{%
+  学生作答约为 2 对，说明只捕捉到局部相等关系，没有按方向完整分类。主要问题是对“有向线段表示的向量”理解不够，漏掉反方向向量以及两条对角线被中点分出的半向量。%
+}
+
+\newcommand{\qVectorEqualVectorsTeachingNotes}{%
+  快讲订正。要求学生按水平方向、竖直方向、对角线 \(AC\)、对角线 \(BD\) 四类列清单，形成“不重不漏”的计数习惯。%
+}
+
+
+% =====================================================
+% 别名兼容：旧课次宏定义
+% =====================================================
+\newcommand{\qLYBZeroOneTwelveStem}{\qVectorEqualVectorsStem}
+\newcommand{\qLYBZeroOneTwelveFigure}[1][1.2]{\qVectorEqualVectorsFigure[#1]}
+\newcommand{\qLYBZeroOneTwelveAnswer}{\qVectorEqualVectorsAnswer}
+\newcommand{\qLYBZeroOneTwelveSolution}{\qVectorEqualVectorsSolution}
+\newcommand{\qLYBZeroOneTwelveDiagnosis}{\qVectorEqualVectorsDiagnosis}
+\newcommand{\qLYBZeroOneTwelveTeachingNotes}{\qVectorEqualVectorsTeachingNotes}

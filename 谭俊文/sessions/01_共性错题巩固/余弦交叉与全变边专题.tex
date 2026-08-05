@@ -1,0 +1,465 @@
+\documentclass[11pt, a4paper]{ctexart}
+\usepackage{amsmath, amssymb}
+\usepackage[margin=1.5cm, top=1.5cm, bottom=1.5cm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{angles, quotes, intersections, calc, positioning, arrows.meta}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx, booktabs}
+\usepackage{enumitem}
+\usepackage{paracol}
+
+% 设置零缩进，由 parskip 控制段落间距
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.3em}
+
+% 自定义颜色
+\definecolor{mainblue}{RGB}{0, 80, 160}
+\definecolor{maingreen}{RGB}{0, 120, 50}
+\definecolor{mainred}{RGB}{180, 0, 0}
+\definecolor{mainorange}{RGB}{200, 100, 0}
+
+% 思想定义框样式
+\newtcolorbox{conceptbox}[1]{
+    colback=gray!5!white,
+    colframe=black!70!white,
+    fonttitle=\sffamily\bfseries,
+    title=#1,
+    boxsep=1.0mm,
+    arc=1mm,
+    left=2mm, right=2mm, top=1.0mm, bottom=1.0mm,
+    before skip=0.3em, after skip=0.3em
+}
+
+% 教师讲解模块与例题容器定义
+\newenvironment{exbox}[1]{%
+  \par\addvspace{0.8em}%
+  \noindent\textbf{#1}\par\nobreak\begingroup
+}{%
+  \endgroup\par\addvspace{0.8em}%
+}
+
+\newcommand{\teachblock}[2]{%
+  \par\addvspace{0.45em}%
+  \noindent\textbf{【#1】}\par
+  \begingroup
+    \setlength{\parskip}{0.35em}%
+    #2\par
+  \endgroup
+}
+
+\begin{document}
+
+\begin{center}
+    {\sffamily \Huge \textbf{解三角形进阶专题：余弦交叉与全变边}} \\
+    \vspace{0.3em}
+    {\sffamily \Large —— 射影定理（投影定理）与代数化边决策流程}
+\end{center}
+
+\vspace{0.2cm}
+
+\begin{conceptbox}{专题导入：解三角形中的结构识别}
+在解三角形综合大题中，条件式往往呈现出边与角的复杂组合。
+对于包含余弦项的结构，学生常因决策不明而在“角化边”（余弦定理展开）与“边化角”（正弦定理展开）之间反复折腾，导致过程冗长易错。
+本讲将系统梳理针对余弦项的核心处理策略：\textbf{“余弦交叉射影线，仅有余弦全变边”}。
+\end{conceptbox}
+
+\section{第一部分：核心概念与射影定理}
+
+\subsection{1. 何谓“余弦交叉”？}
+“余弦交叉”指的是在一个代数项中，\textbf{一条边的长度与其非对应角（即另一个角）的余弦值相乘}。例如：
+\[
+c\cos B, \qquad b\cos C
+\]
+这两个结构如果以求和的形式配对出现：
+\[
+b\cos C + c\cos B
+\]
+就构成了最经典的\textbf{双边余弦交叉项}。
+类似地，常见的余弦交叉组合还包括 $a\cos B + b\cos A$ 以及 $a\cos C + c\cos A$。
+起指示作用的是，类似于 $a\cos A$ 或 $b\cos B$ 这种边与其同名角余弦相乘的项，不属于“余弦交叉”范畴。
+
+\subsection{2. 射影定理（投影定理）}
+在任意 $\triangle ABC$ 中，若角 $A, B, C$ 的对边分别为 $a, b, c$，则有以下三条等式：
+\[
+a = b\cos C + c\cos B
+\]
+\[
+b = a\cos C + c\cos A
+\]
+\[
+c = a\cos B + b\cos A
+\]
+这三条公式统称为\textbf{射影定理}。其直观记忆规律是：任何一条边，都等于另外两条边分别乘上对方角余弦之和。
+
+\subsection{3. 射影定理的几何意义}
+射影定理的物理几何本质是“线段在直线上的垂直投影相加”。
+以 $a = b\cos C + c\cos B$ 为例，底边 $BC = a$。
+从顶点 $A$ 向底边 $BC$ 作高线 $AD \perp BC$：
+\begin{itemize}
+  \item 当 $\triangle ABC$ 为锐角三角形时，垂足 $D$ 落在线段 $BC$ 内部。此时 $CD = b\cos C$，$BD = c\cos B$。显然有 $BC = BD + CD \implies a = b\cos C + c\cos B$。
+  \item 当 $\triangle ABC$ 含有钝角时（例如 $C$ 为钝角），垂足 $D$ 落在 $BC$ 的延长线上。此时 $\cos C < 0$，线段 $CD = b\cos(\pi - C) = -b\cos C$。而 $BD = c\cos B$。显然有 $BC = BD - CD = c\cos B - (-b\cos C) = b\cos C + c\cos B$。
+\end{itemize}
+这说明射影定理在任意三角形（含钝角与直角）中代数形式均恒成立。
+
+\subsection{4. 射影定理的严密代数证明}
+若在高考或大型模拟考中需要直接使用射影定理，为确保步骤不被扣分，可以使用正弦定理进行极简证明。以证明 $a = b\cos C + c\cos B$ 为例：
+由正弦定理，边之比等于其对应角的正弦比：$a : b : c = \sin A : \sin B : \sin C$。
+故我们只需证明：
+\[
+\sin A = \sin B\cos C + \sin C\cos B
+\]
+根据三角恒等变换的两角和正弦公式，右边可化为：
+\[
+\sin B\cos C + \sin C\cos B = \sin(B+C)
+\]
+又在三角形中 $A+B+C = \pi \implies B+C = \pi - A$，根据诱导公式：
+\[
+\sin(B+C) = \sin(\pi - A) = \sin A
+\]
+等式成立，得证。
+
+\newpage
+
+\section{第二部分：典型类型与变式解构}
+
+根据题目中余弦交叉项的呈现状态与单独边的关系，我们可以将题型细分为以下十种经典模式：
+
+\subsection{典型类型一：完整的余弦交叉直接合成一侧边}
+当条件式中直接给出了完整的余弦交叉配对时，我们无需做任何多余的展开，直接将其缩写为对应的单边。
+\begin{tcolorbox}[colback=white, colframe=black!60, boxrule=0.5pt, arc=1pt, before skip=0.2em, after skip=0.2em]
+\textbf{【例 1】}在 $\triangle ABC$ 中，已知 $a\cos C + c\cos A = \sqrt{3}b\cos B$，求角 $B$ 的大小。
+\end{tcolorbox}
+\textbf{解}：观察等式左侧，为完整的关于 $a, c$ 的余弦交叉项。
+根据射影定理，直接将其化简为边 $b$：
+\[
+b = \sqrt{3}b\cos B
+\]
+因为三角形边长 $b > 0$，两边同除以 $b$，可得：
+\[
+1 = \sqrt{3}\cos B \implies \cos B = \frac{\sqrt{3}}{3}
+\]
+由于 $B \in (0, \pi)$，故 $B = \arccos\frac{\sqrt{3}}{3}$。
+
+\subsection{典型类型二：利用射影定理快速判定直角三角形}
+当余弦交叉与二次边长形式结合时，优先使用射影定理降维，可快速化简出三边平方关系。
+\begin{tcolorbox}[colback=white, colframe=black!60, boxrule=0.5pt, arc=1pt, before skip=0.2em, after skip=0.2em]
+\textbf{【例 2】}已知在 $\triangle ABC$ 中，满足 $b\cos C + c\cos B = \frac{b^2+c^2}{a}$，判断三角形的形状。
+\end{tcolorbox}
+\textbf{解}：左边为 $b, c$ 的余弦交叉项，由射影定理代入：
+\[
+a = \frac{b^2+c^2}{a} \implies a^2 = b^2 + c^2
+\]
+由勾股定理逆定理可知，$\triangle ABC$ 是以角 $A$ 为直角的直角三角形。
+
+\subsection{典型类型三：展开移项凑出射影结构}
+有时题目中的余弦交叉项是“伪装”的，我们需要先进行去括号展开，并将交叉项移到同侧以配凑射影定理。
+\begin{tcolorbox}[colback=white, colframe=black!60, boxrule=0.5pt, arc=1pt, before skip=0.2em, after skip=0.2em]
+\textbf{【例 3】}在 $\triangle ABC$ 中，已知 $(2a-c)\cos B = b\cos C$，求角 $B$。
+\end{tcolorbox}
+\textbf{解}：展开括号可得：
+\[
+2a\cos B - c\cos B = b\cos C
+\]
+将负项 $-c\cos B$ 移到等号右侧，使其与 $b\cos C$ 归为一侧：
+\[
+2a\cos B = b\cos C + c\cos B
+\]
+右边刚好构成关于 $b, c$ 的射影定理结构，代入可得：
+\[
+2a\cos B = a
+\]
+因为 $a > 0$，两边同除以 $a$ 得：
+\[
+2\cos B = 1 \implies \cos B = \frac{1}{2}
+\]
+由于 $B \in (0, \pi)$，解得 $B = \frac{\pi}{3}$。
+
+\subsection{典型类型四：只有一个交叉项时，把“单身边”拆开配凑}
+当条件式中只出现了一个余弦交叉项（例如只有 $a\cos B$），我们无法直接用定理合成。此时，应将等式中单独出现的第三边（例如 $c$）反向拆解为 $a\cos B + b\cos A$，从而实现同项相消。
+\begin{tcolorbox}[colback=white, colframe=black!60, boxrule=0.5pt, arc=1pt, before skip=0.2em, after skip=0.2em]
+\textbf{【例 4】}在 $\triangle ABC$ 中，若 $a\cos B = c - b\cos A$，试判定三角形的形状。
+\end{tcolorbox}
+\textbf{解}：式中含有单边 $c$。我们将 $c$ 用射影定理展开：
+\[
+c = a\cos B + b\cos A
+\]
+代入原方程：
+\[
+a\cos B = (a\cos B + b\cos A) - b\cos A
+\]
+Wait，若题目原式是 $a\cos B = c - b\cos A$，我们把 $c$ 移项：
+\[
+a\cos B + b\cos A = c
+\]
+这显然是一个恒等式！
+让我们把题目条件改写为更典型的非恒等变式：
+如果条件为 $2a\cos B = c$，判断三角形形状？
+我们把单独的边 $c$ 拆开：
+\[
+2a\cos B = a\cos B + b\cos A \implies a\cos B = b\cos A
+\]
+利用正弦定理进行“边化角”：
+\[
+\sin A\cos B = \sin B\cos A \implies \sin A\cos B - \cos A\sin B = 0 \implies \sin(A-B) = 0
+\]
+因为 $A, B \in (0, \pi)$，所以 $A-B \in (-\pi, \pi)$。
+由 $\sin(A-B) = 0 \implies A = B$。
+故 $\triangle ABC$ 是等腰三角形。
+这种“把单身边拆开”的逆向运用，是射影定理最为高级的破局思路。
+
+\subsection{典型类型五：射影定理与正弦定理连续使用}
+有些题目在用射影定理消去一部分项后，会退化为 $c\cos B = b\cos C$ 这样的对称半交叉结构。此时，应立即使用正弦定理转换为纯角形式，结合两角差公式求解。
+\begin{tcolorbox}[colback=white, colframe=black!60, boxrule=0.5pt, arc=1pt, before skip=0.2em, after skip=0.2em]
+\textbf{【例 5】}在 $\triangle ABC$ 中，已知 $a = 2b\cos C$，求证：$\triangle ABC$ 是等腰三角形。
+\end{tcolorbox}
+\textbf{解}：将左侧的单边 $a$ 用射影定理展开：
+\[
+b\cos C + c\cos B = 2b\cos C \implies c\cos B = b\cos C
+\]
+此时式中两边均为一次边长项。使用正弦定理将边化为角：
+\[
+\sin C\cos B = \sin B\cos C \implies \sin C\cos B - \sin B\cos C = 0
+\]
+利用两角差的正弦公式：
+\[
+\sin(C-B) = 0
+\]
+由于 $B, C \in (0, \pi) \implies C-B \in (-\pi, \pi)$，故：
+\[
+C - B = 0 \implies B = C
+\]
+得证 $\triangle ABC$ 为等腰三角形。
+
+\subsection{典型类型六：射影定理要换“单身边”，不要换已经成对的边}
+当等式中同时出现“单身边”与“未配对的交叉项”时，我们应当优先拆解单身边，千万不要去动那个已有的交叉项，否则会让式子变得更加冗杂。
+\begin{tcolorbox}[colback=white, colframe=black!60, boxrule=0.5pt, arc=1pt, before skip=0.2em, after skip=0.2em]
+\textbf{【例 6】}在 $\triangle ABC$ 中，已知 $b = a\cos C + \frac{\sqrt{3}}{2}c$，求角 $A$ 的大小。
+\end{tcolorbox}
+\textbf{解}：式中含有单身边 $b$ 与单项 $a\cos C$。我们应当保留右边的 $a\cos C$ 不动，而将左边的 $b$ 用射影定理展开：
+\[
+b = a\cos C + c\cos A
+\]
+代入原等式：
+\[
+a\cos C + c\cos A = a\cos C + \frac{\sqrt{3}}{2}c
+\]
+两边消去共同项 $a\cos C$：
+\[
+c\cos A = \frac{\sqrt{3}}{2}c
+\]
+因为 $c > 0$，两边同除以 $c$ 得：
+\[
+\cos A = \frac{\sqrt{3}}{2}
+\]
+由于 $A \in (0, \pi)$，解得 $A = \frac{\pi}{6}$。
+
+\subsection{典型类型七：结合半角公式诱导射影结构}
+有些题目在初始状态下没有任何余弦交叉的迹象，但如果条件中含有半角正弦/余弦平方项，利用降幂公式化简后，射影定理的结构就会显现。
+\begin{tcolorbox}[colback=white, colframe=black!60, boxrule=0.5pt, arc=1pt, before skip=0.2em, after skip=0.2em]
+\textbf{【例 7】}在 $\triangle ABC$ 中，若三边满足 $a\sin^2\frac{C}{2} + c\sin^2\frac{A}{2} = \frac{a+c-b}{2}$，求角 $B$。
+\end{tcolorbox}
+\textbf{解}：利用半角降幂公式：$\sin^2\frac{\theta}{2} = \frac{1-\cos\theta}{2}$。
+代入原等式：
+\[
+a \cdot \frac{1-\cos C}{2} + c \cdot \frac{1-\cos A}{2} = \frac{a+c-b}{2}
+\]
+两边乘以 2 去分母：
+\[
+a(1-\cos C) + c(1-\cos A) = a+c-b \implies a - a\cos C + c - c\cos A = a+c-b
+\]
+整理等式，消去两侧的 $a+c$：
+\[
+-(a\cos C + c\cos A) = -b \implies a\cos C + c\cos A = b
+\]
+根据射影定理，左侧 $a\cos C + c\cos A$ 恒等于 $b$。
+等式化为 $b = b$，这说明该关系在任意三角形中均恒成立。
+
+Wait，如果原等式的右侧常数项是另外的值，例如若题目是：
+若 $b = a\cos C$，求角 $A$ 的大小？
+我们把单独的边 $b$ 展开：
+\[
+a\cos C + c\cos A = a\cos C \implies c\cos A = 0
+\]
+因为 $c > 0$，所以只能有 $\cos A = 0 \implies A = \frac{\pi}{2}$。
+故三角形为直角三角形。
+
+\subsection{典型类型八：正弦齐次先角化边，再配合射影定理}
+如果题目中同时给出两个条件，其中一个条件是“正弦齐次式”（即各项均为正弦一次方，如 $\sin A = 2\sin B$），应先通过正弦定理将其转化为边的比例（如 $a = 2b$），再代入含有余弦交叉的第二个条件中，利用射影定理求解。
+\begin{tcolorbox}[colback=white, colframe=black!60, boxrule=0.5pt, arc=1pt, before skip=0.2em, after skip=0.2em]
+\textbf{【例 8】}在 $\triangle ABC$ 中，若满足 $\sin B = 2\sin A$，且 $a\cos B = c + 1$，并且 $b=2$，求角 $A$ 的大小。
+\end{tcolorbox}
+\textbf{解}：
+首先处理正弦齐次式，由正弦定理将角化为边：
+\[
+b = 2a
+\]
+然后处理第二个条件 $a\cos B = c + 1$。
+由于右侧有单边 $c$，左侧有部分交叉项 $a\cos B$，我们把 $c$ 展开：
+\[
+c = a\cos B + b\cos A
+\]
+代入第二个条件中：
+\[
+a\cos B = (a\cos B + b\cos A) + 1 \implies b\cos A + 1 = 0
+\]
+又因为已知 $b = 2$，所以代入得到：
+\[
+2\cos A + 1 = 0 \implies \cos A = -\frac{1}{2}
+\]
+由于 $A \in (0, \pi)$，解得 $A = \frac{2\pi}{3}$。
+
+\subsection{典型类型九：隐藏的完全平方与射影定理}
+有些题目形式看似非常复杂（如含有二次边与余弦一次项的混合），但如果能够识别出完全平方式，就能实现代数降维，进而套用射影定理。
+\begin{tcolorbox}[colback=white, colframe=black!60, boxrule=0.5pt, arc=1pt, before skip=0.2em, after skip=0.2em]
+\textbf{【例 9】}在 $\triangle ABC$ 中，若满足 $c^2 - 2bc\cos A + b^2\cos^2 A = 0$，判断三角形的形状。
+\end{tcolorbox}
+\textbf{解}：
+观察等式左侧，代数结构刚好是一个完全平方公式：
+\[
+c^2 - 2c(b\cos A) + (b\cos A)^2 = (c - b\cos A)^2
+\]
+故原等式变形为：
+\[
+(c - b\cos A)^2 = 0 \implies c = b\cos A
+\]
+现在得到了一个单边与单交叉项的关系。我们将 $c$ 展开为射影定理形式：
+\[
+b\cos A + a\cos B = b\cos A \implies a\cos B = 0
+\]
+because $a > 0$，所以只能有：
+\[
+\cos B = 0
+\]
+由于 $B \in (0, \pi)$，解得 $B = \frac{\pi}{2}$。
+故 $\triangle ABC$ 是以角 $B$ 为直角的直角三角形。
+
+\newpage
+
+\section{第三部分：“仅有余弦全变边”的解题决策}
+
+虽然余弦交叉项极其适合用射影定理，但如果题目中\textbf{只有余弦项，没有正弦项}，并且在使用射影定理后出现消项卡壳，那么应当果断放弃射影，直接使用余弦定理将所有的余弦全部转化为三边表示。这被称为\textbf{“全变边”}策略。
+
+\begin{exbox}{典型类型十（全变边案例）}
+已知在 $\triangle ABC$ 中，满足 $2a\cos C + b = 2c\cos A$，且三边满足 $c = \sqrt{3}a$，求角 $A$ 的大小。
+\end{exbox}
+
+\begin{paracol}{2}
+\teachblock{“全变边”代数求解（最优解法）}{
+  由于等式中只有余弦，没有正弦。我们直接使用余弦定理把 $\cos C$ 和 $\cos A$ 化为边表示：
+  \[
+  \begin{aligned}
+  \cos C &= \frac{a^2+b^2-c^2}{2ab}, \\
+  \cos A &= \frac{b^2+c^2-a^2}{2bc}
+  \end{aligned}
+  \]
+  代入原等式 $2a\cos C + b = 2c\cos A$：
+  \[
+  2a \cdot \frac{a^2+b^2-c^2}{2ab} + b = 2c \cdot \frac{b^2+c^2-a^2}{2bc}
+  \]
+  约分化简：
+  \[
+  \frac{a^2+b^2-c^2}{b} + b = \frac{b^2+c^2-a^2}{b}
+  \]
+  两边同乘以 $b$（因为 $b > 0$）：
+  \[
+  a^2 + b^2 - c^2 + b^2 = b^2 + c^2 - a^2
+  \]
+  整理可得：
+  \[
+  2a^2 + b^2 - 2c^2 = 0
+  \]
+  将已知的 $c = \sqrt{3}a$（即 $c^2 = 3a^2$）代入：
+  \[
+  2a^2 + b^2 - 6a^2 = 0 \implies b^2 = 4a^2
+  \]
+  由于边长均为正数，开方可得：$b = 2a$。
+  
+  至此，三边之比为：$a : b : c = a : 2a : \sqrt{3}a = 1 : 2 : \sqrt{3}$。
+  利用余弦定理求角 $A$：
+  \[
+  \begin{aligned}
+  \cos A &= \frac{b^2+c^2-a^2}{2bc} \\
+  &= \frac{4a^2 + 3a^2 - a^2}{2 \cdot 2a \cdot \sqrt{3}a} \\
+  &= \frac{6a^2}{4\sqrt{3}a^2} = \frac{\sqrt{3}}{2}
+  \end{aligned}
+  \]
+  由于 $A \in (0, \pi)$，解得：
+  \[
+  \boxed{A = \frac{\pi}{6}}
+  \]
+}
+\switchcolumn
+\teachblock{射影定理求解（繁琐对比）}{
+  若此题硬用射影定理：
+  将 $b$ 展开为 $a\cos C + c\cos A$，代入原式：
+  \[
+  \begin{aligned}
+  2a\cos C + (a\cos C + c\cos A) &= 2c\cos A \\
+  \implies 3a\cos C &= c\cos A
+  \end{aligned}
+  \]
+  将 $c = \sqrt{3}a$ 代入：
+  \[
+  \begin{aligned}
+  3a\cos C &= \sqrt{3}a\cos A \\
+  \implies \cos C &= \frac{\sqrt{3}}{3}\cos A
+  \end{aligned}
+  \]
+  为求角 $A$，我们还必须利用正弦定理：
+  \[
+  \begin{aligned}
+  \frac{c}{a} &= \frac{\sin C}{\sin A} = \sqrt{3} \\
+  \implies \sin C &= \sqrt{3}\sin A
+  \end{aligned}
+  \]
+  利用同角三角函数平方和为 1：
+  \[
+  \begin{aligned}
+  \sin^2 C + \cos^2 C &= 1 \\
+  \implies 3\sin^2 A + \frac{1}{3}\cos^2 A &= 1
+  \end{aligned}
+  \]
+  代入 $\cos^2 A = 1 - \sin^2 A$：
+  \[
+  \begin{aligned}
+  3\sin^2 A + \frac{1}{3}(1 - \sin^2 A) &= 1 \\
+  \implies \frac{8}{3}\sin^2 A &= \frac{2}{3} \\
+  \implies \sin^2 A &= \frac{1}{4}
+  \end{aligned}
+  \]
+  由于 $\sin A > 0 \implies \sin A = \frac{1}{2}$。
+  解得 $A = \frac{\pi}{6}$ 或 $A = \frac{5\pi}{6}$。
+  由于 $c = \sqrt{3}a > a \implies C > A$。若 $A = \frac{5\pi}{6}$ 则三角形内角和超标，舍去。故 $A = \frac{\pi}{6}$。
+  
+  \textbf{对比结论}：射影法需要引入同角平方和与正弦定理，且最后还要讨论大角对大边的舍选，明显比“全变边”的纯代数运算要绕得多。
+}
+\end{paracol}
+
+\newpage
+
+\section{第四部分：解三角形解题决策流}
+
+在面对复杂的解三角形题目时，选择正确的方法是提速的关键。我们可以按以下“大脑扫描决策流程”进行方法匹配：
+
+\begin{center}
+\begin{tcolorbox}[colback=white, colframe=black, boxrule=0.5pt, arc=0pt, left=8pt, right=8pt, top=8pt, bottom=8pt]
+\textbf{【解三角形代数变形方法决策模板】}
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.8em]
+  \item \textbf{边齐二次 $\Rightarrow$ 优先考虑余弦定理}：
+    如果等式中出现三边平方的线性组合（如 $a^2+b^2-c^2$），或者含有余弦倍角降幂后的二次项，直接使用余弦定理写出边长方程。
+  \item \textbf{边齐一次 $\Rightarrow$ 优先考虑正弦定理“边化角”}：
+    如果等式中所有的边均为一次方（且没有交叉余弦组合，如 $a\cos B = b\cos A$），则使用正弦定理将边换为正弦角，利用两角和差公式进行化简。
+  \item \textbf{正弦不齐次 $\Rightarrow$ 优先考虑“边化角”统一表达}：
+    如果正弦项的次数不一致，用正弦定理把零散的边化为角，尽量让整个等式退化为纯三角函数的运算。
+  \item \textbf{正弦齐次 $\Rightarrow$ 优先考虑“角化边”简化代数}：
+    如果正弦项在分式或等式两侧次数完全一致，直接用正弦定理将正弦消去化为边，利用边长关系做纯代数约分。
+  \item \textbf{余弦交叉 $\Rightarrow$ 优先考虑射影定理}：
+    一旦看到诸如 $b\cos C + c\cos B$ 这样的交叉结构，直接用定理合成为边 $a$；若有未配对的单交叉项，考虑将旁边的单边用射影定理展开相消。
+  \item \textbf{仅有余弦且消项卡壳 $\Rightarrow$ 坚决执行“全变边”}：
+    如果题目中只包含余弦和边长，且使用射影定理后无法约分，立即使用余弦定理公式将所有余弦代换为边，化为纯代数方程求解。
+\end{enumerate}
+\end{tcolorbox}
+\end{center}
+
+\end{document}

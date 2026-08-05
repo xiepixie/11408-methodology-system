@@ -1,0 +1,72 @@
+% =====================================================
+% 题型：解三角形多选题 (q_tjw_20260605_06_triangle_identities_2.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleIdentitiesTwoStem}{%
+  在 $\triangle ABC$ 中，$a, b, c$ 分别为 $\angle A, \angle B, \angle C$ 的对边，下列叙述正确的是%
+}
+
+\newcommand{\qTriangleIdentitiesTwoOptions}{%
+  \mcoptions[1]{
+    若 $A = 45^{\circ}$，$a = \sqrt{2}$，$b = \sqrt{3}$，则 $\triangle ABC$ 有两解
+  }{
+    若 $\dfrac{a}{\cos B} = \dfrac{b}{\cos A}$，则 $\triangle ABC$ 为等腰三角形
+  }{
+    若 $\triangle ABC$ 为锐角三角形，则 $\sin A > \cos B$
+  }{
+    若 $\sin A : \sin B : \sin C = 2:3:4$，则 $\triangle ABC$ 为锐角三角形
+  }%
+}
+
+\newcommand{\qTriangleIdentitiesTwoAnswer}{A, C}
+
+\newcommand{\qTriangleIdentitiesTwoSolution}{%
+  对各选项逐一进行判定：
+  
+  对于 \textbf{A} 选项：
+  已知 $A = 45^{\circ}$，$b = \sqrt{3}$。
+  高为 $h = b\sin A = \sqrt{3} \times \sin 45^{\circ} = \dfrac{\sqrt{6}}{2} \approx 1.225$。
+  由于 $a = \sqrt{2} \approx 1.414$，满足 $b\sin A < a < b$（即 $1.225 < 1.414 < 1.732$）。
+  所以，满足条件的三角形有两解，故 \textbf{A} 正确；
+  
+  对于 \textbf{B} 选项：
+  由正弦定理 $a = 2R\sin A$，$b = 2R\sin B$，代入等式可得：
+  \[ \frac{\sin A}{\cos B} = \frac{\sin B}{\cos A} \implies \sin A\cos A = \sin B\cos B \implies \sin 2A = \sin 2B. \]
+  因为 $A, B \in (0, \pi)$，且在三角形中内角满足 $A+B < 180^{\circ}$（即 $2A+2B < 360^{\circ}$），故由 $\sin 2A = \sin 2B$ 只能推出 $2A = 2B$ 或 $2A + 2B = 180^{\circ}$，即 $A = B$ 或 $A + B = 90^{\circ}$。
+  说明 $\triangle ABC$ 可以是等腰三角形，也可以是直角三角形，因此“$\triangle ABC$ 为等腰三角形”是不正确的（可能是直角三角形而非等腰，例如 $A=30^\circ, B=60^\circ$ 时满足等式但非等腰），故 \textbf{B} 错误；
+  
+  对于 \textbf{C} 选项：
+  根据锐角三角形的性质，有 $A + B > 90^{\circ} \implies A > 90^{\circ} - B$。
+  因为 $y = \sin x$ 在 $\left(0, 90^{\circ}\right)$ 上单调递增，所以 $\sin A > \sin(90^{\circ} - B) = \cos B$，故 \textbf{C} 正确；
+  
+  对于 \textbf{D} 选项：
+  由正弦定理，$\sin A : \sin B : \sin C = a : b : c = 2:3:4$。
+  设三边长为 $a=2, b=3, c=4$，最大角为 $C$。
+  由余弦定理：
+  \[ \cos C = \frac{a^2 + b^2 - c^2}{2ab} = \frac{2^2 + 3^2 - 4^2}{2 \times 2 \times 3} = \frac{4 + 9 - 16}{12} = -\frac{3}{12} = -\frac{1}{4} < 0. \]
+  所以 $C$ 是钝角，该三角形是钝角三角形，故 \textbf{D} 错误。
+  
+  综上所述，正确选项为 \textbf{A, C}。
+}
+
+\newcommand{\qTriangleIdentitiesTwoDiagnosis}{%
+  用于课堂精准变式训练。考查正弦定理比例关系转化、余弦定理判定最大角性质、以及两解的数值验证。
+}
+
+\newcommand{\qTriangleIdentitiesTwoTeachingNotes}{%
+  \item \textbf{易错点排查}：B 选项中容易遗漏直角三角形的情况，需要强调 $\sin 2A = \sin 2B \implies 2A = 2B$ 或 $2A + 2B = 180^{\circ}$。
+  \item \textbf{代数检验}：D 选项中边长比例为 $2:3:4$ 的三角形，最大角 $C$ 的余弦值为负，是一个经典的钝角三角形反例，需让学生口算验证。
+}
+
+
+% =====================================================
+% 别名兼容：旧课次宏定义
+% =====================================================
+\newcommand{\qTJWTriangleIdentitiesTwoStem}{\qTriangleIdentitiesTwoStem}
+\newcommand{\qTJWTriangleIdentitiesTwoOptions}{\qTriangleIdentitiesTwoOptions}
+\newcommand{\qTJWTriangleIdentitiesTwoAnswer}{\qTriangleIdentitiesTwoAnswer}
+\newcommand{\qTJWTriangleIdentitiesTwoSolution}{\qTriangleIdentitiesTwoSolution}
+\newcommand{\qTJWTriangleIdentitiesTwoDiagnosis}{\qTriangleIdentitiesTwoDiagnosis}
+\newcommand{\qTJWTriangleIdentitiesTwoTeachingNotes}{\qTriangleIdentitiesTwoTeachingNotes}

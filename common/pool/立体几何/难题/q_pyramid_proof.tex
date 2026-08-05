@@ -1,0 +1,46 @@
+% =====================================================
+% 题型：立体几何解答题 (q4_pyramid_proof.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qFourStem}{%
+  如图，在四棱锥 $P-ABCD$ 中，$AB\parallel CD$，且 $\angle BAP=\angle CDP=90^\circ$。
+  \begin{enumerate}[label=(\arabic*) , leftmargin=2em, itemsep=0.1em]
+    \item 证明：平面 $PAB\perp$ 平面 $PAD$；
+    \item 若 $PA=PD=AB=DC$，$\angle APD=90^\circ$，且四棱锥 $P-ABCD$ 的体积为 $\dfrac{8}{3}$，求 $PB$ 与平面 $ABCD$ 所成角的大小。
+  \end{enumerate}%
+}
+
+\newcommand{\qFourFigure}[1][1.1]{%
+  \begin{tikzpicture}[scale=#1, >=stealth]
+    \coordinate (A) at (0, 0);
+    \coordinate (B) at (0.8, -0.6);
+    \coordinate (C) at (2.8, -0.6);
+    \coordinate (D) at (2.0, 0);
+    \coordinate (P) at (1.0, 1.5);
+    
+    \draw[thick] (P) -- (A);
+    \draw[thick] (P) -- (B);
+    \draw[thick] (P) -- (C);
+    \draw[thick, dashed] (P) -- (D);
+    \draw[thick] (A) -- (B);
+    \draw[thick] (B) -- (C);
+    \draw[thick, dashed] (C) -- (D);
+    \draw[thick, dashed] (A) -- (D);
+    
+    \ifteacher
+      \coordinate (H) at (1.0, 0);
+      % 教师教案专属：辅助投影高线 PH 与投影线 BH
+      \draw[semithick, dashed, gray] (P) -- (H);
+      \draw[semithick, dashed, gray] (B) -- (H);
+      \node[above right] at (H) {\small $H$};
+    \fi
+    
+    \node[left] at (A) {\small $A$};
+    \node[below left] at (B) {\small $B$};
+    \node[below right] at (C) {\small $C$};
+    \node[above right] at (D) {\small $D$};
+    \node[above] at (P) {\small $P$};
+  \end{tikzpicture}%
+}

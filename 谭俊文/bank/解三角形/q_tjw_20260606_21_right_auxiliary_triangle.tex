@@ -1,0 +1,82 @@
+% =====================================================
+% 题型：三角形辅助垂线与余弦定理填空题 (q_tjw_20260606_21_right_auxiliary_triangle.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleRightAuxiliaryStem}{%
+  如图，在 \(\triangle ABC\) 中，已知点 \(D\) 在 \(BC\) 边上，\(AD \perp AC\)，
+  \(\sin \angle BAC = \dfrac{2\sqrt{2}}{3}\)，\(AB = 3\sqrt{2}\)，\(AD = 3\)，
+  则 \(BD\) 的长为 \underline{\hspace{2.5cm}}。%
+}
+
+\newcommand{\qTriangleRightAuxiliaryFigure}[1][0.9]{%
+  \begin{tikzpicture}[scale=#1, line cap=round, line join=round]
+    \coordinate (B) at (0,0);
+    \coordinate (D) at (1.55,0);
+    \coordinate (C) at (5.2,0);
+    \coordinate (A) at (2.6,1.95);
+    \draw (B)--(C)--(A)--cycle;
+    \draw (A)--(D);
+    \node[left] at (B) {\(B\)};
+    \node[below] at (D) {\(D\)};
+    \node[right] at (C) {\(C\)};
+    \node[above] at (A) {\(A\)};
+    \ifteacher
+      \draw[dashed, gray] (A)--(D);
+      \node[gray, right] at ($(A)!0.55!(D)$) {\scriptsize \(AD\perp AC\)};
+    \fi
+  \end{tikzpicture}%
+}
+
+\newcommand{\qTriangleRightAuxiliaryAnswer}{%
+  \(\sqrt{3}\)%
+}
+
+\newcommand{\qTriangleRightAuxiliarySolution}{%
+  因为 \(AD \perp AC\)，且 \(AD\) 在 \(\angle BAC\) 内部，所以
+  \[
+    \angle BAC = \angle BAD + 90^\circ.
+  \]
+  因此
+  \[
+    \sin\angle BAC
+    = \sin(\angle BAD + 90^\circ)
+    = \cos\angle BAD.
+  \]
+  由题意得
+  \[
+    \cos\angle BAD = \frac{2\sqrt{2}}{3}.
+  \]
+
+  在 \(\triangle ABD\) 中，由余弦定理得
+  \[
+    \begin{aligned}
+    BD^2
+      &= AB^2 + AD^2 - 2 \cdot AB \cdot AD \cos\angle BAD  \\
+      &= (3\sqrt{2})^2 + 3^2
+       - 2 \cdot 3\sqrt{2} \cdot 3 \cdot \frac{2\sqrt{2}}{3} \\
+      &= 3.
+    \end{aligned}
+  \]
+  所以 \(BD = \sqrt{3}\)。%
+}
+
+\newcommand{\qTriangleRightAuxiliaryDiagnosis}{%
+  （留白待收集学生作答后补充）%
+}
+
+\newcommand{\qTriangleRightAuxiliaryTeachingNotes}{%
+  必讲候选。关键不是计算，而是从图中读出 \(\angle BAC=\angle BAD+90^\circ\)，从而把 \(\sin\angle BAC\) 转化为 \(\cos\angle BAD\)。若学生把 \(\angle BAC\) 当作 \(\triangle ABD\) 的夹角直接代入，需重点纠偏。%
+}
+
+
+% =====================================================
+% 别名兼容：旧课次宏定义
+% =====================================================
+\newcommand{\qTJWZeroSixTwentyOneStem}{\qTriangleRightAuxiliaryStem}
+\newcommand{\qTJWZeroSixTwentyOneFigure}[1][1.2]{\qTriangleRightAuxiliaryFigure[#1]}
+\newcommand{\qTJWZeroSixTwentyOneAnswer}{\qTriangleRightAuxiliaryAnswer}
+\newcommand{\qTJWZeroSixTwentyOneSolution}{\qTriangleRightAuxiliarySolution}
+\newcommand{\qTJWZeroSixTwentyOneDiagnosis}{\qTriangleRightAuxiliaryDiagnosis}
+\newcommand{\qTJWZeroSixTwentyOneTeachingNotes}{\qTriangleRightAuxiliaryTeachingNotes}

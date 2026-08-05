@@ -1,0 +1,78 @@
+% =====================================================
+% 题型：圆柱外接球体积选择题 (2017 新课标III卷 理 8)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qSolidCylinderSphereVolumeStem}{%
+  已知圆柱的高为 $1$，它的两个底面的圆周在直径为 $2$ 的同一个球的球面上，则该圆柱的体积为 \hfill （\quad）%
+}
+
+\newcommand{\qSolidCylinderSphereVolumeOptions}{%
+  \mcoptions[4]{$\pi$}{$\dfrac{3\pi}{4}$}{$\dfrac{\pi}{2}$}{$\dfrac{\pi}{4}$}%
+}
+
+\newcommand{\qSolidCylinderSphereVolumeFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    \coordinate (O) at (0,0);
+    \coordinate (T) at (0,0.9);
+    \coordinate (B) at (0,-0.9);
+    \coordinate (P) at (1.25,0.9);
+    \coordinate (Q) at (1.25,-0.9);
+
+    \draw[thick] (O) circle (1.55);
+    \draw[thick] (-1.25,0.9) arc (180:360:1.25 and 0.28);
+    \draw[dashed] (1.25,0.9) arc (0:180:1.25 and 0.28);
+    \draw[thick] (-1.25,-0.9) arc (180:360:1.25 and 0.28);
+    \draw[dashed] (1.25,-0.9) arc (0:180:1.25 and 0.28);
+    \draw[thick] (-1.25,0.9) -- (-1.25,-0.9);
+    \draw[thick] (1.25,0.9) -- (1.25,-0.9);
+
+    \ifteacher
+      \draw[dashed, semithick, gray] (O) -- (P);
+      \draw[dashed, semithick, gray] (O) -- (T);
+      \draw[dashed, semithick, gray] (T) -- (P);
+      \node[right] at ($(O)!0.5!(P)$) {\small $R$};
+      \node[left] at ($(O)!0.5!(T)$) {\small $\frac h2$};
+      \node[above] at ($(T)!0.5!(P)$) {\small $r$};
+    \fi
+
+    \fill (O) circle (1.2pt) node[left] {\small $O$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidCylinderSphereVolumeAnswer}{B}
+
+\newcommand{\qSolidCylinderSphereVolumeSolution}{%
+  设球半径为 $R$，圆柱底面半径为 $r$，圆柱高为 $h$。
+
+  过球心作包含圆柱轴线的截面，得到一个矩形内接于圆。
+  因此有
+  \[
+    R^2=r^2+\left(\frac h2\right)^2.
+  \]
+
+  由题意，球的直径为 $2$，所以 $R=1$；圆柱的高为 $h=1$。
+  代入得
+  \[
+    r^2=1^2-\left(\frac12\right)^2=\frac34.
+  \]
+
+  所以圆柱体积为
+  \[
+    V=\pi r^2h=\pi\cdot\frac34\cdot1=\frac{3\pi}{4}.
+  \]
+
+  故选 B。%
+}
+
+\newcommand{\qSolidCylinderSphereVolumeDiagnosis}{%
+  本题考查圆柱外接球的轴截面模型。学生常见错误是把球半径直接当作圆柱底面半径，忽略圆柱高的一半也占用了球半径。%
+}
+
+\newcommand{\qSolidCylinderSphereVolumeTeachingNotes}{%
+  \item \textbf{模型入口}：让学生画出轴截面，看到“球半径、底面半径、半高”构成直角三角形。
+  \item \textbf{得分公式}：$R^2=r^2+\left(\frac h2\right)^2$。
+  \item \textbf{课堂追问}：为什么用 $\frac h2$，而不是 $h$？因为球心在上下底面圆心连线的中点。
+}
+

@@ -1,0 +1,213 @@
+% =====================================================
+% 题型：立体几何解答题 / 折叠与最值问题 (q_solid_folding_rectangle.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidFoldingRectangleStem}{%
+  如图，在矩形 $ABCD$ 中，$AB=1$，$BC=\sqrt{3}$，$M$ 是线段 $AD$ 上的一动点，将 $\triangle ABM$ 沿着 $BM$ 折起，使点 $A$ 到达点 $A'$ 的位置，满足点 $A' \notin$ 平面 $BCDM$，且点 $A'$ 在平面 $BCDM$ 内的射影 $E$ 落在线段 $BC$ 上。
+  \begin{enumerate}[label=(\arabic*), leftmargin=2em, itemsep=0.1em]
+    \item 当点 $M$ 与端点 $D$ 重合时，证明：$A'B \perp$ 平面 $A'CD$；
+    \item 当 $AM=\dfrac{3}{2}$ 时，求二面角 $A'-BM-C$ 的余弦值；
+    \item 设直线 $CD$ 与平面 $A'BM$ 所成的角为 $\alpha$，二面角 $A'-BM-C$ 的平面角为 $\beta$，求 $\sin^2\alpha \cos\beta$ 的最大值。
+  \end{enumerate}%
+}
+
+\newcommand{\qSolidFoldingRectangleFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    % 左图：折叠前
+    \begin{scope}[xshift=0cm, yshift=0cm]
+      % 定义顶点
+      \coordinate (B) at (0, 0);
+      \coordinate (C) at (2.6, 0);
+      \coordinate (D) at (2.6, 1.5);
+      \coordinate (A) at (0, 1.5);
+      \coordinate (M) at (1.8, 1.5);
+      \coordinate (E) at (1.25, 0);
+      \coordinate (F) at (0.74, 0.62);
+      
+      % 绘制矩形和折痕
+      \draw[thick] (A) -- (B) -- (C) -- (D) -- cycle;
+      \draw[thick, dashed, blue] (B) -- (M);
+      \draw[thick, dashed, red] (A) -- (E);
+      
+      % 标记点
+      \fill (A) circle (1.2pt) node[above left] {\small $A$};
+      \fill (B) circle (1.2pt) node[below left] {\small $B$};
+      \fill (C) circle (1.2pt) node[below right] {\small $C$};
+      \fill (D) circle (1.2pt) node[above right] {\small $D$};
+      \fill (M) circle (1.2pt) node[above] {\small $M$};
+      \fill (E) circle (1.2pt) node[below] {\small $E$};
+      \fill (F) circle (1.2pt) node[above left] {\small $F$};
+      
+      % 直角标记
+      \draw[gray, thin] ($(F)!0.1!(A)$) -- ($($(F)!0.1!(A)$) + ($(F)!0.1!(M)$) - (F)$) -- ($(F)!0.1!(M)$);
+      
+      \node[below] at (1.3, -0.2) {\small 折叠前};
+    \end{scope}
+    
+    % 折叠箭头
+    \draw[->, very thick, gray] (3.0, 0.75) -- (4.0, 0.75) node[midway, above] {\small 折叠};
+    
+    % 右图：折叠后
+    \begin{scope}[xshift=4.5cm, yshift=0cm]
+      % 定义顶点 (精确计算的投影三维坐标)
+      \coordinate (B) at (0, 0);
+      \coordinate (C) at (2.6, 0);
+      \coordinate (D) at (3.2, 0.9);
+      \coordinate (M) at (2.55, 0.9);
+      \coordinate (E) at (1.15, 0);
+      \coordinate (A1) at (1.15, 0.96);
+      \coordinate (F) at (1.02, 0.36); % BM 上的垂足 F
+      
+      % 绘制底面边界与棱
+      \draw[thick] (B) -- (C) -- (D);
+      \draw[thick, dashed, gray!60] (D) -- (M);
+      \draw[thick, dashed, gray!60] (M) -- (B);
+      
+      % 绘制折起后的面 A'BM 和 A'BC
+      \draw[thick, blue] (A1) -- (B);
+      \draw[thick, blue] (A1) -- (M);
+      \draw[thick] (A1) -- (C);
+      \draw[thick, dashed, gray!60] (A1) -- (D);
+      
+      % 绘制辅助线
+      \draw[thick, dashed, red] (A1) -- (E);
+      \draw[thick, dashed, red] (E) -- (F);
+      \draw[thick, dashed, red] (A1) -- (F);
+      
+      % 标记点
+      \fill (B) circle (1.2pt) node[below left] {\small $B$};
+      \fill (C) circle (1.2pt) node[below right] {\small $C$};
+      \fill (D) circle (1.2pt) node[above right] {\small $D$};
+      \fill (M) circle (1.2pt) node[above right] {\small $M$};
+      \fill (E) circle (1.2pt) node[below] {\small $E$};
+      \fill (A1) circle (1.2pt) node[above] {\small $A'$};
+      \fill (F) circle (1.2pt) node[left] {\small $F$};
+      
+      % 直角标记
+      % A'E \perp base
+      \draw[red, thin] ($(E)!0.08!(A1)$) -- ($($(E)!0.08!(A1)$) + ($(E)!0.08!(B)$) - (E)$) -- ($(E)!0.08!(B)$);
+      % A'F \perp BM
+      \draw[red, thin] ($(F)!0.08!(A1)$) -- ($($(F)!0.08!(A1)$) + ($(F)!0.08!(M)$) - (F)$) -- ($(F)!0.08!(M)$);
+      % EF \perp BM
+      \draw[red, thin] ($(F)!0.08!(E)$) -- ($($(F)!0.08!(E)$) + ($(F)!0.08!(M)$) - (F)$) -- ($(F)!0.08!(M)$);
+      
+      \node[below] at (1.3, -0.2) {\small 折叠后};
+    \end{scope}
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidFoldingRectangleAnswer}{%
+  (1) 证明见解析；(2) 二面角 $A'-BM-C$ 的余弦值为 $\dfrac{4}{9}$；(3) $\sin^2\alpha \cos\beta$ 的最大值为 $\dfrac{1}{4}$.%
+}
+
+\newcommand{\qSolidFoldingRectangleSolution}{%
+  【解题思路】\\
+  本题为折叠几何综合最值难题。解题的关键在于抓住折叠前后的“距离与角度不变性”，通过代数建模构建起动态线段的长度关系网络：
+  \begin{enumerate}[label=\arabic*.]
+    \item \textbf{建立核心长度模型}：设 $AM=x$。通过 $A'$ 在底面的射影 $E$ 落在 $BC$ 上这一临界条件，结合折叠前后 $A'B=AB=1, A'M=AM=x$ 及 $A'E \perp$ 平面 $BCDM$，在底面利用 Rt$\triangle A'EB$ 和 Rt$\triangle A'EM$ 构建方程，推导得出 $BE = \dfrac{1}{x}$，此式为全题的计算发动机。
+    \item \textbf{几何垂直证明}：当 $M=D$ 时，长度参数 $x=\sqrt{3}$ 确定。利用勾股定理逆定理在 $\triangle A'BC$ 中求证 $A'B \perp A'C$，再利用线面垂直定理证明 $CD \perp$ 平面 $A'BC$ 从而得到 $CD \perp A'B$，最终证明 $A'B \perp$ 平面 $A'CD$。
+    \item \textbf{二面角计算}：利用三垂线定理判定二面角 $A'-BM-C$ 的平面角为 $\angle A'FE$。通过底面三角形面积法计算出 $EF$，再结合折叠前后 $A'F=AF$（即 $A$ 到折痕 $BM$ 的距离），在直角三角形 $\triangle A'EF$ 中直接求出 $\cos\beta = \dfrac{EF}{A'F} = \dfrac{1}{x^2}$。
+    \item \textbf{最值求解与三正弦定理模型识别}：注意到直线 $CD$ 在底面内，平面 $A'BM$ 是底面绕 $BM$ 折起形成的。根据\textbf{三正弦定理（最大角定理）}，直线与折起平面所成的角 $\alpha$、折起二面角 $\beta$ 以及直线与折痕的夹角 $\theta$ 满足：$\sin\alpha = \sin\beta \sin\theta$。由此将线面角转化为关于 $x$ 的代数式，化简后应用二次函数求最值。
+  \end{enumerate}
+
+  【解析计算】\\
+  \noindent\textbf{核心关系推导：}\\
+  设 $AM=x$，$A'$ 在底面上的射影为 $E \in BC$，则 $A'E \perp$ 平面 $BCDM$。\\
+  因为折叠是绕 $BM$ 进行的刚体旋转，折叠前后距离保持不变，故有：
+  \[ A'B = AB = 1,\quad A'M = AM = x \]
+  由于 $A'E \perp$ 平面 $BCDM$，且 $B, C, E \subset$ 平面 $BCDM$，所以 $A'E \perp BC$。\\
+  在 Rt$\triangle A'EB$ 中，有：
+  \[ A'E^2 = A'B^2 - BE^2 = 1 - BE^2 \quad \text{—— 方程 (1)} \]
+  在底面矩形中，过 $M$ 作 $MM_0 \perp BC$ 于 $M_0$，由矩形性质可知 $BM_0 = AM = x, MM_0 = AB = 1$。\\
+  由于 $E \in BC$，在 Rt$\triangle EM_0M$ 中，有：
+  \[ EM^2 = EM_0^2 + MM_0^2 = (BE - x)^2 + 1 \]
+  在 Rt$\triangle A'EM$ 中，因为 $A'E \perp$ 平面 $BCDM$，所以 $A'E \perp EM$。则有：
+  \[ A'M^2 = EM^2 + A'E^2 \implies x^2 = (BE - x)^2 + 1 + A'E^2 \quad \text{—— 方程 (2)} \]
+  将方程 (1) 代入方程 (2)，消去 $A'E^2$ 得：
+  \[ x^2 = (BE - x)^2 + 1 + (1 - BE^2) \]
+  展开整理得：
+  \[ x^2 = BE^2 - 2x \cdot BE + x^2 + 2 - BE^2 \implies 2x \cdot BE = 2 \implies \boxed{BE = \frac{1}{x}} \]
+  代入方程 (1) 中，可得 $A'$ 的投影高度为：
+  \[ \boxed{A'E = \sqrt{1 - \frac{1}{x^2}}} \]
+  要使折起后的几何体存在，高 $A'E$ 必须为实数且不为 $0$，即 $1 - \frac{1}{x^2} > 0 \implies x > 1$。\\
+  又因为点 $M$ 在线段 $AD$ 上，且 $AD = \sqrt{3}$，所以 $x \le \sqrt{3}$。\\
+  故动点参数 $x$ 的取值范围为 $\boxed{x \in [1, \sqrt{3}]}$。
+
+  \noindent\textbf{（1）证明：当 $M=D$ 时，$A'B \perp$ 平面 $A'CD$}\\
+  当点 $M$ 与端点 $D$ 重合时，其长度参数 $x = AM = AD = BC = \sqrt{3}$。\\
+  此时可得：
+  \[ BE = \frac{1}{\sqrt{3}},\quad CE = BC - BE = \sqrt{3} - \frac{1}{\sqrt{3}} = \frac{2}{\sqrt{3}} \]
+  高度的平方为：
+  \[ A'E^2 = 1 - \frac{1}{x^2} = 1 - \frac{1}{3} = \frac{2}{3} \]
+  在 Rt$\triangle A'EC$ 中，有：
+  \[ A'C^2 = A'E^2 + CE^2 = \frac{2}{3} + \left(\frac{2}{\sqrt{3}}\right)^2 = \frac{2}{3} + \frac{4}{3} = 2 \]
+  在 $\triangle A'BC$ 中，因为 $A'B = 1, BC = \sqrt{3}$，且 $A'C = \sqrt{2}$。\\
+  易见：
+  \[ A'B^2 + A'C^2 = 1^2 + (\sqrt{2})^2 = 3 = BC^2 \]
+  根据勾股定理逆定理，可知 $\boxed{A'B \perp A'C}$。\\
+  在底面矩形中，$CD \perp BC$。又因为 $A'E \perp$ 平面 $BCDM$，且 $CD \subset$ 平面 $BCDM$，所以 $CD \perp A'E$。\\
+  由于 $BC \cap A'E = E$，所以 $CD \perp$ 平面 $A'BC$。\\
+  因为 $A'B \subset$ 平面 $A'BC$，所以有 $\boxed{CD \perp A'B}$。\\
+  由于 $A'C \cap CD = C$，且 $A'C, CD \subset$ 平面 $A'CD$，\\
+  综上所述，$A'B$ 垂直于平面 $A'CD$ 内的两条相交直线，故有：
+  \[ \boxed{A'B \perp \text{平面 } A'CD} \]
+
+  \noindent\textbf{（2）求解二面角 $A'-BM-C$ 的平面角：}\\
+  在底面内，过点 $E$ 作 $EF \perp BM$ 于点 $F$，连接 $A'F$。\\
+  因为 $A'E \perp$ 平面 $BCDM$，且 $EF \perp BM$，根据三垂线定理可知，$\boxed{A'F \perp BM}$。\\
+  因此，$\angle A'FE$ 即为二面角 $A'-BM-C$ 的平面角 $\beta$。\\
+  在直角三角形 $\triangle ABM$ 中，斜边为 $BM = \sqrt{AM^2 + AB^2} = \sqrt{x^2 + 1}$。\\
+  在底面中，三角形 $\triangle BEM$ 的面积可以表示为：
+  \[ S_{\triangle BEM} = \frac{1}{2} \cdot BE \cdot AB = \frac{1}{2} \cdot \frac{1}{x} \cdot 1 = \frac{1}{2x} \]
+  同时，以 $BM$ 为底，高为 $EF$，其面积也可以表示为：
+  \[ S_{\triangle BEM} = \frac{1}{2} \cdot BM \cdot EF = \frac{1}{2} \cdot \sqrt{x^2+1} \cdot EF \]
+  联立面积公式，求得 $EF$ 的长度为：
+  \[ EF = \frac{1}{x\sqrt{x^2+1}} \]
+  折叠前，点 $A$ 到折痕 $BM$ 的距离等于折起后点 $A'$ 到折痕 $BM$ 的距离（即 $A'F$）。\\
+  在直角三角形 $\triangle ABM$ 中，由等面积法有：
+  \[ S_{\triangle ABM} = \frac{1}{2} \cdot AB \cdot AM = \frac{x}{2} = \frac{1}{2} \cdot BM \cdot A'F \implies A'F = \frac{x}{\sqrt{x^2+1}} \]
+  在 Rt$\triangle A'EF$ 中，二面角 $\beta = \angle A'FE$ 的余弦值为：
+  \[ \cos\beta = \frac{EF}{A'F} = \frac{\frac{1}{x\sqrt{x^2+1}}}{\frac{x}{\sqrt{x^2+1}}} = \boxed{\frac{1}{x^2}} \]
+  当 $AM = \frac{3}{2}$ 即 $x = \frac{3}{2}$ 时，代入可得：
+  \[ \cos\beta = \frac{1}{\left(\frac{3}{2}\right)^2} = \frac{4}{9} \]
+  故所求二面角 $A'-BM-C$ 的余弦值为 $\boxed{\dfrac{4}{9}}$。
+
+  \noindent\textbf{（3）求 $\sin^2\alpha \cos\beta$ 的最大值：}\\
+  在底面矩形中，直线 $CD \parallel AB$，所以直线 $CD$ 与折痕 $BM$ 所成的角 $\theta$ 等于直线 $AB$ 与 $BM$ 所成的角。\\
+  在直角三角形 $\triangle ABM$ 中，有：
+  \[ \sin\theta = \frac{AM}{BM} = \frac{x}{\sqrt{x^2+1}} \]
+  直线 $CD$ 位于底面内，平面 $A'BM$ 是由底面的一部分绕 $BM$ 折起形成的，且这两个平面的夹角为 $\beta$。\\
+  根据\textbf{三正弦定理（最大角定理）}，直线 $CD$ 与平面 $A'BM$ 所成的线面角 $\alpha$ 满足关系式：
+  \[ \sin\alpha = \sin\beta \sin\theta \]
+  由（2）中求得 $\cos\beta = \frac{1}{x^2}$，由于 $x \in [1, \sqrt{3}]$，故有：
+  \[ \sin\beta = \sqrt{1 - \cos^2\beta} = \sqrt{1 - \frac{1}{x^4}} \]
+  代入可求得：
+  \[ \sin^2\alpha = \sin^2\beta \sin^2\theta = \left(1 - \frac{1}{x^4}\right) \cdot \frac{x^2}{x^2+1} = \frac{x^4-1}{x^4} \cdot \frac{x^2}{x^2+1} \]
+  利用平方差公式进行化简：
+  \[ \sin^2\alpha = \frac{(x^2-1)(x^2+1)}{x^4} \cdot \frac{x^2}{x^2+1} = \frac{x^2-1}{x^2} \]
+  由此可得目标代数式为：
+  \[ \sin^2\alpha \cos\beta = \frac{x^2-1}{x^2} \cdot \frac{1}{x^2} = \frac{x^2-1}{x^4} \]
+  令 $t = x^2$。因为 $x \in [1, \sqrt{3}]$，所以 $t \in [1, 3]$。\\
+  则代数式化为：
+  \[ f(t) = \frac{t-1}{t^2} = \frac{1}{t} - \frac{1}{t^2} \]
+  进一步令 $u = \frac{1}{t}$。因为 $t \in [1, 3]$，所以 $u \in \left[\frac{1}{3}, 1\right]$。\\
+  目标二次函数为：
+  \[ g(u) = u - u^2 = -\left(u - \frac{1}{2}\right)^2 + \frac{1}{4} \]
+  因为对称轴 $u = \frac{1}{2} \in \left[\frac{1}{3}, 1\right]$，所以当 $u = \frac{1}{2}$（即 $t = 2 \implies x = \sqrt{2} \in [1, \sqrt{3}]$）时，函数取得最大值，最大值为：
+  \[ g\left(\frac{1}{2}\right) = \frac{1}{4} \]
+  故所求 $\sin^2\alpha \cos\beta$ 的最大值为 $\boxed{\dfrac{1}{4}}$。
+}
+
+\newcommand{\qSolidFoldingRectangleDiagnosis}{%
+  用于课堂精准提优训练。本题是一道非常经典的矩形折叠最值难题。重点考查折叠前后“长度与角度的守恒性”以及将动态几何特征转化为代数方程的能力。在解析中应引导学生识别出“三正弦定理”在求线面角最值中的应用，免去在折叠后的复杂空间体系中寻找线面角投影的繁琐作图过程。
+}
+
+\newcommand{\qSolidFoldingRectangleTeachingNotes}{%
+  \item \textbf{教学核心与模型识别提示}：
+    \begin{itemize}
+      \item \textbf{折叠动力引擎}：引导学生先建立折起高 $A'E = \sqrt{1 - \frac{1}{x^2}}$ 与投影点位置 $BE = \frac{1}{x}$ 的代数关系，这是折叠模型中利用垂直平分性质建立等式的一个非常典型的“保距消元”手法，务必让学生彻底掌握这一推导。
+      \item \textbf{三正弦定理的妙用}：第（3）问中，如果按照常规思路去寻找直线 $CD$ 在平面 $A'BM$ 上的投影来求线面角 $\alpha$，空间想象难度极大且极易出错。这里直接把底面看作平面 $\beta$，平面 $A'BM$ 看作平面 $\alpha$，直线 $CD$ 位于底面内，利用\textbf{三正弦定理} $\sin\alpha = \sin\beta \sin\theta$（线面角正弦 = 二面角正弦 $\times$ 面内线与交线夹角正弦），直接跳过了复杂的空间垂足寻找过程，是极佳的模型识别实战案例。
+    \end{itemize}
+}

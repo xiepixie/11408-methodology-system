@@ -1,0 +1,103 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[student]{../../../common/ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 排列组合与概率专题}
+\rhead{\small 姓名：\blank{2.5cm}}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\lessoninfo}[4]{%
+  \begin{center}
+    {\LARGE\bfseries #1}\par
+    \vspace{0.8em}
+    {\small 姓名：#2 \quad 日期：#3 \quad 讲次：#4}
+  \end{center}
+  \vspace{0.6em}
+}
+
+\begin{document}
+
+\lessoninfo{排列组合与概率（六题进阶特训）}{\blank{2.6cm}}{\blank{2.6cm}}{第 X 讲}
+
+\section{核心公式与思维诊断}
+
+\begin{itemize}[itemsep=0.3em]
+  \item \textbf{学完本讲后，你应该能够：}
+  \item 明确计数对象：对象是否相同？单位是否有标号？
+  \item 掌握“先确定容量，再计算组合数”的稳定流程；
+  \item 恰当处理必须同行、必须分开、出现最高频的特殊对象；
+  \item 灵活运用对称性与容斥原理简化计算。
+\end{itemize}
+
+\mindsetcard{容量分配法}{先写人数结构，再算组合方法}{遇到“至少”“至多”等人数限制，先解整数方程列出容量结构，能把一团乱麻变成确定的分类标准。}
+
+\vspace{1em}
+\noindent\textbf{重要公式与结论填空：}
+\begin{enumerate}[itemsep=0.8em]
+    \item 方程 $x_1+x_2+\cdots+x_m=n\ (x_i\geqslant 1)$ 的正整数有序解个数为 \blank{3cm}。
+    \item 将 $n$ 个不同对象分配到 $r$ 个有标号单位，人数依次为 $n_1,\ldots,n_r$，分配数为 \blank{3cm}。
+    \item 容斥原理：$\lvert A\cup B\rvert = $ \blank{6cm}。
+    \item 如果一对对象在两个位置上的排列仅有两种，且等可能，那么满足一种特定大小关系的概率必定为 \blank{1cm}。
+\end{enumerate}
+
+\newpage
+
+\section{经典题型突破}
+
+\prehint{
+  做题第一步：先问自己，对象一样不一样？盒子有没有标号？\\
+  如果有特殊限制对象，优先安排他们！
+}
+
+\studentproblem{题型一：相同球放入有标号盒}
+{\small \qProbPermDiffBoxesStem}
+\answerblank[6cm]{解：}
+
+\studentproblem{题型二：平均分配的概率计算}
+{\small \qProbPermAvgAllocStem}
+\answerblank[7cm]{解：}
+
+\newpage
+
+\studentproblem{题型三：人数有上下限的分配}
+{\small \qProbPermMinMaxCapStem}
+\answerblank[9cm]{解：}
+
+\studentproblem{题型四：利用对称性快速求概率}
+{\small \qProbPermSymmPosStem}
+\answerblank[7cm]{解：}
+
+\newpage
+
+\studentproblem{题型五：多日排课问题}
+{\small \qProbPermMultiDayStem}
+\answerblank[10cm]{解：}
+
+\studentproblem{题型六：带有同行与不同组的人员分配}
+{\small \qProbPermSpecGroupStem}
+\answerblank[10cm]{解：}
+
+\newpage
+
+\section{课堂复盘与反思}
+
+\vspace{0.5em}
+\noindent\textbf{本讲我最容易犯错的地方是（请打勾）：}
+\begin{itemize}[itemsep=0.4em]
+  \item \checkbox 没搞清对象到底相不相同、盒子有没有标号。
+  \item \checkbox 算完了不知道乘的是什么，出现了重复计数。
+  \item \checkbox 忘了利用容量去分类，导致直接硬算是漏掉情况。
+  \item \checkbox 没有优先安排那个限制最大的对象。
+\end{itemize}
+
+\vspace{1em}
+\noindent\textbf{我需要重做复练的题目是：}
+\vspace{0.5em}
+
+\blank{14cm}
+
+\end{document}

@@ -1,0 +1,36 @@
+% =====================================================
+% 题型：平面向量基本定理求系数选择题 (q_vector_equation.tex)
+% 知识板块：平面向量
+% 主思维：等价转化方法
+% 副思维：充分必要条件分析
+% 错因标签：忽略向量不共线的前提
+% 讲义用途：向量线性表示
+% =====================================================
+% 难度：★ (基础)
+% =====================================================
+\newcommand{\qVectorEquationStem}{已知平面向量 \(\boldsymbol{a}, \boldsymbol{b}\) 不共线, 且 \(2\boldsymbol{a} + y\boldsymbol{b} = x\boldsymbol{a} - 3\boldsymbol{b}\), 则 \hfill （\quad）}
+
+\newcommand{\qVectorEquationOptions}{%
+  \mcoptions[2]{\(x=2, y=-3\)}{\(x=-2, y=3\)}{\(x=2, y=3\)}{\(x=-2, y=-3\)}%
+}
+
+\newcommand{\qVectorEquationAnswer}{A}
+
+\newcommand{\qVectorEquationSolution}{%
+  【解题思路】\\
+  根据平面向量基本定理，若平面内的两个向量 \(\boldsymbol{a}, \boldsymbol{b}\) 不共线，则该平面内任意向量表示为这两个向量的线性组合的形式是唯一的。因此，可以采用对应系数相等的原则求解参数。\\
+  【解析计算】\\
+  已知等式为 \(2\boldsymbol{a} + y\boldsymbol{b} = x\boldsymbol{a} - 3\boldsymbol{b}\)。\\
+  因为平面向量 \(\boldsymbol{a}, \boldsymbol{b}\) 不共线，所以它们可以作为该平面内的一组基底，同一个向量的表示是唯一的。\\
+  对应系数相等，可得：\\
+  \(x = 2\)，且 \(y = -3\)。\\
+  故选 A。%
+}
+
+\newcommand{\qVectorEquationDiagnosis}{%
+  容易忽略“不共线”的前提条件。如果共线，对应系数不一定唯一确定。本题中明确给出了不共线，故可直接对应。%
+}
+
+\newcommand{\qVectorEquationTeachingNotes}{%
+  利用平面向量基本定理进行系数对比是向量代数的基本功。可以引导学生理解“基底”的唯一性，以及在直角坐标系下（即 \(\boldsymbol{i}, \boldsymbol{j}\)）对应坐标相等的本质。%
+}

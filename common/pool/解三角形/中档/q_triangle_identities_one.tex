@@ -1,0 +1,103 @@
+% =====================================================
+% 题型：解三角形多选题 (q_tjw_20260605_05_triangle_identities.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleIdentitiesOneStem}{%
+  在 $\triangle ABC$ 中，角 $A, B, C$ 的对边分别为 $a, b, c$，下列说法正确的是%
+}
+
+\newcommand{\qTriangleIdentitiesOneOptions}{%
+  \mcoptions[1]{
+    若 $a\cos A = b\cos B$，则 $\triangle ABC$ 为等腰三角形或直角三角形
+  }{
+    若 $b^2 > a^2 + c^2$，则 $\triangle ABC$ 是锐角三角形
+  }{
+    若 $\triangle ABC$ 为锐角三角形，则 $\sin A > \cos B$
+  }{
+    若 $\triangle ABC$ 有两解，$b=2\sqrt{3}$，$A=60^{\circ}$，则 $3 < a < 2\sqrt{3}$
+  }%
+}
+
+\newcommand{\qTriangleIdentitiesOneAnswer}{A, C, D}
+
+\newcommand{\qTriangleIdentitiesOneSolution}{%
+  对各选项逐一进行判定：
+  
+  对于 \textbf{A} 选项：
+  
+  由正弦定理 $a = 2R\sin A$，$b = 2R\sin B$，代入等式 $a\cos A = b\cos B$ 得：
+  \[ \sin A\cos A = \sin B\cos B \implies \sin 2A = \sin 2B. \]
+  
+  因为 $A, B \in (0, \pi)$，且在三角形中 $A + B < \pi$，
+  
+  所以有
+  \[ 2A + 2B < 2\pi. \]
+  
+  故由 $\sin 2A = \sin 2B$ 可得
+  \[ 2A = 2B \quad \text{或} \quad 2A + 2B = \pi, \]
+  
+  即
+  \[ A = B \quad \text{或} \quad A + B = \frac{\pi}{2}. \]
+  
+  所以 $\triangle ABC$ 为等腰三角形或直角三角形，故 \textbf{A} 正确；
+  
+  对于 \textbf{B} 选项：
+  
+  由余弦定理有
+  \[ \cos B = \frac{a^2 + c^2 - b^2}{2ac}. \]
+  
+  因为 $b^2 > a^2 + c^2$，所以
+  \[ a^2 + c^2 - b^2 < 0. \]
+  
+  因为 $ac > 0$，所以
+  \[ \cos B < 0. \]
+  
+  因为 $B \in (0, \pi)$，所以 $B$ 是钝角，$\triangle ABC$ 是钝角三角形，故 \textbf{B} 错误；
+  
+  对于 \textbf{C} 选项：
+  
+  因为 $\triangle ABC$ 是锐角三角形，所以有
+  \[ A + B > \frac{\pi}{2} \implies A > \frac{\pi}{2} - B. \]
+  
+  由于 $A, B$ 均是锐角，根据正弦函数在 $\left(0, \frac{\pi}{2}\right)$ 上的单调递增性有：
+  \[ \sin A > \sin\left(\frac{\pi}{2} - B\right) = \cos B. \]
+  
+  故 \textbf{C} 正确；
+  
+  对于 \textbf{D} 选项：
+  
+  根据解的个数判定。已知 $b, A$，若满足条件的三角形有两解，则需满足
+  \[ b\sin A < a < b. \]
+  
+  代入已知数据 $b = 2\sqrt{3}$，$A = 60^{\circ}$，得
+  \[ b\sin A = 2\sqrt{3} \times \sin 60^{\circ} = 2\sqrt{3} \times \frac{\sqrt{3}}{2} = 3. \]
+  
+  所以 $a$ 的取值范围是
+  \[ 3 < a < 2\sqrt{3}, \]
+  
+  故 \textbf{D} 正确。
+  
+  综上所述，正确选项为 \textbf{A, C, D}。
+}
+
+\newcommand{\qTriangleIdentitiesOneDiagnosis}{%
+  学生得分率为 50.0\%。暴露出在解三角形多选题中，对于边角互化判定三角形形状以及两解三角形参数边界条件的分析不够严密，容易漏选或误选。
+}
+
+\newcommand{\qTriangleIdentitiesOneTeachingNotes}{%
+  \item \textbf{重点剖析}：C 选项和 D 选项是经典考点。C 选项引导学生推导 $A+B > 90^{\circ} \implies A > 90^{\circ}-B$；D 选项要求学生画图理解“两解”的几何直观（即以 $C$ 为圆心，半径为 $a$ 的圆与 $AB$ 射线有两个交点，半径 $a$ 介于高 $h = b\sin A$ 和 $b$ 之间）。
+  \item \textbf{落实建议}：引导学生在错因分析区记录两解三角形条件：$b\sin A < a < b$。
+}
+
+
+% =====================================================
+% 别名兼容：旧课次宏定义
+% =====================================================
+\newcommand{\qTJWTriangleIdentitiesStem}{\qTriangleIdentitiesOneStem}
+\newcommand{\qTJWTriangleIdentitiesOptions}{\qTriangleIdentitiesOneOptions}
+\newcommand{\qTJWTriangleIdentitiesAnswer}{\qTriangleIdentitiesOneAnswer}
+\newcommand{\qTJWTriangleIdentitiesSolution}{\qTriangleIdentitiesOneSolution}
+\newcommand{\qTJWTriangleIdentitiesDiagnosis}{\qTriangleIdentitiesOneDiagnosis}
+\newcommand{\qTJWTriangleIdentitiesTeachingNotes}{\qTriangleIdentitiesOneTeachingNotes}

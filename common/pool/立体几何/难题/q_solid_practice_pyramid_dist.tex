@@ -1,0 +1,88 @@
+% =====================================================
+% 题型：立体几何解答题 (q_solid_practice_pyramid_dist.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidPracticePyramidDistStem}{%
+  如图，在三棱锥 $P-ABC$ 中，$PA \perp$ 平面 $ABC$，$\angle ABC = 90^\circ$。
+  \begin{enumerate}[label=(\arabic*)]
+    \item 证明：$BC \perp$ 平面 $PAB$；
+    \item 若 $PA = AB = BC = 2$，求点 $A$ 到平面 $PBC$ 的距离。
+  \end{enumerate}
+}
+
+\newcommand{\qSolidPracticePyramidDistFigure}[1][1.2]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (1.8,-0.6);
+    \coordinate (C) at (3.2,0.2);
+    \coordinate (P) at (0,2.2);
+    
+    \draw[dashed, thick, gray!80] (A) -- (C);
+    \draw[thick] (P) -- (A) -- (B) -- (C) -- (P) -- (B);
+    
+    \ifteacher
+      % 教师端教案专属：辅助投影垂线 AH 与交线
+      \coordinate (H) at ($(B)!0.5!(P)$); % 示例垂足 H
+      \draw[dashed, thick, gray!60] (A) -- (H);
+      \node[right] at (H) {\small $H$};
+    \fi
+    
+    \node[left] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[right] at (C) {\small $C$};
+    \node[above] at (P) {\small $P$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidPracticePyramidDistAnswer}{%
+  (1) 见解析； (2) $\sqrt{2}$。
+}
+
+\newcommand{\qSolidPracticePyramidDistSolution}{%
+  (1) 证明：
+  因为 $PA \perp$ 平面 $ABC$，且 $BC \subset$ 平面 $ABC$，
+  所以 $BC \perp PA$。
+  因为 $\angle ABC = 90^\circ$，所以 $BC \perp AB$。
+  因为 $PA \cap AB = A$，且 $PA, AB \subset$ 平面 $PAB$，
+  所以 $BC \perp$ 平面 $PAB$。
+
+  \medskip
+  (2) 解：
+  \textit{方法一（几何投影法）}：
+  由 (1) 知 $BC \perp$ 平面 $PAB$。
+  因为 $BC \subset$ 平面 $PBC$，所以平面 $PAB \perp$ 平面 $PBC$。
+  两平面交线为 $PB$。在平面 $PAB$ 内，作 $AH \perp PB$ 于点 $H$，
+  因为平面 $PAB \perp$ 平面 $PBC$，且 $AH \subset$ 平面 $PAB$，$AH \perp PB$，
+  所以 $AH \perp$ 平面 $PBC$。
+  即线段 $AH$ 的长度就是点 $A$ 到平面 $PBC$ 的距离。
+  在 Rt$\triangle PAB$ 中，因为 $PA = AB = 2$，
+  所以 $PB = \sqrt{2^2 + 2^2} = 2\sqrt{2}$。
+  斜边上的高 $AH = \frac{PA \times AB}{PB} = \frac{2 \times 2}{2\sqrt{2}} = \sqrt{2}$。
+  所以点 $A$ 到平面 $PBC$ 的距离为 $\sqrt{2}$。
+
+  \medskip
+  \textit{方法二（等体积法）}：
+  设点 $A$ 到平面 $PBC$ 的距离为 $d$。
+  因为 $V_{A-PBC} = V_{P-ABC}$，即 $\frac{1}{3} S_{\triangle PBC} \times d = \frac{1}{3} S_{\triangle ABC} \times PA$。
+  在底面 Rt$\triangle ABC$ 中，$S_{\triangle ABC} = \frac{1}{2} AB \times BC = \frac{1}{2} \times 2 \times 2 = 2$。
+  因为 $BC \perp$ 平面 $PAB$，且 $PB \subset$ 平面 $PAB$，所以 $BC \perp PB$。
+  在 Rt$\triangle PAB$ 中，$PB = \sqrt{2^2 + 2^2} = 2\sqrt{2}$。
+  在 Rt$\triangle PBC$ 中，$S_{\triangle PBC} = \frac{1}{2} PB \times BC = \frac{1}{2} \times 2\sqrt{2} \times 2 = 2\sqrt{2}$。
+  代入体积等式：
+  \[ 2\sqrt{2} \times d = 2 \times 2 \implies d = \frac{4}{2\sqrt{2}} = \sqrt{2}. \]
+  所以点 $A$ 到平面 $PBC$ 的距离为 $\sqrt{2}$。
+}
+
+\newcommand{\qSolidPracticePyramidDistDiagnosis}{%
+  考查利用面面垂直性质定理作垂线求点到面距离，或利用等体积法（换底法）计算距离的几何基本功。
+}
+
+\newcommand{\qSolidPracticePyramidDistTeachingNotes}{%
+  \item \textbf{重难点提示}：
+    \begin{itemize}
+      \item 第一问：强化判定定理书写规范（线线垂直 $\rightarrow$ 两相交直线 $\rightarrow$ 线面垂直）。
+      \item 第二问：对比演示“面面垂直作垂”与“等体积法”两种解法，让学生体会到“等体积法是不需要确定垂足的，更加通用”。
+    \end{itemize}
+}

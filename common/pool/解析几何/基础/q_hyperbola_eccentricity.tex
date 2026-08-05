@@ -1,0 +1,48 @@
+% =====================================================
+% 题型：双曲线离心率填空题 (q_hyperbola_eccentricity.tex)
+% 知识板块：双曲线
+% 主思维：定义优先思维
+% 副思维：公式结构
+% 错因标签：标准式化简错误、a, b, c 方程记混
+% 讲义用途：圆锥曲线基础
+% =====================================================
+% 难度：★ (基础)
+% =====================================================
+\newcommand{\qHyperbolaEccentricityStem}{双曲线 \(5x^2 - 6y^2 = 1\) 的离心率为 \blank{3cm}。}
+
+\newcommand{\qHyperbolaEccentricityAnswer}{\(\sqrt{\dfrac{11}{6}}\)}
+
+\newcommand{\qHyperbolaEccentricitySolution}{%
+  \textbf{【解题思路】}\par
+  求双曲线的离心率，核心在于将一般式方程化为标准形式 \(\dfrac{x^2}{a^2} - \dfrac{y^2}{b^2} = 1\)，进而读取参数 \(a^2, b^2\)，结合恒等式 \(c^2 = a^2 + b^2\) 求得焦距 \(c\)，最终由离心率定义 \(e = \dfrac{c}{a}\) 求解。\par\vspace{0.4em}
+
+  \textbf{【解析计算】}\par
+  已知双曲线方程为 \(5x^2 - 6y^2 = 1\)，将其化为标准形式：
+  \[
+    \frac{x^2}{\frac{1}{5}} - \frac{y^2}{\frac{1}{6}} = 1.
+  \]
+  由此可得焦点在 \(x\) 轴上，且参数为：
+  \[
+    a^2 = \frac{1}{5}, \qquad b^2 = \frac{1}{6}.
+  \]
+  在双曲线中，焦距平方满足关系式：
+  \[
+    c^2 = a^2 + b^2 = \frac{1}{5} + \frac{1}{6} = \frac{11}{30}.
+  \]
+  由离心率定义公式，可得：
+  \[
+    \begin{aligned}
+      e^2 &= \frac{c^2}{a^2} = \frac{\frac{11}{30}}{\frac{1}{5}} = \frac{11}{6} \\[0.4em]
+      \implies e &= \sqrt{\frac{11}{6}} \quad \text{（或化简为 } \frac{\sqrt{66}}{6}\text{）}.
+    \end{aligned}
+  \]
+  故答案为 \(\sqrt{\dfrac{11}{6}}\)。%
+}
+
+\newcommand{\qHyperbolaEccentricityDiagnosis}{%
+  学生在化简方程时，容易将 \(5x^2\) 变形错误（如错记为 \(a^2 = 5\)）。同时，双曲线的几何性质中 \(c^2 = a^2 + b^2\) 极易与椭圆的 \(c^2 = a^2 - b^2\) 记混。%
+}
+
+\newcommand{\qHyperbolaEccentricityTeachingNotes}{%
+  离心率计算是圆锥曲线的基础考点。讲评时应重点强化两点：一是“化标准”，将二次项系数化为 1 后，分母即为对应的平方项；二是区分椭圆与双曲线的 \(a, b, c\) 方程关系，夯实基础。%
+}

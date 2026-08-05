@@ -1,0 +1,74 @@
+% =====================================================
+% 题型：正方体线线夹角选择题 (q_lyb_01_3_cube_angle.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qSolidCubeAngleStem}{如图，在正方体 \(ABCD-A_1B_1C_1D_1\) 中，\(E, F\) 分别为 \(AB, BC\) 的中点，则直线 \(A_1B\) 与 \(EF\) 所成角的大小为 \hfill （\quad）}
+
+\newcommand{\qSolidCubeAngleOptions}{%
+  \mcoptions[4]{\(\dfrac{\pi}{6}\)}{\(\dfrac{\pi}{4}\)}{\(\dfrac{\pi}{3}\)}{\(\dfrac{\pi}{2}\)}%
+}
+
+\newcommand{\qSolidCubeAngleFigure}[1][1.3]{%
+  \begin{tikzpicture}[scale=#1, >=stealth]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (1.8,0);
+    \coordinate (D) at (0.65,0.45);
+    \coordinate (C) at (2.45,0.45);
+    \coordinate (A1) at (0,1.8);
+    \coordinate (B1) at (1.8,1.8);
+    \coordinate (D1) at (0.65,2.25);
+    \coordinate (C1) at (2.45,2.25);
+
+    \coordinate (E) at ($(A)!0.5!(B)$);
+    \coordinate (F) at ($(B)!0.5!(C)$);
+
+    \draw[dashed, gray!80, thick] (A) -- (D) -- (C);
+    \draw[dashed, gray!80, thick] (D) -- (D1);
+
+    \ifteacher
+      \draw[dashed, semithick, gray] (A) -- (C);
+      \draw[dashed, semithick, gray] (A1) -- (C1);
+    \fi
+
+    \draw[thick] (A) -- (B) -- (C) -- (C1) -- (D1) -- (A1) -- (A);
+    \draw[thick] (B) -- (B1) -- (C1);
+    \draw[thick] (A1) -- (B1);
+    \draw[semithick] (E) -- (F);
+    \draw[very thick] (A1) -- (B);
+
+    \node[below left] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[right] at (C) {\small $C$};
+    \node[left] at (D) {\small $D$};
+    \node[left] at (A1) {\small $A_1$};
+    \node[above] at (B1) {\small $B_1$};
+    \node[right] at (C1) {\small $C_1$};
+    \node[above] at (D1) {\small $D_1$};
+    \node[below left] at (E) {\small $E$};
+    \node[below right] at (F) {\small $F$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidCubeAngleAnswer}{C}
+
+\newcommand{\qSolidCubeAngleSolution}{%
+  因为 \(E, F\) 分别为 \(AB, BC\) 的中点，由三角形中位线定理得 \(EF \parallel AC\)。
+  所以异面直线 \(A_1B\) 与 \(EF\) 所成的角即为直线 \(A_1B\) 与 \(AC\) 所成的角。
+  连接 \(BC_1\), \(A_1C_1\), \(AC\)。由于在正方体中，底面对角线 \(AC \parallel A_1C_1\)。
+  在 \(\triangle A_1BC_1\) 中，有 \(A_1B = BC_1 = A_1C_1\)，所以 \(\triangle A_1BC_1\) 为等边三角形。
+  从而直线 \(A_1B\) 与 \(A_1C_1\) 所成的角为 \(\dfrac{\pi}{3}\)。
+  因此直线 \(A_1B\) 与 \(AC\) 所成的角也为 \(\dfrac{\pi}{3}\)，即直线 \(A_1B\) 与 \(EF\) 所成角为 \(\dfrac{\pi}{3}\)。
+  故选 C。%
+}
+
+
+% =====================================================
+% 别名兼容：旧课次宏定义
+% =====================================================
+\newcommand{\qLYBZeroOneThreeStem}{\qSolidCubeAngleStem}
+\newcommand{\qLYBZeroOneThreeOptions}{\qSolidCubeAngleOptions}
+\newcommand{\qLYBZeroOneThreeFigure}[1][1.2]{\qSolidCubeAngleFigure[#1]}
+\newcommand{\qLYBZeroOneThreeAnswer}{\qSolidCubeAngleAnswer}
+\newcommand{\qLYBZeroOneThreeSolution}{\qSolidCubeAngleSolution}

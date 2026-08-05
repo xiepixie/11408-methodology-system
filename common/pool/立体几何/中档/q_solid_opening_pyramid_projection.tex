@@ -1,0 +1,36 @@
+% =====================================================
+% 题型：立体几何填空题 (q_solid_opening_pyramid_projection.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qSolidOpeningPyramidProjectionStem}{%
+  在四棱锥 $P-ABCD$ 中，底面 $ABCD$ 为正方形，$PA \perp$ 平面 $ABCD$。
+  \begin{enumerate}[label=(\arabic*)]
+    \item 直线 $PD$ 在平面 $ABCD$ 内的投影是：\blank{3cm}；
+    \item 直线 $PC$ 与平面 $ABCD$ 所成的角是：$\angle$\blank{2cm}；
+    \item 证明 $BC \perp$ 平面 $PAB$ 的关键是找到面内两条与 $BC$ 垂直的相交线，它们分别是：\blank{3cm}。
+  \end{enumerate}
+}
+
+\newcommand{\qSolidOpeningPyramidProjectionAnswer}{%
+  (1) $AD$； (2) $PCA$； (3) $AB, PA$。
+}
+
+\newcommand{\qSolidOpeningPyramidProjectionSolution}{%
+  (1) $AD$。因为 $P$ 在底面 $ABCD$ 内的投影为 $A$，$D$ 就在底面上，所以 $PD$ 在底面的投影为线段 $AD$。\\
+  (2) $\angle PCA$。因为 $P$ 在底面内的射影为 $A$，所以 $AC$ 是斜线 $PC$ 在底面 $ABCD$ 内的投影线，故线面角即为 $\angle PCA$。\\
+  (3) $AB, PA$。要证明 $BC \perp$ 平面 $PAB$，需在面内找到两条垂直的相交直线。因为底面是正方形，有 $BC \perp AB$；又 $PA \perp$ 平面 $ABCD \implies BC \perp PA$。$AB \cap PA = A$，所以它们是 $AB$ 和 $PA$。
+}
+
+\newcommand{\qSolidOpeningPyramidProjectionDiagnosis}{%
+  考查学生对线在面内投影的几何直觉，线面角“作-证-算”中的投影确定，以及线面垂直判定定理条件书写的规范度。
+}
+
+\newcommand{\qSolidOpeningPyramidProjectionTeachingNotes}{%
+  \item \textbf{重难点提示}：
+    \begin{itemize}
+      \item 第二问：强调投影点 $A$ 的定位是线面角的起点。
+      \item 第三问：提醒学生注意线面垂直必含相交条件。
+    \end{itemize}
+}

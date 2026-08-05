@@ -1,0 +1,124 @@
+% 难度：★★★ 难题
+% 知识点：立体几何、垂直关系、截面周长、正六边形截面
+
+\newcommand{\qSolidCubeDiagPerpSectionPerimeterStem}{%
+在棱长为 $2$ 的正方体 $ABCD-A_1B_1C_1D_1$ 中，$Q$ 为 $AD$ 的中点，$P$ 为正方体内部及其表面上的一动点，且 $PQ\perp BD_1$。求满足条件的所有点 $P$ 构成的平面图形的周长为 \blank{2cm}。
+}
+
+\newcommand{\qSolidCubeDiagPerpSectionPerimeterOptions}{%
+A. $\frac{3\sqrt{3}}{2}$ \hfill B. $3\sqrt{3}$ \hfill C. $6\sqrt{2}$ \hfill D. $4+4\sqrt{2}$
+}
+
+\newcommand{\qSolidCubeDiagPerpSectionPerimeterFigure}[1][1]{%
+\begin{tikzpicture}[scale=#1, line join=round, line cap=round, >=stealth]
+  % Define coordinates for cube
+  \coordinate (D) at (0,0);
+  \coordinate (C) at (2,0);
+  \coordinate (A) at (-1,-1);
+  \coordinate (B) at (1,-1);
+  \coordinate (D1) at (0,2);
+  \coordinate (C1) at (2,2);
+  \coordinate (A1) at (-1,1);
+  \coordinate (B1) at (1,1);
+  
+  \coordinate (Q) at ($(A)!0.5!(D)$);
+
+  % Draw visible edges
+  \draw[thick] (A) -- (B) -- (C) -- (C1) -- (D1) -- (A1) -- cycle;
+  \draw[thick] (B1) -- (A1);
+  \draw[thick] (B1) -- (B);
+  \draw[thick] (B1) -- (C1);
+  
+  % Draw hidden edges
+  \draw[thick, dashed, gray] (D) -- (A);
+  \draw[thick, dashed, gray] (D) -- (C);
+  \draw[thick, dashed, gray] (D) -- (D1);
+
+  % Labels
+  \node[left] at (A) {$A$};
+  \node[right] at (B) {$B$};
+  \node[right] at (C) {$C$};
+  \node[left] at (D) {$D$};
+  \node[left] at (A1) {$A_1$};
+  \node[right] at (B1) {$B_1$};
+  \node[right] at (C1) {$C_1$};
+  \node[left] at (D1) {$D_1$};
+  
+  \fill (Q) circle (1.5pt) node[left] {$Q$};
+  \draw[dashed, blue, thick] (B) -- (D1);
+
+  \ifteacher
+    % Coordinates of the regular hexagon
+    \coordinate (V) at ($(A)!0.5!(A1)$);
+    \coordinate (U) at ($(A1)!0.5!(B1)$);
+    \coordinate (T) at ($(B1)!0.5!(C1)$);
+    \coordinate (S) at ($(C1)!0.5!(C)$);
+    \coordinate (R) at ($(C)!0.5!(D)$);
+    
+    \fill[red!10, opacity=0.6] (Q) -- (V) -- (U) -- (T) -- (S) -- (R) -- cycle;
+    \draw[dashed, red, thick] (V) -- (Q) -- (R) -- (S);
+    \draw[thick, red] (S) -- (T) -- (U) -- (V);
+    
+    \fill (V) circle (1.5pt) node[left] {$V$};
+    \fill (U) circle (1.5pt) node[above] {$U$};
+    \fill (T) circle (1.5pt) node[right] {$T$};
+    \fill (S) circle (1.5pt) node[right] {$S$};
+    \fill (R) circle (1.5pt) node[below right] {$R$};
+  \fi
+\end{tikzpicture}
+}
+
+\newcommand{\qSolidCubeDiagPerpSectionPerimeterAnswer}{%
+C
+}
+
+\newcommand{\qSolidCubeDiagPerpSectionPerimeterSolution}{%
+\textbf{法一（空间向量法）：}
+动点 $P$ 满足 $PQ \perp BD_1$，根据空间几何的性质，点 $P$ 一定落在过点 $Q$ 且与直线 $BD_1$ 垂直的平面 $\alpha$ 上。
+因为 $P$ 同时在正方体内部及其表面上，所以 $P$ 构成的平面图形就是平面 $\alpha$ 截正方体所得的截面。
+
+以 $D$ 为原点，$DA, DC, DD_1$ 所在直线分别为 $x, y, z$ 轴建立空间直角坐标系。
+则 $D(0,0,0)$，$A(2,0,0)$，$B(2,2,0)$，$C(0,2,0)$，$D_1(0,0,2)$。
+因为 $Q$ 是 $AD$ 的中点，所以 $Q(1,0,0)$。
+向量 $\vec{BD_1} = (0,0,2) - (2,2,0) = (-2, -2, 2)$。
+平面 $\alpha$ 垂直于 $\vec{BD_1}$，则其法向量可取为 $\vec{n} = (1, 1, -1)$。
+过点 $Q(1,0,0)$ 的平面 $\alpha$ 的方程为：$1\times(x-1) + 1\times(y-0) - 1\times(z-0) = 0$，即 $x + y - z = 1$。
+
+求平面 $\alpha$ 与正方体各棱的交点：
+（1）与 $AD$ 所在直线交于 $Q(1,0,0)$，这是 $AD$ 的中点。
+（2）与 $CD$ 所在直线（$x=0, z=0$）：$0 + y - 0 = 1 \Rightarrow y = 1$。交点为 $R(0,1,0)$，即 $CD$ 的中点。
+（3）与 $CC_1$ 所在直线（$x=0, y=2$）：$0 + 2 - z = 1 \Rightarrow z = 1$。交点为 $S(0,2,1)$，即 $CC_1$ 的中点。
+（4）与 $B_1C_1$ 所在直线（$y=2, z=2$）：$x + 2 - 2 = 1 \Rightarrow x = 1$。交点为 $T(1,2,2)$，即 $B_1C_1$ 的中点。
+（5）与 $A_1B_1$ 所在直线（$x=2, z=2$）：$2 + y - 2 = 1 \Rightarrow y = 1$。交点为 $U(2,1,2)$，即 $A_1B_1$ 的中点。
+（6）与 $AA_1$ 所在直线（$x=2, y=0$）：$2 + 0 - z = 1 \Rightarrow z = 1$。交点为 $V(2,0,1)$，即 $AA_1$ 的中点。
+
+依次连接交点 $Q, R, S, T, U, V$，由于每个点都是对应棱的中点，且相邻交点的连线构成六个全等的等腰直角三角形斜边，
+因此该截面是一个正六边形。
+它的边长等于相邻两交点（如 $Q, V$）之间的距离：
+$|QV| = \sqrt{(2-1)^2 + (0-0)^2 + (1-0)^2} = \sqrt{2}$。
+该正六边形的周长为 $6 \times \sqrt{2} = 6\sqrt{2}$。
+
+\textbf{法二（几何寻找截面法）：}
+截面法线为 $BD_1$。我们需要过 $AD$ 中点 $Q$ 作垂直于 $BD_1$ 的平面。
+对于正方体有一个著名的结论：体对角线 $BD_1$ 垂直于平面 $AB_1C$ 和平面 $A_1DC_1$。
+由于我们要找的截面 $\alpha$ 垂直于 $BD_1$，故 $\alpha \parallel \text{平面 }AB_1C \parallel \text{平面 }A_1DC_1$。
+因为 $Q$ 是 $AD$ 的中点，且 $AB_1C$ 过 $A$，$A_1DC_1$ 过 $D$，
+所以平面 $\alpha$ 恰好位于这两个平行平面的正中间。
+根据正方体的对称性，过棱中点且与 $AB_1C$ 平行的截面，必然依次经过六条棱的中点 $Q, R, S, T, U, V$。
+这六个中点连线构成的图形是正六边形，边长为面对角线的一半，即 $\frac{1}{2} \times 2\sqrt{2} = \sqrt{2}$。
+所以周长为 $6\sqrt{2}$。
+}
+
+\newcommand{\qSolidCubeDiagPerpSectionPerimeterDiagnosis}{%
+\teachblock{学生问题}
+1. \textbf{轨迹形状无感}：不清楚 $PQ \perp BD_1$ 的动点 $P$ 的轨迹是过 $Q$ 的垂直截面；
+2. \textbf{截面形状想象错误}：认为截面可能是三角形或四边形，或者画图时遗漏了穿过某些面的情况；
+3. \textbf{定点不准}：在作截面时，没有找到每个面上的交点位置。
+}
+
+\newcommand{\qSolidCubeDiagPerpSectionPerimeterTeachingNotes}{%
+\teachblock{课堂处理}
+1. \textbf{空间轨迹转截面}：明确“垂直于定直线的动点轨迹”就是一个平面，因此求内部的点即为求截面多边形；
+2. \textbf{推荐坐标法}：正方体是最好的建系模型。写出法向量，写出平面方程 $x+y-z=1$，让学生感受用代数法求交点（令两坐标为定值，求第三个坐标）有多么精确和轻松；
+3. \textbf{六边形截面的拓展}：借此题总结正方体中的经典正六边形截面模型（即垂直于体对角线且经过六条棱中点的截面）。可以引导学生记忆：截面平行于 $AB_1C$ 和 $A_1DC_1$，且恰好位于正中间。
+}

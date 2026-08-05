@@ -1,0 +1,108 @@
+% 难度：★★★ 难题
+\newcommand{\qSolidPrismParallelPerpendicularStem}{%
+  如图，在正三棱柱 \(ABC-A_1B_1C_1\) 中，已知 \(AB = \sqrt{2}AA_1\)，\(E\)、\(F\) 分别是 \(AB\)、\(A_1B_1\) 的中点。\\
+  （1）求证：\(CE \perp\) 平面 \(ABB_1A_1\)；\\
+  （2）求证：平面 \(AFC_1 \parallel\) 平面 \(CEB_1\)；\\
+  （3）求直线 \(AC_1\) 与直线 \(CB_1\) 所成角的大小。%
+}
+
+\newcommand{\qSolidPrismParallelPerpendicularFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, line join=round, line cap=round]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (3,-1);
+    \coordinate (C) at (4,1);
+    \coordinate (A1) at (0,4);
+    \coordinate (B1) at (3,3);
+    \coordinate (C1) at (4,5);
+    
+    \draw[thick] (A) -- (B) -- (C);
+    \draw[dashed, thick] (C) -- (A);
+    \draw[thick] (A1) -- (B1) -- (C1) -- cycle;
+    \draw[thick] (A) -- (A1);
+    \draw[thick] (B) -- (B1);
+    \draw[dashed, thick] (C) -- (C1);
+    
+    \coordinate (E) at (1.5,-0.5);
+    \coordinate (F) at (1.5,3.5);
+    
+    \draw[dashed, thick] (C) -- (E);
+    \draw[thick] (A) -- (F);
+    \draw[dashed, thick] (F) -- (C1);
+    \draw[dashed, thick] (C) -- (B1);
+    \draw[thick] (E) -- (B1);
+    \draw[dashed, thick] (A) -- (C1);
+    
+    \node[left] at (A) {\(A\)};
+    \node[below] at (B) {\(B\)};
+    \node[right] at (C) {\(C\)};
+    \node[left] at (A1) {\(A_1\)};
+    \node[above] at (B1) {\(B_1\)};
+    \node[right] at (C1) {\(C_1\)};
+    \node[below left] at (E) {\(E\)};
+    \node[above left] at (F) {\(F\)};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidPrismParallelPerpendicularSolution}{%
+  \textbf{（1）证明：}
+  
+  因为该几何体为正三棱柱，所以底面 \(\triangle ABC\) 为正三角形。
+  因为 \(E\) 是底边 \(AB\) 的中点，所以 \(CE \perp AB\)。
+  
+  因为 \(AA_1 \perp\) 平面 \(ABC\)，\(CE \subset\) 平面 \(ABC\)，
+  所以 \(AA_1 \perp CE\)。
+  
+  又因为 \(AB \cap AA_1 = A\)，且 \(AB, AA_1 \subset\) 平面 \(ABB_1A_1\)，
+  所以 \(CE \perp\) 平面 \(ABB_1A_1\)。
+
+  \textbf{（2）证明：}
+  
+  连结 \(EF\)。
+  因为 \(E, F\) 分别是 \(AB, A_1B_1\) 的中点，在矩形 \(ABB_1A_1\) 中，
+  易知 \(EF \parallel AA_1 \parallel CC_1\) 且 \(EF = CC_1\)。
+  所以四边形 \(CEFC_1\) 是平行四边形，得到 \(CE \parallel C_1F\)。
+  
+  又 \(CE \subset\) 平面 \(CEB_1\)，\(C_1F \not\subset\) 平面 \(CEB_1\)，
+  故 \(C_1F \parallel\) 平面 \(CEB_1\)。
+  
+  同理，易知 \(AE \parallel FB_1\) 且 \(AE = FB_1\)，四边形 \(AEB_1F\) 是平行四边形，得到 \(AF \parallel EB_1\)。
+  又 \(EB_1 \subset\) 平面 \(CEB_1\)，\(AF \not\subset\) 平面 \(CEB_1\)，
+  故 \(AF \parallel\) 平面 \(CEB_1\)。
+  
+  因为 \(AF \cap C_1F = F\)，且 \(AF, C_1F \subset\) 平面 \(AFC_1\)，
+  所以平面 \(AFC_1 \parallel\) 平面 \(CEB_1\)。
+
+  \textbf{（3）解：}
+  
+  【方法一：中点平移法】
+  连结 \(C_1B\) 交 \(CB_1\) 于点 \(G\)，连结 \(EG\)。
+  
+  在矩形 \(CBB_1C_1\) 中，\(G\) 为对角线交点，故 \(G\) 是 \(C_1B\) 的中点。
+  在 \(\triangle ABC_1\) 中，因为 \(E, G\) 分别是 \(AB, C_1B\) 的中点，所以 \(EG \parallel AC_1\)。
+  因此，\(\angle CGE\)（或其补角）即为直线 \(AC_1\) 与 \(CB_1\) 所成的角。
+  
+  设 \(AA_1 = \sqrt{2}\)，则 \(AB = 2\)。
+  在正 \(\triangle ABC\) 中：
+  \[
+    CE = \sqrt{2^2 - 1^2} = \sqrt{3}.
+  \]
+  在 \(\text{Rt}\triangle EBB_1\) 中：
+  \[
+    EB_1 = \sqrt{EB^2 + BB_1^2} = \sqrt{1^2 + (\sqrt{2})^2} = \sqrt{3}.
+  \]
+  
+  所以 \(CE = EB_1\)，即 \(\triangle CEB_1\) 为等腰三角形。
+  因为 \(G\) 是底边 \(CB_1\) 的中点，由三线合一得 \(EG \perp CB_1\)。
+  所以直线 \(AC_1\) 与直线 \(CB_1\) 所成的角为 \(90^\circ\)（或 \(\dfrac{\pi}{2}\)）。
+  
+  【方法二：空间向量法】
+  选取 \(\overrightarrow{CA}, \overrightarrow{CB}, \overrightarrow{CC_1}\) 作为空间基底。
+  \[
+    \begin{aligned}
+      \overrightarrow{AC_1} \cdot \overrightarrow{CB_1} 
+      &= (\overrightarrow{CC_1} - \overrightarrow{CA}) \cdot (\overrightarrow{CB} + \overrightarrow{BB_1}) \\
+      &= (\overrightarrow{CC_1} - \overrightarrow{CA}) \cdot (\overrightarrow{CB} + \overrightarrow{CC_1}).
+    \end{aligned}
+  \]
+  展开后利用已知边长和夹角可得结果为 0，即两异面直线垂直，所成角为 \(90^\circ\)。%
+}

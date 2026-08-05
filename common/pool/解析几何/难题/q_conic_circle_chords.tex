@@ -1,0 +1,125 @@
+% =====================================================
+% 题型：三圆共截线与弦长最值多项选择题 (q_conic_circle_chords.tex)
+% 知识板块：圆与直线
+% 主思维：数形结合与几何直观
+% 副思维：最值模型分析、分类讨论、边界
+% 错因标签：弦长公式不会转距离、相切临界条件遗漏
+% 讲义用途：解析几何图像题
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qConicCircleChordsStem}{已知圆 \(C_1: (x + 1)^2 + y^2 = 1\)，圆 \(C_2: (x - 1)^2 + y^2 = 1\)，圆 \(C_3: x^2 + (y - \sqrt{3})^2 = 1\)，直线 \(l: y = kx + b\) 与 \(C_1, C_2, C_3\) 均有两个交点。记 \(l\) 被 \(C_1, C_2, C_3\) 截得的弦长分别为 \(s_1, s_2, s_3\)，则 \hfill （\quad）}
+
+\newcommand{\qConicCircleChordsOptions}{%
+  \mcoptions[2]{\(k\) 可以取任意实数}{\(满足\ s_1 = s_2 = s_3\) 的直线共有 \(3\) 条}{\(满足\ s_1 + s_2 + s_3 = 3\) 的直线多于 \(3\) 条}{\(当\ b = 0\) 时，\(s_1 + s_2 + s_3\) 的最大值为 \(\dfrac{2\sqrt{21}}{3}\)}%
+}
+
+\newcommand{\qConicCircleChordsAnswer}{BCD}
+
+\newcommand{\qConicCircleChordsFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1*1.5, >=stealth, line join=round, line cap=round]
+    % Draw coordinate axes
+    \draw[->, color=gray!60, thin] (-2.2, 0) -- (2.2, 0) node[right] {\small \(x\)};
+    \draw[->, color=gray!60, thin] (0, -1.2) -- (0, 3.2) node[above] {\small \(y\)};
+    \node[below left] at (0,0) {\small \(O\)};
+    
+    % Draw the three circles
+    \draw[thick, color=black!85] (-1, 0) circle (1.0);
+    \draw[thick, color=black!85] (1, 0) circle (1.0);
+    \draw[thick, color=black!85] (0, 1.732) circle (1.0);
+    
+    % Draw dashed equilateral triangle connecting centers (thick and red)
+    \draw[dashed, thick, red!85!black] (-1, 0) -- (1, 0) -- (0, 1.732) -- cycle;
+    
+    % Label centers (large red points with \small labels)
+    \fill[red] (-1, 0) circle (2.2pt);
+    \node[below left, red!90!black] at (-1, 0) {\small \(C_1\)};
+    \fill[red] (1, 0) circle (2.2pt);
+    \node[below right, red!90!black] at (1, 0) {\small \(C_2\)};
+    \fill[red] (0, 1.732) circle (2.2pt);
+    \node[above, red!90!black] at (0, 1.732) {\small \(C_3\)};
+    
+    % Draw line l: y = 1.8x (thin background line)
+    \draw[thin, gray!70] (-1.3, -2.34) -- (1.3, 2.34) node[above right, black] {\small \(l\)};
+    
+    % Highlight Chord s_1 (Circle 1) from (0,0) to (-0.472, -0.849) in solid blue
+    \draw[ultra thick, blue] (0, 0) -- (-0.472, -0.849);
+    % Chord s_1 dimension indicators
+    \draw[gray, thin] (-0.472, -0.849) -- (-0.472-0.26, -0.849+0.14);
+    \draw[gray, thin] (0, 0) -- (0-0.26, 0+0.14);
+    \draw[<->, thin, gray] (-0.472-0.2, -0.849+0.11) -- (0-0.2, 0+0.11) node[midway, above left, blue] {\small \(s_1\)};
+    
+    % Highlight Chord s_2 (Circle 2) from (0,0) to (0.472, 0.849) in solid blue
+    \draw[ultra thick, blue] (0, 0) -- (0.472, 0.849);
+    % Chord s_2 dimension indicators
+    \draw[gray, thin] (0, 0) -- (0+0.26, 0-0.14);
+    \draw[gray, thin] (0.472, 0.849) -- (0.472+0.26, 0.849-0.14);
+    \draw[<->, thin, gray] (0+0.2, 0-0.11) -- (0.472+0.2, 0.849-0.11) node[midway, below right, blue] {\small \(s_2\)};
+    
+    % Highlight Chord s_3 (Circle 3) from (0.473, 0.851) to (0.998, 1.796) in solid blue
+    \draw[ultra thick, blue] (0.473, 0.851) -- (0.998, 1.796);
+    % Chord s_3 dimension indicators
+    \draw[gray, thin] (0.473, 0.851) -- (0.473+0.26, 0.851-0.14);
+    \draw[gray, thin] (0.998, 1.796) -- (0.998+0.26, 1.796-0.14);
+    \draw[<->, thin, gray] (0.473+0.2, 0.851-0.11) -- (0.998+0.2, 1.796-0.11) node[midway, below right, blue] {\small \(s_3\)};
+    
+    % Draw helper right triangle for Circle 3 (geometric representation of s_3/2, d_3, and r)
+    % Center: C_3(0, 1.732). Projection point on y=1.8x is P_3(0.735, 1.323)
+    % Chord end: B_3(0.998, 1.796)
+    \draw[dashed, red!80!black, semithick] (0, 1.732) -- (0.735, 1.323) node[midway, left, red!90!black] {\scriptsize \(d_3\)};
+    \draw[thin, black!70] (0, 1.732) -- (0.998, 1.796) node[midway, above] {\scriptsize \(r\)};
+    % Small right angle indicator at P_3
+    \draw[gray!80, thin] (0.735, 1.323) ++(0.049, 0.088) -- ++(-0.088, 0.049) -- ++(-0.049, -0.088);
+  \end{tikzpicture}%
+}
+
+\newcommand{\qConicCircleChordsSolution}{%
+  \textbf{【解题思路】}\par
+  本题为“数形结合”与“几何直观”的经典综合多选题。三圆 \(C_1, C_2, C_3\) 半径均为 \(r = 1\)，圆心分别构成边长为 \(2\) 的正三角形，且两两外切。直线截圆的弦长为 \(s_i = 2\sqrt{1 - d_i^2}\)（\(d_i\) 为圆心距）。通过分析圆心距 \(d_i\) 的对称性与几何位置，无需繁琐运算即可直接判定 A、B 选项；再通过换元与导数求最值攻克 C、D 选项。\par\vspace{0.4em}
+
+  \textbf{【解析计算】}\par
+  设直线方程为 \(l: kx - y + b = 0\)，三个圆心分别为 \(C_1(-1, 0)\)，\(C_2(1, 0)\)，\(C_3(0, \sqrt{3})\)。各圆心到直线的距离为：
+  \[
+    d_1 = \frac{|b - k|}{\sqrt{k^2+1}}, \qquad d_2 = \frac{|b + k|}{\sqrt{k^2+1}}, \qquad d_3 = \frac{|b - \sqrt{3}|}{\sqrt{k^2+1}}.
+  \]
+  直线与三圆均有两个交点要求 \(d_i < 1\)。\par\vspace{0.3em}
+
+  \begin{enumerate}[leftmargin=2em, label=\textbf{\Alph*.}, itemsep=0.4em, topsep=0.3em]
+    \item 取 \(k = \dfrac{1}{\sqrt{3}}\)，则 \(\sqrt{k^2+1} = \dfrac{2}{\sqrt{3}}\)。由 \(d_1, d_2, d_3 < 1\) 可分别解得：
+      \[
+        b \in \left(-\frac{1}{\sqrt{3}}, \sqrt{3}\right), \quad b \in \left(-\sqrt{3}, \frac{1}{\sqrt{3}}\right), \quad b \in \left(\frac{1}{\sqrt{3}}, \frac{5}{\sqrt{3}}\right).
+      \]
+      三区间无公共交集，故此时不存在满足条件的直线，A 错误；
+
+    \item 由 \(s_1 = s_2 = s_3 \Longleftrightarrow d_1 = d_2 = d_3 \Longleftrightarrow |b - k| = |b + k| = |b - \sqrt{3}|\)：
+      \[
+        |b - k| = |b + k| \implies bk = 0.
+      \]
+      (1) 若 \(b = 0 \implies |k| = \sqrt{3} \implies k = \pm\sqrt{3}\)；\\
+      (2) 若 \(k = 0 \implies |b| = |b - \sqrt{3}| \implies b = \dfrac{\sqrt{3}}{2}\)。\\
+      共得 \(3\) 条直线，B 正确；
+
+    \item 当 \(b = 0\) 时，\(d_1 = d_2 = \dfrac{|k|}{\sqrt{k^2+1}}\)，\(d_3 = \dfrac{\sqrt{3}}{\sqrt{k^2+1}}\)。\\
+      代入弦长之和方程 \(s_1 + s_2 + s_3 = 3\)，令 \(t = \sqrt{k^2-2} > 0\)，可化为：
+      \[
+        5t^2 - 16t + 11 = 0 \implies t = 1 \ \text{或} \ t = \frac{11}{5}.
+      \]
+      对应解得 \(4\) 条不同的直线，故多于 3 条，C 正确；
+
+    \item 当 \(b = 0\) 时，弦长之和函数为 \(F(t) = \dfrac{2(t+2)}{\sqrt{t^2+3}}\)（\(t > 0\)）。对其求导得：
+      \[
+        F'(t) = \frac{2(3-2t)}{(t^2+3)^{3/2}}.
+      \]
+      在 \(t = \dfrac{3}{2}\) 处取得最大值，最大值为 \(F\left(\dfrac{3}{2}\right) = \dfrac{2\sqrt{21}}{3}\)，D 正确。
+  \end{enumerate}
+
+  故选 \textbf{BCD}。%
+}
+
+\newcommand{\qConicCircleChordsDiagnosis}{%
+  本题为解析几何难题。A 选项极易在考场上凭直观感觉误判为正确，必须通过代数不等式区间交集为虚来推翻。C、D 选项将复杂的几何条件降维至 \(b=0\)，并通过换元法将无理方程化为一元二次方程和一元函数求导最值问题，体现了高超的代数化简功底。%
+}
+
+\newcommand{\qConicCircleChordsTeachingNotes}{%
+  授课时可重点分析该题的思维突破点：对于具有对称性质的多选题，当选项中包含特殊假设（如“当 \(b=0\) 时”）时，应顺水推舟，将一般性问题退化为特殊情况进行代数代换，利用“换元法”和“导数求最值”来迅速攻克复杂的无理函数最大值问题。%
+}

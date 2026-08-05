@@ -1,0 +1,98 @@
+% =====================================================
+% 题型：直三棱柱外接球表面积选择题 (2010 新课标 理 10)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidRightTriangularPrismSphereAreaStem}{%
+  设三棱柱的侧棱垂直于底面，所有棱的长都为 $a$，顶点都在一个球面上，则该球的表面积为 \hfill （\quad）%
+}
+
+\newcommand{\qSolidRightTriangularPrismSphereAreaOptions}{%
+  \mcoptions[4]{$\pi a^2$}{$\dfrac{7}{3}\pi a^2$}{$\dfrac{11}{3}\pi a^2$}{$5\pi a^2$}%
+}
+
+\newcommand{\qSolidRightTriangularPrismSphereAreaFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (2.2,0);
+    \coordinate (C) at (1.0,0.85);
+    \coordinate (A1) at (0,2.0);
+    \coordinate (B1) at (2.2,2.0);
+    \coordinate (C1) at (1.0,2.85);
+    \coordinate (O0) at (1.1,0.32);
+    \coordinate (O) at (1.1,1.32);
+
+    \draw[dashed, thick, gray!75] (A) -- (C) -- (B);
+    \draw[thick] (A) -- (B) -- (B1) -- (A1) -- cycle;
+    \draw[thick] (A1) -- (C1) -- (B1);
+    \draw[dashed, thick, gray!75] (C) -- (C1);
+
+    \ifteacher
+      \draw[dashed, semithick, gray] (O0) -- (O);
+      \draw[dashed, semithick, gray] (O0) -- (A);
+      \draw[dashed, semithick, gray] (O) -- (A1);
+      \fill (O0) circle (1.1pt) node[right] {\small $O_0$};
+      \fill (O) circle (1.1pt) node[right] {\small $O$};
+    \fi
+
+    \node[below left] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[right] at (C) {\small $C$};
+    \node[left] at (A1) {\small $A_1$};
+    \node[right] at (B1) {\small $B_1$};
+    \node[above] at (C1) {\small $C_1$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidRightTriangularPrismSphereAreaAnswer}{B}
+
+\newcommand{\qSolidRightTriangularPrismSphereAreaSolution}{%
+  因为三棱柱的侧棱垂直于底面，且所有棱长均为 $a$，
+  所以它是高为 $a$、底面为边长 $a$ 的正三角形的直三棱柱。
+
+  设底面正三角形的外接圆半径为 $r$，三棱柱高为 $h$，外接球半径为 $R$。
+  直棱柱外接球满足
+  \[
+    R^2=r^2+\left(\frac h2\right)^2.
+  \]
+
+  正三角形边长为 $a$，其外接圆半径
+  \[
+    r=\frac{\sqrt3}{3}a.
+  \]
+  又 $h=a$，所以
+  \[
+    R^2
+    =
+    \left(\frac{\sqrt3}{3}a\right)^2
+    +
+    \left(\frac a2\right)^2
+    =
+    \frac{a^2}{3}+\frac{a^2}{4}
+    =
+    \frac{7a^2}{12}.
+  \]
+
+  因此球的表面积为
+  \[
+    S=4\pi R^2
+    =
+    4\pi\cdot\frac{7a^2}{12}
+    =
+    \frac{7}{3}\pi a^2.
+  \]
+
+  故选 B。%
+}
+
+\newcommand{\qSolidRightTriangularPrismSphereAreaDiagnosis}{%
+  本题考查直棱柱外接球模型。学生容易把底面外接圆半径误认为底面边长，或忘记球心位于上下底面外心连线中点，导致漏掉 $\left(\frac h2\right)^2$。%
+}
+
+\newcommand{\qSolidRightTriangularPrismSphereAreaTeachingNotes}{%
+  \item \textbf{模型来源}：直棱柱的外接球球心在上下底面外心连线的中点。
+  \item \textbf{得分公式}：$R^2=r_{\text{底}}^2+\left(\frac h2\right)^2$。
+  \item \textbf{课堂追问}：底面是正三角形时，为什么 $r_{\text{底}}=\frac{\sqrt3}{3}a$？
+}
+

@@ -1,0 +1,18 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.synctex
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.nav
+*.snm
+*.vrb
+*.bbl
+*.blg
+
+# macOS / OS files
+.DS_Store
+Thumbs.db

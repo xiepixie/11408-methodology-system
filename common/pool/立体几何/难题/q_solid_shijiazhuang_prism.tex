@@ -1,0 +1,216 @@
+% =====================================================
+% 题型：立体几何解答题 (q_solid_shijiazhuang_prism.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidShijiazhuangPrismStem}{%
+  在四棱柱 $ABCD-A_1B_1C_1D_1$ 中，四边形 $ABCD$ 为菱形，$AA_1 = AC_1 = AB = 2$，$\angle BAD = 60^\circ$，$\angle AA_1B_1 = \angle AA_1D_1$，$E$ 是侧棱 $CC_1$ 上的一点。
+  \begin{enumerate}[label=(\arabic*) , leftmargin=2em, itemsep=0.1em]
+    \item 证明：$AA_1 \perp B_1D_1$；
+    \item 求点 $E$ 到平面 $AA_1B_1B$ 的距离；
+    \item 若直线 $B_1E$ 与平面 $AA_1B_1B$ 所成角的正弦值为 $\dfrac{\sqrt{42}}{14}$，求 $C_1E$ 的长度。
+  \end{enumerate}%
+}
+
+\newcommand{\qSolidShijiazhuangPrismFigure}[1][1.4]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    % 顶点坐标
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (2.4,-0.4);
+    \coordinate (D) at (0.8,0.6);
+    \coordinate (C) at (3.2,0.2);
+    
+    \coordinate (A1) at (0.5,2.0);
+    \coordinate (B1) at (2.9,1.6);
+    \coordinate (D1) at (1.3,2.6);
+    \coordinate (C1) at (3.7,2.2);
+    
+    \coordinate (E) at ($(C1)!0.5!(C)$); % 侧棱 CC1 上的点 E
+    
+    % 隐藏线（背面）
+    \draw[dashed, thick, gray!80] (A) -- (D);
+    \draw[dashed, thick, gray!80] (C) -- (D);
+    \draw[dashed, thick, gray!80] (D) -- (D1);
+    \draw[dashed, thick, gray!70] (A) -- (C);
+    \draw[dashed, thick, gray!70] (B) -- (D);
+    \draw[dashed, thick, gray!70] (A1) -- (C1);
+    \draw[dashed, thick, gray!70] (B1) -- (D1);
+    \draw[dashed, thick, red!80] (A) -- (C1);
+    
+    % 可见实线
+    \draw[thick] (A) -- (B) -- (C) -- (C1) -- (D1) -- (A1) -- cycle;
+    \draw[thick] (B) -- (B1) -- (C1);
+    \draw[thick] (A1) -- (B1);
+    \draw[thick, blue] (B1) -- (E);
+    
+    \fill (E) circle (1.2pt) node[right] {\small $E$};
+    
+    \ifteacher
+      % 教师端教案专属：高线 C1H 与投影线 B1E0/EE0
+      \coordinate (H) at (1.6,0.1); % AC 中点 H
+      \draw[dashed, thick, gray!60] (C1) -- (H);
+      \node[below] at (H) {\small $H$};
+      \coordinate (E0) at (2.0,0.8);
+      \fill[gray] (E0) circle (1.2pt) node[left] {\small $E_0$};
+      \draw[dashed, thick, gray!60] (E) -- (E0);
+      \draw[dashed, thick, gray!60] (B1) -- (E0);
+    \fi
+    
+    \node[below left] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[right] at (C) {\small $C$};
+    \node[left] at (D) {\small $D$};
+    \node[left] at (A1) {\small $A_1$};
+    \node[right] at (B1) {\small $B_1$};
+    \node[above right] at (C1) {\small $C_1$};
+    \node[above] at (D1) {\small $D_1$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidShijiazhuangPrismAnswer}{%
+  (1) $\boxed{AA_1\perp B_1D_1}$；\\
+  (2) $\boxed{d(E,\text{平面 }AA_1B_1B)=\frac{2\sqrt{21}}{7}}$；\\
+  (3) $\boxed{C_1E=1}$。%
+}
+
+\newcommand{\qSolidShijiazhuangPrismSolution}{%
+  \[
+    \boxed{\text{纯几何主线：看图识关系 } \rightarrow \text{ 找平面三角形 } \rightarrow \text{ 用解三角形消元}}
+  \]
+
+  \noindent\textbf{一、读题与几何直觉建构}\par
+  题设中，$ABCD$ 为菱形，$AB=2$，$\angle BAD=60^\circ$。这表明底面可以拆分为两个共边的等边三角形 $\triangle ABD$ 和 $\triangle BCD$。同理，上底面 $A_1B_1C_1D_1$ 也是相同的菱形，$A_1B_1 = A_1D_1 = 2$，对角线 $B_1D_1 = 2$。
+  
+  本题最漂亮的几何特征是：侧棱 $CC_1 \parallel AA_1$，且 $CC_1 \subset$ 侧面 $DCC_1D_1$。因为侧面 $DCC_1D_1 \parallel$ 侧面 $AA_1B_1B$，所以：
+  \[
+    \boxed{E \text{ 到平面 } AA_1B_1B \text{ 的距离是常数 } d}
+  \]
+  无论动点 $E$ 在侧棱 $CC_1$ 上的什么位置，它到目标平面的距离都等于这两个平行侧面之间的距离。这种“动点不动距”的直觉能瞬间锁定第二问的常数性质。
+
+  \medskip
+  \noindent\textbf{二、第（1）问：证明 $AA_1 \perp B_1D_1$（全等对称 + 垂直平分面）}\par
+  高一阶段最推崇的证法是利用对称性与垂直平分面，避开复杂的辅助线：
+  在 $\triangle AA_1B_1$ 与 $\triangle AA_1D_1$ 中，有：
+  \[
+    \begin{cases}
+      AA_1 = AA_1 & (\text{公共边}) \\
+      A_1B_1 = A_1D_1 = 2 & (\text{菱形边长}) \\
+      \angle AA_1B_1 = \angle AA_1D_1 & (\text{已知等角})
+    \end{cases}
+  \]
+  所以 $\triangle AA_1B_1 \cong \triangle AA_1D_1$ (SAS)。由此可得对应边相等：
+  \[ AB_1 = AD_1 \]
+  这说明点 $A$ 到线段 $B_1D_1$ 的两个端点距离相等，即点 $A$ 在线段 $B_1D_1$ 的垂直平分面内。\par
+  同理，在菱形 $A_1B_1C_1D_1$ 中，有 $A_1B_1 = A_1D_1$，即点 $A_1$ 也在 $B_1D_1$ 的垂直平分面内。\par
+  因此，直线 $AA_1$ 就在线段 $B_1D_1$ 的垂直平分面上。根据线面垂直的定义，垂直于该平面的线段必与面内任意直线垂直，故：
+  \[ \boxed{AA_1 \perp B_1D_1} \]
+
+  \medskip
+  \noindent\textbf{三、第（2）问：求点 $E$ 到平面 $AA_1B_1B$ 的距离（等体积换底法）}\par
+  直接作垂线在斜棱柱中极难画出垂足，最简洁的技巧是利用\textbf{等体积法（底面变换）}。
+  
+  \noindent\textbf{1. 求四棱柱的体积 $V$}\par
+  底面菱形 $ABCD$ 的面积为：
+  \[ S_{ABCD} = AB \cdot AD \cdot \sin 60^\circ = 2 \cdot 2 \cdot \frac{\sqrt{3}}{2} = 2\sqrt{3} \]
+  在上底面中，对角线 $A_1C_1 = AC = 2\sqrt{3}$。\par
+  已知 $AA_1 = AC_1 = 2$。在截面三角形 $\triangle AA_1C_1$ 中，三边长分别为：
+  \[ AA_1 = 2,\quad AC_1 = 2,\quad A_1C_1 = 2\sqrt{3} \]
+  由余弦定理可求得夹角：
+  \[ \cos\angle AA_1C_1 = \frac{AA_1^2 + A_1C_1^2 - AC_1^2}{2 \cdot AA_1 \cdot A_1C_1} = \frac{4 + 12 - 4}{8\sqrt{3}} = \frac{\sqrt{3}}{2} \]
+  由此可得：
+  \[ \angle AA_1C_1 = 30^\circ \]
+  因为 $B_1D_1 \perp A_1C_1$ 且 $B_1D_1 \perp AA_1$（第一问已证），所以 $B_1D_1 \perp$ 平面 $AA_1C_1C$。\par
+  又底面对角线 $BD \parallel B_1D_1$，故对角面 $AA_1C_1C$ 垂直于底面，这意味着 $A_1C_1$ 就是侧棱 $AA_1$ 在顶面上的射影。\par
+  因此，侧棱与底面所成的角即为 $\angle AA_1C_1 = 30^\circ$。四棱柱的高为：
+  \[ h = AA_1 \cdot \sin 30^\circ = 2 \cdot \frac{1}{2} = 1 \]
+  四棱柱的体积为：
+  \[ V = S_{ABCD} \cdot h = 2\sqrt{3} \cdot 1 = 2\sqrt{3} \]
+
+  \noindent\textbf{2. 求侧面 $AA_1B_1B$ 的面积}\par
+  侧面为平行四边形，邻边 $AB = 2, AA_1 = 2$。\par
+  由射影投影关系，侧棱与侧面底边的夹角满足：
+  \[ \cos\angle AA_1B_1 = \cos\angle(AA_1, A_1C_1) \cdot \cos\angle(A_1C_1, A_1B_1) \]
+  在底面菱形中，对角线 $A_1C_1$ 平分 $\angle D_1A_1B_1 = 60^\circ$，故 $\angle C_1A_1B_1 = 30^\circ$。\par
+  代入数据得：
+  \[ \cos\angle AA_1B_1 = \cos 30^\circ \cdot \cos 30^\circ = \frac{\sqrt{3}}{2} \cdot \frac{\sqrt{3}}{2} = \frac{3}{4} \]
+  由此可得：
+  \[ \sin\angle AA_1B_1 = \sqrt{1 - \left(\frac{3}{4}\right)^2} = \frac{\sqrt{7}}{4} \]
+  侧面 $AA_1B_1B$ 的面积为：
+  \[ S_{AA_1B_1B} = AB \cdot AA_1 \cdot \sin\angle AA_1B_1 = 2 \cdot 2 \cdot \frac{\sqrt{7}}{4} = \sqrt{7} \]
+
+  \noindent\textbf{3. 等体积换底求距离 $d$}\par
+  设平行侧面之间的距离为 $d$。由体积公式得：
+  \[ V = S_{AA_1B_1B} \cdot d \implies 2\sqrt{3} = \sqrt{7} \cdot d \implies d = \frac{2\sqrt{21}}{7} \]
+  因为点 $E$ 在平行于侧面的侧棱 $CC_1$ 上，所以其到平面的距离恒等于侧面间距：
+  \[ \boxed{d(E, \text{平面 } AA_1B_1B) = \frac{2\sqrt{21}}{7}} \]
+
+  \medskip
+  \noindent\textbf{四、第（3）问：由线面角求 $C_1E$（双平面三角形的“桥梁量”转化）}\par
+  本问是全题的灵魂，重在训练学生\textbf{“目标量不在已知的直角三角形中，要寻找桥梁量进行跨三角形平移消元”}的思维：
+  
+  \noindent\textbf{1. 第一个三角形：线面角直角三角形 $\triangle B_1EF$}\par
+  设点 $E$ 到平面 $AA_1B_1B$ 的垂足为 $F$，连接 $B_1F$。
+  则 $\triangle B_1EF$ 是以 $F$ 为直角的直角三角形，$\angle EB_1F$ 即为直线 $B_1E$ 与平面 $AA_1B_1B$ 所成的角。\par
+  已知 $\sin\angle EB_1F = \frac{\sqrt{42}}{14}$，且垂线段 $EF = d = \frac{2\sqrt{21}}{7}$。\par
+  在 Rt$\triangle B_1EF$ 中，根据三角函数定义：
+  \[ \sin\angle EB_1F = \frac{EF}{B_1E} \implies \frac{\sqrt{42}}{14} = \frac{\frac{2\sqrt{21}}{7}}{B_1E} \]
+  解得斜边段（即跨越三角形的“桥梁量”）的长为：
+  \[ \boxed{B_1E = 2\sqrt{2}} \]
+
+  \noindent\textbf{2. 第二个三角形：侧面平面三角形 $\triangle B_1C_1E$}\par
+  我们要将求得的 $B_1E$ 引入到侧面平行四边形 $BCC_1B_1$ 中。
+  已知 $B_1C_1 = 2$，$B_1E = 2\sqrt{2}$，设待求量 $C_1E = x$。\par
+  因为 $C_1E \parallel AA_1$ 且 $C_1B_1 \parallel A_1D_1$，所以角 $\angle B_1C_1E$ 与角 $\angle AA_1D_1$ 互补。\par
+  由第一问全等对称性及前述计算可知，$\cos\angle AA_1D_1 = \cos\angle AA_1B_1 = \frac{3}{4}$。\par
+  因此：
+  \[ \cos\angle B_1C_1E = -\cos\angle AA_1D_1 = -\frac{3}{4} \]
+  在 $\triangle B_1C_1E$ 中，由余弦定理：
+  \[ B_1E^2 = B_1C_1^2 + C_1E^2 - 2 \cdot B_1C_1 \cdot C_1E \cdot \cos\angle B_1C_1E \]
+  代入已知数据：
+  \[ (2\sqrt{2})^2 = 2^2 + x^2 - 2 \cdot 2 \cdot x \cdot \left(-\frac{3}{4}\right) \]
+  整理得：
+  \[ 8 = 4 + x^2 + 3x \implies x^2 + 3x - 4 = 0 \]
+  因式分解得 $(x-1)(x+4) = 0$。由于线段长度为正，舍去负值 $x = -4$，得：
+  \[ \boxed{C_1E = 1} \]
+
+  \medskip
+  \noindent\textbf{五、建系向量法（仅作为教师备课及验证参考）}\par
+  本段仅供教师心里有数，实际教学不推荐作为高一首选：\par
+  以 $A$ 为原点，$\overrightarrow{AB}$ 方向为 $x$ 轴正方向，底面内垂直于 $AB$ 且指向 $D$ 侧的直线为 $y$ 轴，建立空间直角坐标系。各点坐标为：
+  \[ A(0,0,0),\quad B(2,0,0),\quad D(1,\sqrt{3},0),\quad C(3,\sqrt{3},0) \]
+  设侧棱向量 $\overrightarrow{AA_1} = (p,q,r)$。由 $|\overrightarrow{AA_1}| = 2 \implies p^2 + q^2 + r^2 = 4$。\par
+  由 $\angle AA_1B_1 = \angle AA_1D_1 \implies p = \sqrt{3}q$。\par
+  由 $AC_1 = 2 \implies |\overrightarrow{AC} + \overrightarrow{AA_1}| = 2$，即 $(3+p)^2 + (\sqrt{3}+q)^2 + r^2 = 4 \implies 3p + \sqrt{3}q = -6$。\par
+  联立解得 $\overrightarrow{AA_1} = \left(-\frac{3}{2}, -\frac{\sqrt{3}}{2}, 1\right)$。由此可得高 $h = 1$。\par
+  平面 $AA_1B_1B$ 的法向量为 $\vec{n} = (0, -2, -\sqrt{3})$。因为 $E$ 在侧棱 $CC_1$ 上且 $CC_1 \parallel AA_1$，点 $E$ 到平面距离恒为 $d = \frac{|\overrightarrow{AE} \cdot \vec{n}|}{|\vec{n}|} = \frac{|0 - 2\sqrt{3} - \sqrt{3}|}{\sqrt{7}} = \frac{2\sqrt{21}}{7}$，验证无误。
+
+  \medskip
+  \noindent\textbf{六、这题适合讲给高一学生的纯几何 Trick}\par
+  \begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Trick 1：等角条件不要急着算，先想对称} \\
+      题目给 $\angle AA_1B_1 = \angle AA_1D_1$ 不是为了让学生立刻算角，而是暗示侧棱 $AA_1$ 对两侧有对称性。由 SAS 证得 $\triangle AA_1B_1 \cong \triangle AA_1D_1$，从而得到 $AB_1 = AD_1$，为垂直平分面证法铺平道路。
+    \item \textbf{Trick 2：点在平行面上，距离是常数} \\
+      因为 $E \in CC_1 \subset DCC_1D_1$，且侧面 $DCC_1D_1 \parallel AA_1B_1B$，所以点 $E$ 的位置不影响其到平面 $AA_1B_1B$ 的距离。这有助于学生建立“动点不动距”的空间几何直觉。
+    \item \textbf{Trick 3：点到面的距离难作，体积换底更快} \\
+      直接在斜四棱柱中作垂线、定垂足非常困难。利用体积公式的“底面变换” $V = S \cdot d$ 求解，将三维垂足定位问题转化为一维代数计算，是纯几何的高效解题利器。
+    \item \textbf{Trick 4：线面角一定落在直角三角形里} \\
+      看到“直线与平面所成角”，自动翻译成 $\sin\theta = \frac{\text{高}}{\text{斜边}}$，即 $\sin\theta = \frac{EF}{B_1E}$。这能够帮助学生迅速理清投影直角三角形 $\triangle B_1EF$ 的三边关系。
+    \item \textbf{Trick 5：寻找桥梁量，最终回到目标三角形} \\
+      本题最大的教学价值在于：线面角给出的直角三角形 $\triangle B_1EF$ 里并不包含待求量 $C_1E$，需要通过解直角三角形求出“桥梁量” $B_1E = 2\sqrt{2}$，再平移回侧面平面三角形 $\triangle B_1C_1E$ 中用余弦定理消元。
+  \end{itemize}
+}
+
+\newcommand{\qSolidShijiazhuangPrismDiagnosis}{%
+  主要考查斜侧棱柱中利用性质对称性证明线线垂直、通过体积法利用等体积换底求点到平面距离、以及利用线面角直角三角形降维到侧面平面三角形中应用余弦定理列式求线段长度。
+}
+
+\newcommand{\qSolidShijiazhuangPrismTeachingNotes}{%
+  \item \textbf{重难点提示}：
+    \begin{itemize}
+      \item 第一问：全等三角形是解题的切入点，利用 $AB_1 = AD_1$ 证明垂直平分面，避开传统的辅助面投影，更适合高一思维。
+      \item 第二问：利用平行侧棱性质和四棱柱体积公式进行“体积换底”，是解答点面距离的绝对利器。
+      \item 第三问：结合线面角正弦关系解出 $B_1E$，最后降维到平面 $\triangle B_1C_1E$ 的余弦定理，是几何法与平面几何无缝融合的典范。
+      \item \textbf{真题版本勘误说明}：部分试卷或练习册中由于排版疏忽，常将条件误印为 $AA_1 = AC = AB = 2$（漏掉了 $AC_1$ 的下角标 $1$）。在教学中需提醒学生：若为 $AC = 2$，在底面为菱形且 $AB = 2, \angle BAD = 60^\circ$ 的情况下，对角线 $AC$ 理论上必须为 $2\sqrt{3}$，设为 $2$ 会产生几何矛盾；且没有 $AC_1$ 的长度限制，斜棱柱的倾斜角度（高度）将无法确定。因此，正确的自洽条件应为 $AC_1 = 2$。
+    \end{itemize}
+}

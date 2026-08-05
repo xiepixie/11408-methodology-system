@@ -1,0 +1,49 @@
+% =====================================================
+% 题型：平面向量单位向量夹角选择题 (q_vector_unit_angle.tex)
+% =====================================================
+% =====================================================
+% 难度：★ (基础)
+% =====================================================
+\newcommand{\qVectorUnitAngleStem}{若单位向量 \(\vec{e}_1, \vec{e}_2\) 满足 \(|\vec{e}_1 + \vec{e}_2| = 1\)，则 \(\vec{e}_1, \vec{e}_2\) 的夹角为 \hfill （\quad）}
+
+\newcommand{\qVectorUnitAngleOptions}{%
+  \mcoptions[4]{\(\dfrac{\pi}{6}\)}{\(\dfrac{\pi}{3}\)}{\(\dfrac{\pi}{2}\)}{\(\dfrac{2\pi}{3}\)}%
+}
+
+\newcommand{\qVectorUnitAngleAnswer}{D}
+
+\newcommand{\qVectorUnitAngleSolution}{%
+  【解析方法一：代数平方化】
+  设 \(\vec{e}_1, \vec{e}_2\) 的夹角为 \(\theta\)。因为 \(\vec{e}_1, \vec{e}_2\) 是单位向量，所以 \(|\vec{e}_1| = |\vec{e}_2| = 1\)。
+  
+  对已知等式 \(|\vec{e}_1 + \vec{e}_2| = 1\) 两边平方得：
+  \[
+    |\vec{e}_1 + \vec{e}_2|^2 = |\vec{e}_1|^2 + |\vec{e}_2|^2 + 2\vec{e}_1 \cdot \vec{e}_2 = 1.
+  \]
+  代入模长值并展开数量积：
+  \[
+    1^2 + 1^2 + 2 |\vec{e}_1| |\vec{e}_2| \cos\theta = 1 \implies 2 + 2\cos\theta = 1 \implies 2\cos\theta = -1 \implies \cos\theta = -\frac{1}{2}.
+  \]
+  因为向量夹角 \(\theta \in [0, \pi]\)，所以：
+  \[
+    \theta = \frac{2\pi}{3}.
+  \]
+  故选 D。
+
+  【解析方法二：几何向量合成】
+  若将两单位向量 \(\vec{e}_1, \vec{e}_2\) 首尾相接，由于它们的模长均为 \(1\)，且合成向量 \(\vec{e}_1 + \vec{e}_2\) 的模长也是 \(1\)，这三个向量正好构成一个边长为 \(1\) 的等边三角形。
+  
+  此时合成向量与分向量的夹角为 \(\dfrac{\pi}{3}\)（即三角形的内角）。但注意，两向量 \(\vec{e}_1, \vec{e}_2\) 的夹角是指将它们平移至共同起点时，两射线所夹的角，它与等边三角形的内角互补，即：
+  \[
+    \theta = \pi - \frac{\pi}{3} = \frac{2\pi}{3}.
+  \]
+  故选 D。%
+}
+
+% =====================================================
+% 别名兼容：谭俊文及旧课次宏定义
+% =====================================================
+\newcommand{\qTJWVectorUnitAngleStem}{\qVectorUnitAngleStem}
+\newcommand{\qTJWVectorUnitAngleOptions}{\qVectorUnitAngleOptions}
+\newcommand{\qTJWVectorUnitAngleAnswer}{\qVectorUnitAngleAnswer}
+\newcommand{\qTJWVectorUnitAngleSolution}{\qVectorUnitAngleSolution}

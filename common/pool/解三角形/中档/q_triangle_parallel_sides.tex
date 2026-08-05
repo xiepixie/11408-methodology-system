@@ -1,0 +1,55 @@
+% =====================================================
+% 题型：解三角形边角计算与平面几何解答题 (q_triangle_parallel_sides.tex)
+% 知识板块：解三角形
+% 主思维：卷面书写规范
+% 副思维：数形结合、边界、等价转化
+% 错因标签：边角对应/夹角错误
+% 讲义用途：解三角形重灾区专题
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleParallelSidesStem}{%
+  已知在 \(\triangle ABC\) 中，\(AB=3\)，\(BC=2\sqrt{3}\)，\(\cos B=\dfrac{\sqrt{3}}{3}\)。\\
+  (1) 求 \(\cos A\)；\\
+  (2) 设 \(D, E\) 两点满足：\(D\) 在 \(BA\) 的延长线上，\(DE \parallel BC\)，\(AE \perp AC\)。若 \(DE=\sqrt{6}\)，求 \(CE\)。%
+}
+
+\newcommand{\qTriangleParallelSidesAnswer}{(1) \(\cos A = \dfrac{1}{3}\)； (2) \(CE = 3\sqrt{5}\)}
+
+\newcommand{\qTriangleParallelSidesSolution}{%
+  【核心思维】\\
+  第一步，在 \(\triangle ABC\) 中利用余弦定理求出第三边 \(AC\) 的长，通过判定等腰三角形，利用余弦定理求出 \(\cos A\)；第二步，建立平面直角坐标系将平面几何问题代数化，设出各点坐标，利用向量共线（平行）和距离关系求出点 \(E\) 的坐标，最终求得线段 \(CE\) 的长度。\\
+  【标准作答与步骤分析】\\
+  解：（1）在 \(\triangle ABC\) 中，由余弦定理得：\\
+  \(AC^2 = AB^2 + BC^2 - 2AB \cdot BC \cos B\)。\\
+  代入已知数据可得：\\
+  \(AC^2 = 3^2 + (2\sqrt{3})^2 - 2 \cdot 3 \cdot 2\sqrt{3} \cdot \dfrac{\sqrt{3}}{3} = 9 + 12 - 12 = 9\)，\\
+  所以 \(AC = 3\)。\\
+  因为 \(AB = AC = 3\)，由余弦定理得：\\
+  \(\cos A = \dfrac{AB^2 + AC^2 - BC^2}{2AB \cdot AC} = \dfrac{9 + 9 - 12}{2 \cdot 3 \cdot 3} = \dfrac{6}{18} = \dfrac{1}{3}\)。\\
+  (2) 建立平面直角坐标系：令点 \(A\) 为原点 \((0, 0)\)，边 \(AC\) 在 \(x\) 轴正半轴上，则 \(C(3, 0)\)。\\
+  因为 \(AB = 3\)，\(\cos A = \dfrac{1}{3}\)，且 \(B\) 在第一象限，所以 \(\sin A = \sqrt{1 - \cos^2 A} = \dfrac{2\sqrt{2}}{3}\)。\\
+  可得点 \(B\) 的坐标为 \(\left(3\cos A, 3\sin A\right) = (1, 2\sqrt{2})\)。\\
+  因为点 \(D\) 在 \(BA\) 的延长线上，设 \(\overrightarrow{AD} = -\lambda \overrightarrow{AB}\ (\lambda > 0)\)。\\
+  代入得 \(D = (-\lambda, -2\sqrt{2}\lambda)\)。\\
+  因为 \(AE \perp AC\)，且 \(E\) 在 \(y\) 轴上，设点 \(E\) 的坐标为 \((0, t)\)。\\
+  所以向量 \(\overrightarrow{DE} = E - D = (\lambda, t + 2\sqrt{2}\lambda)\)。\\
+  又因为 \(\overrightarrow{BC} = C - B = (2, -2\sqrt{2})\)，且 \(DE \parallel BC\)，\\
+  所以 \(\overrightarrow{DE} \parallel \overrightarrow{BC}\)，对应坐标成比例：\\
+  \(\dfrac{t + 2\sqrt{2}\lambda}{\lambda} = \dfrac{-2\sqrt{2}}{2} = -\sqrt{2} \implies t + 2\sqrt{2}\lambda = -\sqrt{2}\lambda \implies t = -3\sqrt{2}\lambda\)。\\
+  又 \(\overrightarrow{DE} = \dfrac{\lambda}{2} \overrightarrow{BC}\)，所以线段长度为：\\
+  \(DE = \dfrac{\lambda}{2} BC = \dfrac{\lambda}{2} \cdot 2\sqrt{3} = \lambda\sqrt{3}\)。\\
+  已知 \(DE = \sqrt{6}\)，所以：\\
+  \(\lambda\sqrt{3} = \sqrt{6} \implies \lambda = \sqrt{2}\)。\\
+  此时 \(t = -3\sqrt{2} \cdot \sqrt{2} = -6\)，得点 \(E\) 的坐标为 \((0, -6)\)。\\
+  根据两点间距离公式，线段 \(CE\) 的长度为：\\
+  \(CE = \sqrt{(3 - 0)^2 + (0 - (-6))^2} = \sqrt{9 + 36} = \sqrt{45} = 3\sqrt{5}\)。%
+}
+
+\newcommand{\qTriangleParallelSidesDiagnosis}{%
+  学生在解决第二问时，如果使用纯几何法，需要进行复杂的辅助线构造和比例相似比计算，极易卡壳。通过将三角形放入坐标系中，利用坐标表示各点位置，可以将复杂的几何关系转换为简单的向量平行代数关系。%
+}
+
+\newcommand{\qTriangleParallelSidesTeachingNotes}{%
+  本题展示了“几何问题代数化”的高效解题思维。第一问为基础的余弦定理边角互化，第二问在建立坐标系后，通过设定比例参数 \(\lambda\) 引入向量共线，能够帮助学生形成程式化的解题步骤。%
+}

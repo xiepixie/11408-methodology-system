@@ -1,0 +1,20 @@
+% ★★ 中档
+\newcommand{\qConicDefZeroCoordinatesMultiStem}{
+古希腊数学家阿波罗尼斯采用平面切割圆锥面的方法来研究圆锥曲线。后经研究发现：当圆锥轴截面的顶角为 $2\alpha$ 时，用一个与旋转轴所成角为 $\beta$ 的平面 $\gamma$（不过圆锥顶点）去截该圆锥面，截口曲线的离心率为 $e = \frac{\cos \beta}{\cos \alpha}$。比如，当 $\alpha = \beta$ 时，$e=1$，即截得曲线为抛物线。\\
+在空间直角坐标系 $Oxyz$ 中放置一个圆锥，顶点 $S(0,0,2)$，$M(0,1,1)$，底面圆 $O$ 的半径为 $2$，直径 $AB, CD$ 分别在 $x, y$ 轴上，则下列说法正确的是（\quad）
+}
+\newcommand{\qConicDefZeroCoordinatesMultiOptions}{
+\mcoptions[1]{已知点 $N(0,0,1)$，则过点 $M, N$ 的平面截该圆锥得的截口曲线为圆}{平面 $MAB$ 截该圆锥得的截口曲线为抛物线的一部分}{若 $E(-\sqrt{2}, -\sqrt{2}, 0), F(\sqrt{2}, \sqrt{2}, 0)$，则平面 $MEF$ 截该圆锥得的截口曲线为双曲线的一部分}{若平面 $\gamma$ 截该圆锥得的截口曲线为离心率是 $\sqrt{2}$ 的双曲线的一部分，则平面 $\gamma$ 不经过原点 $O$}
+}
+\newcommand{\qConicDefZeroCoordinatesMultiFigure}{
+}
+\newcommand{\qConicDefZeroCoordinatesMultiAnswer}{
+BCD
+}
+\newcommand{\qConicDefZeroCoordinatesMultiSolution}{
+圆锥高 $SO=2$，底面半径 $R=2$，故母线与轴线夹角 $\alpha = \frac{\pi}{4}$。轴线方向向量为 $\vec{v} = (0,0,1)$。\\
+对于任意截面，设其法向量为 $\vec{n} = (x,y,z)$，则平面与轴线的夹角 $\beta$ 满足 $\sin\beta = \frac{|\vec{n} \cdot \vec{v}|}{|\vec{n}||\vec{v}|} = \frac{|z|}{|\vec{n}|}$。\\
+B 选项：平面 $MAB$ 的法向量。$A(-2,0,0), B(2,0,0)$。易得法向量 $\vec{n} = (0,1,1)$。$\sin\beta = \frac{1}{\sqrt{2}} \Rightarrow \beta = \frac{\pi}{4}$。由于 $\beta = \alpha$，截线为抛物线，B 正确。\\
+C 选项：求平面 $MEF$ 的法向量，计算出 $\beta < \frac{\pi}{4}$，为双曲线，C 正确。\\
+D 选项：$e = \frac{\cos\beta}{\cos\alpha} = \frac{\cos\beta}{\sqrt{2}/2} = \sqrt{2} \Rightarrow \cos\beta = 1 \Rightarrow \beta = 0$。即截面平行于 $z$ 轴。若经过原点 $O$，则过顶点 $S$，截线为两条相交直线。故不过原点，D 正确。
+}

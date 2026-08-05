@@ -1,0 +1,2028 @@
+\documentclass[11pt,a4paper,openany]{ctexbook}
+\usepackage[margin=2.1cm,headheight=16pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{graphicx}
+\usepackage{fontspec}
+\IfFontExistsTF{Noto Serif CJK SC}{%
+  \setCJKmainfont{Noto Serif CJK SC}%
+  \setCJKsansfont{Noto Sans CJK SC}%
+  \IfFontExistsTF{Noto Sans Mono CJK SC}{\setCJKmonofont{Noto Sans Mono CJK SC}}{}%
+}{}
+\usepackage{enumitem}
+\usepackage{booktabs,tabularx,longtable,array,multicol}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{calc,intersections,angles,quotes,arrows.meta,positioning,decorations.pathreplacing}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{needspace}
+\usepackage{lastpage}
+\let\cleardoublepage\clearpage
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!55!black}
+
+\definecolor{navy}{HTML}{17365D}
+\definecolor{bluegray}{HTML}{EAF1F8}
+\definecolor{teal}{HTML}{0F6B78}
+\definecolor{gold}{HTML}{C58A17}
+\definecolor{softgold}{HTML}{FFF7DF}
+\definecolor{softgreen}{HTML}{EAF6F0}
+\definecolor{softred}{HTML}{FCEEEE}
+\definecolor{ink}{HTML}{23262B}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\color{navy}\small 高中数学·平面向量学生讲义}
+\fancyhead[R]{\color{gray}\small \leftmark}
+\fancyfoot[C]{\small 第 \thepage\ 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\setcounter{secnumdepth}{-1}
+\titleformat{\chapter}[display]
+  {\bfseries\sffamily\color{navy}}
+  {}
+  {0pt}
+  {\titlerule[1.2pt]\vspace{0.8ex}\Huge}
+\titleformat{\section}{\Large\bfseries\sffamily\color{teal}}{}{0pt}{}
+\titleformat{\subsection}{\large\bfseries\sffamily\color{navy}}{}{0pt}{}
+
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.25em}
+\linespread{1.22}
+\setlist[itemize]{leftmargin=2em,itemsep=0.25em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=2.3em,itemsep=0.35em,topsep=0.35em}
+
+\newtcolorbox{theorembox}[1]{breakable,colback=softgreen,colframe=teal,
+  boxrule=0.8pt,arc=2mm,title={#1},fonttitle=\bfseries\sffamily}
+\newtcolorbox{warningbox}[1][]{breakable,colback=softred,colframe=red!55!black,
+  boxrule=0.7pt,arc=2mm,title={易错警报},fonttitle=\bfseries\sffamily,#1}
+\newtcolorbox{methodbox}[1][]{breakable,colback=softgold,colframe=gold!80!black,
+  boxrule=0.7pt,arc=2mm,title={方法提炼},fonttitle=\bfseries\sffamily,#1}
+\newtcolorbox{problem}[1]{breakable,colback=white,colframe=navy!65,
+  boxrule=0.75pt,arc=1.5mm,title={#1},fonttitle=\bfseries\sffamily,
+  before skip=0.8em,after skip=0.4em}
+\newtcolorbox{summarybox}[1]{breakable,colback=white,colframe=teal!70,
+  boxrule=0.9pt,arc=2mm,title={#1},fonttitle=\bfseries\sffamily}
+
+\newcommand{\vect}[1]{\overrightarrow{#1}}
+\newcommand{\vv}[1]{\bm{#1}}
+\newcommand{\dotp}{\mathbin{\boldsymbol\cdot}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\area}[1]{S_{\triangle #1}}
+\newcommand{\circled}[1]{\tikz[baseline=(char.base)]{\node[shape=circle,draw,inner sep=1pt,font=\scriptsize] (char) {#1};}}
+
+% ---------- Diagram system ----------
+\tikzset{
+  geom/.style={draw=navy!82,line width=.85pt},
+  vline/.style={-{Stealth[length=2.2mm,width=1.5mm]},draw=teal,line width=1pt},
+  hline/.style={draw=gold!90!black,line width=1.15pt},
+  aid/.style={draw=gray!65,dashed,line width=.65pt},
+  vpoint/.style={circle,fill=navy,inner sep=1.35pt},
+  moving/.style={circle,fill=gold!90!black,inner sep=1.55pt},
+  centerpt/.style={circle,fill=teal,inner sep=1.55pt},
+  faint/.style={fill=teal!9,draw=teal!45},
+  regionA/.style={fill=teal!13,draw=none},
+  regionB/.style={fill=gold!15,draw=none},
+  regionC/.style={fill=blue!8,draw=none}
+}
+\newcommand{\figcap}[2]{%
+  \begin{center}\begin{minipage}{.92\linewidth}\centering
+  \ifx&#1&\else#1\fi
+  \ifx&#2&\else\ifx&#1&\else\\[-.35em]\fi{\footnotesize\color{gray}#2}\fi
+  \end{minipage}\end{center}}
+
+\newcommand{\figVectorLanguage}{%
+\begin{tikzpicture}[scale=.78,every node/.style={font=\small}]
+  \coordinate (A) at (0,0); \coordinate (B) at (2.1,1.0);
+  \coordinate (C) at (3.2,-.1); \coordinate (D) at (5.3,.9);
+  \draw[vline] (A)--(B) node[midway,above left] {$\vec a$};
+  \draw[vline] (C)--(D) node[midway,above left] {$\vec a$};
+  \draw[vline,draw=gold!90!black] (B)--(A) node[midway,below right] {$-\vec a$};
+  \node[vpoint,label=below:$A$] at (A){}; \node[vpoint,label=above:$B$] at (B){};
+  \node[vpoint,label=below:$C$] at (C){}; \node[vpoint,label=above:$D$] at (D){};
+  \node[align=center,text=gray!80!black] at (2.65,1.65) {位置不同不影响向量相等};
+\end{tikzpicture}}
+
+\newcommand{\figVectorAdd}{%
+\begin{tikzpicture}[scale=.82,every node/.style={font=\small}]
+  \coordinate (A) at (0,0); \coordinate (B) at (2.1,.7); \coordinate (C) at (3.4,2.0);
+  \draw[vline] (A)--(B) node[midway,below right] {$\overrightarrow{AB}$};
+  \draw[vline] (B)--(C) node[midway,right] {$\overrightarrow{BC}$};
+  \draw[vline,draw=gold!90!black] (A)--(C) node[midway,above left] {$\overrightarrow{AC}$};
+  \node[vpoint,label=below:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=above:$C$] at (C){};
+\end{tikzpicture}}
+
+\newcommand{\figBasis}{%
+\begin{tikzpicture}[scale=.78,every node/.style={font=\small}]
+  \coordinate (O) at (0,0); \coordinate (E1) at (3,0); \coordinate (E2) at (1.0,2.0);
+  \coordinate (X) at (2.1,0); \coordinate (Y) at (.7,1.4); \coordinate (P) at (2.8,1.4);
+  \draw[vline] (O)--(E1); \node[below] at (E1) {$\vec e_1$};
+  \draw[vline] (O)--(E2); \node[above left] at (E2) {$\vec e_2$};
+  \draw[vline,draw=gold!90!black] (O)--(P) node[midway,above left=-1pt] {$\vec p=x\vec e_1+y\vec e_2$};
+  \draw[aid] (X)--(P)--(Y);
+  \draw[vline,draw=navy!70] (O)--(X) node[midway,below] {$x\vec e_1$};
+  \draw[vline,draw=navy!70] (X)--(P) node[midway,right] {$y\vec e_2$};
+  \node[vpoint,label=below left:$O$] at (O){}; \node[moving,label=above right:$P$] at (P){};
+\end{tikzpicture}}
+
+\newcommand{\figDivision}{%
+\begin{tikzpicture}[scale=.8,every node/.style={font=\small}]
+  \coordinate (A) at (1.6,2.4); \coordinate (B) at (0,0); \coordinate (C) at (4,0); \coordinate (P) at (2.7,0);
+  \fill[regionA] (A)--(B)--(P)--cycle; \fill[regionB] (A)--(P)--(C)--cycle;
+  \draw[geom] (A)--(B)--(C)--cycle;
+  \draw[vline] (A)--(B) node[midway,left] {$\overrightarrow{AB}$};
+  \draw[vline] (A)--(C) node[midway,right] {$\overrightarrow{AC}$};
+  \draw[vline,draw=gold!90!black] (A)--(P) node[midway,right] {$\overrightarrow{AP}$};
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){}; \node[moving,label=above right:$P$] at (P){};
+  \draw[decorate,decoration={brace,amplitude=4pt,mirror}] (B)--(P) node[midway,below=6pt] {$t$};
+  \draw[decorate,decoration={brace,amplitude=4pt,mirror}] (P)--(C) node[midway,below=6pt] {$1-t$};
+\end{tikzpicture}}
+
+\newcommand{\figInterceptRatio}{%
+\begin{tikzpicture}[scale=.75,every node/.style={font=\small}]
+  \coordinate (A) at (0,0); \coordinate (B0) at (2.5,0); \coordinate (C0) at (0.4,1.2);
+  \coordinate (Bk) at (3.75,0); \coordinate (Ck) at (0.6,1.8);
+  \coordinate (P) at (2.4,0.7714);
+  \draw[geom] (A)--(4.2,0); \draw[geom] (A)--(0.8,2.4);
+  \draw[aid,dashed,thick] (B0)--(C0) node[midway,below left,font=\scriptsize,text=gray!80!black] {基线 \(L_1(k=1)\)};
+  \draw[hline] (-0.2,2.257)--(4.25,-0.286) node[right,font=\scriptsize,text=gold!90!black] {平行等和线 \(L_k: a\lambda+b\mu=k\)};
+  \draw[vline,draw=gold!90!black] (A)--(P);
+  \node[vpoint,label=below left:$A$] at (A){};
+  \node[vpoint,label=below:$B_0$] at (B0){}; \node[vpoint,label=left:$C_0$] at (C0){};
+  \node[vpoint,label=below:$B_k$] at (Bk){}; \node[vpoint,label=left:$C_k$] at (Ck){};
+  \node[moving,label=above right:$P$] at (P){};
+\end{tikzpicture}}
+\newcommand{\figProjectionDot}{%
+\begin{tikzpicture}[scale=.78,every node/.style={font=\small}]
+  \coordinate (A) at (0,0); \coordinate (B) at (2.4,0); \coordinate (C) at (0.6,2.0);
+  \coordinate (P) at (2.8,1.8);
+  \coordinate (M) at (1.2,0.32);
+  \coordinate (Pproj) at (3.0,0.8);
+  \draw[geom] (A)--(B); \draw[geom] (A)--(C);
+  \draw[vline,draw=gold!90!black] (A)--(P);
+  \draw[aid,dashed] (A)--(3.8,1.013) node[right,font=\scriptsize,text=gray!70!black] {\(\vec m\) 方向轴};
+  \draw[thick,draw=teal] (A)--(Pproj) node[midway,below right=2pt,font=\scriptsize,text=teal] {投影 \(AP'\)};
+  \draw[aid,->,>=stealth,draw=teal,ultra thick] (A)--(M) node[midway,above left=1pt,font=\scriptsize,text=teal] {辅助向量 \(\vec m\)};
+  \draw[aid,dashed,draw=teal] (P)--(Pproj);
+  \node[vpoint,label=below left:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=left:$C$] at (C){};
+  \node[moving,label=above right:$P$] at (P){}; \node[vpoint,label=below right:$P'$] at (Pproj){};
+\end{tikzpicture}}
+\newcommand{\figEqualSumGeneral}{%
+\begin{tikzpicture}[scale=.78,every node/.style={font=\small}]
+  \coordinate (A) at (0,0); \coordinate (B) at (2.0,0); \coordinate (C) at (0.8,2.0);
+  \coordinate (Q) at (1.2,3.0); \coordinate (P) at (2.64,0.6);
+  \draw[geom] (A)--(B); \draw[geom] (A)--(C);
+  \draw[aid] (B)--(C) node[midway,above right,font=\scriptsize,text=gray!70!black] {基线 \(BC\) (\(\lambda+\mu=1\))};
+  \draw[hline] (-0.3,5.5)--(3.3,-0.5) node[right,font=\scriptsize,text=gold!90!black] {等和轨迹线 \(\lambda+\mu=k \parallel BC\)};
+  \draw[vline,draw=gold!90!black] (A)--(P);
+  \draw[aid,draw=teal,->,>=stealth] (Q)--(P) node[midway,above right,font=\scriptsize,text=teal] {\(\lambda\vect{CB}\)};
+  \draw[aid] (C)--(Q);
+  \node[vpoint,label=below left:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=left:$C$] at (C){};
+  \node[vpoint,label=above left:$Q$] at (Q){}; \node[moving,label=right:$P$] at (P){};
+\end{tikzpicture}}
+\newcommand{\figEqualSum}{%
+\begin{tikzpicture}[scale=.75,every node/.style={font=\small}]
+  \coordinate (O) at (0,0); \coordinate (A) at (2.0,0); \coordinate (B) at (1.414,1.414);
+  \coordinate (A1) at (3.0,0); \coordinate (B1) at (4.242,4.242);
+  \coordinate (P) at (2.121,1.414);
+  \draw[geom] (O)--(A); \draw[geom] (O)--(B);
+  \draw[hline] (-0.3,5.1)--(4.5,-0.6) node[right,font=\scriptsize,text=gold!90!black] {等和轨迹线 \(2\lambda+\mu=3\)};
+  \draw[vline,draw=gold!90!black] (O)--(P);
+  \node[vpoint,label=below left:$O$] at (O){}; \node[vpoint,label=below:$A$] at (A){}; \node[vpoint,label=above left:$B$] at (B){};
+  \node[vpoint,label=below:$A'$] at (A1){}; \node[vpoint,label=above right:$B'$] at (B1){}; \node[moving,label=above right:$P_{\min}$] at (P){};
+\end{tikzpicture}}
+
+\newcommand{\figIntercept}{%
+\begin{tikzpicture}[scale=.77,every node/.style={font=\small}]
+  \coordinate (A) at (0,0); \coordinate (B) at (4,0); \coordinate (C) at (0,3.2);
+  \coordinate (M) at (3.1,0); \coordinate (N) at (0,2.5); \coordinate (P) at (1.35,1.42);
+  \draw[geom] (A)--(B)--(C)--cycle;
+  \draw[hline] (M)--(N);
+  \draw[aid] (P)--(A);
+  \node[vpoint,label=below left:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=left:$C$] at (C){};
+  \node[vpoint,label=below:$M$] at (M){}; \node[vpoint,label=left:$N$] at (N){}; \node[moving,label=above right:$P$] at (P){};
+  \node at (1.5,-.35) {$m$}; \node at (-.35,1.25) {$n$};
+\end{tikzpicture}}
+
+\newcommand{\figCevian}{%
+\begin{tikzpicture}[scale=.73,every node/.style={font=\small}]
+  \coordinate (A) at (1.8,3.1); \coordinate (B) at (0,0); \coordinate (C) at (4.4,0);
+  \coordinate (D) at ($(A)!.58!(C)$); \coordinate (E) at ($(B)!.30!(C)$);
+  \path[name path=BD] (B)--(D); \path[name path=AE] (A)--(E);
+  \path[name intersections={of=BD and AE,by=P}];
+  \coordinate (M) at ($(A)!.72!(C)$); \coordinate (N) at ($(B)!.42!(C)$);
+  \draw[geom] (A)--(B)--(C)--cycle;
+  \draw[geom] (B)--(D); \draw[geom] (A)--(E); \draw[hline] (M)--(N);
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){};
+  \node[vpoint,label=right:$D$] at (D){}; \node[vpoint,label=below left:$E$] at (E){}; \node[moving,label=left:$P$] at (P){};
+  \node[vpoint,label=right:$M$] at (M){}; \node[vpoint,label=below right:$N$] at (N){};
+\end{tikzpicture}}
+
+\newcommand{\figDP}{%
+\begin{tikzpicture}[scale=.76,every node/.style={font=\small}]
+  \coordinate (A) at (1.8,3); \coordinate (B) at (0,0); \coordinate (C) at (4.2,0);
+  \coordinate (D) at ($(A)!.25!(C)$); \coordinate (P) at ($(B)!.58!(D)$);
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[hline] (B)--(D); \draw[vline,draw=gold!90!black] (A)--(P);
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){};
+  \node[vpoint,label=above right:$D$] at (D){}; \node[moving,label=left:$P$] at (P){};
+  \node[font=\footnotesize,anchor=west] at (3.1,1.9) {$AD:DC=1:3$};
+\end{tikzpicture}}
+
+\newcommand{\figCentroidCross}{%
+\begin{tikzpicture}[scale=.74,every node/.style={font=\small}]
+  \coordinate (A) at (2,3.1); \coordinate (B) at (0,0); \coordinate (C) at (4.4,0); \coordinate (D) at (2.2,0);
+  \coordinate (G) at ($(A)!.667!(D)$); \coordinate (M) at ($(A)!.70!(B)$);
+  \path[name path=ad] (A)--(D); \path[name path=mg] (M)--($(M)!2.5!(G)$);
+  \path[name path=ac] (A)--(C); \path[name intersections={of=mg and ac,by=N}];
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[aid] (A)--(D); \draw[hline] (M)--(N);
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){}; \node[vpoint,label=below:$D$] at (D){};
+  \node[centerpt,label=above right:$G$] at (G){}; \node[vpoint,label=left:$M$] at (M){}; \node[vpoint,label=right:$N$] at (N){};
+\end{tikzpicture}}
+
+\newcommand{\figDOnAB}{%
+\begin{tikzpicture}[scale=.75,every node/.style={font=\small}]
+  \coordinate (A) at (0,0); \coordinate (B) at (4.2,0); \coordinate (C) at (1.7,3); \coordinate (D) at (2.5,0);
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[hline] (C)--(D);
+  \node[vpoint,label=below:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=above:$C$] at (C){}; \node[moving,label=below:$D$] at (D){};
+  \draw[vline] (C)--(A) node[midway,left] {$\overrightarrow{CA}$};
+  \draw[vline] (C)--(B) node[midway,right] {$\overrightarrow{CB}$};
+\end{tikzpicture}}
+
+\newcommand{\figMedianCross}{%
+\begin{tikzpicture}[scale=.74,every node/.style={font=\small}]
+  \coordinate (A) at (2,3.1); \coordinate (B) at (0,0); \coordinate (C) at (4.4,0); \coordinate (O) at (2.2,0);
+  \coordinate (M) at ($(A)!.76!(B)$); \coordinate (N) at ($(A)!.68!(C)$);
+  \path[name path=ao] (A)--(O); \path[name path=mn] (M)--(N);
+  \path[name intersections={of=ao and mn,by=P}];
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[aid] (A)--(O); \draw[hline] (M)--(N);
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){};
+  \node[centerpt,label=below:$O$] at (O){}; \node[moving,label=above right:$P$] at (P){}; \node[vpoint,label=left:$M$] at (M){}; \node[vpoint,label=right:$N$] at (N){};
+\end{tikzpicture}}
+
+\newcommand{\figComplexCevian}{%
+\begin{tikzpicture}[scale=.72,every node/.style={font=\small}]
+  \coordinate (A) at (2,3.2); \coordinate (B) at (0,0); \coordinate (C) at (4.5,0);
+  \coordinate (D) at ($(A)!.5!(C)$); \coordinate (E) at ($(B)!.25!(C)$);
+  \path[name path=bd] (B)--(D); \path[name path=ae] (A)--(E); \path[name intersections={of=bd and ae,by=P}];
+  \coordinate (M) at ($(A)!.72!(C)$);
+  \path[name path=mp] (M)--($(M)!2.2!(P)$); \path[name path=bc] (B)--(C);
+  \path[name intersections={of=mp and bc,by=N}];
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[geom] (B)--(D) (A)--(E); \draw[hline] (M)--(N);
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){};
+  \node[vpoint,label=right:$D$] at (D){}; \node[vpoint,label=below:$E$] at (E){}; \node[moving,label=left:$P$] at (P){};
+  \node[vpoint,label=right:$M$] at (M){}; \node[vpoint,label=below:$N$] at (N){};
+\end{tikzpicture}}
+
+\newcommand{\figScaledE}{%
+\begin{tikzpicture}[scale=.74,every node/.style={font=\small}]
+  \coordinate (A) at (2,3); \coordinate (B) at (0,0); \coordinate (C) at (4.3,0); \coordinate (D) at ($(A)!.62!(B)$); \coordinate (E) at ($(C)!.333!(D)$);
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[geom] (C)--(D); \draw[hline] (C)--(E);
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){}; \node[moving,label=left:$D$] at (D){}; \node[centerpt,label=below right:$E$] at (E){};
+  \node[font=\footnotesize] at (3.3,.85) {$\overrightarrow{CE}=\frac13\overrightarrow{CD}$};
+\end{tikzpicture}}
+
+\newcommand{\figTwoCevianExact}{%
+\begin{tikzpicture}[scale=.73,every node/.style={font=\small}]
+  \coordinate (A) at (2,3.1); \coordinate (B) at (0,0); \coordinate (C) at (4.4,0);
+  \coordinate (D) at ($(A)!.5!(B)$); \coordinate (E) at ($(A)!.333!(C)$);
+  \path[name path=cd] (C)--(D); \path[name path=be] (B)--(E); \path[name intersections={of=cd and be,by=P}];
+  \coordinate (M) at ($(A)!.78!(B)$);
+  \path[name path=mp] (M)--($(M)!1.8!(P)$); \path[name path=ac] (A)--(C);
+  \path[name intersections={of=mp and ac,by=N}];
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[geom] (C)--(D) (B)--(E); \draw[hline] (M)--(N);
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){};
+  \node[vpoint,label=left:$D$] at (D){}; \node[vpoint,label=right:$E$] at (E){}; \node[moving,label=below:$P$] at (P){};
+  \node[vpoint,label=left:$M$] at (M){}; \node[vpoint,label=right:$N$] at (N){};
+\end{tikzpicture}}
+
+\newcommand{\figAEH}{%
+\begin{tikzpicture}[scale=.72,every node/.style={font=\small}]
+  \coordinate (A) at (2,3.2); \coordinate (B) at (0,0); \coordinate (C) at (4.5,0); \coordinate (D) at ($(A)!.333!(B)$); \coordinate (E) at ($(C)!.5!(D)$);
+  \path[name path=ae] (A)--(E); \path[name path=bc] (B)--(C); \path[name intersections={of=ae and bc,by=H}]; \coordinate (P) at ($(A)!.62!(H)$);
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[geom] (C)--(D); \draw[hline] (A)--(H);
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){}; \node[vpoint,label=left:$D$] at (D){}; \node[vpoint,label=right:$E$] at (E){}; \node[vpoint,label=below:$H$] at (H){}; \node[moving,label=right:$P$] at (P){};
+\end{tikzpicture}}
+
+\newcommand{\figTriangleAngle}{%
+\begin{tikzpicture}[scale=.78,every node/.style={font=\small}]
+  \coordinate (A) at (0,0); \coordinate (B) at (3,0); \coordinate (C) at (1.6,2.75);
+  \draw[geom] (A)--(B)--(C)--cycle;
+  \draw[vline] (B)--(A) node[midway,below] {$\overrightarrow{BA}$};
+  \draw[vline,draw=gold!90!black] (A)--(C) node[midway,left] {$\overrightarrow{AC}$};
+  \draw[teal,thick] (.7,0) arc[start angle=0,end angle=60,radius=.7];
+  \node at (.95,.35) {$60^\circ$};
+  \node[vpoint,label=below:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=above:$C$] at (C){};
+  \node[align=center] at (4.35,1.25) {平移后夹角\\为 $120^\circ$};
+\end{tikzpicture}}
+
+\newcommand{\figParallelogram}{%
+\begin{tikzpicture}[scale=.74,every node/.style={font=\small}]
+  \coordinate (O) at (0,0); \coordinate (A) at (3,0); \coordinate (B) at (1,2); \coordinate (C) at (4,2);
+  \draw[geom] (O)--(A)--(C)--(B)--cycle;
+  \draw[vline] (O)--(A) node[midway,below] {$\vec a$}; \draw[vline] (O)--(B) node[midway,left] {$\vec b$};
+  \draw[vline,draw=gold!90!black] (O)--(C) node[midway,above left] {$\vec a+\vec b$};
+  \draw[vline,draw=navy!65] (B)--(A) node[midway,below right] {$\vec a-\vec b$};
+  \node[vpoint,label=below left:$O$] at (O){}; \node[vpoint,label=below:$A$] at (A){}; \node[vpoint,label=above left:$B$] at (B){}; \node[vpoint,label=above right:$C$] at (C){};
+\end{tikzpicture}}
+
+\newcommand{\figBenz}{%
+\begin{tikzpicture}[scale=.77,every node/.style={font=\small}]
+  \coordinate (A) at (1.8,3.0); \coordinate (B) at (0,0); \coordinate (C) at (4.2,0); \coordinate (P) at (1.85,1.05);
+  \fill[regionA] (P)--(B)--(C)--cycle; \fill[regionB] (P)--(C)--(A)--cycle; \fill[regionC] (P)--(A)--(B)--cycle;
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[geom] (P)--(A) (P)--(B) (P)--(C);
+  \draw[vline] (P)--(A) node[midway,right] {$\overrightarrow{PA}$};
+  \draw[vline] (P)--(B) node[midway,above left] {$\overrightarrow{PB}$};
+  \draw[vline] (P)--(C) node[midway,above right] {$\overrightarrow{PC}$};
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){}; \node[moving,label=above:$P$] at (P){};
+  \node at (2.1,.35) {$S_{PBC}$}; \node at (3.1,1.55) {$S_{PCA}$}; \node at (.8,1.55) {$S_{PAB}$};
+\end{tikzpicture}}
+
+\newcommand{\figDotProduct}{%
+\begin{tikzpicture}[scale=.82,every node/.style={font=\small}]
+  \coordinate (O) at (0,0); \coordinate (A) at (3.5,0); \coordinate (B) at (2.2,2.1); \coordinate (H) at (2.2,0);
+  \draw[vline] (O)--(A); \node[below right] at (A) {$\vec b$};
+  \draw[vline,draw=gold!90!black] (O)--(B) node[midway,above left] {$\vec a$};
+  \draw[aid] (B)--(H);
+  \draw[thick,teal] (0.75,0) arc[start angle=0,end angle=43.6,radius=.75];
+  \node at (1.05,.38) {$\theta$};
+  \draw[decorate,decoration={brace,amplitude=4pt,mirror}] (O)--(H) node[midway,below=6pt] {$|\vec a|\cos\theta$};
+  \node[vpoint,label=below left:$O$] at (O){}; \node[vpoint,label=below:$A$] at (A){}; \node[moving,label=above:$B$] at (B){}; \node[vpoint,label=above right:$H$] at (H){};
+\end{tikzpicture}}
+
+\newcommand{\figPolarization}{%
+\begin{tikzpicture}[scale=.78,every node/.style={font=\small}]
+  \coordinate (P) at (1.9,2.8); \coordinate (A) at (0,0); \coordinate (B) at (4,0); \coordinate (M) at (2,0);
+  \draw[geom] (P)--(A)--(B)--cycle; \draw[hline] (P)--(M); \draw[aid] (M)+(0,.18)--+(0,-.18);
+  \draw[vline] (P)--(A) node[midway,left] {$\overrightarrow{PA}$};
+  \draw[vline] (P)--(B) node[midway,right] {$\overrightarrow{PB}$};
+  \node[vpoint,label=above:$P$] at (P){}; \node[vpoint,label=below:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[centerpt,label=below:$M$] at (M){};
+  \node[align=center,text=teal!80!black] at (5.1,1.5) {$\overrightarrow{PA}\!\cdot\!\overrightarrow{PB}$\\$=PM^2-\frac14AB^2$};
+\end{tikzpicture}}
+
+\newcommand{\figCircleDistance}{%
+\begin{tikzpicture}[scale=.72,every node/.style={font=\small}]
+  \coordinate (O) at (0,0); \coordinate (M) at (4.0,.4);
+  \draw[geom] (O) circle (1.55);
+  \coordinate (Pn) at (1.54,.15); \coordinate (Pf) at (-1.54,-.15);
+  \draw[aid] (O)--(M); \draw[hline] (Pn)--(M); \draw[hline] (Pf)--(M);
+  \node[centerpt,label=below:$O$] at (O){}; \node[vpoint,label=right:$M$] at (M){};
+  \node[moving,label=above:$P_{\min}$] at (Pn){}; \node[moving,label=below:$P_{\max}$] at (Pf){};
+  \node at (.45,.35) {$r$};
+\end{tikzpicture}}
+
+\newcommand{\figVectorCircle}{%
+\begin{tikzpicture}[scale=.72,every node/.style={font=\small}]
+  \coordinate (A) at (-2,0); \coordinate (B) at (2,0); \coordinate (M) at (0,0); \coordinate (X) at (1.1,1.65);
+  \draw[geom] (M) circle (1.9); \draw[geom] (A)--(B); \draw[hline] (M)--(X);
+  \draw[vline] (X)--(A); \draw[vline] (X)--(B);
+  \node[vpoint,label=below:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[centerpt,label=below:$M$] at (M){}; \node[moving,label=above:$X$] at (X){};
+  \node[align=center] at (4.1,.7) {$XM^2=\frac14AB^2+k$\\轨迹为圆};
+\end{tikzpicture}}
+
+\newcommand{\figFourCenters}{%
+\begin{tikzpicture}[scale=.75,every node/.style={font=\small}]
+  \coordinate (A) at (1.6,3.0); \coordinate (B) at (0,0); \coordinate (C) at (4.3,0);
+  \draw[geom] (A)--(B)--(C)--cycle;
+  \coordinate (G) at (1.97,1.0); \coordinate (I) at (1.67,.88); \coordinate (O) at (2.15,.72); \coordinate (H) at (1.6,1.35);
+  \node[centerpt,label=right:$G$] at (G){}; \node[moving,label=left:$I$] at (I){}; \node[vpoint,label=below:$O$] at (O){}; \node[vpoint,label=above:$H$] at (H){};
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){};
+  \node[align=left,text=gray!85!black] at (5.5,1.45) {重心 $G$：平均\\外心 $O$：等距\\内心 $I$：等角\\垂心 $H$：高线};
+\end{tikzpicture}}
+
+\newcommand{\figCentroid}{%
+\begin{tikzpicture}[scale=.75,every node/.style={font=\small}]
+  \coordinate (A) at (1.8,3); \coordinate (B) at (0,0); \coordinate (C) at (4.2,0);
+  \coordinate (D) at ($(B)!.5!(C)$); \coordinate (E) at ($(C)!.5!(A)$); \coordinate (F) at ($(A)!.5!(B)$); \coordinate (G) at (2,1);
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[aid] (A)--(D) (B)--(E) (C)--(F);
+  \node[centerpt,label=above right:$G$] at (G){}; \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){};
+  \node[vpoint,label=below:$D$] at (D){};
+  \node[align=center] at (5.35,1.25) {$\overrightarrow{GA}+\overrightarrow{GB}$\\$+\overrightarrow{GC}=\vec0$};
+\end{tikzpicture}}
+
+\newcommand{\figCircumcenter}{%
+\begin{tikzpicture}[scale=.72,every node/.style={font=\small}]
+  \coordinate (O) at (0,0); \coordinate (A) at (0,2.2); \coordinate (B) at (-2.067,-.752); \coordinate (C) at (2.067,-.752);
+  \draw[geom] (O) circle (2.2); \draw[geom] (A)--(B)--(C)--cycle;
+  \draw[aid] (O)--(A) (O)--(B) (O)--(C);
+  \node[centerpt,label=below:$O$] at (O){}; \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below left:$B$] at (B){}; \node[vpoint,label=below right:$C$] at (C){};
+  \node at (3.9,.35) {$OA=OB=OC$};
+\end{tikzpicture}}
+
+\newcommand{\figIncenter}{%
+\begin{tikzpicture}[scale=.75,every node/.style={font=\small}]
+  \coordinate (A) at (1.7,3); \coordinate (B) at (0,0); \coordinate (C) at (4.2,0); \coordinate (I) at (1.8715,1.0906);
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[aid] (A)--(I) (B)--(I) (C)--(I); \draw[geom] (I) circle (1.0906);
+  \node[moving,label=above right:$I$] at (I){}; \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){};
+  \node[align=center] at (5.35,1.25) {$a\overrightarrow{IA}+b\overrightarrow{IB}$\\$+c\overrightarrow{IC}=\vec0$};
+\end{tikzpicture}}
+
+\newcommand{\figOrthocenter}{%
+\begin{tikzpicture}[scale=.75,every node/.style={font=\small}]
+  \coordinate (A) at (1.5,3); \coordinate (B) at (0,0); \coordinate (C) at (4.2,0); \coordinate (H) at (1.5,1.35);
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[aid] (A)--(1.5,0); \draw[aid] (B)--(H)--(C);
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){}; \node[centerpt,label=above right:$H$] at (H){};
+  \node[align=center] at (5.4,1.3) {$\overrightarrow{HA}\!\cdot\!\overrightarrow{HB}$\\$=\overrightarrow{HB}\!\cdot\!\overrightarrow{HC}$\\$=\overrightarrow{HC}\!\cdot\!\overrightarrow{HA}$};
+\end{tikzpicture}}
+
+\newcommand{\figEuler}{%
+\begin{tikzpicture}[scale=.72,every node/.style={font=\small}]
+  \coordinate (O) at (0,0); \coordinate (A) at (0,2.25); \coordinate (B) at (-2.114,-.77); \coordinate (C) at (2.114,-.77);
+  \coordinate (G) at (0,.237); \coordinate (H) at (0,.711);
+  \draw[geom] (O) circle (2.25); \draw[geom] (A)--(B)--(C)--cycle; \draw[hline] (O)--(H);
+  \node[vpoint,label=below right:$O$] at (O){}; \node[centerpt,label=right:$G$] at (G){}; \node[moving,label=above right:$H$] at (H){};
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below left:$B$] at (B){}; \node[vpoint,label=below right:$C$] at (C){};
+  \node at (3.7,.25) {$OG:GH=1:2$};
+\end{tikzpicture}}
+
+
+\newcommand{\figCentroidAverage}{%
+\begin{tikzpicture}[scale=.72,every node/.style={font=\small}]
+  \coordinate (A) at (1.7,2.8); \coordinate (B) at (0,0); \coordinate (C) at (4.1,0);
+  \coordinate (G) at (1.93,.93); \coordinate (P) at (-1.25,1.55);
+  \draw[geom] (A)--(B)--(C)--cycle;
+  \draw[aid] (A)--($(B)!.5!(C)$) (B)--($(A)!.5!(C)$) (C)--($(A)!.5!(B)$);
+  \draw[vline] (P)--(A) node[midway,above left] {$\overrightarrow{PA}$};
+  \draw[vline] (P)--(B) node[midway,below left] {$\overrightarrow{PB}$};
+  \draw[vline] (P)--(C) node[midway,below] {$\overrightarrow{PC}$};
+  \draw[vline,draw=gold!90!black] (P)--(G) node[midway,above] {$\overrightarrow{PG}$};
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){};
+  \node[vpoint,label=below:$C$] at (C){}; \node[centerpt,label=above right:$G$] at (G){};
+  \node[moving,label=left:$P$] at (P){};
+  \node[align=center,text=gray!85!black] at (5.65,1.2) {$3\overrightarrow{PG}$\\$=\overrightarrow{PA}+\overrightarrow{PB}+\overrightarrow{PC}$};
+\end{tikzpicture}}
+
+\newcommand{\figCircumProjection}{%
+\begin{tikzpicture}[scale=.75,every node/.style={font=\small}]
+  \coordinate (A) at (-2.2,0); \coordinate (B) at (2.2,0); \coordinate (M) at (0,0); \coordinate (O) at (0,2.35);
+  \draw[geom] (A)--(B); \draw[aid] (O)--(M);
+  \draw[vline] (A)--(B); \node[below right] at (1.0, 0) {$\overrightarrow{AB}$};
+  \draw[vline,draw=gold!90!black] (A)--(O) node[midway,above left] {$\overrightarrow{AO}$};
+  \draw pic[draw=teal,angle radius=5mm] {right angle=O--M--B};
+  \node[vpoint,label=below left:$A$] at (A){}; \node[vpoint,label=below right:$B$] at (B){};
+  \node[vpoint,label=above right:$M$] at (M){}; \node[centerpt,label=above:$O$] at (O){};
+  \draw[decorate,decoration={brace,amplitude=4pt,mirror}] (A)--(M) node[midway,below=7pt] {$AB/2$};
+  \node[align=left,text=gray!85!black] at (4.3,1.25) {沿 $AB$ 的数量投影\\恰为 $AM=AB/2$};
+\end{tikzpicture}}
+
+\newcommand{\figUnitBisectors}{%
+\begin{tikzpicture}[scale=.72,every node/.style={font=\small}]
+  \coordinate (A) at (0,0); \coordinate (U) at (2.4,0); \coordinate (V) at (1.2,2.078);
+  \coordinate (S) at (3.6,2.078); \coordinate (D) at (1.2,-2.078);
+  \draw[vline] (A)--(U) node[midway,below] {$\vec e_1$};
+  \draw[vline] (A)--(V) node[midway,left] {$\vec e_2$};
+  \draw[aid] (U)--(S)--(V);
+  \draw[vline,draw=gold!90!black] (A)--(S) node[midway,above left] {$\vec e_1+\vec e_2$};
+  \draw[vline,draw=navy!70] (A)--(D) node[midway,right] {$\vec e_1-\vec e_2$};
+  \node[vpoint,label=below left:$A$] at (A){};
+  \node[font=\footnotesize] at (1.2,-.28) {$1$}; \node[font=\footnotesize] at (.38,1.15) {$1$};
+  \node[align=left,text=gray!85!black] at (5.15,.45) {和：内角平分线\\差：外角平分线};
+\end{tikzpicture}}
+
+\newcommand{\figRectangleObjective}{%
+\begin{tikzpicture}[scale=.72,every node/.style={font=\small}]
+  \coordinate (A) at (0,0); \coordinate (B) at (2.0,0); \coordinate (D) at (0,3.464); \coordinate (C) at (2.0,3.464);
+  \coordinate (D0) at (0,1.155); \coordinate (P) at (1.225,1.225);
+  \draw[geom] (A)--(B)--(C)--(D)--cycle; \draw[aid] (A) circle (1.732);
+  \draw[aid] (-0.5,1.655)--(2.2,-0.5) node[right,font=\scriptsize,text=gray!70!black] {等和基线 \(\lambda+\sqrt3\mu=1\)};
+  \draw[hline] (-0.2,2.65)--(2.65,-0.2) node[right,font=\scriptsize,text=gold!90!black] {等和切线 \(\lambda+\sqrt3\mu=\frac{\sqrt6}{2}\)};
+  \draw[vline,draw=gold!90!black] (A)--(P); \draw[aid,draw=teal] (A)--(P);
+  \node[vpoint,label=below left:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=above:$C$] at (C){}; \node[vpoint,label=left:$D$] at (D){};
+  \node[moving,label=above right:$P$] at (P){}; \node[vpoint,label=left:$D_0$] at (D0){};
+\end{tikzpicture}}
+
+\newcommand{\figEquilateralDiameter}{%
+\begin{tikzpicture}[scale=.78,every node/.style={font=\small}]
+  \coordinate (B) at (-2,0); \coordinate (C) at (2,0); \coordinate (A) at (0,3.464); \coordinate (O) at (0,0);
+  \coordinate (C0) at (1,1.732); \coordinate (P) at (1,-1.732);
+  \draw[geom] (O) circle (2);
+  \draw[geom] (A)--(B)--(C)--cycle;
+  \draw[aid] (-2.5,-0.288)--(1.6,2.078) node[right,font=\scriptsize,text=gray!70!black] {等和基线 \(\lambda+2\mu=1\)};
+  \draw[hline] (-0.8,-2.771)--(2.8,-0.693) node[right,font=\scriptsize,text=gold!90!black] {等和切线 \(\lambda+2\mu=\frac{5}{2}\)};
+  \draw[vline,draw=gold!90!black] (A)--(P);
+  \draw[aid,draw=teal] (O)--(P);
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=left:$B$] at (B){}; \node[vpoint,label=right:$C$] at (C){};
+  \node[moving,label=below right:$P$] at (P){}; \node[centerpt,label=above left:$O$] at (O){};
+  \node[vpoint,label=right:$C_0$] at (C0){};
+\end{tikzpicture}}
+
+\newcommand{\figHexagonDisk}{%
+\begin{tikzpicture}[scale=.64,every node/.style={font=\small}]
+  \coordinate (A) at (90:2.3); \coordinate (B) at (30:2.3); \coordinate (C) at (-30:2.3);
+  \coordinate (D) at (-90:2.3); \coordinate (E) at (-150:2.3); \coordinate (F) at (150:2.3);
+  \draw[geom] (A)--(B)--(C)--(D)--(E)--(F)--cycle;
+  \draw[aid] ($(B)+(-0.5,0.866)$)--($(F)+(0.5,-0.866)$) node[left,font=\scriptsize,text=gray!70!black] {等和基线 \(m+n=1\)};
+  \coordinate (Q) at (D); \draw[geom,fill=teal!8] (Q) circle (1.15);
+  \coordinate (P) at ($(D)+(270:1.15)$);
+  \draw[hline] ($(D)+(-1.5,0)$)--($(D)+(1.5,0)$) node[right,font=\scriptsize,text=gold!90!black] {等和切线 \(m+n=5\)};
+  \draw[vline,draw=gold!90!black] (A)--(P);
+  \node[centerpt,label=above left:$Q$] at (Q){}; \node[moving,label=below:$P$] at (P){};
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=above right:$B$] at (B){};
+  \node[vpoint,label=below right:$C$] at (C){}; \node[vpoint,label=right:$D$] at (D){};
+  \node[vpoint,label=below left:$E$] at (E){}; \node[vpoint,label=above left:$F$] at (F){};
+\end{tikzpicture}}
+
+\newcommand{\figSquareDisk}{%
+\begin{tikzpicture}[scale=.64,every node/.style={font=\small}]
+  \coordinate (A) at (0,3.6); \coordinate (B) at (0,0); \coordinate (C) at (3.6,0); \coordinate (D) at (3.6,3.6);
+  \draw[geom] (A)--(B)--(C)--(D)--cycle;
+  \draw[aid] (-0.8,4.4)--(4.4,-0.8) node[right,font=\scriptsize,text=gray!70!black] {等和基线 \(m+n=1\)};
+  \coordinate (Q1) at (C); \draw[geom,fill=teal!8] (Q1) circle (0.9); \coordinate (P1) at ($(C)+(-135:0.9)$);
+  \draw[hline] (-1.2,2.5)--(2.5,-1.2) node[below left,font=\scriptsize,text=gold!90!black] {下切线 \(m+n=1-\frac{\sqrt2}{4}\)};
+  \coordinate (Q2) at (D); \draw[geom,fill=teal!8] (Q2) circle (0.9); \coordinate (P2) at ($(D)+(45:0.9)$);
+  \draw[hline] (1.2,6.0)--(6.0,1.2) node[above right,font=\scriptsize,text=gold!90!black] {上切线 \(m+n=2+\frac{\sqrt2}{4}\)};
+  \node[vpoint,label=above left:$A$] at (A){}; \node[vpoint,label=below left:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){}; \node[vpoint,label=above:$D$] at (D){};
+  \node[moving,label=below left:$P_1$] at (P1){}; \node[moving,label=above right:$P_2$] at (P2){};
+\end{tikzpicture}}
+
+\newcommand{\figTwoCircles}{%
+\begin{tikzpicture}[scale=.68,every node/.style={font=\small}]
+  \coordinate (O) at (0,0); \coordinate (A) at (0,2.45); \coordinate (B) at (-2.122,-1.225); \coordinate (C) at (2.122,-1.225);
+  \draw[geom] (O) circle (2.45); \draw[geom] (O) circle (1.225); \draw[geom] (A)--(B)--(C)--cycle;
+  \draw[aid] (-2.8,-1.225)--(2.8,-1.225) node[right,font=\scriptsize,text=gray!70!black] {基线 \(x+y=1\) (BC)};
+  \coordinate (P) at (0,-2.45); \coordinate (Q) at (0,-1.225);
+  \draw[hline] (-2.8,-2.45)--(2.8,-2.45) node[right,font=\scriptsize,text=gold!90!black] {外切线 \(x_1+y_1=\frac{4}{3}\)};
+  \draw[hline] (-2.2,-1.225)--(2.2,-1.225);
+  \node[moving,label=below:$P_{\max}$] at (P){}; \node[centerpt,label=above:$Q_{\min}$] at (Q){};
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below left:$B$] at (B){}; \node[vpoint,label=below right:$C$] at (C){}; \node[vpoint,label=above left:$O$] at (O){};
+\end{tikzpicture}}
+
+\newcommand{\figAngleBisector}{%
+\begin{tikzpicture}[scale=.73,every node/.style={font=\small}]
+  \coordinate (P) at (1.9,3); \coordinate (A) at (0,0); \coordinate (B) at (4.2,0); \coordinate (C) at (2.04,0); \coordinate (I) at (2.08,1.15);
+  \draw[geom] (P)--(A)--(B)--cycle; \draw[hline] (P)--(C); \draw[aid] (B)--(I);
+  \node[vpoint,label=above:$P$] at (P){}; \node[vpoint,label=below:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){}; \node[moving,label=right:$I$] at (I){};
+  \draw[teal,thick] ($(P)!7mm!(A)$) arc[start angle=238,end angle=273,radius=7mm];
+  \draw[teal,thick] ($(P)!7mm!(C)$) arc[start angle=273,end angle=307,radius=7mm];
+\end{tikzpicture}}
+
+\newcommand{\figIsoscelesOrthocenter}{%
+\begin{tikzpicture}[scale=.73,every node/.style={font=\small}]
+  \coordinate (A) at (2,3); \coordinate (B) at (0,0); \coordinate (C) at (4,0); \coordinate (H) at (2,1.333);
+  \draw[geom] (A)--(B)--(C)--cycle; \draw[aid] (A)--(2,0); \draw[aid] (B)--(H)--(C);
+  \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below:$B$] at (B){}; \node[vpoint,label=below:$C$] at (C){}; \node[centerpt,label=right:$H$] at (H){};
+  \node at (2,-.42) {$AB=AC$};
+\end{tikzpicture}}
+
+\newcommand{\figMovingMidpoint}{%
+\begin{tikzpicture}[scale=.67,every node/.style={font=\small}]
+  \coordinate (D) at (0,0); \coordinate (A) at (0,2.6); \coordinate (B) at (-2.2517,-1.3); \coordinate (C) at (2.2517,-1.3); \coordinate (P) at (1.0,2.3916); \coordinate (M) at ($(P)!.5!(C)$);
+  \draw[geom] (D) circle (2.6); \draw[geom] (A)--(B)--(C)--cycle; \draw[aid] (P)--(C); \draw[hline] (B)--(M);
+  \node[centerpt,label=left:$D$] at (D){}; \node[vpoint,label=above:$A$] at (A){}; \node[vpoint,label=below left:$B$] at (B){}; \node[vpoint,label=below right:$C$] at (C){}; \node[moving,label=above:$P$] at (P){}; \node[vpoint,label=right:$M$] at (M){};
+\end{tikzpicture}}
+
+
+\begin{document}
+\frontmatter
+\chapter*{学习说明与内容总览}
+\addcontentsline{toc}{chapter}{学习说明与内容总览}
+
+\begin{tcolorbox}[colback=navy!6,colframe=navy,arc=2mm,boxrule=0.8pt,halign=center]
+{\Large\bfseries\sffamily\color{navy} 高中数学·平面向量图解讲义}\\[0.25em]
+{\small\color{teal}\bfseries 核心解题思维 — 典型结构剖析 — 分层图解训练}
+\end{tcolorbox}
+
+\begin{methodbox}[title={解题核心三问}]
+\begin{enumerate}
+  \item \textbf{基底表示}：这个点或向量能否用一组基底（或坐标）唯一表示？
+  \item \textbf{目标转化}：题目研究的是位置共线、仿射系数，还是长度、夹角与垂直？
+  \item \textbf{轨迹识别}：出现动点时，能否先锁定直线、圆、中点或正交轴的轨迹？
+\end{enumerate}
+\end{methodbox}
+
+\begin{summarybox}{解题三条主线与配色指南}
+\[
+\begin{aligned}
+\text{(1) 线性结构}&\longrightarrow\text{基底表示、分点公式、三点共线、等和线、面积坐标},\\
+\text{(2) 度量结构}&\longrightarrow\text{数量积、模长夹角、投影度量、极化恒等式},\\
+\text{(3) 综合轨迹}&\longrightarrow\text{直线/圆/中点轨迹、参数最值、三角形四心}.
+\end{aligned}
+\]
+\vspace{0.4em}
+\tcblower
+\textbf{图解色彩约定}：
+\textbf{深蓝线}表示几何原图结构；
+\textbf{青色箭头}表示向量与主方向；
+\textbf{金色线/点}表示焦点轨迹、截线与动点。
+\end{summarybox}
+
+\tableofcontents
+
+\mainmatter
+\part{基础语言与线性结构}
+
+\chapter{向量的概念、表示与线性运算}
+
+\section{向量是什么}
+向量由\textbf{大小}和\textbf{方向}共同确定。几何上用有向线段表示：
+\[
+\vect{AB},\qquad |\vect{AB}|=AB.
+\]
+向量是自由向量，只要大小相等、方向相同，即使起点不同，也表示同一个向量。
+\figcap{\figVectorLanguage}{相等向量只比较大小和方向；相反向量方向相反且模相等。}
+
+\begin{warningbox}
+\[
+\vect{AB}=-\vect{BA},\qquad AB=BA.
+\]
+左边是向量，右边是线段长度。零向量没有确定方向；讨论夹角时通常要求两个向量均非零。
+\end{warningbox}
+
+\section{加法、减法和数乘}
+\begin{theorembox}{三角形法则与多边形法则}
+\[
+\vect{AB}+\vect{BC}=\vect{AC},
+\]
+进一步有
+\[
+\vect{A_1A_2}+\vect{A_2A_3}+\cdots+\vect{A_{n-1}A_n}=\vect{A_1A_n}.
+\]
+\end{theorembox}
+\figcap{\figVectorAdd}{首尾相接的两段位移，等价于从起点直接指向终点的位移。}
+
+同起点向量相减时：
+\[
+\vect{OA}-\vect{OB}=\vect{BA}.
+\]
+可以用一句话检查方向：\textbf{从减数的终点指向被减数的终点}。
+
+数乘满足
+\[
+|\lambda\vv a|=|\lambda|\,|\vv a|.
+\]
+当 \(\lambda>0\) 时同向，\(\lambda<0\) 时反向，\(\lambda=0\) 时得到零向量。
+
+\begin{problem}{向量式化简：先统一起点}
+化简
+\[
+\vect{AB}+\vect{DC}-\vect{AC}-\vect{DB}.
+\]
+\end{problem}
+\figcap{\figVectorAdd}{}
+
+
+\begin{problem}{数乘的方向与零向量边界}
+已知非零向量 \(\vv a\)，判断 \(-3\vv a\)、\(\tfrac12\vv a\)、\(\vv0\) 与 \(\vv a\) 的方向关系。
+\end{problem}
+\figcap{\figVectorLanguage}{}
+
+
+\begin{summarybox}{本章小结}
+向量加减描述“位移如何合成”，数乘描述“沿同一方向伸缩或反向”。后续所有复杂式子，第一步都应先统一起点和方向。
+\end{summarybox}
+
+\chapter{平面向量基本定理、分点与共线}
+
+\section{平面向量基本定理}
+\begin{theorembox}{平面向量基本定理}
+若 \(\vv e_1,\vv e_2\) 不共线，则平面内任意向量 \(\vv p\) 都存在唯一实数 \(x,y\)，使
+\[
+\vv p=x\vv e_1+y\vv e_2.
+\]
+\end{theorembox}
+\figcap{\figBasis}{两个不共线方向提供两个自由度；虚线平行四边形展示线性组合。}
+“存在”说明两个方向能张成整个平面；“唯一”说明同一基底下可以比较系数：
+\[
+x_1\vv e_1+y_1\vv e_2=x_2\vv e_1+y_2\vv e_2
+\Longrightarrow x_1=x_2,\ y_1=y_2.
+\]
+
+\section{分点公式与仿射组合}
+若 \(P\) 在直线 \(BC\) 上，且
+\[
+\vect{BP}=t\vect{BC},
+\]
+则
+\[
+\boxed{\vect{AP}=(1-t)\vect{AB}+t\vect{AC}}.
+\]
+特别地，若 \(BP:PC=m:n\)，则
+\[
+\boxed{\vect{AP}=\frac{n}{m+n}\vect{AB}+\frac{m}{m+n}\vect{AC}}.
+\]
+系数之所以“交叉”，来自 \(t=BP/BC=m/(m+n)\)。
+\figcap{\figDivision}{点 P 在线段 BC 上时，位置向量是端点位置的加权平均。}
+
+\begin{theorembox}{三点共线的系数判定}
+若 \(\vect{AB},\vect{AC}\) 不共线，且
+\[
+\vect{AP}=\lambda\vect{AB}+\mu\vect{AC},
+\]
+则
+\[
+B,P,C\text{ 共线}\Longleftrightarrow \lambda+\mu=1.
+\]
+若还要求 \(P\) 在线段 \(BC\) 内，则需进一步满足 \(\lambda,\mu\ge0\)。
+\end{theorembox}
+\figcap{\figEqualSum}{系数和为 1 得到直线 BC；系数和为常数 k 得到与 BC 平行的直线。}
+
+\begin{problem}{分点系数与三点共线}
+在 \(\triangle ABC\) 中，点 \(D\) 在 \(AC\) 上，且
+\[
+\vect{AD}=\frac13\vect{DC}.
+\]
+点 \(P\) 在线段 \(BD\) 上，若
+\[
+\vect{AP}=m\vect{AB}+\frac16\vect{AC},
+\]
+求 \(m\)。
+\end{problem}
+\figcap{\figDP}{}
+
+
+\begin{problem}{过重心的截线与系数和}
+点 \(O\) 是 \(\triangle ABC\) 的重心。过 \(O\) 的直线分别交 \(AB,AC\) 于 \(M,N\)，\(D\) 为 \(BC\) 中点。若
+\[
+\vect{AD}=x\vect{AM}+y\vect{AN},
+\]
+求 \(x+y\)。
+\end{problem}
+\figcap{\figCentroidCross}{}
+
+
+\begin{problem}{共线约束下的倒数和最值}
+在 \(\triangle ABC\) 中，点 \(D\) 在线段 \(AB\) 内，且
+\[
+\vect{CD}=x\vect{CA}+y\vect{CB}.
+\]
+求 \(\dfrac1x+\dfrac2y\) 的最小值。
+\end{problem}
+\figcap{\figDOnAB}{}
+
+
+\begin{methodbox}
+对正数 \(x,y\) 且 \(x+y=k\)，常用模板
+\[
+\min\left(\frac{a}{x}+\frac{b}{y}\right)=\frac{(\sqrt a+\sqrt b)^2}{k}.
+\]
+等和线题经常把几何关系压缩成这个代数模型。
+\end{methodbox}
+
+\begin{problem}{中线参数与截距关系}
+在 \(\triangle ABC\) 中，\(O\) 为 \(BC\) 中点，\(\vect{AP}=t\vect{AO}\)。过 \(P\) 的直线分别交 \(AB,AC\) 于 \(M,N\)，且
+\[
+\vect{AM}=m\vect{AB},\qquad \vect{AN}=n\vect{AC}.
+\]
+求 \(\dfrac1m+\dfrac1n\)。
+\end{problem}
+\figcap{\figMedianCross}{}
+
+
+\begin{summarybox}{本章小结}
+“系数和为 \(1\)”不是记忆技巧，而是点在线段（或直线）上的仿射表示；“同一向量两种表示”则依赖基底表示的唯一性。
+\end{summarybox}
+
+\chapter{等和线、截距模型与参数优化}
+
+\section{等和线的一般形式}
+若
+\[
+\vect{AP}=\lambda\vect{AB}+\mu\vect{AC},\qquad \lambda+\mu=k,
+\]
+则
+\[
+\vect{AP}=k\vect{AC}+\lambda\vect{CB}.
+\]
+取点 \(Q\) 使 \(\vect{AQ}=k\vect{AC}\)，则 \(\vect{QP}=\lambda\vect{CB}\)，故 \(P\) 的轨迹是一条过 \(Q\) 且平行于 \(BC\) 的直线。
+\figcap{\figEqualSumGeneral}{改变参数只让点沿平行于 BC 的方向移动；改变系数和才会更换平行线。}
+
+\begin{warningbox}
+\(\lambda+\mu=1\) 只保证 \(P\) 在直线 \(BC\) 上，不保证在线段内。要在线段内还需 \(\lambda,\mu\ge0\)。
+\end{warningbox}
+
+\section{截距式：一条直线与两条基向量轴}
+若点 \(P\) 在连接 \(M=m\vv a\) 与 \(N=n\vv b\) 的直线上，且
+\[
+\vect{OP}=\alpha\vv a+\beta\vv b,
+\]
+则
+\[
+\boxed{\frac{\alpha}{m}+\frac{\beta}{n}=1}.
+\]
+这就是向量形式的直线截距式。
+
+\begin{problem}{两条劈线交点与截距最值}
+在 \(\triangle ABC\) 中，\(D\) 为 \(AC\) 中点；点 \(E\in BC\) 满足 \(EC=3BE\)；\(P=BD\cap AE\)。过 \(P\) 作一直线，分别交 \(AC,BC\) 于 \(M,N\)。设
+\[
+\vect{CM}=m\vect{CA},\qquad \vect{CN}=n\vect{CB},
+\]
+求 \(m+n\) 的最小值。
+\end{problem}
+\figcap{\figComplexCevian}{}
+
+
+\begin{problem}{缩放向量后的等和约束}
+在 \(\triangle ABC\) 中，点 \(D\) 在 \(AB\) 上运动，且 \(D\ne A,B\)。点 \(E\) 满足
+\[
+\vect{CE}=\frac13\vect{CD},\qquad
+\vect{CE}=\lambda\vect{CA}+\mu\vect{CB}.
+\]
+求 \(\dfrac3\lambda+\dfrac1\mu\) 的最小值。
+\end{problem}
+\figcap{\figScaledE}{}
+
+
+\begin{problem}{两条劈线交点的基底表示}
+在 \(\triangle ABC\) 中，\(D,E\) 分别满足
+\[
+\vect{AD}=\frac12\vect{AB},\qquad
+\vect{AE}=\frac13\vect{AC},
+\]
+直线 \(CD\) 与 \(BE\) 交于 \(P\)。
+\begin{enumerate}[label=(\arabic*)]
+\item 用 \(\vect{AB},\vect{AC}\) 表示 \(\vect{AP}\)；
+\item 过 \(P\) 的直线交射线 \(AB,AC\) 于 \(M,N\)，设 \(\vect{AM}=m\vect{AB}\)、\(\vect{AN}=n\vect{AC}\)，求 \(m+n\) 的最小值。
+\end{enumerate}
+\end{problem}
+\figcap{\figTwoCevianExact}{}
+
+
+\begin{problem}{系数比例、边长与面积最值}
+在 \(\triangle ABC\) 中，点 \(D\in AB\) 且 \(AD=\frac13AB\)，\(E\) 是 \(CD\) 的中点，直线 \(AE\) 交 \(BC\) 于 \(H\)。点 \(P\) 在直线 \(AH\) 上运动，且
+\[
+\vect{AP}=\lambda\vect{AB}+\mu\vect{AC}.
+\]
+已知 \(AB=4\)，并满足 \(\lambda\,AC=\mu\,BC\)，求 \(\triangle CAH\) 面积的最大值。
+\end{problem}
+\figcap{\figAEH}{}
+
+
+\begin{summarybox}{截距模型的统一流程}
+先求定点 \(P\) 在所选基底下的系数 \((\alpha,\beta)\)，再对动截线写
+\[
+\frac{\alpha}{m}+\frac{\beta}{n}=1,
+\]
+最后用柯西、均值不等式或判别式处理 \(m+n\)、\(1/m+1/n\) 等目标。
+\end{summarybox}
+
+\chapter{线性函数、圆与多边形轨迹}
+
+\begin{tcolorbox}[colback=teal!5,colframe=teal!80!black,arc=2mm,boxrule=0.9pt,title={\bfseries\sffamily\color{white} 解疑精讲：等和线的值到底怎么算？（图解三条法则与误区澄清）}]
+\small
+\textbf{【常见误区澄清】}
+等和线的值 \(k\) \textbf{不等于} 原点到直线的垂线长度！垂线长度是几何距离（标量），而等和线的值 \(k\) 是向量在斜坐标系/特定基底下的\textbf{线性加权系数和}。
+
+\vspace{0.4em}
+\textbf{【法则一：截距比例法（几何最速法）】}
+\begin{enumerate}
+  \item 先画出 \(k=1\) 时的\textbf{等和基线 \(L_1\)}：\(a\lambda + b\mu = 1 \iff \frac{\lambda}{1/a} + \frac{\mu}{1/b} = 1\)，两轴截距为 \(B_0\left(\frac{1}{a}\vect{AB}\right)\) 与 \(C_0\left(\frac{1}{b}\vect{AC}\right)\)；
+  \item 过切点 \(P\) 作 \(L_1\) 的平行切线/轨迹线 \(L_k\)，交两轴于 \(B_k, C_k\)；
+  \item 则等和线的值 \(k\) 即为两截距的比值：\(k = \dfrac{AB_k}{AB_0} = \dfrac{AC_k}{AC_0}\)。
+\end{enumerate}
+
+\figcap{\figInterceptRatio}{法则一图解：等和线的值 \(k\) 即为平移平行线 \(L_k\) 在基底轴上的截距与基线 \(L_1\) 截距的比值。}
+
+\vspace{0.4em}
+\textbf{【法则二：直角坐标代换法（最可靠通法）】}
+\begin{enumerate}
+  \item 建系将 \(\vect{AP} = \lambda\vect{AB} + \mu\vect{AC}\) 转为直角坐标 \((x,y)\)，反解出 \(\lambda, \mu\)；
+  \item 将 \(a\lambda + b\mu\) 化为直角坐标下的线性函数 \(Ax + By\)；
+  \item 求出切点/极值点 \(P(x_0, y_0)\) 的坐标，\textbf{直接代入计算}：\(k = Ax_0 + By_0\)。
+\end{enumerate}
+
+\vspace{0.4em}
+\textbf{【法则三：投影点积法（如何构造 \(\vec m\) 与数值代算流程）】}
+\begin{enumerate}
+  \item \textbf{第一步：如何精确构造辅助向量 \(\vec m\)}：
+        设 \(\vec m = x \vect{AB} + y \vect{AC}\)，要求 \(\vect{AP} \cdot \vec m = a\lambda + b\mu\)。列方程组解 \(x,y\)：
+        \[
+        \begin{cases}
+          \vect{AB} \cdot \vec m = a,\\[0.3em]
+          \vect{AC} \cdot \vec m = b
+        \end{cases}
+        \iff
+        \begin{cases}
+          x |\vect{AB}|^2 + y (\vect{AB}\cdot\vect{AC}) = a,\\[0.3em]
+          x (\vect{AB}\cdot\vect{AC}) + y |\vect{AC}|^2 = b.
+        \end{cases}
+        \]
+        解出 \(x,y\) 即唯一确定辅助向量 \(\vec m = x \vect{AB} + y \vect{AC}\)。
+
+  \item \textbf{第二步：实算演示（以例 816 等边三角形求 \(\lambda+2\mu\) 为例）}：
+        \begin{itemize}
+          \item 已知 \(|\vect{AB}|=|\vect{AC}|=2, \vect{AB}\cdot\vect{AC}=2\)。解方程组
+                \(\begin{cases}4x+2y=1\\ 2x+4y=2\end{cases} \implies x=0, y=\frac{1}{2}\)，得到 \(\vec m = \frac{1}{2}\vect{AC}\)；
+          \item 向量 \(\vec m\) 模长 \(|\vec m|=1\)，方向沿 \(\vect{AC}\)；
+          \item 动点 \(P\) 的最大投影长度为 \(AP' = AO_{\text{proj}} + r = \frac{3}{2} + 1 = \frac{5}{2}\)；
+          \item \textbf{代入最终算得：} \(k_{\max} = AP' \times |\vec m| = \frac{5}{2} \times 1 = \mathbf{\frac{5}{2}}\)。
+        \end{itemize}
+\end{enumerate}
+
+\figcap{\figProjectionDot}{法则三图解：通过方程组构造辅助向量 \(\vec m\)，等和线的值 \(k\) 等于 \(\vect{AP}\) 在 \(\vec m\) 方向上的投影长度 \(AP'\) 乘以 \(|\vec m|\)。}
+\end{tcolorbox}
+\vspace{0.6em}
+
+\section{正交坐标中的线性最值}
+若 \(P=(x,y)\) 在圆 \(x^2+y^2=r^2\) 上，则
+\[
+ux+vy\le r\sqrt{u^2+v^2}.
+\]
+等号在 \((x,y)\) 与 \((u,v)\) 同向时成立。
+
+\begin{problem}{矩形中的线性函数最大值}
+矩形 \(ABCD\) 中，\(AB=1,AD=\sqrt3\)。点 \(P\) 在矩形内，且 \(AP=\frac{\sqrt3}{2}\)。若
+\[
+\vect{AP}=\lambda\vect{AB}+\mu\vect{AD},
+\]
+求 \(\lambda+\sqrt3\mu\) 的最大值。
+\end{problem}
+\figcap{\figRectangleObjective}{}
+
+
+\begin{problem}{直径圆上的线性函数最大值}
+\(\triangle ABC\) 为等边三角形，动点 \(P\) 在以 \(BC\) 为直径的圆上。若
+\[
+\vect{AP}=\lambda\vect{AB}+\mu\vect{AC},
+\]
+求 \(\lambda+2\mu\) 的最大值。
+\end{problem}
+\figcap{\figEquilateralDiameter}{}
+
+
+\begin{problem}{移动圆覆盖区域中的线性函数}
+边长为 \(2\) 的正六边形 \(ABCDEF\) 中，半径为 \(1\) 的圆心 \(Q\) 在线段 \(CD\) 上运动，点 \(P\) 在圆上或圆内。若
+\[
+\vect{AP}=m\vect{AB}+n\vect{AF},
+\]
+求 \(m+n\) 的最大值。
+\end{problem}
+\figcap{\figHexagonDisk}{}
+
+
+\begin{problem}{系数约束下的向量模最小值}
+在 \(\triangle OAB\) 中，\(|\vect{OB}|=\sqrt2\)、\(|\vect{AB}|=1\)、\(\angle AOB=45^\circ\)。点 \(P\) 满足
+\[
+\vect{OP}=\lambda\vect{OA}+\mu\vect{OB},
+\qquad 2\lambda+\mu=3.
+\]
+求 \(|\vect{OP}|\) 的最小值。
+\end{problem}
+\figcap{\figEqualSum}{}
+
+
+\begin{problem}{折线移动圆与线性函数范围}
+边长为 \(4\) 的正方形 \(ABCD\) 中，半径为 \(1\) 的圆心 \(Q\) 在折线 \(CD\cup DA\) 上运动（含端点），点 \(P\) 在圆上或圆内。设
+\[
+\vect{BP}=m\vect{BC}+n\vect{BA}.
+\]
+求 \(m+n\) 的取值范围。
+\end{problem}
+\figcap{\figSquareDisk}{}
+
+
+\begin{problem}{外接圆与内切圆上的系数差}
+在等边三角形 \(ABC\) 中，点 \(P\) 在外接圆上，点 \(Q\) 在内切圆上。若
+\[
+\vect{AP}=x_1\vect{AB}+y_1\vect{AC},\qquad
+\vect{AQ}=x_2\vect{AB}+y_2\vect{AC},
+\]
+求
+\[
+(2x_1-x_2)+(2y_1-y_2)
+\]
+的最大值。
+\end{problem}
+\figcap{\figTwoCircles}{}
+
+
+\begin{summarybox}{轨迹线性最值的统一语言}
+系数组合 \(p\lambda+q\mu\) 是一个线性函数。对圆，最值等于“圆心投影 \(\pm\) 半径乘方向向量长度”；对线段或多边形，最值在端点或顶点；对移动圆，先求圆心轨迹，再加半径贡献。
+\end{summarybox}
+
+\chapter{面积坐标、奔驰定理与系数比}
+
+\section{奔驰定理与面积坐标}
+\begin{theorembox}{奔驰定理}
+若点 \(P\) 在 \(\triangle ABC\) 内，则
+\[
+\boxed{
+\area{PBC}\vect{PA}
++\area{PCA}\vect{PB}
++\area{PAB}\vect{PC}=\vv0
+}.
+\]
+\end{theorembox}
+\figcap{\figBenz}{每个向量前的系数，是不含该向量终点的对面小三角形面积。}
+除以 \(\area{ABC}\)，可得三个系数和为 \(1\)。等价的位置向量形式是
+\[
+\vect{OP}=
+\frac{\area{PBC}\vect{OA}+\area{PCA}\vect{OB}+\area{PAB}\vect{OC}}
+{\area{ABC}}.
+\]
+
+\begin{problem}{面积坐标与向量系数}
+在 \(\triangle ABC\) 中，点 \(E,F\) 分别在 \(AB,AC\) 上，且
+\[
+AB=3AE,
+\qquad AC=3AF.
+\]
+点 \(P\) 在 \(EF\) 上，实数 \(x,y\) 满足
+\[
+\vect{PA}+x\vect{PB}+y\vect{PC}=\vv0.
+\]
+设 \(\area{ABC}=S\)，\(\area{PBC}=S_1\)、\(\area{PCA}=S_2\)、\(\area{PAB}=S_3\)，记 \(\lambda_i=S_i/S\)。当 \(\lambda_2\lambda_3\) 取最大值时，求 \(3x-y\)。
+\end{problem}
+\figcap{\figBenz}{}
+
+
+\section{三角形四心的面积坐标预告}
+设 \(a=BC,b=CA,c=AB\)，则
+\[
+\begin{aligned}
+G&:\quad \vect{GA}+\vect{GB}+\vect{GC}=\vv0,\\
+I&:\quad a\vect{IA}+b\vect{IB}+c\vect{IC}=\vv0,\\
+O&:\quad \sin2A\vect{OA}+\sin2B\vect{OB}+\sin2C\vect{OC}=\vv0,\\
+H&:\quad \tan A\vect{HA}+\tan B\vect{HB}+\tan C\vect{HC}=\vv0.
+\end{aligned}
+\]
+后两式在中心位于三角形外部时应使用有向面积或注意符号。
+
+\begin{warningbox}
+奔驰定理适合“系数比、面积比、特殊点”问题；若题目直接求角度或长度，常常应把向量等式移项后平方，转回数量积或余弦定理。
+\end{warningbox}
+
+\part{数量积、度量结构与极化}
+
+\chapter{坐标表示、数量积与投影}
+
+\section{坐标表示}
+在单位正交基底 \(\vv i,\vv j\) 下，
+\[
+\vv a=x\vv i+y\vv j=(x,y).
+\]
+若 \(A(x_1,y_1),B(x_2,y_2)\)，则
+\[
+\vect{AB}=(x_2-x_1,y_2-y_1).
+\]
+记忆原则是“终点减起点”。
+
+\section{数量积与数量投影}
+\begin{theorembox}{数量积}
+对非零向量 \(\vv a,\vv b\)，夹角为 \(\theta\in[0,\pi]\)，定义
+\[
+\vv a\dotp\vv b=|\vv a||\vv b|\cos\theta.
+\]
+若 \(\vv a=(x_1,y_1),\vv b=(x_2,y_2)\)，则
+\[
+\vv a\dotp\vv b=x_1x_2+y_1y_2.
+\]
+\end{theorembox}
+\figcap{\figDotProduct}{数量积把夹角转化为有向投影；投影可正、可零、可负。}
+
+\(\vv a\) 在 \(\vv b\) 方向上的数量投影是
+\[
+\frac{\vv a\dotp\vv b}{|\vv b|}=|\vv a|\cos\theta,
+\]
+它可以为正、为零或为负。
+
+\begin{summarybox}{数量积的四大用途}
+\[
+\begin{array}{ll}
+\text{求模：}&|\vv a|=\sqrt{\vv a\dotp\vv a},\\[1mm]
+\text{判垂直：}&\vv a\perp\vv b\Longleftrightarrow\vv a\dotp\vv b=0,\\[1mm]
+\text{求夹角：}&\cos\theta=\dfrac{\vv a\dotp\vv b}{|\vv a||\vv b|},\\[3mm]
+\text{平方展开：}&|\vv a\pm\vv b|^2=|\vv a|^2+|\vv b|^2\pm2\vv a\dotp\vv b.
+\end{array}
+\]
+\end{summarybox}
+
+\begin{problem}{向量夹角中的补角陷阱}
+已知 \(\angle BAC=60^\circ\)，\(AB=2,AC=3\)。求
+\[
+\vect{BA}\dotp\vect{AC}.
+\]
+\end{problem}
+\figcap{\figTriangleAngle}{}
+
+
+\begin{warningbox}
+图中的几何角不一定就是向量夹角。必须先把两个向量平移到同一起点，并检查箭头方向。
+\end{warningbox}
+
+\chapter{平行四边形恒等式、极化恒等式与轨迹}
+
+\section{平行四边形恒等式与中线公式}
+\begin{theorembox}{平行四边形恒等式}
+\[
+|\vv a+\vv b|^2+|\vv a-\vv b|^2
+=2|\vv a|^2+2|\vv b|^2.
+\]
+\end{theorembox}
+\figcap{\figParallelogram}{两条邻边为 $\vec a,\vec b$，两条对角线分别对应 $\vec a+\vec b$ 与 $\vec a-\vec b$。}
+若 \(M\) 是 \(BC\) 中点，则
+\[
+\vect{AM}=\frac{\vect{AB}+\vect{AC}}2,
+\]
+从而
+\[
+AM^2=\frac{2AB^2+2AC^2-BC^2}{4}.
+\]
+
+\section{极化恒等式}
+\begin{theorembox}{中点型极化恒等式}
+若 \(M\) 是 \(AB\) 中点，则
+\[
+\boxed{\vect{PA}\dotp\vect{PB}=PM^2-\frac14AB^2}.
+\]
+一般形式为
+\[
+\boxed{\vv a\dotp\vv b
+=\frac{|\vv a+\vv b|^2-|\vv a-\vv b|^2}{4}}.
+\]
+\end{theorembox}
+\figcap{\figPolarization}{取 A、B 的中点 M，点积立即变成 PM 的平方减去常数。}
+
+\begin{methodbox}
+看到 \(\vect{PA}\dotp\vect{PB}\) 时，先问三件事：
+\begin{enumerate}
+  \item 两向量是否同起点；
+  \item 终点 \(A,B\) 的中点是否容易确定；
+  \item \(P\) 的轨迹是圆、直线、线段还是圆弧。
+\end{enumerate}
+若 \(AB\) 定长，点积最值就完全由 \(PM\) 的最值决定。
+\end{methodbox}
+
+\begin{problem}{圆上动点的点积最值}
+点 \(P\) 在以 \(O\) 为圆心、半径 \(r\) 的圆上运动，\(A,B\) 为定点，\(M\) 为 \(AB\) 中点。求 \(\vect{PA}\dotp\vect{PB}\) 的最值表达式。
+\end{problem}
+\figcap{\figCircleDistance}{}
+
+
+\begin{problem}{由点积方程识别圆轨迹}
+已知定向量 \(\vv a,\vv b\)，动向量 \(\vv x\) 满足
+\[
+(\vv x-\vv a)\dotp(\vv x-\vv b)=k.
+\]
+说明 \(\vv x\) 的终点轨迹。
+\end{problem}
+\figcap{\figVectorCircle}{}
+
+
+\begin{warningbox}
+若最后得到 \(PQ^2-\frac14LN^2\)，不能分别让 \(PQ\) 最小、\(LN\) 最大后直接相减；必须证明两个极值能在同一位置同时取得。
+\end{warningbox}
+
+\part{三角形四心的统一向量框架}
+
+\chapter{四心基础：从几何定义到向量判据}
+\figcap{\figFourCenters}{四心不是四套孤立公式，而是平均、等距、等角和垂直四种结构。}
+
+\section{四心公式的三个层级}
+\begin{summarybox}{第一层：几何定义决定本质}
+\[
+\begin{array}{c|c|c}
+\text{中心}&\text{几何本质}&\text{最先想到的工具}\\ \hline
+G&\text{三个顶点位置的平均}&\text{线性组合、分点、面积相等}\\
+O&\text{到三个顶点等距}&\text{垂直平分线、等模平方、投影}\\
+I&\text{到三边等距}&\text{角平分线、单位向量、面积权重}\\
+H&\text{三条高线交点}&\text{数量积为零、相邻等式作差}
+\end{array}
+\]
+\end{summarybox}
+
+\begin{summarybox}{第二层：计算判据}
+计算时再调用“向量和为零、边长加权、等点积、外心投影”等式。公式的作用是压缩计算，不能替代几何定义。
+\end{summarybox}
+
+\begin{summarybox}{第三层：方向判据}
+从顶点 \(A\) 出发，常见的三种方向是
+\[
+\vect{AB}+\vect{AC}\quad\text{（中线方向）},
+\]
+\[
+\frac{\vect{AB}}{AB}+\frac{\vect{AC}}{AC}\quad\text{（内角平分线方向）},
+\]
+\[
+\frac{\vect{AB}}{AB\cos B}+\frac{\vect{AC}}{AC\cos C}
+\quad\text{（高线方向，分母有意义时）}.
+\]
+\end{summarybox}
+
+\section{四个基本向量判据}
+设 \(a=BC,b=CA,c=AB\)。
+\[
+\begin{array}{rcl}
+O\text{ 为外心}&\Longleftrightarrow&|\vect{OA}|=|\vect{OB}|=|\vect{OC}|,\\[1mm]
+G\text{ 为重心}&\Longleftrightarrow&\vect{GA}+\vect{GB}+\vect{GC}=\vv0,\\[1mm]
+I\text{ 为内心}&\Longleftrightarrow&a\vect{IA}+b\vect{IB}+c\vect{IC}=\vv0,\\[1mm]
+H\text{ 为垂心}&\Longleftrightarrow&
+\vect{HA}\dotp\vect{HB}=\vect{HB}\dotp\vect{HC}=\vect{HC}\dotp\vect{HA}.
+\end{array}
+\]
+最后一个等价性来自
+\[
+\vect{HB}\dotp(\vect{HA}-\vect{HC})=0
+\Longrightarrow HB\perp AC.
+\]
+
+\begin{warningbox}
+一个等式只能产生一条垂直关系。例如
+\[
+\vect{PA}\dotp\vect{PB}=\vect{PB}\dotp\vect{PC}
+\]
+只能推出 \(PB\perp AC\)，不能单独判定 \(P\) 为垂心；至少还要得到另一条高线条件。
+\end{warningbox}
+
+\begin{problem}{三种向量信号识别三角形中心}
+已知 \(O,N,P\) 在 \(\triangle ABC\) 所在平面内，且
+\[
+|\vect{OA}|=|\vect{OB}|=|\vect{OC}|,
+\]
+\[
+\vect{NA}+\vect{NB}+\vect{NC}=\vv0,
+\]
+\[
+\vect{PA}\dotp\vect{PB}
+=\vect{PB}\dotp\vect{PC}
+=\vect{PC}\dotp\vect{PA}.
+\]
+则 \(O,N,P\) 依次是什么中心？
+\end{problem}
+\figcap{\figFourCenters}{}
+
+
+\begin{problem}{中线方向与角平分线方向}
+\begin{enumerate}[label=(\arabic*)]
+\item 点 \(P\) 满足
+\[
+\vect{OP}=\vect{OA}+\lambda(\vect{AB}+\vect{AC}),\qquad \lambda>0.
+\]
+轨迹必经过哪个中心？
+\item 点 \(P\) 满足
+\[
+\vect{OP}=\vect{OA}+\lambda\left(
+\frac{\vect{AB}}{AB}+\frac{\vect{AC}}{AC}
+\right),\qquad\lambda>0.
+\]
+轨迹必经过哪个中心？
+\end{enumerate}
+\end{problem}
+\figcap{\figCentroid}{}
+
+
+\begin{problem}{四心充要条件辨析}
+设 \(O\) 为平面上一点，\(a,b,c\) 分别为 \(A,B,C\) 的对边。判断下列说法：
+\begin{enumerate}[label=\Alph*.]
+\item \(O\) 为外心 \(\Longleftrightarrow |\vect{OA}|=|\vect{OB}|=|\vect{OC}|=\dfrac{a}{\sin A}\)；
+\item \(O\) 为重心 \(\Longleftrightarrow \vect{OA}+\vect{OB}+\vect{OC}=\vv0\)；
+\item \(O\) 为垂心 \(\Longleftrightarrow \vect{OA}\dotp\vect{OB}=\vect{OB}\dotp\vect{OC}=\vect{OC}\dotp\vect{OA}\)；
+\item \(O\) 为内心 \(\Longleftrightarrow a\vect{OA}+b\vect{OB}+c\vect{OC}=\vv0\)。
+\end{enumerate}
+\end{problem}
+\figcap{\figFourCenters}{}
+
+
+\begin{problem}{四种向量信号的对应}
+已知
+\[
+\vect{OP}=\vect{OA}+\lambda\left(
+\frac{\vect{AB}}{AB}+\frac{\vect{AC}}{AC}
+\right),
+\]
+点 \(H\) 满足 \(HA=HB=HC\)，点 \(N\) 满足
+\[
+\vect{NA}+\vect{NB}+\vect{NC}=\vv0,
+\]
+点 \(Q\) 满足三个成对点积相等。依次判断直线 \(AP\) 经过的中心，以及 \(H,N,Q\) 的身份。
+\end{problem}
+\figcap{\figFourCenters}{}
+
+
+\begin{problem}{四心判据的综合辨析}
+点 \(O\) 在 \(\triangle ABC\) 所在平面内，判断：
+\begin{enumerate}[label=\Alph*.]
+\item 若 \(a\vect{OA}+b\vect{OB}+c\vect{OC}=\vv0\)，则 \(O\) 为重心；
+\item 若
+\[
+\vect{OA}\dotp\left(\frac{\vect{AC}}{AC}-\frac{\vect{AB}}{AB}\right)=0,
+\quad
+\vect{OB}\dotp\left(\frac{\vect{BC}}{BC}-\frac{\vect{BA}}{BA}\right)=0,
+\]
+则 \(O\) 为内心；
+\item 若
+\[
+(\vect{OA}+\vect{OB})\dotp\vect{AB}=0,
+\quad
+(\vect{OB}+\vect{OC})\dotp\vect{BC}=0,
+\]
+则 \(O\) 为外心；
+\item 若三个成对点积相等，则 \(O\) 为垂心。
+\end{enumerate}
+\end{problem}
+\figcap{\figFourCenters}{}
+
+
+\begin{problem}{外心与垂心综合}
+点 \(O,H\) 分别是 \(\triangle ABC\) 的外心、垂心。判断：
+\begin{enumerate}[label=\Alph*.]
+\item 若 \(\vect{BD}\) 同时是 \(\angle B\) 的内角平分线方向，且 \(D\in AC\)，则 \(AD=DC\)；
+\item 若 \(2\vect{BO}=\vect{BA}+\vect{BC}\)，且 \(AB=2\)，则 \(\vect{AC}\dotp\vect{AB}=4\)；
+\item 若 \(\angle B=\pi/3\)，\(\vect{OB}=m\vect{OA}+n\vect{OC}\)，则 \(m+n\in[-2,1)\)；
+\item 若 \(2\vect{HA}+3\vect{HB}+4\vect{HC}=\vv0\)，则
+\[
+\cos\angle BHC=-\frac{\sqrt{10}}5.
+\]
+\end{enumerate}
+\end{problem}
+\figcap{\figCircumcenter}{}
+
+
+\begin{problem}{线性组合、面积与特殊点综合}
+设点 \(M\) 在 \(\triangle ABC\) 所在平面内，判断：
+\begin{enumerate}[label=\Alph*.]
+\item 若 \(\vect{AM}=\frac{\vect{AB}}{AB}+\frac{\vect{AC}}{AC}\)，且
+\(\vect{AM}=\lambda\vect{AB}+(1-\lambda)\vect{AC}\ (0<\lambda<1)\)，则 \(BM=MC\)；
+\item 若 \(\vect{MA}+2\vect{MB}+3\vect{MC}=\vv0\)，则 \([ABC]:[ABM]=2:1\)；
+\item 在 B 的条件下若 \(M\) 又是重心，则 \(\cos\angle AMB=-\sqrt{10}/10\)；
+\item 若
+\[
+\vect{AM}=\lambda\left(\frac{\vect{AB}}{AB\cos B}+\frac{\vect{AC}}{AC\cos C}\right),
+\]
+则轨迹经过垂心。
+\end{enumerate}
+\end{problem}
+\figcap{\figBenz}{}
+
+
+\begin{problem}{四个典型结论判断}
+点 \(P\) 为平面内一点，判断：
+\begin{enumerate}[label=\textcircled{\scriptsize\arabic*}]
+\item 若 \(P\) 为内心，则存在 \(\lambda\) 使
+\[
+\vect{AP}=\lambda\left(\frac{\vect{AB}}{AB}+\frac{\vect{AC}}{AC}\right);
+\]
+\item 若 \(\vect{PA}+\vect{PB}+\vect{PC}=\vv0\)，则 \(P\) 为外心；
+\item 若 \(PA=PB=PC\)，则 \(P\) 为内心；
+\item 若 \(\vect{AP}=\frac13\vect{AB}+\frac23\vect{AC}\)，则 \([ABC]:[ABP]=2:3\)。
+\end{enumerate}
+\end{problem}
+\figcap{\figFourCenters}{}
+
+
+
+
+\begin{problem}{五类方向向量与轨迹辨析}
+判断下列动点轨迹分别经过哪个中心：
+\begin{enumerate}[label=\textcircled{\scriptsize\arabic*}]
+\item \(\vect{OP}=\vect{OA}+\vect{PB}+\vect{PC}\)；
+\item \(\vect{OP}=\vect{OA}+\lambda\left(\frac{\vect{AB}}{AB}+\frac{\vect{AC}}{AC}\right)\)；
+\item \(\vect{OP}=\vect{OA}+\lambda\left(\frac{\vect{AB}}{AB\sin B}+\frac{\vect{AC}}{AC\sin C}\right)\)；
+\item \(\vect{OP}=\vect{OA}+\lambda\left(\frac{\vect{AB}}{AB\cos B}+\frac{\vect{AC}}{AC\cos C}\right)\)；
+\item \(\vect{OP}=\frac{\vect{OB}+\vect{OC}}2+\lambda\left(\frac{\vect{AB}}{AB\cos B}+\frac{\vect{AC}}{AC\cos C}\right)\).
+\end{enumerate}
+\end{problem}
+\figcap{\figFourCenters}{}
+
+
+\begin{problem}{重心、外心与垂心条件辨析}
+点 \(P\) 满足下列四式中的三式，问唯一不成立的是哪一式：
+\[
+\text{甲 }\vect{PA}+\vect{PB}+\vect{PC}=\vv0;
+\]
+\[
+\text{乙 }\vect{PA}\dotp(\vect{PA}-\vect{PB})
+=\vect{PC}\dotp(\vect{PA}-\vect{PB});
+\]
+\[
+\text{丙 }PA=PB=PC;
+\qquad
+\text{丁 }\vect{PA}\dotp\vect{PB}=\vect{PB}\dotp\vect{PC}=\vect{PC}\dotp\vect{PA}.
+\]
+\end{problem}
+\figcap{\figFourCenters}{}
+
+
+\chapter{重心进阶：平均、截线与仿射结构}
+
+\section{重心的四种等价语言}
+\begin{theorembox}{重心公式族}
+设 \(G\) 为 \(\triangle ABC\) 的重心，\(O,P\) 为平面内任意点，则
+\[
+\boxed{\vect{GA}+\vect{GB}+\vect{GC}=\vv0},
+\]
+\[
+\boxed{\vect{AG}=\frac13\bigl(\vect{AB}+\vect{AC}\bigr)},
+\qquad
+\boxed{\vect{OG}=\frac{\vect{OA}+\vect{OB}+\vect{OC}}3},
+\]
+\[
+\boxed{\vect{PG}=\frac13\bigl(\vect{PA}+\vect{PB}+\vect{PC}\bigr)}.
+\]
+\end{theorembox}
+
+\figcap{\figCentroidAverage}{重心与原点无关：从任意点 P 看，PG 都是 PA、PB、PC 的平均。}
+
+取 \(M\) 为 \(BC\) 中点，则
+\[
+\vect{AB}+\vect{AC}=2\vect{AM},
+\qquad
+\vect{AG}=\frac23\vect{AM},
+\]
+所以
+\[
+\vect{AB}+\vect{AC}=3\vect{AG}.
+\]
+其余公式只需统一起点即可。例如
+\[
+\vect{PA}+\vect{PB}+\vect{PC}
+=3\vect{PG}+\vect{GA}+\vect{GB}+\vect{GC}
+=3\vect{PG}.
+\]
+
+\begin{methodbox}
+看到 \(\vect{AB}+\vect{AC}\) 时，可以立即改写成 \(3\vect{AG}\)；看到三个顶点位置向量的平均时，应立即识别重心。重心的本质不是“背三条中线”，而是“仿射平均”。
+\end{methodbox}
+
+\begin{problem}{重心的向量和与单位向量结构}
+\begin{enumerate}[label=(\arabic*)]
+\item 已知 \(\vect{AG}+\vect{BG}+\vect{CG}=\vv0\)，判断 \(G\) 的身份。
+\item 单位向量 \(\vv a,\vv b,\vv c\) 满足 \(\vv a+\vv b+\vv c=\vv0\)，求
+\[
+\cos\angle(\vv a-\vv c,\vv b-\vv c).
+\]
+\end{enumerate}
+\end{problem}
+\figcap{\figCentroid}{}
+
+
+\begin{problem}{重心与边长权重}
+设 \(G\) 为 \(\triangle ABC\) 的重心，且
+\[
+\frac{\sqrt3}{3}a\vect{GA}+\frac12b\vect{GB}+c\vect{GC}=\vv0.
+\]
+求 \(\angle A\)。
+\end{problem}
+\figcap{\figCentroid}{}
+
+
+\begin{problem}{过重心截线的参数最值}
+过重心 \(G\) 的直线交 \(AB,AC\) 于 \(M,N\)，设
+\[
+\vect{AB}=x\vect{AM},
+\qquad
+\vect{AC}=y\vect{AN}.
+\]
+求 \(x+y\)，并求
+\[
+\frac1{x-1}+\frac2{y-1}
+\]
+的最小值及等号时 \(x,y\)。
+\end{problem}
+\figcap{\figIntercept}{}
+
+
+\begin{problem}{过重心截线的两个变式}
+\begin{enumerate}[label=(\arabic*)]
+\item 过重心 \(G\) 的直线交 \(AB,AC\) 于 \(D,E\)，若
+\[
+\vect{AB}=3m\vect{AD},
+\qquad
+\vect{AC}=3n\vect{AE},
+\]
+求 \(m+n\)。
+\item 等边三角形中，过重心 \(G\) 的直线交 \(CA,CB\) 于 \(M,N\)，且
+\[
+\vect{CM}=\lambda\vect{CA},
+\qquad
+\vect{CN}=\mu\vect{CB}.
+\]
+求 \(\lambda+\mu\) 的最小值。
+\end{enumerate}
+\end{problem}
+\figcap{\figCentroid}{}
+
+
+\chapter{外心进阶：等距、垂直平分线与圆上向量}
+\figcap{\figCircumcenter}{外心是三边垂直平分线的交点，也是到三个顶点等距的点。}
+
+\section{外心投影公式：几何与代数两种理解}
+\begin{theorembox}{外心投影公式}
+若 \(O\) 为 \(\triangle ABC\) 的外心，则
+\[
+\boxed{\vect{AB}\dotp\vect{AO}=\frac12AB^2},
+\qquad
+\boxed{\vect{AC}\dotp\vect{AO}=\frac12AC^2},
+\]
+循环地还有
+\[
+\vect{BC}\dotp\vect{BO}=\frac12BC^2.
+\]
+\end{theorembox}
+
+\figcap{\figCircumProjection}{O 在 AB 的垂直平分线上，AO 在 AB 方向上的数量投影等于 AM=AB/2。}
+
+\textbf{几何证明：}设 \(M\) 为 \(AB\) 中点。因为 \(OM\perp AB\)，所以 \(\vect{AO}\) 在 \(\vect{AB}\) 方向上的数量投影为 \(AM=AB/2\)，从而
+\[
+\vect{AB}\dotp\vect{AO}=AB\cdot\frac{AB}{2}=\frac12AB^2.
+\]
+
+\textbf{代数证明：}由 \(OA=OB\) 及
+\[
+\vect{BO}=\vect{BA}+\vect{AO}=\vect{AO}-\vect{AB},
+\]
+得
+\[
+|\vect{AO}-\vect{AB}|^2=|\vect{AO}|^2.
+\]
+展开并约去 \(|\vect{AO}|^2\)，即得结论。
+
+\begin{warningbox}
+外接圆半径满足 \(R=\dfrac{a}{2\sin A}\)，不是 \(\dfrac{a}{\sin A}\)。外心公式中的向量方向也要保持一致，例如 \(\vect{AO}\dotp\vect{AB}\) 与 \(\vect{OA}\dotp\vect{AB}\) 相差一个负号。
+\end{warningbox}
+
+\section{经过外心的直线：垂直平分线模型}
+设 \(N\) 为 \(BC\) 中点，且 \(\cos B\cos C\ne0\)。若
+\[
+\vect{OP}=\frac{\vect{OB}+\vect{OC}}2
++\lambda\left(
+\frac{\vect{AB}}{AB\cos B}+\frac{\vect{AC}}{AC\cos C}
+\right),
+\]
+则第一项是 \(\vect{ON}\)，而括号内向量与 \(\vect{BC}\) 的数量积为
+\[
+-BC+BC=0.
+\]
+因此 \(NP\perp BC\)，点 \(P\) 的轨迹是 \(BC\) 的垂直平分线，必经过外心。
+
+\begin{problem}{外心与分点向量的数量积}
+在 \(\triangle ABC\) 中，\(AB=2,AC=3\)，点 \(E\in BC\) 且 \(BE=2EC\)，\(O\) 为外心。求
+\[
+\vect{AO}\dotp\vect{AE}.
+\]
+\end{problem}
+\figcap{\figCircumcenter}{}
+
+
+\begin{problem}{外心点积条件与面积最大值}
+\(O\) 为 \(\triangle ABC\) 的外心，边长分别为 \(a,b,c\)，且
+\[
+\vect{AO}\dotp\vect{BC}=\frac12a\left(a-\frac85c\right),
+\qquad b=4.
+\]
+求 \(\triangle ABC\) 面积的最大值。
+\end{problem}
+\figcap{\figCircumcenter}{}
+
+
+\begin{problem}{由垂直平分线条件识别外心}
+点 \(O\) 满足
+\[
+\vect{AO}\dotp\vect{AB}=\vect{BO}\dotp\vect{BA},
+\qquad
+\vect{BO}\dotp\vect{BC}=\vect{CO}\dotp\vect{CB}.
+\]
+已知 \(AC=3,BC=\sqrt3\)，求
+\[
+\vect{OC}\dotp(\vect{OA}-\vect{OB}).
+\]
+\end{problem}
+\figcap{\figCircumcenter}{}
+
+
+\begin{problem}{不等长射线的向量分解}
+点 \(O\) 在 \(\triangle ABC\) 内，且
+\[
+\angle AOB=\angle AOC=150^\circ,
+\quad OA=1,
+\quad OB=\frac{\sqrt3}{2},
+\quad OC=2.
+\]
+求 \(|\vect{OA}+\vect{OB}|\)。若
+\[
+\vect{OC}=m\vect{OA}+n\vect{OB},
+\]
+求 \(m+n\)。
+\end{problem}
+\figcap{\figDotProduct}{}
+
+
+\chapter{内心进阶：角平分线、边长权重与面积坐标}
+\figcap{\figIncenter}{内心是三条内角平分线的交点，到三边距离相等。}
+
+\section{单位方向向量与内、外角平分线}
+令
+\[
+\vec e_1=\frac{\vect{AB}}{AB},
+\qquad
+\vec e_2=\frac{\vect{AC}}{AC}.
+\]
+两向量模长都为 \(1\)，因此以它们为邻边构成菱形。
+
+\begin{theorembox}{角平分线方向}
+\[
+\boxed{\vec e_1+\vec e_2\ \text{沿}\ \angle BAC\text{的内角平分线}},
+\]
+\[
+\boxed{\vec e_1-\vec e_2\ \text{沿}\ \angle BAC\text{的一条外角平分线}}.
+\]
+因此
+\[
+\vect{AP}=\lambda\left(
+\frac{\vect{AB}}{AB}+\frac{\vect{AC}}{AC}
+\right)
+\]
+说明直线 \(AP\) 经过内心。
+\end{theorembox}
+
+\figcap{\figUnitBisectors}{两个单位向量的和是菱形对角线，平分内角；差向量平分相邻外角。}
+
+内心到三边距离相等，三个小三角形具有相同的高，因此面积比为
+\[
+\area{IBC}:\area{ICA}:\area{IAB}=a:b:c.
+\]
+由奔驰定理得到
+\[
+\boxed{a\vect{IA}+b\vect{IB}+c\vect{IC}=\vv0}.
+\]
+
+\begin{methodbox}
+“单位向量和”负责确定方向，“边长加权和为零”负责确定点的位置。前者是角平分线语言，后者是面积坐标语言，两者共同刻画内心。
+\end{methodbox}
+
+\begin{problem}{边长权重识别内心}
+\begin{enumerate}[label=(\arabic*)]
+\item 若
+\[
+a\vect{IA}+b\vect{IB}+c\vect{IC}=\vv0,
+\]
+判断 \(I\) 的身份。
+\item 点 \(P\) 在三角形内部，且
+\[
+AB\vect{PC}+BC\vect{PA}+CA\vect{PB}=\vv0,
+\]
+判断 \(P\) 的身份。
+\end{enumerate}
+\end{problem}
+\figcap{\figIncenter}{}
+
+
+\begin{problem}{内心权重与三角形角度}
+已知 \(G\) 为 \(\triangle ABC\) 的内心，且
+\[
+\cos A\vect{GA}+\cos B\vect{GB}+\cos C\vect{GC}=\vv0.
+\]
+求 \(\angle A\)。
+\end{problem}
+\figcap{\figIncenter}{}
+
+
+\begin{problem}{等腰三角形内心的位置系数}
+\(O\) 为 \(\triangle ABC\) 的内心，\(AB=AC=5,BC=8\)。若
+\[
+\vect{AO}=m\vect{AB}+n\vect{BC},
+\]
+求 \(m+n\)。
+\end{problem}
+\figcap{\figIncenter}{}
+
+
+\begin{problem}{角平分线、向量平移与投影}
+点 \(C\) 在线段 \(AB\) 上，点 \(P\) 在直线 \(AB\) 外，\(PC\) 为 \(\angle APB\) 的平分线。点 \(I\in PC\)，且
+\[
+\vect{BI}=\vect{BA}+\lambda\left(
+\frac{\vect{AC}}{AC}+\frac{\vect{AP}}{AP}
+\right),\qquad\lambda>0.
+\]
+已知 \(PA-PB=4\)，且
+\[
+|\vect{PA}-\vect{PB}|=10.
+\]
+求
+\[
+\frac{\vect{BI}\dotp\vect{BA}}{BA}.
+\]
+\end{problem}
+\figcap{\figAngleBisector}{}
+
+
+\begin{problem}{加权向量关系中的系数最值}
+在 \(\triangle ABC\) 中，\(a,b,c\) 分别为角 \(A,B,C\) 的对边，已知 \(\cos B=2/3\)。内点 \(P\) 满足
+\[
+\vect{CP}+\frac bc\vect{BP}=\frac ac\vect{PA},
+\]
+且
+\[
+\vect{BP}=x\vect{BA}+y\vect{BC}.
+\]
+求 \(x+y\) 的最大值。
+\end{problem}
+\figcap{\figIncenter}{}
+
+
+\begin{problem}{位置向量公式识别内心}
+点 \(O\) 满足
+\[
+\vect{PO}=\frac{a\vect{PA}+b\vect{PB}+c\vect{PC}}{a+b+c},
+\]
+其中 \(P\) 为三角形内任意一点。判断 \(O\) 的身份。
+\end{problem}
+\figcap{\figBenz}{}
+
+
+\chapter{垂心进阶：高线方向、等点积与类垂心式}
+\figcap{\figOrthocenter}{垂心是三条高线的交点；等点积关系相减即可得到垂直。}
+
+\section{垂心的两组循环恒等式}
+\begin{theorembox}{循环数量积判据}
+点 \(H\) 为垂心，当且仅当
+\[
+\boxed{
+\vect{HA}\dotp\vect{HB}
+=\vect{HB}\dotp\vect{HC}
+=\vect{HC}\dotp\vect{HA}}
+\]
+（非退化三角形中）。
+\end{theorembox}
+
+相邻两式作差，例如
+\[
+\vect{HB}\dotp(\vect{HA}-\vect{HC})=0,
+\]
+而 \(\vect{HA}-\vect{HC}=\vect{CA}\)，所以 \(BH\perp AC\)。循环处理即可得到三条高线。
+
+\begin{theorembox}{距离平方恒等式}
+若 \(H\) 为垂心，且 \(a=BC,b=CA,c=AB\)，则
+\[
+\boxed{HA^2+a^2=HB^2+b^2=HC^2+c^2}.
+\]
+\end{theorembox}
+
+例如
+\[
+\begin{aligned}
+&(HA^2+BC^2)-(HB^2+CA^2)\\
+&=2\vect{HC}\dotp(\vect{HA}-\vect{HB})
+=2\vect{HC}\dotp\vect{BA}=0,
+\end{aligned}
+\]
+因为 \(CH\perp AB\)。这组公式适合把“距离平方条件”反向还原成高线条件。
+
+\begin{warningbox}
+直角三角形中，垂心就是直角顶点；含 \(1/\cos B\)、\(\tan B\) 的包装公式可能失去意义，应回到“高线”和“数量积为零”的基本定义单独处理。
+\end{warningbox}
+
+\section{余弦包装的高线方向}
+若 \(\cos B\cos C\ne0\)，则
+\[
+\frac{\vect{AB}}{AB\cos B}+\frac{\vect{AC}}{AC\cos C}
+\]
+与 \(\vect{BC}\) 垂直。原因是与 \(\vect{BC}\) 作数量积后两项分别为 \(-BC\) 与 \(BC\)。因此该向量给出了从 \(A\) 出发的高线方向。
+
+\begin{problem}{垂心方向向量的识别}
+动点 \(P\) 满足
+\[
+\vect{OP}=\vect{OA}+\lambda\left(
+\frac{\vect{AB}}{AB\cos B}+\frac{\vect{AC}}{AC\cos C}
+\right).
+\]
+其轨迹必经过哪个中心？
+\end{problem}
+\figcap{\figOrthocenter}{}
+
+
+\begin{problem}{等腰三角形垂心的位置系数}
+在等腰三角形 \(ABC\) 中，\(AB=AC\)，\(\tan C=4/3\)，\(H\) 为垂心。若
+\[
+\vect{AH}=m\vect{AB}+n\vect{BC},
+\]
+求 \(m+n\)。
+\end{problem}
+\figcap{\figIsoscelesOrthocenter}{}
+
+
+\begin{problem}{由平方距离恒等式识别垂心}
+点 \(H\) 满足
+\[
+HA^2+BC^2=HB^2+CA^2=HC^2+AB^2.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item 判断 \(H\) 的身份；
+\item 若 \(AB=7,AC=5,C=\pi/3\)，求 \(\vect{AH}\dotp\vect{AC}\)。
+\end{enumerate}
+\end{problem}
+\figcap{\figOrthocenter}{}
+
+
+\begin{problem}{外心与垂心重合时的动点最值}
+平面内定点 \(D\) 与 \(A,B,C\) 满足
+\[
+DA=DB=DC=2,
+\]
+\[
+\vect{DA}\dotp\vect{BC}
+=\vect{DB}\dotp\vect{AC}
+=\vect{DC}\dotp\vect{AB}=0.
+\]
+动点 \(P\) 满足 \(AP=1\)，点 \(M\) 满足 \(PM=MC\)。求 \(BM\) 的最大值。
+\end{problem}
+\figcap{\figMovingMidpoint}{}
+
+
+\begin{problem}{内心条件与类垂心点积式}
+点 \(P\) 为 \(\triangle ABC\) 的内心，且
+\[
+\vect{AB}\dotp\vect{BC},
+\quad 2\vect{CA}\dotp\vect{AB},
+\quad \vect{BC}\dotp\vect{CA}
+\]
+成等差数列。求 \(\cos\angle BPC\) 的最小值。
+\end{problem}
+\figcap{\figIncenter}{}
+
+
+\begin{problem}{点积恒等式与角的最大值}
+在 \(\triangle ABC\) 中，已知
+\[
+\vect{BA}\dotp\vect{BC}
+=\frac13\vect{CA}\dotp\vect{CB}
++\frac23\vect{AC}\dotp\vect{AB}.
+\]
+求 \(\tan B\) 的最大值。
+\end{problem}
+\figcap{\figDotProduct}{}
+
+
+
+\chapter{四心联系：两心重合、欧拉线与统一辨析}
+
+\section{欧拉线的向量证明}
+\begin{theorembox}{欧拉线}
+对非等边三角形，外心 \(O\)、重心 \(G\)、垂心 \(H\) 共线，且
+\[
+\boxed{OG:GH=1:2},
+\qquad
+\boxed{\vect{OH}=3\vect{OG}}.
+\]
+等边三角形中三点重合，结论按退化意义仍成立。
+\end{theorembox}
+
+\figcap{\figEuler}{取外心 O 为原点，重心是三个顶点位置向量的平均，垂心是它们的和。}
+
+取外心 \(O\) 为原点，记
+\[
+\vec a=\vect{OA},\qquad \vec b=\vect{OB},\qquad \vec c=\vect{OC}.
+\]
+因为 \(O\) 为外心，
+\[
+|\vec a|=|\vec b|=|\vec c|=R.
+\]
+定义点 \(H\) 使
+\[
+\vect{OH}=\vec a+\vec b+\vec c.
+\]
+则
+\[
+\vect{AH}=\vec b+\vec c,
+\qquad
+\vect{BC}=\vec c-\vec b,
+\]
+从而
+\[
+\vect{AH}\dotp\vect{BC}
+=(\vec b+\vec c)\dotp(\vec c-\vec b)
+=|\vec c|^2-|\vec b|^2=0.
+\]
+故 \(AH\perp BC\)。循环可证 \(H\) 是垂心。另一方面，重心满足
+\[
+\vect{OG}=\frac{\vec a+\vec b+\vec c}{3},
+\]
+于是
+\[
+\vect{OH}=3\vect{OG}.
+\]
+
+\begin{problem}{欧拉线与位置向量恒等式}
+三角形中 \(O,G,H\) 分别为外心、重心、垂心，且 \(G\) 到外心的距离是到垂心距离的一半。已知 \(AB=4,AC=2\)，判断：
+\[
+\text{(1) }2\vect{GO}+\vect{GH}=\vv0;
+\quad
+\text{(2) }\vect{AG}\dotp\vect{BC}=4;
+\]
+\[
+\text{(3) }\vect{AO}\dotp\vect{BC}=-6;
+\quad
+\text{(4) }\vect{OH}=\vect{OA}+\vect{OB}+\vect{OC}.
+\]
+\end{problem}
+\figcap{\figEuler}{}
+
+
+\section{四心重合与等边三角形}
+\begin{theorembox}{两心重合判定}
+在非退化三角形中，若重心、外心、内心、垂心中的任意两个重合，则三角形为等边三角形；反之，等边三角形四心重合。
+\end{theorembox}
+
+常用证明路线如下：
+\begin{center}
+\begin{tabularx}{.94\textwidth}{>{\bfseries}p{3.1cm}X}
+\toprule
+重合情形 & 推荐证明路线\\
+\midrule
+\(O=G\) & 以 \(O\) 为原点，三个等模向量之和为零，推出三条弦等长。\\
+\(O=H\) 或 \(G=H\) & 结合欧拉线，先推出 \(O=G\)，再化为上一种情形。\\
+\(G=I\) & 同一点同时在三条中线与三条角平分线上；中线兼角平分线推出对应两边相等。\\
+\(I=H\) & 每条高线同时是角平分线，三组邻边分别相等。\\
+\(O=I\) & 在 \(\triangle AOB\) 中 \(OA=OB\)，而 \(AO,BO\) 又分别平分 \(A,B\)，故 \(A/2=B/2\)；循环可得 \(A=B=C\)。\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{四心问题的统一操作顺序}
+\begin{summarybox}{先定义，后公式}
+\begin{enumerate}
+  \item 先判断题目强调的是平均、等距、等角还是垂直；
+  \item 再选择位置向量、外心投影、单位向量或数量积；
+  \item 复杂式先统一起点，再移项、作差、点乘或平方；
+  \item 最后检查公式的适用边界：直角、钝角、外点和有向面积。
+\end{enumerate}
+\end{summarybox}
+
+\begin{center}
+\begin{tabularx}{.96\textwidth}{>{\bfseries}p{2.3cm}p{4.5cm}X}
+\toprule
+中心 & 核心式 & 最常用动作\\
+\midrule
+重心 & \(\vect{PA}+\vect{PB}+\vect{PC}=3\vect{PG}\) & 求平均、比较仿射系数\\
+外心 & \(\vect{AB}\dotp\vect{AO}=AB^2/2\) & 点乘边向量、展开等模平方\\
+内心 & \(a\vect{IA}+b\vect{IB}+c\vect{IC}=\vv0\) & 识别面积权重、单位向量和\\
+垂心 & 三个成对点积相等 & 相邻等式作差，制造垂直\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\part{复习提要}
+
+\chapter{核心方法与公式图谱}
+
+\section{联想网络：看到条件，首选思路}
+
+\subsection{一、线性与位置关系}
+\begin{center}
+\begin{tabularx}{0.98\textwidth}{>{\bfseries}p{4.2cm}X}
+\toprule
+题目条件 / 几何特征 & 首选解题思路\\
+\midrule
+\(\vect{AP}=x\vect{AB}+y\vect{AC}\) & 观察系数和 \(x+y\) 及符号，判断直线、线段或平行线族\\
+同一向量有两种表示 & 统一步调至同一基底，利用表示唯一性列方程求系数\\
+截线分别交两基底轴 & 建立向量截距式 \(\frac xm+\frac yn=1\)，结合不等式求最值\\
+三向量同起点且加权和为零 & 应用奔驰定理或面积坐标，转为小三角形面积比\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{二、数量积与度量最值}
+\begin{center}
+\begin{tabularx}{0.98\textwidth}{>{\bfseries}p{4.2cm}X}
+\toprule
+题目条件 / 几何特征 & 首选解题思路\\
+\midrule
+\(\vv a\dotp\vv b\) 且已知两终点中点 & 首选极化恒等式：\(\vect{PA}\dotp\vect{PB}=PM^2-\frac14AB^2\)，转化为距离最值\\
+\((\vv x-\vv a)\dotp(\vv x-\vv b)=k\) & 识别圆轨迹方程：取 \(AB\) 中点 \(M\)，化为 \(XM^2 = R^2\)\\
+求向量模长 \(|\vv a\pm\vv b|\) & 先平方展开为 \(|\vv a|^2+|\vv b|^2\pm 2\vv a\dotp\vv b\)，避免过早根式计算\\
+两单位向量之和/之差 & 和向量 \(\vec e_1+\vec e_2\) 为角平分线方向，差向量 \(\vec e_1-\vec e_2\) 为外角平分线方向\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{三、三角形四心与特殊结构}
+\begin{center}
+\begin{tabularx}{0.98\textwidth}{>{\bfseries}p{4.2cm}X}
+\toprule
+题目条件 / 几何特征 & 首选解题思路\\
+\midrule
+\(PA=PB=PC\) 或到三顶点等距 & 外心 \(O\)；利用外心投影 \(\vect{AB}\dotp\vect{AO}=\frac12AB^2\) 简化计算\\
+\(\vect{GA}+\vect{GB}+\vect{GC}=\vv0\) & 重心 \(G\)；对任意基点 \(P\) 均有 \(3\vect{PG}=\vect{PA}+\vect{PB}+\vect{PC}\)\\
+\(a\vect{IA}+b\vect{IB}+c\vect{IC}=\vv0\) & 内心 \(I\)；结合边长加权或角平分线单位向量表示\\
+三个两两点积相等 & 垂心 \(H\)；相邻等式作差推出垂直 \(\vect{HB}\dotp\vect{AC}=0\)\\
+\(O,G,H\) 共线或两心重合 & 应用欧拉线 \(\vect{OH}=3\vect{OG}\)；两心重合推导出等边三角形\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{解题决策流与思维闭环}
+
+\begin{methodbox}[title={考场解题四步决策法}]
+\begin{enumerate}
+  \item \textbf{观察结构选方法}：有比例/分点优先基底法；有直角/建系容易优先坐标法；有模长/夹角优先数量积；有面积比优先奔驰定理。
+  \item \textbf{锁定轨迹化动为静}：面对多动点，先求核心中点、圆心或交点轨迹，将“双动点”降维为“单距离最值”。
+  \item \textbf{先平方，后开方}：处理向量模长与极化恒等式时，先写出平方形式展开，避免中间过程产生复杂根式。
+  \item \textbf{验证边界与可达性}：求得最值点后，务必检查参数是否落在定义域（线段/射线/圆弧），确保极值位置可达。
+\end{enumerate}
+\end{methodbox}
+
+\begin{summarybox}{解题思维闭环指南}
+平面向量是高中的“桥梁语言”——用线性组合描述位置，用数量积描述度量，用轨迹转化解决动态最值。
+复习与解题时，保持清晰的解题思维闭环：
+\[
+\text{识图提取条件}
+\longrightarrow
+\text{选择基底/坐标/数量积}
+\longrightarrow
+\text{代数与几何转化}
+\longrightarrow
+\text{最值与边界验证}.
+\]
+\end{summarybox}
+
+\end{document}

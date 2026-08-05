@@ -1,0 +1,74 @@
+% ★★★ 难题
+
+\newcommand{\qSolidSkewLinesMidpointAreaStem}{
+已知异面直线 $a,b$ 所成角为 $60^\circ$，直线 $AB$ 与 $a,b$ 均垂直，且垂足分别是点 $A,B$。若动点 $P\in a$，$Q\in b$，且 $|PA|+|QB|=2$，则线段 $PQ$ 中点 $M$ 的轨迹围成的区域面积为 \blank{2cm}。
+}
+
+\newcommand{\qSolidSkewLinesMidpointAreaOptions}{
+}
+
+\newcommand{\qSolidSkewLinesMidpointAreaFigure}[1][1]{
+\begin{tikzpicture}[scale=#1, x={(-0.5cm,-0.4cm)}, y={(1cm,0cm)}, z={(0cm,1cm)}]
+    \coordinate (O) at (0,0,0);
+    \coordinate (A) at (0,0,1.5);
+    \coordinate (B) at (0,0,-1.5);
+    
+    \coordinate (Pa1) at (-1.732, -1, 1.5);
+    \coordinate (Pa2) at (1.732, 1, 1.5);
+    
+    \coordinate (Pb1) at (-1.732, 1, -1.5);
+    \coordinate (Pb2) at (1.732, -1, -1.5);
+    
+    \draw[thick] (Pa1) -- (Pa2) node[right] {$a$};
+    \draw[thick] (Pb1) -- (Pb2) node[right] {$b$};
+    
+    \draw[dashed, thick] (B) -- (O) -- (A);
+    \fill (A) circle (1.5pt) node[above left] {$A$};
+    \fill (B) circle (1.5pt) node[below left] {$B$};
+    
+    \coordinate (M1) at (0.866, 0.5, 0);
+    \coordinate (M2) at (0.866, -0.5, 0);
+    \coordinate (M3) at (-0.866, -0.5, 0);
+    \coordinate (M4) at (-0.866, 0.5, 0);
+    
+    \draw[fill=gray!30, opacity=0.8, dashed] (M1) -- (M2) -- (M3) -- (M4) -- cycle;
+    \fill (O) circle (1.5pt) node[above left] {$O$};
+    \node at (0.4, 0, 0) {面积区域};
+\end{tikzpicture}
+}
+
+\newcommand{\qSolidSkewLinesMidpointAreaAnswer}{
+$\sqrt{3}$
+}
+
+\newcommand{\qSolidSkewLinesMidpointAreaSolution}{
+以线段 $AB$ 的中点 $O$ 为原点，建系如下：让 $AB$ 落在 $z$ 轴上，则 $A(0,0,d)$，$B(0,0,-d)$。
+因为直线 $a, b$ 分别过 $A,B$ 且与 $AB$ 垂直，故 $a \subset$ 面 $z=d$，$b \subset$ 面 $z=-d$。
+已知 $a, b$ 所成角为 $60^\circ$，我们可取 $a$ 的方向向量为 $\vec{u} = \left(\frac{\sqrt{3}}{2}, \frac{1}{2}, 0\right)$，$b$ 的方向向量为 $\vec{v} = \left(\frac{\sqrt{3}}{2}, -\frac{1}{2}, 0\right)$。
+动点 $P, Q$ 分别在 $a, b$ 上，设 $P = \left(\frac{\sqrt{3}}{2}x, \frac{1}{2}x, d\right)$，$Q = \left(\frac{\sqrt{3}}{2}y, -\frac{1}{2}y, -d\right)$，其中 $|x|=|PA|$， $|y|=|QB|$。
+已知条件 $|PA|+|QB|=2$，即 $|x| + |y| = 2$。
+线段 $PQ$ 的中点 $M$ 的坐标为 $M = \left(\frac{\sqrt{3}}{4}(x+y), \frac{1}{4}(x-y), 0\right)$。
+显然点 $M$ 始终在 $xy$ 平面（即线段 $AB$ 的中垂面）上。
+令 $X = \frac{\sqrt{3}}{4}(x+y)$，$Y = \frac{1}{4}(x-y)$。
+当点 $(x,y)$ 遍历正方形 $|x|+|y| \leqslant 2$ 的边界时，点 $(X,Y)$ 的轨迹也是一个四边形。
+代入四个顶点 $(2,0)$，$(0,2)$， $(-2,0)$， $(0,-2)$：
+得到 $M$ 的边界顶点为 $\left(\frac{\sqrt{3}}{2}, \frac{1}{2}\right)$，$\left(\frac{\sqrt{3}}{2}, -\frac{1}{2}\right)$，$\left(-\frac{\sqrt{3}}{2}, -\frac{1}{2}\right)$，$\left(-\frac{\sqrt{3}}{2}, \frac{1}{2}\right)$。
+这些顶点在 $xy$ 平面上构成了一个长为 $\sqrt{3}$，宽为 $1$ 的矩形。
+故点 $M$ 的轨迹围成的区域面积为 $S = \sqrt{3} \times 1 = \sqrt{3}$。
+}
+
+\newcommand{\qSolidSkewLinesMidpointAreaDiagnosis}{
+\textbf{学生常见问题：}
+\begin{itemize}
+    \item \textbf{轨迹无法平移}：不知道异面直线上的动点中点轨迹，可以转化为将异面直线平移至同一平面的轨迹问题，导致无从下手。
+    \item \textbf{坐标系建立不合理}：如果没有将原点放在公垂线中点，计算表达式会非常繁琐，难以发现 $x+y$ 和 $x-y$ 的独立变化范围。
+\end{itemize}
+}
+
+\newcommand{\qSolidSkewLinesMidpointAreaTeachingNotes}{
+\textbf{课堂处理与追问：}
+\begin{itemize}
+    \item \textbf{核心方法}：空间坐标系是处理“非标准轨迹（如异面直线中点）”的绝对利器。强调建立坐标系时，对称性（公垂线中点为原点）能极大简化运算。
+    \item \textbf{追问 1}：如果 $|PA|^2 + |QB|^2 = 4$，中点 $M$ 的轨迹围成什么图形？（提示：圆或椭圆，由 $x^2+y^2=4$ 映射而得）。
+\end{itemize}
+}
