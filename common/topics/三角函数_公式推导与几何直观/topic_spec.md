@@ -50,22 +50,22 @@
 
 ## 核心公式
 
-- 诱导公式: \(\sin(\frac{\pi}{2}+\alpha)=\cos\alpha\), \(\cos(\frac{\pi}{2}+\alpha)=-\sin\alpha\), \(\sin(\pi+\alpha)=-\sin\alpha\), 等
-- 两角和差: \(\sin(\alpha\pm\beta) = \sin\alpha\cos\beta \pm \cos\alpha\sin\beta\), \(\cos(\alpha\pm\beta) = \cos\alpha\cos\beta \mp \sin\alpha\sin\beta\)
-- 二倍角: \(\sin 2\alpha = 2\sin\alpha\cos\alpha\), \(\cos 2\alpha = \cos^2\alpha-\sin^2\alpha = 2\cos^2\alpha-1 = 1-2\sin^2\alpha\)
-- 半角与降幂: \(\sin^2\frac{\alpha}{2} = \frac{1-\cos\alpha}{2}\), \(\cos^2\frac{\alpha}{2} = \frac{1+\cos\alpha}{2}\)
-- 积化和差: \(\sin\alpha\cos\beta = \frac{1}{2}[\sin(\alpha+\beta)+\sin(\alpha-\beta)]\), 等
-- 和差化积: \(\sin x + \sin y = 2\sin\frac{x+y}{2}\cos\frac{x-y}{2}\), \(\cos x - \cos y = -2\sin\frac{x+y}{2}\sin\frac{x-y}{2}\)
+- 诱导公式: $\sin(\frac{\pi}{2}+\alpha)=\cos\alpha$, $\cos(\frac{\pi}{2}+\alpha)=-\sin\alpha$, $\sin(\pi+\alpha)=-\sin\alpha$, 等
+- 两角和差: $\sin(\alpha\pm\beta) = \sin\alpha\cos\beta \pm \cos\alpha\sin\beta$, $\cos(\alpha\pm\beta) = \cos\alpha\cos\beta \mp \sin\alpha\sin\beta$
+- 二倍角: $\sin 2\alpha = 2\sin\alpha\cos\alpha$, $\cos 2\alpha = \cos^2\alpha-\sin^2\alpha = 2\cos^2\alpha-1 = 1-2\sin^2\alpha$
+- 半角与降幂: $\sin^2\frac{\alpha}{2} = \frac{1-\cos\alpha}{2}$, $\cos^2\frac{\alpha}{2} = \frac{1+\cos\alpha}{2}$
+- 积化和差: $\sin\alpha\cos\beta = \frac{1}{2}[\sin(\alpha+\beta)+\sin(\alpha-\beta)]$, 等
+- 和差化积: $\sin x + \sin y = 2\sin\frac{x+y}{2}\cos\frac{x-y}{2}$, $\cos x - \cos y = -2\sin\frac{x+y}{2}\sin\frac{x-y}{2}$
 
 ## 易错点
 
-- 诱导公式中“符号看象限”误看成变名后的函数符号（如认为 \(\cos(\frac{\pi}{2}+\alpha) = \sin\alpha\)，因为在第二象限正弦是正数）
+- 诱导公式中“符号看象限”误看成变名后的函数符号（如认为 $\cos(\frac{\pi}{2}+\alpha) = \sin\alpha$，因为在第二象限正弦是正数）
 - 余弦二倍角三种形式在化简或消项（如消去常数1）时的公式选择失误
-- 半角公式开平方时，没有根据 \(\frac{\alpha}{2}\) 所在象限讨论正负号
-- 和差化积公式中 \(\cos x - \cos y\) 丢掉前面的负号
+- 半角公式开平方时，没有根据 $\frac{\alpha}{2}$ 所在象限讨论正负号
+- 和差化积公式中 $\cos x - \cos y$ 丢掉前面的负号
 
 ## 学生常见问题（基于教学经验）
 
 - 公式数量庞大且长相类似，纯靠死记硬背容易混淆、遗忘或记错系数/符号
 - 对公式的几何和向量背景缺乏认知，无法在大题（如三角恒等变换或向量结合题）中产生代数与几何关联的联想
-- “符号看象限”判定中，不知道将 \(\alpha\) 视为锐角只是一个判定符号的代数约定，经常纠结于“如果 \(\alpha\) 本身是钝角，公式还成立吗”
+- “符号看象限”判定中，不知道将 $\alpha$ 视为锐角只是一个判定符号的代数约定，经常纠结于“如果 $\alpha$ 本身是钝角，公式还成立吗”

@@ -3,9 +3,9 @@
 > **系统定位**：本目录（`common/考研/`）并非单纯的 PDF 讲义堆砌库，而是**一个可持续吸收学习、做题和考试反馈，并将其沉淀为稳定心智模型、解题控制规则与考场决策规则的个人认知系统（Personal Cognitive & Methodology System）**。
 >
 > **核心工作流**：
-> \[
+> $$
 > \boxed{\text{Knowledge Plane}} \leftrightarrow \boxed{\text{Control Plane}} \quad \xleftarrow{\text{Feedback}} \quad \boxed{\text{Learning / Evidence Plane}} \quad \xrightarrow{\text{Publish}} \quad \boxed{\text{Publication Plane}}
-> \]
+> $$
 
 ---
 

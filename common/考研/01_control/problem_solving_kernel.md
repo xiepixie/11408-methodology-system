@@ -32,7 +32,7 @@
 
 408 的解题控制核心在于**状态机演化与跨子系统推演**：
 
-\[
+$$
 \boxed{
 \text{Object}
 \xrightarrow{E}
@@ -44,7 +44,7 @@
 \xrightarrow{\text{Invariant \& Cost}}
 \text{Answer}
 }
-\]
+$$
 
 ### 408 专用控制流：
 1. **写出 Snapshot 状态**：列出题目中存在的对象 $O$、关系 $R$ 与队列 $Q$；
@@ -59,7 +59,7 @@
 
 数学一的解题控制核心在于**目标表征与变形降维**：
 
-\[
+$$
 \boxed{
 \text{Object}
 \rightarrow
@@ -73,7 +73,7 @@
 \rightarrow
 \text{Target}
 }
-\]
+$$
 
 ### 数学一专用控制流：
 1. **读目标**：先看最终最值/证明目标，决定决策方向；
@@ -89,7 +89,7 @@
 
 英语一的解题控制核心在于**句法表征与文本功能定位**：
 
-\[
+$$
 \boxed{
 \text{Sentence Structure}
 \rightarrow
@@ -101,7 +101,7 @@
 \rightarrow
 \text{Evidence Option}
 }
-\]
+$$
 
 ### 英语一专用控制流：
 1. **长难句切分**：提取主谓宾主干，隔离定从、状从与同位语插入语；

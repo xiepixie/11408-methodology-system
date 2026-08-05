@@ -1,9 +1,9 @@
 # 数学一学科驾驶舱 (10_数学一 Cockpit)
 
 > **学科研究本质**：
-> \[
+> $$
 > \boxed{\text{Object (已知对象)}} \longrightarrow \boxed{\text{Constraint (定义域与硬约束)}} \longrightarrow \boxed{\text{Representation (选表征)}} \longrightarrow \boxed{\text{Transformation (换元与降维)}} \longrightarrow \boxed{\text{Target (目标输出)}}
-> \]
+> $$
 
 ---
 

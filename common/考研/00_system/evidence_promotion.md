@@ -6,7 +6,7 @@
 
 ## 一、 认知规则成熟度六阶段流水线 (Rule Maturity Pipeline)
 
-\[
+$$
 \boxed{
 \text{Stage 0: Observation}
 \to
@@ -20,7 +20,7 @@
 \to
 \text{Stage 5: Promotion}
 }
-\]
+$$
 
 ---
 

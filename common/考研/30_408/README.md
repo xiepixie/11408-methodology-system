@@ -1,18 +1,18 @@
 # 408 计算机学科综合驾驶舱 (30_408 Cockpit)
 
 > **学科研究本质**：
-> \[
+> $$
 > \boxed{\text{Data (数据结构)}} \longrightarrow \boxed{\text{Program (汇编/指令)}} \longrightarrow \boxed{\text{Machine (计组/硬件)}} \longrightarrow \boxed{\text{OS (内核管理)}} \longrightarrow \boxed{\text{Network (跨机通信)}}
-> \]
+> $$
 
 ---
 
 ## 🎯 408 母模型 (Mother Model)
 
 408 任意四科试题，统一表达为**状态机演化模型**：
-\[
+$$
 \boxed{S_t = (Objects, Relations, Queues)} \xrightarrow{Event + Mechanism + Policy} \boxed{S_{t+1}} \quad \text{s.t. } I(S_{t+1}) = \text{true}
-\]
+$$
 
 ---
 
@@ -48,6 +48,6 @@
 
 ## ⚡ 推荐学习与复习顺序
 
-\[
+$$
 \text{OS 基础五专题} \arr \text{CPU} \times \text{OS 桥梁} \arr \text{408 三科统一} \arr \text{内核状态机综合推演}
-\]
+$$

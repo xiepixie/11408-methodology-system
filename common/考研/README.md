@@ -3,9 +3,9 @@
 > **系统总宣告**：本系统不是静态讲义的堆砌，而是一个**可持续吸收学习、做题和考试反馈，并将其沉淀为稳定心智模型、解题控制规则与考场决策规则的个人认知系统**。
 >
 > 核心运作循环：
-> \[
+> $$
 > \boxed{\text{Learn (学习反馈)}} \rightarrow \boxed{\text{Model (构建模型)}} \rightarrow \boxed{\text{Solve (解题控制)}} \rightarrow \boxed{\text{Test (实战测试)}} \rightarrow \boxed{\text{Reflect (反思诊断)}} \rightarrow \boxed{\text{Update (规则迭代)}}
-> \]
+> $$
 
 ---
 

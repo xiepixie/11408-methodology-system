@@ -1,9 +1,9 @@
 # 英语一学科驾驶舱 (20_英语一 Cockpit)
 
 > **学科研究本质**：
-> \[
+> $$
 > \boxed{\text{Sentence Structure (句法)}} \longrightarrow \boxed{\text{Discourse Function (篇章)}} \longrightarrow \boxed{\text{Author Intent (意图)}} \longrightarrow \boxed{\text{Evidence & Option (证据与选项)}}
-> \]
+> $$
 
 ---
 

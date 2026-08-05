@@ -11,7 +11,7 @@
 
 ## 一、 系统四平面架构图 (Architecture Overview)
 
-\[
+$$
 \boxed{
 \begin{aligned}
 \text{\textbf{Knowledge Plane (理解世界)}} &: \text{Subject} \to \text{Topic} \to \text{Bridge} \to \text{Integration}\\[4pt]
@@ -20,7 +20,7 @@
 \text{\textbf{Publication Plane (发布视图)}} &: \text{Working Knowledge (.md)} \longrightarrow \text{Published Manuals (.tex / .pdf)}
 \end{aligned}
 }
-\]
+$$
 
 ---
 
