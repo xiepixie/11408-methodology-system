@@ -126,6 +126,7 @@ $$
 |---|---|
 | `architecture.md` | 拥有系统边界、三类资产和快慢循环的结构决策 |
 | `terminology.md` | 拥有核心术语定义 |
+| `handbook_writing_spec.md` | 拥有所有心智模型手册与专题手册的认知结构、写作原则与验收标准 |
 | `handbook_contract.md` | 拥有 Handbooks 与 Rules 的最低完成标准 |
 | `evidence_promotion.md` | 拥有 Inbox、诊断和候选规则验证流程 |
 | `ownership_matrix.md` | 登记稳定概念和规则的归属 |
@@ -139,6 +140,7 @@ $$
 - [快速开始一次学习协作](QUICK_START.md)
 - [架构与日常更新路径](00_system/architecture.md)
 - [统一术语](00_system/terminology.md)
+- [手册写作规范（认知结构与验收标准）](00_system/handbook_writing_spec.md)
 - [Handbook 与 Rule 契约](00_system/handbook_contract.md)
 - [Canonical Ownership 台账](00_system/ownership_matrix.md)
 - [Inbox 与规则验证协议](00_system/evidence_promotion.md)
