@@ -2,6 +2,8 @@
 
 本契约规定稳定资产需要说清什么，但不规定固定章节数、篇幅、YAML 或表单。自然中文能说清，就不增加结构。
 
+> 写作原则与验收标准见 [handbook_writing_spec.md](handbook_writing_spec.md)。本文件只定义最低完成清单。
+
 ## 1. 所有 Handbook 的共同要求
 
 读者和 AI 应当能够快速找到：

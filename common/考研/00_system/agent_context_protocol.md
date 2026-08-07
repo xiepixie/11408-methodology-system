@@ -55,6 +55,8 @@ Agent 不应为了显得全面而通读整个仓库。每次只读取与任务�
 
 ## 3. 场景路由表
 
+> 场景结束时的文件更新矩阵见 [collaboration_workflow.md](collaboration_workflow.md) §5。本协议只管 Context 读取，不管写入。
+
 | 场景 | 典型表达 | 主要角色 | 必读 Context | 默认结果 |
 |---|---|---|---|---|
 | `explore` | 还没有模型、想深入讨论 | Mapper + Socratic Tutor | 学科驾驶舱、Atlas、相邻 Topic | provisional model + 反例 + 用户复述 |
