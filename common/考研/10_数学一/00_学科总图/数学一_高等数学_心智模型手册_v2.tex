@@ -1,0 +1,1519 @@
+\documentclass[11pt,a4paper,openany]{ctexbook}
+\usepackage[a4paper,margin=1.78cm,headheight=16pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array,multirow}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlength{\extrarowheight}{2pt}
+\usepackage{enumitem,tcolorbox,tikz,xcolor,fancyhdr,hyperref,microtype,titlesec,lastpage}
+\tcbuselibrary{breakable,skins,theorems}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,fit,matrix}
+\definecolor{ink}{RGB}{25,25,25}
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{150,158,166}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{warn}{RGB}{123,76,67}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{purple}{RGB}{87,72,116}
+\definecolor{blueish}{RGB}{68,92,126}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={数学一高等数学心智模型手册 v2}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.30em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist{itemsep=0.17em,topsep=0.35em,leftmargin=2em}
+\pagestyle{fancy}\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 高等数学}}
+\rhead{\small\color{deep}\leftmark}
+\cfoot{\small 第 \thepage\ 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries\color{deep}}{\filleft\Large 第\thechapter 篇}{0.4ex}{\titlerule\vspace{0.8ex}\filright}
+\titleformat{\section}{\Large\bfseries\color{deep}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{ink}}{\thesubsection}{0.6em}{}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examBox}[1]{breakable,colback=white,colframe=accent,title=\textbf{数学一训练：#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{boundarybox}[1]{breakable,colback=soft,colframe=line,title=\textbf{概念边界：#1},boxrule=0.6pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{贯穿例：#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\key}[1]{\textbf{\color{deep}#1}}
+\newcommand{\eng}[1]{\textit{#1}}
+\let\cleardoublepage\clearpage
+\tikzset{
+ atlas/.style={draw=deep,rounded corners=2mm,minimum width=2.85cm,minimum height=1cm,align=center,fill=soft,font=\small},
+ flow/.style={-{Latex[length=2mm]},thick,draw=deep},
+ dashedflow/.style={-{Latex[length=2mm]},densely dashed,thick,draw=purple}
+}
+
+\begin{document}
+\frontmatter
+\begin{titlepage}
+\centering\vspace*{0.8cm}
+{\Huge\bfseries\color{deep} 高等数学\par}
+\vspace{0.3cm}
+{\LARGE 心智模型手册 v2\par}
+\vspace{0.4cm}
+{\large 局部模型 · 连续累积 · 局部--整体 · 无限逼近 · 动态恢复\par}
+\vspace{0.8cm}
+\begin{tikzpicture}[
+  atlas/.style={draw=deep,rounded corners=2.5mm,text width=3.8cm,minimum height=1.15cm,align=center,fill=soft,font=\small,inner sep=3pt,thick},
+  flow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,draw=deep},
+  dashedflow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,dashed,draw=accent}
+]
+% 第一排：基础微积分与一元工具层 (x=0, 5.8, 11.6)
+\node[atlas] (lim) at (0,0) {\textbf{Limit \& Object}\\\scriptsize 极限底座与研究对象};
+\node[atlas] (loc) at (5.8,0) {\textbf{Local Model}\\\scriptsize 局部近似：导数/Taylor};
+\node[atlas] (acc) at (11.6,0) {\textbf{Accumulation}\\\scriptsize 连续累积：定积分/重积分};
+
+% 第二排：高阶结构与恢复工具层 (y=-2.2)
+\node[atlas] (inf) at (11.6,-2.2) {\textbf{Infinite Build}\\\scriptsize 无限构造：级数与 Fourier};
+\node[atlas] (lg) at (5.8,-2.2) {\textbf{Local $\leftrightarrow$ Global}\\\scriptsize 局部与整体：FTC/场论定理};
+\node[atlas] (dyn) at (0,-2.2) {\textbf{Dynamics}\\\scriptsize 动态恢复：微分方程轨迹};
+
+% 正向流
+\draw[flow] (lim.east) -- node[above,font=\tiny\color{deep}]{局部线性化} (loc.west);
+\draw[flow] (loc.east) -- node[above,font=\tiny\color{deep}]{连续累积} (acc.west);
+\draw[flow] (acc.south) -- node[right,font=\tiny\color{deep}]{无限展开} (inf.north);
+
+% 底行反向化简流
+\draw[flow] (inf.west) -- node[above,font=\tiny\color{deep}]{场与边界定理} (lg.east);
+\draw[flow] (lg.west) -- node[above,font=\tiny\color{deep}]{方程轨迹恢复} (dyn.east);
+
+% 左侧闭环上升线
+\draw[dashedflow] (dyn.north) -- node[left,font=\tiny\color{accent}]{逼近与全局重建} (lim.south);
+\end{tikzpicture}
+\vfill
+{\small 高等数学不是一串求导积分技巧；它研究“变化”怎样被局部描述、连续累积、无限逼近，并怎样从局部规律恢复整体结构。\par}
+\end{titlepage}
+
+\chapter*{使用说明：高数不能被压成一句口号，也不能重新写成一本教材}
+\addcontentsline{toc}{chapter}{使用说明：高数不能被压成一句口号，也不能重新写成一本教材}
+
+\begin{corebox}{本册的职责}
+本册不是公式索引，也不是把教材八章重新压缩一遍。它负责建立一套能\key{生成章节、解释公式、选择路线、检查结果}的稳定认知骨架。高等数学比线性代数更难统一，因此采用：
+\[
+\boxed{\text{一个共同底座：Limit / Approximation}}
+\]
+加上五个反复出现的母模型：
+\[
+\boxed{\text{Local Model}+\text{Accumulation}+\text{Local--Global}+\text{Infinite Construction}+\text{Dynamics}}.
+\]
+其中“一元到多元”主要是\key{对象与维度升级}，不是重新发明一套微积分；曲线、曲面与向量场则要求额外维护参数化、方向和几何微元。
+\end{corebox}
+
+\begin{methodbox}{任何抽象第一次出现，都必须能落到四件事}
+本册采用固定解释契约：
+\[
+\boxed{\text{Meaning}\to\text{Chapter Mapping}\to\text{Worked Example}\to\text{Problem Action}}.
+\]
+例如“导数是局部线性化”不能停在这句话：必须继续说明它怎样对应切线、微分、复合求导、多元全微分和 Taylor；用一个具体函数跑一次；最后告诉你题目出现“近似、切线、极值、主导阶”时怎样调用这个模型。
+\end{methodbox}
+
+\begin{methodbox}{箭头和英文符号怎么读}
+本册中的 $A\to B$ 若出现在模型链里，通常表示\key{思考顺序、构造顺序或信息流}，不是等号，也不自动表示物理时间先后。比如
+\[
+\text{Quantity}\to\text{Region}\to\text{Coordinates}\to\text{Element}\to\text{Bounds}
+\]
+表示做重积分时依次问：累计什么？区域是什么？哪种坐标最省复杂度？微元怎样变化？上下限怎样覆盖区域？
+英文术语只作为跨教材对齐标签；第一次出现时必须配中文含义，不能让英文承担解释本身。
+\end{methodbox}
+
+\begin{warnbox}{本册不做什么}
+本册不把每一种积分技巧、每一种含参极限套路、每一种微分方程特解模板全部写成题型百科。那些属于后续 Practice Layer。本册只保留足以\key{选择正确对象、正确表示、正确母模型和正确检查项}的理论与典型推演。
+\end{warnbox}
+
+\tableofcontents
+\mainmatter
+
+% ============================================================
+\chapter{总图：高等数学究竟在研究什么}
+% ============================================================
+
+\section{第一层先看对象：高数不是只有 $y=f(x)$}
+高数中的公式只有放回“对象”以后才有稳定含义。常见对象包括：
+\begin{longtable}{L{3.1cm}L{4.1cm}L{4.3cm}L{\dimexpr\linewidth-11.67cm\relax}}
+\toprule
+\textbf{对象} & \textbf{它是什么} & \textbf{主要问题} & \textbf{对应章节}\\
+\midrule
+数列 $a_n$ & 定义在离散整数指标上的函数 & $n\to\infty$ 时是否稳定、速度如何 & 数列极限、级数\\
+一元函数 $f(x)$ & 一维输入到数值输出 & 局部变化、区间累积、整体形状 & 极限、微分、积分\\
+参数曲线 $\bm r(t)$ & 用一个参数生成空间轨迹 & 切向、弧长、沿曲线累积 & 空间曲线、线积分\\
+标量场 $f(x,y,z)$ & 空间每一点赋一个数 & 梯度、极值、区域累积 & 多元微分、重积分\\
+向量场 $\bm F(x,y,z)$ & 空间每一点赋一个向量 & 局部源/旋、功、环流、通量 & 曲线/曲面积分、场论\\
+未知函数 $y(x)$ & 尚未知道的整条轨迹 & 由局部变化律恢复整体解 & 常微分方程\\
+\bottomrule
+\end{longtable}
+
+\begin{corebox}{对象升级以后，原来的微积分动作怎样升级}
+从一元函数升到高维，并不是把公式里的 $x$ 换成 $x,y,z$：
+\begin{itemize}
+  \item 一元导数 $f'(x)$ 升级为多元微分/梯度 $\nabla f$，因为现在允许的移动方向不再唯一；
+  \item 一元二阶导 $f''$ 升级为 Hessian，因为二阶弯曲需要记录不同方向之间的耦合；
+  \item 区间积分升级为区域、曲线、曲面积分，因为“微小单元”从 $dx$ 变成 $dA,dV,ds,dS$；
+  \item 一元的“导数积分互联”升级为 Green、Gauss、Stokes，把局部微分算子与边界/区域积分连接。
+\end{itemize}
+所以新章节的第一问永远是：\key{对象变了以后，原来哪个操作需要升维？}
+\end{corebox}
+
+\section{共同底座：Limit 让不可直接触碰的对象变得可定义}
+极限的统一作用是：
+\[
+\boxed{\text{Accessible nearby/finite objects}\to\text{Limit}\to\text{Ideal object}}.
+\]
+瞬时速度不能用“零时间间隔”直接相除，但可以看差商极限；面积不能把连续区域一次性相加，但可以看越来越细的 Riemann 和；无穷级数不是把无穷多个数一次相加，而是看有限部分和的极限。
+
+\begin{examplebox}{三个看似不同的定义，其实共用极限底座}
+\[
+f'(a)=\lim_{h\to0}\frac{f(a+h)-f(a)}{h},
+\]
+\[
+\int_a^b f(x)\,dx=\lim_{\max\Delta x_i\to0}\sum f(\xi_i)\Delta x_i,
+\]
+\[
+\sum_{n=1}^{\infty}a_n=\lim_{N\to\infty}\sum_{n=1}^{N}a_n.
+\]
+三者都在做同一件事：先构造有限/邻近对象，再用极限定义理想对象。区别只在于“正在逼近什么”。
+\end{examplebox}
+
+\section{五个母模型：分别解决五类根本问题}
+\begin{longtable}{L{2.8cm}L{5.0cm}L{4.0cm}L{\dimexpr\linewidth-11.97cm\relax}}
+\toprule
+\textbf{母模型} & \textbf{真正问题} & \textbf{主要章节} & \textbf{题目信号}\\
+\midrule
+局部模型 & 在一点附近，用什么低复杂度对象替代原来的复杂对象？ & 导数、微分、中值、Taylor、多元微分、极值 & 切线、近似、主导阶、极值\\
+累积 & 一个局部贡献如何在连续区域上加成整体量？ & 定积分、重积分、曲线/曲面积分 & 面积、质量、功、流量、总量\\
+局部--整体 & 局部变化信息怎样决定端点、边界或区域的整体效应？ & FTC、路径无关、Green、Gauss、Stokes & 端点差、闭曲线、封闭曲面\\
+无限构造 & 有限部分怎样在极限下构造无穷对象或函数表示？ & 数项级数、幂级数、Taylor/Fourier & 收敛、和函数、展开\\
+动态恢复 & 已知局部变化律与初值，怎样恢复整条未知轨迹？ & 常微分方程 & $y'=\cdots$、初值、通解/特解\\
+\bottomrule
+\end{longtable}
+
+\section{一条贯穿母例：位置 $s(t)$ 如何串起整门课}
+\begin{examplebox}{粒子的运动不是为了讲物理，而是为了展示五种数学动作}
+设位置为 $s(t)$：
+\begin{enumerate}
+  \item 研究 $t\to t_0$ 时 $s(t)$ 是否靠近某值，是\key{极限}；
+  \item $v(t)=s'(t)$ 把一个很短时间内的位置变化压缩成瞬时变化率，是\key{局部模型}；
+  \item $\int_a^b v(t)\,dt$ 把每一瞬间的局部速度贡献累积成净位移，是\key{累积}；
+  \item $\int_a^b s'(t)dt=s(b)-s(a)$ 把内部局部变化与端点总变化联系，是\key{局部--整体}；
+  \item 如果反过来只知道 $s'(t)=F(t,s)$ 和 $s(t_0)=s_0$，要求 $s(t)$，就是\key{动态恢复}。
+\end{enumerate}
+后面一元函数、多元标量场、向量场都可以看作这套思想换了对象与维度。
+\end{examplebox}
+
+\section{高数的第二条暗线：Representation Choice}
+高数大量“技巧”其实不是新定理，而是\key{改表示}：
+\begin{itemize}
+  \item 隐函数改成参数式，复杂切线可能立刻简单；
+  \item 二重积分从直角坐标改成极坐标，本质是让区域和 integrand 同时简单；
+  \item 微分方程令 $y=ux$、$z=y^{1-n}$、$x=e^t$，是在寻找能暴露可积分结构的新变量；
+  \item 级数把函数改写成幂函数或三角函数的无限线性组合，是换一套表示语言。
+\end{itemize}
+因此统一做题控制中，“选择表示”必须位于“开始计算”之前。
+
+% ============================================================
+\chapter{函数、数列与表示：所有微积分之前先确认你在研究什么}
+% ============================================================
+
+\section{函数的第一问题不是公式，而是定义域、对应关系与值域}
+函数 $f:X\to Y$ 先规定允许输入的集合，再规定每个输入对应唯一输出。数学一中大量错误不是算错，而是\key{变形后偷偷改变了定义域}：例如约掉因子、取对数、开方、作反函数、变量代换时，都必须检查允许范围。
+
+\begin{boundarybox}{函数表达式 $\neq$ 函数}
+同一个表达式配不同定义域可以是不同函数；两个表达式在共同定义域上逐点相等才代表同一个函数。题目出现“定义域”“连续延拓”“反函数”时，不能只看代数式。
+\end{boundarybox}
+
+\section{函数性质是“结构信号”，不是考前背诵表}
+\begin{itemize}
+  \item \key{单调性}告诉你输入顺序怎样传到输出，可用于逆函数、方程根唯一性和极值；
+  \item \key{奇偶性}告诉你关于原点/纵轴的对称，可直接减少积分区域和 Fourier 系数；
+  \item \key{周期性}允许把无限重复行为压到一个基本周期研究；
+  \item \key{有界性}常与极限、连续、积分和收敛性结合；
+  \item \key{凸性/凹性}是导数信息的整体几何表现，可用于不等式和最值判断。
+\end{itemize}
+做题时看到这些条件，应问“它能消掉哪一部分计算”。
+
+\section{复合函数：外层变化如何接收内层变化}
+$y=f(g(x))$ 不是“两个公式套一起”，而是两个映射的复合：
+\[
+x\xrightarrow{g}u\xrightarrow{f}y.
+\]
+这个链在求导时直接产生 chain rule；在变量代换积分中又产生“变量和微元一起变”的要求。复合结构是高数里最值得主动识别的结构信号之一。
+
+\section{反函数：交换输入与输出，但只在可逆区间成立}
+若 $f$ 在某区间单调且一一对应，才可以把 $y=f(x)$ 反过来写成 $x=f^{-1}(y)$。反函数求导
+\[
+(f^{-1})'(y)=\frac{1}{f'(x)}
+\]
+不是孤立公式：它来自局部线性模型“正向缩放 $f'(x)$ 与逆向缩放必须互为倒数”。
+
+\section{显式、隐式、参数式：同一个几何对象的不同表示}
+同一条曲线可能写成 $y=f(x)$、$F(x,y)=0$ 或
+\[
+x=x(t),\qquad y=y(t).
+\]
+三种表示不是高低之分。做题时应问：\key{当前目标是求导、积分、切向还是描述轨迹，哪种表示最直接？}
+参数表示尤其适合空间曲线和“一个坐标不是另一个坐标单值函数”的情形。
+
+\section{数列是定义域离散化后的函数}
+数列 $a_n$ 可以看作 $\mathbb N\to\mathbb R$ 的函数。它不能直接使用连续变量的全部微分工具，但极限、单调、有界、夹逼、递推等思想与函数高度相通。递推数列题最重要的不是“猜极限”，而是先证明极限存在，再把可能极限代入不动点方程。
+
+\begin{examBox}{递推数列极限的三步协议}
+\begin{enumerate}
+  \item 根据递推关系研究单调性、有界性或构造夹逼，证明 $a_n$ 确实收敛；
+  \item 设 $a_n\to L$，再对递推式取极限得到候选不动点；
+  \item 若不动点有多个，用初值、单调性、取值区间排除不可能分支。
+\end{enumerate}
+只做第 2 步属于“先假定答案存在”，在证明题中逻辑不完整。
+\end{examBox}
+
+% ============================================================
+\chapter{极限与连续：比较邻域行为、尺度与主导项}
+% ============================================================
+
+\section{极限不是代入：研究的是邻域而不是点值}
+\[
+\lim_{x\to a}f(x)=L
+\]
+表示当 $x$ 足够接近 $a$ 时，$f(x)$ 可以被控制得任意接近 $L$。因此 $f(a)$ 可以不存在，甚至可以故意定义成别的值，而邻域极限不受影响。
+
+\begin{boundarybox}{点值 / 极限 / 连续}
+\begin{itemize}
+  \item $f(a)$：点上实际取值；
+  \item $\lim_{x\to a}f(x)$：邻域趋势；
+  \item 连续：极限存在并且等于点值。
+\end{itemize}
+题目要求“补定义使连续”时，必须先算左右邻域极限；左右极限不同，任何一个点值都救不了连续性。
+\end{boundarybox}
+
+\section{数列极限与函数极限：共同底座，不同接近方式}
+数列只有 $n\to\infty$ 的离散接近；函数可以从左、从右、从任意路径接近。多元函数还会进一步增加“从任意空间路径接近”的要求，这正是多元极限更严格的原因。
+
+\section{极限存在性的核心不是公式，而是“所有允许接近方式给同一结果”}
+一元函数在点 $a$ 的双侧极限存在，当且仅当左右极限都存在且相等。多元函数若沿两条不同路径得到不同结果，就足以否定极限；但沿若干条路径相同不能证明极限，因为还有无限多条路径未检查。
+
+\section{无穷小比较：比较的是尺度层级}
+若 $\alpha,\beta\to0$，则：
+\begin{itemize}
+  \item $\alpha=o(\beta)$：$\alpha/\beta\to0$，$\alpha$ 是更高阶小量；
+  \item $\alpha\sim\beta$：$\alpha/\beta\to1$，两者主导阶相同；
+  \item $\alpha=O(\beta)$：比例保持有界，表示量级不超过对方常数倍。
+\end{itemize}
+高数很多极限技巧都在寻找\key{最先不消失的主导阶}。
+
+\begin{warnbox}{等价无穷小替换的边界}
+$\alpha\sim\tilde\alpha$ 最稳定地用于\key{乘除结构}。若在加减结构中直接替换，低阶主项可能相消，下一阶反而决定答案。例如 $\sin x-x$ 不能把 $\sin x$ 直接换成 $x$ 后得到 0 并停止；必须继续到三阶。遇到“两个很接近的量相减”，优先想到 Taylor 或更精细展开。
+\end{warnbox}
+
+\section{未定式不是答案类别，而是“现有信息不够”}
+$0/0,\infty/\infty,0\cdot\infty,\infty-\infty,1^\infty,0^0,\infty^0$ 都表示直接代入无法决定主导关系。做题的真正动作是把它改写成可比较的结构：因式分解、有理化、取对数、等价无穷小、Taylor、洛必达、夹逼。
+
+\begin{methodbox}{极限路线选择：先看结构，再决定工具}
+\begin{enumerate}
+  \item \key{能直接化简吗？} 因式分解、有理化、换元经常比高级工具更稳；
+  \item \key{能识别主导阶吗？} 指数、对数、三角复合常用等价或 Taylor；
+  \item \key{是严格的商型未定式吗？} 才考虑 L'Hospital；
+  \item \key{能利用单调有界/夹逼吗？} 数列、积分定义型极限经常更自然；
+  \item \key{是否含变限积分？} 先识别积分上限函数，再考虑求导或中值定理。
+\end{enumerate}
+路线标准不是“哪个公式最熟”，而是\key{哪条路线最直接暴露主导结构}。
+\end{methodbox}
+
+\section{连续性把局部极限升级成全局保证}
+闭区间连续函数拥有有界性、最值存在和介值性质。它们在题目里不是背景定理：
+\begin{itemize}
+  \item 证明方程有根：构造连续函数并制造异号端点；
+  \item 证明最值存在：先确认连续与闭有界区间，再研究导数寻找位置；
+  \item 证明某值能取到：把“目标值”放进端点函数值之间，用介值。
+\end{itemize}
+
+\begin{examplebox}{“存在根”题为什么先想连续而不是先求导}
+若要证明 $f(x)=0$ 在 $(a,b)$ 有根，最短的结构通常是：
+\[
+\text{continuous on }[a,b]+f(a)f(b)<0\Longrightarrow \exists c\in(a,b),\ f(c)=0.
+\]
+这是纯存在性。只有当题目进一步问“根唯一”，才通常叠加单调性或 $f'$ 符号。
+\end{examplebox}
+
+% ============================================================
+\chapter{一元微分：局部线性化、存在性桥梁与函数形状}
+% ============================================================
+
+\section{导数真正定义的是“最佳一阶线性主部”}
+若
+\[
+f(x+h)=f(x)+Ah+o(h),\qquad h\to0,
+\]
+则 $A=f'(x)$。所以
+\[
+\boxed{\Delta y=f'(x)\Delta x+o(\Delta x)}
+\]
+比“导数是切线斜率”更一般：切线只是这个局部线性模型的几何图像，微分 $dy=f'(x)dx$ 则是把一阶主部单独拿出来。
+
+\section{可导为什么必然连续，而连续为什么不够}
+可导要求误差比 $|h|$ 更高阶：
+\[
+f(x+h)-f(x)=f'(x)h+o(h)\to0.
+\]
+所以连续自动成立。但连续只要求函数值不跳，不保证局部变化可以被一个线性斜率统一描述；$|x|$ 在 0 连续却有左右斜率冲突。
+
+\section{求导法则可以统一理解成“局部线性模型的组合规则”}
+\subsection{乘积法则：两个因子都在变}
+$f(x)g(x)$ 的一阶增量来自两条主边：$g\,df+f\,dg$；二阶小块 $df\,dg$ 被高阶项吸收，于是
+\[
+d(fg)=g\,df+f\,dg.
+\]
+
+\subsection{链式法则：局部线性映射复合仍是线性映射}
+若 $x\xrightarrow{g}u\xrightarrow{f}y$，则局部近似依次缩放：
+\[
+du\approx g'(x)dx,\qquad dy\approx f'(u)du,
+\]
+所以
+\[
+\boxed{\frac{dy}{dx}=\frac{dy}{du}\frac{du}{dx}}.
+\]
+这条思想到多元后升级成 Jacobian 矩阵相乘。
+
+\subsection{隐函数求导：曲线已给出，但没有显式解出 $y$}
+若 $F(x,y)=0$，沿曲线移动时等式始终保持，因此
+\[
+F_xdx+F_y dy=0,
+\]
+若 $F_y\neq0$，则
+\[
+\frac{dy}{dx}=-\frac{F_x}{F_y}.
+\]
+这其实是“总变化为零”的局部线性约束。
+
+\subsection{参数方程求导：用共同参数比较两个坐标的变化率}
+若 $x=x(t),y=y(t)$ 且 $x'(t)\neq0$，则
+\[
+\frac{dy}{dx}=\frac{dy/dt}{dx/dt}.
+\]
+二阶导数还要再次对 $x$ 求导，不能把 $d^2y/dx^2$ 误写成 $y''(t)/x''(t)$。
+
+\section{高阶导数：研究“变化率本身怎样变化”}
+$f'$ 描述一阶趋势，$f''$ 描述斜率变化，继续求导则逐层描述更高阶局部结构。高阶导真正重要的地方包括 Taylor、曲率、常系数线性微分方程和某些参数函数求导。
+
+\section{中值定理：从有限区间的整体信息制造内部导数信息}
+Rolle、Lagrange、Cauchy 的共同结构是：
+\[
+\boxed{\text{endpoint/global relation}\Longrightarrow \text{some interior derivative relation}}.
+\]
+它们是高数证明题最重要的“存在性生成器”之一。
+
+\subsection{Rolle：制造零导数}
+若端点值相同，连续可导保证中间至少有一处水平切线。它最适合目标中出现 $f'(\xi)=0$ 或可以通过构造辅助函数把目标改成零导数的题。
+
+\subsection{Lagrange：瞬时变化率等于某个平均变化率}
+\[
+f'(\xi)=\frac{f(b)-f(a)}{b-a}.
+\]
+它把端点差转成内部导数，常用于不等式、唯一性、误差估计。
+
+\subsection{Cauchy：两个函数的整体变化比转成导数比}
+当目标式同时出现 $f,g$ 或商型结构时，Cauchy MVT 往往比强行凑 Lagrange 更自然。L'Hospital 的理论根基就在这里。
+
+\begin{methodbox}{中值定理证明题的反向设计协议}
+\begin{enumerate}
+  \item 先看目标结论希望得到 $F'(\xi)=0$、$F'(\xi)=K$ 还是 $f'(\xi)/g'(\xi)=K$；
+  \item 把目标式整理成一个“导数形状”；
+  \item 反推需要构造什么辅助函数 $F$，让端点条件符合 Rolle/Lagrange/Cauchy；
+  \item 最后检查连续、可导、端点条件一个都不能漏。
+\end{enumerate}
+这比“看到存在 $\xi$ 就盲目作差”稳定得多。
+\end{methodbox}
+
+\section{L'Hospital：比较两个函数消失/发散速度的导数版本}
+L'Hospital 只直接处理 $0/0$ 或 $\infty/\infty$ 型商。它不是“只要有极限就上下求导”。使用前要检查型别和条件；使用后如果结构更复杂，应退回 Taylor、等价无穷小或代数化简。
+
+\section{Taylor：从线性主部升级为有限阶局部模型}
+在 $x_0$ 附近，光滑函数可以写成
+\[
+f(x)=\sum_{k=0}^{n}\frac{f^{(k)}(x_0)}{k!}(x-x_0)^k+R_n(x).
+\]
+真正的做题问题不是“会不会展开”，而是：\key{要展开到几阶才能让第一个不消失的项出现？余项需要精确到什么程度？}
+
+\begin{examplebox}{极限中为什么要“展开到刚好够用”}
+若分子低阶项发生消去，例如 $e^x-1-x$，常数项和一次项都消失，所以至少要保留二次项：
+\[
+e^x=1+x+\frac{x^2}{2}+o(x^2).
+\]
+于是分子主导阶是 $x^2/2$。若只写 $e^x\sim1+x$，会把真正决定答案的二阶信息抹掉。
+\end{examplebox}
+
+\section{导数应用：把局部信息拼成整体形状}
+\begin{itemize}
+  \item $f'$ 符号控制单调区间；
+  \item 驻点/不可导点只是极值候选点，必须比较符号或函数值；
+  \item $f''$ 控制斜率增长趋势，从而判断凹凸和拐点候选；
+  \item 渐近线研究边界/无穷远的主导行为；
+  \item 曲率描述切向方向改变得多快，是二阶局部几何量。
+\end{itemize}
+
+\begin{examBox}{函数形状题的统一流程}
+\[
+\boxed{\text{Domain}\to\text{Critical Points}\to\text{Sign Chart}\to\text{Boundary/Infinity}\to\text{Global Picture}}
+\]
+先维护定义域和边界，再找 $f',f''$ 的关键点；最后结合端点与无穷远行为，不要只看某个驻点就宣布全局最值。
+\end{examBox}
+
+% ============================================================
+\chapter{一元积分：从局部贡献到整体累积}
+% ============================================================
+
+\section{定积分的母模型不是“求原函数”，而是连续累积}
+若一个小区间 $[x,x+dx]$ 上的局部贡献近似为
+\[
+\text{density}(x)\cdot dx,
+\]
+把所有小贡献加起来并让分割无限细，就得到定积分。它的统一结构是
+\[
+\boxed{\text{Local Quantity}\times\text{Small Element}\to\text{Sum}\to\text{Limit}\to\text{Global Quantity}}.
+\]
+面积、体积、质量、功、压力、质心等题的真正区别，只在于“局部贡献”具体是什么。
+
+\section{不定积分与定积分是两个不同问题}
+\begin{boundarybox}{逆微分 $\neq$ 连续累积}
+\begin{itemize}
+  \item 不定积分 $\int f(x)dx$：寻找所有满足 $F'=f$ 的原函数，是\key{逆微分问题}；
+  \item 定积分 $\int_a^b f(x)dx$：在区间上累积有向局部贡献，是\key{整体量问题}。
+\end{itemize}
+Newton--Leibniz 把二者连接，但不能因此把定义混为一谈。前者必须保留常数 $C$，后者是一个确定数值。
+\end{boundarybox}
+
+\section{积分上限函数：累积本身也能生成一个新函数}
+定义
+\[
+A(x)=\int_a^x f(t)dt.
+\]
+当右端点从 $x$ 增加到 $x+dx$，新增量近似为 $f(x)dx$，因此在连续条件下
+\[
+\boxed{A'(x)=f(x)}.
+\]
+这不是一个孤立求导公式，而是高数最核心的局部--整体桥：\key{局部密度经过累积生成函数，而对累积函数求导又恢复当前局部密度。}
+
+\begin{examplebox}{为什么积分上限函数是整本高数的关键接口}
+\[
+A(x)=\int_0^x \sin t\,dt.
+\]
+$A(x)$ 表示从 0 到 $x$ 的累计有向面积；$A'(x)=\sin x$ 表示当上限稍微移动时，新增加面积的瞬时速度就是端点处高度。它把“积分是累积”和“导数是局部变化率”真正焊在一起。
+\end{examplebox}
+
+\section{Newton--Leibniz：内部局部变化累积成边界净变化}
+若 $F'=f$，则
+\[
+\boxed{\int_a^b f(x)dx=F(b)-F(a)}.
+\]
+更深地说，若把 $f$ 看成 $F$ 的局部变化率，那么整个区间内这些局部变化率的累计，等于两个边界值的净变化。这个思想在高维会升级成 Green、Gauss、Stokes。
+
+\section{定积分中值：平均局部水平可以由某一点代表}
+若 $f$ 连续，存在 $\xi\in[a,b]$ 使
+\[
+\int_a^b f(x)dx=f(\xi)(b-a).
+\]
+它的意义是：连续函数在区间上的平均高度，一定等于某个实际点的高度。看到“证明存在 $\xi$ 使积分等于某个函数值乘长度”时，应主动识别这是积分中值结构。
+
+\section{换元积分：变量和微元必须一起改变}
+设 $x=\varphi(t)$，则局部小长度满足
+\[
+dx=\varphi'(t)dt.
+\]
+因此换元不是“只把 $x$ 换成 $t$”，而是
+\[
+\boxed{f(x)dx\to f(\varphi(t))\varphi'(t)dt}.
+\]
+它本质上是\key{选择更适合当前结构的坐标}。以后极坐标、柱坐标、球坐标和一般 Jacobian 都是同一思想升维。
+
+\section{分部积分：把求导负担从一个因子转移到另一个因子}
+由
+\[
+d(uv)=u\,dv+v\,du
+\]
+得到
+\[
+\int u\,dv=uv-\int v\,du.
+\]
+真正决策不是“谁当 $u$”，而是：\key{哪一种拆法会让剩余积分的复杂度下降？} 若求导后更简单、积分后仍可控，则转移是有利的；反之只是把问题搬家。
+
+\begin{methodbox}{不定积分的结构识别}
+面对积分先看：
+\begin{enumerate}
+  \item 是否存在明显复合函数与其导数，适合换元；
+  \item 是否存在“求导变简单”的因子与“容易积分”的因子，适合分部；
+  \item 是否是有理函数，需要拆部分分式；
+  \item 是否含三角有理式、根式，可通过恒等变形或代换降为有理结构；
+  \item 若路线越来越复杂，回头检查是不是选错表示，而不是继续硬算。
+\end{enumerate}
+\end{methodbox}
+
+\section{定积分的结构信息：对称、周期与变量替换}
+定积分题常常不需要求原函数：
+\begin{itemize}
+  \item 奇偶性可以把 $[-a,a]$ 的积分直接化简；
+  \item 周期性可以把长区间折叠到基本周期；
+  \item 变换 $x\mapsto a+b-x$ 常用来把两个难项配对；
+  \item 若被积函数满足互补结构，可将原积分和变换后的积分相加消去复杂项。
+\end{itemize}
+这些都是“保持整体累积量、换更好表示”的应用。
+
+\section{反常积分：把无限区间和奇点重新变回极限问题}
+若上限为无穷或区间内部存在无界点，积分本身先不直接定义，而是通过有限区间积分的极限定义。例如
+\[
+\int_1^{\infty}f(x)dx=\lim_{R\to\infty}\int_1^R f(x)dx.
+\]
+因此判断收敛时的核心仍然是\key{尾部/奇点附近的主导阶}。$p$ 型基准
+\[
+\int_1^\infty \frac{dx}{x^p},\qquad \int_0^1\frac{dx}{x^p}
+\]
+分别提供无穷远和有限奇点附近的标准尺度。
+
+\begin{boundarybox}{无穷大积分值 $\neq$ 反常积分发散}
+“积分区间无限”不等于积分发散；真正判断的是定义极限是否有限。类似地，被积函数在某点无界也不自动发散，必须检查奇点附近积累速度。
+\end{boundarybox}
+
+\section{定积分应用：先建局部微元模型，再积分}
+\begin{longtable}{L{3.1cm}L{5.4cm}L{\dimexpr\linewidth-8.67cm\relax}}
+\toprule
+\textbf{目标量} & \textbf{局部贡献} & \textbf{关键建模问题}\\
+\midrule
+平面面积 & $dA\approx \text{height}\cdot dx$ & 竖切还是横切更简单？\\
+旋转体体积 & $dV$ 为薄片/圆盘/壳 & 哪种微元让半径与高度简单？\\
+弧长 & $ds=\sqrt{1+(y')^2}\,dx$ 或参数式 & 用哪个参数描述曲线最自然？\\
+功 & $dW=F(x)dx$ & 力是否随位置变化？\\
+质量/质心 & $dm=\rho(x)dx$，再加权 & 密度是什么，位置如何加权？\\
+\bottomrule
+\end{longtable}
+应用题的第一步永远是写清一个小元素贡献，而不是先找积分公式。
+
+% ============================================================
+\chapter{空间解析几何：为多元微积分建立对象与方向}
+% ============================================================
+
+\section{空间几何的核心不是背方程，而是“点 + 方向/法向”}
+多元微积分中的切线、切平面、法线、曲面法向都依赖空间几何。最稳定的生成规则是：
+\begin{itemize}
+  \item 直线：\key{一点 + 方向向量}；
+  \item 平面：\key{一点 + 法向量}；
+  \item 曲线：可用参数 $\bm r(t)$ 生成；
+  \item 曲面：可用显式 $z=f(x,y)$、隐式 $F(x,y,z)=0$ 或参数式 $\bm r(u,v)$ 表示。
+\end{itemize}
+
+\section{点积、叉积、混合积分别解决什么}
+\begin{itemize}
+  \item 点积 $\bm a\cdot\bm b$：投影、夹角、正交判定；
+  \item 叉积 $\bm a\times\bm b$：同时垂直于两个方向，给法向与有向面积；
+  \item 混合积 $(\bm a\times\bm b)\cdot\bm c$：有向体积、共面判定。
+\end{itemize}
+它们不是三套计算，而是三种几何信息提取器。
+
+\section{直线和平面的关系题先转成方向关系}
+平行、垂直、夹角、距离题都先把对象翻译成方向向量和法向量：
+\begin{itemize}
+  \item 两平面关系看法向量；
+  \item 直线与平面关系看方向向量和法向量点积；
+  \item 两直线关系看两个方向向量；
+  \item 距离常转成投影或法向分量。
+\end{itemize}
+
+\section{空间曲线与投影：三维约束可以先投到二维看}
+空间曲线常由两个曲面交线给出。若直接参数化困难，可以先消去一个变量得到在坐标平面上的投影曲线，再结合原方程恢复空间信息。重积分和曲面积分里“投影区域”就是这个思想的延续。
+
+\section{常见曲面：优先看截面、对称与自由变量}
+柱面说明某个坐标自由；旋转曲面来自平面曲线绕轴旋转；二次曲面应通过与坐标平面/平行平面的截线判断形状。真正要培养的是“方程如何限制自由度”，不是把十几种图形死背。
+
+% ============================================================
+\chapter{多元微分：局部线性化怎样真正升到高维}
+% ============================================================
+
+\section{多元极限：接近路径从两条变成无穷多条}
+对 $f(x,y)$，$(x,y)\to(x_0,y_0)$ 可以沿直线、抛物线、曲线等无穷多种路径。若两条路径极限不同，可立刻否定极限；若若干路径相同，只能说明“尚未发现矛盾”，不能证明极限存在。
+
+\section{偏导只是坐标轴方向的局部变化率}
+\[
+f_x(x_0,y_0)=\lim_{h\to0}\frac{f(x_0+h,y_0)-f(x_0,y_0)}{h}
+\]
+只固定 $y$ 沿 $x$ 轴方向看变化。同理 $f_y$ 只沿另一个坐标方向。它们是高维局部信息的两个切片，不足以自动保证所有斜方向行为一致。
+
+\section{可微：存在一个同时适配所有小方向的统一线性模型}
+若
+\[
+\Delta f=\nabla f(\bm x_0)^T\Delta\bm x+o(\|\Delta\bm x\|),
+\]
+则称 $f$ 在该点可微。核心不在于“偏导都存在”，而在于误差相对总位移长度是高阶小量，说明同一个线性平面可以统一近似所有方向。
+
+\begin{boundarybox}{连续 / 偏导存在 / 方向导数存在 / 可微}
+这四者强弱不能混成一条简单双向链。数学一最常用的安全关系是：
+\begin{itemize}
+  \item 可微 $\Rightarrow$ 连续，并且所有方向导数按梯度公式协调；
+  \item 偏导连续于邻域通常是可微的充分条件；
+  \item 仅有偏导存在，甚至所有方向导数存在，都未必可微。
+\end{itemize}
+分段函数原点题必须回到可微定义或标准充分条件，不能只算两个偏导。
+\end{boundarybox}
+
+\begin{center}
+\begin{tikzpicture}[
+  relnode/.style={draw=deep,rounded corners=2.5mm,text width=3.4cm,minimum height=1.15cm,align=center,fill=soft,font=\small,inner sep=3pt,thick},
+  arrow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,draw=deep},
+  dasharrow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,dashed,draw=accent}
+]
+% 第一层：充分条件 (x=5.5, y=0)
+\node[relnode] (pcont) at (5.5,0) {\textbf{偏导数连续}\\\scriptsize 邻域内 $f_x, f_y$ 连续};
+
+% 第二层：核心概念 (x=5.5, y=-2.4)
+\node[relnode] (diff) at (5.5,-2.4) {\textbf{可微 (Differentiable)}\\\scriptsize $\Delta f = A\Delta x + B\Delta y + o(\rho)$};
+
+% 第三层：必要性质/局部切片 (x=0, 5.5, 11.0, y=-4.8)
+\node[relnode] (cont) at (0,-4.8) {\textbf{连续 (Continuous)}\\\scriptsize $\lim f(x,y) = f(x_0,y_0)$};
+\node[relnode] (pexist) at (5.5,-4.8) {\textbf{偏导数存在}\\\scriptsize 沿坐标轴 $f_x, f_y$ 存在};
+\node[relnode] (dira) at (11.0,-4.8) {\textbf{方向导数存在}\\\scriptsize 沿任意方向 $D_{\bm u} f$ 存在};
+
+% 正向推导线（主路）
+\draw[arrow] (pcont.south) -- node[left,font=\tiny\color{deep}]{充分条件} (diff.north);
+
+\draw[arrow] (diff.south west) -- node[above,sloped,font=\tiny\color{deep}]{必定推出} (cont.north east);
+\draw[arrow] (diff.south) -- node[left,font=\tiny\color{deep}]{必定存在} (pexist.north);
+\draw[arrow] (diff.south east) -- node[above,sloped,font=\tiny\color{deep}]{必定存在} (dira.north west);
+
+% 底部同级关系（线段干净离开节点）
+\draw[dasharrow] (pexist.east) -- node[above,font=\tiny\color{accent}]{无法相互推出} (dira.west);
+
+% 外围左侧反例折线路由（绝对无相交、无覆盖）
+\draw[dasharrow] (cont.west) -- ++(-0.8,0) |- node[left,pos=0.25,font=\tiny\color{accent},align=right]{反例：连续/偏导存在\\无法推出可微} (diff.west);
+\end{tikzpicture}
+\end{center}
+
+\section{多元链式法则：局部线性映射的复合}
+若 $z=f(u,v)$，而 $u=u(x,y),v=v(x,y)$，则局部增量先经 $(x,y)\to(u,v)$，再经 $(u,v)\to z$。坐标表达为
+\[
+\begin{pmatrix}z_x&z_y\end{pmatrix}
+=
+\begin{pmatrix}f_u&f_v\end{pmatrix}
+\begin{pmatrix}u_x&u_y\\v_x&v_y\end{pmatrix}.
+\]
+这就是一元 chain rule 的矩阵化；后面的 Jacobian 不是新世界，而是同一局部线性结构。
+
+\section{隐函数：约束面上的局部自由度}
+若 $F(x,y)=0$ 且 $F_y\neq0$，局部可把 $y$ 看成 $x$ 的函数，并有
+\[
+y'=-\frac{F_x}{F_y}.
+\]
+三元约束 $F(x,y,z)=0$ 则定义曲面，$\nabla F$ 给曲面的法向，因为沿曲面切向移动时一阶变化 $dF=0$。
+
+\section{方向导数与梯度：把所有一阶方向信息压缩到一个向量}
+对单位方向 $\bm u$，若 $f$ 可微，
+\[
+D_{\bm u}f=\nabla f\cdot\bm u.
+\]
+因此：
+\begin{itemize}
+  \item $\nabla f$ 方向是增长最快方向；
+  \item $\|\nabla f\|$ 是最大方向导数；
+  \item 等值面 $f=c$ 的切向变化为 0，所以梯度垂直等值面。
+\end{itemize}
+梯度不是“偏导数组成的向量”这么简单，而是\key{一阶局部变化的完整编码}。
+
+\section{切线、法平面、切平面、法线都来自“局部线性近似”}
+\begin{itemize}
+  \item 参数曲线 $\bm r(t)$ 的切向量是 $\bm r'(t)$；
+  \item 隐式曲面 $F=0$ 的法向量是 $\nabla F$；
+  \item 显式曲面 $z=f(x,y)$ 的切平面来自一阶全微分。
+\end{itemize}
+题目先确认对象是曲线还是曲面，再决定需要切向还是法向，避免把“法平面”和“法线”混成同一个东西。
+
+\section{Hessian：二阶局部信息为什么变成二次型}
+一元函数二阶近似为
+\[
+f(x+h)\approx f(x)+f'(x)h+\frac12f''(x)h^2.
+\]
+多元中 $h$ 是向量，二阶项自然变成
+\[
+\frac12\bm h^T H_f(\bm x)\bm h.
+\]
+因此 Hessian 是“所有二阶方向耦合”的矩阵编码。驻点 $\nabla f=0$ 附近，局部极值由这个二次型的正负性控制，这里直接调用线性代数的正定/负定/不定判别。
+
+\section{多元 Taylor：局部模型从平面升级到二次曲面}
+二阶 Taylor 不只是算近似值，也解释为什么极值判别需要 Hessian、为什么混合偏导出现。真正思路仍是：\key{先保留能决定问题的最低阶非零局部结构。}
+
+\section{无约束极值：驻点只是候选，二阶结构才判断形状}
+标准流程：先解 $\nabla f=0$ 找驻点；再用 Hessian 判别。若二阶判别退化，必须回到更高阶项、定义或沿不同方向比较，不能强行套结论。
+
+\section{Lagrange 乘子：约束减少了允许移动方向}
+在约束 $g(\bm x)=0$ 上移动，只允许沿其切空间方向。极值点上目标函数沿所有允许方向的一阶变化都应为 0，所以 $\nabla f$ 必须垂直切空间；而 $\nabla g$ 本身就是法向，因此
+\[
+\boxed{\nabla f=\lambda\nabla g}.
+\]
+多个约束时，$\nabla f$ 落在多个约束梯度张成的法空间中。
+
+\begin{methodbox}{多元极值题的完整检查}
+\begin{enumerate}
+  \item 无约束：找所有驻点以及定义域中的特殊/边界点；
+  \item 有约束：先看约束集合本身，判断是否有端点、角点、退化点；
+  \item Lagrange 只产生候选点，不自动给全局最值；
+  \item 若区域闭有界且函数连续，可先用存在性保证，再比较所有候选点函数值。
+\end{enumerate}
+\end{methodbox}
+
+% ============================================================
+\chapter{重积分：高维累积的核心是区域、坐标与微元}
+% ============================================================
+
+\section{二重/三重积分只是累积模型升维}
+二重积分近似把区域切成小面积块：
+\[
+\sum f(\xi_i,\eta_i)\Delta A_i\to\iint_D f(x,y)dA.
+\]
+三重积分则把体域切成小体积块。它们没有改变积分的本质，只改变了\key{积分区域和几何微元}。
+
+\section{Fubini：把高维累积改写成逐层累积}
+在适当条件下，二重积分可以写成累次积分。做题时外层变量决定“先固定谁”，内层上下限必须准确描述固定外层变量后剩余截面的范围。
+
+\begin{examBox}{交换积分次序的真正动作}
+不要机械交换 $dx,dy$。先把原上下限翻译成区域 $D$，画图或写不等式；再从另一个方向切区域，重新读取上下限。交换次序本质是\key{换一种扫描区域的方法}。
+\end{examBox}
+
+\section{重积分五问：从题目到积分式}
+\begin{corebox}{Quantity $\to$ Region $\to$ Coordinates $\to$ Element $\to$ Bounds}
+\begin{enumerate}
+  \item \key{Quantity：}正在累计面积、体积、质量、矩还是普通函数值？
+  \item \key{Region：}积分域的几何边界是什么？最好先画或描述截面；
+  \item \key{Coordinates：}直角、极、柱、球还是一般换元，哪种同时简化区域和 integrand？
+  \item \key{Element：}微元是 $dxdy$、$rdrd\theta$、$\rho^2\sin\varphi\,d\rho d\varphi d\theta$ 还是一般 Jacobian？
+  \item \key{Bounds：}上下限是否恰好覆盖一次区域，是否重复/漏掉？
+\end{enumerate}
+\end{corebox}
+
+\section{对称性：先判断能否把区域和 integrand 一起简化}
+若区域关于轴/原点对称，而被积函数具有奇偶结构，可以直接判某些积分为 0 或倍增局部区域。三维也可利用关于坐标面、轴或球心的对称。对称性是“用结构省积分”，不是画图装饰。
+
+\section{极坐标、柱坐标、球坐标：它们是为几何对称而设计的表示}
+极坐标适合圆/扇形与 $x^2+y^2$ 结构；柱坐标适合绕轴对称体域；球坐标适合球、圆锥和径向函数。看到 $x^2+y^2$ 并不自动等于用极坐标，必须同时检查区域是否也简化。
+
+\section{Jacobian：局部线性化告诉你新坐标的小块被拉伸多少}
+设
+\[
+(x,y)=\Phi(u,v).
+\]
+在极小尺度上，$\Phi$ 近似其 Jacobian 线性映射；线性代数告诉我们行列式给面积缩放，所以
+\[
+\boxed{dxdy=\left|\frac{\partial(x,y)}{\partial(u,v)}\right|dudv}.
+\]
+这正是高数与线代最重要的接口之一：\key{微积分负责局部线性化，行列式负责局部面积/体积缩放。}
+
+\section{三重积分的截面思维}
+复杂体域先决定外层变量，再问固定外层变量后得到什么截面。很多球体、锥体、柱面交叠题，真正难点不在积分，而在把体域拆成可描述的层。
+
+\section{几何与物理应用：局部密度乘微元}
+\begin{itemize}
+  \item 面积/体积：密度取 1；
+  \item 质量：$dm=\rho\,dA$ 或 $\rho\,dV$；
+  \item 质心：用位置坐标对质量加权，再除总质量；
+  \item 转动惯量：用到轴的距离平方对质量加权；
+  \item 引力等问题：先写单个微元贡献，再对整个物体积分。
+\end{itemize}
+所有应用仍然遵守同一母模型，不需要为每个物理名词背新积分思想。
+
+% ============================================================
+\chapter{曲线与曲面积分：参数化、方向和几何微元}
+% ============================================================
+
+\section{为什么重积分之后还需要曲线/曲面积分}
+重积分累积的是平面区域或体域；现在积分集合本身可能是一条弯曲曲线或曲面。新增困难不是“又多两个积分符号”，而是：
+\begin{enumerate}
+  \item 怎样参数化几何对象；
+  \item 小弧长/小面积怎样写；
+  \item 是否存在方向/法向，因此符号是否会随取向改变。
+\end{enumerate}
+
+\section{第一类曲线积分：沿曲线累计标量密度}
+\[
+\int_C f\,ds.
+\]
+$ds$ 是正的弧长微元，不依赖走向。因此反向遍历同一曲线，第一类曲线积分不变。参数化 $\bm r(t)$ 后
+\[
+ds=\|\bm r'(t)\|dt.
+\]
+
+\section{第二类曲线积分：向量场沿切向做功/环流}
+\[
+\int_C \bm F\cdot d\bm r=\int_C Pdx+Qdy+Rdz.
+\]
+它累计的是场在运动切向上的分量。方向一旦反转，$d\bm r$ 反向，所以积分变号。这是第一类和第二类最本质的区别之一。
+
+\section{第一类曲面积分：沿曲面累计标量面密度}
+\[
+\iint_S f\,dS.
+\]
+$dS$ 只记录面积大小，不带法向侧别。若曲面写成 $z=z(x,y)$，则
+\[
+dS=\sqrt{1+z_x^2+z_y^2}\,dxdy.
+\]
+更一般参数面 $\bm r(u,v)$ 有
+\[
+dS=\|\bm r_u\times\bm r_v\|dudv.
+\]
+
+\section{第二类曲面积分：向量场穿过曲面的通量}
+\[
+\iint_S \bm F\cdot\bm n\,dS.
+\]
+它累计法向分量，因此必须指定曲面取向。法向反转，通量变号。参数化后有向面积元可写成
+\[
+\bm n\,dS=(\bm r_u\times\bm r_v)dudv
+\]
+或取相反方向。
+
+\begin{boundarybox}{四类几何积分怎样一眼区分}
+\vspace{0.2em}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{L{2.6cm}L{3.6cm}L{2.2cm}Y}
+\toprule
+\textbf{积分} & \textbf{被积对象} & \textbf{微元} & \textbf{方向影响}\\
+\midrule
+第一类线积分 & 标量密度 & $ds$ & 不影响\\
+第二类线积分 & 向量场切向分量 & $d\bm r$ & 反向变号\\
+第一类面积分 & 标量面密度 & $dS$ & 不影响\\
+第二类面积分 & 向量场法向分量 & $\bm n\,dS$ & 反向变号\\
+\bottomrule
+\end{tabularx}
+\end{center}
+\vspace{0.2em}
+看到积分符号先判“标量密度还是向量场投影”“切向还是法向”，这一步错了，后面所有参数化都会错。
+\end{boundarybox}
+
+\section{参数化是把弯曲对象拉回普通参数区域}
+曲线积分把 $C$ 拉回参数区间；曲面积分把 $S$ 拉回参数平面。参数化的目标不是形式漂亮，而是让几何对象、方向和微元都可计算。
+
+\begin{methodbox}{曲线/曲面积分起手协议}
+\begin{enumerate}
+  \item 判断积分类型：标量/向量，切向/法向；
+  \item 判断方向：曲线起终点、闭曲线正向、曲面上/下/外/内侧；
+  \item 决定直接参数化还是调用 Green/Gauss/Stokes；
+  \item 若直接算，选让曲线/曲面最简单的参数；
+  \item 检查微元 $ds,dS,d\bm r,\bm n dS$ 是否匹配。
+\end{enumerate}
+\end{methodbox}
+
+% ============================================================
+\chapter{向量场与局部--整体：Green、Gauss、Stokes 为什么是一族定理}
+% ============================================================
+
+\section{先区分标量场与向量场}
+标量场 $f(\bm x)$ 在每一点给一个数，例如温度、密度、势；向量场 $\bm F(\bm x)$ 在每一点给一个方向和大小，例如速度场、力场。梯度作用于标量场，散度和旋度作用于向量场。
+
+\section{Gradient：标量场的局部上升结构}
+$\nabla f$ 编码所有方向的一阶变化；若 $\bm F=\nabla\phi$，称 $\bm F$ 是某个势函数的梯度场。沿路径的做功满足
+\[
+\int_A^B \nabla\phi\cdot d\bm r=\phi(B)-\phi(A),
+\]
+这是 Newton--Leibniz 在高维路径上的直接升级。
+
+\section{Divergence：局部净流出强度}
+\[
+\nabla\cdot\bm F
+\]
+衡量一个极小体积周围的净外流倾向。正值像局部源，负值像局部汇，零表示一阶意义下没有净产生/消失。
+
+\section{Curl：局部环流/旋转趋势}
+\[
+\nabla\times\bm F
+\]
+描述一个极小回路周围的环流强度与旋转轴方向。它不是“场线真的绕圈”的唯一判据，而是一阶局部旋转量。
+
+\section{局部算子与全局量的配对}
+\begin{longtable}{L{2.8cm}L{4.2cm}L{4.4cm}L{\dimexpr\linewidth-11.57cm\relax}}
+\toprule
+\textbf{局部量} & \textbf{直觉} & \textbf{对应全局量} & \textbf{桥梁}\\
+\midrule
+$\nabla f$ & 最快增长/势差结构 & 路径积分与端点差 & 线积分基本定理\\
+$\nabla\cdot\bm F$ & 局部源汇 & 封闭曲面 flux & Gauss\\
+$\nabla\times\bm F$ & 局部旋转 & 边界 circulation & Green / Stokes\\
+\bottomrule
+\end{longtable}
+
+\begin{center}
+\begin{tikzpicture}[
+  intnode/.style={draw=deep,rounded corners=2.5mm,text width=4.0cm,minimum height=1.15cm,align=center,fill=soft,font=\small,inner sep=3pt,thick},
+  arrow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,draw=deep},
+  dasharrow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,dashed,draw=accent}
+]
+% 一维与二维 (x=0, 6.5, y=0)
+\node[intnode] (ftc) at (0,0) {\textbf{一维微积分 (FTC)}\\\scriptsize $\int_a^b F'(x)dx = F(b)-F(a)$};
+\node[intnode] (green) at (6.5,0) {\textbf{平面格林定理 (Green)}\\\scriptsize $\iint_D (\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y})dA = \oint_C Pdx+Qdy$};
+
+% 三维空间扩展 (y=-2.3)
+\node[intnode] (gauss) at (0,-2.3) {\textbf{空间高斯定理 (Gauss)}\\\scriptsize $\iiint_V \operatorname{div}\vec F dV = \iint_S \vec F\cdot d\vec S$};
+\node[intnode] (stokes) at (6.5,-2.3) {\textbf{空间斯托克斯 (Stokes)}\\\scriptsize $\iint_\Sigma \operatorname{rot}\vec F\cdot d\vec S = \oint_\Gamma \vec F\cdot d\vec r$};
+
+% 核心逻辑：局部微商累计等于边界通量/环量
+\draw[arrow] (ftc.east) -- node[above,font=\tiny\color{deep}]{平面维度提升} (green.west);
+\draw[arrow] (ftc.south) -- node[left,font=\tiny\color{deep}]{三维体累积 (散度)} (gauss.north);
+\draw[arrow] (green.south) -- node[right,font=\tiny\color{deep}]{曲面侧向提升 (旋度)} (stokes.north);
+\draw[dasharrow] (gauss.east) -- node[above,font=\tiny\color{accent}]{散度与旋度对立统一} (stokes.west);
+\end{tikzpicture}
+\end{center}
+
+\section{Green：二维区域内部的旋转/散度信息与边界积分互换}
+平面上最常用的环流型 Green：
+\[
+\oint_{\partial D}Pdx+Qdy
+=
+\iint_D\left(Q_x-P_y\right)dA.
+\]
+它把\key{闭边界上的总环流}变成\key{内部局部旋转的累积}。做题时若闭曲线直接参数化很难，而内部偏导很简单，Green 就是在降维复杂度。
+
+\section{Gauss：体域内部源汇的总和等于封闭边界净通量}
+\[
+\iint_{\partial\Omega}\bm F\cdot\bm n\,dS
+=
+\iiint_\Omega \nabla\cdot\bm F\,dV.
+\]
+它只有在\key{封闭曲面 + 外法向}的标准形式下直接应用。开放曲面题常先补面闭合，再用“总闭合通量减去补面通量”。
+
+\section{Stokes：曲面内部的局部旋转决定边界环流}
+\[
+\oint_{\partial S}\bm F\cdot d\bm r
+=
+\iint_S(\nabla\times\bm F)\cdot\bm n\,dS.
+\]
+它最大的自由度是：同一条边界曲线可以选择任何方便的跨越曲面，只要方向匹配。这意味着空间曲线积分经常可以“换一张更好算的面”。
+
+\begin{corebox}{Newton--Leibniz / Green / Gauss / Stokes 的共同母命题}
+\[
+\boxed{\text{Accumulated Local Differential Structure}=\text{Boundary / Global Effect}}.
+\]
+一维时“边界”是两个端点；二维区域的边界是闭曲线；三维体域的边界是封闭曲面；空间曲面的边界又是一条空间曲线。考试不要求微分形式语言，但理解这个层级关系可以彻底减少公式混淆。
+\end{corebox}
+
+\section{路径无关、势函数与保守场：何时可以不沿路径硬积分}
+在适当的单连通区域中，以下条件常等价：
+\[
+\bm F=\nabla\phi,
+\qquad
+\int_C\bm F\cdot d\bm r\text{ 与路径无关},
+\qquad
+\oint_C\bm F\cdot d\bm r=0,
+\qquad
+\nabla\times\bm F=0.
+\]
+二维 $Pdx+Qdy$ 常检查 $P_y=Q_x$，但必须注意区域条件：有“洞”的区域里局部旋度为零并不自动保证全局存在单值势函数。
+
+\begin{examBox}{Green / Gauss / Stokes 的选择协议}
+先问全局量是什么：
+\begin{itemize}
+  \item 平面闭曲线上的 $Pdx+Qdy$：优先看 Green；
+  \item 封闭曲面的通量：优先看 Gauss；
+  \item 空间闭曲线的做功/环流：若容易补一个曲面，优先看 Stokes；
+  \item 非闭合对象：考虑“补边/补面后减掉”，但必须维护方向。
+\end{itemize}
+公式选择依据是\key{积分对象 + 边界关系 + 局部算子}，不是看见三个字母就套公式。
+\end{examBox}
+
+% ============================================================
+\chapter{无穷级数：从有限部分构造无限对象与函数表示}
+% ============================================================
+
+\section{数列和级数是两个不同对象}
+数列研究单项 $a_n$ 的行为；级数
+\[
+\sum_{n=1}^{\infty}a_n
+\]
+真正研究的是部分和数列
+\[
+S_N=\sum_{n=1}^{N}a_n.
+\]
+因此 $a_n\to0$ 只是级数收敛的必要条件：单项很小不代表无限累积量稳定。
+
+\section{收敛判别的共同本质：控制尾部}
+级数前有限项不会改变收敛性，真正决定命运的是尾部。各种判别法都在寻找一个可控的尾部模型。
+
+\section{正项级数：没有符号抵消，只需比较累计速度}
+\begin{methodbox}{正项级数路线树}
+\begin{enumerate}
+  \item 先识别是否像几何级数或 $p$ 级数；
+  \item 若能与熟悉函数直接比大小，优先比较判别；
+  \item 若含阶乘、指数、连乘，优先看比值/根值；
+  \item 若项来自单调正函数，积分判别可把离散尾部与连续面积比较；
+  \item 极限比较本质上只比较主导阶。
+\end{enumerate}
+\end{methodbox}
+
+\section{交错级数：符号抵消成为新的稳定机制}
+Leibniz 条件要求项的绝对值最终单调下降且趋零。条件收敛说明“去掉符号后会发散，但正负抵消仍使部分和稳定”；绝对收敛则更强，说明无论符号抵消都已足够可控。
+
+\begin{boundarybox}{绝对收敛 $\Rightarrow$ 收敛，但反之不成立}
+判断任意项级数时，一个稳定策略是先看绝对值级数。若绝对收敛，原级数直接收敛；若绝对值发散，再研究是否通过交错等机制条件收敛。
+\end{boundarybox}
+
+\section{幂级数：对每个 $x$，它都是一个数项级数}
+\[
+\sum_{n=0}^{\infty}a_n(x-x_0)^n
+\]
+先问哪些 $x$ 使它收敛。中心周围通常形成半径 $R$：$|x-x_0|<R$ 收敛，外部发散，端点必须单独检查。
+
+\section{收敛半径不是最后答案：端点与和函数同样重要}
+数学一常见完整流程：
+\[
+\boxed{R\to\text{open interval}\to\text{check endpoints}\to\text{sum function / operations}}.
+\]
+只算出 $R$ 不等于得到收敛域。
+
+\section{逐项求导与积分：在收敛区间内部改变级数表示}
+幂级数在收敛区间内部具有良好解析结构，可逐项求导/积分，并保持相同收敛半径。这允许从熟悉的几何级数
+\[
+\frac1{1-x}=\sum_{n=0}^{\infty}x^n
+\]
+通过积分、求导、代换制造许多和函数与数项级数求和。
+
+\section{Taylor 多项式、Taylor 级数与函数本身不能混}
+有限阶 Taylor 多项式是局部近似；Taylor 级数是无限对象；函数是否等于自己的 Taylor 级数，还需要余项趋零/适当充分必要条件。数学一中常用 Maclaurin 展开式必须记住其收敛区间与使用边界。
+
+\section{Fourier：从“局部幂基”切换到“全局三角基”}
+Taylor 以某一点为中心，用 $1,x,x^2,\dots$ 描述局部解析结构；Fourier 用
+\[
+1,\cos\frac{n\pi x}{l},\sin\frac{n\pi x}{l}
+\]
+在整个区间/周期上表示函数。二者都属于“用一组基函数展开复杂函数”，但一个偏局部解析，一个偏全局周期结构。
+
+\section{Fourier 系数为什么是投影系数}
+正弦余弦在区间上具有正交性，因此系数本质上是在积分内积意义下，把函数投影到各个频率方向。奇函数自动消去余弦系数，偶函数自动消去正弦系数，这不是记忆技巧，而是正交 + 对称性。
+
+\section{Dirichlet 收敛：跳跃点处为什么取左右极限平均}
+Fourier 级数在连续点趋向函数值，在跳跃点趋向左右极限平均。这提醒我们：\key{一个表示级数的极限对象不一定逐点等于原定义函数的每一个点值。}
+
+\begin{examBox}{级数题的统一起手}
+先判断对象：数项级数、幂级数还是 Fourier 展开。数项级数先判符号结构与尾部尺度；幂级数先半径后端点；求和函数先寻找已知母级数与逐项操作；Fourier 先确定区间、周期延拓和奇偶性，再算系数。
+\end{examBox}
+
+% ============================================================
+\chapter{常微分方程：从局部变化律恢复整体轨迹}
+% ============================================================
+
+\section{ODE 的母模型：方向与普通微分恰好相反}
+普通微分是
+\[
+y(x)\longrightarrow y'(x),y''(x),\dots
+\]
+已知整体函数，抽取局部变化规律；微分方程则反过来：
+\[
+\boxed{\text{Local evolution law}+\text{initial information}\to\text{global trajectory}}.
+\]
+例如 $y'=F(x,y)$ 在平面每一点规定允许的切线斜率，解曲线就是处处顺着这个方向场前进的轨迹。
+
+\section{通解、特解、初值解是三个不同层次}
+微分方程一般给一族解；积分常数记录尚未被初值确定的自由度。给定初值后，才从解族中选出满足条件的具体轨迹。高阶 $n$ 阶方程通常需要 $n$ 个独立初始条件来固定 $n$ 个自由常数。
+
+\section{一阶方程的统一思想：寻找“可积分表示”}
+\begin{longtable}{L{3.1cm}L{5.1cm}L{\dimexpr\linewidth-8.37cm\relax}}
+\toprule
+\textbf{结构} & \textbf{为什么能化简} & \textbf{典型变换/动作}\\
+\midrule
+可分离 & $x,y$ 依赖可拆到两边 & $dy/g(y)=f(x)dx$\\
+齐次型 & 只依赖比例 $y/x$ & $y=ux$，把二维比例结构降维\\
+一阶线性 & 乘积分因子后左侧成为乘积导数 & $(\mu y)'=\mu q$\\
+Bernoulli & 幂非线性可通过变量幂变换线性化 & $z=y^{1-n}$\\
+全微分 & 左侧本来就是某个势函数的全微分 & 找 $F$ 使 $dF=Mdx+Ndy$\\
+简单代换型 & 某组合反复出现 & 把重复组合设为新变量\\
+\bottomrule
+\end{longtable}
+
+\section{一阶线性方程：积分因子为什么有效}
+\[
+y'+p(x)y=q(x).
+\]
+希望找到 $\mu(x)$ 使
+\[
+\mu y'+\mu py=(\mu y)'.
+\]
+比较系数要求 $\mu'=p\mu$，故可取
+\[
+\mu=e^{\int p(x)dx}.
+\]
+所以积分因子不是魔法公式，而是\key{主动制造一个可直接积分的乘积导数}。
+
+\section{全微分方程与势函数：ODE 和场论共享同一结构}
+若
+\[
+M(x,y)dx+N(x,y)dy=0
+\]
+恰好等于 $dF=0$，解就是
+\[
+F(x,y)=C.
+\]
+条件 $M_y=N_x$ 在适当区域中保证局部/全局势函数结构。这与二维保守场完全同源。
+
+\section{可降阶高阶方程：利用“缺了谁”减少状态变量}
+若方程不显含 $y$，可设 $p=y'$；若不显含 $x$，可把 $p(y)=y'$ 并用 $y''=p\,dp/dy$。真正原则是：\key{观察方程缺少哪个变量，从而选择能降低阶数的新状态。}
+
+\section{线性高阶方程：解空间本身是线性空间}
+齐次线性方程
+\[
+L[y]=0
+\]
+的解对加法和数乘封闭，因此形成线性空间；非齐次
+\[
+L[y]=f
+\]
+若 $y_p$ 是特解，则全部解为
+\[
+\boxed{y=y_p+y_h}.
+\]
+这与线性代数 $Ax=b$ 的“特解 + kernel”完全同构，是三门数学中非常重要的跨学科桥梁。
+
+\section{常系数齐次方程：指数函数把微分算子变成代数多项式}
+试 $y=e^{rx}$，则每求一次导只乘一个 $r$，于是微分方程变成特征多项式 $p(r)=0$。根的实/复、重数直接决定基础解形态。它本质上与线代“寻找使线性算子作用后只缩放的特征方向”非常相似。
+
+\section{非齐次常系数方程：先看 forcing 的结构，再选特解形状}
+总解仍是 $y_h+y_p$。特解试探的核心是：右端若由指数、多项式、正余弦组成，这些函数族在常系数微分算子作用下保持在有限维函数空间中；若试探形状与齐次解重合，需要乘适当 $x^k$ 脱离 kernel。
+
+\section{Euler 方程：尺度齐次结构提示对数坐标或幂函数试探}
+Euler 方程的系数按 $x$ 的幂匹配导数阶数。令 $x=e^t$ 可把尺度变化转成平移变化，从而化成常系数方程；也可直接试 $y=x^m$。这再次体现“识别结构后换表示”。
+
+\section{微分方程应用：建模时先写守恒/变化率关系}
+增长衰减、混合、冷却、运动等应用题应先问：
+\begin{enumerate}
+  \item 状态量是谁；
+  \item 哪些流入/流出或产生/消耗决定其变化率；
+  \item 初始状态是什么；
+  \item 得到 ODE 后再分类求解。
+\end{enumerate}
+应用题不是先猜方程类型，而是先把“局部变化率 = 净作用”写出来。
+
+\begin{examBox}{ODE 题的统一动作链}
+\[
+\boxed{\text{Order}\to\text{Linear?}\to\text{Recognize Structure}\to\text{Transform}\to\text{Integrate/Solve}\to\text{Use IC}\to\text{Verify}}
+\]
+最后一定把解代回原方程或至少检查初值；很多符号错误只有回代能快速抓出。
+\end{examBox}
+
+% ============================================================
+\chapter{内部统一：这些章节为什么其实在反复讲同几件事}
+% ============================================================
+
+\section{微分与积分并不只是“互为逆运算”}
+把微分和积分只记成“求导与求原函数互逆”会漏掉更深关系：
+\begin{itemize}
+  \item 微分把复杂对象压到局部线性/低阶模型；
+  \item 积分把局部贡献沿区域累积成整体量；
+  \item Fundamental Theorem 把“局部变化率”与“整体净变化”接起来。
+\end{itemize}
+所以更稳定的结构是
+\[
+\boxed{\text{Local description}\xleftrightarrow[\text{FTC-type bridge}]{\text{accumulation}}\text{Global change}}.
+\]
+
+\section{Taylor、Jacobian、Hessian 是同一个“局部模型”思想逐阶升级}
+\begin{itemize}
+  \item 一元一阶：$f(x+h)\approx f(x)+f'(x)h$；
+  \item 多元一阶：$f(\bm x+\bm h)\approx f(\bm x)+\nabla f^T\bm h$；
+  \item 向量值映射的一阶：Jacobian 是局部线性映射；
+  \item 多元二阶：Hessian 通过二次型记录局部弯曲。
+\end{itemize}
+因此 Jacobian 与 Hessian 不应被当成“多元新公式”，而是原有局部近似模型的矩阵化。
+
+\section{换元、坐标变换与微分方程代换属于同一种解题思想}
+极限令 $t=x-a$，积分令 $x=\varphi(t)$，重积分换极坐标，ODE 令 $y=ux$，本质上都在做：
+\[
+\boxed{\text{Hard representation}\to\text{Structure-adapted representation}}.
+\]
+好换元的标准不是“形式熟悉”，而是它能否让约束、微元、复合结构或变化律变简单。
+
+\section{“边界”是高数里反复出现的隐藏角色}
+\begin{itemize}
+  \item 一元积分的边界是两个端点；
+  \item 二维区域的边界是闭曲线；
+  \item 三维体域的边界是封闭曲面；
+  \item 曲面的边界又是一条曲线；
+  \item 收敛区间的端点必须单独检查；
+  \item 多元极值的定义域边界不能被内部驻点方法替代。
+\end{itemize}
+很多综合题真正考的是：\key{你是否意识到内部公式只处理内部，而边界必须单独维护。}
+
+\section{高数与线性代数的三个真正接口}
+\begin{enumerate}
+  \item \key{Jacobian determinant：}微积分给局部线性映射，行列式给局部面积/体积缩放；
+  \item \key{Hessian quadratic form：}多元二阶局部模型最终由二次型正负性判极值；
+  \item \key{Linear ODE solution space：}齐次解空间与非齐次“特解 + 齐次解”对应 kernel 与仿射解集。
+\end{enumerate}
+这些接口只调用线代已有模型，不在高数手册重复证明线代分类理论。
+
+\section{高数与概率统计的三个接口}
+\begin{enumerate}
+  \item 概率密度的积分、二维联合密度的区域积分，直接调用“局部密度 $\times$ 微元”的累积模型；
+  \item 随机变量变换中的 Jacobian 与重积分换元同源；
+  \item 极限定理与高数的确定性极限共享“有限对象逼近理想对象”的语言，但概率收敛的定义和对象不同，不能混用。
+\end{enumerate}
+
+\begin{corebox}{重写过程中得到的一个重要理解}
+高数表面上最杂，是因为它不断改变\key{对象、维度和表示}；但真正反复出现的操作很少：
+\[
+\boxed{\begin{gathered}\text{Approximate locally}\quad\text{Accumulate globally}\quad\text{Change representation}\\\text{Pass to a limit}\quad\text{Recover from a law}\end{gathered}}.
+\]
+高数题做熟以后，不应该只形成“看见什么式子用什么技巧”的反射，而应该先识别当前在执行哪一种数学动作。
+\end{corebox}
+
+% ============================================================
+\chapter{概念边界：真正区别、题目信号与错误后果}
+% ============================================================
+
+\begin{longtable}{L{2.2cm}@{}>{\centering\arraybackslash}p{0.5cm}@{}L{2.2cm}L{4.2cm}L{4.2cm}L{\dimexpr\linewidth-13.9cm\relax}}
+\toprule
+\textbf{概念 A} & & \textbf{概念 B} & \textbf{真正区别} & \textbf{题目信号与判据} & \textbf{混淆后果}\\
+\midrule
+函数表达式 & $\neq$ & 函数 & 函数还包含定义域与对应关系 & 定义域、反函数、补定义 & 变形后扩大定义域\\
+极限 & $\neq$ & 函数值 & 邻域趋势 vs 点上取值 & 分段点、可去间断 & 直接代入判极限\\
+左/右极限 & $\neq$ & 双侧极限 & 双侧要求两边一致 & 分段、绝对值、边界点 & 漏掉单侧冲突\\
+无穷小等价 & $\neq$ & 相等 & 只保留主导阶比值 1 & 极限中的乘除结构 & 在加减相消处误替换\\
+连续 & $\neq$ & 可导 & 可导需要统一一阶线性近似 & 尖点、折点、分段 & 由连续直接推导数\\
+可导 & $\neq$ & 导函数连续 & 导数可存在但不连续 & 问 $C^1$、导数连续 & 过度使用连续导数条件\\
+驻点 & $\neq$ & 极值点 & $f'=0$ 只是候选 & 单调符号、端点比较 & 一见零导数就判极值\\
+拐点 & $\neq$ & $f''=0$ 点 & 拐点要求凹凸性改变 & 二阶导变号/定义 & 把所有二阶零点算拐点\\
+Taylor 多项式 & $\neq$ & Taylor 级数 & 有限局部近似 vs 无限表示 & “到 $n$ 阶”/“展开为级数” & 忽略余项或收敛域\\
+L'Hospital & $\neq$ & 通用极限法 & 只直接适用特定商型与条件 & $0/0,\infty/\infty$ & 乱求导、越算越复杂\\
+不定积分 & $\neq$ & 定积分 & 逆微分函数族 vs 累积数值 & 原函数/$C$ vs 区间总量 & 丢常数或概念混乱\\
+积分上限函数 & $\neq$ & 普通定积分 & 上限变量使结果成为函数 & $\int_a^x$、复合上限 & 忘链式法则\\
+反常积分 & $\neq$ & 普通定积分 & 通过极限定义无限区间/奇点 & $\infty$ 或无界点 & 不写极限直接代端点\\
+偏导存在 & $\neq$ & 可微 & 坐标轴方向 vs 全方向统一线性主部 & 原点分段、多元定义题 & 只算两个偏导就下结论\\
+方向导数存在 & $\neq$ & 可微 & 每方向单独存在仍可能不统一线性 & “任意方向”与可微 & 把方向信息误当全微分\\
+梯度 & $\neq$ & 方向导数 & 梯度是编码向量，方向导数是投影标量 & $\nabla f$ vs $D_{\bm u}f$ & 忘单位方向/点积\\
+驻点 & $\neq$ & 多元极值 & $\nabla f=0$ 仍只是候选 & Hessian/边界 & 漏鞍点和边界\\
+局部极值 & $\neq$ & 全局最值 & 邻域比较 vs 整个定义域比较 & 闭区域、边界 & 只比较内部驻点\\
+二重积分 & $\neq$ & 累次积分 & 前者是区域整体对象，后者是计算表示 & 换序/分区 & 上下限不对应区域\\
+坐标变换 & $\neq$ & 纯换变量符号 & 微元也按 Jacobian 缩放 & 极/柱/球/一般换元 & 漏 $r$、$\rho^2\sin\varphi$\\
+第一类线积分 & $\neq$ & 第二类线积分 & 标量沿弧长 vs 向量切向投影 & $ds$ vs $Pdx+Qdy+Rdz$ & 方向/参数化错误\\
+第一类面积分 & $\neq$ & 第二类面积分 & 标量面密度 vs 向量法向通量 & $dS$ vs $\bm F\cdot\bm n dS$ & 忘法向侧别\\
+闭曲线 & $\neq$ & 封闭曲面 & 一维边界 vs 二维边界 & Green/Stokes vs Gauss & 定理选择错误\\
+Green/Stokes & $\neq$ & Gauss & 维度、边界对象、局部算子不同 & 平面闭边界/封闭面/空间曲线 & 公式互套\\
+$\nabla\cdot\bm F$ & $\neq$ & $\nabla\times\bm F$ & 源汇强度 vs 局部旋转 & flux vs circulation & 物理/几何含义颠倒\\
+旋度为零 & $\neq$ & 全局保守场 & 还需适当区域拓扑条件 & 有洞区域、路径无关 & 漏区域条件\\
+数列收敛 & $\neq$ & 级数收敛 & 单项趋限 vs 部分和趋限 & $a_n$ vs $S_n$ & 把 $a_n\to0$ 当充分条件\\
+绝对收敛 & $\neq$ & 条件收敛 & 去掉符号后仍收敛 vs 依靠抵消 & $\sum|a_n|$ & 错判任意项级数\\
+收敛半径 & $\neq$ & 收敛域 & 端点需单独检查 & 幂级数端点 & 只写 $R$ 不查端点\\
+Taylor & $\neq$ & Fourier & 局部幂基 vs 区间全局三角基 & Maclaurin/Fourier 系数 & 展开思想混淆\\
+微分方程通解 & $\neq$ & 初值解 & 解族 vs 被初值选中的具体轨迹 & 任意常数/初值条件 & 常数未确定\\
+齐次 ODE & $\neq$ & 一阶齐次型 & 一个是线性右端为零，一个是 $y/x$ 结构 & “齐次线性”/“齐次方程” & 方法完全选错\\
+非齐次通解 & $\neq$ & 特解 & 全部解 = 特解 + 齐次解 & $L[y]=f$ & 只写一个特解\\
+\bottomrule
+\end{longtable}
+
+% ============================================================
+\chapter{统一做题控制：先判断数学动作，再选择技术}
+% ============================================================
+
+\section{高数十问：全局控制内核}
+\begin{corebox}{任何高数题都先过这十个路口}
+\begin{enumerate}
+  \item \key{Object：}对象是数列、一元函数、多元函数、曲线/曲面、向量场还是未知函数？
+  \item \key{Domain：}定义域、积分域、参数区间、收敛区间、区域边界是什么？
+  \item \key{Target：}要求极限、局部性质、累计量、存在性、最值、展开还是解轨迹？
+  \item \key{Mother Model：}当前主要是极限底座、局部模型、累积、局部--整体、无限构造还是动态恢复？
+  \item \key{Representation：}显式/隐式/参数式/极坐标/势函数/级数展开中，哪种表示最自然？
+  \item \key{Structure：}对称、周期、单调、齐次、线性、保守、闭合、正项、交错等信号是什么？
+  \item \key{Candidate Routes：}至少有哪两条可行路线？哪条减少复杂度？
+  \item \key{Execute：}过程中是否维护定义域、阶数、方向、微元、自由常数、端点？
+  \item \key{Local Check：}每个关键转化后能否用定义/导回去/边界检验立即检查？
+  \item \key{Global Verify：}最终符号、范围、量纲、极端值、几何方向是否合理？
+\end{enumerate}
+\end{corebox}
+
+\section{识别断点：不要先问“这是哪一章”，先问“我要执行哪种数学动作”}
+\begin{longtable}{L{3.0cm}L{5.0cm}L{\dimexpr\linewidth-8.17cm\relax}}
+\toprule
+\textbf{题面信号} & \textbf{优先母模型} & \textbf{第一动作}\\
+\midrule
+$x\to a,n\to\infty$、收敛 & 极限/无限过程 & 找主导结构或先证明存在\\
+切线、近似、误差、极值 & 局部模型 & 找一阶/二阶局部信息\\
+面积、质量、功、总量 & 累积 & 写局部贡献与区域\\
+闭曲线、封闭面、路径无关 & 局部--整体 & 判断 circulation/flux/boundary\\
+无穷和、展开、和函数 & 无限构造 & 先识别级数类型与收敛域\\
+$y',y''$ 与初值 & 动态恢复 & 识别阶数、线性与可化简结构\\
+\bottomrule
+\end{longtable}
+
+\section{路径断点：知道章节以后，为什么仍然不知道从哪开始}
+路径断点通常来自“没有明确转换目标”。例如：
+\begin{itemize}
+  \item 极限：目标是暴露主导阶，而不是“尽量多变形”；
+  \item 中值定理：目标是把结论重写成某个导数关系；
+  \item 重积分：目标是让区域和 integrand 同时简单，而不是盲目换坐标；
+  \item 场论：目标是把难算的边界积分换成简单的内部积分，或反过来；
+  \item ODE：目标是制造可积分导数/降低阶数/进入线性标准形。
+\end{itemize}
+
+\section{执行断点：高数最需要维护的五类“中间状态”}
+\begin{enumerate}
+  \item \key{阶数状态：}Taylor/无穷小计算当前保留到几阶，低阶是否已相消；
+  \item \key{区域状态：}重积分/几何积分当前实际覆盖什么区域；
+  \item \key{方向状态：}曲线/曲面取向是否改变；
+  \item \key{定义域状态：}代换、对数、平方根、分母等是否引入限制；
+  \item \key{自由度状态：}ODE 任意常数是否足够、初值是否全部使用。
+\end{enumerate}
+复杂题最好把这些状态显式写在草稿上，而不是只在脑中维持。
+
+\section{检查断点：高数答案有哪些天然不变量和反向验证}
+\begin{itemize}
+  \item 求原函数：直接求导回去；
+  \item 解 ODE：代回方程和初值；
+  \item 概率/面积/体积式积分：检查正负、量纲与区域大小；
+  \item 极限：检查主导阶与数值趋势；
+  \item 极值：检查候选点附近方向/边界；
+  \item 线/面积分：检查方向反转是否应变号；
+  \item 幂级数：检查 $x=0$ 或简单特殊值、端点收敛；
+  \item Fourier：利用奇偶性检查不该出现的系数是否为 0。
+\end{itemize}
+
+\section{八个模块的局部动作协议}
+\begin{longtable}{L{2.6cm}L{\dimexpr\linewidth-2.77cm\relax}}
+\toprule
+\textbf{模块} & \textbf{起手控制链}\\
+\midrule
+极限 & 对象/趋向点 $\to$ 型别 $\to$ 主导阶 $\to$ 选工具 $\to$ 检查存在性与左右/路径\\
+一元微分 & 定义域 $\to$ 目标是值/证明/形状 $\to$ 求导结构 $\to$ 关键点 $\to$ 中值/Taylor/符号表\\
+一元积分 & 累计/原函数目标 $\to$ 结构识别 $\to$ 换元/分部/对称 $\to$ 边界/常数 $\to$ 反向求导检查\\
+多元微分 & 点与定义域 $\to$ 连续/偏导/可微层级 $\to$ 梯度/Hessian $\to$ 内部/边界候选\\
+重积分 & Quantity $\to$ Region $\to$ Coordinates $\to$ Element $\to$ Bounds $\to$ Symmetry\\
+曲线曲面 & 积分类型 $\to$ 对象 $\to$ 方向 $\to$ 直接参数化还是 integral theorem $\to$ 微元\\
+级数 & 数项/幂/Fourier $\to$ 符号/尾部结构 $\to$ 收敛工具 $\to$ 端点/和函数\\
+ODE & 阶数 $\to$ 线性? $\to$ 结构识别 $\to$ 变量变换/特征方程 $\to$ 通解 $\to$ 初值 $\to$ 回代\\
+\bottomrule
+\end{longtable}
+
+\begin{examplebox}{一个综合题怎样调用多个模型，而不是按章节跳跃}
+设题目要求研究
+\[
+F(x)=\int_0^x e^{-t^2}dt
+\]
+的单调性、极限和某个方程 $F(x)=c$ 的根。
+\begin{enumerate}
+  \item 先识别 $F$ 是\key{累积生成的新函数}；
+  \item FTC 给 $F'(x)=e^{-x^2}>0$，调用\key{局部模型}得到严格单调；
+  \item $x\to\infty$ 时研究反常积分，回到\key{极限底座}；
+  \item 若 $c$ 位于相应值域内部，连续 + 单调分别给根存在与唯一。
+\end{enumerate}
+这类题没有必要问“到底属于积分章还是导数章”，正确思路是跟着对象在多个母模型之间切换。
+\end{examplebox}
+
+% ============================================================
+\appendix
+\chapter{2026 数学一高等数学完整覆盖清单：防漏，不作为正文结构}
+% ============================================================
+
+本附录依据公开转载的 2026 数学（一）考试大纲逐项校验。正文按心智模型组织，因此考纲项目不一定以同名章节出现；本附录只负责确认每个考试模块都有归属。
+
+\section*{一、函数、极限、连续}
+\begin{itemize}
+  \item 函数概念与表示，定义域、值域；有界、单调、周期、奇偶；复合、反函数、隐函数、分段函数与基本初等函数；
+  \item 数列极限、函数极限、左右极限；无穷小、无穷大、无穷小比较；极限性质和四则运算；
+  \item 单调有界准则、夹逼准则、两个重要极限；
+  \item 连续、间断点类型、初等函数连续性、闭区间连续函数性质。
+\end{itemize}
+
+\section*{二、一元微分学}
+\begin{itemize}
+  \item 导数、左右导数、微分；几何/物理意义；
+  \item 四则、复合、反函数、隐函数、参数方程求导；高阶导数；
+  \item Rolle、Lagrange、Cauchy 中值定理；Taylor 定理；L'Hospital；
+  \item 单调、极值、最值、凹凸、拐点、渐近线、函数图形；曲率与曲率半径。
+\end{itemize}
+
+\section*{三、一元积分学}
+\begin{itemize}
+  \item 原函数、不定积分、基本积分公式；换元、分部及常见特殊积分；
+  \item 定积分定义、性质、积分中值；积分上限函数及导数；Newton--Leibniz；
+  \item 反常积分；
+  \item 面积、体积、弧长、功等几何物理应用。
+\end{itemize}
+
+\section*{四、空间解析几何与向量代数}
+\begin{itemize}
+  \item 向量运算、模、方向角、点积、叉积、混合积；
+  \item 平面和直线方程、位置关系、距离与夹角；
+  \item 曲面方程、常见二次曲面、旋转曲面、柱面；
+  \item 空间曲线及投影。
+\end{itemize}
+
+\section*{五、多元函数微分学}
+\begin{itemize}
+  \item 多元函数、极限、连续；偏导、高阶偏导、全微分；
+  \item 多元复合函数和隐函数求导；
+  \item 方向导数、梯度；
+  \item 空间曲线切线/法平面、曲面切平面/法线；
+  \item 多元 Taylor；无约束极值、条件极值、Lagrange 乘子及应用。
+\end{itemize}
+
+\section*{六、多元积分与场论}
+\begin{itemize}
+  \item 二重/三重积分概念、性质、计算；直角、极、柱、球坐标；一般换元思想；
+  \item 两类曲线积分及关系；Green；平面曲线积分与路径无关、全微分求原函数；
+  \item 两类曲面积分及关系；Gauss；Stokes；
+  \item 散度、旋度；
+  \item 面积、体积、曲面面积、弧长、质量、质心/形心、转动惯量、引力、功、流量等应用。
+\end{itemize}
+
+\section*{七、无穷级数}
+\begin{itemize}
+  \item 常数项级数收敛/发散、和、基本性质、必要条件；
+  \item 几何级数、$p$ 级数；正项级数比较、比值、根值、积分判别；
+  \item 交错级数、Leibniz；绝对与条件收敛；
+  \item 函数项级数收敛域与和函数；
+  \item 幂级数收敛半径、区间、收敛域、和函数、逐项求导积分；
+  \item Taylor/Maclaurin 展开及常用基本展开；
+  \item Fourier 系数、Fourier 级数、Dirichlet 收敛，$[-l,l]$ 展开及 $[0,l]$ 正弦/余弦展开。
+\end{itemize}
+
+\section*{八、常微分方程}
+\begin{itemize}
+  \item 基本概念、解、通解、特解、初值问题；
+  \item 可分离、齐次一阶、一阶线性、Bernoulli、全微分及简单变量代换；
+  \item 可降阶高阶方程；
+  \item 线性微分方程解的性质与结构；二阶及部分高阶常系数齐次方程；
+  \item 简单二阶常系数非齐次方程；Euler 方程；简单应用。
+\end{itemize}
+
+\begin{methodbox}{覆盖基准与边界}
+范围校验参考 2026 数学（一）考试大纲公开转载：\url{https://kaoyan.wendu.com/2025/1017/212673.shtml}。本册对 Jacobian、Hessian、保守场等采用高于纯公式记忆一级的解释，但不引入微分形式、测度论、偏微分方程等超出数学一主线的理论。正式备考仍以报考年度官方发布大纲为最终边界。
+\end{methodbox}
+
+% ============================================================
+\chapter{三层压缩：复习时怎样把整本手册越压越短}
+% ============================================================
+
+\section{第一层：六句话}
+\begin{corebox}{高数最终应该留下的生成性骨架}
+\begin{enumerate}
+  \item \key{极限：}用可计算的邻近/有限对象定义不可直接触碰的理想对象，并比较主导尺度；
+  \item \key{局部模型：}导数是最佳一阶线性化，Taylor/Hessian 是更高阶局部结构；
+  \item \key{累积：}积分是“局部贡献 $\times$ 几何微元”的连续求和；
+  \item \key{局部--整体：}FTC、Green、Gauss、Stokes 都把内部微分结构与边界/整体效果连接；
+  \item \key{无限构造：}级数研究有限部分怎样在极限下构造无限和或函数表示；
+  \item \key{动态恢复：}微分方程从局部变化规律和初值恢复整条未知轨迹。
+\end{enumerate}
+\end{corebox}
+
+\section{第二层：一张对象--操作矩阵}
+\begin{longtable}{L{3.1cm}L{3.8cm}L{4.0cm}L{\dimexpr\linewidth-11.07cm\relax}}
+\toprule
+\textbf{对象} & \textbf{局部观察} & \textbf{整体/累积} & \textbf{关键桥梁}\\
+\midrule
+一元函数 $f(x)$ & $f',f'',Taylor$ & $\int fdx$ & FTC / MVT\\
+标量场 $f(\bm x)$ & $\nabla f,H_f$ & $\iint,\iiint$ & 梯度/极值/坐标换元\\
+向量场 $\bm F$ & div / curl & circulation / flux & Green / Gauss / Stokes\\
+数列/函数展开 & 主导项、尾部尺度 & 部分和/级数 & 极限 / Taylor / Fourier\\
+未知轨迹 $y(x)$ & ODE 给出的局部规律 & 整条解曲线 & 初值 + 积分/线性结构\\
+\bottomrule
+\end{longtable}
+
+\section{第三层：考场十问}
+只保留：对象是什么？定义域/区域是什么？目标是什么？属于哪种数学动作？哪种表示最简单？有什么结构信号？候选路线谁最省复杂度？执行中维护什么状态？能否局部检查？结果是否符合几何/符号/边界直觉？
+
+\begin{center}
+\Large\bfseries\color{deep}
+最终目标不是“记住每一章有什么公式”，而是看到陌生问题后能判断：\\[0.4em]
+我现在研究什么对象？需要局部化、累积、取极限、换表示，还是从变化律恢复整体？
+\end{center}
+
+\end{document}

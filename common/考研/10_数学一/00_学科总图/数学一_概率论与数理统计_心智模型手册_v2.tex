@@ -1,0 +1,1402 @@
+\documentclass[11pt,a4paper,openany]{ctexbook}
+\usepackage[a4paper,margin=1.78cm,headheight=16pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array,multirow}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\extrarowheight}{2pt}
+\usepackage{enumitem,tcolorbox,tikz,xcolor,fancyhdr,hyperref,microtype,titlesec,lastpage}
+\tcbuselibrary{breakable,skins,theorems}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,fit,matrix}
+\definecolor{ink}{RGB}{25,25,25}
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{150,158,166}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{warn}{RGB}{123,76,67}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={数学一概率论与数理统计心智模型手册 v2}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.30em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist{itemsep=0.17em,topsep=0.35em,leftmargin=2em}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 概率统计}}
+\rhead{\small\color{deep}\leftmark}
+\cfoot{\small 第 \thepage\ 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries\color{deep}}{\filleft\Large 第\thechapter 篇}{0.4ex}{\titlerule\vspace{0.8ex}\filright}
+\titleformat{\section}{\Large\bfseries\color{deep}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{ink}}{\thesubsection}{0.6em}{}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examBox}[1]{breakable,colback=white,colframe=accent,title=\textbf{数学一训练：#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{boundarybox}[1]{breakable,colback=soft,colframe=line,title=\textbf{概念边界：#1},boxrule=0.6pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{贯穿例：#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\key}[1]{\textbf{\color{deep}#1}}
+\newcommand{\eng}[1]{\textit{#1}}
+\let\cleardoublepage\clearpage
+\tikzset{
+ atlas/.style={draw=deep,rounded corners=2.5mm,minimum width=4.6cm,minimum height=1.15cm,align=center,fill=soft,font=\small,inner sep=4pt,thick},
+ flow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,draw=deep},
+ dashedflow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,dashed,draw=accent}
+}
+
+\begin{document}
+\frontmatter
+\begin{titlepage}
+\centering\vspace*{0.8cm}
+{\Huge\bfseries\color{deep} 概率论与数理统计\par}
+\vspace{0.3cm}
+{\LARGE 心智模型手册 v2\par}
+\vspace{0.4cm}
+{\large 随机对象、信息条件与分布变换的统一心智模型\par}
+\vspace{0.8cm}
+\begin{tikzpicture}[
+  atlas/.style={draw=deep,rounded corners=2.5mm,text width=3.8cm,minimum height=1.15cm,align=center,fill=soft,font=\small,inner sep=3pt,thick},
+  flow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,draw=deep},
+  dashedflow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,dashed,draw=accent}
+]
+% 第一排：概率论（正向：由模型到样本统计）(x=0, 5.8, 11.6)
+\node[atlas] (world) at (0,0) {\textbf{Random World}\\\scriptsize 随机世界 $(\Omega,P)$};
+\node[atlas] (rv) at (5.8,0) {\textbf{Observation}\\\scriptsize 随机变量 $X(\omega)$};
+\node[atlas] (dist) at (11.6,0) {\textbf{Distribution}\\\scriptsize 密度函数 $f(x)$};
+
+% 第二排：数理统计（反向：由样本到参数推断）(y=-2.2)
+\node[atlas] (rep) at (11.6,-2.2) {\textbf{Repeated Sample}\\\scriptsize 样本 $(\bar X,S^2)$};
+\node[atlas] (inf) at (0,-2.2) {\textbf{Statistical Inference}\\\scriptsize 点估计 / 检验};
+
+% 正向概率流
+\draw[flow] (world.east) -- node[above,font=\tiny\color{deep}]{观测化} (rv.west);
+\draw[flow] (rv.east) -- node[above,font=\tiny\color{deep}]{定量分布} (dist.west);
+\draw[flow] (dist.south) -- node[right,font=\tiny\color{deep}]{抽样生成} (rep.north);
+
+% 反向统计推断流（底层横向）
+% 左侧闭环上升线
+\draw[dashedflow] (inf.north) -- node[left,font=\tiny\color{accent}]{估计/校验已知机制} (world.south);
+\end{tikzpicture}
+\vfill
+{\small 概率论研究：当随机机制已知时，结果会怎样随机；数理统计研究：当机制未知、只看样本时，怎样反推机制。\par}
+\end{titlepage}
+
+\chapter*{使用说明：这不是公式册，而是“随机世界的操作系统”}
+\addcontentsline{toc}{chapter}{使用说明：这不是公式册，而是“随机世界的操作系统”}
+
+\begin{corebox}{本册的任务}
+概率统计最容易被学成一串公式：条件概率、Bayes、分布函数、二维密度、期望方差、中心极限定理、$\chi^2/t/F$、最大似然、置信区间、假设检验。真正困难的却不是记住公式，而是判断：\key{当前随机对象是什么？已经知道什么信息？应该改变哪个表示？目标究竟要概率、分布、数字特征，还是未知参数？}
+
+本册只承担四项稳定任务：
+\begin{enumerate}
+  \item 建立概率论与数理统计的统一世界模型；
+  \item 解释教材各章在这个模型中的位置，以及为什么必须出现；
+  \item 建立高频概念边界，给出真正判据和题目信号；
+  \item 给出做题时可执行的识别、路径选择与校验协议。
+\end{enumerate}
+具体计算技巧、题型变式和个人经验留给后续 Practice Layer 持续生长。
+\end{corebox}
+
+\begin{methodbox}{阅读本册时怎样使用箭头}
+本册中的箭头有三种含义，必须看上下文：
+\begin{itemize}
+  \item $A\to B$ 若出现在“对象升级链”中，表示\key{认知层次从 A 升级到 B}，不是时间先后；
+  \item $X\xrightarrow{g}Y$ 表示\key{随机变量通过函数变换}；
+  \item Model $\to$ Data 或 Data $\to$ Model 表示\key{推理方向}。
+\end{itemize}
+任何箭头第一次出现后，本册都必须用文字解释其含义，而不是把符号本身当成解释。
+\end{methodbox}
+
+\tableofcontents
+\mainmatter
+
+% ============================================================
+\chapter{总图：概率论和统计学其实是一个正问题和一个逆问题}
+% ============================================================
+
+\section{概率论：已知机制，问结果怎样随机}
+设随机模型由参数 $\theta$ 决定，例如硬币正面概率 $p$、正态总体的 $\mu,\sigma^2$。概率论的典型方向是
+\[
+\boxed{\theta\ \text{或分布模型}\quad\longrightarrow\quad X,\ (X,Y),\ X_1+\cdots+X_n\ \text{怎样分布}}
+\]
+这是一类\key{正问题（forward problem）}：机制在左边，随机结果在右边。
+
+例如已经知道
+\[
+X_i\overset{iid}{\sim}\mathrm{Bernoulli}(p),
+\]
+那么我们可以推出成功次数
+\[
+S_n=\sum_{i=1}^nX_i\sim B(n,p),
+\]
+进一步求 $P(S_n\ge k)$、$E(S_n)$、$Var(S_n)$，或者在 $n$ 很大时讨论正态近似。
+
+\section{统计学：只看到数据，问背后的机制是什么}
+统计学把方向倒过来：
+\[
+\boxed{x_1,\dots,x_n\quad\longrightarrow\quad \theta\ \text{可能是多少？关于 }\theta\text{ 能作什么判断？}}
+\]
+例如不知道硬币的 $p$，只观察到 100 次中 63 次正面。此时 $p$ 是\key{固定但未知}的参数，63/100 是数据给出的信息。统计学要研究：怎样构造 $\hat p$、这个估计有多稳定、能给怎样的置信区间、能否拒绝 $p=0.5$ 这样的假设。
+
+\begin{boundarybox}{概率 $\neq$ 统计}
+两者不是“前半本书和后半本书”这么简单。概率的输入是模型、输出是随机结果；统计的输入是结果、输出是关于模型的推断。统计推断之所以可能，恰恰因为概率论已经告诉我们：\key{如果参数真是某个值，那么统计量会怎样随机。}
+\end{boundarybox}
+
+\section{对象升级链：同一个随机现象为什么会出现这么多概念}
+整门课可以沿下面的对象链理解：
+\[
+\boxed{\text{Random Experiment}\to\Omega\to Event\to RandomVariable\to Distribution}
+\]
+\[
+\boxed{\text{JointStructure}\to Feature\to Sample\to Statistic\to Inference}
+\]
+这不是时间流程，而是\key{描述同一随机现象时逐渐提高抽象层次}。
+
+\begin{longtable}{L{2.5cm}L{5.0cm}L{3.7cm}L{\dimexpr\linewidth-12.17cm\relax}}
+\toprule
+\textbf{层次} & \textbf{真正含义} & \textbf{教材内容} & \textbf{做题第一问}\\
+\midrule
+Random Experiment & 可以在相同条件下重复、结果事先不唯一 & 随机试验 & 随机性来自哪里？\\
+$\Omega$ & 所有基本结果的集合 & 样本空间 & 所有可能结果列全了吗？\\
+Event & $\Omega$ 的子集，是“我们关心的一类结果” & 事件运算 & “至少/恰好/同时/不发生”翻译成什么集合？\\
+Random Variable & $X:\Omega\to\mathbb R$，给结果贴上数值标签 & 随机变量 & 我要观察随机结果的哪个数值特征？\\
+Distribution & 概率质量在 $X$ 取值空间上的分配 & 分布律、CDF、PDF & 概率质量落在哪里？support 是什么？\\
+Joint Structure & 多个随机观察量怎样共同变化 & 二维分布、条件/边缘、独立 & 知道一个变量会不会改变另一个？\\
+Feature & 用少数数字压缩完整分布 & 期望、方差、协方差 & 题目是否只要摘要而不需要完整分布？\\
+Sample & 从总体重复获得的随机变量组 & 简单随机样本 & 抽样前哪些量仍是随机的？\\
+Statistic & 样本的函数且不能含未知参数 & $\bar X,S^2$、抽样分布 & 这个统计量在重复抽样中怎样随机？\\
+Inference & 根据统计量对参数作估计或检验 & 估计、区间、检验 & 数据究竟支持什么范围/决策？\\
+\bottomrule
+\end{longtable}
+
+\section{概率题反复出现的三种基本信息操作}
+概率论里很多公式其实只是三种动作的不同实现。
+
+\subsection{Condition：加入信息，缩小有效随机世界}
+从 $P(A)$ 变成 $P(A\mid B)$，不是“多了一个竖线”，而是已知 $B$ 发生以后，原来的有效世界从 $\Omega$ 缩小到 $B$，并在 $B$ 内重新归一化。
+
+\subsection{Marginalize：忽略某部分信息，把它的所有可能贡献加起来}
+例如联合密度 $f_{X,Y}$ 已知，只关心 $X$：
+\[
+f_X(x)=\int_{-\infty}^{\infty} f_{X,Y}(x,y)\,dy.
+\]
+这里积分不是技巧，而是“现在不再区分 $Y$ 到底取多少，把所有可能的 $Y$ 情形都合并”。
+
+\subsection{Transform：换观察函数，重新搬运概率质量}
+定义 $Y=g(X)$ 后，随机性并没有重新产生；只是我们从观察 $X$ 改为观察 $g(X)$。所以要追踪：哪些 $x$ 被映射到同一个 $y$，原来的概率质量怎样合并或拉伸。
+
+\begin{methodbox}{三个动作如何连接教材章节}
+\begin{itemize}
+  \item 全概率：对隐藏原因先 Condition，再把原因 Marginalize；
+  \item Bayes：得到 evidence 后重新 Condition 到原因空间；
+  \item 边缘分布：Marginalize 掉不关心的变量；
+  \item 条件分布：Condition 到某个变量取值；
+  \item $Y=g(X)$、$X+Y$、$ \max(X,Y)$：Transform；
+  \item 统计量 $T(X_1,\dots,X_n)$：也是 Transform，只不过输入变成整个样本向量。
+\end{itemize}
+\end{methodbox}
+
+\section{两个母例：后面每一章都回到它们}
+
+\begin{examplebox}{母例 A：Bernoulli 序列}
+一次试验只有成功/失败，成功概率 $p$。定义
+\[
+X_i=\begin{cases}1,&\text{第 }i\text{ 次成功},\\0,&\text{失败}.\end{cases}
+\]
+则 $X_i\sim \text{Bernoulli}(p)$。这个简单对象会依次生成：
+\[
+\text{Event}\to X_i\to S_n=\sum X_i\to B(n,p)\to E/\operatorname{Var}\to \bar X\to LLN/CLT\to \hat p.
+\]
+后面我们会反复用它解释“随机变量为什么有用”“和的分布”“大数定律”“中心极限定理”“点估计”和“假设检验”。
+\end{examplebox}
+
+\begin{examplebox}{母例 B：正态总体}
+设
+\[
+X_1,\dots,X_n\overset{iid}{\sim}N(\mu,\sigma^2).
+\]
+当 $\mu,\sigma^2$ 已知，这是概率模型；当参数未知时，样本用于反推它们。统计阶段将出现
+\[
+\bar X,\qquad S^2,\qquad \frac{\bar X-\mu}{\sigma/\sqrt n},\qquad \frac{(n-1)S^2}{\sigma^2},
+\]
+进而自然出现 Normal、$\chi^2$、$t$、$F$ 四类“概率标尺”。
+\end{examplebox}
+
+\section{本册后续章节与母模型的映射}
+\begin{longtable}{L{4.3cm}L{5.0cm}L{\dimexpr\linewidth-10.17cm\relax}}
+\toprule
+\textbf{章节} & \textbf{真正母问题} & \textbf{核心操作/对象}\\
+\midrule
+随机事件与概率 & 先怎样定义随机世界和信息？ & Event, Condition\\
+随机变量与分布 & 怎样把随机结果数值化？ & $X:\Omega\to\mathbb R$, Distribution\\
+随机变量变换 & 换观察对象后概率质量怎样搬运？ & Transform\\
+多维随机变量 & 多个随机量之间怎样共享信息？ & Joint / Marginal / Conditional\\
+数字特征 & 是否能不用完整分布，只保留重要摘要？ & Expectation / Variance / Covariance\\
+极限定理 & 大量重复为何出现稳定和正态波动？ & Aggregate / Standardize / Approximate\\
+抽样分布 & 统计量自己怎样随机？ & Statistic as Random Variable\\
+参数估计 & 怎样由样本构造参数信息？ & Estimator / Pivot\\
+假设检验 & 一个假设下当前数据是否太极端？ & Null Model / Tail Probability\\
+\bottomrule
+\end{longtable}
+
+% ============================================================
+\chapter{随机事件与概率：先把“随机世界”和“已知信息”说清楚}
+% ============================================================
+
+\section{随机试验、样本点、样本空间、事件是四个不同层次}
+考虑掷两枚硬币。随机试验是“掷两枚硬币”；样本空间可以写为
+\[
+\Omega=\{HH,HT,TH,TT\}.
+\]
+$HH$ 是一个样本点，而“恰好一枚正面”是事件
+\[
+A=\{HT,TH\}.
+\]
+概率 $P(A)$ 才是一个数。这个层级必须始终保持：
+\[
+\boxed{\omega\in\Omega,\qquad A\subseteq\Omega,\qquad P(A)\in[0,1].}
+\]
+很多低级错误来自把集合和数混在一起，例如把 $A\cup B$ 写成概率加法，或者把 $P(A)$ 当事件继续取交集。
+
+\section{事件运算不是符号游戏，而是语言翻译}
+\begin{longtable}{p{3.0cm}p{4.5cm}p{\dimexpr\linewidth-8.35cm\relax}}
+\toprule
+\textbf{自然语言} & \textbf{集合表达} & \textbf{做题提醒}\\
+\midrule
+A 与 B 同时发生 & $A\cap B$ & “同时/且”不等于独立，独立是概率结构条件\\
+A 或 B 至少一个发生 & $A\cup B$ & 注意是否包含二者同时发生\\
+A 不发生 & $A^c$ & “至少一个”常可转成“不是全不发生”\\
+只有 A 发生 & $A\cap B^c$ & “只有”与“至少”不要混\\
+A、B 恰好一个发生 & $(A\cap B^c)\cup(A^c\cap B)$ & 两块互斥，可分别计算后相加\\
+A 发生蕴含 B 发生 & $A\subseteq B$ & 概率上有 $P(A)\le P(B)$\\
+\bottomrule
+\end{longtable}
+
+\section{概率公理真正保证了什么}
+概率不是“感觉”，而是满足非负性、规范性和可列可加性的测度。数学一做题最常用的后果包括：
+\[
+P(A^c)=1-P(A),
+\]
+\[
+P(A\cup B)=P(A)+P(B)-P(A\cap B),
+\]
+以及对互斥事件的直接相加。
+
+\begin{boundarybox}{互斥 $\neq$ 独立}
+互斥是集合结构：$A\cap B=\varnothing$。独立是信息结构：$P(A\cap B)=P(A)P(B)$。如果 $P(A),P(B)>0$ 且互斥，那么 $P(A\cap B)=0$，却有 $P(A)P(B)>0$，所以反而不独立。
+
+\textbf{题目信号：}“不能同时发生/不相容”看互斥；“相互独立/一次结果不影响另一次”看独立。两类条件对应完全不同的计算动作。
+\end{boundarybox}
+
+\section{古典概型、几何概型的共同本质：先确定“等可能”的基本单位}
+古典概型不是“排列组合公式”，而是样本空间有限且基本结果等可能时：
+\[
+P(A)=\frac{|A|}{|\Omega|}.
+\]
+真正难点往往是\key{你选的基本结果是否等可能}。例如抽球问题里，“抽到的颜色序列”通常不一定等可能，而“具体球的组合”可能等可能。
+
+几何概型把“个数”换成长度、面积、体积等几何测度：
+\[
+P(A)=\frac{m(A)}{m(\Omega)}.
+\]
+所以二者共同的母模型是：
+\[
+\boxed{\text{Choose an equiprobable representation}\to\text{measure favorable region}/\text{measure whole region}.}
+\]
+
+\section{条件概率：已知信息以后，世界被重置}
+条件概率
+\[
+P(A\mid B)=\frac{P(A\cap B)}{P(B)},\qquad P(B)>0
+\]
+真正的含义是：已知 $B$ 发生后，不再把 $B^c$ 中的结果视为可能；$B$ 变成新的有效样本空间，其总概率重新归一化为 1。
+
+\begin{examplebox}{从 52 张牌中已知抽到红牌，求是红桃的概率}
+原世界里红桃 13 张，红牌 26 张。已知“红牌”以后，黑牌全部被排除，所以有效世界只剩 26 张红牌，其中 13 张红桃：
+\[
+P(\heartsuit\mid Red)=\frac{13}{26}=\frac12.
+\]
+如果直接用 $13/52$，说明你虽然看见了“已知”，却没有真的更新样本空间。
+\end{examplebox}
+
+\section{乘法公式、全概率、Bayes 是一条因果—证据链}
+乘法公式把联合概率分解：
+\[
+P(A\cap B)=P(A)P(B\mid A).
+\]
+这可以理解为“先走到 A，再在 A 条件下走到 B”。
+
+如果 $B_1,\dots,B_n$ 是完备事件组，事件 $A$ 可以由多个互斥来源产生：
+\[
+P(A)=\sum_iP(B_i)P(A\mid B_i).
+\]
+这就是全概率：\key{先按隐藏来源分层，再把来源 Marginalize 掉。}
+
+Bayes 则在观察到 $A$ 后反推来源：
+\[
+P(B_i\mid A)=\frac{P(B_i)P(A\mid B_i)}{\sum_jP(B_j)P(A\mid B_j)}.
+\]
+
+\begin{examplebox}{三台机器与次品：全概率和 Bayes 为什么是一对}
+三台机器产量占比 $0.2,0.3,0.5$，次品率分别 $0.01,0.02,0.03$。随机抽一个产品：
+\begin{itemize}
+  \item 问“抽到次品的概率”，是从来源到结果：用全概率；
+  \item 已知“它是次品”，问“最可能来自哪台机器”，是从证据反推来源：用 Bayes。
+\end{itemize}
+同一棵概率树，方向不同，问题就不同。
+\end{examplebox}
+
+\section{独立性：知道一个事件以后，另一个概率不变}
+若 $P(B)>0$，独立可写成
+\[
+P(A\mid B)=P(A),
+\]
+也等价于
+\[
+P(A\cap B)=P(A)P(B).
+\]
+前一个表达更接近直觉：\key{B 提供的信息没有改变我们对 A 的不确定性。}
+
+多个事件独立必须严格区分“两两独立”和“相互独立”。数学一题目若明确给“相互独立”，可以对任意子集乘概率；只知道两两独立，不能自动把三个事件交集拆成三项乘积。
+
+\section{Bernoulli 重复试验：独立性第一次变成可计算结构}
+若进行 $n$ 次相互独立且每次成功概率都为 $p$ 的试验，成功次数 $S_n$ 满足
+\[
+P(S_n=k)=\binom nkp^k(1-p)^{n-k}.
+\]
+这里组合数来自“哪些 $k$ 次成功”的位置选择，$p^k(1-p)^{n-k}$ 来自某个具体成功/失败序列的概率。
+
+\begin{methodbox}{本章做题控制链}
+\[
+\boxed{\text{Translate language}\to\text{Event representation}\to\text{Check information}}
+\]
+\[
+\boxed{\text{Condition/Partition/Independence}\to\text{Compute}\to\text{Range check}}
+\]
+先把自然语言变成事件，再判断是否新增了条件信息；不要一上来寻找公式。
+\end{methodbox}
+
+% ============================================================
+\chapter{随机变量与一维分布：把随机世界压缩到数轴上}
+% ============================================================
+
+\section{随机变量是观察函数，不是随机性的来源}
+随机变量
+\[
+X:\Omega\to\mathbb R
+\]
+把每个样本点映射到一个实数。它做的是\key{数值化观察}：从复杂随机结果中提取我们关心的数值特征。
+
+例如两枚硬币：
+\[
+HH\mapsto2,\quad HT\mapsto1,\quad TH\mapsto1,\quad TT\mapsto0,
+\]
+这里 $X=$“正面个数”。多个不同样本点可以映射到同一个 $X$ 值，这正是“压缩”。
+
+\section{分布：概率质量在取值空间上的安排}
+离散型随机变量用分布律
+\[
+P(X=x_i)=p_i
+\]
+描述概率质量落在哪些点上；连续型随机变量若存在密度，则
+\[
+P(a<X\le b)=\int_a^bf(x)\,dx.
+\]
+密度不是点概率，而是“单位长度附近的概率强度”。连续型随机变量满足 $P(X=a)=0$，即使 $f(a)$ 很大也一样。
+
+\section{CDF：离散与连续的统一语言}
+分布函数
+\[
+F(x)=P(X\le x)
+\]
+对所有随机变量都适用。它必须满足：单调不减、右连续、$F(-\infty)=0$、$F(+\infty)=1$。
+
+对离散型，CDF 的跳跃量就是点概率；对绝对连续型，若可导，则
+\[
+F'(x)=f(x).
+\]
+因此 CDF 是“累积到 $x$ 为止的概率”，PDF 则是“局部密度”。
+
+\begin{boundarybox}{CDF $\neq$ PDF}
+$F$ 本身就是概率，所以取值在 $[0,1]$ 且单调；$f$ 可以大于 1，也不要求单调。题目若给一个候选函数问“能否成为密度”，检查的是 $f\ge0$ 与总积分为 1；问“能否成为分布函数”，检查的是 CDF 四性质。
+\end{boundarybox}
+
+\section{Support：先找到随机变量真正可能出现的区域}
+无论离散还是连续，做分布题先找 support。若密度写成分段函数，积分上下限必须同时受题目事件与 support 约束；二维题更是如此。
+
+一个常见错误是：先套积分公式，再发现积分区域超出了密度非零区域。正确顺序应是：
+\[
+\boxed{\text{Find support}\to\text{intersect with event}\to\text{integrate/sum}.}
+\]
+
+\section{常见离散分布：不要背名字，要记“生成机制”}
+\section{常见离散分布：不要背名字，要记“生成机制”}
+\begin{longtable}{L{2.6cm}L{4.6cm}L{4.0cm}L{\dimexpr\linewidth-12.17cm\relax}}
+\toprule
+\textbf{分布} & \textbf{随机机制} & \textbf{最核心对象} & \textbf{高频信号}\\
+\midrule
+0--1 & 一次成败试验 & 指示变量 & 成功/失败\\
+Binomial & 固定 $n$ 次独立同概率试验 & 成功总次数 & $n$ 固定、每次 $p$\\
+Geometric & 不断重复直到首次成功 & 等待次数 & “第一次成功在第几次”\\
+Hypergeo. & 有限总体不放回抽样 & 抽中成功对象数 & 不放回、总体成功数固定\\
+Poisson & 区间内稀疏事件计数模型 & 事件次数 & 到达、事故、缺陷、$\lambda$\\
+\bottomrule
+\end{longtable}
+
+\begin{examplebox}{Binomial 和 Hypergeometric 为什么不能只看“成功次数”}
+两题都可能问“抽中红球个数”。若每次抽后放回，或等价地每次成功概率保持不变且相互独立，容易得到 Binomial；若从有限总体不放回，后一次概率依赖前一次结果，应是 Hypergeometric。\key{真正判据是独立同概率结构，而不是表面上都在“数成功次数”。}
+\end{examplebox}
+
+\section{常见连续分布：记住其“形状原因”}
+\begin{longtable}{L{2.8cm}L{4.7cm}L{4.2cm}L{\dimexpr\linewidth-12.67cm\relax}}
+\toprule
+\textbf{分布} & \textbf{核心机制/形状} & \textbf{关键结构} & \textbf{做题信号}\\
+\midrule
+Uniform & 区间内没有位置偏好 & 密度常数 & 随机点、等可能落在区间\\
+Exponential & Poisson 到达之间的等待时间模型 & 无记忆性 & 等待下一事件、寿命模型\\
+Normal & 大量小扰动叠加的经典模型 & 对称、标准化 & 给 $\mu,\sigma$、线性组合、近似\\
+\bottomrule
+\end{longtable}
+
+\begin{center}
+\begin{tikzpicture}[
+  distnode/.style={draw=deep,rounded corners=2.5mm,text width=3.4cm,minimum height=1.15cm,align=center,fill=soft,font=\small,inner sep=3pt,thick},
+  arrow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,draw=deep},
+  dasharrow/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,dashed,draw=accent}
+]
+% 第一行：离散试探与计数 (x=0, 5.8, 11.6, y=0)
+\node[distnode] (bern) at (0,0) {\textbf{0--1 分布}\\\scriptsize $P(X=1)=p$};
+\node[distnode] (binom) at (5.8,0) {\textbf{二项分布 $B(n,p)$}\\\scriptsize $n$ 次独立试验};
+\node[distnode] (poiss) at (11.6,0) {\textbf{泊松分布 $P(\lambda)$}\\\scriptsize 稀有事件计数};
+
+% 第二行：连续分布与极限 (y=-2.3)
+\node[distnode] (snorm) at (0,-2.3) {\textbf{标准正态 $N(0,1)$}\\\scriptsize 无量纲概率标尺};
+\node[distnode] (norm) at (5.8,-2.3) {\textbf{正态分布 $N(\mu,\sigma^2)$}\\\scriptsize 中心极限定理/叠加};
+\node[distnode] (exp) at (11.6,-2.3) {\textbf{指数分布 $E(\lambda)$}\\\scriptsize 无记忆等待时间};
+
+% 第三行：三大抽样分布 (y=-4.6)
+\node[distnode] (chisq) at (0,-4.6) {$\bm{\chi^2}$ \textbf{分布 $\chi^2(k)$}\\\scriptsize $Z_1^2+\dots+Z_k^2$};
+\node[distnode] (tstat) at (5.8,-4.6) {$\bm{t}$ \textbf{分布 $t(k)$}\\\scriptsize $Z/\sqrt{Y/k}$};
+\node[distnode] (fstat) at (11.6,-4.6) {$\bm{F}$ \textbf{分布 $F(k_1,k_2)$}\\\scriptsize $(Y_1/k_1)/(Y_2/k_2)$};
+
+% === 第一行离散横向链 ===
+\draw[arrow] (bern.east) -- node[above,font=\tiny\color{deep}]{$n$ 次独立求和} (binom.west);
+\draw[arrow] (binom.east) -- node[above,font=\tiny\color{deep}]{$n\to\infty,p\to 0$} (poiss.west);
+
+% === 第一行到第二行纯垂直下落链（无交叉） ===
+\draw[arrow] (binom.south) -- node[left,font=\tiny\color{deep}]{CLT 近似} (norm.north);
+\draw[arrow] (poiss.south) -- node[right,font=\tiny\color{deep}]{Poisson 到达间隔} (exp.north);
+
+% === 第二行横向标准化链 ===
+\draw[arrow] (norm.west) -- node[above,font=\tiny\color{deep}]{标准化 $\frac{X-\mu}{\sigma}$} (snorm.east);
+
+% === 第二行到第三行抽样分布衍生链（纯净垂直与侧向） ===
+\draw[arrow] (snorm.south) -- node[left,font=\tiny\color{deep}]{独立平方和} (chisq.north);
+\draw[arrow] (snorm.south east) -- node[above,sloped,font=\tiny\color{deep}]{分子 $Z\sim N(0,1)$} (tstat.north west);
+\draw[arrow] (chisq.east) -- node[above,font=\tiny\color{deep}]{分母 $\sqrt{\chi^2/k}$} (tstat.west);
+
+% === F 分布底部外围正交路由（绝对无相交） ===
+\draw[arrow] (chisq.south) -- ++(0,-0.85) -| node[below,pos=0.25,font=\tiny\color{deep}]{双 $\chi^2$ 均方比 $(Y_1/k_1)/(Y_2/k_2)$} (fstat.south);
+\end{tikzpicture}
+\end{center}
+
+\section{标准化：把“位置和尺度”从形状里拆出去}
+若 $X\sim N(\mu,\sigma^2)$，标准化
+\[
+Z=\frac{X-\mu}{\sigma}\sim N(0,1)
+\]
+做了两件事：先减均值消除位置，再除标准差消除尺度。标准化不是正态分布专属思维，后面 $t$、$\chi^2$、$F$、CLT 和假设检验都会反复做类似的“构造无量纲概率标尺”。
+
+\section{Poisson 近似 Binomial：近似来自结构，而不是公式相似}
+当 $n$ 大、$p$ 小、$np=\lambda$ 保持在适中尺度时，二项分布可以用 Poisson 近似。这对应“很多机会，每次事件很稀有，总期望次数有限”的结构。若 $p$ 并不小，机械换成 Poisson 通常不合理。
+
+\begin{methodbox}{本章识别链}
+\[
+\boxed{\text{Discrete/Continuous}\to\text{Generation mechanism}\to\text{Support}}
+\]
+\[
+\boxed{\text{Distribution representation}\to\text{Probability calculation}}
+\]
+先识别“如何生成”，再识别“叫什么分布”。
+\end{methodbox}
+
+% ============================================================
+\chapter{随机变量函数：Transform 是概率质量的重新映射}
+% ============================================================
+
+\section{为什么 $Y=g(X)$ 不是“代入一个函数”这么简单}
+定义 $Y=g(X)$ 后，同一个底层样本点 $\omega$ 同时给出 $X(\omega)$ 和 $Y(\omega)=g(X(\omega))$。随机性没有变化，变化的是观察方式。
+
+核心问题变成：
+\[
+\boxed{\text{Which }x\text{ map to the same }y?\quad\text{How does probability mass move?}}
+\]
+
+\section{CDF 法：最稳健的通用思想}
+求 $Y$ 的分布，可以从
+\[
+F_Y(y)=P(Y\le y)=P(g(X)\le y)
+\]
+出发，把关于 $Y$ 的事件重新翻译成关于 $X$ 的事件，再用 $X$ 的已知分布计算。这种方法对单调和非单调函数都适用，只是事件区域翻译难度不同。
+
+\begin{examplebox}{$Y=X^2$ 为什么必须先看原像}
+若 $Y=X^2$，则
+\[
+\{Y\le y\}=\{-\sqrt y\le X\le \sqrt y\},\qquad y\ge0.
+\]
+一个 $y>0$ 通常有两个原像 $\pm\sqrt y$。如果你只保留一个分支，就会漏掉一半概率贡献。
+\end{examplebox}
+
+\section{单调连续变换：密度中的 Jacobian 是“局部拉伸补偿”}
+若 $Y=g(X)$ 单调可逆，$x=g^{-1}(y)$，密度满足
+\[
+f_Y(y)=f_X(g^{-1}(y))\left|\frac{d}{dy}g^{-1}(y)\right|.
+\]
+绝对值导数不是凭空出现的公式，它补偿坐标变换造成的局部长度伸缩，保证概率质量守恒。
+
+\section{离散型变换：把所有原像概率加起来}
+若 $Y=g(X)$ 是离散型，则
+\[
+P(Y=y)=\sum_{x:g(x)=y}P(X=x).
+\]
+这和连续型多分支变换的思想完全一致：\key{同一个输出值的所有来源都要汇合。}
+
+\section{最大值、最小值常用 CDF，因为事件更容易拆}
+对独立随机变量 $X_1,\dots,X_n$：
+\[
+P(\max X_i\le y)=P(X_1\le y,\dots,X_n\le y),
+\]
+独立时可以变成 CDF 乘积。类似地，最小值常用补事件：
+\[
+P(\min X_i>y)=P(X_1>y,\dots,X_n>y).
+\]
+所以“最大/最小值分布”不是新公式，而是寻找一个容易用交集表达的事件。
+
+\section{只求 $E[g(X)]$ 时，先问能否绕过完整分布}
+若目标只是数字特征，LOTUS 思想允许直接在 $X$ 的原分布上计算：
+\[
+E[g(X)]=\sum_xg(x)P(X=x)
+\]
+或
+\[
+E[g(X)]=\int g(x)f_X(x)\,dx.
+\]
+这是一条非常重要的做题路径规则：
+\[
+\boxed{\text{Target is expectation}\Rightarrow\text{do not automatically derive full distribution first}.}
+\]
+
+\begin{examBox}{路径比较}
+已知 $X\sim N(0,1)$，求 $E(X^2)$。直接用 $Var(X)=E(X^2)-(EX)^2$ 得到 1，明显比先求 $Y=X^2$ 的 $\chi^2(1)$ 分布再积分更短。心智模型不仅帮助“会做”，也帮助避免无效路径。
+\end{examBox}
+
+% ============================================================
+\chapter{多维随机变量：真正新增的是“依赖结构”}
+% ============================================================
+
+\section{从一个观察函数升级到多个观察函数}
+同一个随机世界上定义
+\[
+X(\omega),\qquad Y(\omega),
+\]
+得到随机向量 $(X,Y)$。现在问题不再只是各自怎么分布，而是：\key{知道 $Y$ 的信息，会不会改变我们对 $X$ 的分布判断？}
+
+因此二维随机变量的母链应记为：
+\[
+\boxed{Joint\to Marginal\to Conditional\to Dependence.}
+\]
+
+\section{Joint：联合分布保存的是“共同状态”}
+联合分布函数
+\[
+F_{X,Y}(x,y)=P(X\le x,Y\le y)
+\]
+或者联合密度 $f_{X,Y}(x,y)$ 描述 $(X,Y)$ 在二维空间里的概率质量。连续型题首先要画 support，因为概率事件本质上是二维区域积分：
+\[
+P((X,Y)\in D)=\iint_D f_{X,Y}(x,y)\,dxdy.
+\]
+
+\section{Marginal：只看一个变量时，另一个维度被积分掉}
+若只关心 $X$，对所有可能的 $Y$ 求和/积分：
+\[
+f_X(x)=\int_{-\infty}^{\infty}f_{X,Y}(x,y)\,dy.
+\]
+这不是“二维密度的固定公式”，而是\key{Marginalize：不再区分 $Y$ 取值，把所有贡献合并到同一个 $x$ 上。}
+
+\begin{examplebox}{三角形 support 为什么比积分本身更重要}
+若联合密度只在 $0<y<x<1$ 上非零，求 $f_X(x)$ 时，对固定 $x$，$y$ 的允许范围是 $0<y<x$，而不是机械积分 $0$ 到 1。求 $f_Y(y)$ 时，对固定 $y$，$x$ 的范围又变成 $y<x<1$。\key{边缘化上下限来自 support 截面，而不是背公式。}
+\end{examplebox}
+
+\section{Conditional：知道一个变量以后重新切片并归一化}
+连续型条件密度
+\[
+f_{X\mid Y}(x\mid y)=\frac{f_{X,Y}(x,y)}{f_Y(y)}
+\]
+可以理解为：把联合密度在 $Y=y$ 的“切片”取出来，再让这条切片总概率归一化为 1。
+
+因此条件分布和一维条件概率是同一种动作：\key{加入信息以后，重新定义有效随机世界。}
+
+\section{Independence：条件化以后分布完全不变}
+独立最强的表达是：知道 $Y$ 不提供关于 $X$ 的额外分布信息。于是
+\[
+f_{X\mid Y}(x\mid y)=f_X(x),
+\]
+并等价于（适当条件下）
+\[
+f_{X,Y}(x,y)=f_X(x)f_Y(y).
+\]
+
+\section{Covariance 为零只消除了线性共同变化}
+协方差
+\[
+Cov(X,Y)=E[(X-EX)(Y-EY)]
+\]
+只测量线性共同变化。可能存在非常强的非线性依赖，但 covariance 仍为 0。
+
+例如若 $X$ 关于 0 对称，令 $Y=X^2$，则 $Y$ 完全由 $X$ 决定，显然不独立；但在许多对称分布下 $E(X^3)=0$，可能得到 $Cov(X,Y)=0$。
+
+\begin{boundarybox}{独立 $\neq$ 不相关}
+独立通常推出不相关（相关矩存在时）；不相关一般不能推出独立。\textbf{题目信号：}只给 $Cov=0$ 或 $\rho=0$，禁止直接把联合密度拆成乘积。若额外给“二维正态”，才有重要特殊结论：不相关可推出独立。
+\end{boundarybox}
+
+\section{两个随机变量的函数：先确定变换，再决定表示}
+数学一高频目标包括 $X+Y$、$X-Y$、$XY$、$\max(X,Y)$、$\min(X,Y)$。不要把它们看成五套公式，而要先问：
+\begin{enumerate}
+  \item 新随机变量 $Z=g(X,Y)$ 的事件 $\{Z\le z\}$ 在 $(x,y)$ 平面是什么区域？
+  \item 是直接做二维积分更简单，还是利用独立性做 convolution 更简单？
+  \item 若只求 $EZ$ 或 $VarZ$，能否完全绕过 $f_Z$？
+\end{enumerate}
+
+\section{Convolution：独立和的密度为何是“滑动重叠”}
+若 $X,Y$ 独立且连续，$Z=X+Y$，则
+\[
+f_Z(z)=\int_{-\infty}^{\infty}f_X(x)f_Y(z-x)\,dx.
+\]
+对固定 $z$，所有满足 $x+y=z$ 的组合都会对 $Z=z$ 附近的概率贡献质量。卷积就是沿直线 $x+y=z$ 汇总所有来源。
+
+\begin{methodbox}{二维题统一草稿动作}
+先画 support，再画事件区域；若求边缘，画“固定 $x$ 或固定 $y$ 的截线”；若求函数分布，画 $g(x,y)\le z$ 的区域。二维概率题最常见的失败不是积分不会，而是区域没有画清。
+\end{methodbox}
+
+% ============================================================
+\chapter{数字特征：什么时候不需要完整分布？}
+% ============================================================
+
+\section{期望：对随机结果进行“概率加权平均”}
+离散型
+\[
+E[X]=\sum_xxP(X=x),
+\]
+连续型
+\[
+E[X]=\int xf(x)\,dx.
+\]
+它可以理解为长期平均，也可看成概率质量的平衡中心。但期望不一定是最可能值，也不一定属于随机变量实际 support。
+
+\section{期望的线性性是一条非常强的结构性捷径}
+\[
+E(aX+bY)=aEX+bEY
+\]
+不需要 $X,Y$ 独立。这一点极其重要，因为很多“总次数/总收益/总损失”的期望可以拆成许多指示变量之和，而完全不必求它们的联合分布。
+
+\begin{examplebox}{指示变量法：为什么相关事件也能轻松算期望}
+设 $I_i$ 表示第 $i$ 个对象是否满足某条件，则总个数 $N=\sum I_i$。即使 $I_i$ 彼此相关，仍有
+\[
+E[N]=\sum_iE[I_i]=\sum_iP(I_i=1).
+\]
+所以“求计数的期望”常常先拆成指示变量，而不是先求 $N$ 的完整分布。
+\end{examplebox}
+
+\section{方差：围绕期望的平方波动尺度}
+定义
+\[
+Var(X)=E[(X-EX)^2].
+\]
+计算时常用
+\[
+Var(X)=E(X^2)-(EX)^2.
+\]
+方差不是“平均误差”而是平方尺度，因此 $Var(aX+b)=a^2Var(X)$。
+
+\section{和的方差为什么比和的期望多一个 covariance}
+\[
+Var(X+Y)=VarX+VarY+2Cov(X,Y).
+\]
+原因是平方展开中出现交叉项。独立时 covariance 为 0，所以方差可直接相加；但线性期望从来不需要独立。
+
+\begin{boundarybox}{“期望可拆”与“方差可拆”不是同一条件}
+看到 $E(X+Y)$ 可以直接拆，不查独立；看到 $Var(X+Y)$ 必须检查 covariance/independence。很多选择题就是在考这条边界。
+\end{boundarybox}
+
+\section{协方差与相关系数：只测线性共同变化}
+协方差受单位影响，相关系数
+\[
+\rho_{XY}=\frac{Cov(X,Y)}{\sigma_X\sigma_Y}
+\]
+把尺度归一化到 $[-1,1]$，便于比较线性关系强弱。$|\rho|=1$ 表示几乎处处线性关系，而 $\rho=0$ 只表示没有线性相关。
+
+\section{矩：用不同次幂查看分布的不同侧面}
+原点矩 $E(X^k)$、中心矩 $E[(X-EX)^k]$ 是对分布的不同摘要。数学一主要掌握一阶、二阶及协方差等常用量。学习时不要把“矩”当额外公式，它只是“对 $g(X)=X^k$ 求期望”。
+
+\section{Chebyshev 不等式：只知道均值方差，也能控制尾部}
+若 $EX=\mu$、$VarX=\sigma^2$，则
+\[
+P(|X-\mu|\ge\varepsilon)\le\frac{\sigma^2}{\varepsilon^2}.
+\]
+它的意义在于：即使不知道完整分布，仅靠均值和方差，也能给偏离均值的概率一个通用上界。这个思想直接通向大数定律：平均以后方差缩小，于是远离真实均值的概率被压低。
+
+\begin{methodbox}{数字特征题路径规则}
+先看目标是否只要求 $E,Var,Cov$。若是，优先使用线性性、LOTUS、方差展开、独立性等直接结构；只有这些信息不足时，才考虑先求完整分布。
+\end{methodbox}
+
+% ============================================================
+\chapter{大量重复：随机性为什么会同时产生“稳定”和“正态波动”}
+% ============================================================
+
+\section{从单个随机变量转向随机变量序列}
+前面研究一个 $X$ 或一对 $(X,Y)$。现在考虑
+\[
+X_1,X_2,\dots,X_n
+\]
+以及它们的和与平均：
+\[
+S_n=\sum_{i=1}^nX_i,\qquad \bar X_n=\frac{S_n}{n}.
+\]
+核心问题变成：当 $n\to\infty$ 时，大量随机波动叠加后会出现什么规律？
+
+\section{大数定律：平均会稳定到总体水平}
+以 iid 情形为例，若 $EX_i=\mu$，在适当条件下
+\[
+\bar X_n\xrightarrow{P}\mu.
+\]
+大数定律回答的是：\key{平均以后靠近哪里？}
+
+Bernoulli 情形中，$\bar X_n$ 正好是成功频率，所以
+\[
+\frac{S_n}{n}\to p
+\]
+解释了“频率为什么稳定到概率”。这不是概率的定义，而是模型下的极限定理。
+
+\section{Chebyshev 思路：为什么平均会越来越稳定}
+若 $X_i$ iid，方差为 $\sigma^2$，则
+\[
+Var(\bar X_n)=\frac{\sigma^2}{n}.
+\]
+于是 Chebyshev 给出
+\[
+P(|\bar X_n-\mu|\ge\varepsilon)\le\frac{\sigma^2}{n\varepsilon^2}\to0.
+\]
+这展示了一个非常重要的机制：\key{独立平均把随机波动尺度从 $\sigma$ 压到 $\sigma/\sqrt n$。}
+
+\section{中心极限定理：剩余误差为什么近似正态}
+LLN 说 $\bar X_n$ 靠近 $\mu$，但并没有告诉你剩余误差长什么样。CLT 进一步研究标准化波动：
+\[
+\frac{\bar X_n-\mu}{\sigma/\sqrt n}\Rightarrow N(0,1).
+\]
+所以 CLT 回答的是：\key{围绕稳定点的剩余随机波动呈什么形状？}
+
+\begin{boundarybox}{LLN $\neq$ CLT}
+LLN 是“位置”：$\bar X_n$ 去哪里；CLT 是“形状”：标准化后的误差怎样分布。题目问极限概率趋近 0/1、频率是否稳定，多半看 LLN；题目给大 $n$ 并要求近似计算一个和或均值落在区间的概率，多半看 CLT。
+\end{boundarybox}
+
+\section{De Moivre--Laplace：Binomial 的正态近似}
+若 $S_n\sim B(n,p)$，则在合适条件下
+\[
+\frac{S_n-np}{\sqrt{np(1-p)}}\approx N(0,1).
+\]
+这就是 Bernoulli 母例从精确二项分布走向大样本近似的桥梁。离散变量用连续正态近似时，要注意题设和教材口径下的连续性校正习惯。
+
+\section{Levy--Lindeberg：把 Bernoulli 经验推广到一般 iid 和}
+数学一要求了解 iid 中心极限定理。真正要留下的不是名字，而是结构：许多独立、同分布、具有有限均值方差的随机变量相加后，只要适当中心化和标准化，其总和的形状趋向正态。
+
+\begin{examplebox}{Bernoulli 母例第一次完成“概率到统计”的桥}
+对 $X_i\sim Bernoulli(p)$，有 $EX_i=p$、$VarX_i=p(1-p)$。因此
+\[
+\bar X=\frac{S_n}{n}
+\]
+既是成功频率，也是未知 $p$ 的天然估计量。LLN 解释它为什么会靠近 $p$；CLT 解释它大样本下的误差规模约为 $\sqrt{p(1-p)/n}$。统计推断正是从这里开始：\key{稳定性保证“可估”，抽样波动描述“估得有多准”。}
+\end{examplebox}
+
+% ============================================================
+\chapter{数理统计入口：样本、统计量和抽样分布}
+% ============================================================
+
+\section{总体不是“所有人”，而是一个概率分布模型}
+在统计学语言中，总体可以理解为产生观测值的分布。参数 $\theta$ 决定分布的某些性质，例如正态总体的 $\mu,\sigma^2$。参数在频率学派中是\key{固定但未知}的。
+
+\section{简单随机样本：重复抽样产生新的随机向量}
+简单随机样本
+\[
+X_1,\dots,X_n
+\]
+满足独立且与总体同分布。抽样前它们仍是随机变量；真正观察后得到具体值
+\[
+x_1,\dots,x_n.
+\]
+这条“抽样前/抽样后”的边界必须始终保持。
+
+\section{统计量：样本的函数，但不能含未知参数}
+统计量写成
+\[
+T=T(X_1,\dots,X_n).
+\]
+例如
+\[
+\bar X=\frac1n\sum X_i,
+\qquad
+S^2=\frac1{n-1}\sum(X_i-\bar X)^2.
+\]
+它们之所以重要，是因为统计量本身也随机，所以我们可以研究其\key{抽样分布}。
+
+\begin{boundarybox}{Parameter $\neq$ Statistic $\neq$ Estimator $\neq$ Estimate}
+$\mu,\sigma^2,p$ 是固定未知参数；$\bar X,S^2$ 是随机统计量；若 $\bar X$ 被拿来估计 $\mu$，它又承担 estimator 的角色；真正代入数据得到 2.73 后，这个数才是 estimate。题目问“无偏性”时，必须对 estimator 求期望，不能对已观察的数字谈随机性。
+\end{boundarybox}
+
+\section{自由度：为什么样本方差里出现 $n-1$}
+样本偏差满足
+\[
+\sum_{i=1}^n(X_i-\bar X)=0.
+\]
+$n$ 个偏差之间存在一个线性约束，所以只有 $n-1$ 个独立自由方向。这是“自由度”最直观的来源。它会直接进入 $\chi^2,t,F$ 分布参数。
+
+\section{$\chi^2$：平方标准正态量的累积}
+若 $Z_1,\dots,Z_k\overset{iid}{\sim}N(0,1)$，则
+\[
+\sum_{i=1}^kZ_i^2\sim\chi^2(k).
+\]
+对正态总体，有
+\[
+\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1).
+\]
+所以 $\chi^2$ 是“样本方差相对总体方差的标准化波动标尺”。
+
+\section{$t$：总体方差未知时，用样本方差替代会多出额外不确定性}
+若总体正态，则
+\[
+T=\frac{\bar X-\mu}{S/\sqrt n}\sim t(n-1).
+\]
+如果 $\sigma$ 已知，分母是固定尺度，使用 Normal；如果 $\sigma$ 未知，只能用随机的 $S$ 替代，于是概率标尺变成 $t$。所以 $t$ 分布不是“样本量小就用”的机械规则，真正原因是\key{正态总体下总体方差未知，分母自身带来额外随机性。}
+
+\section{$F$：两个独立方差尺度的比}
+若两个独立 $\chi^2$ 变量分别除以自由度后作比，得到 $F$ 分布。正态总体比较两个方差时，自然出现
+\[
+\frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}.
+\]
+因此 $F$ 的核心语义是“两个方差尺度的相对大小”。
+
+\section{正态总体为什么在统计教材里地位特殊}
+不是因为所有现实总体都正态，而是因为正态模型有极强的闭合结构：样本均值仍正态，样本均值与样本方差独立，样本方差标准化后为 $\chi^2$。这些性质使区间估计和假设检验可以得到精确有限样本分布。
+
+\begin{examplebox}{正态母例的抽样分布骨架}
+若 $X_i\overset{iid}{\sim}N(\mu,\sigma^2)$：
+\[
+\bar X\sim N\left(\mu,\frac{\sigma^2}{n}\right),
+\]
+\[
+\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1),
+\]
+并且 $\bar X$ 与 $S^2$ 独立。因此
+\[
+\frac{\bar X-\mu}{S/\sqrt n}\sim t(n-1).
+\]
+这三条不是三个孤立公式，而是同一个正态总体结构的连续结果。
+\end{examplebox}
+
+\section{统计推断选择前，先回答“未知量是谁、方差知道吗”}
+\begin{longtable}{L{3.4cm}L{4.2cm}L{4.0cm}L{\dimexpr\linewidth-12.57cm\relax}}
+\toprule
+\textbf{目标} & \textbf{先检查条件} & \textbf{核心标尺} & \textbf{第一动作}\\
+\midrule
+单总体均值 & 正态？$\sigma^2$ 已知？ & $N$ 或 $t$ & 标准化 $\bar X$\\
+单总体方差 & 总体正态？ & $\chi^2$ & 标准化 $S^2$\\
+两总体均值差 & 独立？方差已知/未知及关系？ & Normal / $t$ & 构造均值差枢轴\\
+两总体方差比 & 两总体正态且独立？ & $F$ & 构造方差比\\
+\bottomrule
+\end{longtable}
+
+% ============================================================
+\chapter{参数估计：从“猜一个数”升级到“构造可评价的随机规则”}
+% ============================================================
+
+\section{点估计首先分“怎么构造”和“怎么评价”}
+点估计不是找到一个看起来合理的数字，而是构造
+\[
+\hat\theta=T(X_1,\dots,X_n)
+\]
+来估计未知参数 $\theta$。构造以后还要研究这个随机规则在重复抽样中的表现。
+
+\section{矩估计：用样本矩匹配理论矩}
+若总体矩
+\[
+E(X^k)=m_k(\theta)
+\]
+含未知参数，就用样本矩
+\[
+\frac1n\sum X_i^k
+\]
+去匹配。其思想是：\key{总体分布的数字特征由参数决定，而样本矩是这些数字特征的可观测近似。}
+
+\begin{examplebox}{Exponential($\lambda$) 的矩估计}
+若参数化采用 $EX=1/\lambda$，则令
+\[
+\bar X=\frac1\lambda
+\]
+得到
+\[
+\hat\lambda_{MM}=\frac1{\bar X}.
+\]
+这不是死记公式，而是“样本平均匹配总体平均”。
+\end{examplebox}
+
+\section{最大似然：选择最能解释已观测样本的参数}
+样本独立时 likelihood 通常写为
+\[
+L(\theta)=\prod_{i=1}^nf(x_i;\theta).
+\]
+MLE 选择使当前样本最可能出现的参数：
+\[
+\hat\theta=\arg\max_\theta L(\theta).
+\]
+常取 log 把乘积变成和，是为了简化计算，不改变最大点。
+
+\begin{methodbox}{MLE 完整动作协议}
+\[
+\boxed{\text{Parameter domain}\to\text{Likelihood}\to\log L\to\text{Candidate extrema}}
+\]
+\[
+\boxed{\text{Boundary/support check}\to\text{Return to parameter meaning}}
+\]
+特别注意：若 support 本身依赖 $\theta$，不能只求导而忽略参数可行域和边界。
+\end{methodbox}
+
+\begin{examplebox}{Bernoulli 母例：MLE 为什么得到样本比例}
+若 $X_i\sim Bernoulli(p)$，观测成功数 $S_n=\sum x_i$，则
+\[
+L(p)=p^{S_n}(1-p)^{n-S_n}.
+\]
+取对数求极值可得
+\[
+\hat p=\frac{S_n}{n}=\bar X.
+\]
+所以样本比例同时是最自然的频率估计、矩估计和 MLE；前面的 LLN 又解释了它为什么随 $n$ 增大会靠近真实 $p$。
+\end{examplebox}
+
+\section{无偏性：平均意义上有没有系统偏差}
+若
+\[
+E_\theta(\hat\theta)=\theta,
+\]
+称估计量无偏。注意 expectation 是对“重复抽样产生的 $\hat\theta$ 分布”求平均，而不是对参数求期望。
+
+\section{有效性：同样无偏时，谁波动更小}
+若两个无偏估计量都对准同一个参数，方差更小者更集中，通常认为更有效。这里比较的是 sampling variance。
+
+\section{一致性：样本量增大以后，是否越来越接近真值}
+一致性研究
+\[
+\hat\theta_n\xrightarrow{P}\theta.
+\]
+它是大样本性质，与“有限 $n$ 时是否无偏”不是一回事。一个估计量可以有小偏差但一致，也可能无偏却方差下降很慢。
+
+\section{区间估计：点估计必须配上不确定尺度}
+单个数不能告诉你“估得有多准”。区间估计构造随机区间
+\[
+[L(X),U(X)]
+\]
+使
+\[
+P_\theta\{L(X)\le\theta\le U(X)\}=1-\alpha.
+\]
+频率学派下 $\theta$ 固定，随机的是区间构造程序。长期重复抽样时，大约 $1-\alpha$ 的区间覆盖真实参数。
+
+\section{枢轴量：把未知参数和已知抽样分布绑在一起}
+区间估计最核心的思路不是背四个公式，而是构造一个：
+\begin{enumerate}
+  \item 含待估参数；
+  \item 分布已知；
+  \item 分布不再依赖未知参数（或可控制）；
+\end{enumerate}
+的量，即 pivot。然后把一个概率不等式反解成参数范围。
+
+\section{单个正态总体均值：$\sigma$ 已知与未知为何对应不同标尺}
+若 $\sigma$ 已知：
+\[
+\frac{\bar X-\mu}{\sigma/\sqrt n}\sim N(0,1).
+\]
+若 $\sigma$ 未知：
+\[
+\frac{\bar X-\mu}{S/\sqrt n}\sim t(n-1).
+\]
+所以选择区间公式之前，真正第一问是：\key{分母尺度是已知常数还是由样本估出来的随机量？}
+
+\section{单总体方差与双总体问题：都是换一个 pivot}
+正态总体方差用 $\chi^2$；两个独立正态总体的方差比用 $F$；两个均值差根据方差已知/未知以及题设关系构造相应 pivot。这里不把所有公式塞入心智手册，但必须留下“先识别未知量与条件，再选抽样标尺”的决策结构。
+
+\begin{examBox}{估计题不要从“该用什么公式”开始}
+先写：未知参数是谁？当前有哪些统计量？总体是否正态？方差是否已知？题目要点估计还是区间？然后才选 MoM/MLE 或 $N/t/\chi^2/F$。这一步能避免大部分“公式其实背对了，但条件用错”的失分。
+\end{examBox}
+
+% ============================================================
+\chapter{假设检验：在一个假设世界里，当前数据是否过于极端？}
+% ============================================================
+
+\section{检验不是证明 $H_0$ 对错，而是控制错误风险的决策}
+假设检验先规定原假设 $H_0$ 和备择假设 $H_1$。然后在\key{$H_0$ 假定为真}的世界里研究某个统计量的分布，并把“太不符合 $H_0$ 的观测值”划入拒绝域。
+
+所以完整逻辑是：
+\[
+\boxed{H_0\to\text{sampling distribution under }H_0\to\text{rejection region}\to\text{observed statistic}\to\text{decision}.}
+\]
+
+\section{显著性水平 $\alpha$ 控制的是第一类错误}
+第一类错误：$H_0$ 为真却拒绝；第二类错误：$H_0$ 为假却未拒绝。显著性水平 $\alpha$ 用来控制第一类错误概率，不是“$H_0$ 为真的概率”，也不是“结论出错概率”。
+
+\section{单侧与双侧：由备择方向决定拒绝域的位置}
+如果 $H_1:\mu>\mu_0$，极端证据在右尾；若 $H_1:\mu<\mu_0$，在左尾；若 $H_1:\mu\ne\mu_0$，两侧都算偏离。题目里“是否增大/是否降低/是否改变”就是方向信号。
+
+\section{检验统计量的选择与区间估计共享同一套抽样分布}
+单个正态总体均值：$\sigma$ 已知用 $Z$，未知用 $t$；方差用 $\chi^2$；两个方差比用 $F$。区别不是数学工具变了，而是\key{区间估计把概率不等式反解成参数范围，假设检验把同一标尺转成拒绝/不拒绝规则。}
+
+\section{置信区间与双侧检验的对应关系}
+在常见双侧情形下，若假设值 $\theta_0$ 落在 $1-\alpha$ 置信区间外，则相应显著性水平 $\alpha$ 的双侧检验会拒绝 $H_0:\theta=\theta_0$。这个对应帮助理解两个章节为什么总使用同一批分位数。
+
+\begin{examplebox}{正态均值检验：真正做的是“标准化后看有多极端”}
+设总体正态、$\sigma$ 已知，检验 $H_0:\mu=\mu_0$。在 $H_0$ 下
+\[
+Z=\frac{\bar X-\mu_0}{\sigma/\sqrt n}\sim N(0,1).
+\]
+观测到的 $z$ 值越远离 0，说明样本均值和 $H_0$ 预期越不相容。双侧检验就是看 $|z|$ 是否进入两端低概率区。
+\end{examplebox}
+
+\section{“不拒绝”绝不等于“证明原假设正确”}
+数据证据不足以拒绝 $H_0$，可能是 $H_0$ 确实合理，也可能只是样本量太小、检验功效不足。因此规范表达是“在显著性水平 $\alpha$ 下不拒绝 $H_0$”，而不是“接受 $H_0$ 为真”。
+
+\begin{methodbox}{假设检验七步}
+\begin{enumerate}
+  \item 写清 $H_0,H_1$ 和方向；
+  \item 确认总体、独立性、正态性和已知/未知条件；
+  \item 在 $H_0$ 下构造统计量；
+  \item 写出该统计量在 $H_0$ 下的分布；
+  \item 根据 $\alpha$ 和单/双侧确定拒绝域；
+  \item 计算观测统计量并比较；
+  \item 用题目语言写结论，不把“不拒绝”写成“证明成立”。
+\end{enumerate}
+\end{methodbox}
+
+% ============================================================
+\chapter{概念边界：真正区别、题目信号与错误后果}
+% ============================================================
+
+\begin{longtable}{L{2.2cm}@{}>{\centering\arraybackslash}p{0.5cm}@{}L{2.2cm}L{4.2cm}L{4.2cm}L{\dimexpr\linewidth-13.9cm\relax}}
+\toprule
+\textbf{概念 A} & & \textbf{概念 B} & \textbf{真正判据} & \textbf{题目信号} & \textbf{混淆后典型错误}\\
+\midrule
+样本点 & $\neq$ & 事件 / 概率 & 结果 / 结果集合 / 数值测度 & “事件 A”“求 $P(A)$” & 把集合运算和数值运算混用\\
+互斥 & $\neq$ & 独立 & 不能同时发生 / 知道一个不改变另一个概率 & “不相容”/“相互独立” & 错把交概率写成乘积或 0\\
+条件概率 & $\neq$ & 联合概率 & 条件世界重新归一化 / 同时发生 & “已知 B” & 漏除 $P(B)$\\
+全概率 & $\neq$ & Bayes & 原因到结果 / 结果反推原因 & “总体概率”/“已知发生” & 推理方向反了\\
+随机变量 & $\neq$ & 样本点 & 观察函数 / 一次具体结果 & $X(\omega)$ & 把随机变量当结果集合\\
+CDF & $\neq$ & PDF & 累积概率 / 局部密度 & $F(x)$ / $f(x)$ & 把 $f(a)$ 当点概率\\
+离散型 & $\neq$ & 连续型 & 概率质量集中于点 / 用密度积分 & 分布律/密度 & 连续型算 $P(X=a)$ 非零\\
+Binomial & $\neq$ & Hypergeometric & 独立同概率重复 / 有限总体不放回 & 放回/不放回 & 错假设独立\\
+Joint & $\neq$ & Marginal & 保留所有变量 / 忽略其他变量 & “联合”“边缘” & 忘记积分/求和掉其他变量\\
+Marginal & $\neq$ & Conditional & 忽略变量 / 已知变量后重新归一化 & “只求 X”/“给定 Y=y” & 把积分和除法混用\\
+独立 & $\neq$ & 不相关 & 分布完全解耦 / 仅线性 covariance 为 0 & $Cov=0$、$\rho=0$ & 直接推出联合密度乘积\\
+$E(X+Y)$ & $\neq$ & $Var(X+Y)$ & 期望线性不需独立 / 方差需 covariance & 求均值或方差 & 无条件把方差相加\\
+LLN & $\neq$ & CLT & 稳定位置 / 标准化波动形状 & “趋于”/“大样本近似概率” & 错选定理\\
+参数 & $\neq$ & 统计量 & 固定未知 / 抽样前随机 & $\mu,\sigma^2$ / $\bar X,S^2$ & 把参数当随机变量求概率\\
+统计量 & $\neq$ & 估计量 & 任意样本函数 / 用于估参数的统计量 & “统计量”/“估计 $\theta$” & 混淆任务角色\\
+估计量 & $\neq$ & 估计值 & 抽样前随机规则 / 数据代入后的数值 & 无偏性/给定样本 & 对具体数值讨论 expectation\\
+无偏 & $\neq$ & 一致 & 有限样本平均无偏差 / 大样本趋于真值 & “无偏”/“相合” & 把不同评价标准当同义词\\
+$Z$ & $\neq$ & $t$ & 总体方差已知 / 用样本方差替代未知方差 & $\sigma$ known/unknown & 机械按样本量选分布\\
+$\chi^2$ & $\neq$ & $F$ & 单方差标准化 / 两个独立方差比 & 单总体方差/方差比 & 标尺选错\\
+置信水平 & $\neq$ & 覆盖概率 & 随机区间的长期覆盖率 / 参数固定 & “95\% CI” & 错解频率学派区间\\
+显著性水平 & $\neq$ & $P(H_0\text{真})$ & 第一类错误控制 / 后验概率不是本课程对象 & $\alpha=0.05$ & 把 0.05 解释成原假设真概率\\
+不拒绝 & $\neq$ & 接受为真 & 证据不足以拒绝 / 逻辑证明成立 & “未落入拒绝域” & 结论表述过强\\
+\bottomrule
+\end{longtable}
+
+% ============================================================
+\chapter{统一做题控制：概率统计真正应该怎样起手}
+% ============================================================
+
+\section{第一层：先判断题目在问哪种“输出”}
+概率统计做题最先不是识别公式，而是识别目标类型：
+\begin{itemize}
+  \item 概率数值 $P(A)$；
+  \item 一个分布/CDF/PDF；
+  \item 数字特征 $E,Var,Cov$；
+  \item 大样本近似概率；
+  \item 参数的点估计；
+  \item 参数的区间；
+  \item 一个假设是否被拒绝。
+\end{itemize}
+目标不同，最短路径完全不同。
+
+\section{第二层：识别当前随机对象}
+问自己：现在处理的是 Event、$X$、$(X,Y)$、$g(X,Y)$、样本 $X_1,\dots,X_n$，还是统计量 $T$？同一个符号若对象层级判断错，后面的所有公式都会错位。
+
+\section{第三层：列出信息条件}
+显式标记：条件事件、independence、iid、support、参数已知/未知、总体是否正态、样本是否独立。数学一概率统计很多题真正考的就是“你有没有看见条件”。
+
+\section{第四层：选择最自然表示}
+\begin{longtable}{L{3.3cm}L{4.7cm}L{\dimexpr\linewidth-8.97cm\relax}}
+\toprule
+\textbf{问题类型} & \textbf{优先表示} & \textbf{为什么}\\
+\midrule
+事件关系 & 集合/Venn/概率树 & 保持“且或非、来源、条件”清晰\\
+一维分布 & 分布律 / CDF / PDF & 根据离散/连续和目标选择\\
+二维概率 & support + 平面区域 & 积分上下限来自几何区域\\
+函数分布 & CDF 事件反推或 Jacobian & 追踪原像\\
+和的分布 & convolution / 二维区域 & 汇总所有来源\\
+只求数字特征 & expectation / variance identities & 避免无谓求完整分布\\
+极限定理 & 标准化后的和/均值 & 对准 LLN/CLT 的对象\\
+估计/检验 & statistic + sampling distribution & 统计推断靠抽样分布提供标尺\\
+\bottomrule
+\end{longtable}
+
+\section{第五层：识别当前操作}
+问：是在 Condition、Marginalize、Transform、Aggregate、Standardize、Approximate 还是 Infer？
+
+其中 Aggregate/Standardize 是后半程高频动作：大量样本先求和/平均，再减去中心、除以尺度，使其进入一个已知参考分布。
+
+\section{第六层：路径选择，不要多做无关中间量}
+三个典型反例：
+\begin{itemize}
+  \item 只求 $E[g(X)]$，不必先求 $g(X)$ 的分布；
+  \item 已知联合密度只求 $P((X,Y)\in D)$，不必先求边缘分布；
+  \item 要估计 $\mu$，若抽样分布已知，直接构造 pivot，不必先“求 $\bar X$ 的具体密度表达式”。
+\end{itemize}
+
+\section{第七层：执行过程中维护 support、参数范围和自由度}
+概率题常见执行断点不是积分不会，而是积分区域丢失；MLE 常见断点是忘记参数定义域；统计题常见断点是自由度、单/双侧、分位数方向错。它们都属于“状态维护问题”。
+
+\section{第八层：结果校验}
+\begin{corebox}{概率统计八项校验}
+\begin{enumerate}
+  \item 概率是否落在 $[0,1]$？
+  \item 分布律概率和/密度总积分是否为 1？
+  \item CDF 是否单调、右连续、两端极限正确？
+  \item support 是否与题意一致？
+  \item 方差是否非负，相关系数是否在 $[-1,1]$？
+  \item 估计量表达式是否偷偷含未知参数？
+  \item 自由度、分位数方向、单/双侧是否与题设一致？
+  \item 最终统计结论是否用“拒绝/不拒绝”而不是过度表述？
+\end{enumerate}
+\end{corebox}
+
+\section{四类典型断点如何修复}
+\begin{longtable}{L{2.8cm}L{4.5cm}L{4.6cm}L{\dimexpr\linewidth-12.87cm\relax}}
+\toprule
+\textbf{断点} & \textbf{典型表现} & \textbf{真正原因} & \textbf{修复动作}\\
+\midrule
+识别断点 & 看见积分就直接算 & 没判断随机对象和目标 & 先写 Target/Object/Information\\
+路径断点 & 明明只求期望却先求完整分布 & 缺目标驱动的路线选择 & 先问能否 LOTUS/线性性直接到目标\\
+执行断点 & 二维积分上下限反复错 & support 没画/截面没维护 & 强制画区域并标固定变量截线\\
+检查断点 & 得到概率 $>1$ 仍继续 & 缺范围和归一化意识 & 结束前跑八项校验\\
+\bottomrule
+\end{longtable}
+
+% ============================================================
+\chapter{两个母例的完整回放：真正把整门课串起来}
+% ============================================================
+
+\section{Bernoulli 序列：从事件到统计推断}
+\subsection{Stage 1：事件}
+一次试验成功事件 $A$，$P(A)=p$。
+
+\subsection{Stage 2：随机变量}
+用指示变量
+\[
+X_i=\mathbf 1_{A_i}
+\]
+把事件编码成 0/1 数值。
+
+\subsection{Stage 3：分布与和}
+$X_i\sim Bernoulli(p)$，独立重复后
+\[
+S_n=\sum X_i\sim B(n,p).
+\]
+
+\subsection{Stage 4：数字特征}
+\[
+E(S_n)=np,\qquad Var(S_n)=np(1-p).
+\]
+
+\subsection{Stage 5：样本比例}
+\[
+\bar X=\frac{S_n}{n},\qquad E\bar X=p,\qquad Var(\bar X)=\frac{p(1-p)}{n}.
+\]
+
+\subsection{Stage 6：LLN 与 CLT 极限导出}
+\key{LLN：}当 $n \to \infty$ 时，$\operatorname{Var}(\bar X_n) = \frac{p(1-p)}{n} \to 0 \implies \bar X_n \xrightarrow{P} p$（切比雪夫大数定律，频率依概率收敛于概率）；
+
+\key{CLT：}由 De Moivre--Laplace 中心极限定理，标准化残差：
+\[
+Z_n = \frac{\bar X_n - p}{\sqrt{p(1-p)/n}} \xrightarrow{d} N(0,1).
+\]
+
+\subsection{Stage 7：统计逆推与估计}
+若 $p$ 未知，由样本 $x_1,\dots,x_n$（含有 $k$ 次成功），极大似然函数 $L(p) = \binom{n}{k}p^k(1-p)^{n-k}$。求导 $\frac{d\ln L}{dp} = 0 \implies \hat p = \frac{k}{n} = \bar x$（MLE 点估计）。并由大样本正态近似导出 $p$ 的 $1-\alpha$ 置信区间 $\left( \bar x - z_{\alpha/2}\sqrt{\frac{\bar x(1-\bar x)}{n}}, \bar x + z_{\alpha/2}\sqrt{\frac{\bar x(1-\bar x)}{n}} \right)$。
+
+\section{正态总体：从模型结构到 $N,\chi^2,t,F$ 和推断全过程推演}
+\subsection{Stage 1：总体模型与独立抽样}
+\[
+X_1,\dots,X_n\overset{iid}{\sim}N(\mu,\sigma^2).
+\]
+
+\subsection{Stage 2：样本均值与样本方差的推导}
+样本均值 $\bar X = \frac{1}{n}\sum_{i=1}^n X_i \sim N\left(\mu, \frac{\sigma^2}{n}\right) \implies Z = \frac{\bar X - \mu}{\sigma/\sqrt{n}} \sim N(0,1)$；
+
+样本方差 $S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar X)^2$。由正态性质，$\bar X$ 与 $S^2$ 相互独立，且离差平方和满足：
+\[
+\frac{(n-1)S^2}{\sigma^2} = \sum_{i=1}^n \left(\frac{X_i-\bar X}{\sigma}\right)^2 \sim \chi^2(n-1).
+\]
+
+\subsection{Stage 3：抽样分布 $t$ 统计量的完整导出}
+当总体方差 $\sigma^2$ 未知时，用样本标准差 $S$ 替代 $\sigma$。构造标准正态与独立 $\chi^2$ 均方根的比值：
+\[
+t = \frac{Z}{\sqrt{\frac{(n-1)S^2/\sigma^2}{n-1}}} = \frac{\frac{\bar X - \mu}{\sigma/\sqrt n}}{\frac{S}{\sigma}} = \frac{\bar X - \mu}{S/\sqrt n} \sim t(n-1).
+\]
+
+\subsection{Stage 4：区间估计推导}
+由 $P\left( -t_{\alpha/2}(n-1) \le \frac{\bar X - \mu}{S/\sqrt n} \le t_{\alpha/2}(n-1) \right) = 1-\alpha$，解不等式可得未知均值 $\mu$ 的双侧 $1-\alpha$ 置信区间为：
+\[
+\left[ \bar X - t_{\alpha/2}(n-1)\frac{S}{\sqrt n}, \quad \bar X + t_{\alpha/2}(n-1)\frac{S}{\sqrt n} \right].
+\]
+
+\subsection{Stage 5：假设检验反证决策推演}
+假设 $H_0: \mu = \mu_0$（$\sigma$ 未知）。在 $H_0$ 为真世界里，检验统计量 $T = \frac{\bar X - \mu_0}{S/\sqrt n} \sim t(n-1)$。显著性水平 $\alpha$ 下拒绝域为 $W = \{ |T| \ge t_{\alpha/2}(n-1) \}$。若观测值 $t_{obs}$ 进入拒绝域，说明看到了小概率发生的极端数据，故拒绝 $H_0$！
+
+\begin{corebox}{两个母例分别承担什么}
+Bernoulli 母例负责展示\key{事件如何被数值化、独立重复如何产生计数、频率为何稳定、CLT 如何近似、样本比例如何估计参数}；正态母例负责展示\key{统计量为什么有抽样分布、为什么会出现 $\chi^2,t,F$、区间估计与检验为什么共享同一套标尺}。两者合起来基本覆盖整门概率统计的骨架。
+\end{corebox}
+
+% ============================================================
+\appendix
+\chapter{数学一概率论与数理统计完整覆盖清单}
+% ============================================================
+
+\begin{methodbox}{覆盖原则}
+正文按心智模型组织，不按考纲目录逐条展开；本附录负责防漏。范围校验参考公开转载的 2026 数学（一）考试大纲，正式备考以报考年度官方考试大纲为最终边界。
+\end{methodbox}
+
+\section*{一、随机事件和概率}
+\begin{itemize}
+\item 随机事件与样本空间；事件关系与运算；
+\item 概率基本性质；古典概型；几何概型；
+\item 条件概率；概率加法、减法、乘法公式；
+\item 全概率公式；Bayes 公式；
+\item 事件独立性；独立重复试验。
+\end{itemize}
+
+\section*{二、随机变量及其分布}
+\begin{itemize}
+\item 随机变量；分布函数；离散型随机变量分布律；连续型随机变量概率密度；
+\item 0--1、Binomial、Geometric、Hypergeometric、Poisson；
+\item Poisson 近似 Binomial；
+\item Uniform、Normal、Exponential；
+\item 随机变量函数的分布。
+\end{itemize}
+
+\section*{三、多维随机变量及其分布}
+\begin{itemize}
+\item 多维随机变量；联合分布函数；联合分布律/密度；
+\item 边缘分布；条件分布；
+\item 随机变量相互独立；不相关；
+\item 二维均匀分布、二维正态分布的基本结构；
+\item 两个及多个随机变量简单函数的分布，包括和等典型变换。
+\end{itemize}
+
+\section*{四、数字特征}
+\begin{itemize}
+\item 数学期望、方差、标准差；
+\item 随机变量函数的数学期望；
+\item 矩；协方差；相关系数及性质；
+\item 常见分布的期望与方差；
+\item Chebyshev 不等式。
+\end{itemize}
+
+\section*{五、大数定律和中心极限定理}
+\begin{itemize}
+\item Chebyshev 大数定律；Bernoulli 大数定律；Khinchin 大数定律；
+\item De Moivre--Laplace 中心极限定理；
+\item Levy--Lindeberg iid 中心极限定理。
+\end{itemize}
+
+\section*{六、数理统计基本概念}
+\begin{itemize}
+\item 总体、个体、简单随机样本、统计量；
+\item 样本均值、样本方差、样本矩；
+\item $\chi^2$、$t$、$F$ 分布及基本性质；
+\item 上侧分位数；
+\item 正态总体常用抽样分布。
+\end{itemize}
+
+\section*{七、参数估计}
+\begin{itemize}
+\item 点估计、估计量与估计值；
+\item 矩估计法（一阶矩、二阶矩）；
+\item 最大似然估计法；
+\item 无偏性、有效性、一致性；无偏性验证；
+\item 区间估计；
+\item 单个正态总体均值和方差的置信区间；
+\item 两个正态总体均值差和方差比的置信区间。
+\end{itemize}
+
+\section*{八、假设检验}
+\begin{itemize}
+\item 显著性检验基本思想；
+\item 假设检验基本步骤；
+\item 第一类和第二类错误；
+\item 单个及两个正态总体均值的假设检验；
+\item 单个及两个正态总体方差相关假设检验。
+\end{itemize}
+
+\begin{methodbox}{当前范围核验来源}
+公开范围核验参考：\url{https://kaoyan.wendu.com/m/2025/1017/212673.shtml}。该页面列出数学一概率统计的八个模块及要求；本册没有把高校自命题概率统计课程中的回归、方差分析、充分统计量等内容混入数学一主线。
+\end{methodbox}
+
+% ============================================================
+\chapter{一页压缩：概率统计最终应该留下什么}
+% ============================================================
+
+\begin{corebox}{第一层：一句话}
+\textbf{概率论把随机机制变成可计算的分布；数理统计利用统计量的抽样分布，把有限数据变成关于未知机制的可控推断。}
+\end{corebox}
+
+\begin{corebox}{第二层：对象链}
+\[
+\boxed{\Omega\to Event\to X\to Distribution\to Joint/Conditional}
+\]
+\[
+\boxed{E/Var\to Sample\to Statistic\to Inference}
+\]
+看到任何新概念，先判断它位于哪一层。
+\end{corebox}
+
+\begin{corebox}{第三层：三种基本信息操作}
+\begin{itemize}
+  \item \key{Condition：}加入信息，缩小随机世界并重新归一化；
+  \item \key{Marginalize：}忽略一个维度，把其所有概率贡献加总；
+  \item \key{Transform：}换观察函数，重新搬运概率质量。
+\end{itemize}
+\end{corebox}
+
+\begin{corebox}{第四层：大量重复与统计桥}
+\[
+\boxed{\text{LLN: stability}\qquad\text{CLT: fluctuation shape}}
+\]
+LLN 解释估计为什么可能稳定，CLT/抽样分布解释估计误差如何量化。
+\end{corebox}
+
+\begin{corebox}{第五层：统计决策}
+\[
+\boxed{\text{Unknown parameter}\to\text{Statistic}\to\text{Sampling distribution}\to\text{Estimate / Interval / Test}.}
+\]
+任何统计题都先找“哪个统计量的概率分布能把数据和未知参数连接起来”。
+\end{corebox}
+
+\end{document}

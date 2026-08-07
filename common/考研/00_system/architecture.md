@@ -1,81 +1,209 @@
-# 系统架构定义 (architecture.md)
+# 系统架构与日常更新路径
 
-> **核心原理**：
-> “学科心智模型”是在描述**世界是什么**；
-> “做题控制、考试决策”是在描述**人怎样操作这个模型**；
-> “个人经验演化”是在描述**前两者怎样被更新**。
->
-> 三者并非平行堆叠的静态知识，而是由 **Knowledge Plane + Control Plane + Learning Plane** 构成的认知闭环系统；**Publication Plane** 则是前三者的稳定发布视图。
+## 1. 设计约束
 
----
+这是一个个人长期学习系统，不是多人软件平台。架构首先服从以下约束：
 
-## 一、 系统四平面架构图 (Architecture Overview)
+1. 每天记录必须足够自然，不能要求为每道题填表；
+2. AI 可以加速比较、诊断和反例生成，但不能代替个人判断；
+3. 稳定模型更新要慢，候选想法流动可以快；
+4. 同一知识不能在 Markdown、LaTeX 和多篇手册中成为多份真相；
+5. 只有确实出现维护困难时，才增加字段、模板或自动化。
 
-$$
-\boxed{
-\begin{aligned}
-\text{\textbf{Knowledge Plane (理解世界)}} &: \text{Subject / Atlas} \to \text{Topic} \to \text{Bridge} \to \text{Integration}\\[4pt]
-\text{\textbf{Control Plane (操作模型)}} &: \text{Question Micro-Control (通用九问)} + \text{Exam Macro-Control}\\[4pt]
-\text{\textbf{Learning Plane (进化闭环)}} &: \text{Observation} \to \text{Diagnosis} \to \text{Hypothesis} \to \text{Candidate} \to \text{Test} \to \text{Promote}\\[4pt]
-\text{\textbf{Publication Plane (发布视图)}} &: \text{Working Knowledge (.md)} \longrightarrow \text{Published Manuals (.tex / .pdf)}
-\end{aligned}
-}
-$$
+因此，本项目不建设数据库，也不要求复杂 schema。
 
----
+## 2. 三个 Plane 与三个资产
 
-## 二、 知识产品分类 (Knowledge Product Types)
+Plane 是思考职责，资产是实际维护对象：
 
-正式区分以下 6 种知识产品，不得把所有内容都混同命名为“方法论手册”：
-
-| 类型 | 核心问题 | 典型稳定性 |
+| Plane | 实际资产 | 负责什么 |
 |---|---|---|
-| **Atlas (学科总图)** | 这门学科的世界长什么样？ | 很稳定 |
-| **Topic Manual (专题手册)** | 单一机制为什么存在、怎样运转？ | 稳定 |
-| **Bridge (桥梁手册)** | 两个专题在哪里交接、谁负责什么？ | 稳定 |
-| **Integration (综合手册)** | 多个机制怎样共同完成一个过程？ | 稳定 |
-| **Practice System (训练系统)** | 做题和考试时怎样判断与行动？ | 持续生长 |
-| **Evidence Base (证据库)** | 哪些观察支持或反驳某条规则？ | 持续增长 |
+| Knowledge | Handbooks | 保存稳定的世界模型 |
+| Control | Rules | 保存可执行的做题和考场动作 |
+| Learning | Inbox + 真实练习 | 暴露问题、形成假设、积累检验 |
+| Publication | LaTeX/PDF 视图 | 发布前三者中已经成熟的内容 |
 
----
+Learning Plane 不是独立知识库。Case、测试记录和反例都可以只作为 Inbox 或待验证规则的一部分存在；只有复杂问题才单独成文。
 
-## 三、 认知成熟度标记 (Rule Maturity Tags)
+## 3. Knowledge Plane
 
-内容成熟度与知识粒度是两条独立坐标：
-- `O (Observation)`：原始观察
-- `H (Hypothesis)`：诊断后的假设
-- `C (Candidate)`：待测试候选规则
-- `V (Validated)`：多场景验证有效
-- `K (Canonical Core)`：标准宿主定本
-- `P (Published)`：已发布视图状态
-- `X (Rejected)`：否定废弃记录
+Knowledge 回答：“世界怎样运转？”
 
----
+它包括：
 
-## 四、 知识归属原则 (Canonical Ownership)
+$$
+\text{Atlas} \to \text{Topic} \to \text{Bridge} \to \text{Integration}
+$$
 
-为了防止系统在扩展过程中篇幅暴涨、自我重复：
+- **Atlas**：学科对象、母问题和专题地图；
+- **Topic**：一个机制为什么存在、怎样运转；
+- **Bridge**：两个专题在哪里交接、各自负责什么；
+- **Integration**：多个机制怎样共同完成一个真实过程。
 
-1. **唯一宿主原则 (One Concept $\to$ One Canonical Owner)**：
-   - 每个元概念或公式机制只能在一本 Topic/Bridge 手册中被“拥有”（Owns）；
-   - 下游手册（Bridge/Integration）或其他学科只能对其进行引用（`Use / Reference`），严禁重复全文解释。
+这个层级表示观察范围，不表示内容重复。Topic 拥有机制，Bridge 只拥有接口，Integration 只拥有协作轨迹。
 
-2. **写作前置检查 5 问**：
-   - 这是 Knowledge、Control、Learning/Evidence 还是 Publication 内容？
-   - 它的粒度是 Subject、Topic、Bridge、Integration，还是 Rule/Case？
-   - 当前 Canonical Owner 是谁？
-   - 本文件是在 Own、Use、Bridge 还是 Integrate？
-   - 修改是否会影响依赖它的其他文档？
+### 什么时候修改 Handbook
 
-3. **台账管理**：
-   - 所有权以 `00_system/ownership_matrix.md` 为唯一台账。
+只在以下情况修改：
 
----
+1. 原模型存在事实或边界错误；
+2. 一个重要新机制补全了旧模型；
+3. 新结构能够解释多个旧问题，并通过反例检查；
+4. 原组织方式已经妨碍理解或产生重复。
 
-## 五、 渐进式纳管原则 (Progressive Adoption)
+刚看完课程、刚读完一章或只做一道题，默认不修改 Handbook。
 
-- **Markdown (`.md`) = Working Knowledge (工作态知识)**：
-  - 承载总图、规则、错题诊断、接口定义、候选修改等日常演化内容。
-- **LaTeX (`.tex` $\to$ `.pdf`) = Published Handbook (发布态手册)**：
-  - 只保存已经成熟、准备发布的定本手册。
-  - 既有成果在 Bootstrap 阶段不得为了目录整齐而批量盲目搬迁；只在有真实内容修改时迁移。PDF 只能由对应的 Canonical LaTeX 源生成。
+## 4. Control Plane
+
+Control 回答：“面对题目和试卷时怎样行动？”
+
+它分为：
+
+- **Question Control**：识别、路径、执行、检查和表达；
+- **Exam Control**：进入、退出、返回、时间、风险和注意力分配。
+
+Rule 必须足够具体，至少让人知道：
+
+- 什么时候使用；
+- 具体做什么；
+- 怎样判断有效；
+- 什么时候不适用或应该退出。
+
+Rule 可以先放在“待验证”区域，不需要立即证明自己是长期规律。
+
+## 5. Learning Plane
+
+Learning 回答：“这次体验是否值得修改系统？”
+
+主路径只有：
+
+```text
+体验
+-> 写入 Inbox 或直接与 AI 对话
+-> AI 帮助显化第一个偏离点
+-> 形成可攻击的假设
+-> 用反例和陌生题检验
+-> 人决定 No Update / 修改 Rule / 修改 Handbook
+```
+
+Inbox 是自由区。几句话、原始草稿或一段对话摘要都可以，不要求 ID、标签、YAML 或完整分类。
+
+### 五类诊断已经足够
+
+1. **模型问题**：对概念、机制或边界的理解错误；
+2. **识别问题**：知识存在，但没有识别题目结构；
+3. **路径问题**：知道是什么，但起手或候选路径选择不合理；
+4. **执行/检查/表达问题**：方向合理，但状态维护、计算、校验或得分链失控；
+5. **考试决策问题**：时间、退出、返回、风险或注意力策略错误。
+
+诊断的目标不是给错误贴最精细的标签，而是决定下一步动作和修改位置。
+
+## 6. No Update 是正式结果
+
+不是每个错误都值得改变系统。以下情况通常选择 No Update：
+
+- 偶发的简单计算错误；
+- 无法复原当时思路；
+- 没有稳定原因；
+- 想不出能降低未来风险的具体动作；
+- 规则成本明显高于可能收益。
+
+值得继续观察的通常是重复出现或具有明确机制的错误：它能被解释、能形成动作，也能在未来新题中被检验。
+
+## 7. 三个核心工作场景
+
+### 7.1 学完以后：Model Diff
+
+```text
+使用者先解释
+-> AI 对照现有 Handbook
+-> 只指出主干、混淆和缺口
+-> AI 提边界问题和反例
+-> 使用者重新解释
+```
+
+AI 不应先给完整总结，因为那会掩盖使用者真实模型。
+
+### 7.2 做题以后：First Divergence
+
+```text
+题目 + 原始过程 + 答案
+-> AI 不先重做
+-> 找到第一次偏离有效路径的位置
+-> 判断五类问题
+-> No Update 或候选规则
+```
+
+最后算错的位置不一定是真正犯错的位置。
+
+### 7.3 每周或专题结束：Batch Consolidation
+
+批量查看 Inbox 和真实表现，只处理：
+
+- 重复模式；
+- 已经经受反例攻击的规则；
+- 与 Handbook 冲突的证据；
+- 可以删除的无价值记录。
+
+这时才使用 Ownership Matrix 和依赖搜索更新稳定资产。
+
+## 8. Canonical Ownership 何时启用
+
+Ownership 是慢循环的维护规则，不是每天记录 Inbox 的前置条件。
+
+当准备修改 Handbook 或正式 Rules 时，才需要确认：
+
+1. 谁拥有这个概念或规则；
+2. 当前文件是在 Own、Use、Bridge 还是 Integrate；
+3. 修改会影响哪些下游内容；
+4. 发布视图是否需要稍后同步。
+
+Inbox 中可以有重复、模糊和矛盾。Canonical 层不可以。
+
+## 9. Publication Plane
+
+Markdown 适合日常维护，LaTeX/PDF 适合阶段性阅读和发布。
+
+发布节奏应慢于 Rule，Rule 应慢于 Inbox：
+
+```text
+Inbox: 随时
+Rules: 几天或每周整合
+Handbooks: 专题或阶段性更新
+PDF: 一轮学习或一次稳定修订后发布
+```
+
+Publication 不创造新结论。PDF 不能因为排版完成就获得更高可信度。
+
+## 10. 已接受的取舍
+
+### 自由 Inbox，而不是结构化数据库
+
+- **获得**：低摩擦，真实记录更容易发生；
+- **放弃**：自动统计和严格查询能力；
+- **重新评估条件**：只有当记录量真实造成检索困难时，再增加最少字段。
+
+### AI 承担复杂分析，不要求用户填写复杂结构
+
+- **获得**：保留诊断深度，同时降低日常负担；
+- **风险**：不同 AI 的分析可能不一致；
+- **缓解**：用 Handbooks、固定术语和协作协议作为 AI Alignment Context。
+
+### 快慢循环分离
+
+- **获得**：候选想法可以快速出现，稳定模型不会频繁抖动；
+- **代价**：Inbox 中会暂时存在未解决问题；
+- **接受理由**：延迟判断比过早沉淀更安全。
+
+## 11. 非目标
+
+本项目不追求：
+
+- 为每道题建档；
+- 自动维护所有标签和状态；
+- 用题量或文档数量代表学习效果；
+- 让 AI 直接生成“我的理解”；
+- 把所有经验都保留下来；
+- 开发一个独立的 AI 学习产品。
+
+技术基础保持简单：Markdown、LaTeX/PDF、Git 和按需使用的 AI 已经足够。

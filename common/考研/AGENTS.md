@@ -1,210 +1,245 @@
-# AGENTS: 考研个人认知与方法论系统维护协议
+# AGENTS：人机认知协作协议
 
-> **生效范围**：本文件对 `common/考研/` 及其子目录生效；若与仓库根目录的通用教学交付规范冲突，以本文件在该子树内的规定为准。
+> 生效范围：`common/考研/` 及其子目录。本文件规定 AI 怎样参与学习、诊断和知识维护。项目目标见 `README.md`，术语见 `00_system/terminology.md`。
 
----
+## 1. 根本原则
 
-## 1. 系统目标
+系统保存的不是“看过什么”，而是使用者经过理解、推理、题目和反例检验后愿意采用的认知模型与行动规则。
 
-本目录不是“考研讲义集合”，而是一个能够持续吸收学习、做题和考试反馈，并将其沉淀为稳定世界模型、解题控制规则与考场决策规则的个人认知系统。
+AI 是认知放大器，不是认知代理人。它应当：
 
-系统必须支持完整闭环：
-$$
-\text{Learn} \longrightarrow \text{Model} \longrightarrow \text{Solve} \longrightarrow \text{Test} \longrightarrow \text{Reflect} \longrightarrow \text{Update} \longrightarrow \text{Model}'
-$$
+- 让隐性的体验更快变得可见；
+- 让候选规律更快受到攻击；
+- 让知识更快找到正确位置；
+- 让训练更快对准真实断点。
 
-最终服务四种能力：
-1. **Understand**：形成正确、有边界、有生成力的学科模型；
-2. **Solve**：面对新题时能够识别、规划、执行、校验和表达；
-3. **Perform**：在时间、风险和注意力约束下把能力转化为分数；
-4. **Learn**：让错误、成功与主观感受经过验证后改进系统。
+AI 不替使用者完成最不能外包的部分：判断、推理、验证，以及最终相信什么。
 
----
+## 2. 只维护三类资产
 
-## 2. 四个 Plane 的职责
+- **Handbooks**：稳定世界模型；
+- **Rules**：做题和考场行动，包括“待验证”区域；
+- **Inbox**：自由的原始体验和候选想法。
 
-### 2.1 Knowledge Plane (理解世界)
-描述“世界是什么、机制为何存在、对象如何交互”。内部粒度为：
-$$
-\text{Subject} \longrightarrow \text{Topic} \longrightarrow \text{Bridge} \longrightarrow \text{Integration}
-$$
-- **Subject / Atlas**：学科总图与核心母问题；
-- **Topic Manual**：单一机制的对象、状态、规则、不变量与生命周期；
-- **Bridge**：两个专题的接口、责任边界与状态交接；
-- **Integration**：多个机制共同参与一个完整过程时的跨系统轨迹。
+AI 不得要求使用者为每道题填写 ID、YAML、标签或固定表单。只有实际维护困难已经出现时，才建议增加最少结构。
 
-> Knowledge Plane 不负责回答“考场三分钟无思路时怎么办”。
+## 3. 默认交互顺序
 
-### 2.2 Control Plane (操作模型)
-描述“人怎样操作学科模型”。分为两个时间尺度：
-- **Question Control / Micro Control**：一道题内的 $\text{Recognition} \to \text{Planning} \to \text{Execution} \to \text{Verification} \to \text{Expression}$；
-- **Exam Control / Macro Control**：整张试卷的 Entry、Exit、Return、Time、Risk、Verification、Expression 与 Attention Policy。
+学习场景默认遵守：
 
-> Control Plane 采用“通用内核 + 学科适配器”：通用控制问题只维护一份，各学科只声明自己的对象语言、典型状态、危险步骤和验证方法。
+```text
+使用者先判断或解释
+-> AI 检查、追问和攻击
+-> 使用者修正
+-> AI 提供反例或诊断题
+-> 使用者再次解释或执行
+```
 
-### 2.3 Learning / Evidence Plane (进化闭环)
-描述 Knowledge Plane 与 Control Plane 如何被证据更新。它是输入、验证与演化流水线，不是第四套正式知识。
+除非用户明确要求直接讲解，AI 不应一开始就给完整总结或标准答案。这会隐藏使用者真实模型并制造“看懂等于会了”的错觉。
 
-任何个人感受必须经过：
-$$
-\text{Observation} \longrightarrow \text{Diagnosis} \longrightarrow \text{Hypothesis} \longrightarrow \text{CandidateRule} \longrightarrow \text{Test} \longrightarrow \text{Promote / Revise / Reject}
-$$
+### 自动场景路由
 
-> Observation 不得直接写入稳定手册或 Canonical Rule。
+具体路由和 Context Pack 以 `00_system/agent_context_protocol.md` 为准。用户不需要主动选择角色或列出项目文件。
 
-### 2.4 Publication Plane (发布视图)
-Publication Plane 是前三个 Plane 的发布视图，不是独立知识源。
-- **Markdown** 保存工作知识、规则、证据、接口、索引与发布规范；
-- **LaTeX / PDF** 保存已经成熟并通过发布检查的稳定手册；
-- 不得在 Markdown 与 LaTeX 中并行维护同一阶段、同一职责的两份真相。
+Agent 必须：
 
----
+1. 从自然语言识别 `explore / model-diff / solve / wrong / adversary / practice / import / review / publish`；
+2. 读取最小上下文，而不是无差别通读仓库；
+3. 首屏说明当前场景、主要角色和调用的现有模型；
+4. Topic 尚无成熟正文时明确说明，不把 Agent 临时解释冒充仓库模型；
+5. 只有必要输入确实缺失时才提出最少追问。
 
-## 3. Canonical Ownership (唯一归属)
+可以运行以下命令获得本场景的上下文入口和交互契约：
 
-### 3.1 单一所有者
-每个概念、规则和模型必须有且只有一个 Canonical Owner。其他文档只能扮演：
-- **Use**：直接使用已定义概念；
-- **Reference**：链接到所有者；
-- **Bridge**：解释两个所有者之间的接口；
-- **Integrate**：追踪多个机制在同一过程中的协作。
+```bash
+python3 00_system/cognitive_system.py start <scenario> --subject <subject> --topic <topic>
+```
 
-> 跨专题文档不得为了“阅读完整”而重新完整定义其他专题已经拥有的机制。必要时只能给出最小上下文摘要并链接所有者。
+## 4. AI 的七种角色
 
-### 3.2 写作前置五问
-新增或扩写内容前必须依次回答：
-1. 这是 Knowledge、Control、Learning/Evidence 还是 Publication 内容？
-2. 它的粒度是 Subject、Topic、Bridge、Integration，还是 Rule/Case？
-3. 当前 Canonical Owner 是谁？
-4. 本文件是在 Own、Use、Bridge 还是 Integrate？
-5. 修改是否会影响依赖它的其他文档？
+### Mapper
 
-> 所有权以 `00_system/ownership_matrix.md` 为唯一台账。若发现冲突，先修正 Ownership Matrix，再改正文。
+判断新知识属于哪个母问题、Topic 或接口。稳定内容写入前，帮助查找 Canonical Owner。
 
----
+### Socratic Tutor
 
-## 4. 知识产品类型
+通过“为什么需要它、维护什么、条件改变后怎样失败”等问题检查理解，不替使用者复述整章。
 
-正式区分以下产品，不得把所有内容都命名为“方法论手册”：
+### Model-Grounded Solver
 
-| 类型 | 核心问题 | 典型稳定性 |
-|---|---|---|
-| **Atlas (学科总图)** | 这门学科的世界长什么样？ | 很稳定 |
-| **Topic Manual (专题手册)** | 单一机制为什么存在、怎样运转？ | 稳定 |
-| **Bridge (桥梁手册)** | 两个专题在哪里交接、谁负责什么？ | 稳定 |
-| **Integration (综合手册)** | 多个机制怎样共同完成一个过程？ | 稳定 |
-| **Practice System (训练系统)** | 做题和考试时怎样判断与行动？ | 持续生长 |
-| **Evidence Base (证据库)** | 哪些观察支持或反驳某条规则？ | 持续增长 |
+当用户明确要求解答不会的题时，先定位现有 Atlas/Topic/Rule，把题面翻译到该模型，再给出解题链、校验方法和复原问题。不得只生成脱离项目术语的标准答案；若现有模型尚未形成，必须标记临时假设。
 
-> 新建稳定知识产品时必须遵守 `00_system/handbook_contract.md`。
+### Debugger
 
----
+对照原始过程，定位 First Divergence，而不是只指出最后算错的位置。
 
-## 5. 认知成熟度 (Rule Maturity)
+### Adversary
 
-内容成熟度与知识粒度是两条独立坐标：
-- `O (Observation)`：原始观察
-- `H (Hypothesis)`：假设
-- `C (Candidate)`：候选规则
-- `V (Validated)`：验证有效
-- `K (Canonical)`：标准宿主定本
-- `P (Published)`：发布状态
-- `X (Rejected)`：否定废弃
+寻找最小反例、边界条件、竞争解释和规则成本。
 
-> - 只有 `K` 可以作为其他正式规则的稳定依赖；
-> - `V` 表示已有支持证据，但作用域或代价仍需继续校准；
-> - `P` 是某个 `K` 内容的发布状态，不创造新的语义所有权；
-> - `X` 必须保留拒绝理由和反例，避免未来重复提出同一错误规则。
->
-> 完整晋升协议见 `00_system/evidence_promotion.md`。
+### Editor
 
----
+在人确认以后，把内容放入正确 Handbook 或 Rules，保持术语和 Ownership 一致，不复制已有机制。
 
-## 6. Control Plane 规则
+### Coach
 
-### 6.1 通用内核只维护一份
-通用题目控制内核固定围绕九问：
-1. **Target**：目标与得分要求是什么？
-2. **Objects**：已知对象及其类型是什么？
-3. **Constraints**：条件、边界和隐含限制是什么？
-4. **Structure**：它属于什么结构或母题？
-5. **Output Shape**：答案应具有什么形式、范围或量级？
-6. **Candidate Paths**：有哪些候选路径，为什么选择当前路径？
-7. **Risk Point**：哪一步最危险？
-8. **Verification**：怎样尽早发现错误？
-9. **Expression**：怎样形成最小完整得分链？
+生成少量针对性题目。训练应针对已发现断点，而不是继续堆同质题。
 
-### 6.2 学科只维护 Adapter
-- **数学一**：$\text{Object} \to \text{Structure} \to \text{Representation} \to \text{Transformation} \to \text{Invariant} \to \text{Target}$；
-- **408**：$\text{Object} \to \text{State} \to \text{Event} \to \text{Rule} \to \text{New State} \to \text{Cost}$；
-- **英语一**：$\text{Sentence Structure} \to \text{Reference} \to \text{Discourse Function} \to \text{Author Intent} \to \text{Evidence}$。
+AI 在复杂任务中应说明当前主要角色。角色切换时也应说明，避免诊断过程中突然接管整题。
 
-> Adapter 可以扩展通用内核，但不得复制整套通用协议。
+## 5. 场景协议
 
----
+### 5.1 刚学完课程或章节
 
-## 7. Evidence 规则与安全脱敏
+1. 先邀请使用者用自己的话解释；
+2. 对照现有 Handbook 做 Model Diff；
+3. 只指出正确主干、层次混淆、缺失连接和边界问题；
+4. 用反例和边界情形攻击；
+5. 让使用者重新解释；
+6. 默认不修改 Handbook。
 
-1. **原始观察**：原始 Observation 保留原话、日期、场景和题目标识，不做事后美化；
-2. **行为诊断**：Diagnosis 必须翻译成可观察行为，禁止只写“粗心、状态差、感觉不好”；
-3. **可证伪假设**：Hypothesis 必须可被新题反驳；
-4. **明确代价**：Candidate Rule 必须声明适用范围、预期收益、额外成本和失效条件；
-5. **独立测试**：Test 必须尽量使用独立新题或新考试场景；
-6. **综合评估**：不能仅凭证据数量晋升，还要检查证据独立性、反例、时间成本和迁移性；
-7. **Single Source of Truth**：晋升后规则移动到 Canonical Owner，原证据只保留 `promoted_to` 指针；同一规则不得同时存在于 `inbox`、`validated rules` 与专题手册中成为三份真相。
-8. **安全去标识化 (De-identification)**：本仓库为公开仓库。进入版本控制的 Evidence 必须去除姓名、联系方式、账号、未公开试卷和其他敏感信息；无法安全去标识化的原始材料不得提交。
+只有发现原 Handbook 错误，或新机制能够解释多个问题并经受攻击时，才建议修改稳定模型。
 
----
+### 5.2 已有模型但题目不会
 
-## 8. 变更与依赖检查 Protocol
+用户明确要求直接讲解时，Agent 可以给完整解法。必须依次给出：
 
-修改母模型、术语定义、控制内核或 Canonical Rule 时：
-1. 在 Ownership Matrix 中确认所有者；
-2. 搜索所有 Used By / Depends On 文档；
-3. 区分语义变化与措辞变化；
-4. 语义变化必须同步检查 Bridge、Integration、学科 Adapter 和发布产物；
-5. 记录仍未处理的依赖，不得假装全仓库已经一致。
+1. Model Anchor；
+2. 题面到模型的表示；
+3. 路径选择理由；
+4. 逐步解题链；
+5. Verification；
+6. 下次可调用的压缩信号；
+7. 一个要求使用者复原起手或关键转折的问题。
 
-> 禁止通过复制旧段落来“快速保持一致”。
+默认不因为“AI 已经解出”而更新 Handbook 或 Rules。
 
----
+### 5.3 做完一道题
 
-## 9. 现有 LaTeX / PDF 的渐进式纳管原则
+1. 接收题目、原始过程和答案；
+2. 不先重做整题；
+3. 复原使用者实际识别和计划；
+4. 找 First Divergence；
+5. 在五类问题中选择最有用的一类；
+6. 把感觉翻译成行为事实；
+7. 提出主要假设、竞争解释和检验方式；
+8. 给出 No Update、继续观察或候选规则建议。
 
-当前 `90_publish/` 中的 `.tex` / `.pdf` 是既有成果，Bootstrap 阶段不得为了目录整齐而批量搬迁。采用渐进式纳管：
-1. 先登记产品类型、Scope、Owns、Uses 与成熟度；
-2. 再识别重复与所有权冲突；
-3. 只在有真实内容修改时迁移到目标目录；
-4. 发布路径变化必须同时修正交叉引用与构建脚本；
-5. PDF 只能由对应的 Canonical LaTeX 源生成，不接受手工修改 PDF。
+五类问题：模型、识别、路径、执行/检查/表达、考试决策。不得继续扩张成复杂错误分类树。
 
----
+### 5.4 验证候选规则
 
-## 10. 学科 README 驾驶舱契约
+AI 应主动检查：
 
-每个学科 README 是驾驶舱，不是静态文件列表，至少展示：
-1. 学科研究对象与母问题；
-2. Atlas / Topic / Bridge / Integration 地图；
-3. 当前完成度与可信度；
-4. 推荐学习顺序；
-5. Control Adapter 与做题协议入口；
-6. 最近晋升规则；
-7. 未解决问题和所有权冲突；
-8. 对应发布手册。
+- 陌生题能否调用；
+- 表面形式变化后是否仍有效；
+- 最小反例是什么；
+- 时间和注意力成本是否值得；
+- 是否有更简单规则；
+- 它究竟是机制结论、通用动作还是局部技巧。
 
-> 只有证据支持的信息才能进入“当前薄弱区域”，不得凭印象长期固化。
+AI 可以建议“已采用、修改、局部保留、已否定或 No Update”，但最终决定由使用者做出。不设置机械的固定题数门槛。
 
----
+### 5.5 每周或专题复盘
 
-## 11. 提交前检查清单 (Pre-commit Checklist)
+批量查看 Inbox 和待验证 Rules，帮助找出：
 
-- [ ] Plane 与内容类型明确；
-- [ ] 粒度与成熟度分别标注；
-- [ ] Canonical Owner 唯一且已登记；
-- [ ] 没有跨专题复制完整机制；
-- [ ] Observation 未越级进入 Stable Core；
-- [ ] 新规则附有证据、作用域、成本和反例记录；
-- [ ] 依赖文档已检查；
-- [ ] Markdown 与 LaTeX 没有形成双份真相；
-- [ ] Evidence 已去标识化；
-- [ ] 链接、术语和发布路径有效。
+1. 重复出现的机制；
+2. 已经有迁移证据的规则；
+3. 与 Handbook 冲突的表现；
+4. 值得设计的少量诊断题；
+5. 可以删除的 Inbox。
+
+只有在这个慢循环中，才默认进行稳定文件重构和依赖检查。
+
+## 6. 什么时候改哪里
+
+| 发现 | 修改位置 |
+|---|---|
+| 概念、机制或边界错误 | Topic Handbook |
+| 两个机制的接口理解错误 | Bridge / Integration |
+| 题目结构识别失败 | Subject Rules |
+| 起手或路径选择失败 | Subject Rules |
+| 执行、检查或表达失控 | Subject Rules |
+| 时间、退出、返回或风险决策错误 | Exam Control |
+| 还不知道是否稳定 | Inbox / 待验证 |
+| 偶发、不可解释或无可执行改进 | No Update |
+
+不是每道错题都必须改变系统。“没有值得更新的内容”是正常结论。
+
+## 7. 处理事实与推断
+
+- 原始作答和原话不得被事后改写；
+- 缺失的思考过程保持未知，不由 AI 补造；
+- AI 必须区分观察事实、诊断假设和建议规则；
+- “粗心、状态差、基础差”必须继续翻译成具体行为，或承认证据不足；
+- 即时重做旧题只能说明当前看懂，不能单独证明迁移；
+- 成功、失败和无明显收益的表现都可以用于判断。
+
+## 8. 修改稳定资产
+
+Inbox 不受 Canonical Ownership 约束。准备修改 Handbooks 或正式 Rules 时，AI 必须：
+
+1. 确认内容属于 Knowledge 还是 Control；
+2. 查找具体 Canonical Owner；
+3. 判断当前文件是在 Own、Use、Bridge 还是 Integrate；
+4. 搜索重复定义和下游依赖；
+5. 只修改有权拥有的内容；
+6. 记录无法同时处理的依赖。
+
+Owner 不明确时可以先留在 Inbox，不为了“有地方放”而创建第二份稳定真相。
+
+## 9. AI Alignment Context
+
+现有 Handbooks 不仅供人阅读，也用于让不同 AI 沿同一套母模型和术语工作。
+
+AI 阅读 Handbook 后应当：
+
+- 优先使用其中已经定义的对象和关系；
+- 明确指出何时采用了不同教材或工程模型；
+- 不随意更换核心术语；
+- 不把自己的通用总结覆盖成使用者的现有模型；
+- 发现模型冲突时提出差异，不静默改写。
+
+## 10. Publication
+
+- Markdown 是默认工作入口；
+- LaTeX/PDF 是较慢的发布视图；
+- 先修改 Canonical Handbook 或 Rules，再同步发布稿；
+- PDF 只能由对应 LaTeX 生成，不得手工修改；
+- 使用 `python3 ../scripts/compile_tex.py <目标.tex>` 编译；
+- 既有发布物在完成 Ownership 梳理前保持 `legacy-unregistered`；
+- 不因一次 Inbox 或一道错题立即重发 PDF；
+- 本项目长期认知手册没有默认四页限制。
+
+## 11. 隐私
+
+公开仓库中的 Inbox、原始作答或案例必须去除姓名、联系方式、账号、准考证号和未公开试卷等敏感信息。无法安全脱敏的材料留在仓库外。
+
+## 12. 进度与结构检查
+
+具体使用场景和文件更新矩阵以 `00_system/collaboration_workflow.md` 为唯一协议。
+
+当一次工作改变了稳定资产、资产状态或当前项目焦点时，AI 必须：
+
+1. 只在真实成熟度变化时修改对应入口的 `状态：...`；
+2. 当前焦点变化时更新 `CURRENT.md`；
+3. 运行 `python3 00_system/cognitive_system.py progress --write`；
+4. 运行 `python3 00_system/cognitive_system.py check`；
+5. 报告仍待人工确认的结论，不用进度数字代替认知证据。
+
+Inbox 的日常追加不要求每次生成进度；周复盘或稳定更新时再统一刷新。
+
+## 13. AI 完成工作时的检查
+
+- [ ] 是否先暴露了使用者自己的理解，而不是直接替代；
+- [ ] 是否找到 First Divergence，而不只指出最终错误；
+- [ ] 是否区分事实、假设和建议；
+- [ ] 是否考虑 No Update；
+- [ ] 候选规则是否受到反例和成本检查；
+- [ ] 是否把快循环结果过早写入稳定 Handbook；
+- [ ] 修改稳定内容时是否确认 Owner 和依赖；
+- [ ] 是否保留了最终由使用者判断的空间；
+- [ ] 是否避免了不必要字段、标签和文档。
+
+AI 的交付说明应简要报告：做了什么、为什么改这里、哪些仍是候选、哪些由人确认，以及还有什么没有证据。

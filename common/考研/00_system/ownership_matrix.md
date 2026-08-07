@@ -1,40 +1,108 @@
-# 全局概念与规则唯一归属矩阵 (ownership_matrix.md)
+# Canonical Ownership Matrix
 
-> **核心原则**：遵从 **One Concept/Rule $\rightarrow$ One Canonical Owner**。新增或引用概念前必须查阅本表；若概念已有 Canonical Owner，其他讲义或学科只能进行引用（`Use / Reference`），严禁重复全文解释。
+本表只在准备修改稳定 Handbooks 或正式 Rules 时使用。它不约束 Inbox，也不要求预先登记所有知识点。
 
----
+## 1. 这张表解决什么
 
-## 一、 408 计算机综合归属矩阵 (408 Matrix)
+发现重复或准备修改核心概念时，只问：
 
-| 核心概念 / 机制 / 规则 | Canonical Owner (唯一宿主) | Used By (引用与桥梁手册) | 职责界定与说明 |
+1. 谁负责完整定义它？
+2. 其他文件是在 Use、Bridge 还是 Integrate？
+3. 修改以后需要检查哪些下游内容？
+
+Owner 应尽量定位到具体 Handbook 或 Rules 文件。尚未建立工作文档时，只能写“规划归属”，不能假装已经存在 Canonical Owner。
+
+## 2. 简单状态
+
+- **规划**：大致知道归属，但稳定文件还不存在；
+- **有效**：唯一 Owner 已存在，可以作为引用入口；
+- **冲突**：出现两个定义位置，需要先决定谁拥有；
+- **废弃**：旧位置停止维护，只保留新 Owner 指针。
+
+日常不需要为每个概念维护状态。只有真正进入台账的项目才使用。
+
+## 3. 408 当前规划
+
+四科完整专题地图见 [408 学科架构](../30_408/00_统一总图/408学科架构.md)。本表只登记最容易重复或跨界的概念。
+
+### 3.1 数据结构
+
+| 概念或机制 | 规划归属 | 常见使用位置 | 边界提醒 |
 |---|---|---|---|
-| **Process / Thread / Task** | `30_408/30_操作系统/` | 408 总图, CPU×OS, 所有综合册 | 定义 Task 三元组、Running/Ready/Blocked 状态 |
-| **Page Table / TLB / Page Fault** | `30_408/30_操作系统/` | VM×File, mmap 综合, CPU×OS | 定义 VA$\to$PTE$\to$PA 映射、TLB 命中与 Fault 修复 |
-| **DMA (Direct Memory Access)** | `30_408/20_计算机组成原理/` | CPU×OS, I/O 专题, read() 综合 | 定义总线控制权交接、DMA Controller 硬件行为 |
-| **Open File Description (OFD)** | `30_408/30_操作系统/` | fork 综合, unlink 综合, read() 综合 | 定义内核 `file` 对象（offset, flags, 引用计数） |
-| **Inode & Dentry** | `30_408/30_操作系统/` | Path lookup, unlink 综合, VFS | 定义文件系统对象身份、硬链接计数与磁盘映射 |
-| **Blocking / Wakeup / Sleep** | `30_408/30_操作系统/` | I/O 专题, Pipe, Mutex 争用 | 定义 task 移出 run queue 进入 wait queue 的机制 |
-| **COW (Copy-On-Write)** | `30_408/30_操作系统/` | fork 综合, Demand Paging | 定义写时复制 Fault 与页 Frame 重新分配 |
-| **Page Cache** | `30_408/30_操作系统/` | VM, File System, read() 综合 | 定义文件 Buffer/Cache 驻留与 dirty writeback |
-| **Cache Consistency / Protocol** | `30_408/20_计算机组成原理/` | CPU 缓存, 体系结构 Bridge | 定义 MESI 协议与 L1/L2 Cache 硬件刷脏 |
-| **TCP State Machine / Congestion**| `30_408/40_计算机网络/` | OS Socket Bridge, 网络综合 | 定义三路握手、四次挥手与 CWND 拥塞控制 |
+| Complexity / Operation Cost Vector | 算法复杂度与成本模型 Topic | 全部数据结构 Topic | 各专题使用，不重复定义渐进分析 |
+| Frontier Traversal Model | 遍历统一模型 Bridge | Tree、Graph、Stack、Queue | Tree/Graph 各自拥有结构语义，Bridge 只比较展开过程 |
+| Heap | 编码、集合与优先级 Topic | 排序、Prim、Dijkstra | Heap Sort 和图算法只调用优先级操作 |
+| Union-Find | 编码、集合与优先级 Topic | Kruskal、动态连通 | 图算法只调用 Find/Union |
+| Ordered Index Trade-off | 有序性、索引与查找代价 Bridge | Binary Search、BST、AVL/RB、B/B+ | 各 Topic 拥有机制，Bridge 拥有成本比较 |
 
----
+### 3.2 计算机组成原理与 OS
 
-## 二、 数学一归属矩阵 (Math 1 Matrix)
-
-| 核心概念 / 方法 / 规则 | Canonical Owner (唯一宿主) | Used By (引用手册) | 职责界定与说明 |
+| 概念或机制 | 规划归属 | 常见使用位置 | 边界提醒 |
 |---|---|---|---|
-| **定义域优先与硬约束扫描** | `10_数学一/90_学科做题规则/` | 高数导数, 最值, 换元 | 规定求导/换元前必先确定初始定义域紧区间 |
-| **等价转化与非零校验** | `10_数学一/90_学科做题规则/` | 导数变形, 极值驻点 | 规定提取公因式/两边同除时必须显式校验 $t=0$ |
-| **分部积分预测法** | `10_数学一/10_高等数学/` | 不定积分, 定积分大题 | 规定分部积分前根据 $u, v'$ 复杂度下降趋势决策 |
-| **矩阵初等行变换与秩** | `10_数学一/20_线性代数/` | 线性方程组, 特征值 | 定义矩阵降维与向量组极大线性无关组提炼 |
-| **全概率公式与 Bayes 逆推** | `10_数学一/30_概率论/` | 随机变量, 条件分布 | 定义复杂事件划分与逆向概率条件推演 |
+| ISA / Addressing / C Mapping | 计组 ISA 与机器级程序 Topic | CPU、C x ISA x CPU | ISA 拥有软件可见语义，CPU 拥有实现 |
+| Datapath / Control Signal | 计组 CPU 数据通路与控制 Topic | Pipeline、Instruction Integration | Pipeline 不重新定义单指令完整微操作 |
+| Hardware Cache | 计组 Cache Topic | CPU、VM Bridge | 不与 OS Page Cache 混同 |
+| TLB / Page Walk / VA-to-PA Hardware Path | 计组地址翻译硬件 Topic | OS VM、Cache x VM x OS | 计组拥有硬件翻译；OS 拥有映射修复和策略 |
+| Process / Thread / Blocking / Wakeup | OS 进程与调度 Topic | I/O、并发、综合过程 | Topic 定义执行实体与状态变化，综合册只追踪过程 |
+| Page Fault / Frame Allocation / Replacement / COW | OS 虚拟内存 Topic | Cache x VM x OS、mmap、fork | 翻译、驻留和置换必须分层 |
+| OFD / inode / dentry | OS 文件系统 Topic | Process、fork、dup、unlink、read 综合 | 文件系统定义对象与生命周期；Process 只使用引用 |
+| DMA Controller / Bus Transfer | 计组 I/O Topic | OS I/O、Interrupt/DMA x OS | 计组拥有控制器、总线与传输机制 |
+| DMA Submit / Complete / Wake | OS I/O + Process 接口 | read 综合 | OS 拥有配置、提交、完成和任务状态语义 |
+| Page Cache | VM x File Bridge | VM、文件系统、OS I/O、read 综合 | File 拥有内容身份，VM 拥有驻留映射，I/O 拥有 miss/writeback |
 
----
+### 3.3 计算机网络
 
-## 三、 规则变更协议 (Change Protocol)
+| 概念或机制 | 规划归属 | 常见使用位置 | 边界提醒 |
+|---|---|---|---|
+| Sliding Window / GBN / SR | 可靠传输 Topic | TCP | TCP 只解释协议实例化 |
+| Flow Control / `rwnd` | Transport/TCP Topic | 拥塞专题、网络综合 | 保护 receiver，不等于保护 network |
+| Congestion Control / `cwnd` | 拥塞专题 | TCP、网络综合 | TCP 只引用具体拥塞状态和动作 |
+| ARP | IP 地址与分组转发 Topic | 单跳交付、网络综合 | 解决 NextHopIP -> MAC；单跳册拥有 frame 交付 |
+| Switch Table | 单跳交付 Topic | 网络综合 | Source learning 与 destination forwarding |
+| Forwarding Table Lookup | IP 地址与分组转发 Topic | 路由、网络综合 | 使用表执行 LPM |
+| Forwarding Table Generation | 路由 Topic | IP 转发 | DV/LS/BGP 等负责生成和更新状态 |
+| TCP Connection State | Transport/TCP Topic | OS x Network、网络综合 | 网络拥有协议状态；OS 拥有 socket/kernel object |
+| DNS | 应用层 Topic | 网络综合 | Integration 只调用 Name -> IP |
 
-1. 当需要在新讲义中引入新概念时，首先检查本表中是否存在 Owner；
-2. 若不存在，在对应学科目录创建新概念或新专题，并在本表追加一行记录；
-3. 若存在归属争议，召开教研审查，更新本表后再统一重构相关 Markdown/LaTeX 讲义。
+这些是规划，不是已经完成的 Owner 登记。
+
+OS 既有手册的具体处理建议见 [408 总手册与 OS 专题逻辑梳理](../30_408/00_统一总图/408总手册与OS专题逻辑梳理.md)。
+
+## 4. 数学一当前规划
+
+| 内容 | 规划归属 | 边界提醒 |
+|---|---|---|
+| 定义域、非零和等价性检查 | 数学 Subject Rules | 是操作检查，不重新定义函数和代数机制 |
+| 分部积分机制 | 高数积分 Topic | 负责公式、适用条件和结构变化 |
+| 分部积分拆法选择 | 高数做题 Rules | 负责识别信号和起手动作，引用机制 Topic |
+| 矩阵初等变换与秩 | 线性代数 Rank Topic | 负责变换及不变量 |
+| 概率统计学科母模型与 Topic 地图 | `10_数学一/30_概率论/README.md` | Atlas 有工作态正文；具体机制只作规划导航 |
+| 全概率与 Bayes | 概率条件概率 Topic | 负责事件划分和逆向条件关系 |
+| 概率统计目标层识别、路径选择与校验 | `10_数学一/90_学科做题规则/概率统计.md` | 当前为待验证 Rules，不重复定义分布机制 |
+
+“机制”和“怎样在题中选择机制”属于不同职责，不能因为写在同一篇文章里就混成同一个 Owner。
+
+## 5. 英语一
+
+英语一尚未形成稳定 Ownership。开始建设时，优先区分：
+
+- 句法和篇章机制属于 Knowledge；
+- 阅读、翻译和写作动作属于 Rules；
+- 干扰项或个人错误经验先进入 Inbox。
+
+## 6. 既有发布物
+
+`90_publish/` 中现有 LaTeX/PDF 暂称 `legacy-unregistered`。这只表示它们尚未梳理工作态 Owner 和引用关系，不评价内容质量。
+
+不为目录整齐批量搬迁。只有真实修改某本手册时，才顺手确认它拥有、使用和发布了什么。
+
+## 7. 修改稳定内容时的最小流程
+
+1. 全文搜索现有定义和同义词；
+2. 判断这是机制、接口、综合轨迹还是做题规则；
+3. 选择唯一 Owner；
+4. 其他位置改成最小摘要和引用；
+5. 搜索受影响的 Bridge、Integration、Rules 和发布稿；
+6. 同步能处理的内容，明确留下不能处理的依赖。
+
+若归属争议暂时无法解决，内容继续留在 Inbox 或标记冲突，不通过复制绕开问题。

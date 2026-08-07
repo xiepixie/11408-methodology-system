@@ -1,0 +1,908 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.75cm,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array,multirow}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.32em}
+\setlist[itemize]{itemsep=0.18em,topsep=0.28em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.28em}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!50!black}
+
+\definecolor{mainblue}{RGB}{45,86,140}
+\definecolor{deepblue}{RGB}{30,62,102}
+\definecolor{softblue}{RGB}{238,245,252}
+\definecolor{softgreen}{RGB}{238,249,243}
+\definecolor{softorange}{RGB}{253,246,233}
+\definecolor{softred}{RGB}{253,239,239}
+\definecolor{softgray}{RGB}{246,247,249}
+\definecolor{deepgreen}{RGB}{35,105,75}
+\definecolor{deeporange}{RGB}{165,98,22}
+\definecolor{deepred}{RGB}{150,55,55}
+\definecolor{purple}{RGB}{94,66,140}
+\definecolor{softpurple}{RGB}{245,241,251}
+\definecolor{teal}{RGB}{38,112,115}
+\definecolor{softteal}{RGB}{238,248,248}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{408 OS × 计组专题}
+\rhead{内存虚拟化、地址翻译与页生命周期}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\newtcolorbox{corebox}[1][]{colback=softblue,colframe=mainblue,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{exam}[1][]{colback=softorange,colframe=deeporange,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warn}[1][]{colback=softred,colframe=deepred,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{eng}[1][]{colback=softgreen,colframe=deepgreen,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{method}[1][]{colback=softgray,colframe=black!45,title=#1,fonttitle=\bfseries,boxrule=0.6pt,arc=2mm}
+\newtcolorbox{bridge}[1][]{colback=softpurple,colframe=purple,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{statebox}[1][]{colback=softteal,colframe=teal,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+
+\newcommand{\kw}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\arr}{\;\longrightarrow\;}
+
+\title{\vspace{-1.2cm}\textbf{内存虚拟化、地址翻译与页生命周期}\\[0.35em]
+\large 从连续重定位、分页、TLB、缺页异常到 COW、Swap、mmap 与物理页分配}
+\author{408 专题手册 · 操作系统 × 计算机组成原理桥梁篇}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}[核心模型：虚拟内存是一套地址意义管理系统]
+\begin{center}
+\Large\bfseries 程序只产生虚拟地址；操作系统定义这些地址代表什么，\par
+硬件高速执行翻译；异常路径再把控制权交回内核。
+\end{center}
+
+分析主线：
+\[
+\boxed{
+\begin{aligned}
+\text{Virtual Region} &\arr \text{Mapping} \arr \text{Physical Residency} \\
+&\arr \text{Translation} \arr \text{Access / Fault}
+\end{aligned}
+}
+\]
+
+其中必须始终区分四件事：
+\[
+\boxed{
+\text{Allocation}
+\neq
+\text{Mapping}
+\neq
+\text{Residency}
+\neq
+\text{Translation}
+}
+\]
+一个虚拟地址范围可以已经“属于进程”，却尚未有物理页；一个页面可以曾经驻留、后来被换出；一个映射可以合法存在，但当前访问权限仍不允许本次操作。
+\end{corebox}
+
+\tableofcontents
+\newpage
+
+\section{第一原则：先把五种“内存问题”拆开}
+
+\subsection{先消除“分配”一词的层次混淆}
+同一个“分配”一词，至少可能指五件完全不同的事：
+
+\begin{center}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} p{0.2\linewidth} X X}
+\toprule
+内存概念层次 & 管理的对象与单位 & 核心解决的核心问题 & 典型代表机制 / 数据结构\\
+\midrule
+语言/运行时对象分配 & Object / Chunk & \code{malloc(100)} 从哪里得到一块可用小块？ & Heap Allocator、Free List、Size Class\\
+进程虚拟地址空间 & VA Range / VMA & 哪些虚拟地址属于本进程？权限与属性是什么？ & VMA (\code{vm\_area\_struct})、\code{brk}、\code{mmap}\\
+页级地址映射 & VPN $\rightarrow$ PFN & 某个虚拟页号 (VPN) 当前映射到哪个物理页框？ & 多级页表 (Page Table) / 页表项 (PTE)\\
+物理内存框分配 & Physical Frame (PFN) & 内核如何从全局空闲物理页中分配连续页？ & Free Page List、Buddy System 伙伴系统\\
+驻留与页面回收 & Resident Page & 主存紧张时，谁保留在 RAM、谁写回/淘汰？ & Page Reclaim、Page Replacement、Swap/Writeback\\
+\bottomrule
+\end{tabularx}
+\endgroup
+\end{center}
+
+\begin{warn}[最容易形成的错误模型]
+\code{malloc()} 并不等于“每次调用系统调用，请 OS 用 First Fit 找一块物理内存”。现代用户态分配器通常先管理已经取得的虚拟地址区域；只有需要扩展 arena 或建立新映射时，才通过 \code{brk}/\code{mmap} 等接口向内核请求地址空间。即使地址空间已经扩大，也可能通过按需分配直到首次访问才真正获得物理页。
+\end{warn}
+
+\subsection{本册统一五层模型}
+\begin{center}
+\begingroup
+\small
+\begin{tikzpicture}[>=Stealth, node distance=0.9cm]
+\tikzset{
+  n1/.style={draw=mainblue, ultra thick, fill=softblue, rounded corners=2.5mm, align=center, minimum width=3.6cm, minimum height=0.95cm, font=\small\bfseries},
+  n2/.style={draw=purple, ultra thick, fill=softpurple, rounded corners=2.5mm, align=center, minimum width=3.6cm, minimum height=0.95cm, font=\small\bfseries},
+  n3/.style={draw=deeporange, ultra thick, fill=softorange, rounded corners=2.5mm, align=center, minimum width=3.6cm, minimum height=0.95cm, font=\small\bfseries},
+  n4/.style={draw=deepgreen, ultra thick, fill=softgreen, rounded corners=2.5mm, align=center, minimum width=3.6cm, minimum height=0.95cm, font=\small\bfseries},
+  n5/.style={draw=deepred, ultra thick, fill=softred, rounded corners=2.5mm, align=center, minimum width=3.6cm, minimum height=0.95cm, font=\small\bfseries}
+}
+\node[n1] (obj) {1. 对象/运行时层\\[2pt]\small Object Allocation (malloc)};
+\node[n2, below=of obj] (vas) {2. 虚拟地址空间层\\[2pt]\small VMA Region (\code{brk/mmap})};
+\node[n3, below=of vas] (map) {3. 页级映射层\\[2pt]\small PTE / Page Table / MMU};
+\node[n4, below=of map] (phy) {4. 物理页框层\\[2pt]\small Physical Frames (RAM / Buddy)};
+\node[n5, below=of phy] (back) {5. 后备对象层\\[2pt]\small File / Swap / Zero-fill};
+
+\draw[->, ultra thick, deepblue] (obj) -- node[right=4pt, font=\small\bfseries] {向运行时要小对象块} (vas);
+\draw[->, ultra thick, purple] (vas) -- node[right=4pt, font=\small\bfseries] {建立 / 延迟建立映射} (map);
+\draw[->, ultra thick, deeporange] (map) -- node[right=4pt, font=\small\bfseries] {驻留时关联 PFN} (phy);
+\draw[<->, ultra thick, deepgreen] (phy) -- node[right=4pt, font=\small\bfseries] {换入 / 写回 / 按需补零} (back);
+\end{tikzpicture}
+\endgroup
+\end{center}
+
+\begin{statebox}[每层回答不同问题]
+\begin{itemize}
+  \item VMA：\kw{这个 VA 是否属于进程？允许 R/W/X 吗？背后是什么对象？}
+  \item PTE：\kw{这个虚拟页当前怎样翻译？权限和驻留状态是什么？}
+  \item Physical Frame：\kw{真实 RAM 中哪一页现在承载数据？}
+  \item Backing Object：\kw{如果页不在 RAM，数据从哪里恢复？文件、Swap，还是直接补零？}
+\end{itemize}
+\end{statebox}
+
+\section{为什么必须虚拟化地址：四个矛盾}
+
+\subsection{重定位：程序不应该知道自己被放在 RAM 的哪里}
+最早的核心问题可以写成：
+\[
+\text{Program Address} \neq \text{Physical Placement}.
+\]
+若程序内部写死物理地址，那么每次换装入位置都必须修改程序；运行中移动、交换、共享更困难。
+
+最简单的动态重定位模型是：
+\[
+PA = Base + VA, \qquad 0\le VA<Limit.
+\]
+硬件完成加法与越界检查，OS 在切换进程时配置 Base/Limit。
+
+\subsection{隔离：不同进程可以使用“相同地址”，却不应访问同一内存}
+例如两个进程都可以访问自己的：
+\[
+VA=0x400000.
+\]
+通过不同映射：
+\[
+VPN_A\to PFN_{12},\qquad VPN_B\to PFN_{91},
+\]
+它们的地址数值相同，物理对象却完全不同。
+
+\subsection{共享：隔离不是“不许共享”，而是共享必须显式受控}
+若只读共享库页需要被多个进程使用，可以让：
+\[
+VPN_A\to PFN_{37},\qquad VPN_B\to PFN_{37}
+\]
+并设置只读/可执行权限。于是：
+\[
+\boxed{\text{独立虚拟地址空间} \not\Rightarrow \text{所有物理页都独占}}
+\]
+
+\subsection{稀疏与按需：地址空间可以很大，但真正付费的只是一部分}
+虚拟地址空间允许大量“洞”和尚未驻留的区域。程序可以先取得一个大虚拟范围，仅在实际访问时再分配物理页：
+\[
+\text{Reserve VA} \arr \text{First Touch} \arr \text{Page Fault} \arr \text{Allocate Frame}.
+\]
+
+\begin{bridge}[虚拟内存的三个最重要目标]
+从系统设计角度，虚拟内存同时追求：
+\begin{enumerate}
+  \item \kw{Transparency}：程序以为自己拥有简单、连续的地址空间；
+  \item \kw{Protection}：不同主体不能越权访问；
+  \item \kw{Efficiency}：常见地址访问必须靠硬件 快路径 完成，而不能每次进入内核。
+\end{enumerate}
+\end{bridge}
+
+\section{从连续重定位到分页：为什么方案一步步升级}
+
+\subsection{静态重定位：在装入时一次性改地址}
+经典静态重定位在 load time 修改需要重定位的位置，使程序以后直接使用最终地址。优点是执行期硬件简单；缺点是运行后移动困难，灵活性和隔离能力有限。
+
+\subsection{动态重定位：把“地址意义”推迟到运行时}
+动态重定位把逻辑地址保留下来，直到每次访问时由 MMU 翻译。最简单实现是 Base/Limit。
+
+\begin{exam}[408 辨析：静态/动态“内存分配”与静态/动态“重定位”不是一对概念]
+语言层面的静态变量、栈变量、heap 动态分配，讨论的是\kw{对象何时取得存储空间}；静态/动态重定位讨论的是\kw{程序地址在什么时候变成物理地址}。两组术语不能混成同一维度。
+\end{exam}
+
+\subsection{连续分配的问题：物理连续性成为束缚}
+如果每个进程必须占用一段连续物理区，就会出现外部碎片：
+\[
+\sum Free_i \ge Request
+\quad\text{但}\quad
+\max Free_i<Request.
+\]
+这促使系统放弃“进程在物理内存必须连续”的要求。
+
+\subsection{分页的关键跨越：固定粒度 + 非连续物理放置}
+分页把：
+\begin{itemize}
+  \item 虚拟地址空间切成 page；
+  \item 物理内存切成同样大小的 frame；
+  \item 通过 page table 建立任意 VPN $\to$ PFN 映射。
+\end{itemize}
+因此进程物理页可以散落在 RAM 中，而虚拟空间依旧看起来连续。
+
+\section{分页数学模型：地址为什么要拆成 VPN 与 Offset}
+
+\subsection{页内偏移保持不变}
+若页大小为：
+\[
+P=2^p\ \text{Bytes},
+\]
+则虚拟地址可以写成：
+\[
+\boxed{VA=VPN\mid Offset},\qquad |Offset|=p.
+\]
+页表只翻译页号：
+\[
+VPN\to PFN,
+\]
+而页内 offset 不变：
+\[
+\boxed{PA=PFN\mid Offset}.
+\]
+
+\begin{method}[地址题第一反应]
+\begin{enumerate}
+  \item 先由 page size 得 offset 位数；
+  \item 再用虚拟地址总位数减去 offset 得 VPN 位数；
+  \item 若多级页表，再按每级索引位数继续拆 VPN；
+  \item 最后不要漏掉 offset 原样拼回物理地址。
+\end{enumerate}
+\end{method}
+
+\subsection{单级页表为什么会太大}
+若虚拟地址 $v$ 位、页大小 $2^p$，虚拟页数：
+\[
+N_{page}=2^{v-p}.
+\]
+若每个 PTE 占 $e$ Bytes，则单级页表大小：
+\[
+S_{PT}=2^{v-p}\cdot e.
+\]
+即使实际只用很少地址，也必须为整个 VPN 空间准备表项，因此出现多级页表。
+
+\section{多级页表：用稀疏数据结构描述稀疏地址空间}
+
+\subsection{核心思想不是“多查几次”，而是“未使用的区域不建低级表”}
+一个多级地址可以抽象成：
+\[
+VA=I_1\mid I_2\mid\cdots\mid I_k\mid Offset.
+\]
+每一级索引选择下一张表，只有实际使用的虚拟区域才需要逐层建立低级页表页。
+
+\begin{bridge}[多级页表本质：树形间接层]
+多级页表拿\kw{更多查询步骤}换\kw{更少的页表空间}。它与文件系统的 inode 间接块、目录树、B+ 树一样，都是“稀疏大命名空间”的层次化描述方法。
+\end{bridge}
+
+\subsection{PTE 不只是 PFN}
+应把 PTE 看成：
+\[
+\boxed{PTE=Mapping+Permission+State}.
+\]
+典型信息包括：
+\begin{itemize}
+  \item 物理页框号或下一层页表地址；
+  \item present/valid；
+  \item user/supervisor；
+  \item read/write/execute；
+  \item accessed/reference；
+  \item dirty；
+  \item 架构或 OS 自定义状态。
+\end{itemize}
+
+\begin{exam}[一条访存真正提出的四个问题]
+\begin{enumerate}
+  \item 这个虚拟地址属于当前地址空间吗？
+  \item 本次访问类型（R/W/X）被允许吗？
+  \item 对应数据当前是否 resident？
+  \item 如果 resident，它映射到哪个 physical frame？
+\end{enumerate}
+\end{exam}
+
+\section{TLB：翻译本身也需要缓存}
+
+\subsection{为什么页表不能每次都完整查}
+如果每次 load/store 为了得到 PA 都先访问多级页表，那么一次数据访问会附带多次额外内存访问。TLB 用一个小型硬件 cache 保存近期地址翻译：
+\[
+VPN\to PFN/permission.
+\]
+
+\subsection{快路径 与 慢路径}
+\begin{center}
+\begingroup
+\small
+\begin{tikzpicture}[>=Stealth, node distance=1.8cm and 3.2cm]
+\tikzset{
+  vanode/.style={draw=mainblue, ultra thick, fill=softblue, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=1.0cm, font=\small\bfseries},
+  tlbnode/.style={draw=purple, ultra thick, fill=softpurple, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=1.0cm, font=\small\bfseries},
+  panode/.style={draw=deepgreen, ultra thick, fill=softgreen, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=1.0cm, font=\small\bfseries},
+  walknode/.style={draw=deeporange, ultra thick, fill=softorange, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=1.0cm, font=\small\bfseries},
+  faultnode/.style={draw=deepred, ultra thick, fill=softred, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=1.0cm, font=\small\bfseries}
+}
+\node[vanode] (va) {产生虚拟地址\\[2pt]\small Virtual Address};
+\node[tlbnode, right=of va] (tlb) {TLB 硬件 Lookup\\[2pt]\small 查翻译缓存};
+\node[panode, right=of tlb] (pa) {得到物理地址\\[2pt]\small Physical Address};
+
+\node[walknode, below=of tlb] (walk) {Page Table Walk\\[2pt]\small 硬件 / 软件查页表};
+\node[faultnode, right=of walk] (fault) {Page Fault 异常\\[2pt]\small 软件慢路径接管};
+
+\draw[->, ultra thick, deepblue] (va) -- node[above=3pt, font=\small\bfseries] {CPU 发起访存} (tlb);
+\draw[->, ultra thick, deepgreen] (tlb) -- node[above=3pt, font=\small\bfseries] {TLB Hit} (pa);
+\draw[->, ultra thick, purple] (tlb) -- node[right=4pt, font=\small\bfseries] {TLB Miss} (walk);
+\draw[->, ultra thick, deepgreen] (walk.north east) -- node[above, sloped, font=\small\bfseries] {找到有效映射} (pa.south west);
+\draw[->, ultra thick, deepred] (walk) -- node[above=3pt, font=\small\bfseries] {映射缺失/无效} (fault);
+\end{tikzpicture}
+\endgroup
+\end{center}
+
+\subsection{三种 miss/fault 必须彻底分开}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
+\toprule
+现象 & 缺失的核心内容 & 是否必然进入 OS 内核？\\
+\midrule
+TLB Miss & 硬件地址翻译缓存项 ($VPN \rightarrow PFN$) & 不一定；硬件 Page Walk 成功时直接补全 TLB，不触发 OS 异常\\
+Page Fault & 当前访问无法沿正常页表路径完成 & \kw{必须进入}；需要 OS 捕获异常、分配页框/解装入/COW 或终止\\
+Cache Miss & 目标数据 Cache line 不在 L1/L2/L3 Cache & \kw{不进入}；属于存储层次硬件行为，由总线与主存完成加载\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\begin{warn}[典型错误]
+\kw{TLB Miss 不等于 Page Fault；Page Fault 也不等于“页面一定在磁盘上”。}COW、lazy allocation、权限错误都可以触发 page fault，而数据可能从未存在于磁盘。
+\end{warn}
+
+\subsection{有效访问时间 EAT 的模型意识}
+408 常用理想化模型：
+\[
+EAT=h\cdot T_{hit}+(1-h)\cdot T_{miss}.
+\]
+关键不是背固定式子，而是\kw{明确每条路径到底发生几次 TLB 查询、页表内存访问和最终数据访问}。题目改变“TLB 与 Cache 是否并行、页表几级、TLB miss 是否硬件 walk”等假设时，公式必须重新从事件路径推导。
+
+\begin{eng}[工程边界：ASID / PCID]
+地址空间切换后必须确保旧 TLB 项不会被错误用于新地址空间，但这并不意味着现代 CPU 每次 context switch 都必须“完全清空 TLB”。ASID/PCID 一类标签允许不同地址空间的翻译共存，从而降低切换成本。408 先掌握“一致性必须维护”，再把标签机制作为现代扩展。
+\end{eng}
+
+\section{Page Fault：虚拟内存的慢路径入口}
+
+\subsection{定义：不是错误，而是“硬件无法完成当前翻译/访问”}
+MMU 在正常 快路径 不能完成访问时触发 page-fault exception。内核收到后必须先分类：
+\[
+\boxed{
+\text{合法但需补工作}
+\quad\text{or}\quad
+\text{非法访问}
+}
+\]
+
+\subsection{统一处理流程}
+\begin{center}
+\begingroup
+\small
+\begin{tikzpicture}[>=Stealth, node distance=1.8cm and 3.2cm]
+\tikzset{
+  startnode/.style={draw=mainblue, ultra thick, fill=softblue, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  failnode/.style={draw=purple, ultra thick, fill=softpurple, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  trapnode/.style={draw=deeporange, ultra thick, fill=softorange, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  checknode/.style={draw=teal, ultra thick, fill=softteal, rounded corners=2.5mm, align=center, minimum width=3.0cm, minimum height=0.95cm, font=\small\bfseries},
+  badnode/.style={draw=deepred, ultra thick, fill=softred, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  fixnode/.style={draw=deepgreen, ultra thick, fill=softgreen, rounded corners=2.5mm, align=center, minimum width=3.2cm, minimum height=0.95cm, font=\small\bfseries}
+}
+\node[startnode] (a) {CPU 发起访问 VA};
+\node[failnode, right=of a] (b) {MMU 检测翻译失败};
+\node[trapnode, right=of b] (c) {Trap 进入 OS 内核};
+
+\node[checknode, below=of c] (d) {检查 VA 是否位于合法 VMA？};
+\node[badnode, left=of d] (bad) {否：非法越界访问\\[2pt]\small Signal / SIGSEGV};
+\node[fixnode, below=of d] (fix) {是：识别缺页类型并修复\\[2pt]\small (分配 / 装入 / COW / 调入)};
+\node[startnode, left=of fix] (retry) {返回并重试原指令};
+
+\draw[->, ultra thick, deepblue] (a) -- node[above=3pt, font=\small\bfseries] {发起访问} (b);
+\draw[->, ultra thick, purple] (b) -- node[above=3pt, font=\small\bfseries] {翻译失败} (c);
+\draw[->, ultra thick, deeporange] (c) -- node[right=4pt, font=\small\bfseries] {Trap 进入 OS} (d);
+\draw[->, ultra thick, deepred] (d) -- node[above=3pt, font=\small\bfseries] {Invalid VMA} (bad);
+\draw[->, ultra thick, deepgreen] (d) -- node[right=4pt, font=\small\bfseries] {Valid VMA} (fix);
+\draw[->, ultra thick, deepgreen] (fix) -- node[above=3pt, font=\small\bfseries] {修复完成} (retry);
+\draw[->, ultra thick, deepblue] (retry.west) -- ++(-5.8cm,0) |- node[pos=0.75, left=4pt, font=\small\bfseries] {重试指令} (a.west);
+\end{tikzpicture}
+\endgroup
+\end{center}
+
+\subsection{Page Fault 六类母模式}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{>{\bfseries}p{0.22\linewidth} p{0.34\linewidth} p{0.4\linewidth}}
+\toprule
+缺页母模式类型 & 硬件/应用触发的具体原因 & OS 内核接管后的核心处理动作\\
+\midrule
+\endfirsthead
+\toprule
+缺页母模式类型 & 硬件/应用触发的具体原因 & OS 内核接管后的核心处理动作\\
+\midrule
+\endhead
+Demand-zero / 延迟分配 & 地址合法，但应用首次访问，物理页尚未真正分配 & 分配空闲 Frame，物理数据清零，更新可用 PTE\\
+File-backed 按需页 & 代码/数据/mmap 页合法，但磁盘文件内容尚未载入 & 从文件系统 / 页缓存 读取数据，建立页表映射\\
+Swap-in 页面换入 & 页面曾驻留主存，先前因内存压力被换出到 Swap 区 & 从 Buddy 分配 Frame，从 Swap 磁盘读回，恢复 PTE\\
+Copy-on-Write (COW) & 父子进程共享只读映射，某一进程试图写入该页 & 检查引用计数，若 $>1$ 则复制物理 Frame 并置为可写\\
+Protection Fault 权限错 & 页面映射存在，但本次访问类型 (R/W/X) 违规 & 校验合法机制 (如 COW 修复)；不可修复则报 SIGSEGV\\
+Invalid Address 越界 & 虚拟地址根本不属于任何合法 VMA 区域 & 软件无法修复，内核向进程发送 SIGSEGV 信号终止进程\\
+\bottomrule
+\end{longtable}
+\endgroup
+
+\begin{exam}[408 必须形成的 Page Fault 观]
+“缺页”在经典请求分页题中常特指页面不在主存；但从完整 OS 机制看，page fault 是更广义的异常入口。做 408 题时先服从题目采用的经典模型；做系统理解时再区分 demand paging、COW、permission 等不同 fault 原因。
+\end{exam}
+
+\section{一个 Page 的一生：从不存在到驻留、变脏、被回收}
+
+\subsection{Page Lifecycle 是虚拟内存最重要的动态模型}
+一个匿名 heap page 的生命周期可以写成：
+\[
+\boxed{
+\begin{aligned}
+\text{VMA exists} &\arr \text{PTE absent} \arr \text{first touch fault} \arr \text{resident clean} \\
+&\arr \text{dirty / accessed} \arr \text{reclaim candidate} \arr \text{evicted / nonresident}
+\end{aligned}
+}
+\]
+未来再次访问时，再经 fault 恢复 residency。
+
+\subsection{Resident 与 Valid 是两个容易混淆的词}
+不同教材/体系结构对 valid/present 命名并不完全一致，因此考试时要看题目定义。方法上应分别记录：
+\begin{itemize}
+  \item \kw{地址是否合法属于进程}；
+  \item \kw{页面当前是否驻留 RAM}；
+  \item \kw{访问权限是否允许}。
+\end{itemize}
+不要只看到一个 ``valid bit'' 就把三层语义压成一层。
+
+\section{Demand Paging：为什么“需要时再做”通常更划算}
+
+\subsection{Lazy 是一种通用系统策略}
+立即为所有潜在页面分配 RAM 会浪费：
+\begin{itemize}
+  \item 从未访问的 heap 页面；
+  \item fork 后马上 exec 的大量页面；
+  \item 稀疏数组的巨大空洞；
+  \item 可执行文件中实际从未执行/读取的区域。
+\end{itemize}
+于是系统把成本延迟到第一次真正使用：
+\[
+\boxed{\text{Reserve now, pay on first touch.}}
+\]
+
+\subsection{代价：首次访问被推入慢路径}
+Lazy allocation 并没有消灭成本，而是把：
+\[
+\text{allocation + initialization + mapping}
+\]
+从申请时移动到了首次访问时。因此平均性能是否更好，取决于“有多少申请最终真的会使用”。
+
+\section{页面置换：RAM 不够时谁应该留下}
+
+\subsection{先问为什么需要 replacement}
+只要 resident working sets 的总需求长期逼近/超过可用 frames，就必须回收一些页面。Replacement 是\kw{选择 victim 的 policy}，而 page fault / page-in / PTE update 是实现机制。
+
+\subsection{四个经典策略的思想，而不是口号}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
+\toprule
+置换算法 & 核心假设与选择规则 & 算法关键性质与工程评价\\
+\midrule
+OPT (最佳置换) & 淘汰未来最长时间内不会被访问的页面 & 理想极限下界；需已知未来访存序列，用于评估性能上界\\
+FIFO (先进先出) & 淘汰最早进入内存的页面 & 简单但盲目；可能出现 Belady 异常 (框增多缺页反增)\\
+LRU (最近最少使用) & 淘汰最长时间未被访问的页面 & 利用时间局部性；精确维护访问次序的实现成本较高\\
+CLOCK (时钟算法) & 用 Reference Bit 近似 LRU (Second Chance) & 工程可行性极佳；访问页重置标志，再给一次机会\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsection{Dirty Page 为什么影响置换代价}
+若 victim 是 clean page，若有可靠后备对象，通常可以直接丢弃映射并未来重新获得；dirty page 则可能需要 write-back：
+\[
+T_{fault}\approx T_{victim\ write}+T_{page\ in}+T_{restart}.
+\]
+所以题目给 dirty bit 时，通常在暗示“换出成本不同”。
+
+\subsection{Frame Allocation 与 Replacement Scope}
+还要区分：
+\begin{itemize}
+  \item 每个进程分多少 frames：fixed / variable allocation；
+  \item victim 只能从自己页面选还是可从全局选：local / global replacement。
+\end{itemize}
+这是“资源配额”与“局部选择策略”两个层次。
+
+\section{Working Set 与 Thrashing：负载过高时越调度越慢}
+
+\subsection{局部性为什么支持虚拟内存}
+程序通常在某一时间窗口只频繁使用较小页面集合，称为工作集的思想基础。只要这些热点页大部分驻留，page fault rate 就可以保持较低。
+
+\subsection{Thrashing 的本质}
+若：
+\[
+\sum_i WorkingSet_i > AvailableFrames,
+\]
+系统会不断：
+\[
+Fault\arr Evict\arr Run\ a\ little\arr Fault\arr Evict.
+\]
+于是大量时间花在移动页面，而不是有用计算。
+
+\begin{bridge}[跨科统一：Thrashing 与网络拥塞、锁竞争属于同一种系统现象]
+当并发工作量超过稀缺资源承载能力，增加任务不再增加吞吐，反而提高管理和等待成本。解决思路不是“再多塞几个任务”，而是控制 admission、减少工作集、增加资源或改变调度策略。
+\end{bridge}
+
+\section{物理内存管理：Buddy 应该放在这里，而不是和 malloc 混在一起}
+
+\subsection{历史连续分区与 Free-Space Management}
+First Fit、Next Fit、Best Fit、Worst Fit、Quick Fit 等算法回答的是：
+\[
+\boxed{\text{面对多个空闲连续块，选择哪一个满足连续请求？}}
+\]
+它们主要研究查找速度、外部碎片、回收合并等权衡。作为 408 历史模型应掌握，但不要把它们直接等同于现代进程虚拟内存的物理页映射。
+
+\subsection{Buddy System：管理成组连续物理页}
+Buddy 以 $2^k$ 页为阶数组织空闲块。请求需要 $2^k$ 时：
+\begin{enumerate}
+  \item 若该 order 有空闲块，直接分配；
+  \item 否则从更高 order 分裂；
+  \item 释放后若 buddy 同阶且空闲，就递归合并。
+\end{enumerate}
+若基于按 $2^k$ 对齐的地址表示，伙伴定位常可用：
+\[
+\boxed{buddy\_addr = addr \oplus 2^k}
+\]
+（具体公式中的单位必须与 $addr$ 和 $2^k$ 的定义一致）。
+
+\begin{eng}[工程定位]
+Linux 内存管理把 Page Allocation、Page Tables、Process Addresses、Page Reclaim、Swap、页缓存 等作为相互关联但不同的子系统；Buddy 属于物理页分配层，而不是用户态 \code{malloc()} 的直接算法。
+\end{eng}
+
+\subsection{为什么还需要 Slab/SLUB 一类对象分配器}
+Buddy 擅长按页/连续页管理物理内存，但内核经常需要大量小型固定结构（task、inode、dentry 等）。若每个小对象都独占整页会浪费，于是在页分配器之上再建立对象 cache。这再次证明：
+\[
+\boxed{\text{物理页分配} \neq \text{对象分配}}
+\]
+
+\section{共享、Copy-on-Write 与 fork：用权限位把复制推迟到真正写入}
+
+\subsection{fork 的语义承诺}
+子进程必须看到“创建时与父进程相同”的初始内存内容，但这并不要求立即复制每个物理页。
+
+\subsection{COW 的完整状态转换}
+Fork 前：
+\[
+P:VPN_1\to PFN_8\quad (RW)
+\]
+Fork 后：
+\[
+P:VPN_1\to PFN_8\quad (RO/COW)
+\]
+\[
+C:VPN_1\to PFN_8\quad (RO/COW)
+\]
+若 child 首次写：
+\[
+Store\arr Protection\ Fault\arr Kernel\ COW\ Handler
+\]
+然后：
+\[
+Allocate\ PFN_{15}\arr Copy(PFN_8)\arr C:VPN_1\to PFN_{15}(RW).
+\]
+父进程仍可继续指向原页。
+
+\begin{corebox}[COW 的真正思想]
+COW 不是“共享内存 IPC”，而是：\kw{先共享物理实现，继续向每个进程承诺私有内存语义；只有写入会破坏私有性时才复制。}
+\end{corebox}
+
+\subsection{为什么 fork + exec 特别受益}
+若 child 很快 \code{exec()}，原地址空间会被新程序映像替换；立即复制父进程全部内存的工作大多白费。COW 将这部分复制完全避免。
+
+\section{mmap：虚拟内存与文件系统真正握手的地方}
+
+\subsection{先分 anonymous 与 file-backed}
+\begin{itemize}
+  \item Anonymous mapping：heap/stack/匿名 mmap，内容通常不来自普通文件；首次使用可 demand-zero，内存压力下可涉及 swap。
+  \item File-backed mapping：VMA 关联文件和 offset，页面内容由文件作为后备对象。
+\end{itemize}
+
+\subsection{mmap 的核心不是“把整个文件读进内存”}
+更准确的模型是建立：
+\[
+\boxed{VirtualPage \leftrightarrow FileOffset}
+\]
+关系。首次访问某个尚未驻留的 file-backed page 时：
+\[
+VA\arr PageFault\arr File/PageCache\arr PhysicalFrame\arr PTE.
+\]
+
+\subsection{标准 read 与 mmap 的结构对比}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
+\toprule
+维度 / 特性 & 标准 \code{read(fd, buf, n)} 系统调用 & 文件映射 file-backed \code{mmap()}\\
+\midrule
+应用接口样式 & 每次数据读取触发显式系统调用 & 一次映射，之后像常规内存访问一样 load/store\\
+数据内核路径 & 页缓存 $\rightarrow$ 显式复制 $\rightarrow$ 用户缓冲区 & 文件页对应的物理页可通过页表映射到用户地址空间\\
+数据复制开销 & 通常需要把页缓存中的数据复制到用户缓冲区 & 可避免这次显式复制，但缺页、页表维护和一致性仍有成本\\
+控制方式 & 适合流式读写和显式控制读取范围 & 适合随机访问、共享映射及按页访问文件内容\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\begin{warn}[不要写“标准 I/O 没有 backing store”]
+文件内容本身的后备对象一直是文件；区别在于 \code{read()} 通常把文件数据复制到用户的匿名 buffer，而 file-backed \code{mmap()} 直接把虚拟页与文件内容联系起来。讨论 backing 时必须说明“是哪一个页面/对象的 backing”。
+\end{warn}
+
+\section{综合题一：一次虚拟地址访问}
+
+\begin{center}
+\begingroup
+\small
+\begin{tikzpicture}[>=Stealth, node distance=1.8cm and 3.2cm]
+\tikzset{
+  vanode/.style={draw=mainblue, ultra thick, fill=softblue, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  tlbnode/.style={draw=purple, ultra thick, fill=softpurple, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  panode/.style={draw=deepgreen, ultra thick, fill=softgreen, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  ptnode/.style={draw=deeporange, ultra thick, fill=softorange, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  pfnode/.style={draw=deepred, ultra thick, fill=softred, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries}
+}
+\node[vanode] (va) {1. CPU 产生 VA};
+\node[tlbnode, right=of va] (tlb) {2. TLB 硬件 Lookup};
+\node[panode, right=of tlb] (pa) {3. 得到 PA / 访存};
+
+\node[ptnode, below=of tlb] (pt) {4. Page Table Walk};
+\node[pfnode, right=of pt] (pf) {5. Page Fault 处理器\\[2pt]\small (VMA / 权限 / 驻留校验)};
+
+\draw[->, ultra thick, deepblue] (va) -- node[above=3pt, font=\small\bfseries] {发起访存} (tlb);
+\draw[->, ultra thick, deepgreen] (tlb) -- node[above=3pt, font=\small\bfseries] {Hit} (pa);
+\draw[->, ultra thick, purple] (tlb) -- node[right=4pt, font=\small\bfseries] {Miss} (pt);
+\draw[->, ultra thick, deepgreen] (pt.north east) -- node[above, sloped, font=\small\bfseries] {PTE 有效} (pa.south west);
+\draw[->, ultra thick, deepred] (pt) -- node[above=3pt, font=\small\bfseries] {PTE 无效} (pf);
+\draw[->, ultra thick, deepgreen] (pf.south) -- ++(0,-0.8cm) -| node[pos=0.25, below=3pt, font=\small\bfseries] {修复完并重试指令} (va.south);
+\end{tikzpicture}
+\endgroup
+\end{center}
+
+\begin{method}[综合题推演时必须记录五类状态]
+\begin{enumerate}
+  \item 当前地址空间/VMA 是否允许这个 VA；
+  \item TLB 是否已有 translation；
+  \item PTE 的 mapping、permission、present 状态；
+  \item physical frame 是否 resident、clean/dirty、referenced；
+  \item 若不 resident，backing object 在哪里。
+\end{enumerate}
+\end{method}
+
+\section{综合题二：一个页面的生命周期}
+\begin{center}
+\begingroup
+\small
+\begin{tikzpicture}[>=Stealth, node distance=2.0cm and 3.2cm]
+\tikzset{
+  st1/.style={draw=mainblue, ultra thick, fill=softblue, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  st2/.style={draw=purple, ultra thick, fill=softpurple, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  st3/.style={draw=deepgreen, ultra thick, fill=softgreen, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  st4/.style={draw=deeporange, ultra thick, fill=softorange, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
+  st5/.style={draw=deepred, ultra thick, fill=softred, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries}
+}
+\node[st1] (r) {1. VMA 保留地址\\[2pt]\small Reserved Region};
+\node[st2, right=of r] (abs) {2. PTE 尚未建立\\[2pt]\small Non-resident};
+\node[st3, right=of abs] (clean) {3. 物理页驻留\\[2pt]\small Resident Clean};
+
+\node[st4, below=of clean] (dirty) {4. 访问变脏 / 热点\\[2pt]\small Dirty / Referenced};
+\node[st5, left=of dirty] (victim) {5. 选中置换牺牲页\\[2pt]\small Victim Selected};
+\node[st2, left=of victim] (out) {6. 换出写回磁盘\\[2pt]\small Evicted / Swap-out};
+
+\draw[->, ultra thick, deepblue] (r) -- node[above=3pt, font=\small\bfseries] {VMA 建立} (abs);
+\draw[->, ultra thick, purple] (abs) -- node[above=3pt, font=\small\bfseries] {First Touch Fault} (clean);
+\draw[->, ultra thick, deepgreen] (clean) -- node[right=4pt, font=\small\bfseries] {Write / Access} (dirty);
+\draw[->, ultra thick, deeporange] (dirty) -- node[above=3pt, font=\small\bfseries] {Memory Pressure} (victim);
+\draw[->, ultra thick, deepred] (victim) -- node[above=3pt, font=\small\bfseries] {Writeback} (out);
+\draw[->, ultra thick, deepgreen] (out.west) -- ++(-1.3cm,0) |- ++(0,3.7cm) -| node[pos=0.7, above=3pt, font=\small\bfseries] {Later Touch Fault (Swap-in)} (clean.north);
+\end{tikzpicture}
+\endgroup
+\end{center}
+
+这张图把“请求分页、reference/dirty bit、置换、swap/writeback、再次缺页”从多个章节重新还原成一个对象的生命周期。
+
+\section{综合题三：fork + COW 的状态变化}
+\begin{method}[手推 COW 固定四步]
+\begin{enumerate}
+  \item \kw{共享前}：谁映射到哪个 PFN？
+  \item \kw{fork 后}：父子 PTE 指向同一 frame，但写权限怎样改变？引用计数如何变化？
+  \item \kw{写 fault}：是谁写？MMU 为什么 fault？内核如何判断这是 COW 而不是非法写？
+  \item \kw{修复后}：谁得到新 frame，旧 frame 谁继续引用，权限如何恢复？
+\end{enumerate}
+\end{method}
+
+\section{408 题型地图：每一类题到底在考哪一层}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{>{\bfseries}p{0.2\linewidth} p{0.36\linewidth} p{0.4\linewidth}}
+\toprule
+408 常见题型分类 & 真正考察的系统层次 & 考场标准推理与定性动作\\
+\midrule
+\endfirsthead
+\toprule
+408 常见题型分类 & 真正考察的系统层次 & 考场标准推理与定性动作\\
+\midrule
+\endhead
+地址拆分与页号 & Paging Math (数学模型) & Page Size $\rightarrow$ Offset Bits $\rightarrow$ VPN 位数划分\\
+多级页表空间计算 & Sparse Mapping Structure & 每级 Index 位数 $\rightarrow$ PTE 数 $\rightarrow$ 只为已用区域建低级页表\\
+TLB / EAT 计算 & Translation Cache (硬件加速) & 画 Hit / Miss 路径，精准数 TLB、页表与主存访问次数\\
+缺页次数模拟 & Residency Transitions (驻留) & 按访存串动态维护 Resident Set 框状态与置换规则\\
+FIFO/LRU/CLOCK & Replacement Policy (策略) & 每次访问后及时更新 Queue 位置、Timestamp 或 Ref Bit\\
+Belady 异常分析 & Policy Anomaly (算法异常) & 比较框数增加时 FIFO 缺页数反常增加的特例序列\\
+页面分配策略 & Resource Allocation (配额) & 明确 Fixed / Variable 框架与 Local / Global 置换作用域\\
+COW 机制分析 & Permission + Sharing + Fault & 校验父子共享只读 PFN、写 Fault、复制 Frame、更新 PTE\\
+连续分区管理 & Free-space Management & FF / BF / WF / NF 找块规则，合并空闲区与计算外部碎片\\
+Buddy 系统分配 & Physical Page Allocator & 计算阶数 Order $2^k$，执行分裂 Split 与按位 XOR 伙伴合并\\
+TLB + Cache 综合 & OS × 计组 软硬件协作 & 先 VA $\rightarrow$ PA 翻译，再按 PA 访问 Cache，严格按题目假设推导\\
+\bottomrule
+\end{longtable}
+\endgroup
+
+\section{408 虚拟内存十二问：考场固定协议}
+\begin{corebox}[拿到任何地址翻译/虚存综合题，依次问]
+\begin{enumerate}
+  \item 当前讨论的是\kw{虚拟空间、页表映射、物理页分配，还是页面置换}？
+  \item VA/PA 各多少位？page size 多少？
+  \item offset 有几位？VPN/PFN 如何拆？
+  \item 页表几级？每级 index 如何取得？
+  \item TLB 是否命中？若 miss，题目规定 page walk 需要几次访问？
+  \item PTE 是否 present/valid？本次 R/W/X 权限合法吗？
+  \item 是否 page fault？fault 是“页面不驻留”还是 COW/权限/非法地址？
+  \item 若需物理 frame，当前有 free frame 吗？
+  \item 若需 replacement，用什么 policy，victim 作用域是 local 还是 global？
+  \item victim 是否 dirty，需要额外 write-back 吗？
+  \item fault 修复后，原指令是否会重试？最终状态怎样更新？
+  \item 最后再算时间：到底统计了几次 TLB、页表、Cache/Memory、Disk 访问？
+\end{enumerate}
+\end{corebox}
+
+\section{高频错因诊断：错一道题到底是哪层模型坏了}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} X X}
+\toprule
+高频错误表现 & 模型理解根因漏洞 & 考场自我纠偏追问\\
+\midrule
+把 \code{malloc()} 当物理页申请 & 概念层级混淆 & 当前讨论的是 Runtime Chunk、VMA 还是 Physical Frame？\\
+TLB Miss 就判缺页 Page Fault & Fast / 慢路径 混淆 & PTE 是否其实有效且 Resident？硬件 Walk 成功则不缺页！\\
+Page Fault 一律去磁盘读盘 & Fault 分类缺失 & Demand-zero / COW / File / Swap / Invalid 哪一种？\\
+页表项存在就判页面在 RAM & Mapping / Residency 混淆 & PTE 的 Present / Valid 标志位状态是什么？\\
+地址拆分计算漏 Offset & 翻译对象范围错误 & 页表只翻译 VPN，Offset 保持不变原样拼接！\\
+LRU / FIFO 模拟算错 & 状态更新时机错误 & 每次 Reference 后队列/时间戳何时更新？\\
+Dirty Bit 被忽略 & 换出成本模型缺失 & Victim 是 Clean 还是 Dirty？是否触发额外 Write-back 延迟？\\
+COW 当共享内存 IPC & 语义目标混淆 & COW 最终承诺的是私有独立写语义还是共享写？\\
+\code{mmap} 当“整文件装入 RAM” & 映射与驻留混淆 & 建立 VA-File 映射关系不等于所有物理页立刻 Resident！\\
+Buddy 与 Best Fit 混淆 & Allocator 层级混淆 & 讨论的是连续进程分区还是物理内存 Order 页框管理？\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\section{教材模型与现代工程：哪些细节要分层记忆}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
+\toprule
+机制主题 & 408 考研核心教学模型 & 现代 Linux 内核工程真实实现\\
+\midrule
+页表数据结构 & 1 / 2 / 多级页表，VPN $\rightarrow$ PFN 直译 & Linux 抽象 5 级页表 (\code{pgd/p4d/pud/pmd/pte})，按架构自动折叠\\
+TLB 一致性 & 切换地址空间 (切 CR3) 清空 TLB & 使用 ASID / PCID 进程上下文标签，避免全量 Flush 带来的高开销\\
+Page Fault 异常 & 请求分页缺页、访问越界 & 广泛依赖 Fault 实现 Lazy Alloc, COW, File-backed mmap, KSM 等\\
+页面置换算法 & FIFO / LRU / CLOCK / OPT & 采用 Active / Inactive 双链表与 Multi-Gen LRU (MGLRU) 估计热度\\
+物理页管理 & Buddy 伙伴系统分配阶数页 & 在 Buddy 之上建立 SLAB / SLUB 对象缓存器，专供小内核对象\\
+文件映射机制 & mmap + Page Fault 按需加载 & 与 页缓存、VFS 回写机制与 Direct I/O 深度耦合\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\section{跨科桥梁：计组与 OS 在一次访存中怎样接力}
+\begin{bridge}[软硬件状态所有权]
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} X X}
+\toprule
+访存对象 / 动作 & CPU / MMU 硬件职责 & OS Kernel 软件职责\\
+\midrule
+VA 产生 & 指令执行单元产生 Effective / Virtual Address & 决定进程地址空间布局 (\code{mm\_struct}) 与允许的 VMA 区域\\
+TLB 缓存 & 硬件 Lookup 查询并高速缓存 $VPN \rightarrow PFN$ & 在修改页表或销毁进程时负责向 CPU 发送 Flush 命令\\
+Page Table 页表 & 硬件 MMU 按 ISA 规范自动 Page Walk & 物理内存中分配页表页、填写 PTE、配置权限与 Valid 标志\\
+Fault 异常 & 硬件检测无法完成翻译或权限违规并触发 Exception & 捕获异常、分类处理 (Alloc/Disk/COW/Kill)、更新页表与状态\\
+Physical Memory & Cache / Memory Hierarchy 硬件完成物理数据读写 & 管理全局 Frame 框配额、运行 Page Reclaim 与 Swap 写回\\
+\bottomrule
+\end{tabularx}
+\endgroup
+\end{bridge}
+
+因此完整路径应该始终看成：
+\[
+\boxed{
+\text{Instruction}
+\arr VA
+\arr TLB/PageTable
+\arr PA
+\arr Cache/Memory
+}
+\]
+若 translation 无法正常完成，才出现：
+\[
+\boxed{PageFault\arr Kernel\ SlowPath\arr Repair\arr Retry.}
+\]
+
+\section{训练阶梯：从会算地址到真正理解虚拟内存}
+\begin{enumerate}[label=\textbf{L\arabic*.}]
+  \item 能区分 VA、PA、VPN、PFN、offset；
+  \item 能完成单级/多级页表地址拆分；
+  \item 能区分 TLB miss、cache miss、page fault；
+  \item 能手推一次 page fault 的完整状态变化；
+  \item 能模拟 FIFO/LRU/CLOCK 和 frame allocation；
+  \item 能手推一个 page 的 residency 生命周期；
+  \item 能推演 fork+COW、lazy allocation、file-backed mmap；
+  \item 能把“地址空间、页表、物理页、页缓存、文件”放到同一张系统图上，并解释每层状态由谁维护。
+\end{enumerate}
+
+\section{六条核心结论}
+\begin{corebox}[复原主干]
+\begin{enumerate}
+  \item \kw{地址是一种名字，不是位置。}虚拟内存首先是把程序命名与物理放置解耦。
+  \item \kw{页表是一层间接映射。}多一次查找，换来隔离、共享、保护、稀疏和延迟分配。
+  \item \kw{Allocation、Mapping、Residency、Translation 是四件不同的事。}
+  \item \kw{TLB 是 translation cache；Page Fault 是 慢路径 entry。}
+  \item \kw{请求分页靠局部性成立；置换是在 RAM 不足时选择谁继续 resident。}
+  \item \kw{COW 与 mmap 都是在重新设计“虚拟页背后对应什么对象”。}前者延迟私有复制，后者把文件页直接纳入地址空间。
+\end{enumerate}
+\end{corebox}
+
+\section*{参考资料与工程边界}
+\addcontentsline{toc}{section}{参考资料与工程边界}
+\small
+\begin{itemize}
+  \item Linux Kernel Documentation, \emph{Memory Management Documentation}: \url{https://www.kernel.org/doc/html/latest/mm/index.html}
+  \item Linux Kernel Documentation, \emph{Process Addresses}: \url{https://cdn.kernel.org/doc/html/latest/mm/process_addrs.html}
+  \item Linux Kernel Documentation, \emph{Page Tables}: \url{https://cdn.kernel.org/doc/html/latest/mm/page_tables.html}
+  \item MIT PDOS, \emph{xv6: a simple, Unix-like teaching operating system} (2025 edition): \url{https://pdos.csail.mit.edu/6.828/2025/xv6/book-riscv-rev5.pdf}
+  \item OSTEP / CS537 teaching materials: address space, address translation, paging, TLB and swapping chapters: \url{https://pages.cs.wisc.edu/~remzi/OSTEP/}
+\end{itemize}
+
+\begin{method}[与文件系统的接口]
+这里负责解释文件怎样成为虚拟页的后备对象。路径名、dentry、inode、打开文件描述、文件偏移、索引分配与磁盘布局由文件系统专题定义；两侧通过 \code{read()} 与 \code{mmap()} 的数据路径连接。
+\end{method}
+
+\end{document}

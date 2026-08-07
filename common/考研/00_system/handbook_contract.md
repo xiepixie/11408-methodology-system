@@ -1,58 +1,146 @@
-# 手册契约与结构规范 (handbook_contract.md)
+# Handbook 与 Rule 契约
 
-> **目标**：规范每一本正式方法论手册（Topic / Bridge / Integration）的必要槽位与呈现格式，确保全系统所有讲义结构统一、防重且具备高可读性。
+本契约规定稳定资产需要说清什么，但不规定固定章节数、篇幅、YAML 或表单。自然中文能说清，就不增加结构。
 
----
+## 1. 所有 Handbook 的共同要求
 
-## 一、 手册必要槽位契约 (The 14 Mandatory Sections)
+读者和 AI 应当能够快速找到：
 
-每一本进入 `Published Handbook`（或编写 `.tex`）的方法论手册，必须显式包含以下 14 个核心结构槽位：
+1. **Position**：它位于哪个学科和母问题下；
+2. **Boundary**：负责什么，不负责什么；
+3. **Mother Model**：用什么核心模型组织内容；
+4. **Owns**：本文件独立定义什么；
+5. **Uses**：依赖哪些其他 Owner；
+6. **Failure / Boundary Cases**：模型在哪里失效或需要分层；
+7. **Compression**：怎样用一张图或一组问题复原主干。
 
-```text
-1. Position (系统定位)
-2. Boundary (边界与非目标)
-3. Mother Problem (母题重述)
-4. Mother Model (母模型/形式化描述)
-5. Objects (核心存在对象及其状态)
-6. Mechanisms (受控状态转换机制)
-7. Lifecycle (对象与关系的生命周期)
-8. Invariants (安全、隔离与一致性不变量)
-9. Trade-offs (成本与性能折衷)
-10. Interfaces (对外暴露与依赖接口)
-11. Exam Map (考题地图与考点识别信号)
-12. Decision Tree (一页式考场决策树)
-13. Pitfalls (典型陷阱与常见易错点)
-14. Compression Page (1 页纸极简复盘/一界一页)
+这些信息可以自然写在前言和正文里，不要求机械填字段。
+
+## 2. Atlas
+
+Atlas 至少说清：
+
+- 这门学科研究什么；
+- 反复出现的母问题；
+- Topic、Bridge、Integration 怎样连接；
+- 推荐学习顺序；
+- 对应的 Subject Rules 入口；
+- 当前哪些内容存在、缺失或冲突。
+
+Atlas 不展开全部专题，也不把目录存在写成已经掌握。
+
+## 3. Topic
+
+Topic 应围绕一个机制回答：
+
+- 为什么需要它；
+- 有哪些对象、状态和关系；
+- 什么事件触发什么变化；
+- 必须保持什么不变量；
+- 对象或关系的一生；
+- 成本、边界和反例；
+- 它向外提供什么接口。
+
+Topic 不负责“考试三分钟没思路怎么办”。做题动作放入 Rules。
+
+## 4. Bridge
+
+Bridge 只需要说清：
+
+- 接口两侧分别由谁拥有；
+- 输入、输出和共享对象；
+- 数据、状态或控制权怎样交接；
+- 接口必须保持什么；
+- 哪些问题是接口失配，而不是单侧机制错误。
+
+Bridge 可以给两侧最小摘要，但必须链接 Owner，不重新讲完整 Topic。
+
+## 5. Integration
+
+Integration 应选择一个真实过程，并说清：
+
+- 初始和结束状态；
+- 哪些机制参与；
+- 事件按什么顺序发生；
+- 每一步由谁负责；
+- Fast Path、Slow Path 和失败分支；
+- 成本怎样累积。
+
+Integration 拥有协作轨迹，不拥有参与机制本身。
+
+## 6. Rules
+
+规则不是知识摘要。它必须能改变下一道题中的行为。
+
+一条规则至少要自然说清：
+
+- 看到什么信号时使用；
+- 起手或下一步具体做什么；
+- 怎样检查是否有效；
+- 什么时候不适用或应该退出。
+
+例如：
+
+```markdown
+### 分部积分前先预测复杂度
+
+看到乘积且考虑分部积分时，正式计算前先比较两种拆法：
+哪一种会让剩余积分的结构变简单？
+
+如果两种都没有降低复杂度，先停止计算并寻找换元、恒等变形或递推结构。
 ```
 
----
+Rules 可以只有三个区域：
 
-## 二、 三类手册的侧重点区别
+```markdown
+## 已采用
+## 待验证
+## 已否定
+```
 
-| 手册类型 | 核心关注槽位 | 典型呈现特征 |
-|---|---|---|
-| **Topic Manual (专题手册)** | Objects, Mechanisms, Invariants | 深入打穿单一局部机制（如 VM 的页表与 Fault 修复） |
-| **Bridge Manual (桥梁手册)** | Interfaces, Boundary, Trade-offs | 专门研究两个专题交接处的接口语义（如 `mmap` 的 VM $\leftrightarrow$ File 边界） |
-| **Integration Manual (综合手册)** | Mother Model, Event-driven Flow, Decision Tree | 追踪多机制协同下的完整事件与状态流转链（如 `read()` 操作） |
+不要求为每条规则填写编号、证据数量或固定字段。复杂或有争议的规则可以附几道代表题和反例。
 
----
+## 7. 什么内容不进入稳定资产
 
-## 三、 LaTeX 排版与 4 页精排约束 (The 4-Page Principle)
+以下内容通常留在 Inbox 或直接删除：
 
-在导出为 LaTeX 讲义 (`.tex`) 时，教案与学案必须遵循以下物理约束：
+- 刚看完课程后的复述；
+- 一次偶发计算错误；
+- 还没有形成具体动作的感想；
+- 只对一道旧题有效的答案记忆；
+- 无法说明边界的聪明口诀；
+- 与现有内容重复但没有新增解释力的段落。
 
-1. **一界一页 (4-Page Layout for Teacher Guides)**：
-   - **第 1 页：课堂教学导引**（元信息 + 3 项可观察成功标准 + 120min 路线表 + 动态 Checkpoint & 分支路由）；
-   - **第 2 页：备课知识库与几何/拓扑模型**（2–3 个经典 TikZ 结构图 + 核心推导链）；
-   - **第 3 页：核心题目精讲与诊断**（单栏干净题面 + 双栏 `paracol (0.68/0.32)` 得分板书与追问梯度）；
-   - **第 4 页：课后总结与复练落实**（`5.5cm` 独立高对比手写框 `tcolorbox` + 吸底课后任务）。
+## 8. AI-readable，而不是 machine-schema
 
-2. **计算机/拓扑流程图黄金五原则**：
-   - 连线优先级：Direct $\to$ One-bend $\to$ Orthogonal multi-bend $\to$ Outer routing；
-   - 矩阵先于节点：先设 Column/Row 网格再填充逻辑；
-   - 包络盒预算：整图宽度 $W_{\text{figure}} \le \min(13.6\text{cm}, 0.90\linewidth)$，绝不挤压边框；
-   - 固定尺寸与文案分层：节点尺寸 $2.55\text{cm} \times 0.92\text{cm}$，第一行对象/动作，第二行状态/语义；
-   - 统一线型：实线控制流、粗实线 Main Path、虚线静态引用、点线 Fast Path/Cache、双线框 `persistent` 对象。
+Handbook 既给人看，也为 AI 提供长期对齐上下文。为此应当：
 
-3. **零编译 Warning/Error 约束**：
-   - 统一使用 `python3 common/scripts/compile_tex.py <target.tex>` 编译，确保多遍编译后 `\zpageref{LastPage}` 正确，无 `??` 问号与未决引用。
+- 固定核心术语；
+- 明确母模型；
+- 区分 Owns 与 Uses；
+- 区分教材模型、考试模型和工程现实；
+- 把长解释拆成清晰推理链；
+- 在跨专题处提供可追踪链接。
+
+不需要把正常中文改写成 JSON。可读、稳定、边界明确比字段齐全更重要。
+
+## 9. 更新节奏
+
+| 资产 | 建议节奏 |
+|---|---|
+| Inbox | 随时写，随时删 |
+| 待验证 Rules | 做题后或晚间加入 |
+| 已采用 Rules | 每周或获得新证据后更新 |
+| Handbooks | 专题或阶段性更新 |
+| PDF | Handbook 稳定修订后发布 |
+
+## 10. 发布
+
+- Markdown 是默认工作入口；
+- LaTeX 是发布排版源，PDF 是编译产物；
+- 发布稿必须能追溯到对应 Handbook 或 Rules；
+- 不得只在 PDF/LaTeX 中修改世界模型，却让工作文档保持过时；
+- 既有 LaTeX 在完成 Ownership 梳理前标记为 `legacy-unregistered`；
+- 不为目录整齐批量迁移旧手册。
+
+发布前检查 Owner、引用、编译和关键排版即可。本项目的长期认知手册没有默认四页限制。
