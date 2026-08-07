@@ -137,24 +137,38 @@ def compile_single_tex(tex_path: Path, keep_aux: bool = False) -> bool:
         elif "教案" in file_name or "学案" in file_name:
             print(f"⚠️  [契约警报] 物理页数偏离 4 页精排契约: 实际 {info2['page_count']} 页 (预期 4 页)！请检查溢出或边距。")
 
-    # 3. 智能发布视图路由 (Publish View Routing: 90_publish/tex -> 90_publish/pdf)
+    # 3. 智能发布视图路由 (Publish View Routing)
     if "90_publish/tex" in target_dir.as_posix():
         publish_pdf_dir = target_dir.parent / "pdf"
         publish_pdf_dir.mkdir(parents=True, exist_ok=True)
         target_pdf_path = publish_pdf_dir / pdf_name
-        shutil.copy2(pdf_path, target_pdf_path)
-        print(f"📦 [发布视图同步] 已把 PDF 自动部署至: {target_pdf_path}")
+        shutil.move(str(pdf_path), str(target_pdf_path))
+        print(f"📦 [发布视图移动] 已把 PDF 自动移至发布目录: {target_pdf_path}")
+        print(f"✨ 保持 {target_dir.name} 目录纯净 (零同名 PDF 残留)")
+    else:
+        # 如果不是在 90_publish/tex 下编译，但该 PDF 在 90_publish/pdf 中属于已有发布资产，自动同步最新副本
+        publish_pdf_dir = common_dir / "考研" / "90_publish" / "pdf"
+        if publish_pdf_dir.exists():
+            target_pdf_path = publish_pdf_dir / pdf_name
+            if target_pdf_path.exists() or "心智模型手册" in pdf_name or "方法论" in pdf_name:
+                shutil.copy2(pdf_path, target_pdf_path)
+                print(f"🔄 [发布视图自动同步] 已同步最新 PDF 副本至: {target_pdf_path}")
 
     if info2["warnings"]:
         print("⚠️ 编译提示信息：")
         for w in info2["warnings"][:5]:
             print(f"   • {w}")
 
-    # 清理当前目录下的临时文件
+    # 清理当前目录下的临时文件与 90_publish/tex 误留的 PDF
     if not keep_aux:
         print("🧹 自动清理临时辅助文件...")
         cleaned = clean_aux_files(target_dir, verbose=False)
-        print(f"✨ 已清理 {cleaned} 个临时文件 (保持目录干净)")
+        # 额外防护：如果在 90_publish/tex 目录下存在遗留的 PDF，一律清理
+        if "90_publish/tex" in target_dir.as_posix():
+            for leftover_pdf in target_dir.glob("*.pdf"):
+                leftover_pdf.unlink(missing_ok=True)
+                cleaned += 1
+        print(f"✨ 已清理 {cleaned} 个临时/冗余文件 (保持目录干净)")
 
     return True
 
