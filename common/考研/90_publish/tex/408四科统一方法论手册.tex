@@ -17,6 +17,9 @@
 \usepackage{lastpage}
 \usepackage{etoolbox}
 
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
 \definecolor{ink}{RGB}{25,25,25}
 \definecolor{deep}{RGB}{42,58,73}
 \definecolor{soft}{RGB}{245,247,249}
@@ -70,16 +73,19 @@
 \vspace{0.9cm}
 {\large 从知识点记忆到问题结构与系统过程推演\par}
 \vspace{1.6cm}
-\begin{tikzpicture}[node distance=1.05cm,>=Latex]
-\node[draw,rounded corners,minimum width=3.5cm,minimum height=1cm,align=center] (d) {数据结构\\信息组织};
-\node[draw,rounded corners,minimum width=3.5cm,minimum height=1cm,right=1.0cm of d,align=center] (c) {计算机组成\\硬件执行};
-\node[draw,rounded corners,minimum width=3.5cm,minimum height=1cm,below=0.9cm of d,align=center] (o) {操作系统\\资源协调};
-\node[draw,rounded corners,minimum width=3.5cm,minimum height=1cm,right=1.0cm of o,align=center] (n) {计算机网络\\分布式通信};
-\node[draw,rounded corners,minimum width=7.2cm,minimum height=1cm,below=1.0cm of $(o)!0.5!(n)$,align=center] (u) {核心语言：对象 · 状态 · 关系 · 映射 · 资源 · 不变量 · 代价};
-\draw[->,thick] (d) -- (u);
-\draw[->,thick] (c) -- (u);
-\draw[->,thick] (o) -- (u);
-\draw[->,thick] (n) -- (u);
+\begin{tikzpicture}[node distance=1.2cm,>=Latex,
+  fournode/.style={draw=deep,rounded corners=2.5mm,text width=3.8cm,minimum height=1.1cm,align=center,fill=soft,font=\small,thick},
+  corenode/.style={draw=deep,rounded corners=2.5mm,text width=8.8cm,minimum height=1.1cm,align=center,fill=soft,font=\small\bfseries\color{deep},thick}
+]
+\node[fournode] (d) {数据结构\\信息组织};
+\node[fournode,right=1.2cm of d] (c) {计算机组成\\硬件执行};
+\node[fournode,below=1.0cm of d] (o) {操作系统\\资源协调};
+\node[fournode,right=1.2cm of o] (n) {计算机网络\\分布式通信};
+\node[corenode,below=1.1cm of $(o)!0.5!(n)$] (u) {核心语言：对象 · 状态 · 关系 · 映射 · 资源 · 不变量 · 代价};
+\draw[->,thick,draw=deep] (d) -- (u);
+\draw[->,thick,draw=deep] (c) -- (u);
+\draw[->,thick,draw=deep] (o) -- (u);
+\draw[->,thick,draw=deep] (n) -- (u);
 \end{tikzpicture}
 \vfill
 {\small 面向 408 复习，同时保留通往专业系统课程的上位理解}\par
@@ -1119,6 +1125,26 @@ $\key{Layering} \neq \key{PhysicalLaw}$ & 分层是架构与分析原则（Isola
 \section{总手册与专题手册的职责边界}
 网络总图不保存完整的五层知识点列表。本篇只拥有：\key{DistributedCommunication}、\key{Scope}、\key{StateOwnership}、\key{State} $\xrightarrow{\text{Message/Timer}}$ \key{Transition} $\rightarrow$ \key{Feedback}、\key{StatisticalMultiplexing} $\rightarrow$ \key{Queue} $\rightarrow$ \key{Congestion}。
 本篇负责 \textbf{Map}，专题负责 \textbf{Depth}，桥梁专题负责 \textbf{Interface}，综合专题负责 \textbf{Integration}。四者不再争夺相同知识。
+
+\section{408 四科核心概念边界与反混淆对齐}
+\begin{longtable}{L{2.2cm}@{}>{\centering\arraybackslash}p{0.5cm}@{}L{2.2cm}L{4.2cm}L{4.2cm}L{\dimexpr\linewidth-13.9cm\relax}}
+\toprule
+\textbf{概念 A} & & \textbf{概念 B} & \textbf{真正区别} & \textbf{题目信号} & \textbf{混淆后果}\\
+\midrule
+Ready (就绪) & $\neq$ & Blocked (阻塞) & 仅缺 CPU 时间片 vs 等待外部 I/O 或锁资源 & “等待事件到来”/“获得时间片” & 把等待锁写成 Ready\\
+Mode Switch & $\neq$ & Context Switch & 仅特权级切换(不换PCB) vs 寄存器与页表上下文全换 & 中断响应/系统调用 vs 进程调度 & 误算上下文保存代价\\
+进程 & $\neq$ & 程序 & 动态执行实体与资源容器 vs 静态磁盘代码二进制 & “可执行文件”/“PCB创建” & 把程序属性套在进程上\\
+线程共享 & $\neq$ & 全部状态共享 & 共享全局与堆内存 vs 独立栈帧与寄存器集合 & “局部变量”/“栈溢出” & 误认为线程栈私有可被直接覆盖\\
+Mutex/Lock & $\neq$ & Condition Var & 互斥资源锁 vs 事件等待与唤醒协调 & \texttt{pthread\_mutex} vs \texttt{pthread\_cond} & 乱用锁代替条件变量\\
+Signal & $\neq$ & Condition True & 信号仅代表提醒 vs 条件可能仍被其他线程抢占 & “while循环判条件” & 改用 if 导致虚假唤醒崩溃\\
+Unsafe State & $\neq$ & Deadlocked & 存在死锁风险路径 vs 实际已陷入循环等待不可推进 & 银行家算法/安全序列 & 把不安全状态判为已死锁\\
+Virtual Addr & $\neq$ & Physical Addr & 逻辑CPU视角的连续空间 vs 物理DRAM块的散布页框 & MMU/页表/段页式 & 把VA当实际物理存储\\
+TLB Miss & $\neq$ & Page Fault & TLB缓存缺失找页表 vs 页面不在内存需磁盘I/O & 内存访问时间/缺页中断 & 混淆微秒级与毫秒级延迟\\
+Buffer & $\neq$ & Cache & 缓解读写速度不匹配的缓冲 vs 缓存热点数据避免重复访存 & I/O 搬运 vs CPU 访存 & 混淆物理职责\\
+Write 返回 & $\neq$ & 稳定入盘 & 数据仅写至内核页缓存 vs 数据物理持久化至磁盘 & \texttt{fsync()} / 崩溃一致性 & 误判数据可靠性\\
+文件名 & $\neq$ & inode & 目录项中的名称映射 vs 文件的物理元信息与数据指针 & dentry/软硬链接 & 把文件名当物理文件实体\\
+\bottomrule
+\end{longtable}
 
 \section{最终压缩：网络真正应该留下什么？}
 \begin{corebox}{计算机网络的终极总结}
