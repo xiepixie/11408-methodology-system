@@ -58,29 +58,34 @@
 \begin{document}
 \maketitle
 
-\begin{corebox}[定位：PV 不是口诀，而是约束映射与语义建模]
-信号量/PV 题不从套模板开始，而从共享状态、等待条件和不变量推导信号量：
+\begin{corebox}[定位：PV 不是口诀，而是通用 OS 推理引擎在并发同步下的落地特例]
+信号量/PV 绝不是背诵伪代码模板，而是通用操作系统系统推理引擎（OS System Reasoning Engine）在“多线程指令交错”场景下的具体应用：
 \[
 \boxed{
-\text{执行流}
-\to\text{交错}
-\to\text{共享状态}
-\to\text{不变量}
-\to\text{约束}
-\to\text{信号量/PV}
-\to\text{进展性与代价}
+\text{State (共享状态)}
+\to\text{Interleaving (交错转移)}
+\to\text{Failure (失效/坏状态)}
+\to\text{Property (Safety / Liveness)}
+\to\text{Minimal Mechanism (信号量/PV)}
+\to\text{Tradeoff (代价)}
 }
 \]
-面对陌生题，先回答：
-\begin{center}
-\bfseries 谁在动？共享什么？谁必须等谁？哪些步骤不可交错？初始系统到底有多少“许可”？
-\end{center}
+面对陌生并发题，严格回答解题三问：
+\begin{enumerate}[leftmargin=1.5em]
+\item \kw{第一问（坏状态）：如果完全不加控制，会出现什么错误交错？}（寻找 Counterexample，如 Lost Update / 缓冲区溢出）。
+\item \kw{第二问（性质与不变量）：我真正要保护的性质是什么？}
+  \begin{itemize}
+    \item \kw{Safety（安全性）}：坏事绝不发生（如互斥临界区、$0\le count\le N$）。注意区分\kw{宏观逻辑不变量}（如动作完成后 $empty+full+in\_transition=N$）与\kw{指令中途的快照}；
+    \item \kw{Liveness（活性）}：好事最终必发生（如无死锁 No Deadlock、无饥饿 No Starvation）。
+  \end{itemize}
+\item \kw{第三问（最小机制）：恢复该性质所需的最小约束与 PV 机制是什么？}（只禁止危险执行，不防范过度）。
+\end{enumerate}
 
-在本手册中，我们严格区分三个核心概念：
+在本手册中，我们严格区分三个核心视级：
 \begin{itemize}[leftmargin=1.5em]
-\item \kw{许可计数（Permit Count）}：信号量整型变量 $S$ 的当前可用数值（如 $S=1$ 表示 1 个互斥进入名额，$S=N$ 表示 $N$ 个缓冲区空位额度）。
-\item \kw{约束映射（Constraint Mapping）}：将现实物理/业务规则推演翻译为 PV 逻辑的思考建模过程。
-\item \kw{PV 伪代码（PV Pseudocode）}：答题卡上最终写出的 \code{P(S)} / \code{V(S)} 程序代码片段。
+\item \kw{许可计数（Permit Count）}：逻辑世界中的可用资源额度（如 $S=1$ 临界区名额，$S=N$ 空位额度）。
+\item \kw{约束映射（Constraint Mapping）}：建模世界中将性质推演翻译为 P/V 逻辑顺序过程。
+\item \kw{PV 伪代码（PV Pseudocode）}：实现世界中答题卡上最终写出的 \code{P(S)} / \code{V(S)} 代码。
 \end{itemize}
 \end{corebox}
 

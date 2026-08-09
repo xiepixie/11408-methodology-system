@@ -598,11 +598,17 @@ OS 的最简状态模型：
 \[
 \boxed{S=(Objects,Relations,Queues)}.
 \]
-事件到来以后：
+统一系统推理引擎（OS System Reasoning Engine）：
+\[
+\boxed{
+\text{State} \to \text{Transition} \to \text{Failure (Bad State)} \to \text{Property (Safety / Liveness)} \to \text{Minimal Mechanism} \to \text{Tradeoff}
+}
+\]
+当事件触发状态转移：
 \[
 S_t\xrightarrow{Event+Mechanism+Policy}S_{t+1},
 \]
-同时要求 Invariant 成立，并优化 Cost。
+必须维持物理与逻辑不变量 $I(S_{t+1})=\mathrm{true}$ 成立，同时优化 Cost。
 
 \subsection{这些词分别是什么意思}
 \begin{description}

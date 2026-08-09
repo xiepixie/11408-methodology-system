@@ -90,6 +90,17 @@
 一个虚拟地址范围可以已经“属于进程”，却尚未有物理页；一个页面可以曾经驻留、后来被换出；一个映射可以合法存在，但当前访问权限仍不允许本次操作。
 \end{corebox}
 
+\begin{eng}[系统的通用推理：缺页中断（Page Fault）中的按序约束]
+在虚拟内存处理缺页异常时，同样遵循 OS 通用系统推理引擎（OS System Reasoning Engine）：
+\[
+\text{State (PTE/Frame/Disk)}
+\to\text{Page Fault (缺页异常)}
+\to\text{Failure (未装载读垃圾/竞态)}
+\to\text{Invariant (PTE.valid = 1 } \implies \text{Frame 数据就绪)}
+\]
+因此内核处理必须施加\kw{按序约束（Ordering Constraint）}：必须先完成磁盘 Page-In 填入 Frame，最后才将 \texttt{PTE.valid} 置 1 并更新 TLB。若顺序颠倒，就会在并发下产生脏读与未定义行为。
+\end{eng}
+
 \tableofcontents
 \newpage
 

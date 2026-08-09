@@ -116,6 +116,17 @@
 学生版一句话：\kw{先找到“谁”，再建立访问关系，再找到“哪一段数据”，最后保证它即使掉电也仍然是一个合法文件。}
 \end{corebox}
 
+\begin{eng}[系统的通用推理：崩溃一致性（Crash Consistency）中的元数据不变量]
+在文件系统持久化与崩溃恢复中，同样遵循 OS 通用系统推理引擎（OS System Reasoning Engine）：
+\[
+\text{State (Bitmap/Inode/Data Blocks)}
+\to\text{Crash/Power Fault (突发断电)}
+\to\text{Failure (块被重复分配/孤立)}
+\to\text{Invariant (Bitmap Free } \iff \text{无 Inode 占用)}
+\]
+为了拦截这类毁坏性坏状态，文件系统引入了\kw{预写日志（Journaling / WAL）}或\kw{写顺序约束（Write-Ordering）}作为最小机制，确保磁盘元数据在故障恢复后依然满足逻辑一致性。
+\end{eng}
+
 \tableofcontents
 \newpage
 
