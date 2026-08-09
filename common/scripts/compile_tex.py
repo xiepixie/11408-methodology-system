@@ -12,7 +12,7 @@ LaTeX 自动化编译、智能发布与契约校验工具 (compile_tex.py)
 
 用法示例：
   - 编译指定文件：
-      python3 common/scripts/compile_tex.py "common/考研/90_publish/tex/OS_综合专题_内核状态机与跨子系统推演方法论_v1.tex"
+      python3 common/scripts/compile_tex.py "common/考研/30_408/60_综合专题/OS-I1_OS综合状态机_方法论手册.tex"
   - 全局清理编译临时文件：
       python3 common/scripts/compile_tex.py --clean-all
 """
@@ -138,36 +138,23 @@ def compile_single_tex(tex_path: Path, keep_aux: bool = False) -> bool:
             print(f"⚠️  [契约警报] 物理页数偏离 4 页精排契约: 实际 {info2['page_count']} 页 (预期 4 页)！请检查溢出或边距。")
 
     # 3. 智能发布视图路由 (Publish View Routing)
-    if "90_publish/tex" in target_dir.as_posix():
-        publish_pdf_dir = target_dir.parent / "pdf"
-        publish_pdf_dir.mkdir(parents=True, exist_ok=True)
-        target_pdf_path = publish_pdf_dir / pdf_name
+    publish_dir = common_dir / "考研" / "90_publish"
+    if publish_dir.exists():
+        target_pdf_path = publish_dir / pdf_name
+        # 直接将生成的 PDF 移动至 90_publish/ 根目录展柜，保持源码目录零 PDF 残留
         shutil.move(str(pdf_path), str(target_pdf_path))
-        print(f"📦 [发布视图移动] 已把 PDF 自动移至发布目录: {target_pdf_path}")
+        print(f"📦 [发布视图移交] 已把成品 PDF 移至集中展示区: {target_pdf_path}")
         print(f"✨ 保持 {target_dir.name} 目录纯净 (零同名 PDF 残留)")
-    else:
-        # 如果不是在 90_publish/tex 下编译，但该 PDF 在 90_publish/pdf 中属于已有发布资产，自动同步最新副本
-        publish_pdf_dir = common_dir / "考研" / "90_publish" / "pdf"
-        if publish_pdf_dir.exists():
-            target_pdf_path = publish_pdf_dir / pdf_name
-            if target_pdf_path.exists() or "心智模型手册" in pdf_name or "方法论" in pdf_name:
-                shutil.copy2(pdf_path, target_pdf_path)
-                print(f"🔄 [发布视图自动同步] 已同步最新 PDF 副本至: {target_pdf_path}")
 
     if info2["warnings"]:
         print("⚠️ 编译提示信息：")
         for w in info2["warnings"][:5]:
             print(f"   • {w}")
 
-    # 清理当前目录下的临时文件与 90_publish/tex 误留的 PDF
+    # 清理当前目录下的临时文件
     if not keep_aux:
         print("🧹 自动清理临时辅助文件...")
         cleaned = clean_aux_files(target_dir, verbose=False)
-        # 额外防护：如果在 90_publish/tex 目录下存在遗留的 PDF，一律清理
-        if "90_publish/tex" in target_dir.as_posix():
-            for leftover_pdf in target_dir.glob("*.pdf"):
-                leftover_pdf.unlink(missing_ok=True)
-                cleaned += 1
         print(f"✨ 已清理 {cleaned} 个临时/冗余文件 (保持目录干净)")
 
     return True

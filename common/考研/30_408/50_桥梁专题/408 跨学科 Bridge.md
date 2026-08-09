@@ -27,4 +27,4 @@ Bridge 必须列出：
 
 ## 既有材料
 
-`OS_计组桥梁专题_CPU与内核软硬件协作边界_v1` 当前覆盖范围较宽。正式纳管时，应判断它是保留为总 Bridge Atlas，还是拆成 `Cache x VM x OS` 与 `Interrupt / DMA x OS` 两条具体接口；在此之前不复制其正文。
+`OS-B1_CPU与OS桥梁_方法论手册` 当前覆盖范围较宽。正式纳管时，应判断它是保留为总 Bridge Atlas，还是拆成 `Cache x VM x OS` 与 `Interrupt / DMA x OS` 两条具体接口；在此之前不复制其正文。
