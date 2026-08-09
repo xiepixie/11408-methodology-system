@@ -154,7 +154,7 @@ S_n=\sum_{i=1}^nX_i\sim B(n,p),
 \]
 这不是时间流程，而是\key{描述同一随机现象时逐渐提高抽象层次}。
 
-\begin{longtable}{L{2.5cm}L{5.0cm}L{3.7cm}L{\dimexpr\linewidth-12.17cm\relax}}
+\begin{longtable}{L{2.2cm}L{4.2cm}L{3.5cm}L{\dimexpr\linewidth-10.42cm\relax}}
 \toprule
 \textbf{层次} & \textbf{真正含义} & \textbf{教材内容} & \textbf{做题第一问}\\
 \midrule
@@ -450,7 +450,7 @@ Poisson & 区间内稀疏事件计数模型 & 事件次数 & 到达、事故、�
 \end{examplebox}
 
 \section{常见连续分布：记住其“形状原因”}
-\begin{longtable}{L{2.8cm}L{4.7cm}L{4.2cm}L{\dimexpr\linewidth-12.67cm\relax}}
+\begin{longtable}{L{2.4cm}L{3.8cm}L{3.8cm}L{\dimexpr\linewidth-10.52cm\relax}}
 \toprule
 \textbf{分布} & \textbf{核心机制/形状} & \textbf{关键结构} & \textbf{做题信号}\\
 \midrule
@@ -526,7 +526,7 @@ Z=\frac{X-\mu}{\sigma}\sim N(0,1)
 \chapter{随机变量函数：Transform 是概率质量的重新映射}
 % ============================================================
 
-\section{为什么 $Y=g(X)$ 不是“代入一个函数”这么简单}
+\section{为什么 \texorpdfstring{$Y=g(X)$}{Y=g(X)} 不是“代入一个函数”这么简单}
 定义 $Y=g(X)$ 后，同一个底层样本点 $\omega$ 同时给出 $X(\omega)$ 和 $Y(\omega)=g(X(\omega))$。随机性没有变化，变化的是观察方式。
 
 核心问题变成：
@@ -574,7 +574,7 @@ P(\min X_i>y)=P(X_1>y,\dots,X_n>y).
 \]
 所以“最大/最小值分布”不是新公式，而是寻找一个容易用交集表达的事件。
 
-\section{只求 $E[g(X)]$ 时，先问能否绕过完整分布}
+\section{只求 \texorpdfstring{$E[g(X)]$}{E[g(X)]} 时，先问能否绕过完整分布}
 若目标只是数字特征，LOTUS 思想允许直接在 $X$ 的原分布上计算：
 \[
 E[g(X)]=\sum_xg(x)P(X=x)
@@ -854,14 +854,14 @@ S^2=\frac1{n-1}\sum(X_i-\bar X)^2.
 $\mu,\sigma^2,p$ 是固定未知参数；$\bar X,S^2$ 是随机统计量；若 $\bar X$ 被拿来估计 $\mu$，它又承担 estimator 的角色；真正代入数据得到 2.73 后，这个数才是 estimate。题目问“无偏性”时，必须对 estimator 求期望，不能对已观察的数字谈随机性。
 \end{boundarybox}
 
-\section{自由度：为什么样本方差里出现 $n-1$}
+\section{自由度：为什么样本方差里出现 \texorpdfstring{$n-1$}{n-1}}
 样本偏差满足
 \[
 \sum_{i=1}^n(X_i-\bar X)=0.
 \]
 $n$ 个偏差之间存在一个线性约束，所以只有 $n-1$ 个独立自由方向。这是“自由度”最直观的来源。它会直接进入 $\chi^2,t,F$ 分布参数。
 
-\section{$\chi^2$：平方标准正态量的累积}
+\section{\texorpdfstring{$\chi^2$}{Chi2}：平方标准正态量的累积}
 若 $Z_1,\dots,Z_k\overset{iid}{\sim}N(0,1)$，则
 \[
 \sum_{i=1}^kZ_i^2\sim\chi^2(k).
@@ -872,14 +872,14 @@ $n$ 个偏差之间存在一个线性约束，所以只有 $n-1$ 个独立自由
 \]
 所以 $\chi^2$ 是“样本方差相对总体方差的标准化波动标尺”。
 
-\section{$t$：总体方差未知时，用样本方差替代会多出额外不确定性}
+\section{\texorpdfstring{$t$}{t}：总体方差未知时，用样本方差替代会多出额外不确定性}
 若总体正态，则
 \[
 T=\frac{\bar X-\mu}{S/\sqrt n}\sim t(n-1).
 \]
 如果 $\sigma$ 已知，分母是固定尺度，使用 Normal；如果 $\sigma$ 未知，只能用随机的 $S$ 替代，于是概率标尺变成 $t$。所以 $t$ 分布不是“样本量小就用”的机械规则，真正原因是\key{正态总体下总体方差未知，分母自身带来额外随机性。}
 
-\section{$F$：两个独立方差尺度的比}
+\section{\texorpdfstring{$F$}{F}：两个独立方差尺度的比}
 若两个独立 $\chi^2$ 变量分别除以自由度后作比，得到 $F$ 分布。正态总体比较两个方差时，自然出现
 \[
 \frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}.
@@ -905,7 +905,7 @@ T=\frac{\bar X-\mu}{S/\sqrt n}\sim t(n-1).
 \end{examplebox}
 
 \section{统计推断选择前，先回答“未知量是谁、方差知道吗”}
-\begin{longtable}{L{3.4cm}L{4.2cm}L{4.0cm}L{\dimexpr\linewidth-12.57cm\relax}}
+\begin{longtable}{L{2.8cm}L{3.6cm}L{3.6cm}L{\dimexpr\linewidth-10.52cm\relax}}
 \toprule
 \textbf{目标} & \textbf{先检查条件} & \textbf{核心标尺} & \textbf{第一动作}\\
 \midrule
@@ -1020,7 +1020,7 @@ P_\theta\{L(X)\le\theta\le U(X)\}=1-\alpha.
 \end{enumerate}
 的量，即 pivot。然后把一个概率不等式反解成参数范围。
 
-\section{单个正态总体均值：$\sigma$ 已知与未知为何对应不同标尺}
+\section{单个正态总体均值：\texorpdfstring{$\sigma$}{sigma} 已知与未知为何对应不同标尺}
 若 $\sigma$ 已知：
 \[
 \frac{\bar X-\mu}{\sigma/\sqrt n}\sim N(0,1).
@@ -1042,7 +1042,7 @@ P_\theta\{L(X)\le\theta\le U(X)\}=1-\alpha.
 \chapter{假设检验：在一个假设世界里，当前数据是否过于极端？}
 % ============================================================
 
-\section{检验不是证明 $H_0$ 对错，而是控制错误风险的决策}
+\section{检验不是证明 \texorpdfstring{$H_0$}{H0} 对错，而是控制错误风险的决策}
 假设检验先规定原假设 $H_0$ 和备择假设 $H_1$。然后在\key{$H_0$ 假定为真}的世界里研究某个统计量的分布，并把“太不符合 $H_0$ 的观测值”划入拒绝域。
 
 所以完整逻辑是：
@@ -1050,7 +1050,7 @@ P_\theta\{L(X)\le\theta\le U(X)\}=1-\alpha.
 \boxed{H_0\to\text{sampling distribution under }H_0\to\text{rejection region}\to\text{observed statistic}\to\text{decision}.}
 \]
 
-\section{显著性水平 $\alpha$ 控制的是第一类错误}
+\section{显著性水平 \texorpdfstring{$\alpha$}{alpha} 控制的是第一类错误}
 第一类错误：$H_0$ 为真却拒绝；第二类错误：$H_0$ 为假却未拒绝。显著性水平 $\alpha$ 用来控制第一类错误概率，不是“$H_0$ 为真的概率”，也不是“结论出错概率”。
 
 \section{单侧与双侧：由备择方向决定拒绝域的位置}
@@ -1089,7 +1089,7 @@ Z=\frac{\bar X-\mu_0}{\sigma/\sqrt n}\sim N(0,1).
 \chapter{概念边界：真正区别、题目信号与错误后果}
 % ============================================================
 
-\begin{longtable}{L{2.2cm}@{}>{\centering\arraybackslash}p{0.5cm}@{}L{2.2cm}L{4.2cm}L{4.2cm}L{\dimexpr\linewidth-13.9cm\relax}}
+\begin{longtable}{L{1.7cm}@{}>{\centering\arraybackslash}p{0.35cm}@{}L{1.7cm}L{3.3cm}L{3.3cm}L{\dimexpr\linewidth-10.72cm\relax}}
 \toprule
 \textbf{概念 A} & & \textbf{概念 B} & \textbf{真正判据} & \textbf{题目信号} & \textbf{混淆后典型错误}\\
 \midrule
@@ -1188,7 +1188,7 @@ $\chi^2$ & $\neq$ & $F$ & 单方差标准化 / 两个独立方差比 & 单总体
 \end{corebox}
 
 \section{四类典型断点如何修复}
-\begin{longtable}{L{2.8cm}L{4.5cm}L{4.6cm}L{\dimexpr\linewidth-12.87cm\relax}}
+\begin{longtable}{L{2.4cm}L{3.8cm}L{3.8cm}L{\dimexpr\linewidth-10.52cm\relax}}
 \toprule
 \textbf{断点} & \textbf{典型表现} & \textbf{真正原因} & \textbf{修复动作}\\
 \midrule
@@ -1241,7 +1241,7 @@ Z_n = \frac{\bar X_n - p}{\sqrt{p(1-p)/n}} \xrightarrow{d} N(0,1).
 \subsection{Stage 7：统计逆推与估计}
 若 $p$ 未知，由样本 $x_1,\dots,x_n$（含有 $k$ 次成功），极大似然函数 $L(p) = \binom{n}{k}p^k(1-p)^{n-k}$。求导 $\frac{d\ln L}{dp} = 0 \implies \hat p = \frac{k}{n} = \bar x$（MLE 点估计）。并由大样本正态近似导出 $p$ 的 $1-\alpha$ 置信区间 $\left( \bar x - z_{\alpha/2}\sqrt{\frac{\bar x(1-\bar x)}{n}}, \bar x + z_{\alpha/2}\sqrt{\frac{\bar x(1-\bar x)}{n}} \right)$。
 
-\section{正态总体：从模型结构到 $N,\chi^2,t,F$ 和推断全过程推演}
+\section{正态总体：从模型结构到 \texorpdfstring{$N,\chi^2,t,F$}{N, Chi2, t, F} 和推断全过程推演}
 \subsection{Stage 1：总体模型与独立抽样}
 \[
 X_1,\dots,X_n\overset{iid}{\sim}N(\mu,\sigma^2).
@@ -1255,7 +1255,7 @@ X_1,\dots,X_n\overset{iid}{\sim}N(\mu,\sigma^2).
 \frac{(n-1)S^2}{\sigma^2} = \sum_{i=1}^n \left(\frac{X_i-\bar X}{\sigma}\right)^2 \sim \chi^2(n-1).
 \]
 
-\subsection{Stage 3：抽样分布 $t$ 统计量的完整导出}
+\subsection{Stage 3：抽样分布 \texorpdfstring{$t$}{t} 统计量的完整导出}
 当总体方差 $\sigma^2$ 未知时，用样本标准差 $S$ 替代 $\sigma$。构造标准正态与独立 $\chi^2$ 均方根的比值：
 \[
 t = \frac{Z}{\sqrt{\frac{(n-1)S^2/\sigma^2}{n-1}}} = \frac{\frac{\bar X - \mu}{\sigma/\sqrt n}}{\frac{S}{\sigma}} = \frac{\bar X - \mu}{S/\sqrt n} \sim t(n-1).

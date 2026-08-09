@@ -36,7 +36,7 @@ Agent 不应为了显得全面而通读整个仓库。每次只读取与任务�
 
 ### L2：学科基线
 
-读取对应学科驾驶舱、Atlas 和 Subject Rules。它们告诉 Agent：
+读取对应学科复习总览与导航、Atlas 和 Subject Rules。它们告诉 Agent：
 
 - 这门学科用什么母模型；
 - 当前有哪些 Topic；
@@ -59,13 +59,13 @@ Agent 不应为了显得全面而通读整个仓库。每次只读取与任务�
 
 | 场景 | 典型表达 | 主要角色 | 必读 Context | 默认结果 |
 |---|---|---|---|---|
-| `explore` | 还没有模型、想深入讨论 | Mapper + Socratic Tutor | 学科驾驶舱、Atlas、相邻 Topic | provisional model + 反例 + 用户复述 |
+| `explore` | 还没有模型、想深入讨论 | Mapper + Socratic Tutor | 学科复习总览与导航、Atlas、相邻 Topic | provisional model + 反例 + 用户复述 |
 | `model-diff` | 刚学完，这是我的理解 | Socratic Tutor + Mapper | Atlas、Topic | 主干/混淆/缺口/边界 |
 | `solve` | 这题不会，按现有模型讲 | Model-Grounded Solver | Atlas、Topic、Subject Rules | 模型锚点 + 解题链 + 校验 + 复原问题 |
 | `wrong` | 这是错题和原过程 | Debugger | Topic、Rules、Evidence 协议 | First Divergence + 诊断假设 + 最小复测 |
 | `adversary` | 攻击这条理解/规则 | Adversary | Topic 或 Rules、已有表现 | 反例、失效条件、成本与下一次测试 |
 | `practice` | 针对这个断点出题 | Coach | Topic、Rules、已确认断点 | 少量诊断题 + 每题观察目标 |
-| `import` | 导入新手册/旧稿 | Mapper + Editor | Handbook Contract、Ownership、驾驶舱 | Handbook Diff + 人工决策点 |
+| `import` | 导入新手册/旧稿 | Mapper + Editor | Handbook Contract、Ownership、复习总览与导航 | Handbook Diff + 人工决策点 |
 | `review` | 周复盘/专题复盘 | Adversary + Editor + Coach | Inbox、Rules、CURRENT、PROGRESS | 删除/继续/采用/更新建议 |
 | `publish` | 同步 LaTeX/PDF | Editor | Canonical Owner、依赖、发布源 | 发布同步与验证 |
 
@@ -127,21 +127,21 @@ Observable Facts
 
 ### 408
 
-- 总驾驶舱：`30_408/408 计算机综合驾驶舱.md`；
+- 总复习总览：`30_408/408 计算机综合复习总览.md`；
 - 数据结构：`30_408/10_数据结构/README.md`；
 - 计组：`30_408/20_计算机组成原理/README.md`；
-- OS：`30_408/30_操作系统/操作系统驾驶舱.md`；
+- OS：`30_408/30_操作系统/操作系统复习总览.md`；
 - 网络：`30_408/40_计算机网络/README.md`。
 
 ### 数学一
 
-- 驾驶舱：`10_数学一/README.md`；
+- 复习总览与导航：`10_数学一/README.md`；
 - 已有概率统计 Atlas：`10_数学一/30_概率论/README.md`；
 - 概率统计 Rules：`10_数学一/90_学科做题规则/概率统计.md`。
 
 ### 英语一
 
-- 驾驶舱：`20_英语一/README.md`；
+- 复习总览与导航：`20_英语一/README.md`；
 - 当前 Topic 与 Rules 尚未形成时，Agent 必须说明这一事实。
 
 ## 6. 用户最少需要提供什么

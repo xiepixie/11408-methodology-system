@@ -138,8 +138,10 @@ Handbook 既给人看，也为 AI 提供长期对齐上下文。为此应当：
 
 ## 10. 发布
 
-- Markdown 是默认工作入口；
-- LaTeX 是发布排版源，PDF 是编译产物；
+- Markdown 是默认日常维护与研讨入口；
+- LaTeX 源码文件直接存放在各自对应的专题/学科目录下（实现源码与研讨笔记就近高内聚）；
+- `90_publish/` 根目录是唯一平铺集中展示所有终版 PDF 的展示柜；
+- 运行 `compile_tex.py` 编译任意位置的 `.tex` 时，最新的 PDF 会自动推送到 `90_publish/` 根目录；
 - 发布稿必须能追溯到对应 Handbook 或 Rules；
 - 不得只在 PDF/LaTeX 中修改世界模型，却让工作文档保持过时；
 - 既有 LaTeX 在完成 Ownership 梳理前标记为 `legacy-unregistered`；

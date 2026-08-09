@@ -155,13 +155,13 @@ Publication 只同步已经确认的内容，不参与日常探索。
 “导入”不自动等于“成为 Canonical”。外部讲义、旧 LaTeX 和 AI 生成稿首先都是输入材料。
 
 1. **定位**：判断 Atlas、Topic、Bridge、Integration 还是 Rules；
-2. **找 Owner**：检查学科驾驶舱和 `ownership_matrix.md`；
+2. **找 Owner**：检查学科复习总览与导航和 `ownership_matrix.md`；
 3. **Handbook Diff**：与当前 Owner 比较重复、新增、冲突和越界；
 4. **拆分**：Knowledge、Control、Evidence、Publication 内容分别去正确位置；
 5. **人工决定**：接受哪些模型、保留哪些候选、拒绝哪些说法；
 6. **纳管**：更新 Canonical Markdown 或建立工作稿；
 7. **状态**：更新该资产入口顶部的状态；
-8. **依赖**：只有产品拓扑或 Owner 改变时，才更新驾驶舱/Ownership；
+8. **依赖**：只有产品拓扑或 Owner 改变时，才更新复习总览与导航/Ownership；
 9. **发布**：LaTeX/PDF 先标为旧发布物或待同步，不反向拥有知识；
 10. **检查**：运行 `progress --write` 和 `check`。
 
@@ -178,7 +178,7 @@ Publication 只同步已经确认的内容，不参与日常探索。
 条件更新：
 
 - Owner 或依赖改变：`ownership_matrix.md`；
-- 专题地图改变：学科驾驶舱；
+- 专题地图改变：学科复习总览与导航；
 - 做题动作改变：Subject Rules；
 - 发布稿因此过时：标记待同步，之后进入发布循环。
 
@@ -226,10 +226,10 @@ Publication 只同步已经确认的内容，不参与日常探索。
 | 学完新内容 | 通常无 | Inbox | PDF、Ownership |
 | 做题/错题 | Inbox 或 No Update | Rules、Exam Control | Handbook（未经验证） |
 | 规则验证 | Subject Rules | Inbox 清理 | Topic 机制定义 |
-| 导入旧手册 | 对应入口状态、工作稿 | 驾驶舱、Ownership、Rules | 直接把 PDF 当 Owner |
+| 导入旧手册 | 对应入口状态、工作稿 | 复习总览与导航、Ownership、Rules | 直接把 PDF 当 Owner |
 | 修改 Topic | Canonical Topic、状态 | Uses/Bridge/Integration、发布待同步 | 其他 Topic 的重复正文 |
 | 新建 Bridge | Bridge、两侧链接 | Ownership | 重讲两侧 Topic |
-| 新建 Integration | Integration、参与 Owner 链接 | 驾驶舱 | 重新拥有局部机制 |
+| 新建 Integration | Integration、参与 Owner 链接 | 复习总览与导航 | 重新拥有局部机制 |
 | 发布 | LaTeX/PDF、发布入口、状态 | 依赖链接 | Inbox |
 | 周复盘 | CURRENT、Inbox/Rules 决策 | Handbook | 为了显得有进度而更新 |
 

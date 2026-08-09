@@ -1,0 +1,1087 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.70cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array,multirow}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,matrix,backgrounds}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{pifont}
+\usepackage{caption}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlength{\parindent}{2em}
+\setcounter{secnumdepth}{0}
+\setlength{\parskip}{0.28em}
+\setlist[itemize]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!50!black,pdftitle={英语语言学习与考试统一心智模型与方法论手册}}
+
+\definecolor{mainblue}{RGB}{43,85,135}
+\definecolor{deepblue}{RGB}{28,60,98}
+\definecolor{softblue}{RGB}{238,245,252}
+\definecolor{softgreen}{RGB}{238,249,243}
+\definecolor{softorange}{RGB}{253,246,233}
+\definecolor{softred}{RGB}{253,239,239}
+\definecolor{softgray}{RGB}{246,247,249}
+\definecolor{deepgreen}{RGB}{35,105,75}
+\definecolor{deeporange}{RGB}{165,98,22}
+\definecolor{deepred}{RGB}{150,55,55}
+\definecolor{purple}{RGB}{94,66,140}
+\definecolor{softpurple}{RGB}{245,241,251}
+\definecolor{teal}{RGB}{38,112,115}
+\definecolor{softteal}{RGB}{238,248,248}
+\definecolor{gold}{RGB}{156,120,28}
+\definecolor{softgold}{RGB}{252,249,235}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{英语语言学习与考试 · 总方法论}
+\rhead{统一心智模型}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\newtcolorbox{corebox}[1][]{colback=softblue,colframe=mainblue,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{exam}[1][]{colback=softorange,colframe=deeporange,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warn}[1][]{colback=softred,colframe=deepred,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{eng}[1][]{colback=softgreen,colframe=deepgreen,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{method}[1][]{colback=softgray,colframe=black!45,title=#1,fonttitle=\bfseries,boxrule=0.6pt,arc=2mm}
+\newtcolorbox{bridge}[1][]{colback=softpurple,colframe=purple,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{statebox}[1][]{colback=softteal,colframe=teal,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{history}[1][]{colback=softgold,colframe=gold,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+
+\newcommand{\kw}[1]{\textbf{#1}}
+\newcommand{\term}[2]{\textbf{#1（#2）}}
+
+% ---- Figure grammar: direct topology & semantic color system ----
+\tikzset{
+  cnode/.style={draw=mainblue,rounded corners=1.8mm,minimum width=2.65cm,minimum height=0.92cm,
+    align=center,inner sep=3pt,font=\small,fill=softblue,line width=0.8pt},
+  cnodeblue/.style={cnode,draw=mainblue,fill=softblue},
+  cnodeg/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodegreen/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodeo/.style={cnode,draw=deeporange,fill=softorange},
+  cnodeorange/.style={cnode,draw=deeporange,fill=softorange},
+  cnodep/.style={cnode,draw=purple,fill=softpurple},
+  cnodepurple/.style={cnode,draw=purple,fill=softpurple},
+  cnodet/.style={cnode,draw=teal,fill=softteal},
+  cnodeteal/.style={cnode,draw=teal,fill=softteal},
+  cnodered/.style={cnode,draw=deepred,fill=softred,font=\small\bfseries},
+  cnodegray/.style={cnode,draw=black!45,fill=softgray},
+  mainflow/.style={-{Latex[length=2.2mm,width=1.5mm]},line width=1.0pt,draw=deepblue},
+  altflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepgreen},
+  returnflow/.style={-{Latex[length=2.0mm,width=1.4mm]},densely dashed,line width=0.85pt,draw=purple},
+  dangerflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepred},
+  optflow/.style={-{Latex[length=1.8mm,width=1.3mm]},dotted,line width=0.85pt,draw=teal},
+  labelnote/.style={font=\scriptsize\bfseries,fill=white,inner sep=1.5pt,rounded corners=0.5mm,text=black!80,draw=black!25,line width=0.4pt},
+  boxgroup/.style={draw=black!25,dashed,rounded corners=2mm,fill=black!2,inner sep=6pt}
+}
+
+\title{\vspace{-1.15cm}\textbf{英语语言学习与考试 · 统一心智模型与方法论手册}\\[0.35em]
+\large 从语言资源、沟通活动到在线处理、能力发展与考试适配}
+\author{个人认知系统 · 英语学科总图}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}[一句话母模型]
+英语能力不是“掌握了多少知识点”，也不是“听、说、读、写四个互不相干的技能”，而是：
+\[
+\boxed{\textbf{在具体情境中，调用语言资源并通过在线处理完成沟通任务的能力。}}
+\]
+因此，本册把英语统一为四个彼此分工明确的层面：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.6cm] (m1) {1. 语言资源\\[-1pt]\scriptsize 形式/词法/语义/语篇};
+\node[cnodeorange,right=of m1,minimum width=2.6cm] (m2) {2. 沟通活动\\[-1pt]\scriptsize 接收/产出/互动/中介};
+\node[cnodeteal,right=of m2,minimum width=2.6cm] (m3) {3. 在线处理\\[-1pt]\scriptsize 识别/解析/提取/监控};
+\node[cnodegreen,right=of m3,minimum width=2.8cm] (m4) {4. 测评与发展\\[-1pt]\scriptsize 范围/Exam Adapter};
+
+\draw[mainflow] (m1) -- (m2);
+\draw[mainflow] (m2) -- (m3);
+\draw[altflow] (m3) -- (m4);
+\end{tikzpicture}
+\end{center}
+不同考试只是对这套系统的不同区域进行取样，并施加不同的任务、时间与评分约束。
+\end{corebox}
+
+\begin{warn}[本册的边界]
+本册是英语学科的\kw{总图与导航手册}，不替代任何专题训练。
+\begin{itemize}
+  \item 不重复讲阅读题、完形、新题型、写作、听力或口语的具体题型算法；
+  \item 不把 IELTS、TOEFL、考研英语、Cambridge A2 等写成几套互不相干的英语；
+  \item 不用词汇量、考试总分或某一项成绩单独定义“英语水平”；
+  \item 本册只负责说明：\kw{英语这套系统由什么组成、怎样运行、怎样诊断、怎样训练，以及不同考试如何接入。}
+\end{itemize}
+\end{warn}
+
+\tableofcontents
+\newpage
+
+\section{第 0 章：整套体系为什么需要一张英语总图}
+
+\subsection{0.1 题型会变化，底层语言行为不会变化}
+同一个学习者可能先准备校内 A2 水平考试，后来准备 IELTS、TOEFL 或研究生入学考试。如果每换一种考试就重新建立一套“英语方法论”，会产生两个问题：
+\begin{enumerate}
+  \item 已经获得的能力无法迁移，只留下大量题型口诀；
+  \item 考试形式一变化，旧方法就失效。
+\end{enumerate}
+更稳定的做法是先建立语言能力本体，再把考试当作\term{考试适配器}{exam adapter}：它规定本次考试从能力地图的哪些区域取样、使用什么任务、允许多少时间、怎样计分。
+
+\subsection{0.2 本册采用四层而不是“听说读写四栏”}
+四个层面分别回答不同问题：
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.18\linewidth} >{\raggedright\arraybackslash}p{0.46\linewidth} Y}
+\toprule
+层面 & 核心问题 & 典型内容 \\
+\midrule
+语言资源层 & 脑中有哪些可调用的语言表征？ & 语音/拼写、词汇语法、意义、语篇、语用与语体 \\
+沟通活动层 & 当前用语言完成什么行为？ & 接收、产出、互动、中介 \\
+在线处理层 & 这些资源怎样在有限时间中运行？ & 感知、识别、解析、整合、计划、提取、产出、监控与修复 \\
+测评与发展层 & 水平怎样扩张？考试怎样抽样？ & 能力画像、A1--C2、任务复杂度、考试 Adapter \\
+\bottomrule
+\end{tabularx}
+\end{center}
+四层不能互相替代。例如：“我认识这个词”属于资源层；“听到它能否立即识别”属于在线处理层；“能否在对话中用它回应别人”属于沟通活动层。
+
+\newpage
+\section{Part I：语言资源层——英语系统中究竟存了什么}
+
+\section{第 1 章：从形式到语用的五层语言资源}
+
+\subsection{1.1 总结构}
+语言资源可以从低到高组织为：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (r1) {1. 形式\\[-1pt]\scriptsize 声音与文字};
+\node[cnodeorange,right=of r1,minimum width=2.4cm] (r2) {2. 词汇语法\\[-1pt]\scriptsize 词词组合与结构};
+\node[cnodeteal,right=of r2,minimum width=2.4cm] (r3) {3. 意义\\[-1pt]\scriptsize 核心命题与关系};
+\node[cnodepurple,right=of r3,minimum width=2.4cm] (r4) {4. 语篇\\[-1pt]\scriptsize 跨句连贯与组织};
+\node[cnodegreen,right=of r4,minimum width=2.6cm] (r5) {5. 语用与语体\\[-1pt]\scriptsize 受众/目的/情境};
+
+\draw[mainflow] (r1) -- (r2);
+\draw[mainflow] (r2) -- (r3);
+\draw[mainflow] (r3) -- (r4);
+\draw[altflow] (r4) -- (r5);
+\end{tikzpicture}
+\end{center}
+这些层级不是“先学完第一层再学第二层”的课程顺序，而是一次真实语言理解或产出中可能同时被调用的资源。
+
+\subsection{1.2 形式：声音与文字必须分别建立连接}
+\term{语言形式}{form} 指语言可以被感知的外在形态，主要包括：
+\begin{itemize}
+  \item 声音：音位、重音、弱读、连读、语调；
+  \item 文字：字母、拼写、标点、词形变化。
+\end{itemize}
+一个词存在至少两条访问路径：
+\[
+\text{Written Form}\rightarrow\text{Meaning}
+\]
+和
+\[
+\text{Sound Form}\rightarrow\text{Meaning}.
+\]
+因此，“阅读中认识、听力中反应不出”不是矛盾，而是声音形式到词义的连接没有自动化。
+
+\begin{exam}[实操诊断]
+如果看见 \texttt{environment} 能立即理解，但在自然语速中听到它需要两秒才能反应，训练目标不是继续背中文释义，而是加强：
+\[
+\boxed{\text{声音形式}\rightarrow\text{词汇识别}\rightarrow\text{意义}}
+\]
+这类诊断能够避免“什么差都归结成词汇量”的粗糙判断。
+\end{exam}
+
+\subsection{1.3 词汇语法：不是“单词 + 语法规则”两堆知识}
+本册把 vocabulary、morphology、syntax、collocation 和 valency 放在同一个\kw{词汇语法资源层}中，因为真实句子中的词义与结构高度耦合。
+\begin{itemize}
+  \item \term{词汇}{lexicon}：词及其义项、词性、语体和常见搭配；
+  \item \term{形态}{morphology}：时态、单复数、词形变化等；
+  \item \term{句法}{syntax}：词怎样组成短语、分句和句子；
+  \item \term{搭配}{collocation}：哪些词习惯共同出现；
+  \item \term{配价}{valency}：一个词要求或允许哪些补足成分。
+\end{itemize}
+实际理解不是把每个词的中文释义相加，而是：
+\[
+\boxed{
+\text{词汇形式}
++\text{结构关系}
+\rightarrow
+\text{句子意义}
+}
+\]
+
+\subsection{1.4 意义：句子的核心产物是命题}
+\term{命题}{proposition} 指一句话所表达、可以被判断为真/假或成立/不成立的核心内容。
+例如：
+\begin{eng}
+Remote work can increase employees' scheduling flexibility.
+\end{eng}
+其核心并不是几个词，而是一个关系：
+\[
+\text{remote work}
+\xrightarrow{\text{can increase}}
+\text{flexibility}.
+\]
+阅读、听力、翻译和写作都必须最终进入这一层，否则学习者只能“认识词”，不能稳定理解或表达信息。
+
+\subsection{1.5 语篇：多句话怎样成为一个整体}
+\term{语篇}{discourse} 研究超过单句范围的信息组织。核心资源包括：
+\begin{itemize}
+  \item 指代：谁指向谁；
+  \item 关系：因果、转折、解释、举例、并列、让步；
+  \item 主题：当前持续讨论什么；
+  \item 功能：某句/某段在整体中承担什么作用；
+  \item 连贯：信息是否按可理解的方式推进。
+\end{itemize}
+它回答的不是“这句话语法对不对”，而是：
+\begin{quote}
+\kw{这句话为什么出现在这里？它与前后信息建立了什么关系？}
+\end{quote}
+
+\subsection{1.6 语用与语体：语言必须适合人、目的和情境}
+\term{语用}{pragmatics} 关注实际沟通意图；\term{语体}{register} 关注表达与场景、身份关系、正式程度是否匹配。
+例如：
+\begin{eng}
+Could you open the window?
+\end{eng}
+从字面结构看是询问能力，真实沟通功能通常是\kw{请求}。因此高级语言能力必须进一步回答：
+\[
+\boxed{
+\text{谁}
++\text{对谁}
++\text{为了什么}
++\text{在什么情境}
+}
+\]
+这也是应用写作、口语互动和现实沟通不能只依赖语法正确性的原因。
+
+\newpage
+\section{第 2 章：资源层的核心边界——知道不等于能用}
+
+\subsection{2.1 Knowledge 与 Availability 必须分开}
+学习者可能“学过”一个语言单位，却不能在任务中及时调用。为了避免把这两种状态混为一谈，本册区分：
+\begin{itemize}
+  \item \term{知识可得性}{knowledge possession}：是否知道这个词、结构或表达；
+  \item \term{即时可调用性}{online availability}：在真实时间压力下能否迅速识别或提取。
+\end{itemize}
+因此：
+\[
+\boxed{\text{知道}\neq\text{自动识别}\neq\text{主动产出}}
+\]
+
+\subsection{2.2 同一个语言单位应当有多种连接}
+一个真正可用的词条至少可能连接：
+\[
+\boxed{
+\text{声音}
+\leftrightarrow
+\text{拼写}
+\leftrightarrow
+\text{意义}
+\leftrightarrow
+\text{搭配}
+\leftrightarrow
+\text{语境功能}
+}
+\]
+只背“英文 = 中文”建立的是最窄的一条边，因此容易造成：阅读认识、听力不认识、写作想不起、口语不敢用。
+
+\begin{method}[词汇学习的正确产物]
+对重要词汇，不追求记录越来越长的中文释义，而应逐渐形成：
+\begin{itemize}
+  \item 它怎样读、怎样写；
+  \item 在什么结构里出现；
+  \item 常与什么词组合；
+  \item 在什么语境表达什么精确意义；
+  \item 自己能否在一句真实表达中主动提取。
+\end{itemize}
+\end{method}
+
+\newpage
+\section{Part II：沟通活动层——英语到底被用来做什么}
+
+\section{第 3 章：四种沟通活动}
+
+\subsection{3.1 接收：从别人产生的语言中恢复意义}
+\term{接收}{reception} 包括典型的阅读和听力活动。统一过程是：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (rec1) {输入信号\\[-1pt]\scriptsize 声音/文字};
+\node[cnodeorange,right=of rec1,minimum width=2.4cm] (rec2) {形式识别\\[-1pt]\scriptsize 音/词匹配};
+\node[cnodeteal,right=of rec2,minimum width=2.4cm] (rec3) {结构解析\\[-1pt]\scriptsize 语法与修饰};
+\node[cnodepurple,right=of rec3,minimum width=2.4cm] (rec4) {意义构建\\[-1pt]\scriptsize 命题生成};
+\node[cnodegreen,right=of rec4,minimum width=2.4cm] (rec5) {语篇整合\\[-1pt]\scriptsize 纳入全局模型};
+
+\draw[mainflow] (rec1) -- (rec2);
+\draw[mainflow] (rec2) -- (rec3);
+\draw[mainflow] (rec3) -- (rec4);
+\draw[altflow] (rec4) -- (rec5);
+\end{tikzpicture}
+\end{center}
+阅读的输入主要是视觉文字；听力的输入主要是连续声学信号。后半段的意义与语篇处理高度共享，但听力额外要求学习者实时完成声音分词、弱读/连读识别和连续记忆维护。
+
+\subsection{3.2 产出：从意义主动生成语言}
+\term{产出}{production} 包括典型的独白口语和写作。其方向与接收相反：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (pro1) {意图\\[-1pt]\scriptsize 沟通目标};
+\node[cnodeorange,right=of pro1,minimum width=2.4cm] (pro2) {意义规划\\[-1pt]\scriptsize 命题生成};
+\node[cnodeteal,right=of pro2,minimum width=2.4cm] (pro3) {语篇组织\\[-1pt]\scriptsize 框架与Move};
+\node[cnodepurple,right=of pro3,minimum width=2.4cm] (pro4) {句子编码\\[-1pt]\scriptsize 词句检索};
+\node[cnodegreen,right=of pro4,minimum width=2.4cm] (pro5) {语言形式\\[-1pt]\scriptsize 书面/语音产出};
+
+\draw[mainflow] (pro1) -- (pro2);
+\draw[mainflow] (pro2) -- (pro3);
+\draw[mainflow] (pro3) -- (pro4);
+\draw[altflow] (pro4) -- (pro5);
+\end{tikzpicture}
+\end{center}
+写作允许更多计划、回看和修改；口语则对实时检索和连续产出的要求更高。
+
+\subsection{3.3 互动：语言使用者共同维护一个正在变化的情境}
+\term{互动}{interaction} 不是 Listening + Speaking 的机械相加。互动中双方共同维护“目前彼此已经知道什么、正在谈什么、下一步要解决什么”。其典型闭环为：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (int1) {接收\\[-1pt]\scriptsize 理解对方};
+\node[cnodeorange,right=of int1,minimum width=2.4cm] (int2) {更新共同情境\\[-1pt]\scriptsize 维护共享概念};
+\node[cnodeteal,right=of int2,minimum width=2.4cm] (int3) {回应\\[-1pt]\scriptsize 实时产出};
+\node[cnodepurple,right=of int3,minimum width=2.4cm] (int4) {检查理解\\[-1pt]\scriptsize 确认效果};
+\node[cnodegreen,right=of int4,minimum width=2.4cm] (int5) {必要时修复\\[-1pt]\scriptsize 澄清/重组};
+
+\draw[mainflow] (int1) -- (int2);
+\draw[mainflow] (int2) -- (int3);
+\draw[mainflow] (int3) -- (int4);
+\draw[altflow] (int4) -- (int5);
+\end{tikzpicture}
+\end{center}
+因此诸如 “Do you mean...?”、“So you're saying...?” 并不是语言失败，而是\term{沟通修复}{repair}：在理解出现风险时主动恢复共享意义。
+
+\subsection{3.4 中介：理解之后，为另一个目标重新组织意义}
+\term{中介}{mediation} 指学习者并非只“理解”或“表达自己的想法”，而是先获取已有内容，再为了新的对象、任务或受众重新选择、组织和表达信息。
+典型活动包括：
+\begin{itemize}
+  \item 翻译与口译；
+  \item 摘要与转述；
+  \item 根据阅读/听力材料完成综合写作或口语；
+  \item 向别人解释复杂材料；
+  \item 在沟通双方之间帮助建立共同理解。
+\end{itemize}
+统一过程为：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.6cm] (med1) {Source\\[-1pt]\scriptsize 来源信息};
+\node[cnodeorange,right=of med1,minimum width=2.6cm] (med2) {Meaning Model\\[-1pt]\scriptsize 恢复意义模型};
+\node[cnodeteal,right=of med2,minimum width=2.8cm] (med3) {Select/Reorganise\\[-1pt]\scriptsize 结合新目标重组};
+\node[cnodegreen,right=of med3,minimum width=3.0cm] (med4) {Target Output\\[-1pt]\scriptsize 面向目标的再表达};
+
+\draw[mainflow] (med1) -- (med2);
+\draw[mainflow] (med2) -- (med3);
+\draw[altflow] (med3) -- (med4);
+\end{tikzpicture}
+\end{center}
+中文即：\kw{获取来源信息} $\rightarrow$ \kw{恢复意义模型} $\rightarrow$ \kw{按新目标筛选重组} $\rightarrow$ \kw{重新表达}。
+
+\begin{bridge}[四种活动不是四个学科]
+真实任务经常组合多种活动。例如课堂讨论可能同时需要接收、互动与产出；综合写作可能同时需要接收、中介与产出。因此学习目标应围绕\kw{任务链}组织，而不是把四种活动割裂成互不相干的训练岛。
+\end{bridge}
+
+\newpage
+\section{第 4 章：同一语言系统如何产生听、说、读、写差异}
+
+\subsection{4.1 阅读与听力共享意义系统，但输入端不同}
+阅读：
+\[
+\text{文字}\rightarrow\text{词汇识别}\rightarrow\text{结构}\rightarrow\text{意义}\rightarrow\text{语篇}
+\]
+听力：
+\[
+\text{声音}\rightarrow\text{词边界/词汇识别}\rightarrow\text{结构}\rightarrow\text{意义}\rightarrow\text{语篇}
+\]
+因此阅读强、听力弱时，不应该重新训练整套意义系统；应优先定位声音识别和实时处理是否为首个断点。
+
+\subsection{4.2 写作与口语共享生成系统，但时间控制不同}
+写作与口语都要经历：
+\[
+\text{意义}\rightarrow\text{计划}\rightarrow\text{词句提取}\rightarrow\text{表达}
+\]
+但口语要求高速度、低回看；写作允许较高计划成本。因此：
+\begin{quote}
+“作文会写，但开口说不出来”通常不是没有想法，而是\kw{实时词句提取与连续产出}没有自动化。
+\end{quote}
+
+\subsection{4.3 翻译与综合任务为什么不能归入单纯阅读或写作}
+因为这类任务要求保留来源意义，同时重新编码：
+\[
+\boxed{\text{理解正确} + \text{选择正确} + \text{重组正确} + \text{表达正确}}
+\]
+任何一环错误都会改变输出。中介因此是解释翻译、摘要、综合写作等任务的更上位模型。
+
+\newpage
+\section{Part III：在线处理层——语言资源怎样在时间中运行}
+
+\section{第 5 章：接收端的实时处理链}
+
+\subsection{5.1 总链}
+接收过程可以压成：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (rp1) {1. 感知\\[-1pt]\scriptsize 视/听信号};
+\node[cnodeorange,right=of rp1,minimum width=2.4cm] (rp2) {2. 识别\\[-1pt]\scriptsize 词/形式匹配};
+\node[cnodeteal,right=of rp2,minimum width=2.4cm] (rp3) {3. 解析\\[-1pt]\scriptsize 句法与修饰};
+\node[cnodepurple,right=of rp3,minimum width=2.4cm] (rp4) {4. 意义构建\\[-1pt]\scriptsize 命题生成};
+\node[cnodered,right=of rp4,minimum width=2.4cm] (rp5) {5. 语篇整合\\[-1pt]\scriptsize 上下文融合};
+\node[cnodegreen,right=of rp5,minimum width=2.4cm] (rp6) {6. 任务决策\\[-1pt]\scriptsize 答题/回应};
+
+\draw[mainflow] (rp1) -- (rp2);
+\draw[mainflow] (rp2) -- (rp3);
+\draw[mainflow] (rp3) -- (rp4);
+\draw[mainflow] (rp4) -- (rp5);
+\draw[altflow] (rp5) -- (rp6);
+\end{tikzpicture}
+\end{center}
+
+\subsection{5.2 感知：信号有没有进入系统？}
+阅读中是视线是否正确落在文本单位上；听力中是声音是否被稳定接收。若音质、语速或注意力导致输入断裂，后续语言知识再强也无法补回丢失信号。
+
+\subsection{5.3 识别：是否快速访问已知词与形式？}
+如果一个词“过几秒才想起来”，它虽然存在于长期记忆，但在线识别成本过高。听力尤其容易因此产生连锁崩溃。
+
+\subsection{5.4 解析：能否建立句法关系而不是逐词堆积？}
+遇到长句时，核心不是把每个词翻成中文，而是识别：
+\begin{itemize}
+  \item 主干；
+  \item 修饰范围；
+  \item 从句边界；
+  \item 指代对象；
+  \item 逻辑连接。
+\end{itemize}
+
+\subsection{5.5 意义构建：能否把结构压成命题？}
+真正的理解结果应能压成一句简洁判断。若只能复述原句，却不能说出“它究竟在说什么”，说明仍停留在语言表层。
+
+\subsection{5.6 语篇整合：新信息放进哪里？}
+每个新命题都应更新当前语篇模型：
+\begin{itemize}
+  \item 是继续同一主题？
+  \item 是反驳前文？
+  \item 是原因还是结果？
+  \item 是例子还是结论？
+\end{itemize}
+这一步决定学习者能否理解长文章、讲座和多轮对话，而不是只理解孤立句子。
+
+\newpage
+\section{第 6 章：产出端的实时处理链}
+
+\subsection{6.1 总链}
+产出过程可以压成：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (pp1) {1. 任务/意图\\[-1pt]\scriptsize 确定目标};
+\node[cnodeorange,right=of pp1,minimum width=2.4cm] (pp2) {2. 意义规划\\[-1pt]\scriptsize 命题设计};
+\node[cnodeteal,right=of pp2,minimum width=2.4cm] (pp3) {3. 语篇组织\\[-1pt]\scriptsize 框架与Move};
+\node[cnodepurple,right=of pp3,minimum width=2.4cm] (pp4) {4. 词句提取\\[-1pt]\scriptsize 无提示检索};
+\node[cnodered,right=of pp4,minimum width=2.4cm] (pp5) {5. 编码产出\\[-1pt]\scriptsize 书写/口头表达};
+\node[cnodegreen,right=of pp5,minimum width=2.4cm] (pp6) {6. 监控\\[-1pt]\scriptsize 风险修复};
+
+\draw[mainflow] (pp1) -- (pp2);
+\draw[mainflow] (pp2) -- (pp3);
+\draw[mainflow] (pp3) -- (pp4);
+\draw[mainflow] (pp4) -- (pp5);
+\draw[altflow] (pp5) -- (pp6);
+\end{tikzpicture}
+\end{center}
+
+\subsection{6.2 意义规划先于英语句子}
+如果连中文/概念层都不能回答“我到底要表达什么”，大量背模板只能生成空洞而重复的句子。因此稳定产出必须先形成清晰命题，再调用语言形式。
+
+\subsection{6.3 词句提取是主动能力，不等于识别能力}
+识别一个词只要求“看到/听到时知道”；主动提取要求在没有提示时，从意义直接访问英语形式：
+\[
+\boxed{\text{Meaning}\rightarrow\text{English Form}}
+\]
+因此写作和口语训练必须包含无提示输出，而不能长期停留在选择题和阅读输入。
+
+\subsection{6.4 监控与修复}
+成熟产出不是“永不出错”，而是在发现风险时及时修复：
+\begin{itemize}
+  \item 写作中重写不稳定句子；
+  \item 口语中换用自己可控的表达；
+  \item 对话中主动澄清；
+  \item 忘词时使用释义、上位词或结构重组继续表达。
+\end{itemize}
+这类策略的目标不是掩盖语言不足，而是\kw{保证任务持续完成}。
+
+\newpage
+\section{第 7 章：Working Memory 与 Automaticity——为什么“我都会”仍然做不出来}
+
+\subsection{7.1 工作记忆是有限资源}
+理解和产出都必须在有限的\term{工作记忆}{working memory}中维持当前状态。如果低层操作占用过多资源，高层任务就会失败。
+
+典型链条：
+\begin{quote}
+听力中每个词都需要努力识别 $\rightarrow$ 工作记忆被词级处理占满 $\rightarrow$ 上一句还没整合，下一句已经到来 $\rightarrow$ “单词都认识但没听懂”。
+\end{quote}
+
+\subsection{7.2 自动化的真正意义}
+\term{自动化}{automaticity} 不是“完全不思考”，而是让高频低层操作以更低注意成本完成，从而释放资源给更高层任务。
+\[
+\boxed{
+\text{较低处理成本}
+\Rightarrow
+\text{更多资源用于意义、推理与互动}
+}
+\]
+因此熟练度提升的一部分，本质上是越来越多基础操作从“刻意计算”转成“快速调用”。
+
+\begin{exam}[训练判断]
+若做题错误发生在高层推理，不要继续无限强化词汇；若错误首先发生在词汇识别或句法解析，也不要用“多刷整套题”掩盖底层断点。训练必须针对\kw{第一个失败节点}。
+\end{exam}
+
+\newpage
+\section{Part IV：能力发展层——A1 到 C2 到底在增长什么}
+
+\section{第 8 章：英语水平不是一条单轴刻度}
+
+\subsection{8.1 Proficiency Profile：能力画像}
+\term{能力画像}{proficiency profile} 指一个人在不同活动、不同场景和不同处理要求下可能表现出不同水平。
+例如完全可能出现：
+\[
+\text{Reading}=B2,
+\quad
+\text{Listening}=B1,
+\quad
+\text{Writing}=B1,
+\quad
+\text{Speaking}=A2.
+\]
+这不是异常，而是说明英语能力天然具有多维结构。
+
+\subsection{8.2 CEFR 等级应理解为“能完成什么”}
+CEFR 的核心价值不是给学习者贴标签，而是通过\term{Can-do descriptors}{“能够做什么”的描述}说明学习者在不同活动中可以完成哪些语言行为。A1、A2、B1、B2、C1、C2 因此更适合被理解为任务能力范围的逐步扩张，而非简单词汇量档位。
+
+\section{第 9 章：Operating Envelope——熟练度扩张的七个方向}
+
+\subsection{9.1 可稳定工作范围}
+本册把一个学习者能够稳定完成任务的范围称为\term{可稳定工作范围}{operating envelope}。等级提升可以沿至少七个方向扩张：
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.16\linewidth} >{\raggedright\arraybackslash}p{0.48\linewidth} Y}
+\toprule
+维度 & 较低水平常见状态 & 较高水平扩张方向 \\
+\midrule
+主题范围 & 熟悉、具体、日常 & 抽象、专业、陌生领域 \\
+语言范围 & 固定短语、简单结构 & 灵活、精确、多样表达 \\
+输入复杂度 & 短、清晰、结构直接 & 长、密集、复杂、嵌套 \\
+显性程度 & 信息大多直接说明 & 能处理含蓄、隐含与推断 \\
+语篇跨度 & 单句/短对话 & 长篇文章、讲座、多轮讨论 \\
+处理压力 & 可以慢慢规划与反应 & 更快速、自发、连续 \\
+沟通独立性 & 依赖重复、提示和配合 & 能主动澄清、调整、修复和组织 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{9.2 这比“词汇量升级”更能指导学习}
+一个 A2 学习者向 B1 发展，不只是“再背一批单词”，还需要：
+\begin{itemize}
+  \item 处理更长语篇；
+  \item 在更少帮助下完成任务；
+  \item 从固定句型转向更自主表达；
+  \item 提高实时理解与回应能力。
+\end{itemize}
+因此每次制定学习目标，都应该把“我要达到 B2”翻译成一组具体可执行任务，而不是只制定词汇量目标。
+
+\newpage
+\section{第 10 章：从 A1/A2 到高级水平的训练重心如何变化}
+
+\subsection{10.1 初级阶段：先保证基本任务能够闭环}
+A1/A2 阶段最重要的不是追求复杂，而是建立稳定的基础闭环：
+\begin{itemize}
+  \item 能识别高频声音和文字形式；
+  \item 能理解和产生熟悉情境中的核心命题；
+  \item 能处理简单问答、请求、描述和信息交换；
+  \item 能使用有限但可靠的表达完成任务。
+\end{itemize}
+
+\subsection{10.2 中级阶段：扩大语篇跨度与自主性}
+B1/B2 阶段的关键通常转向：
+\begin{itemize}
+  \item 长句和段落级理解；
+  \item 概念改写和同义表达；
+  \item 更复杂的因果、对比和论证；
+  \item 更自主的写作与口语组织；
+  \item 在自然速度下提高自动化程度。
+\end{itemize}
+
+\subsection{10.3 高级阶段：提高精确性、灵活性和情境适配}
+C1/C2 方向的增长更多体现在：
+\begin{itemize}
+  \item 对隐含意义、立场与语体的敏感度；
+  \item 更长、更复杂信息的组织与中介；
+  \item 用更精确的语言表达细微差别；
+  \item 在高认知负荷任务下仍保持流畅和连贯；
+  \item 能针对对象、目的和场合主动调整表达。
+\end{itemize}
+
+\newpage
+\section{Part V：测评层——考试到底在测什么}
+
+\section{第 11 章：考试是能力空间的有限取样}
+
+\subsection{11.1 Score 不等于 Proficiency 本身}
+一次考试可以形式化理解为：
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeblue,minimum width=3.2cm] (sc1) {1. Proficiency\\[-1pt]\scriptsize 真实语言能力空间};
+\node[cnodeorange,right=of sc1,minimum width=3.4cm] (sc2) {2. Performance\\[-1pt]\scriptsize 特定任务/条件下的表现};
+\node[cnodegreen,right=of sc2,minimum width=3.2cm] (sc3) {3. Observed Score\\[-1pt]\scriptsize 最终考试得分};
+
+\draw[mainflow] (sc1) -- node[labelnote,above=2pt] {有限抽样} (sc2);
+\draw[altflow] (sc2) -- node[labelnote,above=2pt] {按规则量化} (sc3);
+\end{tikzpicture}
+\end{center}
+考试成绩是\kw{在特定任务、时间、评分规则下观察到的表现}，不是英语能力本身的完整同义词。
+
+\subsection{11.2 为什么不同考试分数不能直接互相替代}
+两个考试可能：
+\begin{itemize}
+  \item 抽样不同沟通活动；
+  \item 使用不同主题领域；
+  \item 对速度和交互施加不同要求；
+  \item 采用不同任务格式和评分标准。
+\end{itemize}
+因此必须先比较\kw{考试采样的能力区域}，再讨论成绩对应关系。
+
+\section{第 12 章：Exam Adapter——不同考试怎样挂接同一英语系统}
+
+\subsection{12.1 研究生入学英语：重接收、书面产出与中介}
+以考研英语一为例，其核心采样集中在：
+\begin{itemize}
+  \item 书面接收：完形、新题型、阅读；
+  \item 中介：翻译；
+  \item 书面产出：应用文与图画作文。
+\end{itemize}
+它不直接测试听力和口语互动。因此考研高分并不能自动等价于同等级的听说表现。
+
+\subsection{12.2 IELTS：四项分测，并显式评价产出质量}
+IELTS 分别测试 Listening、Reading、Writing、Speaking。写作评分显式考虑任务完成/回应、连贯衔接、词汇资源、语法范围与准确性；口语还评价流利与连贯、词汇、语法以及发音。
+这意味着它对\kw{持续产出、语言范围、互动口语和可理解发音}的直接取样比只含书面任务的考试更强。
+
+\subsection{12.3 TOEFL：学术场景中的多活动取样}
+2026 年 1 月 21 日后的 TOEFL iBT 仍分别报告 Reading、Listening、Writing、Speaking 四部分成绩，并采用更新后的任务形式和 1--6 分制。其官方结构强调学术环境中的英语使用，同时包含阅读、听力、邮件/学术讨论写作以及口语回应等任务。
+这里值得注意的是：\kw{题型已经变化，但接收、产出、互动/回应与中介等底层语言行为仍然可以用本册统一解释。}
+
+\subsection{12.4 CEFR-aligned qualifications：等级是任务能力里程碑}
+Cambridge English Qualifications 等考试以 CEFR 等级组织，例如 A2 Key 明确面向“能够在简单情境中沟通”的 A2 水平，并测试 reading、writing、listening、speaking。对这类考试而言，核心不是“做某一套题型”，而是验证学习者能否稳定完成与相应等级相匹配的语言任务。
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.20\linewidth} >{\raggedright\arraybackslash}p{0.44\linewidth} Y}
+\toprule
+考试/框架 & 主要取样重点 & 总模型中的位置 \\
+\midrule
+考研英语一 & 书面接收、翻译中介、书面产出 & Reading/Writing/Mediation 偏重 \\
+IELTS & 听、读、写、说分测 & Reception + Production + Speaking Interaction \\
+TOEFL iBT & 学术场景四项、多种综合/回应任务 & Academic Reception/Production/Interaction/Mediation \\
+CEFR-aligned A1/A2 等 & 对相应等级 Can-do 任务进行抽样 & Proficiency Envelope 的阶段性验证 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\newpage
+\section{Part VI：通用考试控制——任何英语任务拿到手以后怎么办}
+
+\section{第 13 章：Task → Meaning → Operation → Response → Monitor}
+
+\subsection{13.1 通用任务链}
+不管是阅读选择题、听力填空、口语面试、写邮件还是综合写作，都可以先压成：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (ex1) {1. 任务\\[-1pt]\scriptsize 确认解题目标};
+\node[cnodeorange,right=of ex1,minimum width=2.4cm] (ex2) {2. 意义\\[-1pt]\scriptsize 建立命题模型};
+\node[cnodeteal,right=of ex2,minimum width=2.4cm] (ex3) {3. 操作\\[-1pt]\scriptsize 比/推/概/回应};
+\node[cnodepurple,right=of ex3,minimum width=2.4cm] (ex4) {4. 回应\\[-1pt]\scriptsize 选项/书写/口述};
+\node[cnodegreen,right=of ex4,minimum width=2.4cm] (ex5) {5. 检查\\[-1pt]\scriptsize 确认任务闭合};
+
+\draw[mainflow] (ex1) -- (ex2);
+\draw[mainflow] (ex2) -- (ex3);
+\draw[mainflow] (ex3) -- (ex4);
+\draw[altflow] (ex4) -- (ex5);
+\end{tikzpicture}
+\end{center}
+
+\subsection{13.2 Task：到底要求我完成什么语言行为？}
+先不要问“这是什么题型”，而问：
+\begin{itemize}
+  \item 找事实？
+  \item 判断关系？
+  \item 推断？
+  \item 总结？
+  \item 描述？
+  \item 请求？
+  \item 说服？
+  \item 转述？
+  \item 回应另一个人？
+\end{itemize}
+题型名称只是外壳，\kw{任务动词}决定真正需要的处理动作。
+
+\subsection{13.3 Meaning：我真正理解/准备表达什么？}
+接收题中，先把输入压成必要的意义模型；产出题中，先形成需要表达的核心命题。避免两种错误：
+\begin{itemize}
+  \item 从英语表面形式直接猜答案；
+  \item 从背诵模板直接生成句子，却没有真实内容。
+\end{itemize}
+
+\subsection{13.4 Operation：题目要求对意义做什么？}
+常见操作包括：
+\[
+\boxed{
+\text{Locate, Compare, Infer, Summarise, Explain, Respond, Persuade, Mediate}
+}
+\]
+中文依次可理解为：定位、比较、推断、概括、解释、回应、说服、中介重组。
+
+\subsection{13.5 Response：选择、写出或说出结果}
+此时才进入具体答案形式。选择题需要验证候选命题；写作需要将意义组织成语篇和句子；口语需要将计划转为实时语言。
+
+\subsection{13.6 Monitor：最后检查的是任务是否完成}
+检查不应停留在“英语有没有错”，还包括：
+\begin{itemize}
+  \item 是否真正回答所问；
+  \item 是否遗漏必要信息；
+  \item 是否超出证据/材料；
+  \item 语气与受众是否匹配；
+  \item 语言是否清楚、可理解、可评分。
+\end{itemize}
+
+\begin{corebox}[考试通用压缩]
+任何英语任务先问五句：
+\begin{enumerate}
+  \item \kw{我要完成什么行为？}
+  \item \kw{当前最必要的意义信息是什么？}
+  \item \kw{题目要求我对这些信息做什么操作？}
+  \item \kw{答案必须以什么形式交付？}
+  \item \kw{我怎样证明任务已经完成？}
+\end{enumerate}
+\end{corebox}
+
+\newpage
+\section{Part VII：故障诊断——“英语不好”不是一个可执行诊断}
+
+\section{第 14 章：统一故障链}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.32cm]
+% Top Row: Reception & Meaning Construction
+\node[cnodeblue,minimum width=2.4cm] (f1) {1. 信号感知\\[-1pt]\scriptsize 视/听输入};
+\node[cnodeorange,right=of f1,minimum width=2.4cm] (f2) {2. 词汇识别\\[-1pt]\scriptsize 音/词匹配};
+\node[cnodeteal,right=of f2,minimum width=2.4cm] (f3) {3. 结构解析\\[-1pt]\scriptsize 句法与修饰};
+\node[cnodepurple,right=of f3,minimum width=2.4cm] (f4) {4. 意义构建\\[-1pt]\scriptsize 命题生成};
+\node[cnodegreen,right=of f4,minimum width=2.4cm] (f5) {5. 语篇整合\\[-1pt]\scriptsize 模型更新};
+
+\draw[mainflow] (f1) -- (f2);
+\draw[mainflow] (f2) -- (f3);
+\draw[mainflow] (f3) -- (f4);
+\draw[mainflow] (f4) -- (f5);
+
+% Bottom Row: Decision & Production
+\node[cnodeblue,below=0.85cm of f1,minimum width=2.4cm] (f6) {6. 任务决策\\[-1pt]\scriptsize 解题/沟通动作};
+\node[cnodeorange,right=of f6,minimum width=2.4cm] (f7) {7. 语言提取\\[-1pt]\scriptsize 无提示检索};
+\node[cnodeteal,right=of f7,minimum width=2.4cm] (f8) {8. 产出/回应\\[-1pt]\scriptsize 编码与输出};
+\node[cnodegreen,right=of f8,minimum width=2.6cm] (f9) {9. 监控与修复\\[-1pt]\scriptsize 澄清/重组};
+
+\draw[mainflow] (f5.south) -- (f6.north);
+\draw[mainflow] (f6) -- (f7);
+\draw[mainflow] (f7) -- (f8);
+\draw[altflow] (f8) -- (f9);
+\end{tikzpicture}
+\end{center}
+
+这条链不是所有任务都必须完整经过。例如阅读选择题可能在任务决策后直接选择答案；写作可能从任务决策进入语言提取。但它提供了统一诊断坐标。
+
+\section{第 15 章：常见症状如何定位第一个断点}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.24\linewidth} >{\raggedright\arraybackslash}p{0.48\linewidth} Y}
+\toprule
+表面症状 & 更可能的首个断点 & 优先训练 \\
+\midrule
+看见词认识，听到反应不出 & 声音形式 $\rightarrow$ 词汇识别 & 音词映射、自然语流识别 \\
+单词基本认识，长句仍读不懂 & 结构解析 & 主干、从句、修饰范围、指代 \\
+每句都懂，文章整体抓不住 & 语篇整合 & 主题、关系、段落功能、信息推进 \\
+文章看懂，阅读题仍反复错 & 任务决策/证据控制 & 题干目标、证据范围、选项验证 \\
+知道中文想法，但作文写不出 & 主动语言提取 & 意义 $\rightarrow$ 词汇/句式的无提示输出 \\
+作文能慢慢写，口语停顿很长 & 实时检索与产出 & 限时口头重述、固定功能块自动化 \\
+听懂当前句，下一句来就忘 & 低层处理成本/工作记忆 & 识别自动化 + 句群整合 \\
+口语被问到陌生表达就停住 & 修复策略不足 & 释义、改述、澄清、替代表达 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{warn}[禁止使用的粗诊断]
+“词汇量不够”“语感不好”“听力差”“口语差”都只能描述结果，不能直接生成训练动作。真正的诊断必须落到：\kw{哪一个信息转换第一次失败。}
+\end{warn}
+
+\newpage
+\section{Part VIII：训练系统——从完整任务回到断点，再回到完整任务}
+
+\section{第 16 章：完整任务不是唯一训练单位}
+
+\subsection{16.1 通用训练闭环}
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (cl1) {1. 完整任务\\[-1pt]\scriptsize 暴露实际断点};
+\node[cnodeorange,right=of cl1,minimum width=2.4cm] (cl2) {2. 定位断点\\[-1pt]\scriptsize 找首次失败节点};
+\node[cnodeteal,right=of cl2,minimum width=2.4cm] (cl3) {3. 隔离能力\\[-1pt]\scriptsize 抽离针对练习};
+\node[cnodepurple,right=of cl3,minimum width=2.4cm] (cl4) {4. 针对训练\\[-1pt]\scriptsize 强化自动化};
+\node[cnodegreen,right=of cl4,minimum width=2.4cm] (cl5) {5. 重新整合\\[-1pt]\scriptsize 回完整任务验证};
+
+\draw[mainflow] (cl1) -- (cl2);
+\draw[mainflow] (cl2) -- (cl3);
+\draw[mainflow] (cl3) -- (cl4);
+\draw[altflow] (cl4) -- (cl5);
+\end{tikzpicture}
+\end{center}
+这个闭环同时避免两个极端：
+\begin{itemize}
+  \item 只刷整套题，错误不断重复；
+  \item 永远做孤立单词/语法训练，能力不能回到真实任务。
+\end{itemize}
+
+\subsection{16.2 隔离训练必须保持与真实任务的接口}
+例如听力首个断点是弱读下的词汇识别，可以做声音识别专项；但专项完成后必须重新放回：
+\[
+\text{Word}\rightarrow\text{Sentence}\rightarrow\text{Discourse}\rightarrow\text{Task}.
+\]
+否则学习者只会“听写那个词”，仍不会在真实语流中使用这项能力。
+
+\section{第 17 章：四种高价值训练模式}
+
+\subsection{17.1 输入可理解训练：提高接收速度与跨度}
+目标不是无限增加材料难度，而是在“能基本建立意义”的材料上逐渐提高：
+\begin{itemize}
+  \item 速度；
+  \item 语篇长度；
+  \item 陌生主题比例；
+  \item 隐含意义比例。
+\end{itemize}
+
+\subsection{17.2 检索训练：把被动认识转成主动可用}
+对产出高频语言，必须从：
+\[
+\text{English}\rightarrow\text{Chinese/Meaning}
+\]
+增加反向：
+\[
+\boxed{\text{Meaning / Function}\rightarrow\text{English}}
+\]
+例如不是背 “I would suggest that...”，而是在看到“委婉提出建议”这个沟通功能时能主动提取它或等价表达。
+
+\subsection{17.3 重组训练：连接接收与产出}
+摘要、复述、解释和综合写作具有很高迁移价值，因为它们要求：
+\[
+\text{理解}\rightarrow\text{选择重点}\rightarrow\text{重新组织}\rightarrow\text{输出}.
+\]
+这类训练同时覆盖语篇、意义与语言提取，是中高级阶段的重要桥梁。
+
+\subsection{17.4 修复训练：在不会时仍维持任务}
+训练的不只是“正确答案”，还要主动练习：
+\begin{itemize}
+  \item 忘词时改述；
+  \item 没听清时请求重复；
+  \item 理解不确定时确认；
+  \item 写作中删除高风险表达，换成自己能控制的句子。
+\end{itemize}
+真正的自主语言使用者不是从不遇到困难，而是能在困难中恢复沟通。
+
+\newpage
+\section{第 18 章：学习计划应该怎样从总图生成}
+
+\subsection{18.1 第一步：先定义目标任务，不先定义教材}
+错误目标：
+\begin{quote}
+“我要把英语提高到 B2。”
+\end{quote}
+更可执行的目标：
+\begin{quote}
+“我希望能在 10 分钟内读懂一般学术文章的主要论证，并用 2 分钟英语概括；能参与熟悉话题的连续讨论；能写结构清楚的 250 词论述。”
+\end{quote}
+任务定义以后，才能反推需要的资源和处理能力。
+
+\subsection{18.2 第二步：建立能力画像}
+分别记录：
+\begin{itemize}
+  \item Reception：阅读/听力能处理什么；
+  \item Production：写作/独白口语能完成什么；
+  \item Interaction：真实对话能否跟随、回应、修复；
+  \item Mediation：能否转述、概括、翻译和整合信息。
+\end{itemize}
+然后再找每类活动的首要断点。
+
+\subsection{18.3 第三步：只选择一个主断点和一个保持任务}
+为了避免学习系统过度工程化，一段训练周期只需：
+\begin{itemize}
+  \item 一个\kw{主断点}：当前最限制目标任务的能力；
+  \item 一个\kw{完整任务}：保持所有能力的整合使用。
+\end{itemize}
+例如：主断点 = 听力词汇识别；完整任务 = 每周两次完整学术听力并复述。
+
+\subsection{18.4 第四步：用新任务验证迁移}
+训练成功的标准不是“专项练习正确率提高”，而是：
+\begin{quote}
+\kw{在新的完整任务中，原来的首个断点是否后移或消失？}
+\end{quote}
+只有迁移发生，训练才真正进入能力系统。
+
+\newpage
+\section{Part IX：与现有专题手册的 Canonical Ownership}
+
+\section{第 19 章：每个专题只拥有一个核心问题}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.18\linewidth} >{\raggedright\arraybackslash}p{0.46\linewidth} Y}
+\toprule
+专题 & Canonical Owner & 本总图只保留什么 \\
+\midrule
+词汇/发音 & Form ↔ Lexicon 连接 & 资源层位置与诊断接口 \\
+语法/长难句 & Structure → Meaning & 句法解析在处理链中的位置 \\
+完形 & 多层约束下恢复词项 & 作为接收/词项恢复实例 \\
+新题型 & 恢复语篇结构 & Discourse 能力接口 \\
+阅读 & Question → Evidence → Decision & 接收后的任务决策接口 \\
+听力 & Sound → Meaning under time & 接收链与实时处理接口 \\
+翻译 & Source Meaning → Target Reconstruction & Mediation 接口 \\
+写作 & Task → Meaning → Discourse → Language & Production 接口 \\
+口语 & Meaning → Real-time Language & 实时产出接口 \\
+互动 & Receive → Update → Respond → Repair & Interaction 接口 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{第 20 章：以后新考试怎样接入而不重写体系}
+拿到一个新考试，先建立 Adapter Card：
+\begin{enumerate}
+  \item \kw{Domain}：日常、学术、职业还是综合？
+  \item \kw{Activities}：接收、产出、互动、中介抽样哪些？
+  \item \kw{Input}：文字、声音、图表、对话或多模态？
+  \item \kw{Operations}：定位、推断、总结、回应、说服、转述哪些？
+  \item \kw{Processing Pressure}：时间、语速、准备时间如何？
+  \item \kw{Scoring}：任务完成、准确、连贯、词汇、发音等怎样评分？
+\end{enumerate}
+完成这六项，新考试就能挂在总图上，不需要重新发明“英语学习法”。
+
+\newpage
+\section{Part X：一页压缩与长期维护}
+
+\section{第 21 章：英语学科总图}
+
+\begin{corebox}[四层统一模型]
+\textbf{语言资源层：我有什么？}
+\[
+\boxed{
+\text{形式}
+\rightarrow
+\text{词汇语法}
+\rightarrow
+\text{意义}
+\rightarrow
+\text{语篇}
+\rightarrow
+\text{语用/语体}
+}
+\]
+
+\textbf{沟通活动层：我用英语做什么？}
+\[
+\boxed{
+\text{接收}
+\quad
+\text{产出}
+\quad
+\text{互动}
+\quad
+\text{中介}
+}
+\]
+
+\textbf{在线处理层：它怎样在时间中运行？}
+\[
+\boxed{
+\text{感知}
+\rightarrow
+\text{识别}
+\rightarrow
+\text{解析/整合}
+\rightarrow
+\text{计划/提取}
+\rightarrow
+\text{回应}
+\rightarrow
+\text{监控/修复}
+}
+\]
+
+\textbf{测评与发展层：水平和考试怎样表示？}
+\[
+\boxed{
+\text{能力画像}
++\text{可稳定工作范围}
++\text{Exam Adapter}
+}
+\]
+\end{corebox}
+
+\section{第 22 章：学习与考试时只保留的八个问题}
+\begin{enumerate}
+  \item \kw{当前任务要求我完成什么语言行为？}
+  \item \kw{这个任务主要属于接收、产出、互动还是中介？}
+  \item \kw{要完成它，我真正需要哪些意义信息？}
+  \item \kw{当前第一个失败节点在哪里？}
+  \item \kw{缺的是语言资源，还是资源不能及时运行？}
+  \item \kw{应该隔离训练哪一个能力？}
+  \item \kw{怎样把专项能力重新放回完整任务？}
+  \item \kw{新任务中断点是否已经后移？}
+\end{enumerate}
+
+\begin{exam}[最终压缩口令]
+\centering
+\Large\bfseries
+先看任务，再看意义；\\
+先找断点，再练能力；\\
+专项解决问题，完整任务验证迁移。
+\end{exam}
+
+\section{附录 A：规范框架与当前考试资料参照}
+本手册的总模型不是对任何单一考试官方框架的复制，而是在语言学习与考试场景中进行统一组织。以下资料用于校准其中与现行测评框架有关的部分：
+\begin{enumerate}
+  \item Council of Europe, \textit{Common European Framework of Reference for Languages (CEFR)}：\href{https://www.coe.int/en/web/common-european-framework-reference-languages/home}{CEFR 官方入口}。CEFR 采用行动导向视角，并以 reception、production、interaction、mediation 等沟通活动以及 Can-do descriptors 描述语言能力。
+  \item Council of Europe, CEFR 四类语言活动概述：\href{https://www.coe.int/en/web/portfolio/the-common-european-framework-of-reference-for-languages-learning-teaching-assessment-cefr-}{European Language Portfolio - CEFR overview}。
+  \item IELTS 官方 Writing 评分说明：\href{https://ielts.org/take-a-test/preparation-resources/writing-test-resources}{IELTS Writing resources}；Speaking 评分说明：\href{https://ielts.org/take-a-test/test-types/ielts-academic-test/ielts-academic-format-speaking}{IELTS Speaking format}。
+  \item ETS，TOEFL iBT 2026 年 1 月 21 日后内容与结构：\href{https://www.ets.org/toefl/institutions/ibt/about/content-structure.html}{TOEFL iBT Content and Structure}；新 1--6 分制：\href{https://www.ets.org/toefl/institutions/ibt/score-scale-update.html}{TOEFL Score Scale Update}。
+  \item Cambridge English Qualifications，A2 Key：\href{https://www.cambridgeenglish.org/exams-and-tests/qualifications/key/}{A2 Key official page}，用于说明 CEFR-aligned 资格考试如何将等级映射到具体沟通任务。
+\end{enumerate}
+
+\section{附录 B：本册的长期维护规则}
+\begin{itemize}
+  \item 若某个考试修改题型，只更新对应 Exam Adapter，不修改英语资源层与处理层；
+  \item 若新的语言学习研究改变了对 processing、interaction 或 mediation 的理解，再评估总模型；
+  \item 学习过程中产生的新技巧，先进入专题规则或个人观察，不直接晋升为本册 Stable Core；
+  \item 本册只保存能够跨考试、跨等级、跨技能迁移的高层机制和诊断坐标。
+\end{itemize}
+
+\begin{corebox}[最终定义]
+\begin{center}
+\fbox{\parbox{0.88\linewidth}{\centering\bfseries
+真正的英语学习，不是不断增加知识条目，而是扩大自己能够稳定完成的语言任务范围，并不断降低完成这些任务所需的处理成本。}}
+\end{center}
+考试只是在这个能力空间中选取若干任务进行观察。理解这一点以后，学习的核心问题就不再是“下一本教材学什么”，而是：\kw{我想完成什么任务？第一个断点在哪里？怎样训练并验证迁移？}
+\end{corebox}
+
+\end{document}

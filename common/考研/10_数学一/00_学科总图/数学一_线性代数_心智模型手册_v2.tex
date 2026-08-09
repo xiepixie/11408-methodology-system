@@ -659,7 +659,7 @@ r(PA)=r(AQ)=r(A),
 \]
 因为左右乘可逆矩阵只是在输入或输出端换坐标。
 
-\section{$AB=0$ 时的 rank 约束}
+\section{\texorpdfstring{$AB=0$}{AB=0} 时的 rank 约束}
 由
 \[
 \operatorname{Im}B\subseteq\ker A
@@ -694,7 +694,7 @@ $r(A)=r$ 表示：至少存在一个 $r$ 阶子式非零，说明确实能找到
 \chapter{线性方程组：把“求解”升级为“研究逆像结构”}
 % ============================================================
 
-\section{齐次方程 $Ax=0$：直接在求 kernel}
+\section{齐次方程 \texorpdfstring{$Ax=0$}{Ax=0}：直接在求 kernel}
 齐次方程解集
 \[
 N(A)=\{x:Ax=0\}=\ker A
@@ -715,7 +715,7 @@ Ax=0\text{ 有非零解}\iff r(A)<n.
 \]
 注意：方阵时 determinant 能快速判，但一般 $m\times n$ 方程组仍应使用 rank。
 
-\section{非齐次方程 $Ax=b$：先问 $b$ 是否可达}
+\section{非齐次方程 \texorpdfstring{$Ax=b$}{Ax=b}：先问 \texorpdfstring{$b$}{b} 是否可达}
 列向量视角下
 \[
 Ax=x_1a_1+\cdots+x_na_n=b,
@@ -772,7 +772,7 @@ x_i=\frac{D_i}{D}.
 \]
 它的理论意义是“可逆 $\Rightarrow$ 任意 $b$ 唯一可达”；但含参数、欠定、超定、解结构题中，rank 与行变换更通用。
 
-\section{矩阵方程 $AX=B$：其实是一次解多个右端项}
+\section{矩阵方程 \texorpdfstring{$AX=B$}{AX=B}：其实是一次解多个右端项}
 若
 \[
 AX=B=[b_1\ \cdots\ b_k],
@@ -783,7 +783,7 @@ Ax_j=b_j,\qquad j=1,\dots,k.
 \]
 若 $A$ 可逆，当然 $X=A^{-1}B$；若不可逆，则每一列 $b_j$ 都必须落在 $\operatorname{Col}(A)$ 中才能相容。
 
-\section{$XA=B$ 与 $AX=B$ 不可随便对称处理}
+\section{\texorpdfstring{$XA=B$ 与 $AX=B$}{XA=B 与 AX=B} 不可随便对称处理}
 矩阵乘法不交换。$XA=B$ 若 $A$ 可逆，应右乘 $A^{-1}$ 得 $X=BA^{-1}$；$AX=B$ 则左乘得 $X=A^{-1}B$。考试中“逆矩阵乘哪边”错误，本质上是忘了矩阵代表有方向的复合作用。
 
 \section{两个方程组解集关系：用 kernel/span 语言统一}
@@ -835,7 +835,7 @@ I_r&0\\0&0
 \boxed{\text{same operator, different coordinates}.}
 \]
 
-\section{相似公式完整推导：不要背 $P^{-1}$ 在哪边}
+\section{相似公式完整推导：不要背 \texorpdfstring{$P^{-1}$}{P inverse} 在哪边}
 由
 \[
 T(\mathcal B)=\mathcal BA,\qquad T(\mathcal B')=\mathcal B'B,\qquad \mathcal B'=\mathcal BP,
@@ -939,7 +939,7 @@ Av=\lambda v,\qquad v\neq0,
   \item $\lambda=0$ 意味着这个 eigenvector 被压进 kernel，因此 $A$ 不可逆。
 \end{itemize}
 
-\section{为什么要解 $\det(\lambda I-A)=0$}
+\section{为什么要解 \texorpdfstring{$\det(\lambda I-A)=0$}{det(lambda I - A) = 0}}
 条件
 \[
 (A-\lambda I)v=0
@@ -1276,7 +1276,7 @@ Q^TAQ=\Lambda.
 \chapter{概念边界：每一个“不等于”都要能改变你的做题动作}
 % ============================================================
 
-\begin{longtable}{L{2.2cm}@{}>{\centering\arraybackslash}p{0.5cm}@{}L{2.2cm}L{4.2cm}L{4.2cm}L{\dimexpr\linewidth-13.9cm\relax}}
+\begin{longtable}{L{1.7cm}@{}>{\centering\arraybackslash}p{0.35cm}@{}L{1.7cm}L{3.3cm}L{3.3cm}L{\dimexpr\linewidth-10.72cm\relax}}
 \toprule
 \textbf{概念 A} & & \textbf{概念 B} & \textbf{真正区别} & \textbf{题目信号} & \textbf{混淆后常见错误}\\
 \midrule

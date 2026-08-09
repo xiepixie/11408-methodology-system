@@ -1,6 +1,6 @@
-# 计算机网络驾驶舱
+# 计算机网络复习总览与导航
 
-当前状态：框架已采用，专题正文待建。
+当前状态：框架已采用；Atlas、八个 Topic 与 Integration 已形成工作稿，待逐册人工确认。
 
 ## 学科母问题
 
@@ -34,7 +34,7 @@ $$
 | [拥塞控制](07_拥塞_共享资源与反馈控制/README.md) | 共享网络怎样通过反馈避免 offered load 压垮容量？ | congestion signal、cwnd、slow start、AIMD、avoidance、fast recovery 教材模型 |
 | [应用层服务语义](08_应用层_DNS_HTTP与服务语义/README.md) | 端到端通信能力怎样成为可发现、可解释的服务？ | DNS、HTTP semantics、C/S、P2P、FTP、SMTP、POP3、MIME |
 
-规划目录为 `01_` 到 `08_`。开始写正文时再创建 Topic 文件。
+目录为 `01_` 到 `08_`。当前正文均为工作稿，尚未因完成整理而自动升级为“已采用”。
 
 ## 已锁定 Ownership
 

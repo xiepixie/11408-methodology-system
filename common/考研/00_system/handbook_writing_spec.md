@@ -597,6 +597,6 @@ $$\boxed{\text{认知结构不合格} \implies \text{不允许进入排版}} \qq
 - LaTeX 排版标准：TikZ 图表规范（节点固定 `text width`、前实后虚、标签避让）；
 - 概念边界表格标准：5 列 `Concept A | ≠ | Concept B | Difference | Consequences`；
 - 编译工具链：统一使用 `python3 common/scripts/compile_tex.py <target.tex>`；
-- 发布视图路由：`90_publish/tex/` 只存 `.tex` 源码，编译后 PDF 自动移至 `90_publish/pdf/`。
+- 发布视图路由：`.tex` 源码在各自专题下保存，编译后的 PDF 自动同步推送到 `90_publish/` 根目录集中展现。
 
 详见 [`AGENTS.md`](../AGENTS.md) §七至§九。

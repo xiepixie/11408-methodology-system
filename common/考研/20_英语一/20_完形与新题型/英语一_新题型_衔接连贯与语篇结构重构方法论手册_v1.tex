@@ -1,0 +1,1204 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.70cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,matrix,backgrounds}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{pifont}
+\usepackage{caption}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlength{\parindent}{2em}
+\setcounter{secnumdepth}{0}
+\setlength{\parskip}{0.28em}
+\setlist[itemize]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!50!black,pdftitle={英语一新题型：衔接、连贯与语篇结构重构}}
+
+\definecolor{mainblue}{RGB}{43,85,135}
+\definecolor{deepblue}{RGB}{28,60,98}
+\definecolor{softblue}{RGB}{238,245,252}
+\definecolor{softgreen}{RGB}{238,249,243}
+\definecolor{softorange}{RGB}{253,246,233}
+\definecolor{softred}{RGB}{253,239,239}
+\definecolor{softgray}{RGB}{246,247,249}
+\definecolor{deepgreen}{RGB}{35,105,75}
+\definecolor{deeporange}{RGB}{165,98,22}
+\definecolor{deepred}{RGB}{150,55,55}
+\definecolor{purple}{RGB}{94,66,140}
+\definecolor{softpurple}{RGB}{245,241,251}
+\definecolor{teal}{RGB}{38,112,115}
+\definecolor{softteal}{RGB}{238,248,248}
+\definecolor{gold}{RGB}{156,120,28}
+\definecolor{softgold}{RGB}{252,249,235}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{英语一 · 新题型方法论}
+\rhead{衔接、连贯与语篇结构重构}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\newtcolorbox{corebox}[1][]{colback=softblue,colframe=mainblue,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{exam}[1][]{colback=softorange,colframe=deeporange,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warn}[1][]{colback=softred,colframe=deepred,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{eng}[1][]{colback=softgreen,colframe=deepgreen,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{method}[1][]{colback=softgray,colframe=black!45,title=#1,fonttitle=\bfseries,boxrule=0.6pt,arc=2mm}
+\newtcolorbox{bridge}[1][]{colback=softpurple,colframe=purple,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{statebox}[1][]{colback=softteal,colframe=teal,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{history}[1][]{colback=softgold,colframe=gold,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+
+\newcommand{\kw}[1]{\textbf{#1}}
+\newcommand{\yes}{\textcolor{deepgreen}{\ding{51}}}
+\newcommand{\no}{\textcolor{deepred}{\ding{55}}}
+\newcommand{\term}[2]{\textbf{#1（#2）}}
+
+% ---- Figure grammar: direct topology & semantic color system ----
+\tikzset{
+  cnode/.style={draw=mainblue,rounded corners=1.8mm,minimum width=2.65cm,minimum height=0.92cm,
+    align=center,inner sep=3pt,font=\small,fill=softblue,line width=0.8pt},
+  cnodeblue/.style={cnode,draw=mainblue,fill=softblue},
+  cnodeg/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodegreen/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodeo/.style={cnode,draw=deeporange,fill=softorange},
+  cnodeorange/.style={cnode,draw=deeporange,fill=softorange},
+  cnodep/.style={cnode,draw=purple,fill=softpurple},
+  cnodepurple/.style={cnode,draw=purple,fill=softpurple},
+  cnodet/.style={cnode,draw=teal,fill=softteal},
+  cnodeteal/.style={cnode,draw=teal,fill=softteal},
+  cnodered/.style={cnode,draw=deepred,fill=softred,font=\small\bfseries},
+  cnodegray/.style={cnode,draw=black!45,fill=softgray},
+  mainflow/.style={-{Latex[length=2.2mm,width=1.5mm]},line width=1.0pt,draw=deepblue},
+  altflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepgreen},
+  returnflow/.style={-{Latex[length=2.0mm,width=1.4mm]},densely dashed,line width=0.85pt,draw=purple},
+  dangerflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepred},
+  optflow/.style={-{Latex[length=1.8mm,width=1.3mm]},dotted,line width=0.85pt,draw=teal},
+  labelnote/.style={font=\scriptsize\bfseries,fill=white,inner sep=1.5pt,rounded corners=0.5mm,text=black!80,draw=black!25,line width=0.4pt},
+  boxgroup/.style={draw=black!25,dashed,rounded corners=2mm,fill=black!2,inner sep=6pt}
+}
+
+\title{\vspace{-1.15cm}\textbf{英语一 · 新题型方法论手册}\\[0.35em]
+\large 衔接、连贯与语篇结构重构：从局部线索到整体关系}
+\author{个人认知系统 · 英语一专题手册}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}[一句话母模型]
+新题型不是“寻找相同单词”，也不是“凭语感判断哪一句顺”。它的核心任务是：
+\[
+\boxed{\textbf{根据可验证的语言关系，恢复被删除、打乱或隐藏的语篇结构。}}
+\]
+七选五恢复缺失的句子，段落排序恢复被打乱的先后关系，小标题恢复段落被隐藏的功能标签；三者共同依赖\kw{衔接、连贯、指代、逻辑关系、时间关系与段落功能}。
+\end{corebox}
+
+\tableofcontents
+\newpage
+
+\section{第 0 章：本册在英语一认知体系中的位置}
+
+\subsection{0.1 英语理解的共同主线}
+英语阅读不是单纯把单词翻译成中文。稳定的理解过程可以概括为：
+\begin{center}
+\begin{tikzpicture}[node distance=0.32cm]
+\node[cnodeblue,minimum width=2.45cm] (f) {1. 语言形式\\[-1pt]\scriptsize 单词/标点/词序};
+\node[cnodeblue,right=of f,minimum width=2.45cm] (s) {2. 句法结构\\[-1pt]\scriptsize 短语与分句结构};
+\node[cnodeteal,right=of s,minimum width=2.60cm] (r) {3. 指代与关系\\[-1pt]\scriptsize 逻辑/代词衔接};
+\node[cnodeblue,right=of r] (m) {4. 句义\\[-1pt]\scriptsize 完整命题意义};
+\node[cnodegreen,right=of m,minimum width=2.65cm] (d) {5. 语篇功能\\[-1pt]\scriptsize 段落/篇章作用};
+
+\draw[mainflow] (f) -- (s);
+\draw[mainflow] (s) -- (r);
+\draw[mainflow] (r) -- (m);
+\draw[altflow] (m) -- (d);
+\end{tikzpicture}
+\end{center}
+其中，\term{语篇功能}{discourse function} 指一句话或一个段落在全文中承担的作用，例如提出观点、解释原因、给出例子、形成转折或总结结论。
+
+完形填空主要要求恢复词项，因此重点是词项如何同时满足句法、搭配、句义与语篇约束；新题型则把观察尺度上移到句子和段落，重点研究：\kw{这些语言单元为什么必须这样连接、这样排列、这样概括。}
+
+\begin{bridge}[与完形专题的关系]
+本册会继续使用“证据必须能够解释结论”的原则，但不重新讲词项选择。完形的核心对象是\kw{词项}；本册的核心对象是\kw{语篇单元之间的关系}。两本手册共享英语理解的基础语言，却各自拥有不同的核心问题。
+\end{bridge}
+
+\subsection{0.2 三种题型其实破坏了三种不同信息}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.14\linewidth} p{0.18\linewidth} p{0.22\linewidth} X}
+\toprule
+形式 & 被拿走的信息 & 真正需要恢复的对象 & 核心判断 \\
+\midrule
+七选五 & 一部分句子 & 缺失的语篇单元 & 哪个候选能同时接住前文并引出后文？ \\
+段落排序 & 段落的先后顺序 & 单元之间的有向关系 & 哪些段落之间存在不能颠倒的先后约束？ \\
+小标题 & 段落的概括标签 & 段落的中心功能 & 这一段围绕什么对象完成了什么核心表达？ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+因此，本册不会给三种题型分别发明一套互不相干的口诀，而先建立共同的语篇结构模型，再从同一模型推导三套操作方法。
+
+\newpage
+\section{Part I：统一心智模型——语篇不是句子堆积，而是关系网络}
+
+\section{第 1 章：语篇结构的三个基本组成部分}
+
+\subsection{1.1 语篇单元：我们到底在排列什么？}
+本册把能够独立承担一定意义或功能的句子、句群、段落统称为\term{语篇单元}{discourse unit}。
+
+在不同题型中，语篇单元的尺度不同：
+\begin{itemize}
+  \item 七选五中，一个候选句通常就是一个语篇单元；
+  \item 段落排序中，一个完整段落就是一个语篇单元；
+  \item 小标题中，需要判断的是整个段落这个语篇单元的中心功能。
+\end{itemize}
+
+引入这个概念的目的，是避免把“句子”“段落”“选项”当作三个完全不同的对象。无论尺度如何变化，真正需要判断的都是：
+\[
+\boxed{\text{这个单元与前后单元是什么关系？它在这里承担什么作用？}}
+\]
+
+\subsection{1.2 关系：为什么两个句子不能随意交换？}
+一句话之所以必须放在另一句话之后，通常不是因为它们“有相同单词”，而是因为存在某种方向明确的依赖关系。例如：
+\begin{eng}[例 1：指代造成方向约束]
+A new monitoring system was introduced last year. \textbf{This system} has already reduced processing time.
+\end{eng}
+第二句中的 \texttt{This system} 需要前文先出现一个可指代的系统，因此关系方向是：
+\begin{center}
+\begin{tikzpicture}[node distance=2.8cm]
+\node[cnodeblue,minimum width=3.4cm] (du1) {语篇单元 A ($DU_1$)\\[-1pt]\scriptsize 引入实体: \texttt{a new system}};
+\node[cnodeteal,right=of du1,minimum width=3.4cm] (du2) {语篇单元 B ($DU_2$)\\[-1pt]\scriptsize 指代依赖: \texttt{This system}};
+
+\draw[mainflow] (du1) -- node[labelnote,above=2pt] {强方向依赖 $A \to B$} (du2);
+\end{tikzpicture}
+\end{center}
+如果颠倒顺序，第二句的指代对象就会悬空。
+
+这类关系比单纯词汇重复更强，因为它不仅告诉我们“有关联”，还告诉我们\kw{谁必须在前、谁必须在后}。
+
+\subsection{1.3 功能：一句话为什么会出现在这里？}
+除了“和谁连接”，还要判断“它在做什么”。常见语篇功能包括：
+\begin{itemize}
+  \item 提出主题或中心观点；
+  \item 解释前文；
+  \item 举例说明；
+  \item 补充并列信息；
+  \item 转折或限制前文；
+  \item 推出结果；
+  \item 总结当前讨论；
+  \item 从一个部分过渡到下一个部分。
+\end{itemize}
+
+小标题题尤其依赖这一层：正确标题通常不是复述段落中最显眼的一个词，而是概括\kw{整段围绕什么对象完成了什么核心功能}。
+
+\section{第 2 章：衔接与连贯——表面连接和深层意义必须同时成立}
+
+\subsection{2.1 衔接：语言表面怎样留下连接痕迹？}
+\term{衔接}{cohesion} 指句子或段落之间通过可观察的语言形式建立联系。常见形式包括：
+\begin{itemize}
+  \item 代词与指示词：\texttt{he, they, it, this, these, such}；
+  \item 重复与同义改写：同一概念以相同词或近义表达再次出现；
+  \item 逻辑连接词：\texttt{however, therefore, for example, meanwhile} 等；
+  \item 平行结构：\texttt{on the one hand / on the other hand}，或相似句式并列；
+  \item 时间和顺序标记：\texttt{later, previously, eventually, then} 等。
+\end{itemize}
+
+衔接的价值在于，它往往能提供较强的局部证据，让我们快速发现两个语篇单元之间可能存在连接。
+
+\subsection{2.2 连贯：没有相同单词也可以紧密相连}
+\term{连贯}{coherence} 指语篇在意义和论证上能够形成完整、合理的整体。它并不要求表面出现同一个词。
+
+例如：
+\begin{eng}[例 2：没有原词复现也可以高度连贯]
+Many employees now work from home several days a week. The change has forced managers to rethink how team performance should be evaluated.
+\end{eng}
+第二句没有重复 \texttt{work from home}，但 \texttt{The change} 将前面的工作方式变化概括为一个事件，并继续说明其结果。理解这段关系需要同时看到指代和因果意义。
+
+因此：
+\[
+\boxed{\text{衔接提供连接线索，连贯决定整体意义是否成立。}}
+\]
+
+\subsection{2.3 两者的关系不能写成“有词就对、没词就错”}
+原词复现、同义复现、相同时态都只能增加某种候选关系的可能性。它们不能独立证明答案。
+
+\begin{warn}[必须避免的机械规则]
+下列判断不能作为正式结论：
+\begin{itemize}
+  \item “某个关键词出现两次以上，所以一定正确”；
+  \item “两个句子都有过去时，所以必须相邻”；
+  \item “出现同一个人名，所以就是答案”；
+  \item “只要情感色彩一致，就说明段落连贯”。
+\end{itemize}
+真正需要的是：\kw{线索能否解释两个语篇单元之间具体是什么关系，以及这个关系在当前位置是否成立。}
+\end{warn}
+
+\newpage
+\section{第 3 章：语篇关系图——把“感觉顺”变成可以检查的关系}
+
+\subsection{3.1 为什么需要“图”的视角？}
+新题型最难的地方，是很多人只能说：
+\begin{quote}
+“这两句读起来比较顺。”
+\end{quote}
+但无法说明为什么顺，也无法在两个都“好像可以”的选项之间做稳定比较。
+
+为了把这种判断显化，本册把一篇文章看成一张\term{语篇关系图}{discourse graph}。设
+\[
+G=(V,E),
+\]
+其中：
+\begin{itemize}
+  \item $V$ 表示语篇单元，即句子或段落；
+  \item $E$ 表示单元之间的关系，例如指代、因果、时间先后、解释、对比或举例。
+\end{itemize}
+这个符号只用于压缩思考。做题时不需要真的画复杂图，只需要能明确说出：
+\[
+A\xrightarrow{\text{什么关系}}B.
+\]
+
+\begin{exam}[实操标准]
+如果你判断“选项 C 应该放在第 42 空”，至少应该能补全下面一句话：
+\begin{quote}
+“前文的 \underline{\hspace{2cm}} 为 C 提供了 \underline{\hspace{2cm}}，而 C 中的 \underline{\hspace{2cm}} 又为后文的 \underline{\hspace{2cm}} 提供了依据。”
+\end{quote}
+如果只能说“有同一个词”“感觉很顺”，证据通常还没有闭环。
+\end{exam}
+
+\subsection{3.2 六类高频关系}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.19\linewidth} X X}
+\toprule
+关系 & 观察什么 & 典型作用 \\
+\midrule
+指代关系 & 代词、指示词、简称、上下义概括 & 建立明确的前后依赖 \\
+词汇关系 & 原词、近义词、上下义词、同一概念链 & 维持讨论对象连续 \\
+逻辑关系 & 因果、转折、并列、让步、举例、解释 & 说明命题之间如何连接 \\
+时间关系 & 年份、先后词、事件发展、时态组合 & 建立事件顺序 \\
+结构关系 & 成对结构、平行句式、问答结构 & 提供较强形式约束 \\
+功能关系 & 观点、解释、例子、总结、过渡 & 判断单元在段落中的角色 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+这六类不是“六个技巧”。一个正确连接经常同时得到两三类关系支持。例如：
+\[
+\text{指代成立}+\text{语义成立}+\text{时间顺序成立}
+\]
+通常比“只出现相同词”更可靠。
+
+\section{第 4 章：证据强度——什么线索应该优先相信？}
+
+\subsection{4.1 方向性约束优先于表面相似}
+新题型中最有价值的证据，是能够规定前后方向的约束。例如：
+\begin{itemize}
+  \item \texttt{this finding} 必须能回指前文某个 finding；
+  \item \texttt{the latter} 需要前面已经出现两个可比较对象；
+  \item \texttt{on the other hand} 通常需要与前文某种第一侧面形成对照；
+  \item 一个事件被描述为“随后发生”，就必须存在更早的事件。
+\end{itemize}
+这些线索不仅说明 A、B 有关，还说明：
+\[
+\boxed{A\rightarrow B}
+\]
+因此称为\term{方向性约束}{directional constraint}。
+
+\subsection{4.2 证据层级}
+为了防止弱线索推翻强证据，本册采用下面的检查顺序：
+\begin{center}
+\begin{tikzpicture}[node distance=0.18cm]
+% 5 Stacked Evidence Cards (Center Column with locked text width)
+\node[cnode,draw=deepgreen,fill=softgreen,minimum width=9.2cm,text width=8.7cm,inner sep=4pt] (ea)
+  {\textbf{\color{deepgreen}1 级 · 方向性约束 (Directional)}\hfill\textbf{\color{deepgreen}[最高置信]}\\[1.5pt]
+   \scriptsize\color{black!80} 明确指代(this/these)、成对结构、时间先后、定义后简称(不可倒置)};
+
+\node[cnode,draw=mainblue,fill=softblue,below=0.18cm of ea,minimum width=9.2cm,text width=8.7cm,inner sep=4pt] (eb)
+  {\textbf{\color{mainblue}2 级 · 语义与逻辑关系 (Semantic \& Logical)}\hfill\textbf{\color{mainblue}[强置信]}\\[1.5pt]
+   \scriptsize\color{black!80} 因果、转折、解释、举例、一般到具体命题验证};
+
+\node[cnode,draw=teal,fill=softteal,below=0.18cm of eb,minimum width=9.2cm,text width=8.7cm,inner sep=4pt] (ec)
+  {\textbf{\color{teal}3 级 · 词汇衔接 (Lexical Cohesion)}\hfill\textbf{\color{teal}[中置信]}\\[1.5pt]
+   \scriptsize\color{black!80} 原词复现、同义改写、上下义词与同一概念链};
+
+\node[cnode,draw=purple,fill=softpurple,below=0.18cm of ec,minimum width=9.2cm,text width=8.7cm,inner sep=4pt] (ed)
+  {\textbf{\color{purple}4 级 · 整体连贯 (Global Coherence)}\hfill\textbf{\color{purple}[辅助置信]}\\[1.5pt]
+   \scriptsize\color{black!80} 全文主题推进、段落论证方向与逻辑流转向相容性};
+
+\node[cnode,draw=deeporange,fill=softorange,below=0.18cm of ed,minimum width=9.2cm,text width=8.7cm,inner sep=4pt] (ee)
+  {\textbf{\color{deeporange}5 级 · 辅助性表面线索 (Surface Anchors)}\hfill\textbf{\color{deeporange}[弱置信]}\\[1.5pt]
+   \scriptsize\color{black!80} 时态相似、数字、引号、显眼专名 (仅供定位范围，不可独自定结论)};
+
+% 1. Left Rank Pillar Container (fitted to ea.north and ee.south)
+\coordinate (ltop) at ($(ea.north west)+(-0.35,0)$);
+\coordinate (lbot) at ($(ee.south west)+(-0.35,0)$);
+\node[draw=deepgreen,fill=softgreen,rounded corners=1.8mm,line width=0.8pt,
+      fit=(ltop)(lbot),anchor=east,minimum width=1.40cm,inner sep=0pt] (rankbox) {};
+% Centered Text inside Left Pillar
+\node[font=\small\bfseries\color{deepgreen},align=center] at (rankbox.center)
+  {\begin{tabular}{c} 证\\据\\强\\度\\与\\置\\信\\度\\递\\增\\[3pt]$\mathbf{\uparrow}$ \end{tabular}};
+
+% 2. Right Warning Pillar Container (fitted to ea.north and ee.south)
+\coordinate (rtop) at ($(ea.north east)+(0.35,0)$);
+\coordinate (rbot) at ($(ee.south east)+(0.35,0)$);
+\node[draw=deepred,fill=softred,rounded corners=1.8mm,line width=0.7pt,
+      fit=(rtop)(rbot),anchor=west,minimum width=2.40cm,inner sep=0pt] (warnbox) {};
+% Centered Text inside Right Pillar
+\node[font=\scriptsize\bfseries\color{deepred},align=center] at (warnbox.center)
+  {\begin{tabular}{c} 核心纪律\\[6pt] 弱线索 (5级)\\[4pt] 绝不可推翻\\[4pt] 硬约束\\[1pt](1/2 级) \end{tabular}};
+\end{tikzpicture}
+\end{center}
+这不是说第 1 类永远“一票决定”，而是规定一种纪律：\kw{低层证据不能在没有解释的情况下推翻高层关系。}
+
+\subsection{4.3 高信息锚点：为什么数字、人名、引号仍然值得先看？}
+旧笔记中的“数、时、引、人”有实战价值，但其底层逻辑不是“视觉显眼就更正确”，而是这些信息常常具有较高区分度。
+
+本册称它们为\term{高信息锚点}{high-information anchor}：能够快速缩小候选范围、帮助定位关系的具体信息。
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.16\linewidth} X X}
+\toprule
+锚点 & 真正提供的信息 & 正确用法 \\
+\midrule
+数字 & 数量、年份、比例、金额等具体身份 & 检查是否属于同一事件或比较链，而非见数字就匹配 \\
+专有名词 & 人物、机构、地点的实体身份 & 检查实体何时被引入、后文如何继续指称 \\
+引号 & 术语边界或直接引语边界 & 判断引用是否续接、解释或评价前文 \\
+时态 & 事件所在时间框架 & 与时间词、事件顺序共同验证，不单独决定位置 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{4.4 “首次全名”应升级成实体引入原则}
+英语语篇中，一个新人物或机构首次进入读者视野时，通常需要足够的信息完成识别；后续再提及时可以使用姓氏、简称、代词或其他缩略指称。
+
+因此更稳定的原则是：
+\[
+\boxed{
+\text{实体引入}
+\rightarrow
+\text{建立身份}
+\rightarrow
+\text{后续简化指称}
+}
+\]
+而不是死记“第一次一定全名”。做题时真正要检查的是：\kw{某个简称或代词出现时，读者是否已经知道它指谁。}
+
+\section{Part II：七选五——恢复缺失的语篇单元}
+
+\section{第 5 章：七选五的母模型——双侧接口}
+
+\subsection{5.1 一个空格不是一个点，而是两个接口}
+设空格左侧已有内容为 $L$，右侧已有内容为 $R$，候选句为 $C$。一个候选句放入空格后，需要同时解释：
+\[
+L\rightarrow C
+\qquad\text{以及}\qquad
+C\rightarrow R.
+\]
+这里 $L$、$C$、$R$ 分别表示左侧语境、候选句和右侧语境。
+
+本册把这种要求称为\term{双侧接口}{two-sided interface}：候选句既要能够被前文自然引出，也要能够自然引出后文。
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeblue,minimum width=2.9cm] (l) {左侧语境 $L$\\[-1pt]\scriptsize 前文话题/依赖};
+\node[cnodeorange,right=of l,minimum width=3.1cm] (c) {候选句 $C$\\[-1pt]\scriptsize 待插入语篇单元};
+\node[cnodegreen,right=of c,minimum width=2.9cm] (r) {右侧语境 $R$\\[-1pt]\scriptsize 后文接续/证明};
+
+\draw[mainflow] (l) -- node[labelnote,above=2pt] {左接口 $L \to C$} (c);
+\draw[altflow] (c) -- node[labelnote,above=2pt] {右接口 $C \to R$} (r);
+\end{tikzpicture}
+\end{center}
+
+\begin{corebox}[七选五核心检查式]
+\[
+\boxed{
+\text{左侧兼容 } (L \to C)
+\quad + \quad
+\text{右侧兼容 } (C \to R)
+\quad + \quad
+\text{整体功能合理}
+}
+\]
+只与一侧出现相同词，不足以锁定答案。
+\end{corebox}
+
+\subsection{5.2 为什么只找“原词复现”会失误？}
+假设左侧出现 \texttt{online privacy}，两个候选句都包含 \texttt{privacy}。如果其中一个候选句末尾引出 \texttt{these measures}，而右侧正好继续解释一组 measures；另一个候选没有任何办法接右侧，那么真正决定答案的是：
+\[
+C\rightarrow R
+\]
+的结构，而不是左侧的原词复现。
+
+因此原词复现最适合做：
+\begin{quote}
+\kw{候选生成工具}，而不是\kw{最终裁决工具}。
+\end{quote}
+
+\section{第 6 章：七选五的六类接口证据}
+
+\subsection{6.1 指代接口}
+重点检查候选句首和空格后一句句首：
+\begin{itemize}
+  \item \texttt{this / that + 名词}；
+  \item \texttt{these / those + 名词}；
+  \item \texttt{he / she / they / it}；
+  \item \texttt{such + 名词}；
+  \item \texttt{the former / the latter}。
+\end{itemize}
+操作不是“看到代词就匹配”，而是完成两个问题：
+\begin{enumerate}
+  \item 它具体指什么？
+  \item 这个指代对象在当前位置之前是否已经建立？
+\end{enumerate}
+
+\begin{eng}[例 3：指示词提供强方向]
+前文：Researchers identified three recurring errors in the process.\\
+候选：\textbf{These errors} were most common among inexperienced teams.
+\end{eng}
+\texttt{These errors} 明确回指前文的 three recurring errors，因此存在强方向关系。
+
+\subsection{6.2 逻辑接口}
+逻辑连接词的作用是提示候选句和上下文之间的关系类型，而不是直接决定“正面/负面”。
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} p{0.27\linewidth} X}
+\toprule
+关系 & 常见形式 & 真正需要检查 \\
+\midrule
+转折/限制 & however, yet, nevertheless & 后句是否修正、限制或违背前文预期 \\
+因果/结果 & therefore, thus, as a result & 前文是否真的能够推出该结果 \\
+解释/举例 & for example, for instance, in other words & 后句是否对前文观点作具体化或改述 \\
+并列/递进 & also, moreover, furthermore & 是否在同一论题下增加并列或更进一步的信息 \\
+让步 & although, even though, despite & 是否承认一个事实后仍保留另一结论 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+例如 \texttt{however} 只说明后文与前文存在预期上的对照，不能机械翻译成“前文正面，后文负面”。
+
+\subsection{6.3 词汇接口}
+词汇衔接包括：
+\begin{itemize}
+  \item 原词复现；
+  \item 同义或近义改写；
+  \item 上位词与下位词；
+  \item 同一概念链中的相关词。
+\end{itemize}
+
+例如：
+\[
+\text{cars}
+\rightarrow
+\text{vehicles}
+\rightarrow
+\text{transport}
+\]
+可能形成概念连续，但必须结合句义判断它们是否讨论同一件事。
+
+\subsection{6.4 时间接口}
+处理人物传记、事件发展、研究过程时，时间关系特别重要。
+
+检查：
+\begin{itemize}
+  \item 明确年份；
+  \item before / after / later / eventually；
+  \item 首次发生与后续结果；
+  \item 完成、持续、回顾等时态意义。
+\end{itemize}
+
+原则是：
+\[
+\boxed{\text{先恢复事件顺序，再用时态帮助验证。}}
+\]
+不能反过来只因为两个句子都是过去时就判定相邻。
+
+\subsection{6.5 平行与成对接口}
+这类证据通常很强：
+\begin{itemize}
+  \item \texttt{on the one hand} / \texttt{on the other hand}；
+  \item \texttt{not only} / \texttt{but also}；
+  \item 问句 / 回答；
+  \item 相似句式连续列举；
+  \item \texttt{They may X. Or they may Y.}
+\end{itemize}
+
+关键不是识别固定词组本身，而是确认两部分确实承担互补、并列或问答功能。
+
+\subsection{6.6 功能接口}
+有时没有明显词汇标记，但段落功能很清楚。例如前文提出抽象观点，空格后紧跟一个具体例子，那么空格中的候选句可能承担“从观点过渡到例子”的功能。
+
+这时应问：
+\begin{quote}
+“当前段落在这个位置缺的是一个观点、解释、例子、转折，还是总结？”
+\end{quote}
+功能判断能够在词汇重复不足时提供重要支持。
+
+\newpage
+\section{第 7 章：七选五的标准操作流程}
+
+\subsection{7.1 第一步：先建立候选句的关系特征}
+快速阅读候选项，不要求逐句翻译，而是标出高价值结构：
+\begin{itemize}
+  \item 是否以代词或指示结构开头；
+  \item 是否有 however / therefore / for example 等逻辑标记；
+  \item 是否有具体人名、年份、数字、引号；
+  \item 是否明显是总结句、例子句、问句或过渡句；
+  \item 句末是否留下可以被下一句接续的对象。
+\end{itemize}
+这一步的目标是建立“候选句能接什么”的初步认识，而不是提前把答案分配给空格。
+
+\subsection{7.2 第二步：读取空格两侧，先找硬约束}
+对每个空格先看最近的完整语境，优先检查：
+\begin{enumerate}
+  \item 左侧是否留下未完成的话题、并列、问题或时间线；
+  \item 右侧是否包含需要前文提供对象的代词、指示词或逻辑词；
+  \item 是否存在方向明确的成对结构；
+  \item 如果没有，再检查词汇与语义连续。
+\end{enumerate}
+
+\subsection{7.3 第三步：建立候选，不急于锁定}
+如果一个空格有两个候选都能接左侧，不要立刻选。分别检查：
+\[
+L\rightarrow C_1\rightarrow R
+\]
+和
+\[
+L\rightarrow C_2\rightarrow R.
+\]
+能同时解释两侧并且功能自然的候选更强。
+
+\subsection{7.4 第四步：用剩余选项反向约束，但不能代替证据}
+随着确定项增加，剩余空格的候选空间会缩小。排除法可以降低搜索成本，但最后仍要做局部关系验证。
+
+\begin{warn}[排除法的边界]
+“只剩这个选项”可以帮助你重新检查，但不能成为唯一理由。若剩余选项放入后出现悬空代词、时间倒置或逻辑断裂，应回头检查前面的已定答案。
+\end{warn}
+
+\subsection{7.5 第五步：整段回读，检查信息推进}
+最后不是问“每句语法对不对”，而是检查：
+\begin{itemize}
+  \item 讨论对象有没有突然消失或凭空出现；
+  \item 指代是否都有明确对象；
+  \item 观点、解释、例子、结论的顺序是否自然；
+  \item 是否出现两个句子内容重复但没有推进；
+  \item 转折、因果、时间是否都能解释。
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeorange,minimum width=2.2cm] (p1) {1. 候选特征\\[-1pt]\scriptsize 提取代词/逻辑词};
+\node[cnodeblue,right=of p1,minimum width=2.2cm] (p2) {2. 两侧接口\\[-1pt]\scriptsize 识别 L 与 R 悬空};
+\node[cnodeteal,right=of p2,minimum width=2.3cm] (p3) {3. 强关系优先\\[-1pt]\scriptsize 方向性约束校验};
+\node[cnodeblue,right=of p3,minimum width=2.2cm] (p4) {4. 双侧验证\\[-1pt]\scriptsize $L \to C \to R$ 闭合};
+\node[cnodegreen,right=of p4,minimum width=2.3cm] (p5) {5. 整段回读\\[-1pt]\scriptsize 检查信息推进};
+
+\draw[mainflow] (p1) -- (p2);
+\draw[mainflow] (p2) -- (p3);
+\draw[mainflow] (p3) -- (p4);
+\draw[altflow] (p4) -- (p5);
+\end{tikzpicture}
+\end{center}
+
+\begin{corebox}[七选五考场压缩协议]
+一句话：\kw{不要找“像”的句子，要找能同时完成前后连接任务的句子。}
+\end{corebox}
+
+\section{Part III：段落排序——恢复被打乱的有向顺序}
+
+\section{第 8 章：排序题的母模型——不是猜完整顺序，而是恢复局部先后约束}
+
+\subsection{8.1 为什么不能从第一段一路猜到最后一段？}
+若有多个段落，直接尝试完整排列会迅速增加认知负荷。真正有效的方法是先寻找不能轻易颠倒的局部关系：
+\[
+P_a\rightarrow P_b.
+\]
+其中 $P_a$、$P_b$ 表示两个段落。
+
+这些局部关系组成\term{部分顺序}{partial order}：我们不需要一开始知道全部位置，只需要先知道某些段落必然在另一些段落之前。
+
+\subsection{8.2 强关系先形成链}
+例如发现：
+\[
+P_2\rightarrow P_5,
+\qquad
+P_5\rightarrow P_1,
+\]
+就先形成：
+\[
+P_2\rightarrow P_5\rightarrow P_1.
+\]
+本册把这样连续连接的局部顺序称为\term{关系链}{chain}。
+
+操作目标是：
+\begin{center}
+\begin{tikzpicture}[node distance=0.55cm]
+\node[cnodeorange,minimum width=3.3cm] (b1) {1. 找强有向边\\[-1pt]\scriptsize 锁定不可颠倒依赖 $P_a \to P_b$};
+\node[cnodeteal,right=of b1,minimum width=3.3cm] (b2) {2. 组成局部短链\\[-1pt]\scriptsize 构建部分顺序 $P_2 \to P_5 \to P_1$};
+\node[cnodegreen,right=of b2,minimum width=3.3cm] (b3) {3. 合并短链全局验证\\[-1pt]\scriptsize 拼合长链并检查实体引入};
+
+\draw[mainflow] (b1) -- (b2);
+\draw[altflow] (b2) -- (b3);
+\end{tikzpicture}
+\end{center}
+而不是从头到尾一次性排列所有段落。
+
+\section{第 9 章：哪些关系最适合建立排序约束？}
+
+\subsection{9.1 指代和实体连续}
+如果某段以 \texttt{this proposal} 开始，而另一段首次完整介绍该 proposal，通常有：
+\[
+\text{实体引入}
+\rightarrow
+\text{回指}
+\]
+同理，简称、代词、the former/the latter 等都可能提供方向性约束。
+
+\subsection{9.2 时间和事件发展}
+传记、历史、研究过程常出现：
+\[
+\text{提出问题}
+\rightarrow
+\text{采取行动}
+\rightarrow
+\text{产生结果}
+\rightarrow
+\text{后续评价}
+\]
+先恢复事件逻辑，再检查年份和时态是否一致。
+
+\subsection{9.3 一般到具体、观点到例子}
+如果一个段落给出一般判断，另一个段落明显以具体人物、数据或案例说明它，通常存在：
+\[
+\text{General Claim}
+\rightarrow
+\text{Example / Detail}.
+\]
+这里的英文只用于对应常见阅读术语：\textit{General Claim} 指一般性观点，\textit{Example / Detail} 指例子或具体细节。
+
+\subsection{9.4 问题到解决、问句到回答}
+若某段提出问题，后续段落开始讨论方法、解释或解决方案，通常形成：
+\[
+\text{Problem}
+\rightarrow
+\text{Response / Solution}.
+\]
+做题时必须确认“解决的是否正是前面提出的问题”，而不是见到 solution 类词就机械连接。
+
+\subsection{9.5 转折与承接}
+以 \texttt{however}、\texttt{yet} 开头的段落通常需要一个可以被修正、限制或对照的前文。它们不一定不能做首段，但如果缺少任何可供转折的背景，就出现明显的向前依赖。
+
+\section{第 10 章：首段判断的真正原则——检查向前依赖是否已经满足}
+
+\subsection{10.1 不要背“这些词绝不能当首段”}
+旧经验常把转折词、因果词、代词、简称统一列为“不能当首段”。这个方向有帮助，但绝对化会产生错误。
+
+更稳定的检查是：
+\[
+\boxed{\text{一个段落若要求读者已经知道某个前置信息，就不能在该前提尚未建立时出现。}}
+\]
+本册称这种尚未满足的前提为\term{向前依赖}{backward dependency}：当前段落向前要求某个信息来源。
+
+例如：
+\begin{itemize}
+  \item \texttt{This decision} 要求前面先有 decision；
+  \item \texttt{However} 要求前面先有一个可被转折的命题；
+  \item 某机构缩写要求读者已经知道它是谁，除非题目给定背景已经完成介绍；
+  \item \texttt{the second reason} 要求第一理由已经出现。
+\end{itemize}
+
+因此首段判断不是词表排除，而是：
+\[
+\boxed{\text{检查该段的向前依赖是否全部能够被题目已有背景满足。}}
+\]
+
+\section{第 11 章：段落排序的标准操作流程}
+
+\subsection{11.1 第一步：利用题目已给位置建立锚点}
+如果题目已经固定某个段落位置，先从这个已知点向前后寻找强关系。固定位置是最可靠的结构信息，不应忽略。
+
+\subsection{11.2 第二步：扫描每段首尾，标出依赖和输出}
+每个段落只做两类标记：
+\begin{itemize}
+  \item \kw{它需要什么前文？}例如 this、however、another reason；
+  \item \kw{它给后文留下什么？}例如新人物、新问题、一个观点、一个时间节点。
+\end{itemize}
+这样每段就从“长文本”变成“接口”。
+
+\subsection{11.3 第三步：寻找强有向关系}
+优先寻找：
+\begin{enumerate}
+  \item 指代必须回指；
+  \item 实体必须先引入后简称；
+  \item 明确时间先后；
+  \item 成对结构；
+  \item 问题与直接回答；
+  \item 一般观点与明确例子。
+\end{enumerate}
+
+\subsection{11.4 第四步：构造短链，再合并}
+不要立刻填完整顺序。先写：
+\[
+A\rightarrow D,
+\qquad
+C\rightarrow F\rightarrow B.
+\]
+然后再判断两条链如何连接。
+
+\subsection{11.5 第五步：全文检查“信息是否被正确引入”}
+排序完成后重点检查：
+\begin{itemize}
+  \item 每个代词是否有明确前项；
+  \item 每个新人物/概念是否先被介绍再简化指称；
+  \item 时间是否倒置；
+  \item 举例是否出现在观点之前；
+  \item 结论是否过早出现；
+  \item 段落之间是否存在无法解释的突然转题。
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodegray,minimum width=2.15cm] (o1) {1. 找锚点\\[-1pt]\scriptsize 锁定已知位置段};
+\node[cnodeorange,right=of o1,minimum width=2.25cm] (o2) {2. 读首尾接口\\[-1pt]\scriptsize 标出依赖与输出};
+\node[cnodeteal,right=of o2,minimum width=2.25cm] (o3) {3. 找强关系\\[-1pt]\scriptsize 指代/时间/实体};
+\node[cnodeblue,right=of o3,minimum width=2.15cm] (o4) {4. 组成短链\\[-1pt]\scriptsize 拼接局部 order};
+\node[cnodegreen,right=of o4,minimum width=2.35cm] (o5) {5. 合并全局验证\\[-1pt]\scriptsize 检查实体与时间流};
+
+\draw[mainflow] (o1) -- (o2);
+\draw[mainflow] (o2) -- (o3);
+\draw[mainflow] (o3) -- (o4);
+\draw[altflow] (o4) -- (o5);
+\end{tikzpicture}
+\end{center}
+
+\begin{corebox}[排序题考场压缩协议]
+一句话：\kw{先证明局部谁必须在谁前面，再让完整顺序自己长出来。}
+\end{corebox}
+
+\section{Part IV：小标题——恢复段落的功能标签}
+
+\section{第 12 章：小标题的母模型——把一个段落压缩成“主题 + 核心表达”}
+
+\subsection{12.1 为什么词频高不等于标题正确？}
+一个段落可能多次出现某个例子中的具体名词，但标题需要概括的往往是例子所服务的更高层观点。
+
+因此小标题的核心不是：
+\begin{quote}
+“哪个选项里的词在这一段出现最多？”
+\end{quote}
+而是：
+\begin{quote}
+“这一段一直围绕什么对象，最终要让我接受什么观点、建议或说明？”
+\end{quote}
+
+\subsection{12.2 段落压缩模型}
+本册把小标题判断压成：
+\begin{center}
+\begin{tikzpicture}[node distance=0.55cm]
+\node[cnodeblue,minimum width=3.3cm] (p) {段落文本 (Paragraph)\\[-1pt]\scriptsize 排除支撑性细节与例子};
+\node[cnodeorange,right=of p,minimum width=3.4cm] (tc) {核心压缩 (Topic + Claim)\\[-1pt]\scriptsize 主题对象 + 核心判断/行动};
+\node[cnodegreen,right=of tc,minimum width=3.3cm] (h) {功能标签 (Heading)\\[-1pt]\scriptsize 准确覆盖全段功能};
+
+\draw[mainflow] (p) -- (tc);
+\draw[altflow] (tc) -- (h);
+\end{tikzpicture}
+\end{center}
+其中：
+\begin{itemize}
+  \item \term{Topic}{主题对象}：这一段主要谈什么；
+  \item \term{Claim}{核心判断}：作者关于这个对象说了什么；
+  \item \term{Action}{核心行动}：如果是建议型段落，作者要求读者做什么；
+  \item \term{Heading}{标题}：能够同时覆盖主题对象和核心判断/行动的概括标签。
+\end{itemize}
+
+\begin{exam}[实操模板]
+读完一段，强迫自己只写一句：
+\begin{quote}
+“本段围绕 \underline{\hspace{2.5cm}}，主要说明/建议 \underline{\hspace{4cm}}。”
+\end{quote}
+然后再看选项。若无法填完这句话，说明你还没有完成段落压缩。
+\end{exam}
+
+\section{第 13 章：怎样识别段落核心，而不是被例子带走？}
+
+\subsection{13.1 先区分观点与支撑材料}
+段落常见结构是：
+\[
+\text{Claim}
+\rightarrow
+\text{Explanation}
+\rightarrow
+\text{Example}
+\rightarrow
+\text{Restatement / Result}.
+\]
+标题通常更接近 Claim，而不是 Example。
+
+\subsection{13.2 高价值位置只是入口，不是定律}
+以下位置经常承载核心观点：
+\begin{itemize}
+  \item 段首主题句；
+  \item 明确建议句；
+  \item 转折后的关键判断；
+  \item 设问后的直接回答；
+  \item 段尾总结或结果句。
+\end{itemize}
+但文章结构可以变化，因此不能规定“祈使句权重 0.8”“转折后必是答案”等数值规则。正确做法是：先用这些位置快速生成候选主旨，再用整段内容验证。
+
+\subsection{13.3 词汇复现应该验证概念，不应该计次数}
+如果标题中的核心概念在段落中以多个词反复展开，这当然是支持证据；但重点是：
+\[
+\boxed{\text{这些词是否共同指向同一个中心概念。}}
+\]
+
+例如标题使用 \texttt{avoid superficial conversation}，段落可能通过 \texttt{small talk}、\texttt{routine greetings}、\texttt{more personal questions} 等不同表达共同支持它。即使标题原词只出现一次甚至没有出现，仍可能是准确概括。
+
+\section{第 14 章：小标题的标准操作流程}
+
+\subsection{14.1 第一步：先读大标题与题目背景，建立主题范围}
+大标题的作用是确定全文讨论的上位主题，防止把某一段局部细节误判成另一领域的观点。它提供的是\kw{范围约束}，不是每段标题的直接答案。
+
+\subsection{14.2 第二步：先压缩段落，再匹配标题}
+每段完成：
+\[
+\text{Topic}+\text{Claim/Action}.
+\]
+不要一边读句子一边在七个选项里来回搜索，否则容易被局部词汇牵着走。
+
+\subsection{14.3 第三步：比较候选标题的覆盖范围}
+两个标题都相关时，检查：
+\begin{itemize}
+  \item 哪一个覆盖整段，而不是只覆盖一个例子；
+  \item 哪一个准确保留作者的方向和立场；
+  \item 哪一个没有加入段落未表达的额外信息；
+  \item 哪一个与其他段落标题区分更清楚。
+\end{itemize}
+
+\subsection{14.4 第四步：用全文标题组做一致性检查}
+最后把五个已选标题连起来看：
+\begin{itemize}
+  \item 是否共同服务于全文大标题；
+  \item 是否有两个标题实际概括同一个角度；
+  \item 是否遗漏了一个明显的重要分论点；
+  \item 是否出现某标题比对应段落范围明显更宽或更窄。
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.2cm] (h1) {1. 确定范围\\[-1pt]\scriptsize 文章大标题约束};
+\node[cnodeorange,right=of h1,minimum width=2.2cm] (h2) {2. 段落压缩\\[-1pt]\scriptsize Topic + Claim};
+\node[cnodeteal,right=of h2,minimum width=2.2cm] (h3) {3. 标题匹配\\[-1pt]\scriptsize 查找功能标签};
+\node[cnodeblue,right=of h3,minimum width=2.3cm] (h4) {4. 范围比较\\[-1pt]\scriptsize 排除宽/窄错项};
+\node[cnodegreen,right=of h4,minimum width=2.3cm] (h5) {5. 标题组验证\\[-1pt]\scriptsize 全局主旨对齐};
+
+\draw[mainflow] (h1) -- (h2);
+\draw[mainflow] (h2) -- (h3);
+\draw[mainflow] (h3) -- (h4);
+\draw[altflow] (h4) -- (h5);
+\end{tikzpicture}
+\end{center}
+
+\begin{corebox}[小标题考场压缩协议]
+一句话：\kw{不是找出现最多的词，而是给整段最准确的功能标签。}
+\end{corebox}
+
+\section{Part V：统一解题控制——三种题型共用什么，分别增加什么？}
+
+\section{第 15 章：新题型的统一控制链}
+
+\subsection{15.1 通用流程}
+结合考试控制手册，新题型统一采用：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.15cm] (u1) {1. 任务识别\\[-1pt]\scriptsize 确认题型目标};
+\node[cnodeorange,right=of u1,minimum width=2.25cm] (u2) {2. 结构建模\\[-1pt]\scriptsize 接口/顺序/压缩};
+\node[cnodeteal,right=of u2,minimum width=2.25cm] (u3) {3. 提取约束\\[-1pt]\scriptsize 找指代/逻辑线索};
+\node[cnodeblue,right=of u3,minimum width=2.15cm] (u4) {4. 候选比较\\[-1pt]\scriptsize 证伪弱线索项};
+\node[cnodeteal,right=of u4,minimum width=2.15cm] (u5) {5. 局部验证\\[-1pt]\scriptsize 双侧/强边闭合};
+\node[cnodegreen,right=of u5,minimum width=2.35cm] (u6) {6. 整体确认\\[-1pt]\scriptsize 全文连贯推进};
+
+\draw[mainflow] (u1) -- (u2);
+\draw[mainflow] (u2) -- (u3);
+\draw[mainflow] (u3) -- (u4);
+\draw[mainflow] (u4) -- (u5);
+\draw[altflow] (u5) -- (u6);
+\end{tikzpicture}
+\end{center}
+
+各步骤含义如下：
+\begin{enumerate}
+  \item \kw{任务识别}：当前要求恢复的是句子、顺序还是标题；
+  \item \kw{结构建模}：把题目转换成双侧接口、部分顺序或段落压缩问题；
+  \item \kw{提取约束}：找到指代、逻辑、时间、词汇和功能证据；
+  \item \kw{候选比较}：比较哪个候选违反的强约束最少；
+  \item \kw{局部验证}：检查当前位置前后关系是否闭合；
+  \item \kw{整体确认}：回到段落或全文，检查全局连贯。
+\end{enumerate}
+
+\subsection{15.2 三种题型的 Adapter}
+这里的 Adapter 指\kw{同一通用流程在不同题型中的具体化方式}。
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.17\linewidth} X X X}
+\toprule
+题型 & 结构模型 & 最强局部检查 & 最终全局检查 \\
+\midrule
+七选五 & 左侧 $\rightarrow$ 候选 $\rightarrow$ 右侧 & 双侧接口是否都成立 & 整段信息推进是否自然 \\
+排序 & $P_a\rightarrow P_b$ 的部分顺序 & 是否存在不可颠倒的有向关系 & 所有实体、时间、观点是否依次引入 \\
+小标题 & Topic + Claim/Action & 标题是否覆盖整段核心 & 标题组是否共同构成全文结构 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{第 16 章：什么时候应该跳过？——没有新增结构信息时停止消耗}
+
+\subsection{16.1 卡住通常意味着什么？}
+新题型卡住，常见原因不是“读得不够久”，而是：
+\begin{itemize}
+  \item 没有分清强关系和弱相似；
+  \item 只看了一侧，没有检查另一侧；
+  \item 只找词，没有判断句子功能；
+  \item 排序时试图一次猜完整顺序；
+  \item 小标题时还没有完成段落压缩。
+\end{itemize}
+
+\subsection{16.2 退出条件}
+若继续阅读只是在重复同一句，没有得到新的：
+\begin{itemize}
+  \item 指代对象；
+  \item 逻辑关系；
+  \item 时间顺序；
+  \item 结构功能；
+  \item 候选排除依据；
+\end{itemize}
+就应暂时标记并转向其他空格或段落。后面的答案常会通过候选减少、主题变清、关系链延长而反向提供新证据。
+
+\section{第 17 章：错误诊断——错题究竟暴露了哪一种能力缺口？}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
+\toprule
+错误类型 & 典型表现 & 修复动作 \\
+\midrule
+指代断点 & 看见 this/they，却说不清具体指什么 & 逐次标记指代词并写出前项 \\
+关系断点 & 认识 however/therefore，但解释不出两句关系 & 用中文写清 A 与 B 的具体逻辑 \\
+方向断点 & 知道两个段落相关，却总排反 & 专门训练“谁依赖谁”的箭头 \\
+语义断点 & 只靠原词复现，忽略同义改写 & 做概念链和段落命题复述 \\
+功能断点 & 小标题总被例子带偏 & 每段先写 Topic + Claim/Action \\
+全局断点 & 局部都顺，全文却跳跃或重复 & 做整段/全文信息推进检查 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{method}[错题复盘不要只写“没看出原词复现”]
+更有价值的复盘是：
+\begin{quote}
+“我只注意到了选项与左侧的词汇复现，没有检查候选句中的 \texttt{these measures} 是否能被右侧继续承接，因此在双侧接口的右侧验证处失败。”
+\end{quote}
+这种描述能直接告诉下一轮训练应该改哪一个动作。
+\end{method}
+
+\section{Part VI：训练系统——把结构关系训练成可调用能力}
+
+\section{第 18 章：训练的目标不是背技巧，而是提高关系识别速度}
+
+\subsection{18.1 指代训练}
+拿一篇真题，不做选项，只标：
+\[
+\text{代词/指示词}
+\rightarrow
+\text{实际指代对象}.
+\]
+目标是让 \texttt{this / these / they / such} 不再只是“信号词”，而是立即触发“它指什么”的检查。
+
+\subsection{18.2 关系训练}
+每两句之间只写一个最主要关系：
+\begin{quote}
+补充 / 转折 / 因果 / 解释 / 举例 / 时间推进 / 总结。
+\end{quote}
+然后要求自己用中文完整说出：
+\begin{quote}
+“A 说了什么，B 为什么会接在 A 后面。”
+\end{quote}
+
+\subsection{18.3 排序链训练}
+不要求一次做完整题。只拿 6--7 个段落，寻找所有你有把握的：
+\[
+A\rightarrow B.
+\]
+训练“强边识别”比反复猜完整排列更能提升稳定性。
+
+\subsection{18.4 段落压缩训练}
+每读一个段落，用不超过一句中文写出：
+\[
+\text{Topic}+\text{Claim/Action}.
+\]
+如果只能复述例子，说明仍未抓到段落中心功能。
+
+\subsection{18.5 词汇复现训练的正确目标}
+不要统计“某词出现几次”，而要建立概念链。例如：
+\[
+\text{job loss}
+\leftrightarrow
+\text{unemployment}
+\leftrightarrow
+\text{workers losing positions}.
+\]
+训练的是：\kw{不同形式是否表达同一概念。}
+
+\section{第 19 章：旧经验如何保留，哪些不进入稳定核心？}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.26\linewidth} X X}
+\toprule
+旧经验 & 新位置 & 处理原则 \\
+\midrule
+数字、人名、引号、时态 & 高信息锚点 & 保留，用于缩小候选，不直接定答案 \\
+原词复现 & 词汇衔接 & 保留，与语义和方向共同验证 \\
+指示代词 + 名词 & 指代关系 & 强化，必须还原真实指代对象 \\
+首次全名 & 实体引入 & 保留底层逻辑，取消绝对化 \\
+“首段不能有代词/转折” & 向前依赖检查 & 升级为结构原则 \\
+情感色彩一致 & 立场/语义兼容 & 可作辅助，不能覆盖明确逻辑 \\
+“核心词复现至少两次” & 不进入稳定核心 & 删除固定阈值 \\
+“显眼词正确率 90\%+” & 不进入稳定核心 & 无稳定证据，不作为规则 \\
+结构决定论 & 结构与语义共同约束 & 取消“结构压倒内容” \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{第 20 章：与阅读理解专题的接口}
+
+新题型训练出来的以下能力会直接服务后续阅读理解：
+\begin{itemize}
+  \item 指代恢复：知道代词究竟指什么；
+  \item 语篇关系：知道一句话为什么接在另一句话后；
+  \item 段落功能：能够区分观点、解释、例子和结论；
+  \item 概念改写：识别同义替换与抽象概括；
+  \item 证据层级：不让表面词汇相似推翻直接逻辑证据。
+\end{itemize}
+
+但阅读理解将进一步研究：
+\[
+\text{题干目标}
+\rightarrow
+\text{文本证据}
+\rightarrow
+\text{命题理解}
+\rightarrow
+\text{选项判断/推断}.
+\]
+这些不在本册展开，以避免专题之间重复。
+
+\newpage
+\section{第 21 章：一页压缩——新题型最终要留下什么？}
+
+\begin{corebox}[总母模型]
+\[
+\boxed{
+\textbf{新题型 = 根据可验证的关系，恢复被破坏的语篇结构。}
+}
+\]
+语篇结构由三部分组成：
+\[
+\boxed{
+\text{语篇单元}
++
+\text{单元关系}
++
+\text{单元功能}
+}
+\]
+\end{corebox}
+
+\subsection{三种题型}
+\begin{center}
+\begin{tikzpicture}[node distance=0.55cm]
+\node[cnodeblue,minimum width=3.3cm] (t1) {七选五\\[-1pt]\scriptsize 恢复缺失句子 ($L \to C \to R$)};
+\node[cnodeorange,right=of t1,minimum width=3.3cm] (t2) {段落排序\\[-1pt]\scriptsize 恢复先后关系 ($P_a \to P_b$)};
+\node[cnodegreen,right=of t2,minimum width=3.5cm] (t3) {小标题\\[-1pt]\scriptsize 恢复段落功能标签 (Heading)};
+
+\draw[mainflow] (t1) -- (t2);
+\draw[altflow] (t2) -- (t3);
+\end{tikzpicture}
+\end{center}
+
+\subsection{16.2 六类关系}
+\begin{center}
+\begin{tikzpicture}[node distance=0.30cm]
+\node[cnodeblue,minimum width=2.15cm] (r1) {1. 指代\\[-1pt]\scriptsize 代词/指示};
+\node[cnodeblue,right=of r1,minimum width=2.15cm] (r2) {2. 词汇\\[-1pt]\scriptsize 概念链};
+\node[cnodeteal,right=of r2,minimum width=2.15cm] (r3) {3. 逻辑\\[-1pt]\scriptsize 因果/转折};
+\node[cnodeorange,right=of r3,minimum width=2.15cm] (r4) {4. 时间\\[-1pt]\scriptsize 事件顺序};
+\node[cnodepurple,right=of r4,minimum width=2.15cm] (r5) {5. 结构\\[-1pt]\scriptsize 成对平行};
+\node[cnodegreen,right=of r5,minimum width=2.25cm] (r6) {6. 功能\\[-1pt]\scriptsize 段落角色};
+
+\draw[mainflow] (r1) -- (r2);
+\draw[mainflow] (r2) -- (r3);
+\draw[mainflow] (r3) -- (r4);
+\draw[mainflow] (r4) -- (r5);
+\draw[altflow] (r5) -- (r6);
+\end{tikzpicture}
+\end{center}
+
+\subsection{七选五}
+\[
+\boxed{
+L\rightarrow C\rightarrow R
+}
+\]
+必须同时验证左右两侧。
+
+\subsection{排序}
+\[
+\boxed{
+\text{强关系}
+\rightarrow
+\text{短链}
+\rightarrow
+\text{链合并}
+\rightarrow
+\text{全文验证}
+}
+\]
+
+\subsection{小标题}
+\[
+\boxed{
+\text{Paragraph}
+\rightarrow
+\text{Topic}+\text{Claim/Action}
+\rightarrow
+\text{Heading}
+}
+\]
+
+\begin{exam}[考场总检查]
+面对任何一个新题型判断，依次问：
+\begin{enumerate}
+  \item 我现在恢复的是句子、顺序还是段落功能？
+  \item 最强的方向性约束是什么？
+  \item 指代对象是否完整？
+  \item 两个单元之间具体是什么逻辑/时间/功能关系？
+  \item 原词复现是在证明关系，还是只是在制造表面相似？
+  \item 局部关系成立以后，放回全文是否仍然连贯？
+\end{enumerate}
+\end{exam}
+
+\begin{corebox}[最终口诀]
+\centering
+\Large\bfseries
+先恢复关系，再决定位置；\\
+先解释为什么连，再判断读起来顺不顺。
+\end{corebox}
+
+\end{document}

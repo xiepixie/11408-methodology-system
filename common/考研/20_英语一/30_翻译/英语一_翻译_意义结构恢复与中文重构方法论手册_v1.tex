@@ -1,0 +1,1288 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.70cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,matrix,backgrounds}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{pifont}
+\usepackage{caption}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlength{\parindent}{2em}
+\setcounter{secnumdepth}{0}
+\setlength{\parskip}{0.28em}
+\setlist[itemize]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!50!black,pdftitle={英语一翻译：意义结构恢复与中文重构}}
+
+\definecolor{mainblue}{RGB}{43,85,135}
+\definecolor{deepblue}{RGB}{28,60,98}
+\definecolor{softblue}{RGB}{238,245,252}
+\definecolor{softgreen}{RGB}{238,249,243}
+\definecolor{softorange}{RGB}{253,246,233}
+\definecolor{softred}{RGB}{253,239,239}
+\definecolor{softgray}{RGB}{246,247,249}
+\definecolor{deepgreen}{RGB}{35,105,75}
+\definecolor{deeporange}{RGB}{165,98,22}
+\definecolor{deepred}{RGB}{150,55,55}
+\definecolor{purple}{RGB}{94,66,140}
+\definecolor{softpurple}{RGB}{245,241,251}
+\definecolor{teal}{RGB}{38,112,115}
+\definecolor{softteal}{RGB}{238,248,248}
+\definecolor{gold}{RGB}{156,120,28}
+\definecolor{softgold}{RGB}{252,249,235}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{英语一 · 翻译方法论}
+\rhead{意义结构恢复与中文重构}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\newtcolorbox{corebox}[1][]{colback=softblue,colframe=mainblue,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{exam}[1][]{colback=softorange,colframe=deeporange,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warn}[1][]{colback=softred,colframe=deepred,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{eng}[1][]{colback=softgreen,colframe=deepgreen,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{method}[1][]{colback=softgray,colframe=black!45,title=#1,fonttitle=\bfseries,boxrule=0.6pt,arc=2mm}
+\newtcolorbox{bridge}[1][]{colback=softpurple,colframe=purple,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{statebox}[1][]{colback=softteal,colframe=teal,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{history}[1][]{colback=softgold,colframe=gold,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+
+\newcommand{\kw}[1]{\textbf{#1}}
+\newcommand{\yes}{\textcolor{deepgreen}{\ding{51}}}
+\newcommand{\no}{\textcolor{deepred}{\ding{55}}}
+\newcommand{\term}[2]{\textbf{#1（#2）}}
+
+% ---- Figure grammar: direct topology & semantic color system ----
+\tikzset{
+  cnode/.style={draw=mainblue,rounded corners=1.8mm,minimum width=2.65cm,minimum height=0.92cm,
+    align=center,inner sep=3pt,font=\small,fill=softblue,line width=0.8pt},
+  cnodeblue/.style={cnode,draw=mainblue,fill=softblue},
+  cnodeg/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodegreen/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodeo/.style={cnode,draw=deeporange,fill=softorange},
+  cnodeorange/.style={cnode,draw=deeporange,fill=softorange},
+  cnodep/.style={cnode,draw=purple,fill=softpurple},
+  cnodepurple/.style={cnode,draw=purple,fill=softpurple},
+  cnodet/.style={cnode,draw=teal,fill=softteal},
+  cnodeteal/.style={cnode,draw=teal,fill=softteal},
+  cnodered/.style={cnode,draw=deepred,fill=softred,font=\small\bfseries},
+  cnodegray/.style={cnode,draw=black!45,fill=softgray},
+  mainflow/.style={-{Latex[length=2.2mm,width=1.5mm]},line width=1.0pt,draw=deepblue},
+  altflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepgreen},
+  returnflow/.style={-{Latex[length=2.0mm,width=1.4mm]},densely dashed,line width=0.85pt,draw=purple},
+  dangerflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepred},
+  optflow/.style={-{Latex[length=1.8mm,width=1.3mm]},dotted,line width=0.85pt,draw=teal},
+  labelnote/.style={font=\scriptsize\bfseries,fill=white,inner sep=1.5pt,rounded corners=0.5mm,text=black!80,draw=black!25,line width=0.4pt},
+  boxgroup/.style={draw=black!25,dashed,rounded corners=2mm,fill=black!2,inner sep=6pt}
+}
+
+\title{\vspace{-1.15cm}\textbf{英语一 · 翻译方法论手册}\\[0.35em]
+\large 意义结构恢复与中文重构：从英文形式到准确中文表达}
+\author{个人认知系统 · 英语一专题手册}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}[一句话母模型]
+翻译不是把英文单词逐个替换成中文，也不是先追求“像中文”再回头补意思。它的核心任务是：
+\[
+\boxed{
+\text{英文形式}
+\xrightarrow{\text{恢复}}
+\text{意义结构}
+\xrightarrow{\text{重构}}
+\text{中文形式}
+}
+\]
+允许改变的是\kw{表面表达形式}；必须尽量保持的是原文的\kw{命题内容、参与者关系、逻辑关系、指代、作用范围与语气强度}。
+\end{corebox}
+
+\tableofcontents
+\newpage
+
+\section{第 0 章：本册在英语一认知体系中的位置}
+
+\subsection{0.1 翻译与阅读的根本区别}
+阅读和翻译都需要理解英文，但二者的任务不同。
+
+阅读的主要目标是回答问题，因此允许根据题目目标分配注意力：某些背景信息可能只需快速处理。翻译则要求把指定句子的意义重新表达出来，因此不能因为某一成分“看起来次要”就擅自删除。
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.16\linewidth} X X}
+\toprule
+任务 & 核心目标 & 对信息的处理要求 \\
+\midrule
+阅读理解 & 获得足够信息以完成题目判断 & 可以依据任务目标分配注意力 \\
+翻译 & 将指定英文句子的意义重新表达为中文 & 原文承载的有效信息原则上都要保留 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+因此，阅读中“抓主干、暂缓次要修饰”的策略不能直接变成翻译中的“删除修饰”。翻译可以\kw{重组}信息，但不能无依据地\kw{丢失}信息。
+
+\subsection{0.2 语法在翻译中的唯一职责}
+语法知识在本册中不以“给句子贴标签”为目标。
+
+知道一个结构叫“定语从句”“同位语从句”本身并不能保证翻译正确。语法真正的价值是帮助恢复以下关系：
+\begin{itemize}
+  \item 谁是动作或状态的主体；
+  \item 动作作用于谁或什么；
+  \item 某个修饰成分到底修饰谁；
+  \item 两个分句之间是什么逻辑关系；
+  \item 省略、倒装、后置之后，完整意义结构是什么。
+\end{itemize}
+
+可以压缩成：
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeblue,minimum width=3.4cm] (syn) {语法分析\\[-1pt]\scriptsize 识别结构成分};
+\node[cnodegreen,right=of syn,minimum width=3.4cm] (sem) {意义关系恢复\\[-1pt]\scriptsize 确定命题与依赖};
+
+\draw[mainflow] (syn) -- node[labelnote,above=2pt] {目标转向} (sem);
+\end{tikzpicture}
+\end{center}
+而不是：
+\[
+\text{语法分析} \longrightarrow \text{术语识别}.
+\]
+
+\begin{bridge}[与完形、新题型专题的接口]
+完形填空研究“候选词怎样满足多层语言约束”；新题型研究“语篇单元怎样通过衔接和连贯形成结构”；翻译会继续使用这些语言知识，但本册拥有的核心问题是：\kw{如何从英文形式恢复完整意义，再把同一意义重新组织成中文。}
+\end{bridge}
+
+\newpage
+\section{Part I：统一心智模型——改变形式，不改变意义}
+
+\section{第 1 章：翻译到底在转换什么？}
+
+\subsection{1.1 从逐词替换转向意义恢复}
+初学翻译时最自然的动作是：
+\[
+\text{English word} \rightarrow \text{Chinese word}.
+\]
+这对简单句有时勉强可行，但一旦出现长定语、倒装、抽象名词、否定范围或复杂比较，逐词替换就会失效。
+
+原因在于，句子的意义不等于单词意思的简单相加。真正需要恢复的是：
+\begin{itemize}
+  \item 谁参与了这个事件或关系；
+  \item 谁对谁做了什么；
+  \item 哪些成分修饰哪些对象；
+  \item 几个事件之间是什么关系；
+  \item 否定、比较和情态分别作用到哪里。
+\end{itemize}
+
+本册把这些信息统称为\term{意义结构}{meaning structure}。这里的“结构”不是指英文表面的词序，而是指句子真正表达的关系网络。
+
+\begin{eng}[例 1：词序不是意义结构]
+The proposal was rejected by the committee after months of debate.
+\end{eng}
+表面词序是“proposal - was rejected - by committee”，但核心意义关系是：
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeblue,minimum width=3.2cm] (sub) {施事: \texttt{committee}\\[-1pt]\scriptsize 委员会};
+\node[cnodeorange,right=of sub,minimum width=3.2cm] (obj) {受事: \texttt{proposal}\\[-1pt]\scriptsize 提议};
+
+\draw[mainflow] (sub) -- node[labelnote,above=2pt] {核心动作: \texttt{reject}} (obj);
+
+\node[draw=teal,fill=softteal,rounded corners=1.2mm,inner sep=3.5pt,font=\scriptsize\bfseries\color{teal},below=0.60cm of sub.east,anchor=north] (timenote)
+  {时间背景: \texttt{after months of debate} (经过数月讨论后)};
+\end{tikzpicture}
+\end{center}
+中文既可以说“该提议在数月讨论后被委员会否决”，也可以说“委员会经过数月讨论后否决了该提议”。两种形式不同，但核心意义关系没有改变。
+
+\subsection{1.2 表征转换：为什么中文可以重新组织？}
+\term{表征转换}{representation transformation} 指同一意义可以用不同的语言形式表示。这个概念用于解释：为什么翻译允许调序、拆句、合句和词性转换，却又不能随意改意思。
+
+例如：
+\begin{eng}[例 2：名词结构可以转换为动词表达]
+His refusal to accept the proposal surprised everyone.
+\end{eng}
+如果机械对应：
+\begin{quote}
+“他的对接受该提议的拒绝使所有人惊讶。”
+\end{quote}
+中文非常生硬。恢复意义后可以写成：
+\begin{quote}
+“他拒绝接受这一提议，这让所有人都感到意外。”
+\end{quote}
+英文中的名词 \texttt{refusal} 被重构成中文动词“拒绝”，但“他不接受提议”以及“这件事使众人意外”的意义没有改变。
+
+因此：
+\[
+\boxed{\text{形式可变} \qquad \text{意义受约束}}
+\]
+
+\section{第 2 章：六类意义不变量——翻译中什么不能被改掉？}
+
+\subsection{2.1 命题内容：谁发生了什么？}
+最基本的不变量是句子陈述的事实、判断或事件本身。
+
+\begin{eng}[例 3]
+Researchers questioned the assumption.
+\end{eng}
+核心结构是：
+\[
+\text{Researchers}
+\xrightarrow{\text{question}}
+\text{assumption}.
+\]
+译文无论怎样调整，都不能把施事和受事调换。
+
+\subsection{2.2 参与者关系：谁修饰谁、谁作用于谁？}
+长句中最常见的严重错误之一，是把相邻成分误认为存在修饰关系。
+
+\begin{eng}[例 4]
+the researchers who developed the method
+\end{eng}
+正确关系是：
+\[
+\text{who developed the method}
+\longrightarrow
+\text{researchers}.
+\]
+这里的关键不在于记住“who 引导定语从句”，而在于恢复：\kw{开发该方法的人就是这些研究人员。}
+
+本册后文把“一个修饰成分到底连接到哪个对象”称为\term{附着关系}{attachment}。判断附着关系，是处理隔离结构、长定语和插入成分的核心。
+
+\subsection{2.3 逻辑关系：两个意义单元为什么连接？}
+若两个分句之间存在原因、条件、让步、转折、目的或比较关系，这种关系本身就是意义的一部分。
+
+\begin{eng}[例 5]
+Although the method is expensive, it remains widely used.
+\end{eng}
+这里不是两个独立事实简单并列，而是：
+\[
+\text{昂贵}
+\xrightarrow{\text{让步关系}}
+\text{仍被广泛使用}.
+\]
+译文可以调整语序，但必须让读者仍然理解“昂贵并没有阻止其被广泛使用”。
+
+\subsection{2.4 指代关系：代词到底指向谁？}
+\term{指代}{reference} 指一个表达式通过上下文指向另一个已经建立的对象，例如 \texttt{it, they, this, these findings}。
+
+翻译时若中文代词会造成歧义，应恢复具体指代对象。
+
+\begin{eng}[例 6]
+The new policy altered the funding system, and this caused further debate.
+\end{eng}
+\texttt{this} 可以理解为“这一变化”或“这项政策造成的调整”。若直接译为“这引发了进一步争论”而上下文有多个可能对象，就应具体化为：
+\begin{quote}
+“这一变化又引发了进一步争论。”
+\end{quote}
+
+\subsection{2.5 作用范围：否定、限定和比较到底管到哪里？}
+\term{作用范围}{scope} 指否定词、限定词、比较结构或情态成分实际控制的意义区域。
+
+\begin{eng}[例 7]
+Not all researchers agree with this conclusion.
+\end{eng}
+\texttt{not} 的作用范围不是简单否定 \texttt{agree}，而是否定“all researchers agree”这一全称命题。因此：
+\begin{quote}
+“并非所有研究人员都赞同这一结论。”
+\end{quote}
+不能译成：
+\begin{quote}
+“所有研究人员都不赞同这一结论。”
+\end{quote}
+后者把部分否定错误改成了全体否定。
+
+\subsection{2.6 语气强度：作者到底说得有多确定？}
+学术英语经常用\term{情态}{modality} 控制断言强度。例如：
+\[
+\texttt{may} < \texttt{is likely to} < \texttt{will}
+\]
+这里只表示一般意义上的强度差异，不是固定数学刻度。
+
+\begin{eng}[例 8]
+The findings may suggest that the effect is temporary.
+\end{eng}
+稳妥译法是：
+\begin{quote}
+“这些发现可能表明，这种影响是暂时的。”
+\end{quote}
+若直接译为“这些发现证明这种影响是暂时的”，就把原文的谨慎推断强化成确定结论，意义发生了改变。
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.18cm]
+% 6 Stacked Evidence Cards (Center Column with locked text width)
+\node[cnode,draw=deepgreen,fill=softgreen,minimum width=9.2cm,text width=8.7cm,inner sep=4pt] (ea)
+  {\textbf{\color{deepgreen}1 级 · 命题内容 (Propositional Content)}\hfill\textbf{\color{deepgreen}[核心事实]}\\[1.5pt]
+   \scriptsize\color{black!80} 谁发生了什么事，陈述的客观事实与判断本身 (不可翻反)};
+
+\node[cnode,draw=mainblue,fill=softblue,below=0.18cm of ea,minimum width=9.2cm,text width=8.7cm,inner sep=4pt] (eb)
+  {\textbf{\color{mainblue}2 级 · 参与者与附着关系 (Participants \& Attachment)}\hfill\textbf{\color{mainblue}[结构依赖]}\\[1.5pt]
+   \scriptsize\color{black!80} 施事受事关系、修饰成分具体附着到哪个名词对象};
+
+\node[cnode,draw=teal,fill=softteal,below=0.18cm of eb,minimum width=9.2cm,text width=8.7cm,inner sep=4pt] (ec)
+  {\textbf{\color{teal}3 级 · 逻辑关系 (Logical Relations)}\hfill\textbf{\color{teal}[连接依赖]}\\[1.5pt]
+   \scriptsize\color{black!80} 原因、条件、让步、转折、目的、比较等命题间逻辑};
+
+\node[cnode,draw=purple,fill=softpurple,below=0.18cm of ec,minimum width=9.2cm,text width=8.7cm,inner sep=4pt] (ed)
+  {\textbf{\color{purple}4 级 · 指代关系 (Reference)}\hfill\textbf{\color{purple}[上下文指称]}\\[1.5pt]
+   \scriptsize\color{black!80} 代词与指示表达(it/this/they)在上下文中的唯一实体对象};
+
+\node[cnode,draw=deeporange,fill=softorange,below=0.18cm of ed,minimum width=9.2cm,text width=8.7cm,inner sep=4pt] (ee)
+  {\textbf{\color{deeporange}5 级 · 作用范围 (Scope Control)}\hfill\textbf{\color{deeporange}[控制边界]}\\[1.5pt]
+   \scriptsize\color{black!80} 否定(not)、限定(only)、比较(than/as)实际控制的语义区域};
+
+\node[cnode,draw=deepred,fill=softred,below=0.18cm of ee,minimum width=9.2cm,text width=8.7cm,inner sep=4pt] (ef)
+  {\textbf{\color{deepred}6 级 · 语气与情态强度 (Modality)}\hfill\textbf{\color{deepred}[语气边界]}\\[1.5pt]
+   \scriptsize\color{black!80} 可能(may)、倾向(tend to)、证明(prove)、必须(must)等断言强度};
+
+% 1. Left Rank Pillar Container (fitted to ea.north and ef.south)
+\coordinate (ltop) at ($(ea.north west)+(-0.35,0)$);
+\coordinate (lbot) at ($(ef.south west)+(-0.35,0)$);
+\node[draw=deepgreen,fill=softgreen,rounded corners=1.8mm,line width=0.8pt,
+      fit=(ltop)(lbot),anchor=east,minimum width=1.40cm,inner sep=0pt] (rankbox) {};
+% Centered Text inside Left Pillar
+\node[font=\small\bfseries\color{deepgreen},align=center] at (rankbox.center)
+  {\begin{tabular}{c} 严\\格\\受\\控\\不\\变\\项\\[3pt]$\mathbf{\uparrow}$ \end{tabular}};
+
+% 2. Right Warning Pillar Container (fitted to ea.north and ef.south)
+\coordinate (rtop) at ($(ea.north east)+(0.35,0)$);
+\coordinate (rbot) at ($(ef.south east)+(0.35,0)$);
+\node[draw=deepred,fill=softred,rounded corners=1.8mm,line width=0.7pt,
+      fit=(rtop)(rbot),anchor=west,minimum width=2.40cm,inner sep=0pt] (warnbox) {};
+% Centered Text inside Right Pillar
+\node[font=\scriptsize\bfseries\color{deepred},align=center] at (warnbox.center)
+  {\begin{tabular}{c} 核心纪律\\[6pt] 形式可变\\[4pt] 绝不可改变\\[4pt] 核心意义\\[1pt](1-6 级) \end{tabular}};
+\end{tikzpicture}
+\end{center}
+
+\begin{corebox}[六项检查]
+任何复杂句翻译完成后，都必须反查上述 6 项不变量是否忠实保留。
+\end{corebox}
+
+\newpage
+\section{Part II：理解阶段——从英文形式恢复意义结构}
+
+\section{第 3 章：第一步，切分——先确定句子里有几个意义单元}
+
+\subsection{3.1 为什么必须先切分？}
+面对长句，如果从第一个单词开始连续替换中文，大脑必须同时维持太多未完成关系。句子越长，越容易在后半段忘记前面谁是主语、哪个从句修饰谁。
+
+因此第一步不是翻译，而是把长句切分成若干能够独立理解的\kw{意义单元}。为了书写方便，本册用符号
+\[
+U_1,U_2,U_3,\ldots
+\]
+表示这些单元，其中字母 $U$ 只是英文 \textit{unit}（单元）的缩写。它不是语法类别，只用于帮助我们在草稿上讨论不同意义块之间的关系。
+
+\subsection{3.2 切分优先寻找什么？}
+优先寻找：
+\begin{itemize}
+  \item 有限谓语动词；
+  \item 明确连词或关系词；
+  \item 分号、冒号、破折号、逗号等结构边界；
+  \item 能形成独立动作或状态的非谓语结构；
+  \item 插入语的起止边界。
+\end{itemize}
+
+\begin{eng}[例 9：先切分，不急着译]
+Because the evidence was incomplete, the committee postponed its decision, allowing researchers to collect additional data.
+\end{eng}
+可以先切成：
+\[
+\begin{aligned}
+U_1 &: \text{the evidence was incomplete}\\
+U_2 &: \text{the committee postponed its decision}\\
+U_3 &: \text{allowing researchers to collect additional data}
+\end{aligned}
+\]
+然后再恢复关系：
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeblue,minimum width=2.8cm] (u1) {$U_1$\\[-1pt]\scriptsize 证据不完整};
+\node[cnodeorange,right=of u1,minimum width=2.8cm] (u2) {$U_2$\\[-1pt]\scriptsize 委员会推迟决定};
+\node[cnodegreen,right=of u2,minimum width=2.8cm] (u3) {$U_3$\\[-1pt]\scriptsize 允许研究员收集数据};
+
+\draw[mainflow] (u1) -- node[labelnote,above=2pt] {原因关系} (u2);
+\draw[altflow] (u2) -- node[labelnote,above=2pt] {结果/伴随} (u3);
+\end{tikzpicture}
+\end{center}
+这样比从 \texttt{Because} 开始逐词翻译更稳。
+
+\subsection{3.3 切分不是“见逗号就断句”}
+标点只是线索，不是决定关系的唯一依据。一个逗号可能隔开：
+\begin{itemize}
+  \item 状语从句；
+  \item 非限定性定语从句；
+  \item 插入语；
+  \item 并列成分；
+  \item 非谓语结构。
+\end{itemize}
+因此切分以后仍必须进入下一步：\kw{还原这些单元真正属于谁、彼此是什么关系。}
+
+\section{第 4 章：第二步，还原——找出“谁做什么、谁和谁相连”}
+
+\subsection{4.1 谓词和论元：为什么比“主谓宾”更通用？}
+本册使用\term{谓词}{predicate} 指表达动作、状态或关系的核心，例如 \texttt{reject, remain, cause, be vulnerable to}；使用\term{论元}{argument} 指参与这个动作或关系的人、物或内容。
+
+引入这两个术语，是因为英语句子不一定都有传统“主谓宾”三件套，但几乎都可以问：
+\[
+\boxed{\text{核心关系是什么？谁参与了这个关系？}}
+\]
+
+例如：
+\begin{eng}[例 10]
+Migrating birds are particularly vulnerable to this danger.
+\end{eng}
+核心关系是：
+\[
+\text{vulnerable to}(
+\text{migrating birds},
+\text{danger})
+\]
+中文只需恢复为：“迁徙鸟类尤其容易受到这种危险的影响/伤害。”
+
+\subsection{4.2 还原主干不等于删掉枝叶}
+找主干的目的是建立骨架，不是把修饰信息扔掉。
+
+建议草稿先写：
+\begin{method}[骨架记录法]
+先写出最短命题：
+\[
+\text{谁} \rightarrow \text{做什么/处于什么状态} \rightarrow \text{对谁/什么}
+\]
+再把定语、状语、插入语、同位说明逐一挂回相应对象。
+\end{method}
+
+\subsection{4.3 附着关系：线性距离不等于语义关系}
+复杂句经常把真正相关的成分隔开。判断修饰成分归属时，不要只看“离谁最近”，而要检查：
+\begin{enumerate}
+  \item 语法上谁允许接受这个修饰；
+  \item 语义上谁与该成分合理搭配；
+  \item 如果连接到另一个名词，是否造成明显语义冲突。
+\end{enumerate}
+
+\begin{eng}[例 11：插入语造成隔离]
+The proposal, after several rounds of revision, that the committee finally approved was substantially different from the original draft.
+\end{eng}
+这里 \texttt{that the committee finally approved} 仍然修饰 \texttt{proposal}。中间的 \texttt{after several rounds of revision} 只是插入背景。意义结构应先恢复成：
+\[
+\text{the proposal [that the committee finally approved]}
+\]
+再处理插入成分。
+
+\section{第 5 章：第三步的一部分——恢复从句和单元之间的逻辑关系}
+
+\subsection{5.1 关系词是证据，不是自动翻译公式}
+\texttt{because, although, while, if, since, as} 等词的价值在于提示候选关系，但同一个词可能有不同功能。例如 \texttt{since} 可以表示原因，也可以表示时间。
+
+因此稳定流程是：
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeorange,minimum width=3.3cm] (m) {1. 关系标记\\[-1pt]\scriptsize 识别 because/since/while};
+\node[cnodepurple,right=of m,minimum width=3.3cm] (h) {2. 候选逻辑\\[-1pt]\scriptsize 提出因果/让步假设};
+\node[cnodegreen,right=of h,minimum width=3.4cm] (v) {3. 结合句义验证\\[-1pt]\scriptsize 命题事实方向核对};
+
+\draw[mainflow] (m) -- (h);
+\draw[altflow] (h) -- (v);
+\end{tikzpicture}
+\end{center}
+而不是：
+\[
+\texttt{since} \rightarrow \text{“因为”}.
+\]
+
+\subsection{5.2 原因、条件、让步、转折的处理目标}
+翻译时真正要保持的是关系，而不是英文连接词的表面位置。
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.14\linewidth} >{\raggedright\arraybackslash}p{0.36\linewidth} Y}
+\toprule
+关系 & 要恢复的问题 & 中文重构时允许做什么 \\
+\midrule
+原因 & 为什么发生？ & 可根据中文习惯调整因果顺序，但不能倒置因果 \\
+条件 & 在什么条件下成立？ & 可前置或后置条件，必须保留条件范围 \\
+让步 & 哪个事实本应阻碍结论却没有阻碍？ & 可译“虽然/尽管……但是……”，不可把让步改成因果 \\
+转折/对比 & 哪两项形成预期落差或差异？ & 可调整连接形式，但必须保留对比双方 \\
+目的 & 行动是为了什么？ & 可译“为了/以便/从而能够”，注意不要误译成已发生结果 \\
+结果 & 前文造成了什么后果？ & 可用“因此/从而/结果是”等重构 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{5.3 定语从句：先判断功能，再决定中文位置}
+定语从句的第一问题不是“前置还是后置”，而是：\kw{它为先行词提供什么信息？}
+
+\begin{itemize}
+  \item \kw{限定信息}：帮助确定“到底是哪一个对象”；
+  \item \kw{补充信息}：对象已经明确，从句继续补充关于它的说明。
+\end{itemize}
+
+随后再判断中文若前置会不会过长、过重。
+
+\begin{eng}[例 12：短限定信息]
+Researchers who use this method must report the uncertainty of their estimates.
+\end{eng}
+可以自然译为：
+\begin{quote}
+“采用这种方法的研究人员必须报告其估计结果的不确定性。”
+\end{quote}
+
+\begin{eng}[例 13：补充信息更适合分句]
+The report, which was released after months of investigation, raised new questions about the policy.
+\end{eng}
+可以译为：
+\begin{quote}
+“这份报告是在历时数月的调查之后发布的，它又引出了有关该政策的新问题。”
+\end{quote}
+也可以根据上下文合并为更紧凑的中文。决定因素是\kw{信息功能和中文负荷}，不是机械的“长从句必须后置”。
+
+\subsection{5.4 同位说明和名词性从句：抽象名词后面的内容往往才是核心}
+当 \texttt{fact, idea, claim, assumption, evidence, possibility} 等抽象名词后面跟从句时，需要先判断后面的从句是在\kw{说明这个名词的具体内容}，还是在\kw{修饰这个名词所指的对象}。
+
+对于翻译而言，名称区分不是最终目的。核心问题是：
+\[
+\boxed{\text{抽象标签的具体内容是什么？}}
+\]
+例如：
+\begin{eng}[例 14]
+The assumption that economic growth would automatically reduce inequality has been widely questioned.
+\end{eng}
+先恢复：
+\[
+\text{assumption} = \text{economic growth would automatically reduce inequality}.
+\]
+再译：
+\begin{quote}
+“经济增长会自动缩小不平等差距这一假设，已经受到广泛质疑。”
+\end{quote}
+
+\newpage
+\section{第 6 章：高风险意义——指代、否定、比较、限定与情态}
+
+\subsection{6.1 为什么这一章比“特殊句型清单”更重要？}
+有些结构即使词义和主干都认识，只要作用范围理解错，整句事实条件就会改变。这类错误通常比中文不够自然更严重。
+
+因此翻译时要单独检查：
+\begin{center}
+\begin{tikzpicture}[node distance=0.30cm]
+\node[cnodeblue,minimum width=2.2cm] (k1) {1. 指代\\[-1pt]\scriptsize Reference};
+\node[cnodeteal,right=of k1,minimum width=2.2cm] (k2) {2. 否定\\[-1pt]\scriptsize Negation};
+\node[cnodeorange,right=of k2,minimum width=2.2cm] (k3) {3. 比较\\[-1pt]\scriptsize Comparison};
+\node[cnodepurple,right=of k3,minimum width=2.2cm] (k4) {4. 限定\\[-1pt]\scriptsize Limitation};
+\node[cnodered,right=of k4,minimum width=2.3cm] (k5) {5. 情态\\[-1pt]\scriptsize Modality};
+
+\draw[mainflow] (k1) -- (k2);
+\draw[mainflow] (k2) -- (k3);
+\draw[mainflow] (k3) -- (k4);
+\draw[dangerflow] (k4) -- (k5);
+\end{tikzpicture}
+\end{center}
+这些英文词分别表示指代、否定、比较、限定和情态；它们共同决定“句子究竟断言到什么程度”。
+
+\subsection{6.2 否定：先确定否定范围，再决定中文形式}
+\begin{eng}[例 15]
+The new evidence does not necessarily invalidate the earlier conclusion.
+\end{eng}
+关键不是 \texttt{not}，而是 \texttt{not necessarily}：
+\begin{quote}
+“新的证据未必会使先前的结论失效。”
+\end{quote}
+不能简单翻成“新的证据不会使先前的结论失效”，因为原文只否定“必然失效”。
+
+\subsection{6.3 比较：先找比较对象，再找比较维度}
+看到 \texttt{than, as...as, more, less} 时先问：
+\begin{enumerate}
+  \item 谁和谁比？
+  \item 比的是什么属性？
+  \item 否定词是否改变整个比较关系？
+\end{enumerate}
+
+\begin{eng}[例 16]
+The method is no less useful in small studies than in large ones.
+\end{eng}
+核心不是逐词翻 \texttt{no less...than}，而是恢复比较命题：
+\[
+\text{usefulness in small studies}
+\geq
+\text{usefulness in large studies}
+\]
+自然中文可以是：
+\begin{quote}
+“这种方法用于小规模研究时同样具有价值，并不逊于其在大规模研究中的作用。”
+\end{quote}
+
+\subsection{6.4 only、even、at least 等限定词不可随意弱化}
+这些词决定信息边界。例如：
+\begin{eng}[例 17]
+Only under these conditions can the result be reproduced.
+\end{eng}
+不仅有倒装，还存在严格限定：
+\begin{quote}
+“只有在这些条件下，这一结果才可以被重复得到。”
+\end{quote}
+若漏掉“只有……才……”，意义强度会明显改变。
+
+\subsection{6.5 情态和证据强度必须保持}
+建议把常见表达按功能理解，而不是机械背一一对应译法：
+\begin{center}
+\small
+\begin{tabularx}{0.92\linewidth}{>{\ttfamily}p{0.22\linewidth} X}
+\toprule
+表达 & 需要保留的意义 \\
+\midrule
+may / might & 可能性，不是确定事实 \\
+appear / seem & 观察或推断上的“似乎” \\
+tend to & 一般倾向，不是绝对规律 \\
+suggest / indicate & 提供支持或迹象，通常弱于 prove \\
+must & 在具体语境中可能表示义务，也可能表示强推断 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{第 7 章：词义确定——不是寻找“僻义”，而是寻找能让结构成立的词义}
+
+\subsection{7.1 词义选择的五个证据来源}
+一个多义词在当前句中的合适词义，通常由以下因素共同限制：
+\begin{center}
+\begin{tikzpicture}[node distance=0.30cm]
+\node[cnodeblue,minimum width=2.2cm] (d1) {1. 句法角色\\[-1pt]\scriptsize 动词/名词/修饰};
+\node[cnodeblue,right=of d1,minimum width=2.2cm] (d2) {2. 搭配习惯\\[-1pt]\scriptsize 动宾/介词短语};
+\node[cnodeteal,right=of d2,minimum width=2.2cm] (d3) {3. 领域语境\\[-1pt]\scriptsize 学科/专业范畴};
+\node[cnodeorange,right=of d3,minimum width=2.2cm] (d4) {4. 当前命题\\[-1pt]\scriptsize 事实合理性};
+\node[cnodegreen,right=of d4,minimum width=2.3cm] (d5) {5. 上下文\\[-1pt]\scriptsize 概念一致性};
+
+\draw[mainflow] (d1) -- (d2);
+\draw[mainflow] (d2) -- (d3);
+\draw[mainflow] (d3) -- (d4);
+\draw[altflow] (d4) -- (d5);
+\end{tikzpicture}
+\end{center}
+因此“熟词僻义”的正确训练方法不是专门背一张“反常词义表”，而是训练在语境中重新选择词义。
+
+\subsection{7.2 词义代入检验}
+当一个词有多个候选含义时，可以按以下顺序检查：
+\begin{enumerate}
+  \item 该词在句中是什么词性和句法角色？
+  \item 它与附近词形成什么搭配？
+  \item 文章讨论的领域是什么？
+  \item 代入这个词义后，完整命题是否合理？
+  \item 是否与上下文前后信息冲突？
+\end{enumerate}
+
+\begin{eng}[例 18：不能只取第一词义]
+The new regulations may shape future investment decisions.
+\end{eng}
+\texttt{shape} 的常见实体义是“形状”，但这里作动词，与 \texttt{decisions} 搭配，表示“塑造、影响……的形成”。译为：
+\begin{quote}
+“这些新规定可能会影响未来投资决策的形成。”
+\end{quote}
+
+\subsection{7.3 专有名词：先保证可识别，再追求译名规范}
+专有名词处理遵循三条稳定原则：
+\begin{enumerate}
+  \item 有公认中文译名时使用规范译名；
+  \item 没有把握时，优先避免创造一个看似确定却错误的中文名称；
+  \item 专有名词在句中仍然要恢复其语法和语义角色，不能因为“不认识名字”而看不见整个句子骨架。
+\end{enumerate}
+
+\begin{warn}[不要把专有名词变成结构障碍]
+长句中即使完全不知道某个人名、机构名的中文译法，也通常仍能判断：它是主语、宾语、同位说明还是修饰对象。先恢复结构，再处理译名。
+\end{warn}
+
+\newpage
+\section{Part III：结构错配——表面位置为什么会欺骗理解？}
+
+\section{第 8 章：四类高风险结构的统一解释}
+
+\subsection{8.1 统一原则：表面顺序不等于逻辑结构}
+宾语后置、隔离、倒装和省略看似是四种技巧，实际上都来自同一个困难：
+\[
+\boxed{\text{Surface Order} \neq \text{Logical Structure}}
+\]
+其中 \textit{Surface Order} 指句子表面的线性排列，\textit{Logical Structure} 指真实的语法和意义关系。
+
+\subsection{8.2 后置：真正对象被推迟出现}
+英语为了平衡句子长度，可能把较重的宾语、主语或说明成分放到后面。
+
+遇到这类句子时不要先背结构名称，而要问：
+\begin{quote}
+“前面的动词或形容词，到底还缺哪个必要成分？”
+\end{quote}
+
+\begin{eng}[例 19]
+The committee considered it essential to revise the guidelines before publication.
+\end{eng}
+这里形式宾语 \texttt{it} 不承载具体内容，真正被认为“essential”的是：
+\[
+\text{to revise the guidelines before publication}.
+\]
+自然译为：
+\begin{quote}
+“委员会认为，在发布之前修订这些指导原则是必要的。”
+\end{quote}
+
+\subsection{8.3 隔离：真正相关的成分被其他信息分开}
+识别隔离结构时，先找“哪个名词仍然缺少解释”，再寻找后面能够合理补足它的从句或短语。
+
+\begin{eng}[例 20]
+A concern has emerged among researchers that the measure may discourage long-term investment.
+\end{eng}
+\texttt{that...} 并不是修饰最近的 \texttt{researchers}，而是在说明 \texttt{concern} 的内容：
+\begin{quote}
+“研究人员中出现了一种担忧，即这项措施可能会抑制长期投资。”
+\end{quote}
+
+\subsection{8.4 倒装：先恢复正常信息关系}
+倒装会改变表面词序，但通常不会改变基本参与者关系。
+
+\begin{eng}[例 21]
+Only after the data were reanalyzed did the researchers notice the pattern.
+\end{eng}
+先还原：
+\[
+\text{the researchers noticed the pattern only after the data were reanalyzed}.
+\]
+再译：
+\begin{quote}
+“直到重新分析这些数据之后，研究人员才注意到这一模式。”
+\end{quote}
+重点是同时保留 \texttt{only after} 的限定关系，而不是只把主谓语序调回来。
+
+\subsection{8.5 省略：没写出来的成分仍然可能存在于意义结构中}
+英语并列结构常省略重复成分。
+
+\begin{eng}[例 22]
+Pictures had given him considerable pleasure and music very great delight.
+\end{eng}
+第二部分省略了 \texttt{had given him}。理解时应恢复：
+\[
+\begin{aligned}
+\text{Pictures} &\rightarrow \text{had given him considerable pleasure}\\
+\text{Music} &\rightarrow \text{had given him very great delight}
+\end{aligned}
+\]
+中文可以直接译成：
+\begin{quote}
+“绘画给他带来了相当大的愉悦，音乐则给了他极大的快乐。”
+\end{quote}
+
+\section{第 9 章：从句和特殊结构的操作边界}
+
+\subsection{9.1 限定性与非限定性定语从句}
+逗号是重要线索，但真正决定翻译方式的仍然是信息功能。
+
+限定性从句帮助确定对象范围；非限定性从句通常对已明确对象补充信息。实际操作时：
+\begin{enumerate}
+  \item 先找先行词；
+  \item 判断从句在从句内部缺什么成分；
+  \item 判断从句是限定对象还是补充对象；
+  \item 再决定中文前置、后置还是分句。
+\end{enumerate}
+
+\subsection{9.2 名词性从句：不要因为长就把它当枝叶}
+主语从句、宾语从句、表语从句和说明抽象名词内容的从句，常常直接承载句子的核心命题。
+
+例如：
+\begin{eng}[例 23]
+What remains unclear is whether the policy can produce lasting effects.
+\end{eng}
+两个从句都不能“做减法”：
+\begin{quote}
+“目前仍不清楚的是，这项政策能否产生持久影响。”
+\end{quote}
+
+\subsection{9.3 强调句与形式结构：先恢复被强调或被后置的内容}
+遇到 \texttt{It is/was ... that ...}，不要只依赖“去头去尾口诀”，还要检查：
+\begin{itemize}
+  \item 去掉强调框架后是否形成结构完整的命题；
+  \item 被突出的是谁、什么时间、什么地点或什么原因；
+  \item 中文是否需要显式使用“正是……才……”才能保留强调。
+\end{itemize}
+
+\subsection{9.4 虚拟与反事实：必须恢复现实状态和假设状态的区别}
+虚拟语气不是单纯的时态变化，而是在区分：
+\[
+\boxed{\text{假设世界} \neq \text{现实世界}}
+\]
+例如：
+\begin{eng}[例 24]
+Had the warning been taken seriously, the damage might have been reduced.
+\end{eng}
+它隐含的现实是“警告当时没有得到足够重视”。译文应保留假设性和不确定性：
+\begin{quote}
+“如果当时认真对待了这一警告，损失或许本可以减少。”
+\end{quote}
+
+\newpage
+\section{Part IV：表达阶段——把恢复出的意义重新组织成中文}
+
+\section{第 10 章：中文重构的基本原则}
+
+\subsection{10.1 中文重构不是“润色”，而是第二次编码}
+英文理解完成后，脑中已经形成意义结构。接下来要决定：中文用什么顺序、什么词性、什么句式最清楚地承载同一意义。
+
+这里可以使用多种\kw{重构策略}，但所有策略都受六类意义不变量约束。
+
+\subsection{10.2 调序：按中文的信息组织重新排列}
+英语与中文在修饰位置、状语位置和主从结构上存在差异，因此翻译时可以调整顺序。
+
+原则不是“状语必须前置”，而是：
+\begin{quote}
+让中文读者按照自然顺序获得条件、背景、核心动作和结果，同时不改变原有逻辑关系。
+\end{quote}
+
+\subsection{10.3 拆句：当一个中文句子承载过多层级时主动分开}
+长定语、插入语和多层从句若全部压进一个中文句子，会导致修饰关系难以辨认。此时可把一个英文句拆成多个中文分句。
+
+拆句必须满足：
+\begin{enumerate}
+  \item 新增的中文连接关系能够从原文推得；
+  \item 指代对象仍然明确；
+  \item 没有把修饰信息错误升级为独立事实。
+\end{enumerate}
+
+\subsection{10.4 词性转换：为了中文自然，可以改变表达类别}
+英文名词化表达较多，中文常用动词表达同一事件。例如：
+\[
+\texttt{the rejection of the proposal}
+\rightarrow
+\text{“拒绝这一提议”}.
+\]
+
+但不能机械执行“名词全部动词化”。若原文讨论的是一个真正需要作为概念对象处理的名词，就应保留名词性质。
+
+\subsection{10.5 语态选择：被动不必强制改主动}
+被动结构翻成中文时主要考虑：
+\begin{itemize}
+  \item 施事者是否已知；
+  \item 施事者是否重要；
+  \item 原句信息焦点在动作、对象还是施事者；
+  \item 中文哪种表达更清楚。
+\end{itemize}
+
+因此：
+\[
+\boxed{\text{Passive} \not\Rightarrow \text{必须主动化}}
+\]
+
+\subsection{10.6 增词和重复：只能补表达需要，不能补事实}
+中文有时需要显式重复名词、补出逻辑连接词或恢复英文省略成分，以避免歧义。
+
+但增词只能补：
+\begin{itemize}
+  \item 原文已有但中文若不说会不清楚的关系；
+  \item 英文语法允许省略、中文需要恢复的成分；
+  \item 指代明确化所需的名词。
+\end{itemize}
+不能补充原文没有的原因、态度或事实。
+
+\subsection{10.7 “抽象变具体”必须有边界}
+如果英文抽象表达在当前语境中对应一个明确事件，可以适当具体化表达。例如：
+\[
+\texttt{his dislike of the proposal}
+\rightarrow
+\text{“他不喜欢这一提议”}.
+\]
+但如果原文本身有意讨论抽象概念，例如 \texttt{institutional legitimacy}，就不能为了“说人话”随意改成一个原文没有的具体故事。
+
+\begin{warn}[中文自然不能高于意义准确]
+“读起来像中文”不是最后裁决标准。一个非常流畅但改变了主客体、逻辑关系、否定范围或情态强度的译文，仍然是错误译文。
+\end{warn}
+
+\section{第 11 章：完整示例——同一句话如何走完两阶段}
+
+\begin{eng}[例 25：复杂句]
+The panel, appointed by the government, accepted as well founded the charge that the new turbines, because of their high-altitude location, might pose a danger to which migrating birds would be particularly vulnerable.
+\end{eng}
+
+\subsection{11.1 切分}
+先识别意义单元：
+\[
+\begin{aligned}
+U_1 &: \text{The panel accepted the charge as well founded}\\
+U_2 &: \text{the panel was appointed by the government}\\
+U_3 &: \text{the new turbines might pose a danger}\\
+U_4 &: \text{because of their high-altitude location}\\
+U_5 &: \text{migrating birds would be particularly vulnerable to the danger}
+\end{aligned}
+\]
+
+\subsection{11.2 还原}
+恢复关系：
+\begin{itemize}
+  \item $U_2$ 修饰 \texttt{panel}；
+  \item \texttt{charge} 的具体内容是 $U_3$；
+  \item $U_4$ 说明涡轮机构成危险的原因；
+  \item $U_5$ 修饰并解释 \texttt{danger} 对迁徙鸟类的影响；
+  \item \texttt{might} 表示可能性，不能译成确定事实。
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.6cm]
+\node[cnodeblue,minimum width=3.0cm] (p) {主语: \texttt{panel}\\[-1pt]\scriptsize 政府任命的专家组};
+\node[cnodeorange,right=of p,minimum width=3.4cm] (ch) {核心指控: \texttt{charge}\\[-1pt]\scriptsize 提议/指责内容};
+
+\draw[mainflow] (p) -- node[labelnote,above=2pt] {\texttt{accepted as well founded}} (ch);
+
+\node[draw=deepgreen,fill=softgreen,rounded corners=1.8mm,line width=0.8pt,minimum width=8.5cm,align=center,inner sep=5pt,below=0.65cm of p.east,anchor=north] (substructure)
+  {\textbf{\color{deepgreen}\texttt{charge} 内部嵌套命题关系:}\\[2pt]
+   \scriptsize\color{black!80} \texttt{high-altitude turbines} (高海拔涡轮机) $\xrightarrow{\text{may pose}}$ \texttt{danger to migrating birds} (对迁徙鸟类的危险)};
+\end{tikzpicture}
+\end{center}
+
+\subsection{11.3 释义}
+逐块确定意义：
+\begin{itemize}
+  \item \texttt{accepted ... as well founded}：认为……有充分根据；
+  \item \texttt{charge}：这里不是简单“指控犯罪”，而是对问题提出的指责/说法；
+  \item \texttt{pose a danger to}：对……构成危险；
+  \item \texttt{be vulnerable to}：容易受到……伤害或影响。
+\end{itemize}
+
+\subsection{11.4 重构}
+中文不需要复制所有英文嵌套层级。可以写成：
+\begin{quote}
+“由政府任命的专家组认为，下述说法有充分根据：由于地处高海拔，新型涡轮机可能会对迁徙鸟类构成一种它们尤其容易受到伤害的危险。”
+\end{quote}
+进一步调整使中文关系更自然：
+\begin{quote}
+“由政府任命的专家组认为，下述说法有充分根据：由于安装在高海拔地区，新型涡轮机可能会对迁徙鸟类构成危险，而这些鸟类尤其容易受到这种危险的影响。”
+\end{quote}
+
+\subsection{11.5 校验}
+最后逐项对照：
+\begin{itemize}
+  \item panel 是判断主体；\yes
+  \item charge 的内容没有丢失；\yes
+  \item high-altitude location 与危险之间仍是原因关系；\yes
+  \item migrating birds 是容易受危险影响的对象；\yes
+  \item might 的可能性得到保留；\yes
+\end{itemize}
+
+这一步表明：\kw{好的译文不是因为“像中文”，而是因为在中文自然的同时仍然可以反向恢复原文意义。}
+
+\newpage
+\section{Part V：考试执行——五步控制协议}
+
+\section{第 12 章：切分—还原—释义—重构—校验}
+
+\subsection{12.1 为什么只保留五个动作？}
+考场流程必须足够短，才能真正执行。本册最终只保留五个中文动作：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.2cm] (s1) {1. 切分\\[-1pt]\scriptsize 识别意义单元};
+\node[cnodeorange,right=of s1,minimum width=2.2cm] (s2) {2. 还原\\[-1pt]\scriptsize 主干与关系};
+\node[cnodeteal,right=of s2,minimum width=2.2cm] (s3) {3. 释义\\[-1pt]\scriptsize 语境消歧};
+\node[cnodeblue,right=of s3,minimum width=2.2cm] (s4) {4. 重构\\[-1pt]\scriptsize 中文表达};
+\node[cnodegreen,right=of s4,minimum width=2.3cm] (s5) {5. 校验\\[-1pt]\scriptsize 不变量反查};
+
+\draw[mainflow] (s1) -- (s2);
+\draw[mainflow] (s2) -- (s3);
+\draw[mainflow] (s3) -- (s4);
+\draw[altflow] (s4) -- (s5);
+\end{tikzpicture}
+\end{center}
+
+它们分别解决五个不同问题：
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.12\linewidth} X X}
+\toprule
+动作 & 核心问题 & 草稿上应产生什么 \\
+\midrule
+切分 & 句子里有几个意义单元？ & 边界、谓语、从句/插入区域 \\
+还原 & 谁做什么？谁修饰谁？单元怎样连接？ & 骨架、附着、指代、逻辑关系、作用范围 \\
+释义 & 每个核心词和结构在这里是什么意思？ & 语境词义、搭配、术语、情态强度 \\
+重构 & 中文怎样表达最清楚？ & 调序、拆句、词性/语态处理后的初稿 \\
+校验 & 中文是否仍然表达原句？ & 六项不变量逐项检查 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{12.2 第一步：切分}
+不要一看到句子就开始写中文。先找：
+\begin{itemize}
+  \item 核心谓语；
+  \item 关系词；
+  \item 从句边界；
+  \item 插入语；
+  \item 非谓语形成的独立意义块。
+\end{itemize}
+
+如果句子并不复杂，可以几秒内完成，不需要形式化标注。
+
+\subsection{12.3 第二步：还原}
+按顺序问：
+\begin{enumerate}
+  \item 主命题是什么？
+  \item 每个修饰成分挂到谁？
+  \item 从句之间是什么关系？
+  \item 代词指谁？
+  \item 否定、only、比较、情态作用到哪里？
+  \item 有没有后置、倒装、省略导致表面顺序失真？
+\end{enumerate}
+
+\subsection{12.4 第三步：释义}
+只对真正决定意义的词做精细消歧。不要在每个普通词上浪费同样时间。
+
+优先处理：
+\begin{itemize}
+  \item 多义核心动词；
+  \item 抽象名词；
+  \item 固定搭配；
+  \item 关系词；
+  \item 专业领域词；
+  \item 改变语气强度的词。
+\end{itemize}
+
+\subsection{12.5 第四步：重构}
+先保证“能准确表达”，再优化“更像中文”。当一个英文结构直接搬到中文会造成理解负担时，允许：
+\begin{itemize}
+  \item 调整语序；
+  \item 拆成两个或更多分句；
+  \item 将名词化结构转成动词；
+  \item 根据焦点调整主动/被动；
+  \item 恢复指代对象；
+  \item 适度补出中文需要的连接成分。
+\end{itemize}
+
+\subsection{12.6 第五步：校验}
+用“反向核对”代替单纯朗读。逐项找原文来源：
+\begin{enumerate}
+  \item 中文每个主要事实对应原文哪里？
+  \item 原文每个重要意义块在中文哪里？
+  \item 有没有主客体颠倒？
+  \item 有没有逻辑关系变化？
+  \item 有没有把“可能”翻成“必然”？
+  \item 有没有把部分否定翻成全部否定？
+\end{enumerate}
+
+\begin{exam}[考场压缩口令]
+遇到长难句时，只保留五个动作：
+\[
+\boxed{\text{先切块，后还原；定词义，再重组；最后反查意义。}}
+\]
+如果卡住，先判断自己卡在五步中的哪一步，而不是从句首重新翻一遍。
+\end{exam}
+
+\section{第 13 章：卡住时怎样回退，而不是反复重译？}
+
+\subsection{13.1 看不懂句子：回到“还原”而不是查更多词}
+如果单词大多认识却整句不通，优先怀疑：
+\begin{itemize}
+  \item 主干找错；
+  \item 修饰对象连错；
+  \item 从句边界错；
+  \item 省略/倒装没恢复；
+  \item 否定或比较范围错。
+\end{itemize}
+不要立即假设“还有一个生词没查出来”。
+
+\subsection{13.2 结构懂但中文生硬：进入“重构”，不要重新理解}
+如果你能准确说出英文是什么意思，只是中文别扭，那么问题已经不在理解阶段。此时只处理：
+\begin{itemize}
+  \item 顺序；
+  \item 句子长度；
+  \item 词性；
+  \item 语态；
+  \item 指代明确度。
+\end{itemize}
+
+\subsection{13.3 两个译法都通顺：回到“不变量”比较}
+不要凭“哪个更高级”决定。逐项比较：
+\begin{itemize}
+  \item 哪个主客体关系更准确？
+  \item 哪个保留了限定和语气？
+  \item 哪个没有额外添加原文没有的因果或评价？
+\end{itemize}
+
+\newpage
+\section{Part VI：错误诊断与训练}
+
+\section{第 14 章：六类典型错误——定位第一次意义损失发生在哪里}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.16\linewidth} >{\raggedright\arraybackslash}p{0.48\linewidth} Y}
+\toprule
+错误类型 & 典型表现 & 真正需要修正的能力 \\
+\midrule
+切分错误 & 从句边界、插入语范围划错 & 识别谓语与结构边界 \\
+骨架错误 & 主语、宾语、施受关系颠倒 & 谓词-论元恢复 \\
+附着错误 & 定语/介词短语修饰对象判断错 & 附着关系判断 \\
+逻辑错误 & 因果、让步、比较、条件翻反 & 单元关系恢复 \\
+作用范围错误 & 否定、only、比较、情态强度出错 & 作用范围控制 \\
+表达失真 & 理解正确但中文重构添加/遗漏信息 & 中文重构与反向校验 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{14.1 不要只记录“参考译文比我好”}
+参考译文和自己的译文不同，并不自动说明自己错。复盘应首先判断：
+\begin{quote}
+“我的译文在哪一个意义不变量上发生了损失？”
+\end{quote}
+如果意义完整、关系准确，只是措辞不同，可以记录更自然的表达，但不应把所有差异都当成错误。
+
+\subsection{14.2 错误复盘必须找到第一个偏离点}
+例如最终译文把原因翻成结果，不要只记：
+\begin{quote}
+“because 翻错了。”
+\end{quote}
+而要继续判断：
+\begin{itemize}
+  \item 是没认出关系词？
+  \item 还是认出了 because，却把两个命题的方向连反？
+  \item 还是理解正确，中文重构时调序后把因果写反？
+\end{itemize}
+不同偏离点需要不同训练。
+
+\section{第 15 章：训练方法——训练恢复意义，而不是抄参考译文}
+
+\subsection{15.1 第一阶段：只做结构恢复}
+选择真题式长句，暂时不要求写完整中文。只完成：
+\begin{enumerate}
+  \item 切意义单元；
+  \item 写主命题；
+  \item 画修饰和指代箭头；
+  \item 标原因、转折、比较、否定范围。
+\end{enumerate}
+
+目的：让“看懂结构”独立于“中文表达”。
+
+\subsection{15.2 第二阶段：只练语义消歧}
+选取包含熟词多义、抽象动词、固定搭配的句子，要求说明：
+\begin{quote}
+“为什么这个词在这里应该取这个意思，而不是我最熟悉的那个意思？”
+\end{quote}
+必须给出搭配、句法角色或上下文证据。
+
+\subsection{15.3 第三阶段：同一意义写两版中文}
+对已经完全理解的句子，尝试：
+\begin{itemize}
+  \item 一版尽量贴近原结构；
+  \item 一版更符合中文信息顺序。
+\end{itemize}
+然后比较哪一版在六项不变量全部保持的前提下更清楚。
+
+这个训练能建立一个重要能力：\kw{区分“意义必须保留”和“形式可以改变”。}
+
+\subsection{15.4 第四阶段：限时完整执行}
+进入完整翻译时，才训练五步协议：
+\[
+\text{切分} \rightarrow \text{还原} \rightarrow \text{释义} \rightarrow \text{重构} \rightarrow \text{校验}.
+\]
+限时训练的目标不是强迫每句平均分配时间，而是观察：\kw{自己最常在哪个阶段出现无进展停滞。}
+
+\subsection{15.5 AI 应该怎样辅助翻译训练？}
+AI 最有价值的角色不是直接给出“标准译文”，而是帮助定位意义损失。
+
+可以让 AI 分别完成：
+\begin{itemize}
+  \item 检查自己的切分和附着关系；
+  \item 比较两种结构分析哪个更符合语法和语义；
+  \item 给出一个多义词在当前语境中的证据；
+  \item 对照原文指出自己的译文遗漏了哪一个意义单元；
+  \item 只评价“意义是否保持”，暂时不评价文采；
+  \item 在意义正确后，再比较几种中文重构方案。
+\end{itemize}
+
+不建议一开始就把原句交给 AI 要完整译文，因为这样最容易跳过本册真正训练的中间过程：
+\[
+\boxed{\text{英文形式} \rightarrow \text{意义结构}}
+\]
+
+\section{第 16 章：本册不负责什么？}
+
+本册不把以下内容作为稳定核心：
+\begin{itemize}
+  \item 某种固定做题顺序必须放在整张卷子的第几位；
+  \item 固定目标分数或平均分；
+  \item “某种从句一定不重要”“时间地点一定可以忽略”；
+  \item “被动一定改主动”“定语从句一定前置”；
+  \item “直译一定优于意译”之类二分规则；
+  \item 没有上下文支持的万能中文模板。
+\end{itemize}
+
+这些内容要么属于整卷考试控制，要么只能作为经过个人训练验证的阶段性经验。翻译专题只保存能够跨题稳定复用的理解与表达机制。
+
+\newpage
+\section{最后压缩：一页考场协议}
+
+\begin{corebox}[母模型]
+\[
+\boxed{
+\text{英文形式}
+\xrightarrow{\text{恢复}}
+\text{意义结构}
+\xrightarrow{\text{重构}}
+\text{中文形式}
+}
+\]
+\textbf{改变形式，不改变意义。}
+\end{corebox}
+
+\begin{statebox}[六个意义不变量]
+\begin{enumerate}
+  \item \textbf{命题内容}：谁发生了什么；
+  \item \textbf{参与者关系}：谁对谁做什么、谁修饰谁；
+  \item \textbf{逻辑关系}：原因、条件、让步、转折、比较等；
+  \item \textbf{指代关系}：代词、指示词指向谁；
+  \item \textbf{作用范围}：否定、only、比较、限定控制哪里；
+  \item \textbf{语气强度}：可能、倾向、判断、证明等程度有没有变化。
+\end{enumerate}
+\end{statebox}
+
+\begin{method}[五步执行]
+\centering
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.2cm] (m1) {1. 切分\\[-1pt]\scriptsize 单元边界};
+\node[cnodeorange,right=of m1,minimum width=2.2cm] (m2) {2. 还原\\[-1pt]\scriptsize 结构与关系};
+\node[cnodeteal,right=of m2,minimum width=2.2cm] (m3) {3. 释义\\[-1pt]\scriptsize 语境词义};
+\node[cnodeblue,right=of m3,minimum width=2.2cm] (m4) {4. 重构\\[-1pt]\scriptsize 中文组织};
+\node[cnodegreen,right=of m4,minimum width=2.3cm] (m5) {5. 校验\\[-1pt]\scriptsize 反查不变量};
+
+\draw[mainflow] (m1) -- (m2);
+\draw[mainflow] (m2) -- (m3);
+\draw[mainflow] (m3) -- (m4);
+\draw[altflow] (m4) -- (m5);
+\end{tikzpicture}
+\par\vspace{0.4em}
+\begin{enumerate}
+  \item \textbf{切分}：有几个意义单元？
+  \item \textbf{还原}：谁做什么？谁修饰谁？单元怎样连接？
+  \item \textbf{释义}：核心词和结构在这里到底是什么意思？
+  \item \textbf{重构}：中文怎样调序、拆句、转换表达最清楚？
+  \item \textbf{校验}：六个意义不变量有没有任何一项被改掉？
+\end{enumerate}
+\end{method}
+
+\begin{exam}[卡住时只问一个问题]
+\raggedright 不要从句首重新翻一遍。先判断自己卡在哪里：\par\vspace{0.3em}
+\centering
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeorange,minimum width=2.6cm] (c1) {1. 边界不清？\\[-1pt]\scriptsize 回到 Step 1 切分};
+\node[cnodeteal,right=of c1,minimum width=2.6cm] (c2) {2. 关系不清？\\[-1pt]\scriptsize 回到 Step 2 还原};
+\node[cnodeblue,right=of c2,minimum width=2.6cm] (c3) {3. 词义不清？\\[-1pt]\scriptsize 回到 Step 3 释义};
+\node[cnodegreen,right=of c3,minimum width=2.8cm] (c4) {4. 表达生硬？\\[-1pt]\scriptsize 回到 Step 4 重构};
+
+\draw[mainflow] (c1) -- (c2);
+\draw[mainflow] (c2) -- (c3);
+\draw[altflow] (c3) -- (c4);
+\end{tikzpicture}
+\par\vspace{0.3em}
+\raggedright 只有定位到具体阶段，下一步操作才明确。
+\end{exam}
+
+\begin{warn}[最后纪律]
+一个“非常通顺”的中文译文，如果改变了主客体、逻辑关系、否定范围或语气强度，仍然是错误译文。一个“非常贴英文”的译文，如果中文无法清楚表达原意，也没有完成翻译任务。最终目标始终是：
+\[
+\boxed{\textbf{用清楚的中文，重新表达同一意义。}}
+\]
+\end{warn}
+
+\end{document}

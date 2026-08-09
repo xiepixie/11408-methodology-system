@@ -1,0 +1,923 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.70cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,matrix,backgrounds}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{pifont}
+\usepackage{caption}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlength{\parindent}{2em}
+\setcounter{secnumdepth}{0}
+\setlength{\parskip}{0.28em}
+\setlist[itemize]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!50!black,pdftitle={英语一阅读理解：证据定位与选项判定方法论}}
+
+\definecolor{mainblue}{RGB}{43,85,135}
+\definecolor{deepblue}{RGB}{28,60,98}
+\definecolor{softblue}{RGB}{238,245,252}
+\definecolor{softgreen}{RGB}{238,249,243}
+\definecolor{softorange}{RGB}{253,246,233}
+\definecolor{softred}{RGB}{253,239,239}
+\definecolor{softgray}{RGB}{246,247,249}
+\definecolor{deepgreen}{RGB}{35,105,75}
+\definecolor{deeporange}{RGB}{165,98,22}
+\definecolor{deepred}{RGB}{150,55,55}
+\definecolor{purple}{RGB}{94,66,140}
+\definecolor{softpurple}{RGB}{245,241,251}
+\definecolor{teal}{RGB}{38,112,115}
+\definecolor{softteal}{RGB}{238,248,248}
+\definecolor{gold}{RGB}{156,120,28}
+\definecolor{softgold}{RGB}{252,249,235}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{英语一 · 阅读理解方法论}
+\rhead{证据定位与选项判定}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\newtcolorbox{corebox}[1][]{colback=softblue,colframe=mainblue,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{exam}[1][]{colback=softorange,colframe=deeporange,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warn}[1][]{colback=softred,colframe=deepred,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{eng}[1][]{colback=softgreen,colframe=deepgreen,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{method}[1][]{colback=softgray,colframe=black!45,title=#1,fonttitle=\bfseries,boxrule=0.6pt,arc=2mm}
+\newtcolorbox{bridge}[1][]{colback=softpurple,colframe=purple,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{statebox}[1][]{colback=softteal,colframe=teal,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{history}[1][]{colback=softgold,colframe=gold,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+
+\newcommand{\kw}[1]{\textbf{#1}}
+\newcommand{\term}[2]{\textbf{#1（#2）}}
+
+% ---- Figure grammar: direct topology & semantic color system ----
+\tikzset{
+  cnode/.style={draw=mainblue,rounded corners=1.8mm,minimum width=2.65cm,minimum height=0.92cm,
+    align=center,inner sep=3pt,font=\small,fill=softblue,line width=0.8pt},
+  cnodeblue/.style={cnode,draw=mainblue,fill=softblue},
+  cnodeg/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodegreen/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodeo/.style={cnode,draw=deeporange,fill=softorange},
+  cnodeorange/.style={cnode,draw=deeporange,fill=softorange},
+  cnodep/.style={cnode,draw=purple,fill=softpurple},
+  cnodepurple/.style={cnode,draw=purple,fill=softpurple},
+  cnodet/.style={cnode,draw=teal,fill=softteal},
+  cnodeteal/.style={cnode,draw=teal,fill=softteal},
+  cnodered/.style={cnode,draw=deepred,fill=softred,font=\small\bfseries},
+  cnodegray/.style={cnode,draw=black!45,fill=softgray},
+  mainflow/.style={-{Latex[length=2.2mm,width=1.5mm]},line width=1.0pt,draw=deepblue},
+  altflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepgreen},
+  returnflow/.style={-{Latex[length=2.0mm,width=1.4mm]},densely dashed,line width=0.85pt,draw=purple},
+  dangerflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepred},
+  optflow/.style={-{Latex[length=1.8mm,width=1.3mm]},dotted,line width=0.85pt,draw=teal},
+  labelnote/.style={font=\scriptsize\bfseries,fill=white,inner sep=1.5pt,rounded corners=0.5mm,text=black!80,draw=black!25,line width=0.4pt},
+  boxgroup/.style={draw=black!25,dashed,rounded corners=2mm,fill=black!2,inner sep=6pt}
+}
+
+\title{\vspace{-1.15cm}\textbf{英语一 · 阅读理解方法论手册}\\[0.35em]
+\large 证据定位与选项判定：面向考场实操的阅读控制系统}
+\author{个人认知系统 · 英语一专题手册}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}[一句话母模型]
+阅读理解的目标不是在有限时间内完整翻译文章，而是：
+\begin{center}
+\fbox{\parbox{0.90\linewidth}{\centering\bfseries
+根据题干确定当前要解决的问题，在文章中找到足以回答它的证据，并判断哪个选项得到这组证据最完整的支持。}}
+\end{center}
+因此，考场真正要形成的自动化流程不是“全文读懂再答题”，而是：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.6cm] (m1) {1. 题干定目标\\[-1pt]\scriptsize 明确解题对象与问题};
+\node[cnodeorange,right=of m1,minimum width=2.6cm] (m2) {2. 文章找证据\\[-1pt]\scriptsize 定位并扩至闭合区};
+\node[cnodeteal,right=of m2,minimum width=2.6cm] (m3) {3. 证据形成答案\\[-1pt]\scriptsize 先生成中文自答};
+\node[cnodegreen,right=of m3,minimum width=2.8cm] (m4) {4. 选项逐项核验\\[-1pt]\scriptsize 不变量审计与确认};
+
+\draw[mainflow] (m1) -- (m2);
+\draw[mainflow] (m2) -- (m3);
+\draw[altflow] (m3) -- (m4);
+\end{tikzpicture}
+\end{center}
+\end{corebox}
+
+\begin{warn}[本册的使用边界]
+本册强调“少读无关信息”，但不把阅读简化成关键词匹配。\kw{少读}指只读取当前问题所需的证据范围；\kw{精读}指一旦进入证据区，就必须把决定答案的对象、关系、限定和逻辑读准确。
+\end{warn}
+
+\tableofcontents
+\newpage
+
+\section{第 0 章：一篇阅读拿到手以后，到底怎么做？}
+
+\subsection{0.1 默认考场路线}
+本册建议把一篇传统阅读按以下顺序执行：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (r1) {1. 扫题干\\[-1pt]\scriptsize 建立问题地图};
+\node[cnodeorange,right=of r1,minimum width=2.4cm] (r2) {2. 逐题定位\\[-1pt]\scriptsize 寻找证据起点};
+\node[cnodeteal,right=of r2,minimum width=2.4cm] (r3) {3. 读完整证据\\[-1pt]\scriptsize 最小充分闭合区};
+\node[cnodepurple,right=of r3,minimum width=2.4cm] (r4) {4. 形成自答\\[-1pt]\scriptsize 事实与动作判断};
+\node[cnodered,right=of r4,minimum width=2.4cm] (r5) {5. 比较选项\\[-1pt]\scriptsize 逐项维度审计};
+\node[cnodegreen,right=of r5,minimum width=2.4cm] (r6) {6. 整合主旨\\[-1pt]\scriptsize 主旨/全局态度};
+
+\draw[mainflow] (r1) -- (r2);
+\draw[mainflow] (r2) -- (r3);
+\draw[mainflow] (r3) -- (r4);
+\draw[mainflow] (r4) -- (r5);
+\draw[altflow] (r5) -- (r6);
+\end{tikzpicture}
+\end{center}
+这条路线的目的不是让考生“少读文章”，而是让每一次阅读都带有明确任务，避免把大量注意力投入当前题目根本不会使用的背景信息。
+
+\subsection{0.2 开始前的 20--40 秒：只扫题干，不急着做题}
+快速阅读 5 个题干，暂时不逐项研究所有选项。完成三件事：
+\begin{enumerate}
+  \item 圈出每题的\kw{核心对象}：人、机构、观点、事件、段落；
+  \item 圈出\kw{任务词}：why、suggest、imply、purpose、attitude、mainly about 等；
+  \item 标出\kw{高区分度锚点}：人名、年份、专有名词、引号词、特殊概念。
+\end{enumerate}
+这样得到一张很粗的“问题地图”：你提前知道文章中哪些对象以后会被问，但还没有让四个选项提前干扰理解。
+
+\begin{exam}[为什么默认只扫题干，不先精读全部选项？]
+选项既能提供搜索线索，也会把四个不同命题提前塞进工作记忆。默认情况下，先读题干能够保留问题方向而减少干扰；如果某题无法定位，再使用选项进行反向搜索。\kw{选项是辅助定位工具，不是默认的文章理解框架。}
+\end{exam}
+
+\subsection{0.3 逐题推进，而不是把文章切成“先读完再统一答”}
+传统阅读的大多数题都可以依照文章推进逐步解决。实际操作时：
+\begin{enumerate}
+  \item 先处理第一个题目；
+  \item 从文章开头寻找其证据；
+  \item 解决后，从当前阅读位置继续向后寻找下一题；
+  \item 遇到主旨题、全文态度题等全局任务，优先留到文章主要局部题完成后处理。
+\end{enumerate}
+题目顺序可以帮助减少重复阅读，但它只是\kw{默认搜索方向}，不是“第 2 题答案一定在第 2 段”的硬规则。找不到时，应重新依据题干对象和证据关系定位。
+
+\newpage
+\section{Part I：单题控制链——问、定、读、答、比、验}
+
+\section{第 1 章：问——把题干改写成一个明确的问题}
+
+\subsection{1.1 不要只圈关键词，要知道“它究竟在问什么”}
+题干的任务是规定答案必须满足什么。每题先拆成四项：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.6cm] (q1) {1. 对象\\[-1pt]\scriptsize 人/机构/实体};
+\node[cnodeorange,right=of q1,minimum width=2.6cm] (q2) {2. 所问关系\\[-1pt]\scriptsize 原因/结果/态度};
+\node[cnodeteal,right=of q2,minimum width=2.6cm] (q3) {3. 范围\\[-1pt]\scriptsize Paragraph 3};
+\node[cnodegreen,right=of q3,minimum width=2.8cm] (q4) {4. 限定\\[-1pt]\scriptsize 时间/主体/程度};
+
+\draw[mainflow] (q1) -- (q2);
+\draw[mainflow] (q2) -- (q3);
+\draw[altflow] (q3) -- (q4);
+\end{tikzpicture}
+\end{center}
+
+例如：
+\begin{eng}[例 1：题干拆解]
+According to Paragraph 3, why did the researchers reject the original explanation?
+\end{eng}
+应立即得到：
+\begin{itemize}
+  \item 对象：the researchers；
+  \item 所问关系：reject 的原因；
+  \item 范围：Paragraph 3；
+  \item 限定：问的是 researchers 自己拒绝该解释的原因，不是作者评价，也不是研究结果。
+\end{itemize}
+
+\subsection{1.2 题干中的限定词不是装饰}
+重点检查：
+\begin{itemize}
+  \item 数量：some / many / most / all；
+  \item 时间：previously / now / recently / eventually；
+  \item 程度：mainly / partly / especially / merely；
+  \item 主体：the author / researchers / consumers / critics；
+  \item 范围：Paragraph 2 / the study / the example / the text as a whole。
+\end{itemize}
+这些限定会直接决定选项是否合法。考试中大量干扰项并非“完全错误”，而是把限定扩大、缩小、换主体或改时间。
+
+\begin{method}[题干压缩句]
+在进入文章前，最好能用一句中文说清：
+\begin{quote}
+“我要找的是\underline{谁/什么}为什么/怎样/持什么态度\underline{对什么}，证据范围大约在\underline{哪里}。”
+\end{quote}
+这句话说不清，就不要急着扫描关键词。
+\end{method}
+
+\section{第 2 章：定——不是找关键词，而是找“证据起点”}
+
+\subsection{2.1 什么叫证据起点？}
+定位的目标不是找到与题干词汇最像的句子，而是找到\kw{最可能开始回答题目}的位置。本册称其为\term{证据起点}{evidence anchor}。
+
+优先使用：
+\begin{enumerate}
+  \item 专有名词、数字、引号词等高区分度信息；
+  \item 题干对象的同义改写或上位/下位表达；
+  \item 与所问关系相符的语言结构，如原因、结果、评价、对比；
+  \item 题目已明确给出的段落范围。
+\end{enumerate}
+
+\subsection{2.2 关键词只负责“把你带到附近”}
+题干写 \texttt{privacy}，文章可能写：
+\[
+\texttt{personal data / information protection / user records}.
+\]
+因此搜索应当同时允许：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.6cm] (s1) {1. 原词\\[-1pt]\scriptsize 专有名词/数字};
+\node[cnodeorange,right=of s1,minimum width=2.6cm] (s2) {2. 同义改写\\[-1pt]\scriptsize 上下义/概念替换};
+\node[cnodeteal,right=of s2,minimum width=2.6cm] (s3) {3. 相关实体\\[-1pt]\scriptsize 上下文同位对象};
+\node[cnodegreen,right=of s3,minimum width=2.8cm] (s4) {4. 关系信号\\[-1pt]\scriptsize 原因/转折/对比词};
+
+\draw[mainflow] (s1) -- (s2);
+\draw[mainflow] (s2) -- (s3);
+\draw[altflow] (s3) -- (s4);
+\end{tikzpicture}
+\end{center}
+
+\begin{warn}[定位失败的常见原因]
+如果一遍扫描没有找到题干原词，不要马上判断“这题无法定位”。先问：\kw{题干是否把原文改写成了更抽象的说法？它问的是原因、结果、态度还是例子功能？}
+\end{warn}
+
+\subsection{2.3 正向定位困难时，怎样用选项反向定位？}
+当题干过于宽泛，或原文改写很深，可以打开选项，把每个选项中最具区分度的实体或关系作为搜索线索。
+
+操作：
+\begin{enumerate}
+  \item 不翻译整组选项；
+  \item 每项只抓一个最具体的名词/动作；
+  \item 回文章寻找对应证据；
+  \item 找到后仍必须按正常证据流程判断，不能“搜到相同词就选”。
+\end{enumerate}
+
+反向定位是\kw{搜索策略}，不是\kw{正确性证明}。
+
+\newpage
+\section{第 3 章：读——从一个定位句扩展成完整证据区}
+
+\subsection{3.1 最重要的改动：不要再寻找“唯一定位句”}
+一道题真正需要的可能是：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=3.4cm] (e1) {单句定位\\[-1pt]\scriptsize 独立回答问题};
+\node[cnodeorange,right=of e1,minimum width=3.4cm] (e2) {双句/并列闭合\\[-1pt]\scriptsize 原因/因果/转折覆盖};
+\node[cnodegreen,right=of e2,minimum width=3.6cm] (e3) {逻辑小单元\\[-1pt]\scriptsize 观点+例子/解释闭合};
+
+\draw[mainflow] (e1) -- (e2);
+\draw[altflow] (e2) -- (e3);
+\end{tikzpicture}
+\end{center}
+本册把足以回答当前问题、再增加信息也不会明显改变结论的最小范围称为\term{最小充分证据}{minimal sufficient evidence}。
+
+\subsection{3.2 证据区从哪里开始扩大？}
+找到证据起点后，先读完整句，然后检查是否触发以下扩展信号：
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.26\linewidth} >{\raggedright\arraybackslash}p{0.36\linewidth} Y}
+\toprule
+信号 & 为什么必须扩展 & 需要检查哪里 \\
+\midrule
+and / also / as well as & 后面可能仍属于同一个回答单位 & 继续读并列项是否改变答案范围 \\
+but / however / yet & 后文可能修正前文预期 & 至少读完转折后的完整命题 \\
+this / these / it / they & 当前句依赖前文指代对象 & 向前恢复真实指代 \\
+because / therefore / thus & 因果关系跨越两个命题 & 同时读原因与结果 \\
+for example / such as & 当前句可能只是论据而非观点 & 找它支撑的概括命题 \\
+which / who / that 从句 & 关键信息可能嵌在修饰结构中 & 读清修饰对象与从句功能 \\
+冒号 / 分号 / 破折号 & 后部可能解释、列举、转折 & 读完整标点结构 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{3.3 “防并列”应该怎样实际执行？}
+旧经验中“定位后检查并列”非常实用。考场将它固定成一个动作：
+\begin{quote}
+\kw{在准备离开证据区之前，看一句：当前回答是否还有同级信息没有读完？}
+\end{quote}
+例如：
+\begin{eng}[例 2：答案可能藏在第二个并列项]
+The policy reduced administrative costs \textbf{and} gave local offices greater freedom to adjust their services.
+\end{eng}
+若题目问“地方办公室从政策中获得了什么”，只读到 reduced costs 就会答错主体；必须完成整个并列结构。
+
+\subsection{3.4 读到什么程度就可以停？}
+满足下面三项即可停止扩大：
+\begin{enumerate}
+  \item 已经出现题干所问的对象；
+  \item 已经出现题干所问的关系，如原因、结果、评价；
+  \item 继续向外读没有新的同级限定、转折、指代或补充会改变答案。
+\end{enumerate}
+这就是“减少背景信息”的真正操作标准：\kw{不是按句数少读，而是证据闭合以后立即停止。}
+
+\section{第 4 章：答——看选项前，先把证据压成一句自己的答案}
+
+\subsection{4.1 为什么必须先形成自己的答案？}
+四个选项往往各自截取原文的一部分、换一个主体、改一个程度或加入一条看似合理的新信息。如果直接在四项之间来回比较，很容易被措辞牵着走。
+
+因此，读完证据以后先问：
+\begin{quote}
+\kw{“如果现在没有选项，我会用一句最短的中文怎样回答这个问题？”}
+\end{quote}
+
+例如题目问：
+\begin{quote}
+Why did the company abandon the plan?
+\end{quote}
+证据说：计划成本持续上升，而且试验效果没有达到预期。
+
+先形成：
+\begin{quote}
+“因为成本越来越高，而且效果不足。”
+\end{quote}
+再看选项。这样选项只能被你的证据答案检验，不能反过来决定你怎样理解原文。
+
+\subsection{4.2 自己的答案不需要漂亮，只需要保留决定性信息}
+一个合格的“证据答案”通常只包含：
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeblue,minimum width=3.2cm] (a1) {1. 对象\\[-1pt]\scriptsize 谁/什么};
+\node[cnodeorange,right=of a1,minimum width=3.4cm] (a2) {2. 关系/动作\\[-1pt]\scriptsize 做了什么/为什么};
+\node[cnodegreen,right=of a2,minimum width=3.2cm] (a3) {3. 关键限定\\[-1pt]\scriptsize 部分/现在/更重视};
+
+\draw[mainflow] (a1) -- (a2);
+\draw[altflow] (a2) -- (a3);
+\end{tikzpicture}
+\end{center}
+例如：
+\begin{quote}
+“部分年轻员工现在更重视灵活时间，而不是更高薪酬。”
+\end{quote}
+这里 \textit{部分}、\textit{现在}、\textit{更重视} 都可能是后面区分选项的关键。
+
+\newpage
+\section{第 5 章：比——把“比错”变成逐项审计}
+
+\subsection{5.1 每个选项都是一个待验证的命题}
+不要判断“这个选项像不像原文”，而要拆成：
+\[
+\boxed{
+\text{对象}
++
+\text{关系}
++
+\text{限定}
+}
+\]
+其中限定主要包括：范围、程度、时间、可能性/必然性。
+
+\subsection{5.2 六个固定检查维度}
+将选项与证据答案逐项对照：
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.20\linewidth} X X}
+\toprule
+检查维度 & 常见改坏方式 & 快速问题 \\
+\midrule
+对象 & A 的观点换成 B 的观点 & 谁在做/说/认为？ \\
+关系 & 原因改结果，相关改因果，支持改反对 & 他们之间到底是什么关系？ \\
+范围 & some 改成 all，某群体改成全部人 & 选项有没有扩大或缩小范围？ \\
+程度 & may 改成 must，concern 改成 rejection & 强度是否被放大/缩小？ \\
+时间 & 过去状态改成现在，趋势改成结果 & 时间阶段是否一致？ \\
+信息来源 & 加入原文没有建立的关键前提 & 这部分信息证据在哪里？ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{5.3 每个选项只有三种状态}
+训练时把选项分成：
+\begin{enumerate}
+  \item \kw{有支持}：文本证据能够推出或明确改写该命题；
+  \item \kw{被反驳}：文本明确与其冲突；
+  \item \kw{未建立}：听起来可能合理，但文本没有提供足够证据。
+\end{enumerate}
+
+正确选项需要的是\kw{有支持}，而不是“没有被明确反驳”。
+
+\begin{warn}[“无中生有”最容易被世界常识掩盖]
+一个选项可能在现实世界里完全合理，也可能符合你的价值判断，但如果当前文本没有建立它，它仍然不是这道阅读题的答案。
+\end{warn}
+
+\subsection{5.4 “内容 + 方向”的旧经验怎样升级？}
+旧方法先看名词内容是否沾边，再看动词/形容词方向，这个动作非常实用。现在把它固定成两轮：
+\begin{enumerate}
+  \item \kw{第一轮：对象筛选}。主体、客体、话题不一致，优先排除；
+  \item \kw{第二轮：关系与限定筛选}。对象相同后，再检查动作方向、程度、范围、时间。
+\end{enumerate}
+这样仍然保留“先粗筛、再精比”的速度优势，同时避免“只要内容沾边就可能正确”。
+
+\section{第 6 章：验——二选一时到底怎么收口？}
+
+\subsection{6.1 不要继续问“哪个更像正确答案”}
+二选一时强制切换问题：
+\begin{quote}
+\kw{“这两个选项分别多说了什么、少说了什么、改了什么？”}
+\end{quote}
+把差异词直接圈出来。例如：
+\[
+\texttt{some} \quad vs. \quad \texttt{most}
+\]
+\[
+\texttt{may reduce} \quad vs. \quad \texttt{will eliminate}
+\]
+\[
+\texttt{researchers} \quad vs. \quad \texttt{the author}
+\]
+答案通常就藏在这些差异，而不是两项共同拥有的部分。
+
+\subsection{6.2 二选一收口协议}
+\begin{enumerate}
+  \item 写出两项的\kw{唯一关键差异}；
+  \item 回到证据区，只找能判断这一差异的句子；
+  \item 谁需要额外前提，谁优先排除；
+  \item 如果两项仍都似乎成立，检查题干限定是否被忽略；
+  \item 最后检查是否读漏了并列、转折或后一句解释。
+\end{enumerate}
+
+\begin{exam}[一个非常实用的停止标准]
+如果一个选项的对象、关系和限定都能由证据逐项解释，而其他选项至少有一项无法被文本支持，就应当确认。不要为了追求“100\% 心理确定”继续无限重读。
+\end{exam}
+
+\newpage
+\section{Part II：六类题型只改变“证据怎么找”}
+
+\section{第 7 章：细节题——找到直接回答题干的命题}
+
+\subsection{7.1 操作重点}
+细节题最适合执行完整的“问--定--读--答--比--验”：
+\begin{enumerate}
+  \item 题干圈对象和限定；
+  \item 用高区分度信息找证据起点；
+  \item 读完整句并检查并列/转折/指代；
+  \item 用中文形成一句证据答案；
+  \item 选项逐项检查对象、关系、范围、程度、时间。
+\end{enumerate}
+
+\subsection{7.2 三种常见定位情况}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.18\linewidth} >{\raggedright\arraybackslash}p{0.46\linewidth} Y}
+\toprule
+情况 & 表现 & 动作 \\
+\midrule
+明显定位 & 有人名、数字、特殊概念 & 快速扫描后进入证据区 \\
+改写定位 & 题干与原文词不同但意义对应 & 寻找同义改写、上下义与关系信号 \\
+宽范围题 & 题干问一段“下列哪项正确” & 用选项反向定位，逐项验证 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{第 8 章：例子题——不要解释例子，要找它在证明什么}
+
+\subsection{8.1 例子的功能}
+文章中的例子通常不是独立存在，而是为某个观点服务：
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeblue,minimum width=3.2cm] (c1) {观点/概括判断\\[-1pt]\scriptsize Claim};
+\node[cnodeorange,right=of c1,minimum width=3.4cm] (c2) {例子/数据具象\\[-1pt]\scriptsize Example/Data};
+\node[cnodegreen,right=of c2,minimum width=3.2cm] (c3) {观点得到支持\\[-1pt]\scriptsize Functional Goal};
+
+\draw[mainflow] (c1) -- node[labelnote,above=2pt] {具体化} (c2);
+\draw[altflow] (c2) -- node[labelnote,above=2pt] {服务于} (c3);
+\end{tikzpicture}
+\end{center}
+题目问“为什么提到 X”时，真正目标通常是恢复\kw{例子的语篇功能}。
+
+\subsection{8.2 实操四步}
+\begin{enumerate}
+  \item 找到例子边界；
+  \item 问：例子之前作者刚刚提出了什么一般判断？
+  \item 若前文没有，检查例子之后有没有总结、解释或转折；
+  \item 把例子删掉，问：\kw{“这段剩下最重要的观点是什么？”}
+\end{enumerate}
+
+\begin{method}[位置经验怎么使用]
+“段中例常往前找观点”可以作为搜索顺序，但不是证明。真正锁定答案的标准始终是：\kw{这个观点是否能够解释作者为什么需要这个例子。}
+\end{method}
+
+\section{第 9 章：推断题——只走最短的一步}
+
+\subsection{9.1 推断的考场定义}
+推断不是自由联想，而是：
+\[
+\boxed{\textbf{在不增加关键新前提的情况下，从文本现有信息向前走最短的一步。}}
+\]
+因此推断题先找基础证据，再问它\kw{最低限度能说明什么}。
+
+\subsection{9.2 三种安全推断}
+\begin{enumerate}
+  \item \kw{改写型}：原文命题换一种表达；
+  \item \kw{直接后果型}：文本已经明确建立关系，选项只是表达其直接结果；
+  \item \kw{立场/行为含义型}：文本评价已经足够明确，例如“批评某方案不现实”可支持“不赞同该方案”。
+\end{enumerate}
+
+\subsection{9.3 三个危险信号}
+如果选项需要：
+\begin{itemize}
+  \item 加入文章没有给出的社会常识作为关键前提；
+  \item 把 may / tend to / often 推成必然关系；
+  \item 从一类人的特征直接推出每个个体都如此；
+\end{itemize}
+优先怀疑为过度推理。
+
+\begin{exam}[推断题收口句]
+做完后必须能说：
+\begin{quote}
+“原文已经给了 A；不再增加新的关键条件时，A 最多允许我推出 B。”
+\end{quote}
+如果中间还有 C、D 两层未经文本支持的想象，推得太远。
+\end{exam}
+
+\section{第 10 章：态度题——锁定“谁对什么”的评价}
+
+\subsection{10.1 三元结构}
+态度题固定拆成：
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeblue,minimum width=3.2cm] (att1) {1. 态度持有者\\[-1pt]\scriptsize 作者 vs. 研究者};
+\node[cnodeorange,right=of att1,minimum width=3.4cm] (att2) {2. 态度对象\\[-1pt]\scriptsize 理论/现象/措施};
+\node[cnodegreen,right=of att2,minimum width=3.2cm] (att3) {3. 评价方向与强度\\[-1pt]\scriptsize 赞同/批评/谨慎支持};
+
+\draw[mainflow] (att1) -- (att2);
+\draw[altflow] (att2) -- (att3);
+\end{tikzpicture}
+\end{center}
+先别急着背 positive / negative 词表；先确认：\kw{到底是谁，对到底什么东西。}
+
+\subsection{10.2 证据来源}
+重点阅读：
+\begin{itemize}
+  \item 明确评价词；
+  \item 情态词与程度词；
+  \item 引用前后的作者框架；
+  \item 转折、让步和限制语；
+  \item 作者在引用别人以后自己的后续评价。
+\end{itemize}
+
+\begin{warn}[引用不是认同]
+作者引用某位专家并不自动代表赞同；没有明显转折也不自动证明立场一致。必须寻找作者对该观点的评价、使用方式以及后续论证。
+\end{warn}
+
+\section{第 11 章：词义与句子理解题——把局部意思换成一句可代回的话}
+
+\subsection{11.1 操作顺序}
+\begin{enumerate}
+  \item 看词/句在本句中的语法角色；
+  \item 用上下文恢复真实指代与逻辑关系；
+  \item 尝试用一句普通中文或简单英文改写；
+  \item 把候选解释代回原句，检查前后逻辑是否保持。
+\end{enumerate}
+
+这部分与完形专题共享同一个原则：\kw{词义由当前结构和语境约束，不由词典第一义决定。}
+
+\section{第 12 章：主旨题——最后再做，利用前面已经读过的证据}
+
+\subsection{12.1 主旨题为什么适合后做？}
+前面四道局部题已经迫使你读过文章最重要的几个证据区。此时不必重新全文翻译，而是把已有信息压缩成两问：
+\begin{enumerate}
+  \item 全文持续围绕什么对象？
+  \item 作者关于这个对象主要在做什么：解释、批评、比较、分析问题还是提出方向？
+\end{enumerate}
+
+因此主旨可以压成：
+\[
+\boxed{
+\text{主题对象}
++
+\text{中心判断/主要写作动作}
+}
+\]
+
+\subsection{12.2 三分钟以内的主旨整合动作}
+\begin{enumerate}
+  \item 回忆前面各题证据区分别说了什么；
+  \item 看首段提出的问题或背景；
+  \item 看转折后的作者推进；
+  \item 看末段是否给结论、评价或未来方向；
+  \item 形成一句“文章主要说明……”；
+  \item 再看主旨选项，排除只覆盖一个局部段落或加入额外结论的项。
+\end{enumerate}
+
+\begin{warn}[主旨不是细节题的最高法院]
+主旨可以帮助判断一个模糊选项是否符合全文方向，但不能推翻明确局部证据。局部题有直接证据时，以直接证据为准；只有局部证据不足时，才把全文模型作为辅助限制。
+\end{warn}
+
+\section{Part III：整篇阅读的完整考场流程}
+
+\section{第 13 章：从拿到文章到完成五题的标准流程}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (q) {1. 扫题干\\[-1pt]\scriptsize 问题地图};
+\node[cnodeorange,right=of q,minimum width=2.4cm] (t) {2. 审题\\[-1pt]\scriptsize 对象+关系+限定};
+\node[cnodeteal,right=of t,minimum width=2.4cm] (l) {3. 定位\\[-1pt]\scriptsize 证据起点};
+\node[cnodepurple,right=of l,minimum width=2.4cm] (e) {4. 扩证据\\[-1pt]\scriptsize 并列/转折/指代};
+\node[cnodered,right=of e,minimum width=2.4cm] (a) {5. 形成自答\\[-1pt]\scriptsize 先答后看选项};
+\node[cnodegreen,right=of a,minimum width=2.4cm] (v) {6. 逐项审计\\[-1pt]\scriptsize 确认并推进};
+
+\draw[mainflow] (q) -- (t);
+\draw[mainflow] (t) -- (l);
+\draw[mainflow] (l) -- (e);
+\draw[mainflow] (e) -- (a);
+\draw[altflow] (a) -- (v);
+\end{tikzpicture}
+\end{center}
+
+\subsection{13.1 阶段 A：题干地图}
+只解决：\kw{后面会问谁、问什么关系。}
+不要在这里花大量时间猜答案。
+
+\subsection{13.2 阶段 B：按题推进}
+每一题都执行：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (p1) {问\\[-1pt]\scriptsize 明确解题目标};
+\node[cnodeorange,right=of p1,minimum width=2.4cm] (p2) {定\\[-1pt]\scriptsize 寻找证据起点};
+\node[cnodeteal,right=of p2,minimum width=2.4cm] (p3) {读\\[-1pt]\scriptsize 扩至最小闭合区};
+\node[cnodepurple,right=of p3,minimum width=2.4cm] (p4) {答\\[-1pt]\scriptsize 先形成中文自答};
+\node[cnodered,right=of p4,minimum width=2.4cm] (p5) {比\\[-1pt]\scriptsize 逐项维度审计};
+\node[cnodegreen,right=of p5,minimum width=2.4cm] (p6) {验\\[-1pt]\scriptsize 核对二选一差异};
+
+\draw[mainflow] (p1) -- (p2);
+\draw[mainflow] (p2) -- (p3);
+\draw[mainflow] (p3) -- (p4);
+\draw[mainflow] (p4) -- (p5);
+\draw[altflow] (p5) -- (p6);
+\end{tikzpicture}
+\end{center}
+中文动作分别是：
+\begin{itemize}
+  \item 问：题干究竟问什么；
+  \item 定：找到证据起点；
+  \item 读：读完整最小证据区；
+  \item 答：自己先形成一句答案；
+  \item 比：逐项检查选项哪里被改坏；
+  \item 验：二选一回原文查唯一差异。
+\end{itemize}
+
+\subsection{13.3 阶段 C：每题做完立即向后推进}
+不要反复从文章开头重新扫描。记住上一题证据结束的大致位置，从这里继续向后寻找下一题。只有题干明确指向前文或无法定位时才回退。
+
+\subsection{13.4 阶段 D：主旨和全文态度最后整合}
+利用已读证据区、首尾和关键转折形成全文模型，不再重新逐句翻译。
+
+\section{第 14 章：什么时候应该读更多，什么时候应该立刻停？}
+
+\subsection{14.1 需要扩大阅读范围的信号}
+\begin{itemize}
+  \item 当前句有未解析的 this/they/which；
+  \item 当前句只是例子，无法回答“为什么提到”；
+  \item but/however 后明显修正答案；
+  \item and 后还有同级信息；
+  \item 当前句是结论，但原因在前一句；
+  \item 题目本身要求 paragraph / text as a whole。
+\end{itemize}
+
+\subsection{14.2 应该停止继续读的信号}
+\begin{itemize}
+  \item 对象、关系、限定已经齐全；
+  \item 当前证据已经能形成一句明确答案；
+  \item 后文转入新的对象或例子；
+  \item 继续读只是在增加背景，不会改变当前判断。
+\end{itemize}
+
+\begin{corebox}[阅读效率的真正来源]
+效率不是“每篇只读多少行”，而是：
+\[
+\boxed{
+\text{当前问题没有证据时继续找；证据闭合以后立即停止。}
+}
+\]
+这才是题目导向阅读能够减少无效背景信息的机制。
+\end{corebox}
+
+\section{第 15 章：一道题卡住时，按什么顺序排查？}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.16\linewidth} >{\raggedright\arraybackslash}p{0.48\linewidth} Y}
+\toprule
+卡点 & 自检问题 & 修复动作 \\
+\midrule
+题干不清 & 我到底在找原因、结果、态度还是主旨？ & 重写题干目标 \\
+定位不到 & 是否只搜原词？题干是否被同义改写？ & 用实体、关系、选项反向定位 \\
+定位后仍不会 & 当前句是否只是证据的一部分？ & 向前/向后扩到逻辑闭合 \\
+两项都像 & 两项唯一差异是什么？ & 只回原文查这个差异 \\
+四项都怪 & 自己是否还没形成证据答案？ & 先离开选项，重新读证据 \\
+读太久 & 是否还在产生新的答案信息？ & 无新增证据则先标记离开 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\newpage
+\section{Part IV：干扰项到底怎样制造——把“陷阱词库”压成六种改写}
+
+\section{第 16 章：干扰项不是随机错误，而是在正确信息上动一个部件}
+高质量干扰项常常保留大部分原文内容，只改坏一个关键位置。因此最实用的不是背几十种陷阱名称，而是检查以下六类变化：
+
+\begin{enumerate}
+  \item \kw{换对象}：把 A 的行为说成 B；
+  \item \kw{换关系}：把相关变因果，把手段变目的，把例子变结论；
+  \item \kw{扩范围}：部分变全部，某阶段变长期；
+  \item \kw{改程度}：担忧变反对，可能变必然，主要变唯一；
+  \item \kw{换时间}：过去现象说成现在，计划说成已经发生；
+  \item \kw{加信息}：加入符合常识但文本没有建立的原因、结果或评价。
+\end{enumerate}
+
+\subsection{16.1 训练时怎样做“选项解剖”？}
+错题不要只写“B 错，A 对”。建议把错误项中的关键改动圈出来：
+\begin{quote}
+B：主体正确，关系正确，但把 \texttt{some} 改成了 \texttt{most} —— 范围扩大。
+\end{quote}
+下一次再遇到相同断点，就会直接检查范围词，而不是背“以偏概全”这个标签。
+
+\section{第 17 章：哪些旧经验可以保留，但只能作为搜索辅助？}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.22\linewidth} >{\raggedright\arraybackslash}p{0.26\linewidth} Y}
+\toprule
+旧经验 & 保留方式 & 边界 \\
+\midrule
+关键词定位 & 证据起点搜索 & 必须用句义确认真正回答问题 \\
+反向定位 & 宽范围题/定位困难时使用 & 找到相同词不等于选项正确 \\
+防并列 & 证据边界完整性检查 & 同时检查转折、指代、解释等 \\
+内容+方向 & 对象筛选 + 关系筛选 & 还需检查范围、程度、时间 \\
+主旨辅助细节 & 证据不足时的全局一致性检查 & 不能推翻直接局部证据 \\
+题目之间的信息 & 帮助形成文章问题地图 & 不能让后一题“证明”前一题答案 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{第 18 章：哪些规则不进入稳定核心？}
+以下规则即使在某些真题中偶尔有效，也不作为正式做题依据：
+\begin{itemize}
+  \item 两个选项相似/相反，所以答案一定在其中；
+  \item 范围更宽、措辞更抽象的选项更安全；
+  \item “大道理”更难出错；
+  \item 没有转折就默认作者认同被引用者；
+  \item 某些态度词永远不能选；
+  \item 主旨句固定在段尾、转折或段首某一位置；
+  \item 整体的属性可以自动推出每个部分的属性；
+  \item 自然语言中的条件、因果关系都可以直接套形式逻辑公式。
+\end{itemize}
+这些规则最大的问题不是“从来不会碰巧有用”，而是学生无法知道什么时候失效。正式手册只保留能够通过文本证据检查的规则。
+
+\section{Part V：训练与复盘——把流程练成真正的考场能力}
+
+\section{第 19 章：阅读训练不能只统计正确率}
+一篇阅读 5 题对 4 题，不代表方法已经稳定；对 2 题也不一定说明全文都没读懂。训练时要分别记录：
+\begin{enumerate}
+  \item 题干有没有读错；
+  \item 证据起点有没有找错；
+  \item 证据范围有没有截断；
+  \item 原文有没有理解错；
+  \item 自己形成的答案是否正确；
+  \item 是否被选项中的某个改写骗走。
+\end{enumerate}
+
+\subsection{19.1 错题只追“第一次偏离”}
+例如最终选 B，但真正错误过程是：
+\begin{quote}
+题干问“主要原因”，我在定位时只看到第一个原因就停止，没有读完后面的并列信息。
+\end{quote}
+那么要修改的是\kw{证据边界检查}，而不是记住“这道题 B 错 A 对”。
+
+\section{第 20 章：一篇真题的四轮训练怎样改得更有效？}
+旧笔记提出“限时做题--不限时分析--听讲--复盘讲解”的四遍法，核心方向值得保留。正式训练建议改成：
+
+\subsection{20.1 第一轮：真实限时}
+目标：暴露当前真实控制问题。不要查词，不暂停。
+
+\subsection{20.2 第二轮：证据重建}
+不看答案，逐题完成：
+\begin{enumerate}
+  \item 重写题干目标；
+  \item 标出证据起点；
+  \item 画出完整证据边界；
+  \item 写一句自己的答案；
+  \item 给四个选项标“支持 / 反驳 / 未建立”。
+\end{enumerate}
+
+\subsection{20.3 第三轮：对照解析}
+重点不是抄解析，而是比较：
+\begin{quote}
+“解析使用的决定性证据，和我认为的决定性证据是否相同？”
+\end{quote}
+如果不同，要判断谁的证据链更短、更直接。
+
+\subsection{20.4 第四轮：口头复盘}
+不看笔记，用 1--2 分钟讲清一题：
+\begin{quote}
+“题目问什么，我在哪里找到什么证据，为什么 A 被支持，B/C/D 分别错在哪一个维度。”
+\end{quote}
+能稳定讲出来，才说明流程开始内化。
+
+\section{第 21 章：专项训练要针对控制节点，不要只按题型刷数量}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.18\linewidth} >{\raggedright\arraybackslash}p{0.46\linewidth} Y}
+\toprule
+薄弱点 & 专项训练 & 评价标准 \\
+\midrule
+定位慢 & 只看题干，30 秒内标出对象和高区分锚点 & 能找到正确证据起点附近 \\
+证据截断 & 专练 and/but/this/which 后的信息边界 & 不再只截取半句 \\
+二选一错 & 只做选项差异词审计 & 能指出唯一差异及对应证据 \\
+推断过度 & 每题写“文本给了什么，我只多走哪一步” & 不引入关键新前提 \\
+主旨不稳 & 每段写一句功能，再压全文一句 & 主旨覆盖全文而非局部 \\
+态度混淆 & 标注“谁--对什么--什么评价” & 不再混作者与他人观点 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\newpage
+\section{Part VI：一页考场协议}
+
+\section{第 22 章：传统阅读最终压缩}
+
+\begin{corebox}[整篇开始前]
+\begin{enumerate}
+  \item 扫 5 个题干：圈对象、任务词、限定、高区分锚点；
+  \item 不急着精读全部选项；
+  \item 主旨题/全文态度题先标记，通常后做。
+\end{enumerate}
+\end{corebox}
+
+\begin{exam}[每一道题：问--定--读--答--比--验]
+\begin{enumerate}
+  \item \kw{问}：到底问谁的什么关系？有什么范围和程度限定？
+  \item \kw{定}：用对象、锚点、关系信号找到证据起点；
+  \item \kw{读}：读完整最小证据区，检查并列、转折、指代、解释；
+  \item \kw{答}：先不用选项，用一句中文回答题干；
+  \item \kw{比}：检查选项的对象、关系、范围、程度、时间、额外信息；
+  \item \kw{验}：二选一只回原文核对两项的唯一差异。
+\end{enumerate}
+\end{exam}
+
+\begin{statebox}[六类题型只记一个核心动作]
+\begin{itemize}
+  \item 细节题：\kw{找到直接回答问题的命题}；
+  \item 例子题：\kw{找例子服务的观点/功能}；
+  \item 推断题：\kw{从证据只走最短一步}；
+  \item 态度题：\kw{锁定谁--对什么--持什么评价}；
+  \item 词句题：\kw{用结构和上下文恢复可代回的含义}；
+  \item 主旨题：\kw{主题对象 + 全文中心判断/主要动作}。
+\end{itemize}
+\end{statebox}
+
+\begin{method}[二选一只问三件事]
+\begin{enumerate}
+  \item 两个选项唯一差异是什么？
+  \item 哪一处文本能判断这个差异？
+  \item 哪个选项需要额外假设才能成立？
+\end{enumerate}
+\end{method}
+
+\begin{warn}[四个禁止]
+\begin{enumerate}
+  \item 禁止只因出现相同关键词就选；
+  \item 禁止用全文主旨推翻明确局部证据；
+  \item 禁止把“现实中合理”当成“原文已证明”；
+  \item 禁止在证据已经闭合后继续无目的重读。
+\end{enumerate}
+\end{warn}
+
+\begin{corebox}[最终心智模型]
+阅读真正要自动化的不是几十条题型技巧，而是：
+\begin{center}
+\Large\bfseries
+题目告诉我找什么，\\
+文章告诉我证据是什么，\\
+选项只能接受证据审查。
+\end{center}
+考场中所有技巧都必须服务于这条主线：\kw{更快找到决定性证据，更少读取无关背景，更严格控制从证据到答案的距离。}
+\end{corebox}
+
+\section{附录：个人复盘记录的最小格式}
+每一道真正值得记录的错题只写四项：
+\begin{enumerate}
+  \item \kw{题干目标：}我当时应该找什么？
+  \item \kw{决定证据：}真正决定答案的是哪一句/哪两句？
+  \item \kw{第一次偏离：}我在哪一步开始错？
+  \item \kw{下次动作：}以后看到什么信号时，具体增加哪一步检查？
+\end{enumerate}
+
+例如：
+\begin{method}[复盘示例]
+题干目标：问研究者放弃原解释的主要原因。\\
+决定证据：第一句给出成本问题，下一句以 and 补充实验效果不足。\\
+第一次偏离：定位到第一句后立即看选项，没有读完并列信息。\\
+下次动作：定位句出现 and / also / 分号时，确认同级信息是否已经读完再进入选项。
+\end{method}
+
+\end{document}

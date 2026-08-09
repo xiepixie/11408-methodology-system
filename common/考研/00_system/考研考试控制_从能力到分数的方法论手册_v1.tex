@@ -1,0 +1,1110 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.72cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array,multirow}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,matrix,backgrounds}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{pifont}
+\usepackage{caption}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlength{\parindent}{2em}
+\setcounter{secnumdepth}{0}
+\setlength{\parskip}{0.30em}
+\setlist[itemize]{itemsep=0.16em,topsep=0.26em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.16em,topsep=0.26em,leftmargin=2em}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!50!black,pdftitle={考研考试控制与得分转化方法论手册}}
+
+\definecolor{mainblue}{RGB}{45,86,140}
+\definecolor{deepblue}{RGB}{30,62,102}
+\definecolor{softblue}{RGB}{238,245,252}
+\definecolor{softgreen}{RGB}{238,249,243}
+\definecolor{softorange}{RGB}{253,246,233}
+\definecolor{softred}{RGB}{253,239,239}
+\definecolor{softgray}{RGB}{246,247,249}
+\definecolor{deepgreen}{RGB}{35,105,75}
+\definecolor{deeporange}{RGB}{165,98,22}
+\definecolor{deepred}{RGB}{150,55,55}
+\definecolor{purple}{RGB}{94,66,140}
+\definecolor{softpurple}{RGB}{245,241,251}
+\definecolor{teal}{RGB}{38,112,115}
+\definecolor{softteal}{RGB}{238,248,248}
+\definecolor{gold}{RGB}{156,120,28}
+\definecolor{softgold}{RGB}{252,249,235}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{考研考试控制方法论}
+\rhead{从能力到分数}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\newtcolorbox{corebox}[1][]{colback=softblue,colframe=mainblue,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{exam}[1][]{colback=softorange,colframe=deeporange,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warn}[1][]{colback=softred,colframe=deepred,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{eng}[1][]{colback=softgreen,colframe=deepgreen,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{method}[1][]{colback=softgray,colframe=black!45,title=#1,fonttitle=\bfseries,boxrule=0.6pt,arc=2mm}
+\newtcolorbox{bridge}[1][]{colback=softpurple,colframe=purple,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{statebox}[1][]{colback=softteal,colframe=teal,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{history}[1][]{colback=softgold,colframe=gold,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+
+\newcommand{\kw}[1]{\textbf{#1}}
+\newcommand{\yes}{\textcolor{deepgreen}{\ding{51}}}
+\newcommand{\no}{\textcolor{deepred}{\ding{55}}}
+
+% ---- Figure grammar: direct topology & semantic color system ----
+\tikzset{
+  cnode/.style={draw=mainblue,rounded corners=1.8mm,minimum width=2.65cm,minimum height=0.92cm,
+    align=center,inner sep=3pt,font=\small,fill=softblue,line width=0.8pt},
+  cnodeblue/.style={cnode,draw=mainblue,fill=softblue},
+  cnodeg/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodegreen/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodeo/.style={cnode,draw=deeporange,fill=softorange},
+  cnodeorange/.style={cnode,draw=deeporange,fill=softorange},
+  cnodep/.style={cnode,draw=purple,fill=softpurple},
+  cnodepurple/.style={cnode,draw=purple,fill=softpurple},
+  cnodet/.style={cnode,draw=teal,fill=softteal},
+  cnodeteal/.style={cnode,draw=teal,fill=softteal},
+  cnodered/.style={cnode,draw=deepred,fill=softred,font=\small\bfseries},
+  cnodegray/.style={cnode,draw=black!45,fill=softgray},
+  mainflow/.style={-{Latex[length=2.2mm,width=1.5mm]},line width=1.0pt,draw=deepblue},
+  altflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepgreen},
+  returnflow/.style={-{Latex[length=2.0mm,width=1.4mm]},densely dashed,line width=0.85pt,draw=purple},
+  dangerflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepred},
+  optflow/.style={-{Latex[length=1.8mm,width=1.3mm]},dotted,line width=0.85pt,draw=teal},
+  labelnote/.style={font=\scriptsize\bfseries,fill=white,inner sep=1.5pt,rounded corners=0.5mm,text=black!80,draw=black!25,line width=0.4pt},
+  boxgroup/.style={draw=black!25,dashed,rounded corners=2mm,fill=black!2,inner sep=6pt}
+}
+
+\title{\vspace{-1.2cm}\textbf{考研考试控制与得分转化方法论手册}\\[0.35em]
+\large 从单题控制、证据判断到整卷调度的统一考试心智模型}
+\author{个人认知系统 · Control Plane 总手册}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}[这本手册只解决一个问题]
+学科手册回答：\kw{这个世界怎样运转？}\quad 本册回答：\kw{在有限考试时间里，我怎样调用已有知识，把能力稳定地兑现成分数？}
+
+因此本册不重复数学、408、英语的知识正文，也不保存某一种题型的零散技巧。它只维护一个稳定的\kw{考试控制内核}，各学科再接入自己的 Adapter。
+\[
+\boxed{
+\text{Target}
+\rightarrow
+\text{Model}
+\rightarrow
+\text{Route}
+\rightarrow
+\text{Execute}
+\rightarrow
+\text{Verify}
+\rightarrow
+\text{Commit}
+}
+\]
+外层再由整卷控制决定：\kw{现在做谁、继续多久、什么时候退出、什么时候回来、检查哪里。}
+\end{corebox}
+
+\begin{warn}[本册不做三件事]
+\begin{enumerate}
+  \item 不把未经题目证据验证的个人感觉写成“考试定律”；
+  \item 不用固定百分比、固定秒数或所谓“命题人心理”冒充普遍规律；
+  \item 不追求一套跨学科的僵硬话术。统一的是\kw{控制问题}，不是每门课的具体动作。
+\end{enumerate}
+\end{warn}
+
+\tableofcontents
+\newpage
+
+\section{第 0 章：这本手册在整个认知系统中的位置}
+
+\subsection{Knowledge Plane 与 Control Plane 必须分开}
+一个学生可能已经拥有正确的知识模型，却仍然在考试中失分。因为：
+\[
+\boxed{
+\text{Knowledge}
+\neq
+\text{Score}
+}
+\]
+知识真正变成分数，要经过一条从【知识层】延伸至【控制层】的更长决策链：
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.50cm and 0.45cm]
+% Row 1: Knowledge Plane (学科知识层)
+\node[cnodegray] (k) {1. Knowledge\\[-1pt]\scriptsize 学科知识体系};
+\node[cnodegray,right=of k] (r) {2. Recognition\\[-1pt]\scriptsize 模式/条件识别};
+\node[cnodegray,right=of r] (p) {3. Planning\\[-1pt]\scriptsize 路线与模型构建};
+
+% Row 2: Control Plane (考试控制层)
+\node[cnodeblue,below=0.95cm of p] (e) {4. Execution\\[-1pt]\scriptsize 状态推进与计算};
+\node[cnodeteal,left=of e] (v) {5. Verification\\[-1pt]\scriptsize 证据级别校验};
+\node[cnodeblue,left=of v] (x) {6. Expression\\[-1pt]\scriptsize 采分点规范表达};
+\node[cnodegreen,left=of x] (s) {7. Score\\[-1pt]\scriptsize 最终兑现分数};
+
+% Connections
+\draw[mainflow] (k) -- (r);
+\draw[mainflow] (r) -- (p);
+\draw[mainflow] (p.south) -- node[labelnote,right=1pt] {进入控制层} (e.north);
+\draw[mainflow] (e) -- (v);
+\draw[mainflow] (v) -- (x);
+\draw[altflow] (x) -- (s);
+
+% Grouping Boxes
+\begin{scope}[on background layer]
+  \node[boxgroup,fit=(k)(r)(p),label={[font=\scriptsize\bfseries\color{black!60},anchor=south west]north west:Knowledge Plane (知识层)}] {};
+  \node[boxgroup,fit=(e)(v)(x)(s),label={[font=\scriptsize\bfseries\color{mainblue},anchor=north west]south west:Control Plane (控制层)}] {};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+任意一环断裂，都会出现熟悉的现象：\kw{“这题我明明会，但考试没有拿到分。”}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.23\linewidth} X X}
+\toprule
+系统部分 & 主要问题 & 本册关系 \\
+\midrule
+学科总图/专题手册 & 世界是什么，机制为什么成立？ & 向本册提供 Model \\
+做题规则 & 某类题常见信号、起手动作、风险点是什么？ & 作为各学科 Adapter \\
+考试控制手册 & 当前下一步做什么，何时继续/退出/检查？ & 本册 Canonical Owner \\
+个人经验/错题证据 & 哪些控制规则真的对自己有效？ & 负责验证并修订规则 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{本册的边界}
+本册\kw{拥有（Own）}：
+\begin{itemize}
+  \item 单题控制闭环；
+  \item 证据等级与置信度；
+  \item 断点诊断与回退；
+  \item 无进展检测与退出；
+  \item 整卷任务调度；
+  \item 检查预算与风险控制；
+  \item 从答案到得分表达的 Commit 规则。
+\end{itemize}
+
+本册\kw{调用（Use）}：
+\begin{itemize}
+  \item 数学的对象、结构、变换、不变量；
+  \item 408 的对象、状态、事件、规则、成本；
+  \item 英语的句法、指代、语篇关系、文本证据。
+\end{itemize}
+
+本册\kw{不拥有（Do not own）}具体公式、协议机制、词汇、题型知识和专题技巧。
+
+\newpage
+\section{Part I：考试到底是什么——有限资源下的连续决策}
+
+\section{第 1 章：考试目标不是“每题都做到最优”}
+
+\subsection{考试的资源约束}
+考试不是无限时间的研究环境。你始终受四类有限资源约束：
+\[
+\boxed{
+\mathcal R=
+\{\text{Time},\text{Attention},\text{Working Memory},\text{Knowledge Access}\}
+}
+\]
+其中最容易被忽略的是\kw{Attention} 与 \kw{Working Memory}：即使还有时间，如果注意力已经被一道卡题持续占用，后续题目的错误率也会升高。
+
+因此考试的真实任务不是：
+\begin{quote}
+“把每一道题都思考到我百分之百放心。”
+\end{quote}
+而是：
+\begin{quote}
+\kw{在总资源受限的条件下，尽可能稳定地把已有能力转化为总分。}
+\end{quote}
+
+\subsection{为什么不能只优化单题正确率}
+设第 $i$ 道题最终得到分数 $s_i$，耗费时间 $t_i$。考试存在硬约束：
+\[
+\sum_i t_i\le T_{\text{exam}}.
+\]
+因此继续给一道题增加时间，不仅有本题收益，还有明确的\kw{机会成本}：这段时间不能再用于其他题。
+
+\begin{corebox}[考试的控制目标]
+不需要把考试伪装成精确优化公式。实际只要始终记住：
+\[
+\boxed{
+\text{Total Score}
+\text{ is produced under }
+\text{Time + Attention + Risk constraints.}
+}
+\]
+每一次“继续、换路、检查、跳过、返回”都是资源分配决策。
+\end{corebox}
+
+\subsection{三种尺度，够用了}
+整套考试控制只分三个尺度：
+\begin{enumerate}
+  \item \kw{Question Control}：眼前这道题下一步做什么？
+  \item \kw{Paper Control}：整张卷子现在应该把资源给哪道题？
+  \item \kw{Self Control}：自己的注意力、错误风险和执行状态是否失控？
+\end{enumerate}
+不要再为“战略、战术、技巧、节奏、心态”各造一套平行模型。它们都应该落回这三个尺度。
+
+\newpage
+\section{Part II：Question Control——单题六步闭环}
+
+\section{第 2 章：统一控制链}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.75cm and 0.65cm]
+% Row 1: Target, Model, Route (问题建模)
+\node[cnodeblue] (t) {1. Target\\[-1pt]\scriptsize 交付物与限制};
+\node[cnodeblue,right=of t] (m) {2. Model\\[-1pt]\scriptsize 抽象结构/状态};
+\node[cnodeblue,right=of m] (r) {3. Route\\[-1pt]\scriptsize 第一中间目标};
+
+% Row 2: Commit, Verify, Execute (执行与交付)
+\node[cnodegreen,below=1.1cm of t] (c) {6. Commit\\[-1pt]\scriptsize 锁定并完整表达};
+\node[cnodeteal,right=of c] (v) {5. Verify\\[-1pt]\scriptsize 检查证据等级};
+\node[cnodeblue,right=of v] (e) {4. Execute\\[-1pt]\scriptsize 显式维护状态};
+
+% Forward Flow
+\draw[mainflow] (t) -- (m);
+\draw[mainflow] (m) -- (r);
+\draw[mainflow] (r) -- (e);
+\draw[mainflow] (e) -- (v);
+\draw[altflow] (v) -- (c);
+
+% Return Feedback Loop
+\draw[returnflow] (v.north) -- node[labelnote] {证据不足：按协议回退} (r.south);
+
+% Background Groups
+\begin{scope}[on background layer]
+  \node[boxgroup,fit=(t)(m)(r),label={[font=\scriptsize\bfseries\color{mainblue}]above:分析阶段 (Analysis Phase)}] {};
+  \node[boxgroup,fit=(c)(v)(e),label={[font=\scriptsize\bfseries\color{deepgreen}]below:执行交付阶段 (Execution \& Delivery Phase)}] {};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+
+这六步不是“写答案的六个步骤”，而是\kw{大脑的控制检查点}。简单题可以在几秒内自动完成，复杂题才需要显式外化。
+
+\section{第 3 章：Target——先确定合法输出}
+
+\subsection{第一问题永远不是“这题考哪章”}
+Target 只回答：
+\[
+\boxed{\text{题目最终要求我交付什么？}}
+\]
+必须确定：
+\begin{itemize}
+  \item 未知量/判断对象；
+  \item 输出形式；
+  \item 范围、程度、条件等限定；
+  \item 选择、计算、证明、解释还是表达；
+  \item 哪些过程是得分所需的最低证据链。
+\end{itemize}
+
+\begin{exam}[Target 检查句]
+在正式运算或定位以前，能否用一句话补全：
+\begin{quote}
+“我要得到/判断的是 \underline{\hspace{4.5cm}}，并且必须满足 \underline{\hspace{3.2cm}}。”
+\end{quote}
+如果这句话说不清，先不要开始执行。
+\end{exam}
+
+\subsection{常见 Target 错误}
+\begin{itemize}
+  \item 数学问“参数范围”，却只求出一个候选值；
+  \item 网络问“下一跳”，却把完整端到端路径全部推一遍；
+  \item 英语问“原因”，却只因为某句出现关键词就当作定位句；
+  \item 主观题知道结论，却没有给评分所需的关键依据。
+\end{itemize}
+
+\section{第 4 章：Model——把陌生题压回已有心智模型}
+
+\subsection{Model 的定义}
+Model 不等于“章节标签”。
+\[
+\boxed{
+\text{Model}
+=
+\text{题面对象经过抽象后得到的可操作结构}
+}
+\]
+如果只能说“这是一道积分题”“这是一道 TCP 题”“这是一道阅读题”，通常还没有完成建模。
+
+\subsection{三个学科的 Model 语言}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.15\linewidth} X X}
+\toprule
+学科 & 建模语言 & 典型问题 \\
+\midrule
+数学 & Object + Condition + Structure + Invariant + Target & 对象有什么结构？可以转化成什么熟悉形式？ \\
+408 & Object + State + Event/Rule + Cost & 当前状态是什么？什么事件会使它怎样变化？ \\
+英语 & Question Function + Evidence Scope + Discourse Relation & 题干要哪种证据？证据在什么范围？句间逻辑是什么？ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{warn}[识别断点的判定]
+如果你“知道所有知识点”但仍然说不出：\kw{当前应该维护哪些变量、状态、关系或证据}，这不是执行慢，而是 Model 尚未建立。
+\end{warn}
+
+\section{第 5 章：Route——执行前必须知道第一座桥在哪里}
+
+\subsection{Route 不是完整解法}
+考试不需要在动笔前知道全部过程。Route 只需要回答：
+\[
+\boxed{
+\text{Current State}
+\rightarrow
+\text{Useful Intermediate State}
+\rightarrow
+\text{Target}
+}
+\]
+也就是：\kw{我现在第一步为什么做，它准备制造什么中间结果？}
+
+\subsection{路径断点的客观表现}
+出现以下任意一种，都应先停止机械执行：
+\begin{itemize}
+  \item 写了很多式子，但说不出下一步希望得到什么；
+  \item 一直尝试熟悉公式，却没有任何复杂度下降；
+  \item 408 中开始枚举状态，但不知道题目真正追踪哪个量；
+  \item 英语中不断重读原文，却不知道需要寻找事实、原因、态度还是主旨证据。
+\end{itemize}
+
+\begin{method}[Route 的最小表达]
+复杂题开始执行前，用一句极短的内部指令：
+\begin{quote}
+“先做 \underline{\hspace{3cm}}，目的是得到 \underline{\hspace{3cm}}。”
+\end{quote}
+如果目的说不出来，不要把“开始写”误认为“已经有路径”。
+\end{method}
+
+\section{第 6 章：Execute——关键状态必须外化}
+
+\subsection{执行失败常常不是知识失败}
+复杂题真正危险的是：路线正确，但中间状态维护失败。
+因此 Execute 的核心原则不是“写得越多越好”，而是：
+\[
+\boxed{\text{Externalize the state that future steps depend on.}}
+\]
+
+\subsection{什么必须外化？}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.14\linewidth} X X}
+\toprule
+学科 & 适合外化的状态 & 目的 \\
+\midrule
+数学 & 变量替换、中间等式、符号区间、几何关系、关键图形 & 防止条件丢失与非法变换 \\
+408 & 时间线、状态表、队列、页表/缓存命中链、地址分解 & 防止“脑内模拟”漏更新 \\
+英语 & 题干限定、证据句、主体、逻辑方向、选项错误点 & 防止重读时反复丢失定位结论 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{局部检查点}
+长过程不要只在最后检查。每跨过一个高风险转换，可以进行低成本局部检查：
+\begin{itemize}
+  \item 数学：变换是否等价？定义域是否变了？
+  \item 408：事件发生后，所有相关状态是否都更新？
+  \item 英语：当前证据是否真的回答题干所问，而不只是出现关键词？
+\end{itemize}
+
+\section{第 7 章：Verify——证据比“感觉正确”更重要}
+
+\subsection{四级证据体系}
+所有验证规则统一按强度分层排序：
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.20cm]
+% 4 Stacked Evidence Cards (Center Column with locked text width)
+\node[cnode,draw=deepgreen,fill=softgreen,minimum width=9.2cm,text width=8.7cm,inner sep=5pt] (ea)
+  {\textbf{\color{deepgreen}A 级 · 硬证据 (Hard Evidence)}\hfill\textbf{\color{deepgreen}[最高置信]}\\[2pt]
+   \scriptsize\color{black!80} 题设/定义/协议/原文约束 (具最高约束力)};
+
+\node[cnode,draw=mainblue,fill=softblue,below=0.20cm of ea,minimum width=9.2cm,text width=8.7cm,inner sep=5pt] (eb)
+  {\textbf{\color{mainblue}B 级 · 结构性推理 (Structural Reasoning)}\hfill\textbf{\color{mainblue}[强置信]}\\[2pt]
+   \scriptsize\color{black!80} 依赖硬证据可靠推演 (单调性/状态机/句法)};
+
+\node[cnode,draw=teal,fill=softteal,below=0.20cm of eb,minimum width=9.2cm,text width=8.7cm,inner sep=5pt] (ec)
+  {\textbf{\color{teal}C 级 · 全局一致性 (Global Consistency)}\hfill\textbf{\color{teal}[中置信]}\\[2pt]
+   \scriptsize\color{black!80} 全局校验 (范围/量纲/不变量/文章主旨)};
+
+\node[cnode,draw=deeporange,fill=softorange,below=0.20cm of ec,minimum width=9.2cm,text width=8.7cm,inner sep=5pt] (ed)
+  {\textbf{\color{deeporange}D 级 · 启发式与经验 (Heuristic)}\hfill\textbf{\color{deeporange}[弱置信]}\\[2pt]
+   \scriptsize\color{black!80} 常见套路/选项特征/统计经验 (仅供初始假设)};
+
+% 1. Left Rank Pillar Container (fitted to ea.north and ed.south)
+\coordinate (ltop) at ($(ea.north west)+(-0.35,0)$);
+\coordinate (lbot) at ($(ed.south west)+(-0.35,0)$);
+\node[draw=deepgreen,fill=softgreen,rounded corners=1.8mm,line width=0.8pt,
+      fit=(ltop)(lbot),anchor=east,minimum width=1.40cm,inner sep=0pt] (rankbox) {};
+% Centered Text inside Left Pillar
+\node[font=\small\bfseries\color{deepgreen},align=center] at (rankbox.center)
+  {\begin{tabular}{c} 证\\据\\强\\度\\与\\置\\信\\度\\递\\增\\[3pt]$\mathbf{\uparrow}$ \end{tabular}};
+
+% 2. Right Warning Pillar Container (fitted to ea.north and ed.south)
+\coordinate (rtop) at ($(ea.north east)+(0.35,0)$);
+\coordinate (rbot) at ($(ed.south east)+(0.35,0)$);
+\node[draw=deepred,fill=softred,rounded corners=1.8mm,line width=0.7pt,
+      fit=(rtop)(rbot),anchor=west,minimum width=2.40cm,inner sep=0pt] (warnbox) {};
+% Centered Text inside Right Pillar
+\node[font=\scriptsize\bfseries\color{deepred},align=center] at (warnbox.center)
+  {\begin{tabular}{c} 核心纪律\\[6pt] 低级证据\\[4pt] 绝不可推翻\\[4pt] 高级证据 \end{tabular}};
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.16\linewidth} X X}
+\toprule
+等级 & 含义 & 例子 \\
+\midrule
+A 直接/硬证据 & 由题设、定义、规则、原文直接约束 & 方程；协议状态规则；原文明示；题干限定 \\
+B 结构性推理 & 在硬证据上进行可靠推演 & 单调性；状态机；因果关系；句法/语篇结构 \\
+C 全局一致性 & 检查答案是否与整体结构协调 & 数值范围；系统不变量；文章主旨一致性 \\
+D 启发式 & 经验倾向，只有弱支持 & 常见套路、选项形式、个人统计经验 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{corebox}[证据纪律]
+\[
+\boxed{\text{Lower-level evidence must not overturn higher-level evidence.}}
+\]
+例如“主旨一致”不能推翻原文直接陈述；“常见答案形式”不能推翻数学约束；个人历史统计不能推翻协议规则。
+\end{corebox}
+
+\subsection{Confidence 必须由 Evidence 产生}
+考试中不要问：\kw{“我感觉有多确定？”}\quad 而问：\kw{“我为什么相信这个答案？”}
+\[
+\boxed{
+\text{Confidence}
+\leftarrow
+\text{Evidence}
+}
+\]
+如果只能回答“就是感觉”，置信度不应该高；如果能列出直接依据和排除理由，即使主观上仍紧张，答案实际上可能已经足够可靠。
+
+\section{第 8 章：Commit——什么时候停止思考并交付答案}
+
+\subsection{考试里必须允许“足够好”}
+Commit 不是“百分之百确信”，而是：
+\[
+\boxed{
+\text{证据已足以支持当前答案，继续投入的边际价值已不高。}
+}
+\]
+这一步是单题控制与整卷控制的接口。
+
+\subsection{Commit 有两部分}
+\[
+\boxed{
+\text{Commit}
+=
+\text{Decision}
++
+\text{Score-bearing Expression}
+}
+\]
+知道答案不等于评分者能给分：
+\begin{itemize}
+  \item 数学：关键依据、必要推导、结论范围必须可见；
+  \item 408：问过程时不能只写最终数值，单位和状态依据要完整；
+  \item 英语写作：题目要求的交际任务与要点必须真正覆盖。
+\end{itemize}
+
+\newpage
+\section{Part III：断点诊断——卡住以后不要继续随机搜索}
+
+\section{第 9 章：六类断点就是六个控制节点}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.16\linewidth} >{\raggedright\arraybackslash}p{0.22\linewidth} X X}
+\toprule
+断点 & 外在表现 & 真正缺失 & 第一修复动作 \\
+\midrule
+审题/Target & 做到后面发现答非所问 & 合法输出没有锁定 & 重写“最终要交付什么” \\
+识别/Model & 知识见过但不会起手 & 没压回熟悉结构 & 列对象/状态/约束/证据 \\
+路径/Route & 会知识但不知道第一步 & 中间目标缺失 & 明确“先做什么，为了得到什么” \\
+执行/Execute & 路线对但过程反复错 & 状态维护失败 & 外化状态并设局部检查点 \\
+检查/Verify & 错了却完全没察觉 & 缺验证证据与风险点 & 使用不变量/范围/直接证据检查 \\
+表达/Commit & 会做但得分链不完整 & 输出没有适配评分要求 & 补关键依据、单位、要点或结论 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{exam}[诊断原则：寻找“第一次偏离”]
+复盘时不要问“最后错在哪里”，而问：
+\begin{quote}
+\kw{哪一个控制节点第一次失去正确状态？}
+\end{quote}
+最后一个算错的数字通常只是症状。真正值得修改规则的是第一次错误决策。
+\end{exam}
+
+\section{第 10 章：No-Progress Detection——什么时候必须换路或退出}
+
+\subsection{卡题的本质}
+卡题不是“已经用了很多时间”，而是：
+\[
+\boxed{
+\text{投入继续增加，但可用于解题的新信息没有增加。}
+}
+\]
+因此比固定“几分钟必跳”更通用的标准是\kw{无进展检测}。
+
+\subsection{四个无进展信号}
+出现以下情形时，必须触发一次控制检查：
+\begin{enumerate}
+  \item \kw{重复}：同一路线或同一句文本已经重复处理，仍无新结果；
+  \item \kw{无新状态}：没有产生新等式、新排除、新状态变量、新证据；
+  \item \kw{无目标}：说不出下一步准备制造什么中间结果；
+  \item \kw{资源侵蚀}：本题开始明显挤压后续高价值任务或注意力。
+\end{enumerate}
+
+\subsection{发生无进展后只有三种动作}
+\[
+\boxed{
+\text{Reframe}
+\quad/\quad
+\text{Switch Route}
+\quad/\quad
+\text{Exit}
+}
+\]
+\begin{itemize}
+  \item Reframe：重新确认 Target/Model；
+  \item Switch Route：换表征、换定理、换推演方向；
+  \item Exit：标记当前状态，先让资源流向其他题。
+\end{itemize}
+
+\begin{warn}[禁止“随机继续”]
+如果已经确认无进展，却只是继续算、继续读、继续尝试熟悉公式，这不是坚持，而是失去控制。考试里的坚持必须带来新状态。
+\end{warn}
+
+\section{第 11 章：回退协议——卡在哪，就退到哪一层}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.85cm and 0.55cm]
+% Row 1: Target, Model, Route, Execute
+\node[cnodeblue] (t) {1. Target\\[-1pt]\scriptsize 审题/交付物};
+\node[cnodeblue,right=of t] (m) {2. Model\\[-1pt]\scriptsize 结构/状态};
+\node[cnodeblue,right=of m] (r) {3. Route\\[-1pt]\scriptsize 第一中间点};
+\node[cnodeblue,right=of r] (e) {4. Execute\\[-1pt]\scriptsize 显式推进};
+
+% Row 2: Commit, Verify (placed below Route & Execute with ample vertical gap)
+\node[cnodegreen,below=1.35cm of r] (c) {6. Commit\\[-1pt]\scriptsize 锁定表达};
+\node[cnodeteal,right=of c] (v) {5. Verify\\[-1pt]\scriptsize 证据检查};
+
+% Forward Main Line
+\draw[mainflow] (t) -- (m);
+\draw[mainflow] (m) -- (r);
+\draw[mainflow] (r) -- (e);
+\draw[mainflow] (e) -- (v);
+\draw[altflow] (v) -- (c);
+
+% Non-intersecting Rollback Feedback Paths
+% 1. Local calculation retry: straight vertical arrow
+\draw[returnflow] (v.north) -- node[labelnote,right=2pt] {① 执行算错：局部重算} (e.south);
+
+% 2. Route failure: routed in the gap between Row 1 and Row 2
+\draw[returnflow] (v.north) -- ++(0,0.65) -| node[labelnote,above,pos=0.5] {② 路线无进展：换路线} (r.south);
+
+% 3. Model misidentified: routed horizontally in open space below Row 2
+\draw[returnflow] (v.south) -- ++(0,-0.42) -| node[labelnote,below,pos=0.45] {③ 结构认错：重新建模} (m.south);
+
+% 4. Target misunderstood: routed further below Row 2
+\draw[returnflow] (v.south) -- ++(0,-0.85) -| node[labelnote,below,pos=0.45] {④ 目标理解错：重新读题} (t.south);
+\end{tikzpicture}
+\end{center}
+
+修复不是从头重做。先判断失败发生在哪一级，只回退到\kw{最小必要层级}。
+
+\newpage
+\section{Part IV：Paper Control——整张卷子的资源调度}
+
+\section{第 12 章：把试卷看成任务队列，而不是顺序文本}
+一张卷子给出的只是印刷顺序，不代表最优资源分配顺序。
+每道题在某一时刻都可以粗略处于三种状态：
+
+\begin{center}
+\small
+\begin{tabularx}{0.90\linewidth}{>{\bfseries}p{0.16\linewidth} X X}
+\toprule
+状态 & 判定 & 动作 \\
+\midrule
+Green & Model 清楚，Route 清楚 & 立即兑现 \\
+Yellow & Model 基本清楚，但路线/执行有不确定 & 给有限探索预算 \\
+Red & 连结构或目标都没有建立 & 暂时退出，等待后续线索/状态恢复 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+这并非固定标签。同一道题随着新线索与状态的显式化，可完成状态升级：
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.6cm]
+\node[cnodered,minimum width=2.30cm] (red) {\textbf{Red 任务}\\[-1pt]\scriptsize 结构未建立 / 高阻力};
+\node[cnodeorange,minimum width=2.30cm,right=of red] (yellow) {\textbf{Yellow 任务}\\[-1pt]\scriptsize 结构清楚 / 探索路线};
+\node[cnodegreen,minimum width=2.30cm,right=of yellow] (green) {\textbf{Green 任务}\\[-1pt]\scriptsize 路线明确 / 立即兑现};
+
+% Main State Upgrades
+\draw[mainflow] (red) -- node[labelnote,above] {读出约束 / 找到切点} (yellow);
+\draw[mainflow] (yellow) -- node[labelnote,above] {确定第一步 Route} (green);
+
+% Skip/Return Reordering (routed below in open space)
+\draw[returnflow] (yellow.south) -- ++(0,-0.55) -| node[labelnote,below,pos=0.5] {无进展 / 资源侵蚀 → 暂时退出重排} (red.south);
+
+% Execution Output
+\draw[altflow] (green.east) -- ++(0.65,0) node[right,font=\scriptsize\bfseries\color{deepgreen}] {解题内循环};
+\end{tikzpicture}
+\end{center}
+因此 Skip 不等于放弃，而是主动对任务队列进行\kw{动态重排序}。
+
+\section{第 13 章：整卷外循环}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.75cm and 0.60cm]
+% Outer Loop Grid
+\node[cnodeorange] (s) {1. Scan\\[-1pt]\scriptsize 建立全卷态势};
+\node[cnodeorange,right=of s] (sel) {2. Select\\[-1pt]\scriptsize 选高确定/高价值任务};
+\node[cnodeblue,right=of sel] (sol) {3. Solve\\[-1pt]\scriptsize 运行单题六步内循环};
+
+\node[cnodeteal,below=1.1cm of sol] (mon) {4. Monitor\\[-1pt]\scriptsize 监测 进展/时间/风险};
+\node[cnodepurple,left=of mon] (sr) {5. Skip / Return\\[-1pt]\scriptsize 动态重排任务队列};
+\node[cnodegreen,left=of sr] (fin) {6. Finalize\\[-1pt]\scriptsize 检查预算与封包交付};
+
+% Forward Connections
+\draw[mainflow] (s) -- (sel);
+\draw[mainflow] (sel) -- (sol);
+\draw[mainflow] (sol) -- (mon);
+\draw[mainflow] (mon) -- (sr);
+\draw[altflow] (sr) -- (fin);
+
+% Re-select Loop
+\draw[returnflow] (sr.north) -- node[labelnote] {仍有可用资源：选下一任务} (sel.south);
+
+% Background Container
+\begin{scope}[on background layer]
+  \node[boxgroup,fit=(s)(sel)(sol)(mon)(sr)(fin),label={[font=\scriptsize\bfseries\color{deeporange}]above:整卷控制外循环 (Paper Control Outer Loop)}] {};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+
+外循环只做资源控制，不重新解释学科机制。
+
+\subsection{Scan：建立态势，不求解}
+Scan 的目标是识别：
+\begin{itemize}
+  \item 高确定性可兑现分；
+  \item 高价值但需要较长连续思考的任务；
+  \item 当前明显 Red 的任务；
+  \item 必须预留的主观题表达与检查成本。
+\end{itemize}
+
+\subsection{Monitor：三个量}
+做题过程中只监控三个量：
+\[
+\boxed{
+\text{Progress}
++\text{Time Pressure}
++\text{Error Risk}
+}
+\]
+不是每隔一分钟看表，而是在自然控制点问：\kw{我是否仍在产生有效进展？当前风险是否值得继续投入？}
+
+\section{第 14 章：时间预算必须来自模考校准，不来自“万能分钟数”}
+
+\subsection{为什么固定时间规则不能成为 Stable Core}
+不同人的：
+\begin{itemize}
+  \item 阅读速度；
+  \item 计算速度；
+  \item 目标分数；
+  \item 强弱题型；
+  \item 检查收益；
+\end{itemize}
+都不同。因此“某题必须 $x$ 分钟”“某篇必须 $y$ 分钟”最多是初始训练参数，不能作为普遍定律。
+
+\subsection{真正稳定的是预算原则}
+\begin{enumerate}
+  \item \kw{先保护高确定性分数}：不要让一道困难题侵蚀大量 Green 题；
+  \item \kw{为表达预留成本}：主观题不是算出答案才开始写；
+  \item \kw{为高风险环节预留检查}：检查时间必须投向最可能纠正错误的地方；
+  \item \kw{用模考更新预算}：以真实完成时间和失分结构修订自己的时间策略。
+\end{enumerate}
+
+\section{第 15 章：检查预算——不要把“检查”理解成重做}
+
+\subsection{检查的目标函数}
+有限时间里，最有价值的检查不是平均覆盖所有步骤，而是：
+\[
+\boxed{
+\text{Inspect the highest-risk, highest-recoverability points first.}
+}
+\]
+也就是优先检查：\kw{容易错、错了损失大、而且短时间能发现的点}。
+
+\subsection{三类检查}
+\begin{enumerate}
+  \item \kw{Invariant Check}：有没有违反定义域、范围、协议不变量、语篇逻辑？
+  \item \kw{Boundary Check}：极端值、单位、边界条件、限定词是否满足？
+  \item \kw{Reverse Check}：能否代回、逆推、重新由答案恢复题设要求？
+\end{enumerate}
+
+\newpage
+\section{Part V：Self Control——保持控制，而不是追求“状态完美”}
+
+\section{第 16 章：考试状态失控的三个可观察信号}
+本册不试图管理抽象“情绪值”，只处理能观察到的行为信号：
+\begin{enumerate}
+  \item \kw{速度异常}：突然远快于平时，开始跳步骤；或明显变慢，反复检查同一处；
+  \item \kw{注意力粘滞}：脑中持续想着上一题，当前题无法建立 Target/Model；
+  \item \kw{错误扩散}：一次不确定答案开始驱动后续连续改答案、反复猜测。
+\end{enumerate}
+
+\subsection{最小恢复协议}
+发生失控时不要设计复杂心理流程，立即触发四步复位协议：
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.45cm]
+\node[cnodered,minimum width=2.1cm] (stop) {\textbf{\ding{55} STOP}\\[-1pt]\scriptsize 停笔/中断卡顿};
+\node[cnodeblue,right=of stop,minimum width=2.45cm] (t) {1. Read Target\\[-1pt]\scriptsize 重读交付目标};
+\node[cnodeteal,right=of t,minimum width=2.65cm] (e) {2. Externalize State\\[-1pt]\scriptsize 草稿纸外化已知状态};
+\node[cnodegreen,right=of e,minimum width=2.65cm] (a) {3. One Next Action\\[-1pt]\scriptsize 只选一个可执行动作};
+
+\draw[dangerflow] (stop) -- (t);
+\draw[mainflow] (t) -- (e);
+\draw[altflow] (e) -- (a);
+\end{tikzpicture}
+\end{center}
+恢复的目标不是“让我立刻感觉良好”，而是\kw{重新获得下一步可执行动作}。
+
+\section{第 17 章：答案修改规则——修改必须由新证据触发}
+考试后半程最危险的一类行为是：
+\begin{quote}
+“我突然觉得刚才那个答案好像不对。”
+\end{quote}
+修改答案至少需要一种\kw{新信息}：
+\begin{itemize}
+  \item 发现先前漏读的题干条件；
+  \item 找到新的直接证据；
+  \item 发现不变量/单位/边界冲突；
+  \item 重算得到明确不同结果并定位原错误。
+\end{itemize}
+没有新证据，只是主观不安，不构成修改理由。
+\[
+\boxed{
+\text{Change Answer}
+\Longleftarrow
+\text{New Evidence}
+}
+\]
+
+\newpage
+\section{Part VI：Subject Adapters——统一控制，不统一话术}
+
+\section{第 18 章：数学 Adapter}
+数学的学科世界由对象、条件、结构、变换、不变量和目标组织。考试控制接入方式如下。
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.14\linewidth} X X}
+\toprule
+控制节点 & 数学中的固定问题 & 典型动作 \\
+\midrule
+Target & 求什么量/证明什么命题？范围与形式是什么？ & 圈定未知量、参数范围、结论形式 \\
+Model & 对象有什么结构，约束是什么？ & 函数/数列/向量/矩阵/概率对象化 \\
+Route & 准备把陌生结构转成什么熟悉结构？ & 换元、构造、配方、对角化、条件化 \\
+Execute & 哪些中间状态未来会依赖？ & 写关键等式、区间、图、变量关系 \\
+Verify & 变换合法吗？范围/符号/极端值合理吗？ & 定义域、量纲、边界、代回、逆向验证 \\
+Commit & 评分者需要看到哪条依据链？ & 结论 + 必要推导 + 条件说明 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{exam}[数学最重要的 Route 纪律]
+开始长计算前先问：\kw{“这次变换以后，结构应该变简单在哪里？”}\quad 如果复杂度没有可预期下降，先不要把熟悉公式当作路线。
+\end{exam}
+
+\section{第 19 章：408 Adapter}
+408 的通用学科模型可以压成：
+\[
+\boxed{
+\text{Object}
++
+\text{State}
++
+\text{Event/Rule}
+\rightarrow
+\text{New State}
++
+\text{Cost}
+}
+\]
+因此考试时最重要的是\kw{显式模拟}。
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.14\linewidth} X X}
+\toprule
+控制节点 & 408 中的固定问题 & 典型动作 \\
+\midrule
+Target & 最终问 state/value/path/cost 中哪个？ & 锁定最终量和单位 \\
+Model & 对象、当前状态、规则、事件是什么？ & 画状态表/地址链/时间线 \\
+Route & 哪个状态应该先被推出？ & 找第一个确定事件或映射 \\
+Execute & 每个事件后哪些变量必须同步更新？ & 逐事件推进，拒绝脑内跳步 \\
+Verify & 不变量、边界、单位、作用域有没有冲突？ & 容量、序号范围、队列合法性、层次检查 \\
+Commit & 最终状态/数值是否对应题目问法？ & 数值 + 单位 + 必要状态依据 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{method}[408 的高频第一动作]
+如果题目包含多个实体、多个时刻或多个层次，优先把它变成\kw{状态表、时间线、映射链}中的一种；如果仍然全部留在脑内，执行断点概率会显著上升。
+\end{method}
+
+\section{第 20 章：英语 Adapter}
+英语考试的稳定基础不是“技巧词库”，而是：
+\[
+\boxed{
+\text{Task}
++
+\text{Text Evidence}
++
+\text{Language/Discourse Relation}
+}
+\]
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.14\linewidth} X X}
+\toprule
+控制节点 & 英语中的固定问题 & 典型动作 \\
+\midrule
+Target & 题干要 fact/reason/attitude/inference/main idea 中哪种？ & 圈主体、范围、程度、逻辑功能 \\
+Model & 应寻找哪一类证据，证据范围多大？ & 局部句、段落、全文；句法/指代/语篇关系 \\
+Route & 去哪里找什么证据？ & 关键词 + 同义改写 + 逻辑功能定位 \\
+Execute & 原文与选项如何逐项对应？ & 拆主体、动作、程度、因果方向 \\
+Verify & 直接证据是否回答题干？选项哪里可证伪？ & 直接证据优先，主旨只作一致性检查 \\
+Commit & 当前答案是否拥有最强证据，而非最熟悉措辞？ & 比较证据强度，锁定最佳支持项 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{warn}[英语旧经验的三条降级规则]
+\begin{enumerate}
+  \item “题目先读还是文章先读”属于\kw{题型/个人策略}，不升格为普遍考试定律；
+  \item “词汇复现次数”“答案分布”“红花绿叶”等只能属于 D 级启发式，不能推翻文本证据；
+  \item “主旨一致”只能用于 C 级全局校验，不能覆盖 A 级直接证据。
+\end{enumerate}
+\end{warn}
+
+\newpage
+\section{Part VII：从训练到考试——控制规则怎样被验证}
+
+\section{第 21 章：考试规则不能靠听起来有道理而成立}
+一条考试规则只有在新题中持续改善行为，才值得进入稳定控制层。
+
+\subsection{最小验证流程}
+任何新增规则必须经历严密验证流程：
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodegray,minimum width=2.15cm] (o) {1. Observation\\[-1pt]\scriptsize 客观现象记录};
+\node[cnodeteal,right=of o,minimum width=2.15cm] (d) {2. Diagnosis\\[-1pt]\scriptsize 定位首次偏离};
+\node[cnodeorange,right=of d,minimum width=2.25cm] (c) {3. Candidate\\[-1pt]\scriptsize 提出动作化规则};
+\node[cnodeblue,right=of c,minimum width=2.15cm] (n) {4. Verification\\[-1pt]\scriptsize 新题独立测试};
+\node[cnodegreen,right=of n,minimum width=2.25cm] (k) {5. Decision\\[-1pt]\scriptsize Keep / Revise / Reject};
+
+\draw[mainflow] (o) -- (d);
+\draw[mainflow] (d) -- (c);
+\draw[mainflow] (c) -- (n);
+\draw[altflow] (n) -- (k);
+\end{tikzpicture}
+\end{center}
+例如：
+\begin{quote}
+原始感受：“这类题我总觉得会，一写就错。”
+\end{quote}
+不要直接沉淀为“做题必须仔细”。先诊断第一次偏离：也许真正问题是 Route 前没有预测结果形态，于是候选规则应当是可执行的具体动作。
+
+\section{第 22 章：一次错题到底改哪里？}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.29\linewidth} X}
+\toprule
+发现的问题 & Canonical 修改位置 \\
+\midrule
+概念/机制理解错误 & 对应学科专题手册 \\
+两个专题接口理解错误 & 桥梁/综合手册 \\
+题目识别失败 & 学科做题规则：Recognition \\
+起手与路径选择失败 & 学科做题规则：Route \\
+状态维护失败 & 学科做题规则：Execution \\
+不会发现自己错了 & 学科 Verification Checklist \\
+评分表达不完整 & 学科 Commit/Expression 规则 \\
+整卷时间/退出/返回失控 & 本考试控制手册或个人考场策略 \\
+一次偶发、无法解释的粗心 & 不修改 Stable Core，继续观察 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{corebox}[更新纪律]
+\kw{不是每道错题都值得修改系统。}\quad 只有当错误可重复、可解释、可通过具体动作降低，并且能在新题验证时，才值得生成正式规则。
+\end{corebox}
+
+\section{第 23 章：AI 在考试控制训练中的正确角色}
+AI 最有价值的不是替你完成 Question Control，而是帮助你\kw{调试控制过程}：
+\begin{itemize}
+  \item \kw{Debugger}：找第一次偏离，而不是只给标准答案；
+  \item \kw{Adversary}：寻找候选规则的反例；
+  \item \kw{Coach}：针对某一断点生成小规模诊断训练；
+  \item \kw{Editor}：验证后把规则放回唯一 owner，避免重复；
+  \item \kw{Evidence Auditor}：区分硬证据、结构推理与启发式。
+\end{itemize}
+
+最重要的训练顺序仍然是人主导、AI 辅助攻击的对抗式训练环：
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.2cm] (j) {1. 我先判断\\[-1pt]\scriptsize 独立完成控制};
+\node[cnodeblue,right=of j,minimum width=2.2cm] (e) {2. 我先解释\\[-1pt]\scriptsize 阐明依据链};
+\node[cnodered,right=of e,minimum width=2.2cm] (a) {3. AI 攻击\\[-1pt]\scriptsize 寻找反例漏洞};
+\node[cnodeorange,right=of a,minimum width=2.2cm] (r) {4. 我修正\\[-1pt]\scriptsize 修订控制规则};
+\node[cnodegreen,right=of r,minimum width=2.2cm] (v) {5. 新题再验证\\[-1pt]\scriptsize 形成稳定能力};
+
+\draw[mainflow] (j) -- (e);
+\draw[dangerflow] (e) -- (a);
+\draw[mainflow] (a) -- (r);
+\draw[altflow] (r) -- (v);
+\end{tikzpicture}
+\end{center}
+
+\newpage
+\section{Part VIII：旧规则迁移——什么保留，什么降级，什么删除}
+
+\section{第 24 章：稳定核心与启发式必须分层}
+早期英语笔记中已经出现了很多有价值的控制思想，例如：信号驱动、限定词审查、定位难度分级、超时退出、最终验证。但其中一些规则被写成了比证据更强的“定律”。正式体系必须重新归位。
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.28\linewidth} p{0.17\linewidth} X}
+\toprule
+旧规则/表述 & 处理 & 新位置 \\
+\midrule
+先识别信号，避免纯语感 & 保留并升级 & Evidence first：Observation 与 Inference 分开 \\
+题干限定必须审查 & 保留 & 英语 Adapter 的 A 级任务约束 \\
+定位句必须回答所问 & 保留 & Target + Verify \\
+排除可证伪选项 & 保留 & Verify 中的证据比较 \\
+主旨一致性 & 保留但降级 & C 级全局一致性 \\
+固定时间红线 & 降级 & 个人模考校准参数 \\
+“80\%/60\% 题可靠某方法” & 删除 Stable Core & 若有真实样本，留在个人观察 \\
+“概念词复现至少两次” & 删除硬规则 & D/B 级辅助证据，不设固定次数 \\
+“结构决定论” & 改写 & 结构是证据，不是结论 \\
+“红花绿叶/答案分布” & 移出正式核心 & 个人低置信启发式，需数据验证 \\
+“命题人故意怎样设计” & 改写 & 改为可观察的 Task Constraint/Option Error \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{第 25 章：为什么这种重构更适合长期生长}
+Stable Core 只保存跨题长期成立的控制关系；做题中新发现的技巧先进入学科规则或观察区。这样以后即使某个具体启发式被否定，也不会破坏本册主体。
+
+\[
+\boxed{
+\text{Stable Control Kernel}
++
+\text{Subject Adapters}
++
+\text{Validated Personal Rules}
+}
+\]
+三者分别保持不同更新速度。
+
+\newpage
+\section{Part IX：最终压缩页}
+
+\section{第 26 章：一页考试控制协议}
+
+\begin{corebox}[单题：六步]
+\begin{enumerate}
+  \item \kw{Target}：最终要交付什么？限定是什么？
+  \item \kw{Model}：这是什么结构？当前对象/状态/证据是什么？
+  \item \kw{Route}：第一步为了制造什么中间结果？
+  \item \kw{Execute}：哪些关键状态必须写出来并逐步更新？
+  \item \kw{Verify}：我凭什么相信答案？证据等级是什么？
+  \item \kw{Commit}：证据是否已经足够？评分所需表达是否完整？
+\end{enumerate}
+\end{corebox}
+
+\begin{exam}[卡住：四问]
+\begin{enumerate}
+  \item 我现在卡在 Target / Model / Route / Execute / Verify / Commit 哪一层？
+  \item 最近一次真正产生新状态是什么时候？
+  \item 我是应该 Reframe、Switch Route，还是 Exit？
+  \item 退出前要留下什么状态，方便回来直接继续？
+\end{enumerate}
+\end{exam}
+
+\begin{statebox}[整卷：五步外循环]
+\begin{center}
+\begin{tikzpicture}[node distance=0.28cm]
+\node[cnodeorange,minimum width=1.85cm,minimum height=0.70cm,font=\scriptsize] (s1) {1. Scan\\[-2pt]\tiny 态势};
+\node[cnodeorange,right=of s1,minimum width=1.85cm,minimum height=0.70cm,font=\scriptsize] (s2) {2. Select\\[-2pt]\tiny 任务};
+\node[cnodeblue,right=of s2,minimum width=1.85cm,minimum height=0.70cm,font=\scriptsize] (s3) {3. Solve\\[-2pt]\tiny 六步};
+\node[cnodeteal,right=of s3,minimum width=1.85cm,minimum height=0.70cm,font=\scriptsize] (s4) {4. Monitor\\[-2pt]\tiny 三量};
+\node[cnodepurple,right=of s4,minimum width=2.45cm,minimum height=0.70cm,font=\scriptsize] (s5) {5. Skip/Return\\[-2pt]\tiny 动态重排};
+
+\draw[mainflow] (s1) -- (s2);
+\draw[mainflow] (s2) -- (s3);
+\draw[mainflow] (s3) -- (s4);
+\draw[mainflow] (s4) -- (s5);
+\end{tikzpicture}
+\end{center}
+保护 Green 题；Yellow 题有限探索；Red 题不要长期吞噬资源。
+\end{statebox}
+
+\begin{method}[验证：四级证据]
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodegreen,minimum width=2.1cm,minimum height=0.70cm,font=\scriptsize] (e1) {A. 硬证据\\[-2pt]\tiny 直接约束};
+\node[cnodeblue,right=of e1,minimum width=2.1cm,minimum height=0.70cm,font=\scriptsize] (e2) {B. 结构推理\\[-2pt]\tiny 逻辑/状态机};
+\node[cnodeteal,right=of e2,minimum width=2.1cm,minimum height=0.70cm,font=\scriptsize] (e3) {C. 全局一致\\[-2pt]\tiny 范围/主旨};
+\node[cnodeorange,right=of e3,minimum width=2.1cm,minimum height=0.70cm,font=\scriptsize] (e4) {D. 启发式\\[-2pt]\tiny 经验/特征};
+
+% Stepwise leftward arrows showing increasing strength
+\draw[altflow] (e4) -- (e3);
+\draw[altflow] (e3) -- (e2);
+\draw[altflow] (e2) -- node[above,font=\tiny\bfseries\color{deepgreen},inner sep=1pt] {强度递增} (e1);
+\end{tikzpicture}
+\end{center}
+低级证据不能推翻高级证据。修改答案必须由\kw{新证据}触发。
+\end{method}
+
+\begin{bridge}[最终心智模型]
+考试不是“把会的题做出来”这么简单，而是：
+\begin{center}
+\fbox{\parbox{0.88\linewidth}{\centering\bfseries
+在有限时间和注意力下，持续判断当前控制节点，调用正确模型，选择可行路线，维护执行状态，用证据验证，并在合适时刻停止与交付。}}
+\end{center}
+当一道题失败时，不再说“我粗心”或“我状态不好”，而是定位：\kw{究竟是哪一个控制节点第一次失去正确状态？}
+\end{bridge}
+
+\section{附录：本册与后续个人规则的维护边界}
+\begin{itemize}
+  \item 本册只在\kw{跨学科控制模型}发生实质变化时更新；
+  \item 数学、408、英语的新识别信号和起手动作进入各自的做题规则；
+  \item 个人时间预算、做题顺序、启发式必须通过模考和新题持续校准；
+  \item 一次性体验先进入观察区，不直接修改 Stable Core；
+  \item 每次复盘优先寻找“第一次偏离”，再决定该改知识模型、做题规则还是整卷策略。
+\end{itemize}
+
+\end{document}

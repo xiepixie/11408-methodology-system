@@ -1,0 +1,1259 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.70cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,matrix,backgrounds}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{pifont}
+\usepackage{caption}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlength{\parindent}{2em}
+\setcounter{secnumdepth}{0}
+\setlength{\parskip}{0.28em}
+\setlist[itemize]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!50!black,pdftitle={英语一完形填空：多层语言约束下的词项恢复}}
+
+\definecolor{mainblue}{RGB}{43,85,135}
+\definecolor{deepblue}{RGB}{28,60,98}
+\definecolor{softblue}{RGB}{238,245,252}
+\definecolor{softgreen}{RGB}{238,249,243}
+\definecolor{softorange}{RGB}{253,246,233}
+\definecolor{softred}{RGB}{253,239,239}
+\definecolor{softgray}{RGB}{246,247,249}
+\definecolor{deepgreen}{RGB}{35,105,75}
+\definecolor{deeporange}{RGB}{165,98,22}
+\definecolor{deepred}{RGB}{150,55,55}
+\definecolor{purple}{RGB}{94,66,140}
+\definecolor{softpurple}{RGB}{245,241,251}
+\definecolor{teal}{RGB}{38,112,115}
+\definecolor{softteal}{RGB}{238,248,248}
+\definecolor{gold}{RGB}{156,120,28}
+\definecolor{softgold}{RGB}{252,249,235}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{英语一 · 完形填空方法论}
+\rhead{词项恢复与证据控制}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\newtcolorbox{corebox}[1][]{colback=softblue,colframe=mainblue,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{exam}[1][]{colback=softorange,colframe=deeporange,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warn}[1][]{colback=softred,colframe=deepred,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{eng}[1][]{colback=softgreen,colframe=deepgreen,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{method}[1][]{colback=softgray,colframe=black!45,title=#1,fonttitle=\bfseries,boxrule=0.6pt,arc=2mm}
+\newtcolorbox{bridge}[1][]{colback=softpurple,colframe=purple,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{statebox}[1][]{colback=softteal,colframe=teal,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{history}[1][]{colback=softgold,colframe=gold,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+
+\newcommand{\kw}[1]{\textbf{#1}}
+\newcommand{\yes}{\textcolor{deepgreen}{\ding{51}}}
+\newcommand{\no}{\textcolor{deepred}{\ding{55}}}
+\newcommand{\term}[2]{\textbf{#1（#2）}}
+
+% ---- Figure grammar: direct topology & semantic color system ----
+\tikzset{
+  cnode/.style={draw=mainblue,rounded corners=1.8mm,minimum width=2.65cm,minimum height=0.92cm,
+    align=center,inner sep=3pt,font=\small,fill=softblue,line width=0.8pt},
+  cnodeblue/.style={cnode,draw=mainblue,fill=softblue},
+  cnodeg/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodegreen/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodeo/.style={cnode,draw=deeporange,fill=softorange},
+  cnodeorange/.style={cnode,draw=deeporange,fill=softorange},
+  cnodep/.style={cnode,draw=purple,fill=softpurple},
+  cnodepurple/.style={cnode,draw=purple,fill=softpurple},
+  cnodet/.style={cnode,draw=teal,fill=softteal},
+  cnodeteal/.style={cnode,draw=teal,fill=softteal},
+  cnodered/.style={cnode,draw=deepred,fill=softred,font=\small\bfseries},
+  cnodegray/.style={cnode,draw=black!45,fill=softgray},
+  mainflow/.style={-{Latex[length=2.2mm,width=1.5mm]},line width=1.0pt,draw=deepblue},
+  altflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepgreen},
+  returnflow/.style={-{Latex[length=2.0mm,width=1.4mm]},densely dashed,line width=0.85pt,draw=purple},
+  dangerflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepred},
+  optflow/.style={-{Latex[length=1.8mm,width=1.3mm]},dotted,line width=0.85pt,draw=teal},
+  labelnote/.style={font=\scriptsize\bfseries,fill=white,inner sep=1.5pt,rounded corners=0.5mm,text=black!80,draw=black!25,line width=0.4pt},
+  boxgroup/.style={draw=black!25,dashed,rounded corners=2mm,fill=black!2,inner sep=6pt}
+}
+
+\title{\vspace{-1.15cm}\textbf{英语一 · 完形填空方法论手册}\\[0.35em]
+\large 多层语言约束下的词项恢复：从“凭感觉选词”到“证据驱动决策”}
+\author{个人认知系统 · 英语一专题手册}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}[一句话母模型]
+完形填空不是“从四个词里挑一个顺眼的”，而是：
+\[
+\boxed{\textbf{在语篇中恢复被删除的词项，使多个语言层级的约束重新同时成立。}}
+\]
+因此，一个候选项最终能被选中，不是因为某一个技巧“命中”，而是因为它在当前证据下比其他候选更完整地满足：\kw{结构、搭配、句义、句间关系与语篇功能}。
+\end{corebox}
+
+\begin{warn}[本册的术语规则]
+本册第一次引入英文术语、流程名或符号时，必须同时回答三件事：
+\begin{enumerate}
+  \item \kw{它中文是什么意思？}
+  \item \kw{为什么需要这个概念？它解决哪个认知问题？}
+  \item \kw{做一道空格题时，具体在什么时候调用？}
+\end{enumerate}
+只有解释过一次以后，后文才允许直接使用英文简称或符号。
+\end{warn}
+
+\tableofcontents
+\newpage
+
+\section{第 0 章：本册在英语一认知体系中的位置}
+
+\subsection{英语不是五种题型，而是一套语言理解系统}
+英语理解可以先压成一条从表面形式到篇章功能的链：
+\begin{center}
+\begin{tikzpicture}[node distance=0.32cm]
+\node[cnodeblue,minimum width=2.45cm] (f) {1. Form\\[-1pt]\scriptsize 词形/标点/词序};
+\node[cnodeblue,right=of f,minimum width=2.45cm] (s) {2. Structure\\[-1pt]\scriptsize 短语与分句结构};
+\node[cnodeteal,right=of s,minimum width=2.60cm] (r) {3. Reference\\[-1pt]\scriptsize 指代与逻辑关系};
+\node[cnodeblue,right=of r] (m) {4. Meaning\\[-1pt]\scriptsize 完整命题意义};
+\node[cnodegreen,right=of m,minimum width=2.65cm] (d) {5. Discourse\\[-1pt]\scriptsize 语篇篇章功能};
+
+\draw[mainflow] (f) -- (s);
+\draw[mainflow] (s) -- (r);
+\draw[mainflow] (r) -- (m);
+\draw[altflow] (m) -- (d);
+\end{tikzpicture}
+\end{center}
+第一次出现这些英文词时，先明确中文：
+\begin{itemize}
+  \item \term{Form}{形式}：你真正看到的单词、词形、标点与词序；
+  \item \term{Structure}{结构}：这些形式怎样组成短语、分句和句子；
+  \item \term{Reference / Relation}{指代 / 关系}：一个词指向谁，两个句子是什么逻辑关系；
+  \item \term{Meaning}{意义}：一句话真正表达了什么命题；
+  \item \term{Discourse Function}{语篇功能}：这句话在段落中是在提出观点、解释、转折、举例还是总结。
+\end{itemize}
+
+\begin{method}[为什么先建立这一条链？]
+因为完形删掉的是一个词或短语，但判断它时可能需要一直向上检查到句子甚至整个语篇。若只把完形理解成“词汇题”，学生就会在本该扩大上下文时死盯空格；若把它理解成“阅读题”，又容易忽略固定搭配和句法位置这些非常硬的局部约束。
+\end{method}
+
+\subsection{完形与其他英语专题的边界}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.20\linewidth} X X}
+\toprule
+专题 & 被破坏/要求恢复的对象 & 本册是否拥有 \\
+\midrule
+完形填空 & Word / Phrase（词项或短语） & \textbf{Own：本册} \\
+新题型 & Sentence / Order / Heading（句子、顺序、功能标签） & Use：只引用语篇关系基础 \\
+阅读理解 & Proposition / Evidence / Inference（命题、证据、推断） & Use：只调用证据意识 \\
+翻译 & Meaning Structure（意义结构） & 不展开 \\
+写作 & Intent $\rightarrow$ Discourse $\rightarrow$ Language & 不展开 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{本册真正要帮助你形成什么能力？}
+不是背“however 是红花词”，也不是记“逻辑题一般有几道”，而是形成三个稳定能力：
+\begin{enumerate}
+  \item \kw{识别竞争维度}：四个选项究竟差在语法、搭配、词义还是逻辑关系？
+  \item \kw{控制证据范围}：当前一句够不够？不够时应该扩大到哪里？
+  \item \kw{比较并证伪候选项}：不是寻找“像正确答案的词”，而是说明其他词违反了什么约束。
+\end{enumerate}
+
+\newpage
+\section{Part I：完形到底是什么——一个约束满足问题}
+
+\section{第 1 章：从“填词”重构为“恢复词项”}
+
+\subsection{1.1 为什么“填词版阅读理解”还不够准确？}
+“填词版阅读理解”抓到了语境的重要性，但没有说明一个关键事实：\kw{同一个空格同时受到多个层级约束。}
+
+考虑一个人为构造的例子：
+\begin{eng}[例 1：同一个空格为什么不能只靠一种技巧]
+The policy may ultimately \underline{\hspace{1.5cm}} the way small firms make investment decisions.
+
+候选：\texttt{affect / influence / shape / impact}
+\end{eng}
+四个词语法上都可能作为动词，单靠“词性”淘汰不了；它们大意都与“影响”有关，单靠中文释义也不够。真正需要比较的是：当前语境强调一般影响、长期塑造、强烈冲击还是某种更自然的搭配倾向。
+
+因此，完形不是问：
+\begin{quote}
+“我认不认识这四个词？”
+\end{quote}
+而是问：
+\begin{quote}
+“在这个位置、这个句子、这个局部语篇里，哪一个候选最符合所有可观察约束？”
+\end{quote}
+
+\subsection{1.2 第一次引入：Constraint Satisfaction（约束满足）}
+\term{Constraint Satisfaction}{约束满足} 是本册最重要的上位概念。
+
+\kw{中文含义：}一个候选答案必须同时满足若干条件，只要违反一个关键条件，就应该被排除。
+
+\kw{为什么需要它：}过去的“逻辑 > 语义 > 搭配”把不同证据强行排成固定顺序，但真实题目中，决定答案的约束并不固定。某题可能一个固定搭配就结束，另一题必须读完整段落。
+
+\kw{实操时怎么用：}面对四个选项，先不要问“哪个最像”，而问“每个候选分别会在哪一层失败”。
+
+我们用五类约束表示：
+\begin{center}
+\begin{tikzpicture}[node distance=0.42cm]
+\node[cnodeblue,minimum width=2.35cm] (csyn) {$C_{\text{syn}}$ 句法约束\\[-1pt]\scriptsize 位置与结构合法};
+\node[cnodeblue,right=of csyn,minimum width=2.40cm] (clex) {$C_{\text{lex}}$ 词汇组合\\[-1pt]\scriptsize 搭配与配价自然};
+\node[cnodeteal,right=of clex,minimum width=2.35cm] (csem) {$C_{\text{sem}}$ 语义约束\\[-1pt]\scriptsize 句义与事实正确};
+\node[cnodepurple,right=of csem,minimum width=2.40cm] (crel) {$C_{\text{rel}}$ 关系约束\\[-1pt]\scriptsize 前后逻辑与指代};
+\node[cnodegreen,right=of crel,minimum width=2.40cm] (cdisc) {$C_{\text{disc}}$ 语篇约束\\[-1pt]\scriptsize 全局主题与立场};
+
+\draw[mainflow] (csyn) -- node[labelnote,above=2pt] {$\cap$} (clex);
+\draw[mainflow] (clex) -- node[labelnote,above=2pt] {$\cap$} (csem);
+\draw[mainflow] (csem) -- node[labelnote,above=2pt] {$\cap$} (crel);
+\draw[altflow] (crel) -- node[labelnote,above=2pt] {$\cap$} (cdisc);
+\end{tikzpicture}
+\end{center}
+第一次见这些符号时逐一解释：
+\begin{itemize}
+  \item $C_{\text{syn}}$：\term{Syntactic Constraint}{句法约束}，即这个位置在语法结构上允许什么；
+  \item $C_{\text{lex}}$：\term{Lexical Constraint}{词汇组合约束}，即这个词与周围词能否自然组合；
+  \item $C_{\text{sem}}$：\term{Semantic Constraint}{语义约束}，即词义是否真正符合本句；
+  \item $C_{\text{rel}}$：\term{Relational Constraint}{关系约束}，即本句与前后句的逻辑/指代关系是否成立；
+  \item $C_{\text{disc}}$：\term{Discourse Constraint}{语篇约束}，即答案是否与当前段落的讨论对象和功能相容。
+\end{itemize}
+这里的“交集”符号 $\cap$ 不是要求真的计算集合，而是在提醒：\kw{正确答案要同时活过多轮筛选。}
+
+\begin{exam}[马上落到一道题怎么操作]
+假设某空四个选项为 A/B/C/D：
+\begin{enumerate}
+  \item 先看句法：A 的词性不可能放在这里，排除；
+  \item 再看搭配：B 虽然词义近似，但与后面的介词组合不成立，排除；
+  \item C、D 都能成句，此时才进入句义比较；
+  \item 若本句仍无法区分，就读前后句，看哪一个与当前因果/转折关系相容。
+\end{enumerate}
+这就是“约束满足”的实操，不需要在考场写 $C_{\text{syn}}$ 等符号；符号只是训练阶段对思维顺序的压缩。
+\end{exam}
+
+\subsection{1.3 正确答案不是“唯一完美词”，而是当前证据下的最佳满足项}
+很多完形难题的四个选项故意很接近。此时不要期待某个词在所有角度都“完美无缺”，而应比较：
+\[
+\boxed{
+\text{Which candidate violates the fewest and weakest constraints?}
+}
+\]
+中文就是：\kw{哪个候选违反的约束最少，而且没有违反高强度证据？}
+
+这与考试控制手册里的证据等级一致：直接结构和明确语义证据，优先于“好像更常见”“感觉更顺”等弱经验。
+
+\newpage
+\section{第 2 章：完形判断的四级视野——到底要看多远？}
+
+\subsection{2.1 第一次引入：Evidence Scope（证据范围）}
+\term{Evidence Scope}{证据范围} 指：\kw{为了区分当前候选项，你最少需要读取多大的上下文。}
+
+\kw{为什么需要：}“瞻前顾后”是对的，但如果每个空都从头看到尾，效率很低；如果永远只看空格所在句，又会错过后文线索。所以必须学会\kw{按需要扩大阅读范围}。
+
+我们用四级范围表示：
+\[
+\boxed{
+\text{Slot}
+\rightarrow
+\text{Sentence}
+\rightarrow
+\text{Local Discourse}
+\rightarrow
+\text{Global Discourse}
+}
+\]
+中文依次是：
+\begin{itemize}
+  \item \term{Slot}{空位局部}：只看空格附近结构；
+  \item \term{Sentence}{整句}：把完整句子读懂；
+  \item \term{Local Discourse}{局部语篇}：扩大到前后句或当前小段；
+  \item \term{Global Discourse}{全局语篇}：需要当前段落乃至全文主题才能判断。
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.45cm]
+\node[cnodeblue,minimum width=2.75cm] (a) {1. Slot\\[-1pt]\scriptsize 空位局部结构};
+\node[cnodeblue,right=of a,minimum width=2.75cm] (b) {2. Sentence\\[-1pt]\scriptsize 整句命题意义};
+\node[cnodeorange,right=of b,minimum width=2.85cm] (c) {3. Local Discourse\\[-1pt]\scriptsize 前后逻辑与指代};
+\node[cnodepurple,right=of c,minimum width=2.85cm] (d) {4. Global Discourse\\[-1pt]\scriptsize 全局段落与主题};
+
+\draw[mainflow] (a) -- (b);
+\draw[mainflow] (b) -- (c);
+\draw[mainflow] (c) -- (d);
+
+% Expansion Principle Note (Placed below nodes with ample 0.65cm clearance)
+\node[draw=deepgreen,fill=softgreen,rounded corners=1.2mm,inner sep=4pt,font=\scriptsize\bfseries\color{deepgreen},below=0.65cm of b,anchor=north] (scopenote)
+  {控制原则：按需扩大阅读范围（当前层无法区分候选项时，才向外升级一级）};
+\end{tikzpicture}
+\end{center}
+
+\subsection{2.2 Slot：空位局部解决什么？}
+先问：\kw{这个位置允许什么语言单位？}
+
+典型检查：
+\begin{itemize}
+  \item 冠词后更可能需要名词性成分；
+  \item 情态动词后通常接动词原形；
+  \item 介词后需要名词性成分或动名词结构；
+  \item 某些固定结构对介词、动词形式有硬要求。
+\end{itemize}
+
+如果这一层已经唯一确定，就不要为了“技巧完整”强行分析全文。
+
+\subsection{2.3 Sentence：为什么整句常常是最小语义单位？}
+四个词词性一致时，真正差别经常来自：
+\begin{itemize}
+  \item 谁对谁做动作；
+  \item 作用方向；
+  \item 程度强弱；
+  \item 褒贬与评价；
+  \item 搭配对象。
+\end{itemize}
+
+所以必须恢复完整 proposition（\term{Proposition}{命题内容}）：\kw{这句话到底在说什么事实或判断。}
+
+\subsection{2.4 Local Discourse：什么时候必须看前后？}
+出现以下现象时，应扩大到前后句：
+\begin{itemize}
+  \item 本句出现 \texttt{this, these, such, they, it} 等，需要找指代；
+  \item 本句含 \texttt{however, therefore, instead, for example} 等关系标记；
+  \item 四个选项都能解释本句，但前后论证方向不同；
+  \item 当前句明显是例子、解释、结果或转折的一部分。
+\end{itemize}
+
+\subsection{2.5 Global Discourse：全局主题什么时候才真正有用？}
+全局信息应当是\kw{最后一级约束}，主要帮助：
+\begin{itemize}
+  \item 判断当前段落持续讨论的对象；
+  \item 区分两个局部都合理但与全文立场不同的候选；
+  \item 回头解决前面暂时跳过、需要后文主题信息的空格。
+\end{itemize}
+
+\begin{warn}[不要把“首句定基调”写成硬规则]
+首句通常是高价值的 Topic Prior（\term{Topic Prior}{主题先验}）：它让你提前知道文章大概在讨论什么。但文章完全可能从问题写到方案、从批评写到改善，因此首句不是“全文情感永久不变”的约束。
+\end{warn}
+
+\newpage
+\section{Part II：五类核心约束——每一种到底怎么识别？}
+
+\section{第 3 章：句法约束——先确定“这个位置能放什么”}
+
+\subsection{3.1 Syntactic Constraint（句法约束）是什么？}
+\term{Syntactic Constraint}{句法约束} 指：词在句子结构中的位置要求。
+
+\kw{为什么需要：}有些题根本还没到词义比较，候选项就已经因结构不合法被淘汰。忽略这一层，会把简单题做成语义难题。
+
+\kw{实操：}先识别空格在主干里的角色，再看候选项能否承担这个角色。
+
+\begin{eng}[例 2：先看结构，不要先翻中文]
+The new evidence has \underline{\hspace{1.3cm}} researchers to reconsider the earlier assumption.
+
+若候选中同时出现名词、形容词和过去分词形式，先看 \texttt{has + \_ + object + to do} 的结构，再谈词义。
+\end{eng}
+
+\subsection{3.2 句法检查不是“背词性”}
+真正有价值的是识别：
+\[
+\boxed{
+\text{Head}
++
+\text{Complement}
++
+\text{Modifier}
+}
+\]
+第一次出现：
+\begin{itemize}
+  \item \term{Head}{中心词}：短语中决定基本语法类别的词；
+  \item \term{Complement}{补足成分}：中心词语义或结构上需要的成分；
+  \item \term{Modifier}{修饰成分}：提供附加信息，但不是核心结构必需项。
+\end{itemize}
+
+考场不要求给它们命名，但训练时要能看出：空格是在补核心结构，还是只是添加修饰。
+
+\subsection{3.3 句法层最常见的三类失误}
+\begin{enumerate}
+  \item \kw{只看空格前一个词}，忽略更远处的谓语/从句边界；
+  \item \kw{候选词都认识就直接比中文}，没有先检查结构合法性；
+  \item \kw{把形式相同当成功能相同}，例如 \texttt{-ing} 既可能是动名词也可能是分词。
+\end{enumerate}
+
+\begin{exam}[句法层的起手动作]
+看到一个空格，先用一句中文问自己：\kw{“这个位置在整句里缺的是谁？”}
+
+若你能回答“缺谓语动词 / 缺介词 / 缺名词性宾语 / 缺连接两个分句的词”，就已经完成了句法层建模。
+\end{exam}
+
+\section{第 4 章：词汇组合约束——Collocation 与 Valency}
+
+\subsection{4.1 Collocation（搭配）为什么不是“随缘背词组”？}
+\term{Collocation}{搭配} 指：英语中某些词比其他近义词更习惯、自然地共同出现。
+
+例如中文都可以译为“产生影响”，但不同名词、动词与介词的组合存在稳定偏好。
+
+\kw{为什么需要：}四个候选词中文含义很近时，真正区分项可能不是逻辑，而是英语本身的组合习惯。
+
+\kw{实操：}不要把搭配当“最后补充技巧”，而是在发现候选意义接近时主动问：\kw{“哪个词通常和当前宾语/介词/名词一起出现？”}
+
+\subsection{4.2 第一次引入：Valency（配价）}
+\term{Valency}{配价} 可以粗略理解为：\kw{一个词天然要求或允许带哪些成分。}
+
+例如某些动词要求：
+\[
+\text{Verb}+\text{Object},
+\]
+有些要求：
+\[
+\text{Verb}+\text{Preposition}+\text{Object},
+\]
+还有些可以接：
+\[
+\text{Verb}+\text{Object}+\text{to-infinitive}.
+\]
+
+\kw{为什么引入：}固定搭配只是记住一个成品，Valency 帮你理解“这个词为什么和这种结构天然合拍”。
+
+\kw{实操：}当四个动词都能翻译成相近中文时，检查它们各自允许的宾语、介词和补足结构。
+
+\begin{eng}[例 3：搭配与配价比中文释义更硬]
+The campaign aims to \underline{\hspace{1.2cm}} public awareness of the issue.
+
+即使若干动词都可译为“提高/促进”，也要问：它们与 \texttt{awareness} 的组合是否自然，是否需要额外介词或不同宾语结构。
+\end{eng}
+
+\subsection{4.3 搭配证据的强弱}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.28\linewidth} X X}
+\toprule
+证据 & 强度 & 操作 \\
+\midrule
+固定语法结构 & 很强 & 违反即排除 \\
+高稳定搭配/配价 & 强 & 优先比较候选 \\
+一般共现偏好 & 中等 & 与句义共同验证 \\
+“我好像见过” & 弱 & 不能单独定答案 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{第 5 章：语义约束——近义词不是一条“强弱链”}
+
+\subsection{5.1 Semantic Constraint（语义约束）}
+\term{Semantic Constraint}{语义约束} 指：\kw{候选词放进句子后，整句话表达的事实、动作方向、程度和评价是否正确。}
+
+\kw{为什么需要：}许多完形真正难点不是“不认识”，而是四个词都认识、中文释义又很接近。
+
+\subsection{5.2 不要用“show → indicate → demonstrate → reveal”这种单轴排序记近义词}
+近义词差异往往不是简单“程度越来越强”，而是多个维度：
+\[
+\boxed{
+\text{Meaning Difference}
+=
+\text{Direction}
++
+\text{Agent/Object}
++
+\text{Degree}
++
+\text{Register}
++
+\text{Collocation}
+}
+\]
+第一次解释：
+\begin{itemize}
+  \item Direction：动作方向或结果方向；
+  \item Agent/Object：谁通常做这个动作，作用于什么对象；
+  \item Degree：强弱程度；
+  \item Register：语体，偏正式、口语、技术还是中性；
+  \item Collocation：和哪些词自然共现。
+\end{itemize}
+
+\begin{exam}[近义词辨析时的五问]
+不要问“这四个哪个中文最像”，而问：
+\begin{enumerate}
+  \item 谁在做这个动作？
+  \item 动作指向谁/什么？
+  \item 是一般变化还是强调结果？
+  \item 当前语体允许这个表达吗？
+  \item 哪一个与周围词组合最自然？
+\end{enumerate}
+\end{exam}
+
+\subsection{5.3 熟词僻义怎么判断？}
+熟词僻义不是看到常见义不顺就“猜一个冷门义”，而是：
+\[
+\boxed{
+\text{Candidate Meaning}
+\xrightarrow{\text{Sentence Test}}
+\text{Does the proposition make sense?}
+}
+\]
+操作：
+\begin{enumerate}
+  \item 先代入最熟悉词义；
+  \item 如果句法成立但整句语义明显不通，说明需要检查其他义项；
+  \item 新义项必须同时被上下文和搭配支持，不能只靠“这个词好像还有别的意思”。
+\end{enumerate}
+
+\newpage
+\section{第 6 章：句间关系——连接词是证据，不是答案按钮}
+
+\subsection{6.1 第一次引入：Discourse Relation（语篇关系）}
+\term{Discourse Relation}{语篇关系} 指：\kw{两个命题在篇章中是什么关系。}
+
+常见关系包括：
+\[
+\text{Addition},\ 
+\text{Contrast},\ 
+\text{Cause},\ 
+\text{Result},\ 
+\text{Concession},\ 
+\text{Condition},\ 
+\text{Example},\ 
+\text{Explanation}.
+\]
+中文分别大致是：并列补充、对比、原因、结果、让步、条件、举例、解释。
+
+\kw{为什么需要：}逻辑连接词并不是“词义题”，它们是在告诉你两个完整命题如何连接。
+
+\subsection{6.2 正确使用信号词的三步链}
+第一次引入流程：
+\begin{center}
+\begin{tikzpicture}[node distance=0.55cm]
+\node[cnodeorange,minimum width=3.3cm] (sig) {1. Signal\\[-1pt]\scriptsize 识别关联词形式};
+\node[cnodepurple,right=of sig,minimum width=3.4cm] (hyp) {2. Candidate Relation\\[-1pt]\scriptsize 提出逻辑关系假设};
+\node[cnodegreen,right=of hyp,minimum width=3.4cm] (ver) {3. Semantic Verification\\[-1pt]\scriptsize 验证前后命题语义};
+
+\draw[mainflow] (sig) -- (hyp);
+\draw[altflow] (hyp) -- (ver);
+\end{tikzpicture}
+\end{center}
+中文解释：
+\begin{enumerate}
+  \item \term{Signal}{信号}：看到 \texttt{however, therefore, while} 等形式；
+  \item \term{Candidate Relation}{候选关系}：先提出“可能是转折/因果/对比”；
+  \item \term{Semantic Verification}{语义验证}：把前后两个命题真正读懂，确认关系是否成立。
+\end{enumerate}
+
+\begin{warn}[两个经典过度公式化]
+\texttt{and} 不等于“前后情感相同”；它主要标记协调/追加。\par
+\texttt{but} 也不等于“后句 = 前句的逻辑否定”；更准确地说，后句与前句建立的预期形成对比。
+\end{warn}
+
+\begin{eng}[例 4：为什么 and 可以连接表面上“相反”的内容]
+Analysts hold different views, \textbf{and} they agree on several practical measures.
+\end{eng}
+句子完全可以成立：前半句说“总体观点有分歧”，后半句补充“具体措施上存在共识”。两者不是互相否定，而是两个并列事实。
+
+\subsection{6.3 多义关系词必须回到句义}
+\begin{itemize}
+  \item \texttt{since} 可能表达原因，也可能表达时间起点；
+  \item \texttt{while} 可能表达时间，也可能表达对比；
+  \item \texttt{when} 常常只是时间条件，不等于严格逻辑条件；
+  \item \texttt{as} 可能表示时间、原因、方式或比较结构的一部分。
+\end{itemize}
+
+因此任何“看到某词立即选某关系”的口诀，都只能是第一步候选，不是最终证据。
+
+\section{第 7 章：语篇约束——Topic、Reference 与 Stance}
+
+\subsection{7.1 Global Discourse（全局语篇）到底管什么？}
+全局语篇不是“全文情感统一”，而是提供三个重要背景：
+\begin{enumerate}
+  \item 当前到底持续讨论哪个对象；
+  \item 某个代词或概念链指向什么；
+  \item 当前段落的立场与功能如何变化。
+\end{enumerate}
+
+\subsection{7.2 Reference（指代）}
+\term{Reference}{指代} 指：代词或指示表达实际指向哪个对象。
+
+例如：
+\[
+\text{several limitations}
+\rightarrow
+\text{these problems}
+\rightarrow
+\text{they}
+\]
+如果一个候选放入后让 \texttt{this/these/it/they} 找不到合法对象，即使单句看起来顺，也应高度怀疑。
+
+\subsection{7.3 Stance Compatibility（立场相容性）}
+\term{Stance Compatibility}{立场相容性} 比“情感一致”更准确。
+
+它不是说全文只能保持一种褒贬，而是问：\kw{当前候选是否与此处的论证方向相容。}
+
+例如文章可以：
+\[
+\text{Problem}
+\rightarrow
+\text{Criticism}
+\rightarrow
+\text{Alternative}
+\rightarrow
+\text{Positive Evaluation}.
+\]
+因此局部立场完全可能变化，关键是变化有没有结构信号和语义理由。
+
+\begin{method}[Topic Prior（主题先验）的正确用法]
+首句或开头部分常常提供 Topic Prior，即“文章大概率围绕什么问题展开”的初始判断。它的作用是缩小解释空间，而不是锁死全文情感。后文证据足够强时，必须允许更新最初判断。
+\end{method}
+
+\newpage
+\section{Part III：把模型变成考场动作}
+
+\section{第 8 章：单空六步协议——从 Target 到 Commit}
+
+\subsection{8.1 为什么需要一个完形 Adapter？}
+总考试控制模型是：
+\[
+\text{Target}
+\rightarrow
+\text{Model}
+\rightarrow
+\text{Route}
+\rightarrow
+\text{Execute}
+\rightarrow
+\text{Verify}
+\rightarrow
+\text{Commit}.
+\]
+但完形不能机械照抄。它的具体适配版是：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.15cm] (t) {1. Target\\[-1pt]\scriptsize 空位语法角色};
+\node[cnodeorange,right=of t,minimum width=2.45cm] (d) {2. Dimension\\[-1pt]\scriptsize 识别选项差在哪};
+\node[cnodeteal,right=of d,minimum width=2.25cm] (s) {3. Scope\\[-1pt]\scriptsize 确定证据范围};
+\node[cnodeblue,right=of s,minimum width=2.15cm] (c) {4. Compare\\[-1pt]\scriptsize 比较与证伪};
+\node[cnodeteal,right=of c,minimum width=2.15cm] (v) {5. Verify\\[-1pt]\scriptsize 四层代入检查};
+\node[cnodegreen,right=of v,minimum width=2.35cm] (cm) {6. Commit/Defer\\[-1pt]\scriptsize 锁定或延后决策};
+
+\draw[mainflow] (t) -- (d);
+\draw[mainflow] (d) -- (s);
+\draw[mainflow] (s) -- (c);
+\draw[mainflow] (c) -- (v);
+\draw[altflow] (v) -- (cm);
+\end{tikzpicture}
+\end{center}
+下面第一次逐个解释。
+
+\subsection{8.2 Step 1：Target（目标）——这个空在句中承担什么？}
+\kw{中文：}先确定空位的结构角色和输出类型。
+
+\kw{为什么：}你连“这里缺什么”都不知道，就没有资格比较词义。
+
+\kw{动作：}用一句中文描述：
+\begin{quote}
+“这里缺一个连接前后分句的关系词 / 一个修饰名词的形容词 / 一个带宾语的谓语动词……”
+\end{quote}
+
+\subsection{8.3 Step 2：Competition Dimension（竞争维度）}
+\term{Competition Dimension}{竞争维度} 指：\kw{四个选项真正在哪一方面不同。}
+
+可能是：
+\begin{itemize}
+  \item grammatical form（语法形式）；
+  \item collocation / valency（搭配 / 配价）；
+  \item lexical meaning（词义差异）；
+  \item discourse relation（语篇关系）。
+\end{itemize}
+
+\kw{为什么：}如果四个都是介词，你就不应该把时间花在词性判断；如果四个都是近义动词，核心很可能是搭配或语义。
+
+\begin{exam}[最重要的起手句]
+\boxed{\text{“这四个选项到底差在哪？”}}
+
+这个问题比“这题是哪一种技巧题？”更稳定，因为它直接决定你接下来需要哪类证据。
+\end{exam}
+
+\subsection{8.4 Step 3：Evidence Scope（证据范围）}
+先用最小范围解决：
+\[
+Slot\rightarrow Sentence\rightarrow Local\rightarrow Global.
+\]
+只有当前范围不能区分时，才升级。
+
+\subsection{8.5 Step 4：Compare（比较）}
+\term{Compare}{比较候选} 不是“看哪个顺”，而是建立证伪：
+\[
+A\;\checkmark/? ,\quad
+B\;\times(C_{\text{lex}}),\quad
+C\;\times(C_{\text{sem}}),\quad
+D\;\checkmark.
+\]
+考场当然不用写符号，但训练时至少要能说：
+\begin{quote}
+“B 搭配不成立；C 方向错；A 和 D 还需要看后句。”
+\end{quote}
+
+\subsection{8.6 Step 5：Verify（验证）}
+代入后做四层快速检查：
+\[
+\boxed{
+\text{Grammar}
+\land
+\text{Meaning}
+\land
+\text{Relation}
+\land
+\text{Coherence}
+}
+\]
+中文：语法成立、整句有意义、前后关系成立、局部语篇不突兀。
+
+\subsection{8.7 Step 6：Commit / Defer（确认 / 延迟决策）}
+\term{Commit}{确认}：证据已经足够，锁定答案并继续。
+
+\term{Defer}{延迟决策}：当前证据不足，先保留 1--2 个候选，继续阅读，等待后文提供新证据。
+
+这不是“不会就跳”，而是主动利用完形的一个重要性质：
+\[
+\boxed{\text{Later Context can reveal earlier constraints.}}
+\]
+中文：后文可能暴露前面当时看不到的限制条件。
+
+\section{第 9 章：什么时候继续想，什么时候先走？}
+
+\subsection{9.1 不用固定“单题 1.5 分钟”作为普遍规律}
+时间预算可以通过模拟训练形成，但真正应监控的是：
+\[
+\boxed{\text{No-Progress Detection（无进展检测）}}
+\]
+第一次解释：当你继续盯着一道题，却没有产生新的证据、新的排除、新的语义解释时，继续投入的边际价值已经很低。
+
+典型信号：
+\begin{itemize}
+  \item 四个词反复念，但说不出差异；
+  \item 同一句读第三遍，仍没有新增信息；
+  \item 已经确定需要后文主题，但后文还没读；
+  \item 只剩“这个词看起来更顺”的循环感觉。
+\end{itemize}
+
+此时执行：
+\begin{center}
+\begin{tikzpicture}[node distance=0.55cm]
+\node[cnodeorange,minimum width=3.3cm] (m1) {1. Mark\\[-1pt]\scriptsize 标记题号与候选集};
+\node[cnodeblue,right=of m1,minimum width=3.3cm] (m2) {2. Move\\[-1pt]\scriptsize 顺序阅读后文};
+\node[cnodegreen,right=of m2,minimum width=3.5cm] (m3) {3. Return\\[-1pt]\scriptsize 携带新上下文回溯};
+
+\draw[mainflow] (m1) -- (m2);
+\draw[altflow] (m2) -- (m3);
+\end{tikzpicture}
+\end{center}
+中文：标记、继续、带着更多上下文回来。
+
+\subsection{9.2 保留候选比强行猜一个更好}
+训练时可以写：
+\[
+\{B,D\}
+\]
+表示当前只剩两个候选。继续读后文时，脑子要带着一个明确问题：
+\begin{quote}
+“后面是否出现能区分 B 与 D 的搭配、指代、立场或因果关系？”
+\end{quote}
+这比忘掉前题、最后随机回来看高效得多。
+
+\section{第 10 章：整篇做完以后怎么检查？}
+
+\subsection{10.1 第二遍不是“重做一遍”}
+整篇检查的任务是寻找\kw{局部做题时不容易看到的冲突}。
+
+建议按四类高风险点扫：
+\begin{enumerate}
+  \item \kw{结构冲突}：代入后主干是否断裂；
+  \item \kw{关系冲突}：转折、因果、指代是否突然失效；
+  \item \kw{概念链冲突}：关键对象是否前后换了；
+  \item \kw{候选残留冲突}：前面延迟决策的题是否已被后文新信息解决。
+\end{enumerate}
+
+\subsection{10.2 “读起来顺”只能做低级证据}
+语感有价值，但要放在正确位置：
+\begin{center}
+\begin{tikzpicture}[node distance=0.20cm]
+% 4 Stacked Evidence Cards (Center Column with locked text width)
+\node[cnode,draw=deepgreen,fill=softgreen,minimum width=9.2cm,text width=8.7cm,inner sep=5pt] (ea)
+  {\textbf{\color{deepgreen}A 级 · 硬结构与明确语义 (Hard Structure/Meaning)}\hfill\textbf{\color{deepgreen}[最高置信]}\\[2pt]
+   \scriptsize\color{black!80} 句子主干、硬性语法位置、明确命题事实 (最具排他性)};
+
+\node[cnode,draw=mainblue,fill=softblue,below=0.20cm of ea,minimum width=9.2cm,text width=8.7cm,inner sep=5pt] (eb)
+  {\textbf{\color{mainblue}B 级 · 语篇与逻辑关系 (Discourse Relation)}\hfill\textbf{\color{mainblue}[强置信]}\\[2pt]
+   \scriptsize\color{black!80} 前后句转折、因果、指代与关联标记约束};
+
+\node[cnode,draw=teal,fill=softteal,below=0.20cm of eb,minimum width=9.2cm,text width=8.7cm,inner sep=5pt] (ec)
+  {\textbf{\color{teal}C 级 · 全局语篇相容性 (Global Coherence)}\hfill\textbf{\color{teal}[中置信]}\\[2pt]
+   \scriptsize\color{black!80} 全局主题先验、段落论证方向与立场相容性};
+
+\node[cnode,draw=deeporange,fill=softorange,below=0.20cm of ec,minimum width=9.2cm,text width=8.7cm,inner sep=5pt] (ed)
+  {\textbf{\color{deeporange}D 级 · 语感与熟悉感 (Familiarity Feeling)}\hfill\textbf{\color{deeporange}[弱置信]}\\[2pt]
+   \scriptsize\color{black!80} “读起来顺”、常见搭配印象 (仅作复查提示，不可推翻硬证据)};
+
+% 1. Left Rank Pillar Container (fitted to ea.north and ed.south)
+\coordinate (ltop) at ($(ea.north west)+(-0.35,0)$);
+\coordinate (lbot) at ($(ed.south west)+(-0.35,0)$);
+\node[draw=deepgreen,fill=softgreen,rounded corners=1.8mm,line width=0.8pt,
+      fit=(ltop)(lbot),anchor=east,minimum width=1.40cm,inner sep=0pt] (rankbox) {};
+% Centered Text inside Left Pillar
+\node[font=\small\bfseries\color{deepgreen},align=center] at (rankbox.center)
+  {\begin{tabular}{c} 证\\据\\强\\度\\与\\置\\信\\度\\递\\增\\[3pt]$\mathbf{\uparrow}$ \end{tabular}};
+
+% 2. Right Warning Pillar Container (fitted to ea.north and ed.south)
+\coordinate (rtop) at ($(ea.north east)+(0.35,0)$);
+\coordinate (rbot) at ($(ed.south east)+(0.35,0)$);
+\node[draw=deepred,fill=softred,rounded corners=1.8mm,line width=0.7pt,
+      fit=(rtop)(rbot),anchor=west,minimum width=2.40cm,inner sep=0pt] (warnbox) {};
+% Centered Text inside Right Pillar
+\node[font=\scriptsize\bfseries\color{deepred},align=center] at (warnbox.center)
+  {\begin{tabular}{c} 核心纪律\\[6pt] 弱语感 (D)\\[4pt] 绝不可推翻\\[4pt] 硬证据 (A/B) \end{tabular}};
+\end{tikzpicture}
+\end{center}
+最后一项就是“感觉熟 / 顺口”。它可以提示复查，但不能推翻前面的硬证据。
+
+\newpage
+\section{Part IV：旧技巧怎样重新定位}
+
+\section{第 11 章：哪些旧方法应该保留，哪些必须降级？}
+
+\subsection{11.1 保留：逻辑关系识别}
+保留，但从“公式”升级为：
+\[
+\boxed{
+\text{Marker}
+\rightarrow
+\text{Relation Hypothesis}
+\rightarrow
+\text{Proposition Check}
+}
+\]
+中文：看到标记词，只生成一个关系假设，再用前后句意义验证。
+
+\subsection{11.2 保留：同义复现与概念呼应}
+但重新定义为 \term{Lexical Cohesion}{词汇衔接}：通过原词、同义词、上下义词和同一概念链，让语篇保持连接。
+
+它是证据之一，不是“看到复现就选”。
+
+\subsection{11.3 保留：固定搭配}
+但把“背搭配表”升级成：
+\[
+\boxed{
+\text{Collocation}
++
+\text{Valency}
++
+\text{Contextual Meaning}
+}
+\]
+这样遇到没背过的组合，也能从结构和宾语类型进行推断。
+
+\subsection{11.4 修改：首句定基调}
+改为：
+\[
+\boxed{\text{Opening}\rightarrow\text{Topic Prior}}
+\]
+首句提供初始主题和情境，不保证后文立场永远不变。
+
+\subsection{11.5 删除出 Stable Core：红花绿叶与答案分布}
+以下规则不进入正式心智模型：
+\begin{itemize}
+  \item 某词“正确率 70\%+”；
+  \item 某词“排除率 80\%+”；
+  \item A/B/C/D 应该大致均匀；
+  \item 某类题固定占 6--8 道、10--12 道等。
+\end{itemize}
+原因不是这些观察一定永远错误，而是：\kw{它们不能从语言机制直接推出，也缺少稳定、透明、可复核的证据。}
+
+若未来你的个人真题数据证明某个启发式对自己有用，只能进入“个人待验证规则”，且证据等级低于文本本身。
+
+\subsection{11.6 修改：技巧优先级}
+取消：
+\[
+\text{逻辑}>\text{语义}>\text{搭配}.
+\]
+改成：
+\[
+\boxed{
+\text{Identify Competition Dimension}
+\rightarrow
+\text{Use the strongest relevant evidence}
+}
+\]
+中文：先判断四个选项在哪里竞争，然后调用最相关、最硬的证据。
+
+\newpage
+\section{Part V：错误诊断与训练系统}
+
+\section{第 12 章：错一道完形，究竟应该改什么？}
+
+\subsection{12.1 五类稳定错误}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X X}
+\toprule
+错误 & 典型表现 & 真正原因 & 应改什么 \\
+\midrule
+结构错 & 句子主干没看清 & Target/句法模型错 & 句法拆解训练 \\
+搭配错 & 词义懂但组合不自然 & lexical resource 不足 & 搭配/配价积累 \\
+语义错 & 近义词总二选一错 & 区分维度过粗 & 近义词语境对比 \\
+关系错 & 连词/前后逻辑误判 & Signal 直接跳到 Answer & 命题+关系验证 \\
+范围错 & 只看一句或动辄看全文 & Evidence Scope 控制差 & 最小范围升级训练 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{12.2 不要把所有错题归结成“单词不会”}
+一道近义词题做错后，至少问：
+\begin{enumerate}
+  \item 我是不认识某个词，还是认识但不会区分？
+  \item 区分证据来自搭配、句义还是语篇？
+  \item 我当时有没有识别出真正竞争维度？
+  \item 如果再来一个新例句，我能否主动说出这几个词的区别？
+\end{enumerate}
+
+\subsection{12.3 第一次引入：Minimal Pair Practice（最小对比训练）}
+\term{Minimal Pair Practice}{最小对比训练} 在这里不是语言学严格意义上的“最小音位对”，而是借用其训练思想：\kw{只改变一个关键条件，观察两个近义候选何时交换优劣。}
+
+例如比较两个近义动词：
+\begin{itemize}
+  \item 例句 A 中都能用；
+  \item 例句 B 改变宾语以后，只剩一个自然；
+  \item 例句 C 改变语体以后，两者适用性不同。
+\end{itemize}
+
+这比把四个中文释义写在词汇本上更能形成可调用模型。
+
+\section{第 13 章：训练到底要练什么？}
+
+\subsection{13.1 训练单位不应该只有“整篇正确率”}
+整篇正确率只能告诉你结果，不能告诉你系统哪个部件坏了。
+
+建议把训练拆成四种能力：
+\begin{enumerate}
+  \item \kw{结构识别}：快速说出空位角色；
+  \item \kw{候选比较}：说出四个选项真正差异；
+  \item \kw{证据定位}：知道最小需要看多远；
+  \item \kw{回溯解释}：做完后能说明正确项为什么胜出、错误项违反什么约束。
+\end{enumerate}
+
+\subsection{13.2 精读一篇完形的正确复盘方式}
+不要只做：
+\begin{quote}
+错题抄下来 + 中文翻译 + 正确答案。
+\end{quote}
+建议每个值得复盘的空只留下三句话：
+\begin{enumerate}
+  \item \kw{竞争维度：}这四个词主要差在哪？
+  \item \kw{决定证据：}真正区分答案的证据是什么？
+  \item \kw{我的断点：}我当时在哪一步没有调用这个证据？
+\end{enumerate}
+
+例如：
+\begin{method}[一个合格的复盘条目]
+竞争维度：四个都是表示“影响”的动词，差异主要在搭配与作用方式。\par
+决定证据：宾语是长期行为模式，文本强调逐渐形成，因此强调“塑造”的候选更吻合。\par
+我的断点：我只比较中文释义，没有先看宾语类型和段落描述的时间尺度。
+\end{method}
+
+\subsection{13.3 AI 在完形学习里最适合做什么？}
+AI 不应该替你直接选完所有答案，而应该承担：
+\begin{itemize}
+  \item \kw{Contrast Coach}：让 AI 比较四个近义词在搭配、语义角色、语体上的差别；
+  \item \kw{Adversarial Tester}：让 AI 构造反例，攻击“某词一定用于某场景”的过强规则；
+  \item \kw{Minimal Pair Generator}：围绕两个易混词生成最小对比句；
+  \item \kw{Error Debugger}：根据你的原始过程定位第一次偏离点，而不是只讲正确答案。
+\end{itemize}
+
+一个高价值提问方式是：
+\begin{quote}
+“不要先告诉我答案。先判断这四个选项真正在哪个维度竞争，再告诉我我应该寻找哪一类证据。”
+\end{quote}
+
+\newpage
+\section{Part VI：完整推演示范}
+
+\section{第 14 章：一空到底怎样从四选一推到唯一候选？}
+
+\begin{eng}[示范题 A：局部结构即可解决]
+The committee is responsible \underline{\hspace{1.1cm}} reviewing all applications.
+
+候选：\texttt{for / to / with / at}
+\end{eng}
+\kw{Step 1 Target：}空位位于 \texttt{responsible \_ reviewing} 结构中。\par
+\kw{Step 2 Competition Dimension：}四个都是介词，竞争维度是搭配。\par
+\kw{Step 3 Evidence Scope：}Slot 层已经足够。\par
+\kw{Step 4 Compare：}\texttt{responsible for doing} 是稳定结构，其余候选不匹配。\par
+\kw{Step 5 Verify：}代入后句法、语义均成立。\par
+\kw{Step 6 Commit：}直接确认，不读全文找“逻辑词”。
+
+\begin{eng}[示范题 B：必须扩大到整句]
+The reform did not immediately reduce costs, but it gradually \underline{\hspace{1.1cm}} how local agencies allocated resources.
+
+候选：\texttt{affected / shaped / struck / touched}
+\end{eng}
+\kw{Target：}缺谓语动词。\par
+\kw{Competition Dimension：}都是“影响”相关动词，句法层无区分；核心是词义、搭配和过程特征。\par
+\kw{Evidence Scope：}必须读完整句。\par
+\kw{Compare：}\texttt{gradually} 与“长期形成/塑造分配方式”形成更明确的过程语义；\texttt{struck/touched} 在此宾语和语体下不自然，\texttt{affected} 虽可成立但描述更一般。\par
+\kw{Verify：}前半句说“未立即降低成本”，后半句通过 \texttt{but} 引入另一种逐渐发生的影响，不要求语义反义，只要求形成预期对比。\par
+\kw{Commit：}选择能最好表达“逐渐塑造方式”的候选。
+
+\begin{eng}[示范题 C：必须读前后句]
+Many employees welcomed the flexible schedule. \underline{\hspace{1.1cm}}, some managers worried that coordination would become harder.
+
+候选：\texttt{Therefore / However / For example / Similarly}
+\end{eng}
+\kw{Target：}句首关系词，连接两个完整命题。\par
+\kw{Competition Dimension：}discourse relation。\par
+\kw{Evidence Scope：}Local Discourse，必须同时理解前后句。\par
+\kw{Compare：}前句是员工欢迎，后句是经理担忧，构成对比；不是因果、举例或相似补充。\par
+\kw{Verify：}\texttt{However} 只告诉我们关系为 contrast，它不是因为“红花词概率高”才正确。\par
+\kw{Commit：}证据充分。
+
+\begin{eng}[示范题 D：当前无法区分时延迟决策]
+The author argues that the change is not merely technical but also deeply \underline{\hspace{1.1cm}}.
+
+候选：\texttt{social / public / common / shared}
+\end{eng}
+若只看这一句，多个候选可能暂时合理。正确动作不是强行凭感觉，而是标记：\kw{需要后文说明“这种变化究竟改变了社会关系、公共制度还是共同资源”。}继续读后文后再返回，这就是 Defer。
+
+\newpage
+\section{第 15 章：一篇完形的完整流程}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.75cm and 0.40cm]
+% Row 1: Main Forward Flow (1 -> 2 -> 3 -> 4)
+\node[cnodeorange] (a) {1. 首句/开头\\[-1pt]\scriptsize 建立 Topic Prior};
+\node[cnodeblue,right=of a] (b) {2. 逐空识别\\[-1pt]\scriptsize 确认 Competition Dim};
+\node[cnodeteal,right=of b] (c) {3. 最小范围\\[-1pt]\scriptsize 定位证据 Scope};
+\node[cnodeblue,right=2.8cm of c] (d) {4. 比较候选\\[-1pt]\scriptsize 证伪与拟合};
+
+% Row 2: Defer & Finalize Branches
+\node[cnodepurple,below=1.25cm of c] (e) {5. 证据不足 (Defer)\\[-1pt]\scriptsize 标记候选并继续};
+\node[cnodegreen,below=1.25cm of d] (f) {6. 全文结束 (Finalize)\\[-1pt]\scriptsize 回看高风险空位};
+
+% Main Forward Line
+\draw[mainflow] (a) -- (b);
+\draw[mainflow] (b) -- (c);
+\draw[mainflow] (c) -- (d);
+
+% Clean Orthogonal Branching Connections (Zero diagonal lines & Zero badge overlap)
+\draw[returnflow] (d.south) -- ++(0,-0.52) -| node[labelnote,above,pos=0.45] {证据不足} (e.north);
+\draw[altflow] (d.south) -- node[labelnote,right=2pt] {证据充分} (f.north);
+\draw[mainflow] (e.east) -- node[labelnote,above=1pt] {带着问题后文探索} (f.west);
+
+% Background Group Box
+\begin{scope}[on background layer]
+  \node[boxgroup,fit=(a)(b)(c)(d)(e)(f),label={[font=\scriptsize\bfseries\color{mainblue}]above:完形填空整篇解题控制流 (Cloze Full-Paper Control Flow)}] {};
+\end{scope}
+\end{tikzpicture}
+\end{center}
+
+\subsection{15.1 开头：只建立主题先验，不做全文预测赌博}
+读开头的任务只有：
+\begin{itemize}
+  \item 谁/什么是主要讨论对象；
+  \item 当前在描述问题、现象、研究还是观点；
+  \item 是否存在明显时间或立场背景。
+\end{itemize}
+不要花大量时间预测“这篇肯定最后会怎样”。
+
+\subsection{15.2 逐空：每一题都先问“差在哪？”}
+建议形成肌肉记忆：
+\[
+\boxed{
+\text{四选项}
+\rightarrow
+\text{竞争维度}
+\rightarrow
+\text{最小证据范围}
+}
+\]
+而不是：
+\[
+\text{四选项}
+\rightarrow
+\text{背过的技巧清单逐条扫描}.
+\]
+
+\subsection{15.3 难题：允许临时保持不确定}
+一个成熟考生不需要每个空第一次经过时就 100\% 确定。真正重要的是：
+\begin{itemize}
+  \item 不确定的原因是否明确；
+  \item 候选是否已经缩小；
+  \item 你是否知道后文应该寻找什么证据。
+\end{itemize}
+
+\subsection{15.4 收尾：只检查高风险处}
+高风险优先级：
+\begin{enumerate}
+  \item Defer 过的题；
+  \item 只凭熟悉感确定的题；
+  \item 两个近义词二选一但没有明确区分依据的题；
+  \item 连接词题中前后命题关系没有真正解释过的题。
+\end{enumerate}
+
+\newpage
+\section{Part VII：压缩页与日常调用}
+
+\section{第 16 章：一页心智模型}
+
+\begin{corebox}[完形填空的最终母模型]
+\[
+\boxed{
+\text{Missing Word}
++
+\text{Context}
+\xrightarrow{\text{Constraints}}
+\text{Best-Supported Candidate}
+}
+\]
+第一次出现的中文解释：缺失词项并不是从词库中“猜”出来，而是让候选逐层接受结构、搭配、语义和语篇证据筛选，最后保留当前证据支持最强的候选。
+\end{corebox}
+
+\subsection{16.1 四级证据范围}
+\[
+\boxed{
+\text{空位}
+\rightarrow
+\text{整句}
+\rightarrow
+\text{前后句}
+\rightarrow
+\text{段落/全文}
+}
+\]
+原则：\kw{够用就停，不够才扩大。}
+
+\subsection{16.2 一空六问}
+\begin{enumerate}
+  \item 这个空在句子里承担什么角色？
+  \item 四个选项真正差在哪个维度？
+  \item 当前最小需要看多远？
+  \item 每个错误候选具体违反什么约束？
+  \item 正确候选代入后，结构、句义、关系是否同时成立？
+  \item 证据够不够确认？不够就先保留候选并继续读。
+\end{enumerate}
+
+\subsection{16.3 五个长期不变量}
+\begin{enumerate}
+  \item \kw{Signal $\neq$ Answer}：信号只能生成假设，不能直接生成答案；
+  \item \kw{Translation $\neq$ Distinction}：中文释义相近不代表英语用法相同；
+  \item \kw{Global Theme $\neq$ Local Evidence}：全文主题不能推翻明确局部证据；
+  \item \kw{Familiarity $\neq$ Evidence}：顺眼、见过、常选都只是弱证据；
+  \item \kw{Uncertainty $\neq$ Failure}：暂时不确定可以被管理，关键是明确缺什么证据。
+\end{enumerate}
+
+\begin{exam}[考场压缩口令]
+\centering
+\Large
+\textbf{先看差在哪，\quad 再找证据在哪；\\
+局部够就定，\quad 不够向外看。}
+\end{exam}
+
+\section{第 17 章：本册与个人经验如何继续生长}
+本册的 Stable Core（稳定核心）只保存能从语言结构和大量题目共同支持的原则。以后做题产生的新感觉，先进入个人观察，而不是直接修改母模型。
+
+建议更新路径：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodegray,minimum width=2.15cm] (o) {1. Observation\\[-1pt]\scriptsize 个人解题观察};
+\node[cnodeteal,right=of o,minimum width=2.15cm] (d) {2. Diagnosis\\[-1pt]\scriptsize 定位偏离断点};
+\node[cnodeorange,right=of d,minimum width=2.25cm] (c) {3. Candidate\\[-1pt]\scriptsize 提出动作化规则};
+\node[cnodeblue,right=of c,minimum width=2.25cm] (t) {4. New-question\\[-1pt]\scriptsize 真题独立测试};
+\node[cnodegreen,right=of t,minimum width=2.25cm] (p) {5. Promotion\\[-1pt]\scriptsize Promote/Revise/Reject};
+
+\draw[mainflow] (o) -- (d);
+\draw[mainflow] (d) -- (c);
+\draw[mainflow] (c) -- (t);
+\draw[altflow] (t) -- (p);
+\end{tikzpicture}
+\end{center}
+中文依次是：原始观察、错误诊断、候选规则、新题复测、晋升/修正/废弃。
+
+例如：
+\begin{quote}
+原始观察：“我每次看到 however 都特别想选它。”
+\end{quote}
+不能直接写成：
+\begin{quote}
+“however 是高概率正确答案。”
+\end{quote}
+而应转成可验证规则：
+\begin{quote}
+“我是否在关系词题中把视觉显著性误当成语义证据？以后要求自己先说清前后两个命题，再判断 contrast 是否存在。”
+\end{quote}
+这才是属于个人认知系统的可执行更新。
+
+\section{附录 A：术语与符号快速表}
+\small
+\begin{longtable}{>{\bfseries\raggedright\arraybackslash}p{0.22\linewidth} >{\raggedright\arraybackslash}p{0.23\linewidth} >{\raggedright\arraybackslash}p{0.47\linewidth}}
+\toprule
+英文/符号 & 中文 & 在本册中的实操意义 \\
+\midrule
+Constraint Satisfaction & 约束满足 & 候选答案必须同时满足多层语言条件 \\
+$C_{\text{syn}}$ & 句法约束 & 位置结构是否合法 \\
+$C_{\text{lex}}$ & 词汇组合约束 & 搭配、介词、配价是否自然 \\
+$C_{\text{sem}}$ & 语义约束 & 句子命题是否正确 \\
+$C_{\text{rel}}$ & 关系约束 & 前后句逻辑/指代是否成立 \\
+$C_{\text{disc}}$ & 语篇约束 & 是否与段落对象和功能相容 \\
+Evidence Scope & 证据范围 & 当前要读多大的上下文 \\
+Collocation & 搭配 & 哪些词习惯共同出现 \\
+Valency & 配价 & 一个词要求/允许带哪些补足成分 \\
+Discourse Relation & 语篇关系 & 两个命题如何连接 \\
+Topic Prior & 主题先验 & 开头提供的初始主题判断，可被后文修正 \\
+Stance Compatibility & 立场相容性 & 当前候选是否符合此处论证方向 \\
+Commit & 确认 & 证据足够，锁定答案 \\
+Defer & 延迟决策 & 证据不足，保留候选等待后文 \\
+No-Progress Detection & 无进展检测 & 判断继续盯题是否还产生新证据 \\
+Minimal Pair Practice & 最小对比训练 & 只改变一个条件，观察近义词适用边界 \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{附录 B：与旧版笔记的兼容说明}
+旧版笔记中以下思想被吸收到本册：
+\begin{itemize}
+  \item 完形不是纯词汇题，而是语篇中的微观语言运用；
+  \item 逻辑关系、语义呼应、固定搭配都具有重要价值；
+  \item 无线索时允许标记、继续阅读、再回溯；
+  \item 辅助技巧不能推翻明确语言证据；
+  \item 训练应积累近义词、逻辑关系和固定搭配。
+\end{itemize}
+
+以下内容不再作为正式稳定规则：
+\begin{itemize}
+  \item “逻辑 > 语义 > 搭配”的固定优先级；
+  \item 某类题固定占比、固定正确率；
+  \item 红花绿叶与答案分布推断；
+  \item “首句决定全文情感”；
+  \item 把 \texttt{and/but/while} 简化成机械正反公式。
+\end{itemize}
+
+\begin{corebox}[最终目标]
+把完形从：
+\[
+\text{认识单词} + \text{语感} + \text{口诀}
+\]
+升级为：
+\begin{center}
+\begin{tikzpicture}[node distance=0.45cm]
+\node[cnodeorange,minimum width=2.7cm] (dim) {1. 识别竞争维度\\[-1pt]\scriptsize 选项究竟差在哪};
+\node[cnodeteal,right=of dim,minimum width=2.7cm] (sco) {2. 控制证据范围\\[-1pt]\scriptsize 按需扩大阅读};
+\node[cnodeblue,right=of sco,minimum width=2.7cm] (con) {3. 逐层约束候选\\[-1pt]\scriptsize 结构/搭配/语义};
+\node[cnodegreen,right=of con,minimum width=2.7cm] (out) {4. 证据驱动确认\\[-1pt]\scriptsize 锁定最强支持项};
+
+\draw[mainflow] (dim) -- (sco);
+\draw[mainflow] (sco) -- (con);
+\draw[altflow] (con) -- (out);
+\end{tikzpicture}
+\end{center}
+最终你不需要在考场背这些英文术语；真正要留下的是一套稳定动作：\kw{知道四个词差在哪，知道该去哪里找证据，知道什么时候证据已经够了。}
+\end{corebox}
+
+\end{document}

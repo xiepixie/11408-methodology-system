@@ -1,6 +1,6 @@
-# 计算机组成原理驾驶舱
+# 计算机组成原理复习总览与导航
 
-当前状态：框架已采用，专题正文待建。
+当前状态：框架已采用；Atlas、八个 Topic 与 Integration 已形成工作稿，待逐册人工确认。
 
 ## 学科母问题
 
@@ -29,13 +29,13 @@ $$
 | [CPU 数据通路与控制](30_CPU数据通路与控制/README.md) | 一条指令怎样变成真实数据移动和控制信号？ | 不展开多指令重叠 |
 | [流水线与指令级并行](40_流水线与指令级并行/README.md) | 多条指令怎样时间重叠而不破坏语义？ | 不重讲单指令所有微操作 |
 | [主存与存储硬件](50_主存与存储硬件/README.md) | 一个地址怎样落到芯片、Bank、Row、Column 和介质？ | 不拥有 Cache 副本协议 |
-| [Cache 与存储层次](60_Cache与存储层次/README.md) | 怎样维护一个正确的高速副本？ | 不拥有 OS Page Cache |
+| [Cache 与存储层次](60_Cache与存储层次/Cache%20与存储层次：怎样维护一个正确的高速副本.md) | 怎样维护一个正确的高速副本？ | 不拥有 OS Page Cache |
 | [地址翻译与虚拟存储硬件](70_地址翻译与虚拟存储硬件/README.md) | VA 怎样经 TLB/页表形成 PA 并继续访问 Cache/Memory？ | 不拥有 frame 分配、换页、COW 和 fault policy |
 | [总线与 I/O 硬件](80_总线与IO硬件/README.md) | 同步 CPU 怎样通过共享事务与异步设备合作？ | 不拥有 OS block/wakeup 和驱动策略 |
 
-规划目录沿用 `10_` 到 `80_`。开始写正文时再创建对应 Topic 文件。
+专题正文已按 `10_` 到 `80_` 落地为工作稿，当前状态不代表稳定采用。
 
-## 规划 Ownership
+## Canonical Ownership
 
 ### 数据表示与运算 Owns
 
@@ -71,7 +71,7 @@ bus transaction、arbitration、timing、controller registers、port addressing�
 
 ## Bridge 与 Integration
 
-- 科内 [Bridge 与 Integration](85_科内桥梁与综合/README.md)：《C x ISA x CPU》与《一条指令的一生》；
+- 科内 [Bridge 与 Integration](85_科内桥梁与综合/计组科内桥梁与综合：从%20C%20语句到一次精确提交.md)：《C x ISA x CPU》与《一条指令的一生》；
 - 全局 Bridge：`Cache x VM x OS`；
 - 全局 Bridge：`Interrupt / DMA x OS`；
 
@@ -99,19 +99,16 @@ $$
 5. 数据何时可用，在哪个周期边界锁存？
 6. 最终何时改变体系结构状态？
 
-## 推荐建设顺序
+## 建议审查顺序
 
 ```text
 Atlas
--> ISA 与机器级程序
 -> CPU 数据通路与控制
+-> ISA 与机器级程序
 -> 流水线
--> 数据表示与运算
--> 主存硬件
--> Cache
--> 地址翻译硬件
--> 总线与 I/O
+-> Cache / 地址翻译
+-> 数据表示 / 主存 / I/O
 -> 一条指令的一生
 ```
 
-第一本正式 Topic 优先建设《CPU 数据通路与控制》，因为它是 ISA、运算、流水线、存储和 I/O 的中央接口。
+审查时优先攻击《CPU 数据通路与控制》的“状态差 -> 路径 -> 微操作”以及《一条指令的一生》的跨层慢路径；它们决定其余 Topic 是否能被统一调用。

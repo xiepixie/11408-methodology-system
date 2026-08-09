@@ -1,0 +1,1212 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.70cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,matrix,backgrounds}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{pifont}
+\usepackage{caption}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlength{\parindent}{2em}
+\setcounter{secnumdepth}{0}
+\setlength{\parskip}{0.28em}
+\setlist[itemize]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!50!black,pdftitle={英语一写作总方法论：从任务到语言的生成系统}}
+
+\definecolor{mainblue}{RGB}{43,85,135}
+\definecolor{deepblue}{RGB}{28,60,98}
+\definecolor{softblue}{RGB}{238,245,252}
+\definecolor{softgreen}{RGB}{238,249,243}
+\definecolor{softorange}{RGB}{253,246,233}
+\definecolor{softred}{RGB}{253,239,239}
+\definecolor{softgray}{RGB}{246,247,249}
+\definecolor{deepgreen}{RGB}{35,105,75}
+\definecolor{deeporange}{RGB}{165,98,22}
+\definecolor{deepred}{RGB}{150,55,55}
+\definecolor{purple}{RGB}{94,66,140}
+\definecolor{softpurple}{RGB}{245,241,251}
+\definecolor{teal}{RGB}{38,112,115}
+\definecolor{softteal}{RGB}{238,248,248}
+\definecolor{gold}{RGB}{156,120,28}
+\definecolor{softgold}{RGB}{252,249,235}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{英语一 · 写作总方法论}
+\rhead{从任务到语言的生成系统}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\newtcolorbox{corebox}[1][]{colback=softblue,colframe=mainblue,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{exam}[1][]{colback=softorange,colframe=deeporange,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warn}[1][]{colback=softred,colframe=deepred,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{eng}[1][]{colback=softgreen,colframe=deepgreen,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{method}[1][]{colback=softgray,colframe=black!45,title=#1,fonttitle=\bfseries,boxrule=0.6pt,arc=2mm}
+\newtcolorbox{bridge}[1][]{colback=softpurple,colframe=purple,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{statebox}[1][]{colback=softteal,colframe=teal,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{history}[1][]{colback=softgold,colframe=gold,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+
+\newcommand{\kw}[1]{\textbf{#1}}
+\newcommand{\term}[2]{\textbf{#1（#2）}}
+
+% ---- Figure grammar: direct topology & semantic color system ----
+\tikzset{
+  cnode/.style={draw=mainblue,rounded corners=1.8mm,minimum width=2.65cm,minimum height=0.92cm,
+    align=center,inner sep=3pt,font=\small,fill=softblue,line width=0.8pt},
+  cnodeblue/.style={cnode,draw=mainblue,fill=softblue},
+  cnodeg/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodegreen/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodeo/.style={cnode,draw=deeporange,fill=softorange},
+  cnodeorange/.style={cnode,draw=deeporange,fill=softorange},
+  cnodep/.style={cnode,draw=purple,fill=softpurple},
+  cnodepurple/.style={cnode,draw=purple,fill=softpurple},
+  cnodet/.style={cnode,draw=teal,fill=softteal},
+  cnodeteal/.style={cnode,draw=teal,fill=softteal},
+  cnodered/.style={cnode,draw=deepred,fill=softred,font=\small\bfseries},
+  cnodegray/.style={cnode,draw=black!45,fill=softgray},
+  mainflow/.style={-{Latex[length=2.2mm,width=1.5mm]},line width=1.0pt,draw=deepblue},
+  altflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepgreen},
+  returnflow/.style={-{Latex[length=2.0mm,width=1.4mm]},densely dashed,line width=0.85pt,draw=purple},
+  dangerflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepred},
+  optflow/.style={-{Latex[length=1.8mm,width=1.3mm]},dotted,line width=0.85pt,draw=teal},
+  labelnote/.style={font=\scriptsize\bfseries,fill=white,inner sep=1.5pt,rounded corners=0.5mm,text=black!80,draw=black!25,line width=0.4pt},
+  boxgroup/.style={draw=black!25,dashed,rounded corners=2mm,fill=black!2,inner sep=6pt}
+}
+
+\title{\vspace{-1.15cm}\textbf{英语一 · 写作总方法论手册}\\[0.35em]
+\large 从任务到语言的生成系统：内容、语篇与表达的统一模型}
+\author{个人认知系统 · 英语一写作共同方法论}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}[一句话母模型]
+写作不是“把背过的句子填进题目”，而是：
+\[
+\boxed{\textbf{根据写作任务生成必要内容，将内容组织成连贯语篇，再用准确、得体、可控的英语完成交付。}}
+\]
+因此，写作的稳定生成方向是：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.2cm] (g1) {1. Task\\[-1pt]\scriptsize 任务与情境};
+\node[cnodeorange,right=of g1,minimum width=2.2cm] (g2) {2. Meaning\\[-1pt]\scriptsize 命题与机制};
+\node[cnodeteal,right=of g2,minimum width=2.2cm] (g3) {3. Discourse\\[-1pt]\scriptsize Move与连贯};
+\node[cnodepurple,right=of g3,minimum width=2.2cm] (g4) {4. Language\\[-1pt]\scriptsize 准确与得体};
+\node[cnodegreen,right=of g4,minimum width=2.3cm] (g5) {5. Delivery\\[-1pt]\scriptsize 检查与交付};
+
+\draw[mainflow] (g1) -- (g2);
+\draw[mainflow] (g2) -- (g3);
+\draw[mainflow] (g3) -- (g4);
+\draw[altflow] (g4) -- (g5);
+\end{tikzpicture}
+\end{center}
+即：\kw{任务} $\rightarrow$ \kw{内容意义} $\rightarrow$ \kw{语篇组织} $\rightarrow$ \kw{语言实现} $\rightarrow$ \kw{最终交付}。
+\end{corebox}
+
+\begin{warn}[本册的边界]
+本册只维护应用文与图画作文共同使用的写作能力，不重复两类题型的专门模板。
+\begin{itemize}
+  \item 应用文专题负责：具体交际情境、文体格式、任务动作与语气适配；
+  \item 图画作文专题负责：图画观察、寓意抽象、中心命题与论证展开；
+  \item 本册负责：从任务到内容、从内容到语篇、从语篇到英语、从草稿到可评分答案的共同生成机制。
+\end{itemize}
+\end{warn}
+
+\tableofcontents
+\newpage
+
+\section{第 0 章：写作在英语学科中的位置}
+
+\subsection{0.1 写作是英语理解过程的反向生成}
+在完形、新题型和阅读中，考生面对的是已经存在的英语，需要从语言形式恢复结构、关系和意义：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+% Top Row: Reading (Bottom-up: Form -> Meaning)
+\node[cnodegray,minimum width=2.5cm] (r1) {语言形式\\[-1pt]\scriptsize Form};
+\node[cnodegray,right=of r1,minimum width=2.5cm] (r2) {句法结构\\[-1pt]\scriptsize Structure};
+\node[cnodegray,right=of r2,minimum width=2.5cm] (r3) {逻辑关系\\[-1pt]\scriptsize Relation};
+\node[cnodegray,right=of r3,minimum width=2.6cm] (r4) {核心意义\\[-1pt]\scriptsize Meaning};
+
+\draw[returnflow] (r1) -- (r2);
+\draw[returnflow] (r2) -- (r3);
+\draw[returnflow] (r3) -- (r4);
+
+\node[font=\scriptsize\bfseries\color{purple},above=2pt of r2.north west] {【阅读理解】自下而上：从形式解构意义};
+
+% Bottom Row: Writing (Top-down: Task -> Form)
+\node[cnodeblue,below=0.90cm of r1,minimum width=2.5cm] (w1) {任务意图\\[-1pt]\scriptsize Task/Intent};
+\node[cnodeorange,right=of w1,minimum width=2.5cm] (w2) {内容命题\\[-1pt]\scriptsize Meaning};
+\node[cnodeteal,right=of w2,minimum width=2.5cm] (w3) {语篇框架\\[-1pt]\scriptsize Discourse};
+\node[cnodepurple,right=of w3,minimum width=2.6cm] (w4) {语言交付\\[-1pt]\scriptsize Language Form};
+
+\draw[mainflow] (w1) -- (w2);
+\draw[mainflow] (w2) -- (w3);
+\draw[altflow] (w3) -- (w4);
+
+\node[font=\scriptsize\bfseries\color{deepblue},above=2pt of w2.north west] {【写作生成】自上而下：从意图构建表达};
+\end{tikzpicture}
+\end{center}
+这里：
+\begin{itemize}
+  \item \term{Task}{任务}：题目要求完成的写作行为；
+  \item \term{Intent}{意图}：写作者希望读者知道、相信或采取什么行动；
+  \item \term{Meaning}{意义}：准备表达的具体信息和判断；
+  \item \term{Discourse Structure}{语篇结构}：这些内容按什么关系排列；
+  \item \term{Sentence Structure}{句子结构}：每条内容具体采用什么句法实现；
+  \item \term{Language Form}{语言形式}：最终落在卷面上的词汇、搭配、时态和标点。
+\end{itemize}
+
+\begin{bridge}[与阅读类专题的接口]
+写作会反向调用前面已经建立的英语能力：
+\begin{itemize}
+  \item 完形训练词汇、搭配与句法约束；
+  \item 新题型训练衔接、连贯、指代与段落功能；
+  \item 阅读训练命题理解、证据与逻辑关系；
+  \item 写作把这些能力整合起来，主动生成一个新的英语语篇。
+\end{itemize}
+\end{bridge}
+
+\subsection{0.2 为什么“模板”不能成为上位模型？}
+模板只能解决“某个功能通常怎样表达”，却不能替代三个更早的决策：
+\begin{enumerate}
+  \item 题目真正要求什么；
+  \item 需要表达哪些具体内容；
+  \item 这些内容之间是什么关系。
+\end{enumerate}
+如果这三步尚未完成，就直接调用背诵句型，容易产生：
+\begin{itemize}
+  \item 句子正确但答非所问；
+  \item 全文充满“重要、意义深远”等空泛评价；
+  \item 不同题目写出几乎相同的内容；
+  \item 为了迁就模板而遗漏题目要求。
+\end{itemize}
+因此：
+\[
+\boxed{
+\text{Template is a language resource, not a content generator.}
+}
+\]
+即：\kw{模板是语言资源，不是内容生成器。}
+
+\newpage
+\section{Part I：写作的五层生成模型}
+
+\section{第 1 章：Task Plane——先建立任务模型}
+
+\subsection{1.1 任务层解决什么？}
+\term{任务层}{Task Plane} 负责回答：\kw{这篇作文必须完成什么，不能遗漏什么。}
+
+任何写作开始前，都应先确定：
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.6cm] (t1) {1. Situation\\[-1pt]\scriptsize 触发情境};
+\node[cnodeorange,right=of t1,minimum width=2.6cm] (t2) {2. Audience\\[-1pt]\scriptsize 目标读者};
+\node[cnodeteal,right=of t2,minimum width=2.6cm] (t3) {3. Purpose\\[-1pt]\scriptsize 写作目的};
+\node[cnodegreen,right=of t3,minimum width=2.8cm] (t4) {4. Required Content\\[-1pt]\scriptsize 必须覆盖内容};
+
+\draw[mainflow] (t1) -- (t2);
+\draw[mainflow] (t2) -- (t3);
+\draw[altflow] (t3) -- (t4);
+\end{tikzpicture}
+\end{center}
+即：\kw{情境 + 读者 + 目的 + 必须覆盖的内容}。
+
+\subsection{1.2 情境：为什么现在要写？}
+\term{情境}{Situation} 是写作行为发生的背景。例如：
+\begin{itemize}
+  \item 收到一封询问信；
+  \item 需要邀请某人参加活动；
+  \item 看到一幅反映社会现象的图画；
+  \item 需要就某种品质或现象发表评价。
+\end{itemize}
+情境限定内容，不是可有可无的开场装饰。
+
+\subsection{1.3 读者：语言不是写给“阅卷老师”的}
+\term{读者}{Audience} 指文本在题目设定中真正面向的人或群体。
+
+应用文尤其需要区分：
+\begin{itemize}
+  \item 朋友或同学；
+  \item 教授、负责人或机构；
+  \item 公众或活动参与者。
+\end{itemize}
+读者关系影响称呼、礼貌程度、请求方式和措辞强度。
+
+写作时不要想着“怎样让阅卷老师觉得高级”，而要问：
+\begin{quote}
+\kw{“在这个情境里，一个正常写作者会怎样对这个读者说话？”}
+\end{quote}
+
+\subsection{1.4 目的：我要让读者知道、相信还是行动？}
+\term{写作目的}{Purpose} 是文本需要完成的核心功能。常见目的可以抽象为：
+\begin{center}
+\begin{tikzpicture}[node distance=0.25cm]
+\node[cnodeblue,minimum width=2.1cm] (p1) {Inform\\[-1pt]\scriptsize 告知};
+\node[cnodeblue,right=of p1,minimum width=2.1cm] (p2) {Request\\[-1pt]\scriptsize 请求};
+\node[cnodeteal,right=of p2,minimum width=2.1cm] (p3) {Recommend\\[-1pt]\scriptsize 推荐};
+\node[cnodeteal,right=of p3,minimum width=2.1cm] (p4) {Invite\\[-1pt]\scriptsize 邀请};
+\node[cnodeorange,right=of p4,minimum width=2.1cm] (p5) {Explain\\[-1pt]\scriptsize 解释};
+\node[cnodegreen,right=of p5,minimum width=2.1cm] (p6) {Evaluate\\[-1pt]\scriptsize 评价};
+
+\draw[mainflow] (p1) -- (p2);
+\draw[mainflow] (p2) -- (p3);
+\draw[mainflow] (p3) -- (p4);
+\draw[mainflow] (p4) -- (p5);
+\draw[altflow] (p5) -- (p6);
+\end{tikzpicture}
+\end{center}
+
+同一个主题，如果目的不同，文章结构会完全不同。比如“校园活动”可以是：
+\begin{itemize}
+  \item 通知活动安排；
+  \item 邀请教授参加；
+  \item 建议改进活动组织；
+  \item 评价参加活动的意义。
+\end{itemize}
+所以“主题是什么”不能代替“任务是什么”。
+
+\subsection{1.5 必须内容：评分前先保证任务闭合}
+题目中的每一个明确要求都应转化为一项可核验的内容单元。
+
+例如题目要求：
+\begin{quote}
+说明来意，并给出两条建议。
+\end{quote}
+则至少形成：
+\[
+\boxed{
+M_1=\text{说明来意},\quad
+M_2=\text{建议一},\quad
+M_3=\text{建议二}
+}
+\]
+这里 $M_i$ 表示一个必须完成的内容单元。符号的作用只是提醒：\kw{题目要求必须一项一项落到正文中，不能依赖“整体好像提到了”。}
+
+\begin{exam}[任务层的最低完成标准]
+动笔前，应能用一句中文概括：
+\begin{center}
+\fbox{\parbox{0.88\linewidth}{
+情境：\underline{\hspace{2.6cm}}\quad 读者：\underline{\hspace{2.6cm}}\par
+目的：\underline{\hspace{4.0cm}}\quad 必须内容：\underline{\hspace{4.0cm}}
+}}
+\end{center}
+这句话说不清，说明还没有建立任务模型。
+\end{exam}
+
+\newpage
+\section{第 2 章：Meaning Plane——先生成命题，再生成英语}
+
+\subsection{2.1 内容层的基本单位不是“主题词”，而是命题}
+\term{内容层}{Meaning Plane} 负责回答：\kw{我具体要说什么。}
+
+“teamwork”“traditional culture”“confidence”只是\term{主题}{Topic}，不是完整内容。
+
+真正可以写进作文的是\term{命题}{Proposition}：对一个对象作出明确判断，或说明对象之间的关系。
+
+例如：
+\begin{center}
+\small
+\begin{tabularx}{0.94\linewidth}{>{\bfseries}p{0.25\linewidth} X}
+\toprule
+主题词 & 可写的命题 \\
+\midrule
+teamwork & 有效合作依赖成员明确分工并持续交换信息。 \\
+traditional culture & 传统文化的保护能够维持群体记忆，并帮助年轻一代理解自身文化身份。 \\
+perseverance & 坚持使个人能够在多次失败后持续修正方法，因此长期目标才可能逐步实现。 \\
+innovation & 创新不仅来自新想法，还依赖把新想法转化为可执行方案的能力。 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{corebox}[内容生成的核心原则]
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeblue,minimum width=3.2cm] (top) {1. Topic\\[-1pt]\scriptsize 主题词 (teamwork)};
+\node[cnodeorange,right=of top,minimum width=3.4cm] (prop) {2. Proposition\\[-1pt]\scriptsize 判断命题 (分工与交换)};
+\node[cnodegreen,right=of prop,minimum width=3.2cm] (exp) {3. Explanation\\[-1pt]\scriptsize 深层机制 (效率提升)};
+
+\draw[mainflow] (top) -- node[labelnote,above=2pt] {判断实例化} (prop);
+\draw[altflow] (prop) -- node[labelnote,above=2pt] {因果展开} (exp);
+\end{tikzpicture}
+\end{center}
+先确定谈什么，再形成一个可以判断真假的明确命题，最后解释它为什么成立。
+\end{corebox}
+
+\subsection{2.2 为什么“X 很重要”通常不是足够内容？}
+句子：
+\begin{eng}
+This activity is of great significance and will exert a profound influence on our personal growth.
+\end{eng}
+语言形式本身未必错误，但内容仍然很弱，因为它没有回答：
+\begin{itemize}
+  \item 哪方面重要；
+  \item 通过什么机制产生影响；
+  \item 对谁产生什么具体结果。
+\end{itemize}
+
+更好的内容生成过程是：
+\begin{quote}
+参加项目 $\rightarrow$ 接触真实问题 $\rightarrow$ 运用课堂知识 $\rightarrow$ 提升实践能力。
+\end{quote}
+然后再实现为英语。
+
+因此写作训练应优先提升：\kw{把抽象主题变成明确关系的能力。}
+
+\subsection{2.3 内容不需要“深刻”，需要相关、明确、可展开}
+考场内容的最低质量标准是：
+\begin{enumerate}
+  \item \kw{相关}：直接回答题目要求；
+  \item \kw{明确}：能说出谁、做什么、为什么；
+  \item \kw{可展开}：后面至少能补充原因、结果、例子或具体做法中的一种。
+\end{enumerate}
+
+不要为了追求“深度”强行加入宏大社会结论、复杂政治判断或自己并不熟悉的事实。
+
+\section{第 3 章：从命题到机制——为什么这个观点成立？}
+
+\subsection{3.1 机制是最稳定的扩展方式}
+\term{机制}{Mechanism} 指：\kw{一个原因如何通过中间过程产生结果。}
+
+基本结构是：
+\[
+\boxed{
+A
+\rightarrow
+B
+\rightarrow
+C
+}
+\]
+其中 A 是原因或行动，B 是中间过程，C 是结果。
+
+例如：
+\[
+\text{明确分工}
+\rightarrow
+\text{减少重复工作和责任冲突}
+\rightarrow
+\text{提高团队效率}
+\]
+
+这比直接写“teamwork is important”更容易形成稳定、具体的主体句群。
+
+\subsection{3.2 四种常用内容扩展关系}
+总手册只保留四种最通用关系：
+\begin{enumerate}
+  \item \kw{原因}：为什么会这样；
+  \item \kw{机制}：中间如何发生；
+  \item \kw{结果}：最终产生什么影响；
+  \item \kw{具体化}：这一观点在现实中表现为什么行为、例子或措施。
+\end{enumerate}
+
+它们可以组合为：
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeblue,minimum width=3.2cm] (c) {1. Claim\\[-1pt]\scriptsize 观点句/核心判断};
+\node[cnodeorange,right=of c,minimum width=3.4cm] (m) {2. Reason/Mechanism\\[-1pt]\scriptsize 理由/中间推导过程};
+\node[cnodegreen,right=of m,minimum width=3.2cm] (e) {3. Example/Consequence\\[-1pt]\scriptsize 例子/结果具象化};
+
+\draw[mainflow] (c) -- node[labelnote,above=2pt] {为什么} (m);
+\draw[altflow] (m) -- node[labelnote,above=2pt] {表现为/导致} (e);
+\end{tikzpicture}
+\end{center}
+这里 \term{Claim}{观点句} 是本段核心判断；\term{Reason / Mechanism}{理由 / 机制} 解释为什么；\term{Example / Consequence}{例子 / 结果} 让抽象观点具体化。
+
+\subsection{3.3 例子不是必需装饰}
+例子只在它能完成以下功能时使用：
+\begin{itemize}
+  \item 把抽象命题变具体；
+  \item 展示一个因果机制如何发生；
+  \item 提供读者容易理解的现实场景。
+\end{itemize}
+
+不应为了“显得有论据”而编造精确数据、研究名称或陌生历史事实。
+
+\newpage
+\section{Part II：Discourse Plane——把内容组织成有功能的语篇}
+
+\section{第 4 章：Move——段落不是句子容器，而是一组功能动作}
+
+\subsection{4.1 交际动作的定义}
+\term{交际动作}{Communicative Move} 指：\kw{一部分文字在当前任务中必须完成的功能。}
+
+例如应用文中的“发出邀请”“说明安排”“提出请求”，图画作文中的“描述画面”“解释寓意”“提出中心判断”，都属于不同的 Move。
+
+Move 与句子不是一一对应：
+\begin{itemize}
+  \item 一个 Move 可以由一句话完成；
+  \item 复杂 Move 可能需要两到三句；
+  \item 多个简单 Move 也可能压缩在一句中。
+\end{itemize}
+
+引入 Move 的意义是让文章首先满足任务功能，再决定句式。
+
+\subsection{4.2 应用文与图画作文拥有不同的 Move 系统}
+总手册只给出抽象示意：
+
+应用文 Move 控制链：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (m1) {Context\\[-1pt]\scriptsize 交代背景};
+\node[cnodeorange,right=of m1,minimum width=2.4cm] (m2) {Purpose\\[-1pt]\scriptsize 说明来意};
+\node[cnodeteal,right=of m2,minimum width=2.8cm] (m3) {Required Info/Request\\[-1pt]\scriptsize 核心请求/建议};
+\node[cnodegreen,right=of m3,minimum width=2.4cm] (m4) {Expectation\\[-1pt]\scriptsize 期待回复};
+
+\draw[mainflow] (m1) -- (m2);
+\draw[mainflow] (m2) -- (m3);
+\draw[altflow] (m3) -- (m4);
+\end{tikzpicture}
+\end{center}
+
+图画作文 Move 控制链：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.2cm] (p1) {Observation\\[-1pt]\scriptsize 观察画面};
+\node[cnodeteal,right=of p1,minimum width=2.2cm] (p2) {Interpretation\\[-1pt]\scriptsize 抽象寓意};
+\node[cnodeorange,right=of p2,minimum width=2.2cm] (p3) {Central Claim\\[-1pt]\scriptsize 中心命题};
+\node[cnodepurple,right=of p3,minimum width=2.2cm] (p4) {Explanation\\[-1pt]\scriptsize 机制解释};
+\node[cnodegreen,right=of p4,minimum width=2.3cm] (p5) {Implication\\[-1pt]\scriptsize 总结建议};
+
+\draw[mainflow] (p1) -- (p2);
+\draw[mainflow] (p2) -- (p3);
+\draw[mainflow] (p3) -- (p4);
+\draw[altflow] (p4) -- (p5);
+\end{tikzpicture}
+\end{center}
+
+具体形式由两本专题手册分别拥有，本册只保留一个原则：
+\begin{quote}
+\kw{每一段、每一组句子都必须知道自己正在完成哪个功能。}
+\end{quote}
+
+\subsection{4.3 语篇结构来自关系，不来自“三段式”本身}
+三段式只是常见外形。真正决定连贯的是内容关系：
+\begin{itemize}
+  \item 先情境，后请求；
+  \item 先观点，后解释；
+  \item 先问题，后建议；
+  \item 先观察，后抽象；
+  \item 先原因，后结果。
+\end{itemize}
+
+因此：
+\[
+\boxed{
+\text{Paragraph Structure}
+\leftarrow
+\text{Functional Relation}
+}
+\]
+而不是：
+\[
+\text{Three Paragraphs}
+\Rightarrow
+\text{Good Discourse}.
+\]
+
+\section{第 5 章：Coherence 与 Cohesion——先连贯，再衔接}
+
+\subsection{5.1 连贯：内容关系必须成立}
+\term{连贯}{Coherence} 指整篇文章在意义上持续推进，同一段中的句子围绕一个明确功能组织。
+
+判断连贯时，问：
+\begin{itemize}
+  \item 这一句为什么接在上一句后面；
+  \item 它增加了什么新信息；
+  \item 它是否仍然服务当前段落功能；
+  \item 下一句是否能够由当前句自然引出。
+\end{itemize}
+
+\subsection{5.2 衔接：语言形式帮助读者看见关系}
+\term{衔接}{Cohesion} 指用代词、同义改写、连接表达等语言形式把已经存在的逻辑关系显化。
+
+例如：
+\begin{itemize}
+  \item \texttt{this measure} 回指前文措施；
+  \item \texttt{as a result} 表示结果；
+  \item \texttt{however} 表示预期上的转折；
+  \item 同义表达避免机械重复，同时保持概念连续。
+\end{itemize}
+
+\begin{warn}[不要把连接词当作语篇结构本身]
+如果两句话本来没有因果关系，加入 \texttt{therefore} 也不会使它们变得有因果关系。正确顺序是：
+\[
+\boxed{
+\text{Meaning Relation}
+\rightarrow
+\text{Cohesive Expression}
+}
+\]
+先建立意义关系，再选择适合的衔接表达。
+\end{warn}
+
+\newpage
+\section{Part III：Language Plane——把已经想清楚的内容实现成英语}
+
+\section{第 6 章：语言实现的目标——准确、得体、可控制}
+
+\subsection{6.1 三个核心标准}
+语言层只维护三个稳定目标：
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodegreen,minimum width=3.2cm] (acc) {1. Accuracy\\[-1pt]\scriptsize 语法/词义/搭配正确};
+\node[cnodeblue,right=of acc,minimum width=3.2cm] (app) {2. Appropriateness\\[-1pt]\scriptsize 语体/读者/场景得体};
+\node[cnodeorange,right=of app,minimum width=3.4cm] (ran) {3. Controlled Range\\[-1pt]\scriptsize 句型多样但完全可控};
+
+\draw[mainflow] (acc) -- (app);
+\draw[mainflow] (app) -- (ran);
+\end{tikzpicture}
+\end{center}
+即：\kw{准确性 + 得体性 + 可控制的语言范围}。
+
+\term{Accuracy}{准确性}：语法、词义、搭配、拼写正确。
+
+\term{Appropriateness}{得体性}：词语和句式适合当前读者、任务和语体。
+
+\term{Controlled Range}{可控制的语言范围}：能够使用不止一种句型和表达方式，但所有变化都处于自己真正掌握的范围内。
+
+\subsection{6.2 “准确优先”应该怎样理解？}
+准确优先不是永远只写简单句，而是：
+\[
+\boxed{
+\text{Simple + Correct}
+>
+\text{Complex + Uncontrolled}
+}
+\]
+在准确基础上，再逐步增加：
+\begin{itemize}
+  \item 从句；
+  \item 非谓语；
+  \item 不同主语结构；
+  \item 更精确的动词和名词；
+  \item 自然的逻辑连接。
+\end{itemize}
+
+“复杂”只有在承担内容功能时才有价值。
+
+\subsection{6.3 语言多样性不等于替换生僻词}
+多样性可以来自：
+\begin{itemize}
+  \item 改变句子功能：陈述、解释、条件、结果、让步；
+  \item 改变主语：人、事物、抽象过程；
+  \item 改变信息结构：先原因后结果，或先结论后解释；
+  \item 在必要时使用代词和同义改写保持衔接。
+\end{itemize}
+
+不应把普通词机械升级为更生僻的词。判断词汇质量的标准是：
+\[
+\boxed{
+\text{Precision}
++
+\text{Natural Collocation}
++
+\text{Context Fit}
+}
+\]
+即：\kw{意义精确 + 搭配自然 + 语境合适}。
+
+\subsection{6.4 为什么“important → crucial → paramount”不是可靠升级路线？}
+这些词并非单纯强度递增，它们在搭配、语体和语义重心上都有差异。真正应该积累的是：
+\begin{quote}
+\kw{“什么概念通常和什么词自然组合，什么功能通常用什么句型表达。”}
+\end{quote}
+
+因此语言积累应以\kw{功能与搭配}为单位，而不是“高级词排行榜”。
+
+\section{第 7 章：Functional Language Bank——模板应该怎样保存？}
+
+\subsection{7.1 功能语料库的定义}
+\term{功能语料库}{Functional Language Bank} 指：按照交际功能保存的、已经验证过的语言实现方式。
+
+例如不是保存“邀请信万能模板”，而是分别保存：
+\begin{itemize}
+  \item 说明来意；
+  \item 发出邀请；
+  \item 提出建议；
+  \item 解释原因；
+  \item 描述预期结果；
+  \item 请求回应；
+  \item 总结观点。
+\end{itemize}
+
+每个功能只保留少量自己真正会用的表达。
+
+\subsection{7.2 模板的正确层级}
+\begin{center}
+\begin{tikzpicture}[node distance=0.40cm]
+\node[cnodeblue,minimum width=2.5cm] (h1) {1. Task\\[-1pt]\scriptsize 审题与任务};
+\node[cnodeorange,right=of h1,minimum width=2.5cm] (h2) {2. Move\\[-1pt]\scriptsize 段落功能动作};
+\node[cnodeteal,right=of h2,minimum width=2.5cm] (h3) {3. Meaning\\[-1pt]\scriptsize 具化命题内容};
+\node[cnodegreen,right=of h3,minimum width=2.8cm] (h4) {4. Language Pattern\\[-1pt]\scriptsize 检索并调用句型};
+
+\draw[mainflow] (h1) -- (h2);
+\draw[mainflow] (h2) -- (h3);
+\draw[altflow] (h3) -- (h4);
+\end{tikzpicture}
+\end{center}
+即：先确定任务，再确定当前动作，再生成具体意义，最后调用句型。
+
+错误顺序是：
+\[
+\text{Memorized Sentence}
+\rightarrow
+\text{Search for a place to insert it}.
+\]
+中文：先背一句，再到题目里寻找可以硬塞的位置。
+
+\subsection{7.3 一个功能最好准备“基础版 + 扩展版”}
+例如“提出建议”可以有：
+\begin{itemize}
+  \item 基础版：结构简单、错误风险低；
+  \item 扩展版：当句子需要更委婉或更正式时使用。
+\end{itemize}
+
+目的不是追求句型数量，而是提高\kw{任务适配能力}。
+
+\begin{method}[语言资源的录入标准]
+一个句型只有满足以下条件，才值得进入个人语料库：
+\begin{enumerate}
+  \item 我知道它完成什么功能；
+  \item 我知道适合什么语气；
+  \item 我知道核心搭配如何变化；
+  \item 我能在新题中改写，而不是只能背原句；
+  \item 多次限时写作中没有引发新的语法错误。
+\end{enumerate}
+\end{method}
+
+\newpage
+\section{第 8 章：Register——得体不是“越正式越好”}
+
+\subsection{8.1 语体的定义}
+\term{语体}{Register} 指语言表达与具体场景、读者关系和交际目的之间的匹配程度。
+
+写给朋友与写给机构，即使表达同一个请求，也不会使用完全相同的语气。
+
+\subsection{8.2 语体主要控制什么？}
+\begin{itemize}
+  \item 称呼与结尾；
+  \item 直接命令还是委婉建议；
+  \item 缩略形式是否合适；
+  \item 评价词是否过度强烈；
+  \item 是否需要更加客观、正式的名词表达。
+\end{itemize}
+
+\subsection{8.3 “高级”与“得体”不是同一个维度}
+一个非常正式的表达放在朋友来信中可能不自然；一个口语化表达放在正式通知中也可能失衡。
+
+因此：
+\[
+\boxed{
+\text{Appropriate}
+>
+\text{Merely Formal}
+}
+\]
+即：\kw{得体优先于单纯正式。}
+
+\newpage
+\section{Part IV：Delivery Plane——把草稿转化成可评分答案}
+
+\section{第 9 章：写作中的 Commit——什么时候可以交付？}
+
+\subsection{9.1 交付不是“写完最后一个句号”}
+\term{交付层}{Delivery Plane} 负责检查：文章是否已经满足题目要求，并且以阅卷者能够稳定识别的形式呈现。
+
+检查顺序应从高风险到低风险：
+\begin{enumerate}
+  \item 任务是否全部完成；
+  \item 是否存在跑题或内容矛盾；
+  \item 句子主干是否正确；
+  \item 时态、主谓一致、单复数、冠词和介词是否存在明显错误；
+  \item 拼写、标点、格式和书写是否影响识别。
+\end{enumerate}
+
+\subsection{9.2 为什么检查不能从“换高级词”开始？}
+如果仍然漏掉任务点，或者有明确语法错误，替换几个所谓高级词几乎没有价值。
+
+因此检查优先级应为：
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (d1) {1. Task Completion\\[-1pt]\scriptsize 任务点覆盖 (最高级)};
+\node[cnodeorange,right=of d1,minimum width=2.4cm] (d2) {2. Meaning\\[-1pt]\scriptsize 内容一致无矛盾};
+\node[cnodeteal,right=of d2,minimum width=2.4cm] (d3) {3. Grammar\\[-1pt]\scriptsize 主干与关键语法};
+\node[cnodepurple,right=of d3,minimum width=2.4cm] (d4) {4. Word Choice\\[-1pt]\scriptsize 词语搭配与得体};
+\node[cnodegreen,right=of d4,minimum width=2.4cm] (d5) {5. Presentation\\[-1pt]\scriptsize 拼写/格式/书写};
+
+\draw[mainflow] (d1) -- (d2);
+\draw[mainflow] (d2) -- (d3);
+\draw[mainflow] (d3) -- (d4);
+\draw[altflow] (d4) -- (d5);
+\end{tikzpicture}
+\end{center}
+中文：\kw{任务完整性 > 内容一致性 > 语法 > 词语选择 > 表面呈现}。
+
+\subsection{9.3 书写的目标是 Legibility}
+\term{可辨识性}{Legibility} 指阅卷者能够轻松辨认单词、句子边界和段落结构。
+
+书写训练应关注：
+\begin{itemize}
+  \item 字母清楚；
+  \item 大小写稳定；
+  \item 单词间距合理；
+  \item 行与行之间不互相干扰；
+  \item 减少大面积涂改。
+\end{itemize}
+
+正式方法论不把某种字体设为唯一高分字体，也不假定“漂亮字体必然增加固定分数”。书写的核心功能是\kw{降低识别成本，避免表达被误读。}
+
+\section{第 10 章：写作中的风险管理}
+
+\subsection{10.1 高风险语言的判定}
+下列情况应主动降低复杂度：
+\begin{itemize}
+  \item 不确定某个单词的拼写；
+  \item 不确定某个动词能否接当前宾语；
+  \item 复杂从句已经使主句主干难以控制；
+  \item 为了“高级”使用一个自己不能稳定变形的表达；
+  \item 一个句子已经承载过多逻辑关系。
+\end{itemize}
+
+正确动作不是硬写，而是：
+\[
+\boxed{
+\text{Simplify without losing meaning.}
+}
+\]
+中文：\kw{在不损失核心意义的前提下降低表达复杂度。}
+
+\subsection{10.2 考场中的内容风险}
+同样需要避免：
+\begin{itemize}
+  \item 编造复杂数据；
+  \item 引用自己不确定的名人或研究；
+  \item 为了“思想深刻”引入与题目无关的大结论；
+  \item 依赖押题主题而忽略当前图画或任务要求。
+\end{itemize}
+
+\newpage
+\section{Part V：两类写作的共同内核与分工}
+
+\section{第 11 章：应用文 Adapter——从交际任务生成文本}
+
+本册不展开具体信件类型，只定义共同控制链：
+\[
+\boxed{
+\text{Situation}
+\rightarrow
+\text{Audience}
+\rightarrow
+\text{Purpose}
+\rightarrow
+\text{Required Moves}
+\rightarrow
+\text{Register}
+\rightarrow
+\text{Language}
+}
+\]
+这里 \term{Required Moves}{必须交际动作} 指题目要求正文实际完成的功能，例如解释、邀请、建议、请求、回应和告知。
+
+应用文专题需要进一步回答：
+\begin{itemize}
+  \item 不同文体有哪些必要 Move；
+  \item 信息传递型与说服/建议型如何组织主体；
+  \item 称呼、落款、通知格式等如何处理；
+  \item 不同读者关系如何控制语气。
+\end{itemize}
+
+\section{第 12 章：图画作文 Adapter——从视觉信息生成中心命题}
+
+图画作文的共同控制链是：
+\[
+\boxed{
+\text{Observation}
+\rightarrow
+\text{Interpretation}
+\rightarrow
+\text{Proposition}
+\rightarrow
+\text{Mechanism}
+\rightarrow
+\text{Implication}
+}
+\]
+中文依次是：\kw{观察画面 $\rightarrow$ 解释寓意 $\rightarrow$ 形成中心命题 $\rightarrow$ 解释为什么 $\rightarrow$ 给出影响、建议或总结}。
+
+\subsection{12.1 Observation：只说图中可以确认的事实}
+\term{观察}{Observation} 是图画直接展示的信息：人物、动作、物体、文字、对比关系。
+
+\subsection{12.2 Interpretation：从事实中抽象出关系}
+\term{解释}{Interpretation} 是对画面意义的概括，例如：
+\begin{itemize}
+  \item 两种不同态度形成对比；
+  \item 某种行为带来长期影响；
+  \item 个体选择与社会结果之间存在关系。
+\end{itemize}
+
+\subsection{12.3 Proposition：主题词必须变成判断}
+\term{中心命题}{Central Proposition} 不是“teamwork”“confidence”这样的单词，而是：
+\begin{quote}
+\kw{对这个主题作出了什么具体判断？}
+\end{quote}
+图画作文专题将进一步研究如何从画面证据约束中心命题，防止套题。
+
+\begin{warn}[为什么不能把“主题—活动—人物”作为大作文共同模型？]
+“主题—活动—人物”适合某些活动类应用文，但图画作文通常并不存在“活动安排”和“参与人物需求”。若把活动类 Schema 强行用于图画作文，内容会偏离题目真正要求的观察、寓意与评论。
+\end{warn}
+
+\newpage
+\section{Part VI：把旧经验重新放回正确层级}
+
+\section{第 13 章：哪些经验保留，哪些降级？}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.22\linewidth} >{\raggedright\arraybackslash}p{0.26\linewidth} Y}
+\toprule
+旧经验 & 新位置 & 处理原则 \\
+\midrule
+审题先定类型、关系、任务 & 任务层 & 保留并升级为任务模型 \\
+准确优先于华丽 & 语言层 & 保留，改为“准确 + 得体 + 可控范围” \\
+主题—活动—人物 & 活动类应用文内容 Schema & 保留但不再宣称通用 \\
+A+B+C 开篇 & 应用文功能语料 & 可作为特定文体资源，不是总模型 \\
+CREST 扩展工具 & 内容层扩展关系 & 保留可迁移部分，不要求每篇调用 \\
+三段式 & 语篇外形 & 保留为常见结构，不能替代功能关系 \\
+高级词汇替换 & 语言资源 & 改为精确、自然搭配与语境适配 \\
+复杂句/倒装作为亮点 & 可控语言范围 & 只有承担功能且稳定掌握时使用 \\
+字体训练 & 交付层可辨识性 & 关注清楚、整洁，不绑定特定字体 \\
+“阅卷黄金30秒” & 不进入稳定核心 & 缺乏可验证基础，不能指导认知模型 \\
+“字体固定多1--2分” & 不进入稳定核心 & 不作精确分值承诺 \\
+固定主题押题 & 个人备考观察 & 不影响正式任务判断 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{第 14 章：模板化真正应该被怎样控制？}
+
+模板化本身不是问题。真正的问题是：\kw{模板替代了内容决策。}
+
+可接受的模板化：
+\begin{itemize}
+  \item 稳定的称呼和结尾；
+  \item 功能明确的目的句；
+  \item 自己验证过的原因、结果、请求表达；
+  \item 可灵活替换内容的句法骨架。
+\end{itemize}
+
+危险的模板化：
+\begin{itemize}
+  \item 不同题目使用完全相同的主体内容；
+  \item 为了使用背诵句而改变题目原本的逻辑；
+  \item 只替换一个主题名词，其他句子全部不变；
+  \item 中心命题尚未确定，就先决定第二段写什么“万能意义”。
+\end{itemize}
+
+\begin{corebox}[模板使用原则]
+\[
+\boxed{
+\text{Reuse structure, regenerate meaning.}
+}
+\]
+中文：\kw{可以复用结构，但每道题必须重新生成内容意义。}
+\end{corebox}
+
+\newpage
+\section{Part VII：训练系统——怎样真正提高写作能力}
+
+\section{第 15 章：写作训练不应只以“完整作文”为单位}
+
+完整作文当然需要练，但能力拆分训练更高效。
+
+\subsection{15.1 Task Deconstruction 训练}
+\term{任务拆解}{Task Deconstruction}：只看题目，不写作文，用 1--2 分钟写出：
+\begin{itemize}
+  \item 情境；
+  \item 读者；
+  \item 目的；
+  \item 必须内容；
+  \item 预期语气。
+\end{itemize}
+
+\subsection{15.2 Proposition Training 训练}
+\term{命题训练}{Proposition Training}：给一个抽象主题，不写英语，只生成 3 个明确、不同的中文命题。
+
+例如“volunteering”：
+\begin{itemize}
+  \item 志愿服务能让学生接触真实社会需求；
+  \item 它能训练与陌生人协作和沟通的能力；
+  \item 持续参与比一次性活动更容易形成责任感。
+\end{itemize}
+
+\subsection{15.3 Mechanism Training 训练}
+给一个观点，补完整：
+\[
+A\rightarrow B\rightarrow C.
+\]
+重点训练“为什么成立”，而不是词汇难度。
+
+\subsection{15.4 Move Planning 训练}
+只写段落功能，不写正文。例如：
+\begin{quote}
+第一段：回应来信 + 说明目的；\quad
+第二段：回答问题一 + 回答问题二；\quad
+第三段：提供进一步帮助 + 收尾。
+\end{quote}
+
+\subsection{15.5 Sentence Realization 训练}
+\term{句子实现}{Sentence Realization}：同一个中文命题，用 2--3 种不同但安全的英语结构表达。
+
+训练目标不是炫技，而是扩大可控表达范围。
+
+\section{第 16 章：一篇作文复盘应该诊断哪一层？}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright\arraybackslash}p{0.16\linewidth} >{\raggedright\arraybackslash}p{0.48\linewidth} Y}
+\toprule
+断点 & 典型表现 & 应修改的对象 \\
+\midrule
+任务断点 & 漏点、语气错、答错任务 & 审题与任务模型 \\
+内容断点 & 全是空话、没有具体判断 & 命题生成能力 \\
+机制断点 & 观点后只能重复“很重要” & 原因/机制展开 \\
+语篇断点 & 句子都对但段落跳跃 & Move 与关系组织 \\
+语言断点 & 想法清楚但英语实现错误 & 句法、搭配、功能语料 \\
+交付断点 & 拼写、格式、书写影响得分 & 检查与卷面控制 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{exam}[复盘优先找“第一次偏离”]
+不要只修改最后一个语法错误。先问：
+\begin{quote}
+“这篇作文最早在哪一层开始偏离题目或我的原始意图？”
+\end{quote}
+如果中心命题本身就空泛，后面再换十个高级词也修不好文章。
+\end{exam}
+
+\section{第 17 章：AI 在写作训练中的正确角色}
+
+AI 最适合帮助调试写作生成过程，而不是替代考生完成整个生成过程。
+
+\subsection{17.1 Task Auditor：任务审计}
+让 AI 检查你的任务拆解是否漏点、是否误判读者关系或目的。
+
+\subsection{17.2 Proposition Coach：命题教练}
+先给出你自己的中心命题，再让 AI 判断它是否：
+\begin{itemize}
+  \item 过于抽象；
+  \item 与题目关系太弱；
+  \item 难以展开；
+  \item 可以改写得更具体。
+\end{itemize}
+
+\subsection{17.3 Mechanism Tester：机制检验}
+让 AI 追问：
+\begin{quote}
+“为什么 A 会导致 B？中间缺了什么？”
+\end{quote}
+用它攻击逻辑跳跃，而不是让它直接写一段更漂亮的正文。
+
+\subsection{17.4 Language Editor：语言编辑}
+当内容已经确定后，再让 AI：
+\begin{itemize}
+  \item 检查搭配与语法；
+  \item 提供更自然但风险相近的替代表达；
+  \item 标出复杂但不必要的句子；
+  \item 解释为什么某个表达不适合当前语体。
+\end{itemize}
+
+\subsection{17.5 Adversarial Marker：反向评分者}
+让 AI 不改作文，只指出：
+\begin{itemize}
+  \item 哪个任务点没有完成；
+  \item 哪一句没有增加有效信息；
+  \item 哪个论点只有结论没有机制；
+  \item 哪个句子语言复杂度高于内容价值。
+\end{itemize}
+
+\begin{method}[推荐的 AI 协作顺序]
+\[
+\boxed{
+\text{我先审题}
+\rightarrow
+\text{我先生成内容}
+\rightarrow
+\text{AI 审计与攻击}
+\rightarrow
+\text{我重写}
+\rightarrow
+\text{AI 做语言校验}
+}
+\]
+先保持内容判断权，再利用 AI 缩短发现问题和寻找替代表达的时间。
+\end{method}
+
+\newpage
+\section{Part VIII：考场执行协议}
+
+\section{第 18 章：从题目到成文的统一六步}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.4cm] (a) {1. Parse Task\\[-1pt]\scriptsize 拆解任务};
+\node[cnodeorange,right=of a,minimum width=2.4cm] (b) {2. Generate\\[-1pt]\scriptsize 生成内容};
+\node[cnodeteal,right=of b,minimum width=2.4cm] (c) {3. Arrange Moves\\[-1pt]\scriptsize 组织功能};
+\node[cnodepurple,right=of c,minimum width=2.4cm] (d) {4. Realize\\[-1pt]\scriptsize 英语实现};
+\node[cnodered,right=of d,minimum width=2.4cm] (e) {5. Verify\\[-1pt]\scriptsize 检查约束};
+\node[cnodegreen,right=of e,minimum width=2.4cm] (f) {6. Commit\\[-1pt]\scriptsize 完成交付};
+
+\draw[mainflow] (a) -- (b);
+\draw[mainflow] (b) -- (c);
+\draw[mainflow] (c) -- (d);
+\draw[mainflow] (d) -- (e);
+\draw[altflow] (e) -- (f);
+\end{tikzpicture}
+\end{center}
+
+\subsection{18.1 Parse Task：拆解任务}
+确定：情境、读者、目的、必须内容。
+
+\subsection{18.2 Generate：生成内容}
+为每个任务点生成一条明确命题；需要展开时，再补原因、机制、结果或具体化。
+
+\subsection{18.3 Arrange Moves：组织功能}
+决定这些内容按什么顺序出现，每一段完成什么任务。
+
+\subsection{18.4 Realize：英语实现}
+先用最稳定的表达写出核心信息，再根据需要增加从句、衔接或更精确词汇。
+
+\subsection{18.5 Verify：检查约束}
+优先检查：任务完整、意义一致、句子主干、关键语法、拼写格式。
+
+\subsection{18.6 Commit：完成交付}
+达到以下标准即可结束：
+\begin{itemize}
+  \item 题目任务全部可定位；
+  \item 中心内容明确；
+  \item 语篇关系基本闭合；
+  \item 没有自己已知的明显语言错误；
+  \item 书写与格式可清楚识别。
+\end{itemize}
+
+\newpage
+\section{第 19 章：一页压缩——写作真正要留下什么？}
+
+\begin{corebox}[总母模型]
+\[
+\boxed{
+\textbf{写作 = 从任务出发生成意义，再把意义组织并实现为可交付的英语。}
+}
+\]
+\end{corebox}
+
+\subsection{五层}
+\[
+\boxed{
+\text{任务}
+\rightarrow
+\text{内容}
+\rightarrow
+\text{语篇}
+\rightarrow
+\text{语言}
+\rightarrow
+\text{交付}
+}
+\]
+
+\subsection{任务层四问}
+\begin{enumerate}
+  \item 为什么写？
+  \item 写给谁？
+  \item 要完成什么目的？
+  \item 哪些内容绝不能漏？
+\end{enumerate}
+
+\subsection{内容层三步}
+\[
+\boxed{
+\text{Topic}
+\rightarrow
+\text{Proposition}
+\rightarrow
+\text{Mechanism / Detail}
+}
+\]
+即：\kw{主题 $\rightarrow$ 明确判断 $\rightarrow$ 为什么/如何/结果是什么。}
+
+\subsection{语篇层两问}
+\begin{enumerate}
+  \item 当前这一段在完成什么 Move？
+  \item 下一句与上一句具体是什么关系？
+\end{enumerate}
+
+\subsection{语言层三个标准}
+\[
+\boxed{
+\text{准确}
++
+\text{得体}
++
+\text{可控制的多样性}
+}
+\]
+
+\subsection{交付层五项检查}
+\begin{enumerate}
+  \item 任务是否全部完成；
+  \item 内容是否前后一致；
+  \item 句子主干是否正确；
+  \item 拼写、时态、主谓、单复数、冠词等是否有明显错误；
+  \item 书写与格式是否清楚可辨。
+\end{enumerate}
+
+\begin{exam}[考场总口令]
+\centering
+\Large\bfseries
+先完成任务，再生成内容；\\
+先组织关系，再选择句子；\\
+语言求准确得体，不为复杂而复杂。
+\end{exam}
+
+\section{附录：本册术语快速表}
+\small
+\begin{longtable}{>{\bfseries\raggedright\arraybackslash}p{0.22\linewidth} >{\raggedright\arraybackslash}p{0.24\linewidth} >{\raggedright\arraybackslash}p{0.46\linewidth}}
+\toprule
+英文术语 & 中文 & 实际作用 \\
+\midrule
+Task & 任务 & 题目要求你完成什么 \\
+Audience & 读者 & 决定语气、称呼与表达方式 \\
+Purpose & 目的 & 决定文章的核心功能 \\
+Proposition & 命题 & 对主题作出的明确判断 \\
+Mechanism & 机制 & 解释原因如何经过中间过程产生结果 \\
+Communicative Move & 交际动作 & 一组文字在任务中承担的具体功能 \\
+Coherence & 连贯 & 内容关系是否持续、合理地推进 \\
+Cohesion & 衔接 & 用语言形式显化已经存在的关系 \\
+Register & 语体 & 语言与读者、场景和目的的匹配程度 \\
+Functional Language Bank & 功能语料库 & 按交际功能保存的可复用表达 \\
+Legibility & 可辨识性 & 书写是否容易被准确识别 \\
+Task Deconstruction & 任务拆解 & 把题目还原为情境、读者、目的和任务点 \\
+Sentence Realization & 句子实现 & 把已经确定的意义转化为英语句子 \\
+Delivery & 交付 & 将完整内容以可评分形式呈现 \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\begin{corebox}[本册最终边界]
+本册的任务到此为止：它建立了\kw{所有英语一写作共同使用的生成系统}。
+
+后续《应用文专题》负责把 Task 与 Move 具体化为不同交际文体；《图画作文专题》负责把 Observation、Interpretation、Proposition 和 Mechanism 具体化为图画作文的推演过程。两本专题均调用本册，不重复本册的共同语言原则。
+\end{corebox}
+
+\end{document}

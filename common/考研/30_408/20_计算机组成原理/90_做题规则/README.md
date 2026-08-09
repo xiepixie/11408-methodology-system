@@ -24,9 +24,9 @@ TLB miss、Cache miss 和 Page Fault 必须分别写清检测者、处理者、�
 
 性能计算先声明成本模型，再选择公式：
 
-- CPU time：`IC x CPI x clock period`；
-- Pipeline：`ideal CPI + stall`；
-- Cache：`hit time + miss rate x miss penalty`；
+- CPU time：$IC\times CPI\times clock\ period$；
+- Pipeline：$ideal\ CPI+stall$；
+- Cache：$hit\ time+miss\ rate\times miss\ penalty$；
 - Memory/Bus：latency、throughput、bandwidth 和 bottleneck；
 - 加速比较：明确基准、受影响比例和不能加速的部分。
 
