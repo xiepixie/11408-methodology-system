@@ -45,11 +45,11 @@ Inbox + 待验证 Rules + 新题表现
 ### 发布循环：阶段
 
 ```text
-Canonical 内容已采用
+Canonical .tex 内容已采用
 -> 检查 Owner 与依赖
--> 同步 LaTeX
--> 编译 PDF
--> 更新发布入口和状态
+-> 用项目脚本编译
+-> PDF 自动进入 90_publish/
+-> 更新 README Landing Page 与状态
 ```
 
 Publication 只同步已经确认的内容，不参与日常探索。
@@ -154,15 +154,15 @@ Publication 只同步已经确认的内容，不参与日常探索。
 
 “导入”不自动等于“成为 Canonical”。外部讲义、旧 LaTeX 和 AI 生成稿首先都是输入材料。
 
-1. **定位**：判断 Atlas、Topic、Bridge、Integration 还是 Rules；
+1. **定位**：先判断 Atlas、Topic、Bridge、Integration 还是 Rules；若只是指出真实但超纲的连接或阻断伪连接，再标记为 Extension / Anti-Bridge 关系，不新建第五、第六类 Handbook；
 2. **找 Owner**：检查学科复习总览与导航和 `ownership_matrix.md`；
 3. **Handbook Diff**：与当前 Owner 比较重复、新增、冲突和越界；
 4. **拆分**：Knowledge、Control、Evidence、Publication 内容分别去正确位置；
 5. **人工决定**：接受哪些模型、保留哪些候选、拒绝哪些说法；
-6. **纳管**：更新 Canonical Markdown 或建立工作稿；
+6. **纳管**：Handbook 内容进入对应 Canonical `.tex`；README 只建立/更新 Landing Page。若旧正文来自 Markdown，先作为 Source 做 Diff，再迁入 `.tex`；
 7. **状态**：更新该资产入口顶部的状态；
 8. **依赖**：只有产品拓扑或 Owner 改变时，才更新复习总览与导航/Ownership；
-9. **发布**：LaTeX/PDF 先标为旧发布物或待同步，不反向拥有知识；
+9. **发布**：旧 LaTeX/PDF 先标为 legacy；新 Handbook 以 `.tex` 为正文 Owner，PDF 仅由脚本生成，不反向拥有知识；
 10. **检查**：运行 `progress --write` 和 `check`。
 
 ### 场景 F：修改稳定 Handbook
@@ -184,8 +184,26 @@ Publication 只同步已经确认的内容，不参与日常探索。
 
 ### 场景 G：形成跨专题理解
 
-- 只解释接口交接：Bridge；
-- 追踪一个真实过程：Integration；
+先过 **Bridge Validity**，再过 **Standalone Promotion**，不能把“真连接”和“值得独立建册”混成同一个判断。
+
+**Gate 1｜Bridge Validity**
+
+1. 去掉具体题目后，两个独立 Owner 之间是否仍有稳定、可复用的 `A output -> translation/shared structure -> B input`？
+2. 如果只是 B 调用 A 的既有机制，没有新的交接责任，记为 `Use`；
+3. 如果只是多个成熟模块为了完成一个完整问题而按顺序协作，归 Integration；
+4. 如果只是名称、公式或直觉相似而不能互推，标 Anti-Bridge。
+
+**Gate 2｜Standalone Promotion**
+
+真接口只有同时出现明显 Ownership Pressure、重复调用、当前范围相关性和新的可调用推理价值时，才独立建立 Bridge。否则保留为 Bridge Note / Candidate / Extension。
+
+因此：
+
+- 真接口 + 值得独立维护：Bridge；
+- 真连接但只是单向调用：Use；
+- 追踪一个真实过程怎样组合：Integration；
+- 真实但超纲或当前不值得独立维护：Extension / Candidate；
+- 表面相似但结构不同：Anti-Bridge；
 - 仍只是新发现：Inbox；
 - 不在两个 Topic 中各复制一份完整解释。
 
@@ -209,15 +227,16 @@ Publication 只同步已经确认的内容，不参与日常探索。
 - 时间、风险、注意力和返回策略进入 Exam Control；
 - 只有明确机制误解才挑战 Handbook。
 
-### 场景 J：发布 LaTeX/PDF
+### 场景 J：编译与发布 Handbook
 
-1. 确认 Canonical Markdown 已采用；
-2. 确认 LaTeX 对应哪个 Owner；
-3. 同步内容，不在 LaTeX 中创造新结论；
-4. 使用 `python3 ../scripts/compile_tex.py <目标.tex>`；
-5. 检查编译、引用、页面和发布链接；
-6. 更新入口状态和发布物链接；
-7. 生成进度并运行系统检查。
+1. 确认目标 `.tex` 就是该 Handbook 的 Canonical Source；
+2. 确认 Owner、状态和依赖已经同步；
+3. README 只检查导航、引子、Scope 和 `.tex`/PDF 链接，不把正文复制进去；
+4. 从 `common/考研/` 使用 `python3 ../scripts/compile_tex.py "<目标.tex>"`；
+5. 确认编译成功，专题目录无同名 PDF，最终 PDF 位于 `90_publish/` 根目录；
+6. 检查交叉引用、页面、图表和发布链接；
+7. 只有真实达到对应成熟度才更新状态；
+8. 生成进度并运行系统检查。
 
 ## 5. 文件更新矩阵
 
@@ -226,11 +245,12 @@ Publication 只同步已经确认的内容，不参与日常探索。
 | 学完新内容 | 通常无 | Inbox | PDF、Ownership |
 | 做题/错题 | Inbox 或 No Update | Rules、Exam Control | Handbook（未经验证） |
 | 规则验证 | Subject Rules | Inbox 清理 | Topic 机制定义 |
-| 导入旧手册 | 对应入口状态、工作稿 | 复习总览与导航、Ownership、Rules | 直接把 PDF 当 Owner |
-| 修改 Topic | Canonical Topic、状态 | Uses/Bridge/Integration、发布待同步 | 其他 Topic 的重复正文 |
-| 新建 Bridge | Bridge、两侧链接 | Ownership | 重讲两侧 Topic |
-| 新建 Integration | Integration、参与 Owner 链接 | 复习总览与导航 | 重新拥有局部机制 |
-| 发布 | LaTeX/PDF、发布入口、状态 | 依赖链接 | Inbox |
+| 导入旧手册 | README Landing + Canonical `.tex` 工作稿 | 复习总览与导航、Ownership、Rules | 把旧 Markdown/PDF 继续当正文 Owner |
+| 修改 Topic | Canonical `.tex`、README 状态/链接 | Uses/Bridge/Integration、重新编译 PDF | 把完整正文写回 README |
+| 新建 Bridge | README Landing + Bridge `.tex` | Ownership、两侧链接、Anti-Bridge 边界 | 重讲两侧 Topic |
+| 新建 Integration | README Landing + Integration `.tex` | 复习总览与导航、参与 Owner 链接 | 重新拥有局部机制 |
+| 增加 Extension / Anti-Bridge | 对应 Handbook `.tex` 的关系段落 | README 仅在导航必要时提示 | 为它们新建平行 Handbook 树 |
+| 发布 | `90_publish/*.pdf`、README 发布链接、状态 | 依赖链接 | Inbox、手工编辑 PDF |
 | 周复盘 | CURRENT、Inbox/Rules 决策 | Handbook | 为了显得有进度而更新 |
 
 ## 6. 每次协作的结束报告
@@ -244,9 +264,20 @@ AI 结束时简要回答：
 5. 哪些决定仍由使用者确认；
 6. 下一次最小验证动作是什么。
 
-## 7. 简单命令
+## 7. 系统自动防线与简单命令
+
+`python3 00_system/cognitive_system.py check` 是项目资产一致性与规则防越权的自动化防线，硬性校验以下 5 项：
+
+1. **Handbook 包结构与状态一致性**：未建立 Canonical `<Handbook>.tex` 的 Topic/Bridge/Integration，其 `状态：...` 禁止虚报为 `已采用` / `Canonical` / `已发布`（必须标为 `legacy working draft` / `provisional model`）；
+2. **README 篇幅与越权检测**：非 legacy 的 Handbook `README.md` 篇幅不得超过 200 行上限，防范 README 沦为第二份简版正文；
+3. **Ownership Matrix 与唯一 Owner 冲突检查**：校验 `ownership_matrix.md` 中的文件引用真实存在；检测非 legacy 文件中是否存在相同的 H1 标题（防止对同一机制重复建立 Canonical Owner）；
+4. **悬空引用与做题规则/Bridge/Integration 链接完整性**：扫描所有 Markdown（包含 `Subject Rules`、Bridge、Integration）的相对链接，确保无断链或悬空引用；
+5. **`CURRENT.md` 存在性与更新状态**：确保 `CURRENT.md` 存在且包含 `# 当前焦点` 节点，防止其沦为无人维护的摆设。
+
+常用脚本命令：
 
 ```bash
+python3 00_system/cognitive_system.py start <scenario> --subject <subject> --topic <topic>
 python3 00_system/cognitive_system.py progress --write
 python3 00_system/cognitive_system.py check
 python3 00_system/cognitive_system.py prompt model-diff

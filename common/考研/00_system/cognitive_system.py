@@ -140,17 +140,18 @@ PROMPTS = {
     "publish": """
         当前角色：Editor。
 
-        我要把已采用的 Canonical 内容同步到 LaTeX/PDF。
+        我要编译并发布一个 Handbook。
 
         请先检查：
-        1. Canonical Owner 和当前状态；
-        2. Markdown 与 LaTeX 的职责是否重复；
+        1. 目标 .tex 是否就是该 Handbook 的 Canonical Source；
+        2. README 是否只承担 Landing Page，而没有复制正文；
         3. 受影响的 Uses、Bridge、Integration 和发布链接；
         4. 是否还有待人工确认的模型结论；
-        5. 编译命令、引用、页数和警告；
-        6. 发布后需要更新的状态与进度。
+        5. 使用项目 compile_tex.py 后的引用、页数和警告；
+        6. PDF 是否进入 90_publish/，专题目录是否保持零同名 PDF；
+        7. 发布后需要更新的状态与进度。
 
-        不在发布稿中创造 Canonical Markdown 尚未采用的新结论。
+        不在 PDF 或 README 中创造 Canonical .tex 尚未拥有的新结论。
     """,
 }
 
@@ -163,10 +164,44 @@ SUBJECTS = {
         "context": [Path("README.md"), Path("01_control/problem_solving_kernel.md")],
     },
     "math": {
-        "label": "数学一",
-        "aliases": {"math", "数学", "数学一"},
+        "label": "数学一 / Cross-Subject",
+        "aliases": {"math", "数学", "数学一", "数学综合"},
         "root": Path("10_数学一"),
-        "context": [Path("10_数学一/README.md")],
+        "context": [
+            Path("10_数学一/README.md"),
+            Path("10_数学一/50_桥梁专题/README.md"),
+            Path("10_数学一/60_综合专题/README.md"),
+        ],
+    },
+    "calculus": {
+        "label": "数学一 / 高等数学",
+        "aliases": {"calculus", "高数", "高等数学"},
+        "root": Path("10_数学一/10_高等数学"),
+        "context": [
+            Path("10_数学一/README.md"),
+            Path("10_数学一/10_高等数学/README.md"),
+            Path("10_数学一/90_学科做题规则/README.md"),
+        ],
+    },
+    "linear-algebra": {
+        "label": "数学一 / 线性代数",
+        "aliases": {"linear-algebra", "linear", "线代", "线性代数"},
+        "root": Path("10_数学一/20_线性代数"),
+        "context": [
+            Path("10_数学一/README.md"),
+            Path("10_数学一/20_线性代数/README.md"),
+            Path("10_数学一/90_学科做题规则/README.md"),
+        ],
+    },
+    "probability": {
+        "label": "数学一 / 概率论与数理统计",
+        "aliases": {"probability", "prob", "概率", "概率论", "概率统计", "数理统计"},
+        "root": Path("10_数学一/30_概率论"),
+        "context": [
+            Path("10_数学一/README.md"),
+            Path("10_数学一/30_概率论/README.md"),
+            Path("10_数学一/90_学科做题规则/概率统计.md"),
+        ],
     },
     "english": {
         "label": "英语一",
@@ -175,12 +210,13 @@ SUBJECTS = {
         "context": [Path("20_英语一/README.md")],
     },
     "408": {
-        "label": "408 通用",
-        "aliases": {"408", "计算机"},
+        "label": "408 / Cross-Subject",
+        "aliases": {"408", "计算机", "408通用", "跨科"},
         "root": Path("30_408"),
         "context": [
-            Path("30_408/408 计算机综合复习总览.md"),
-            Path("30_408/00_统一总图/408学科架构.md"),
+            Path("30_408/README.md"),
+            Path("30_408/50_桥梁专题/README.md"),
+            Path("30_408/60_综合专题/README.md"),
             Path("30_408/90_408做题规则/README.md"),
         ],
     },
@@ -189,9 +225,8 @@ SUBJECTS = {
         "aliases": {"data-structure", "ds", "数据结构"},
         "root": Path("30_408/10_数据结构"),
         "context": [
-            Path("30_408/408 计算机综合复习总览.md"),
+            Path("30_408/README.md"),
             Path("30_408/10_数据结构/README.md"),
-            Path("30_408/10_数据结构/00_学科总图/README.md"),
             Path("30_408/10_数据结构/90_做题规则/README.md"),
         ],
     },
@@ -200,9 +235,8 @@ SUBJECTS = {
         "aliases": {"computer-organization", "co", "计组", "计算机组成原理"},
         "root": Path("30_408/20_计算机组成原理"),
         "context": [
-            Path("30_408/408 计算机综合复习总览.md"),
+            Path("30_408/README.md"),
             Path("30_408/20_计算机组成原理/README.md"),
-            Path("30_408/20_计算机组成原理/00_学科总图/README.md"),
             Path("30_408/20_计算机组成原理/90_做题规则/README.md"),
         ],
     },
@@ -211,9 +245,8 @@ SUBJECTS = {
         "aliases": {"os", "操作系统"},
         "root": Path("30_408/30_操作系统"),
         "context": [
-            Path("30_408/408 计算机综合复习总览.md"),
-            Path("30_408/30_操作系统/操作系统复习总览.md"),
-            Path("30_408/30_操作系统/00_学科总图/README.md"),
+            Path("30_408/README.md"),
+            Path("30_408/30_操作系统/README.md"),
             Path("30_408/30_操作系统/90_做题规则/README.md"),
         ],
     },
@@ -222,9 +255,8 @@ SUBJECTS = {
         "aliases": {"network", "net", "网络", "计算机网络"},
         "root": Path("30_408/40_计算机网络"),
         "context": [
-            Path("30_408/408 计算机综合复习总览.md"),
+            Path("30_408/README.md"),
             Path("30_408/40_计算机网络/README.md"),
-            Path("30_408/40_计算机网络/00_网络统一总图/README.md"),
             Path("30_408/40_计算机网络/90_做题规则/README.md"),
         ],
     },
@@ -280,6 +312,106 @@ SCENARIOS = {
 }
 
 
+def resolve_subject(value: str) -> tuple[str, dict[str, object]]:
+    normalized = value.strip().casefold()
+    for key, config in SUBJECTS.items():
+        aliases = {str(alias).casefold() for alias in config["aliases"]}
+        if normalized == key.casefold() or normalized in aliases:
+            return key, config
+    valid = ", ".join(sorted(SUBJECTS))
+    raise ValueError(f"unknown subject: {value!r}; use one of: {valid}")
+
+
+def topic_candidates(root: Path, query: str, limit: int = 8) -> list[tuple[Path, str, str]]:
+    base = PROJECT_ROOT / root
+    if not base.exists():
+        return []
+
+    needle = query.strip().casefold()
+    if not needle:
+        return []
+
+    candidates: list[tuple[int, Path, str, str]] = []
+    for path in base.rglob("*.md"):
+        if ".git" in path.parts:
+            continue
+        text = path.read_text(encoding="utf-8")
+        title_match = TITLE_RE.search(text)
+        title = title_match.group(1).strip() if title_match else path.stem
+        relative = path.relative_to(PROJECT_ROOT)
+        searchable_title = title.casefold()
+        searchable_path = relative.as_posix().casefold()
+        if needle not in searchable_title and needle not in searchable_path:
+            continue
+
+        status_match = STATUS_RE.search(text)
+        status = status_match.group(1).strip().rstrip("。") if status_match else "未声明状态"
+        if path.name == "README.md":
+            score = 0 if needle in searchable_title else 1
+        else:
+            score = 2 if needle in searchable_title else 3
+        candidates.append((score, relative, title, status))
+
+    candidates.sort(key=lambda item: (item[0], len(item[1].parts), item[1].as_posix()))
+    return [(relative, title, status) for _, relative, title, status in candidates[:limit]]
+
+
+def command_start(scenario: str, subject: str, topic: str | None) -> int:
+    try:
+        subject_key, subject_config = resolve_subject(subject)
+    except ValueError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
+
+    scenario_config = SCENARIOS[scenario]
+    label = str(subject_config["label"])
+    context_paths = [Path(path) for path in subject_config["context"]]
+
+    print(f"场景：{scenario}")
+    print(f"主要角色：{scenario_config['role']}")
+    print(f"范围：{label}")
+    if topic:
+        print(f"专题查询：{topic}")
+    print(f"首屏动作：{scenario_config['first']}")
+    print(f"最少输入：{scenario_config['minimum']}")
+
+    print("\nContext Pack：")
+    for relative in context_paths:
+        marker = "OK" if (PROJECT_ROOT / relative).exists() else "MISSING"
+        print(f"- [{marker}] {relative.as_posix()}")
+
+    if topic:
+        matches = topic_candidates(Path(subject_config["root"]), topic)
+        if subject_key == "math":
+            preferred = {"50_桥梁专题", "60_综合专题"}
+            matches.sort(
+                key=lambda item: (
+                    0 if len(item[0].parts) > 1 and item[0].parts[1] in preferred else 1,
+                    len(item[0].parts),
+                    item[0].as_posix(),
+                )
+            )
+        print("\n候选 Topic / Bridge / Integration：")
+        if matches:
+            for relative, title, status in matches:
+                print(f"- {title} | 状态：{status} | {relative.as_posix()}")
+                absolute = PROJECT_ROOT / relative
+                if absolute.name == "README.md":
+                    tex_files = sorted(absolute.parent.glob("*.tex"))
+                    if len(tex_files) == 1:
+                        tex_relative = tex_files[0].relative_to(PROJECT_ROOT)
+                        print(f"  Canonical .tex: {tex_relative.as_posix()}")
+                    elif len(tex_files) > 1:
+                        names = ", ".join(p.name for p in tex_files)
+                        print(f"  Canonical .tex: AMBIGUOUS ({names})")
+                    else:
+                        print("  Canonical .tex: MISSING — README/Source 不等于 Handbook 正文")
+        else:
+            print("- 未找到直接命中；先使用上述 Atlas 建立 provisional model，不冒充成熟 Topic。")
+
+    return 0
+
+
 def markdown_files() -> list[Path]:
     return sorted(
         path
@@ -299,6 +431,19 @@ def source_area(relative_path: Path) -> str:
         "30_408": "408",
     }
     area = top_level.get(parts[0], "系统")
+
+    if parts[0] == "10_数学一" and len(parts) > 1:
+        subject = {
+            "00_学科总图": "旧发布总图",
+            "10_高等数学": "高等数学",
+            "20_线性代数": "线性代数",
+            "30_概率论": "概率统计",
+            "50_桥梁专题": "跨科 Bridge",
+            "60_综合专题": "跨科 Integration",
+            "90_学科做题规则": "数学 Rules",
+        }.get(parts[1])
+        if subject:
+            return f"数学一 / {subject}"
 
     if parts[0] == "30_408" and len(parts) > 1:
         subject = {
@@ -341,6 +486,8 @@ def markdown_escape(value: str) -> str:
 
 
 def status_bucket(status: str) -> str:
+    if "旧工作稿待迁移" in status:
+        return "Handbook Source 待迁移"
     if "需修订" in status:
         return "需修订"
     if "旧发布物" in status or "旧综合发布物" in status:
@@ -457,6 +604,95 @@ def broken_links() -> list[str]:
     return issues
 
 
+def check_handbook_package_and_status() -> list[str]:
+    issues: list[str] = []
+    for path in markdown_files():
+        relative = path.relative_to(PROJECT_ROOT)
+        text = path.read_text(encoding="utf-8")
+        status_match = STATUS_RE.search(text)
+        if not status_match:
+            continue
+        status = status_match.group(1).strip()
+
+        # 1. Status claim vs .tex existence check
+        is_canonical_claim = any(kw in status for kw in ["已采用", "Canonical", "已发布"]) and not any(
+            kw in status for kw in [
+                "旧", "legacy", "工作稿", "草稿", "框架", "目录", "未建", "规划",
+                "待确认", "待解耦", "待建", "分阶段", "正文待", "架构已采用", "Landing Page", "已建立"
+            ]
+        )
+        if is_canonical_claim:
+            has_tex = any(path.parent.glob("*.tex"))
+            if not has_tex:
+                issues.append(
+                    f"status mismatch: {relative} claims '{status}' but missing canonical .tex file in {relative.parent.as_posix()} (must be marked as legacy/provisional working draft)"
+                )
+
+        # 2. README bloat / Landing Page limit check
+        if path.name == "README.md" and relative != Path("README.md"):
+            is_legacy_or_draft = any(kw in status for kw in ["旧", "legacy", "工作稿", "草稿"])
+            is_subject_portal = relative.parent in {Path("10_数学一"), Path("20_英语一"), Path("30_408")}
+            line_count = len(text.splitlines())
+            if line_count > 200 and not is_legacy_or_draft and not is_subject_portal:
+                issues.append(
+                    f"README bloat: {relative} ({line_count} lines > 200 limit); README must be a concise Landing Page, move mechanism details to .tex or mark as legacy working draft"
+                )
+
+    return issues
+
+
+def check_ownership_matrix_and_duplicates() -> list[str]:
+    issues: list[str] = []
+    ownership_path = PROJECT_ROOT / "00_system" / "ownership_matrix.md"
+    if ownership_path.exists():
+        text = ownership_path.read_text(encoding="utf-8")
+        for raw_link in LINK_RE.findall(text):
+            link = normalize_link(raw_link)
+            parsed = urlparse(link)
+            if parsed.scheme or link.startswith("#"):
+                continue
+            target_text = unquote(parsed.path)
+            if not target_text:
+                continue
+            target = (ownership_path.parent / target_text).resolve()
+            if not target.exists():
+                issues.append(f"ownership matrix broken reference: 00_system/ownership_matrix.md -> {link}")
+
+    title_to_files: dict[str, list[Path]] = {}
+    for path in markdown_files():
+        relative = path.relative_to(PROJECT_ROOT)
+        text = path.read_text(encoding="utf-8")
+        status_match = STATUS_RE.search(text)
+        status = status_match.group(1).strip() if status_match else ""
+        if any(kw in status for kw in ["旧", "legacy"]):
+            continue
+        title_match = TITLE_RE.search(text)
+        if title_match:
+            title = title_match.group(1).strip()
+            if title and title not in {"项目进度", "当前焦点", "通用解题控制内核", "AGENTS", "README"}:
+                title_to_files.setdefault(title, []).append(relative)
+
+    for title, files in title_to_files.items():
+        if len(files) > 1:
+            file_list = ", ".join(f.as_posix() for f in files)
+            issues.append(f"duplicate H1 title / canonical owner conflict: '{title}' in [{file_list}]")
+
+    return issues
+
+
+def check_current_freshness() -> list[str]:
+    issues: list[str] = []
+    if not CURRENT_PATH.exists():
+        issues.append("CURRENT.md is missing; must exist as current focus entry")
+    else:
+        text = CURRENT_PATH.read_text(encoding="utf-8").strip()
+        if not text:
+            issues.append("CURRENT.md is empty")
+        elif "# 当前焦点" not in text:
+            issues.append("CURRENT.md missing '# 当前焦点' section")
+    return issues
+
+
 def structural_issues() -> list[str]:
     issues = broken_links()
     for path in markdown_files():
@@ -464,6 +700,10 @@ def structural_issues() -> list[str]:
         if STATUS_RE.search(text) and not TITLE_RE.search(text):
             relative = path.relative_to(PROJECT_ROOT)
             issues.append(f"status without H1 title: {relative}")
+
+    issues.extend(check_handbook_package_and_status())
+    issues.extend(check_ownership_matrix_and_duplicates())
+    issues.extend(check_current_freshness())
 
     expected_progress = render_progress()
     if not PROGRESS_PATH.exists():
@@ -512,6 +752,19 @@ def build_parser() -> argparse.ArgumentParser:
 
     subparsers.add_parser("check", help="check links, status entries, and progress")
 
+    start_parser = subparsers.add_parser(
+        "start", help="render a scenario-specific Context Pack without modifying files"
+    )
+    start_parser.add_argument("scenario", choices=sorted(SCENARIOS))
+    start_parser.add_argument(
+        "--subject",
+        required=True,
+        help="subject key or alias, e.g. calculus, 高数, linear-algebra, probability, math",
+    )
+    start_parser.add_argument(
+        "--topic", help="optional topic/bridge/integration keyword used to find nearby assets"
+    )
+
     prompt_parser = subparsers.add_parser("prompt", help="print a reusable AI prompt")
     prompt_parser.add_argument("name", choices=sorted(PROMPTS))
     return parser
@@ -523,6 +776,8 @@ def main() -> int:
         return command_progress(args.write)
     if args.command == "check":
         return command_check()
+    if args.command == "start":
+        return command_start(args.scenario, args.subject, args.topic)
     if args.command == "prompt":
         return command_prompt(args.name)
     return 2

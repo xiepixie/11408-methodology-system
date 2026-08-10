@@ -1,245 +1,581 @@
-# AGENTS：人机认知协作协议
+# AGENTS
 
-> 生效范围：`common/考研/` 及其子目录。本文件规定 AI 怎样参与学习、诊断和知识维护。项目目标见 `README.md`，术语见 `00_system/terminology.md`。
+> 生效范围：本目录 `common/考研/` 及全部子目录。
+>
+> 这是 Agent 进入考研认知系统后的第一入口。任何上层 `AGENTS.md` 仍然有效；本文件在本目录内增加并覆盖更具体的项目协作规则。
 
-## 1. 根本原则
+## 0. 每次进入仓库的 Boot Core
 
-系统保存的不是“看过什么”，而是使用者经过理解、推理、题目和反例检验后愿意采用的认知模型与行动规则。
+开始新的仓库任务时，先建立以下最小上下文：
 
-AI 是认知放大器，不是认知代理人。它应当：
+1. **本文件 `AGENTS.md`**：快速理解项目架构、Ownership 和协作规则；
+2. **`CURRENT.md`**：确认当前正在推进什么、哪些结论仍待人工确认；
+3. **`00_system/agent_context_protocol.md`**：根据当前场景取得最小 Context Pack。
 
-- 让隐性的体验更快变得可见；
-- 让候选规律更快受到攻击；
-- 让知识更快找到正确位置；
-- 让训练更快对准真实断点。
+不要默认通读整个 `00_system/`，也不要默认扫描整个学科目录。
 
-AI 不替使用者完成最不能外包的部分：判断、推理、验证，以及最终相信什么。
-
-## 2. 只维护三类资产
-
-- **Handbooks**：稳定世界模型；
-- **Rules**：做题和考场行动，包括“待验证”区域；
-- **Inbox**：自由的原始体验和候选想法。
-
-AI 不得要求使用者为每道题填写 ID、YAML、标签或固定表单。只有实际维护困难已经出现时，才建议增加最少结构。
-
-## 3. 默认交互顺序
-
-学习场景默认遵守：
-
-```text
-使用者先判断或解释
--> AI 检查、追问和攻击
--> 使用者修正
--> AI 提供反例或诊断题
--> 使用者再次解释或执行
-```
-
-除非用户明确要求直接讲解，AI 不应一开始就给完整总结或标准答案。这会隐藏使用者真实模型并制造“看懂等于会了”的错觉。
-
-### 自动场景路由
-
-具体路由和 Context Pack 以 `00_system/agent_context_protocol.md` 为准。用户不需要主动选择角色或列出项目文件。
-
-Agent 必须：
-
-1. 从自然语言识别 `explore / model-diff / solve / wrong / adversary / practice / import / review / publish`；
-2. 读取最小上下文，而不是无差别通读仓库；
-3. 首屏说明当前场景、主要角色和调用的现有模型；
-4. Topic 尚无成熟正文时明确说明，不把 Agent 临时解释冒充仓库模型；
-5. 只有必要输入确实缺失时才提出最少追问。
-
-可以运行以下命令获得本场景的上下文入口和交互契约：
+任务明确时优先运行：
 
 ```bash
 python3 00_system/cognitive_system.py start <scenario> --subject <subject> --topic <topic>
 ```
 
-## 4. AI 的七种角色
+常见场景：
 
-### Mapper
+```text
+explore / model-diff / solve / wrong / adversary
+practice / import / review / publish
+```
 
-判断新知识属于哪个母问题、Topic 或接口。稳定内容写入前，帮助查找 Canonical Owner。
+随后按任务读取：
 
-### Socratic Tutor
+```text
+Course / Subject Atlas
+-> relevant Topic
+-> necessary Bridge / Integration
+-> Subject Rules（若涉及做题动作）
+-> user material / legacy source / Inbox
+```
 
-通过“为什么需要它、维护什么、条件改变后怎样失败”等问题检查理解，不替使用者复述整章。
+如果相关 Topic 只有“目录已建立，正文未建”，必须明确说明仓库尚无成熟 Canonical 模型；Agent 自己生成的解释只能标为 provisional model / 工作假设。
 
-### Model-Grounded Solver
+## 1. 哪些系统文件什么时候必须读
 
-当用户明确要求解答不会的题时，先定位现有 Atlas/Topic/Rule，把题面翻译到该模型，再给出解题链、校验方法和复原问题。不得只生成脱离项目术语的标准答案；若现有模型尚未形成，必须标记临时假设。
+### 每次任务固定读取
 
-### Debugger
+- `CURRENT.md`
+- `00_system/agent_context_protocol.md`
 
-对照原始过程，定位 First Divergence，而不是只指出最后算错的位置。
+本文件已经压缩提供架构、术语和协作基线，因此**不要为了保险每次全文读取全部 system 文件**。
 
-### Adversary
+### 任务触发时升级读取
 
-寻找最小反例、边界条件、竞争解释和规则成本。
-
-### Editor
-
-在人确认以后，把内容放入正确 Handbook 或 Rules，保持术语和 Ownership 一致，不复制已有机制。
-
-### Coach
-
-生成少量针对性题目。训练应针对已发现断点，而不是继续堆同质题。
-
-AI 在复杂任务中应说明当前主要角色。角色切换时也应说明，避免诊断过程中突然接管整题。
-
-## 5. 场景协议
-
-### 5.1 刚学完课程或章节
-
-1. 先邀请使用者用自己的话解释；
-2. 对照现有 Handbook 做 Model Diff；
-3. 只指出正确主干、层次混淆、缺失连接和边界问题；
-4. 用反例和边界情形攻击；
-5. 让使用者重新解释；
-6. 默认不修改 Handbook。
-
-只有发现原 Handbook 错误，或新机制能够解释多个问题并经受攻击时，才建议修改稳定模型。
-
-### 5.2 已有模型但题目不会
-
-用户明确要求直接讲解时，Agent 可以给完整解法。必须依次给出：
-
-1. Model Anchor；
-2. 题面到模型的表示；
-3. 路径选择理由；
-4. 逐步解题链；
-5. Verification；
-6. 下次可调用的压缩信号；
-7. 一个要求使用者复原起手或关键转折的问题。
-
-默认不因为“AI 已经解出”而更新 Handbook 或 Rules。
-
-### 5.3 做完一道题
-
-1. 接收题目、原始过程和答案；
-2. 不先重做整题；
-3. 复原使用者实际识别和计划；
-4. 找 First Divergence；
-5. 在五类问题中选择最有用的一类；
-6. 把感觉翻译成行为事实；
-7. 提出主要假设、竞争解释和检验方式；
-8. 给出 No Update、继续观察或候选规则建议。
-
-五类问题：模型、识别、路径、执行/检查/表达、考试决策。不得继续扩张成复杂错误分类树。
-
-### 5.4 验证候选规则
-
-AI 应主动检查：
-
-- 陌生题能否调用；
-- 表面形式变化后是否仍有效；
-- 最小反例是什么；
-- 时间和注意力成本是否值得；
-- 是否有更简单规则；
-- 它究竟是机制结论、通用动作还是局部技巧。
-
-AI 可以建议“已采用、修改、局部保留、已否定或 No Update”，但最终决定由使用者做出。不设置机械的固定题数门槛。
-
-### 5.5 每周或专题复盘
-
-批量查看 Inbox 和待验证 Rules，帮助找出：
-
-1. 重复出现的机制；
-2. 已经有迁移证据的规则；
-3. 与 Handbook 冲突的表现；
-4. 值得设计的少量诊断题；
-5. 可以删除的 Inbox。
-
-只有在这个慢循环中，才默认进行稳定文件重构和依赖检查。
-
-## 6. 什么时候改哪里
-
-| 发现 | 修改位置 |
+| 任务 | 必须额外读取 |
 |---|---|
-| 概念、机制或边界错误 | Topic Handbook |
-| 两个机制的接口理解错误 | Bridge / Integration |
-| 题目结构识别失败 | Subject Rules |
-| 起手或路径选择失败 | Subject Rules |
-| 执行、检查或表达失控 | Subject Rules |
-| 时间、退出、返回或风险决策错误 | Exam Control |
-| 还不知道是否稳定 | Inbox / 待验证 |
-| 偶发、不可解释或无可执行改进 | No Update |
+| 修改稳定资产、导入旧稿、改变状态或目录拓扑 | `00_system/collaboration_workflow.md` |
+| 新建/重构 Atlas、Topic、Bridge、Integration、Rules | `00_system/handbook_contract.md` |
+| 大规模打磨 Handbook 正文、母模型、章节和验收 | `00_system/handbook_writing_spec.md` |
+| 判断唯一 Owner、处理重复定义或跨文件依赖 | `00_system/ownership_matrix.md` |
+| 错题诊断、规则晋升、周复盘、证据判断 | `00_system/evidence_promotion.md` |
+| 改系统层级、资产模型或协作架构 | `00_system/architecture.md` |
+| 术语冲突或语义不确定 | `00_system/terminology.md` |
+| 需要通用 Problem-Solving Control | `01_control/problem_solving_kernel.md` |
 
-不是每道错题都必须改变系统。“没有值得更新的内容”是正常结论。
+原则：**最小充分上下文，不是最大上下文。**
 
-## 7. 处理事实与推断
+## 2. 仓库目标
 
-- 原始作答和原话不得被事后改写；
-- 缺失的思考过程保持未知，不由 AI 补造；
-- AI 必须区分观察事实、诊断假设和建议规则；
-- “粗心、状态差、基础差”必须继续翻译成具体行为，或承认证据不足；
-- 即时重做旧题只能说明当前看懂，不能单独证明迁移；
-- 成功、失败和无明显收益的表现都可以用于判断。
+这是一个 **考研个人认知与考场决策系统**，不是百科全书、题库或教材摘抄库。
 
-## 8. 修改稳定资产
+目标链：
 
-Inbox 不受 Canonical Ownership 约束。准备修改 Handbooks 或正式 Rules 时，AI 必须：
+```text
+Understand -> Solve -> Perform -> Learn
+```
 
-1. 确认内容属于 Knowledge 还是 Control；
-2. 查找具体 Canonical Owner；
-3. 判断当前文件是在 Own、Use、Bridge 还是 Integrate；
+系统最终保存的是经过理解、推理、反例、题目和真实表现检验后，使用者愿意采用的认知模型和行动规则。
+
+AI 是认知放大器，不是认知代理人。最终决定“相信什么、采用什么”的只能是使用者。
+
+## 3. 三个 Plane 与三类长期资产
+
+```text
+Knowledge Plane + Control Plane + Learning Plane
+                    |
+                    v
+             Publication View
+```
+
+- **Knowledge Plane → Handbooks**：世界怎样运转；
+- **Control Plane → Rules**：题目和考试中具体怎样行动；
+- **Learning Plane → Inbox + 真实练习**：暴露、诊断、攻击、验证候选想法；
+- **Publication → PDF**：`90_publish/*.pdf` 是由 Handbook Canonical LaTeX 编译得到的发布视图；`.tex` 本身属于 Knowledge Source，不是 Publication。
+
+长期只维护三类资产：
+
+```text
+Handbooks / Rules / Inbox
+```
+
+### Handbook 的物理真相必须立刻记住
+
+```text
+README.md               = Landing Page / 导航与引子
+<Handbook>.tex          = Canonical Handbook Source / 唯一正文 (.tex)
+90_publish/*.pdf        = Published View / 编译结果 (.pdf)
+Subject Rules           = Control Plane Rules / 做题指南 (Markdown)
+Inbox / System          = Learning & System Metadata (Markdown)
+```
+
+因此，Agent 进入某个 Topic 时：**先读 README 定位，再读 `.tex` 获取模型正文。没有 `.tex` 就必须声明“Canonical Handbook 尚未建立”；旧长 README 只能作为 Source / legacy working draft（产生的解释标为 provisional model）。**
+
+不要为了目录整齐引入新的日常填表、ID、YAML 或数据库负担。
+
+## 4. Knowledge Plane：四种 Handbook
+
+稳定 Handbook 只有：
+
+```text
+Atlas -> Topic -> Bridge -> Integration
+```
+
+它们是解释责任，不是简单章节层级。
+
+### Atlas = Map
+
+回答：
+
+```text
+Why + Where + Relationship
+```
+
+拥有学科母问题、对象地图、Topic 地图和依赖关系，不展开全部机制。
+
+### Topic = Depth
+
+单一核心机制的 Canonical Owner。
+
+标准生成链：
+
+```text
+Problem
+-> Naive Approach
+-> Failure
+-> Mechanism
+-> Invariant / Boundary
+-> Cost / Tradeoff
+```
+
+### Bridge = Interface
+
+回答：**两个已有模块为什么能接？**
+
+```text
+A output -> translation/shared structure -> B input
+```
+
+只有删除具体题目后仍然存在稳定、普遍、可复用的共享机制，才独立建立 Bridge。
+
+### Integration = Composition
+
+回答：**多个成熟模块怎样在一个完整问题/过程中一起运行？**
+
+```text
+Problem
+-> Module Recognition
+-> Module Composition
+-> Execution
+-> Verification
+```
+
+Integration 拥有协作轨迹，不重新拥有参与机制。
+
+最短判据：
+
+```text
+Bridge = 两个模块为什么能接（例如 X-B01 Privilege/Syscall 硬件与 OS 控制权切换）
+Integration = 多个模块怎样一起工作（例如 OS-I01 BlockingRead 磁盘、内存与进程阻塞读全生命周期）
+```
+
+## 5. Extension 与 Anti-Bridge
+
+它们不是第五、第六种 Handbook，而是稳定知识中的关系角色。
+
+### Extension
+
+```text
+True Structural Connection + Outside Current Core Scope
+```
+
+真连接，但暂时不进入当前主干；只在相关 Atlas / Topic / Bridge 中留下最小指针。
+
+### Anti-Bridge
+
+主动阻断：
+
+```text
+表面相似 != 结构相同
+```
+
+至少说明为什么容易混淆、真正判据是什么、哪些结论禁止互推。
+
+禁止为 Extension / Anti-Bridge 新建平行资产树。
+
+## 6. Canonical Ownership
+
+任何稳定内容必须先判断：
+
+```text
+Own / Use / Bridge / Integrate / Extension / Anti-Bridge
+```
+
+- **Own**：完整定义；
+- **Use**：调用已有 Owner，不复制；
+- **Bridge**：拥有接口；
+- **Integrate**：拥有协作轨迹；
+- **Extension**：真连接但暂不展开；
+- **Anti-Bridge**：明确禁推关系。
+
+同一机制只能有一个 Canonical Owner。
+
+准备修改稳定资产前必须：
+
+1. 判断 Knowledge 还是 Control；
+2. 找唯一 Owner；
+3. 搜索已有重复定义；
+4. 找 Uses / Bridges / Integrations 下游依赖；
+5. 只修改有解释责任的位置；
+6. Owner 不清楚时先留 Inbox，不为了“有地方放”制造第二份稳定真相。
+
+## 7. 学科解耦与层级
+
+### 7.1 数学一的层级
+
+数学一不共享一个强行统一的世界模型。
+
+```text
+Math 1 Course Atlas
+        |
+        +-- Calculus Subject Atlas
+        +-- Linear Algebra Subject Atlas
+        +-- Probability & Statistics Subject Atlas
+        |
+        +-- Cross-Subject Bridges
+        +-- Cross-Subject Integrations
+```
+
+入口：
+
+- Course Atlas：`10_数学一/README.md`
+- 高数：`10_数学一/10_高等数学/README.md`
+- 线代：`10_数学一/20_线性代数/README.md`
+- 概率：`10_数学一/30_概率论/README.md`
+- 跨科 Bridge：`10_数学一/50_桥梁专题/README.md`
+- 跨科 Integration：`10_数学一/60_综合专题/README.md`
+- 数学 Rules：`10_数学一/90_学科做题规则/`
+
+单科任务只读 Course Atlas + 对应 Subject Atlas + 必要 Topic/Rules；不要无差别加载三科世界模型。
+
+跨学科接口问题才进入 Math 1 Cross-Subject Bridge / Integration。
+
+### 7.2 408 的层级
+
+408 同样使用 Course Atlas → Subject Atlas，但四科保留各自世界模型：
+
+```text
+408 Course Atlas
+        |
+        +-- Data Structure Subject Atlas
+        +-- Computer Organization Subject Atlas
+        +-- Operating System Subject Atlas
+        +-- Computer Network Subject Atlas
+        |
+        +-- Cross-Subject Core Bridges
+        +-- Cross-Subject Integrations
+```
+
+入口：
+
+- Course Atlas：`30_408/README.md`
+- 数据结构：`30_408/10_数据结构/README.md`
+- 计组：`30_408/20_计算机组成原理/README.md`
+- OS：`30_408/30_操作系统/README.md`
+- 网络：`30_408/40_计算机网络/README.md`
+- 跨科 Bridge：`30_408/50_桥梁专题/README.md`
+- 跨科 Integration：`30_408/60_综合专题/README.md`
+- 408 Rules：`30_408/90_408做题规则/README.md`
+
+当前 Cross-Subject Core Bridge 只有 X-B01 privilege/exception × OS、X-B02 hardware translation × OS VM、X-B03 interrupt/DMA × OS I/O；X-B04 process/socket × transport endpoint 是 Candidate Core。Graph Algorithm × Routing 等真连接当前优先记为 Use/Extension，不因为类比漂亮就独立建册。
+
+数据结构 complexity 与 OS 基础概念属于各自 Atlas Foundation；Foundation 不是第五种 Handbook 类型。
+
+单科任务只读 Course Atlas + 对应 Subject Atlas + 必要 Topic/Rules；跨科问题才加载 Cross-Subject Bridge / Integration。
+
+## 8. Control Plane：机制与调用动作必须分开
+
+“机制为什么成立”和“题里什么时候调用”不是同一个 Owner。
+
+例如：
+
+```text
+分部积分机制、条件、结构变化 -> 积分 Topic
+看到何种结构考虑分部积分、拆法怎么选 -> Subject Rules
+```
+
+通用控制镜头：
+
+```text
+Object
+-> Goal
+-> Structure
+-> Representation
+-> Transformation / Route
+-> Invariant
+-> Execute
+-> Verify
+```
+
+它只是共同控制语言，不得替代各学科自己的世界模型和 Adapter。
+
+## 9. Learning Plane：默认先诊断，不默认更新
+
+```text
+Observation
+-> Diagnosis
+-> Hypothesis
+-> Candidate Rule / Model Challenge
+-> Independent Test
+-> Promote / Revise / Reject / No Update
+```
+
+五个主要断点已经足够：
+
+1. 模型；
+2. 识别；
+3. 路径；
+4. 执行 / 检查 / 表达；
+5. 考试决策。
+
+模型层需要时再细分：
+
+```text
+Topic mechanism / Bridge interface / Integration composition
+```
+
+“粗心、状态差、基础差”不是最终诊断；必须继续落到具体行为，或承认证据不足。
+
+No Update 是正式结果。不是每做一道题都必须增加知识节点或规则。
+
+## 10. 默认场景与角色
+
+| 场景 | 主要角色 | 第一目标 |
+|---|---|---|
+| `explore` | Mapper + Socratic Tutor | 找母问题，暴露当前模型 |
+| `model-diff` | Socratic Tutor + Mapper | 找主干、混淆、缺口、边界 |
+| `solve` | Model-Grounded Solver | 沿现有模型解题并 Verification |
+| `wrong` | Debugger | 找 First Divergence，不先重做 |
+| `adversary` | Adversary | 找最小反例、失效条件和成本 |
+| `practice` | Coach | 针对已确认断点出少量诊断题 |
+| `import` | Mapper + Editor | Handbook Diff + Owner 定位 |
+| `review` | Adversary + Editor + Coach | 复盘 Inbox / Rules / 表现 |
+| `publish` | Editor | 同步已采用 Canonical 内容 |
+
+用户不需要主动选择角色，Agent 自动路由。
+
+## 11. 默认人机协作顺序
+
+学习和建模场景默认：
+
+```text
+用户先解释 / 判断
+-> AI 检查、攻击、指出差异
+-> 用户修正
+-> AI 给反例或诊断题
+-> 用户再次解释 / 执行
+```
+
+除非用户明确要求直接讲解，不要一开始就用完整标准答案覆盖用户自己的模型。
+
+用户明确要求解题时，可以直接完成，但输出必须沿：
+
+```text
+Model Anchor
+-> Problem Representation
+-> Path Choice
+-> Solution Chain
+-> Verification
+-> Compression Signal
+```
+
+## 12. 旧笔记、教材、LaTeX、PDF 的导入规则
+
+所有旧材料首先都是 **Source Corpus**，不是 Canonical Owner。
+
+先拆：
+
+```text
+Knowledge / Control / Evidence / Publication
+```
+
+Knowledge 再判断：
+
+```text
+Atlas / Topic / Bridge / Integration
+```
+
+迁移流程：
+
+```text
+Locate
+-> Find Owner
+-> Handbook Diff
+-> Split responsibilities
+-> Human decision
+-> Update correct Owner / create work draft
+-> Update status & dependencies if needed
+```
+
+旧文件数量绝不等于未来 Handbook 数量。不要为了保留旧稿完整阅读体验整篇复制。
+
+## 13. 系统权威定义源
+
+当本文件的压缩说明不足时，按职责升级读取；其他文件不得另造定义。
+
+| 文件 | Canonical Responsibility |
+|---|---|
+| `00_system/architecture.md` | Plane、资产、Knowledge topology、快慢循环与系统边界 |
+| `00_system/terminology.md` | 核心术语 |
+| `00_system/agent_context_protocol.md` | 自动场景路由与 Context Pack |
+| `00_system/collaboration_workflow.md` | 写入/更新动作、文件更新矩阵、结束条件 |
+| `00_system/handbook_contract.md` | Handbook / Rules 最低契约 |
+| `00_system/handbook_writing_spec.md` | 心智模型正文生成结构、写作和验收 |
+| `00_system/ownership_matrix.md` | 唯一 Owner 与跨文件边界 |
+| `00_system/evidence_promotion.md` | Inbox、诊断、规则验证和晋升 |
+| `01_control/problem_solving_kernel.md` | 通用 Problem-Solving Control |
+
+若系统契约之间冲突，不要静默选择；指出冲突并优先修配置。
+
+## 14. 修改稳定资产时的强制流程
+
+只要任务会改变 Handbook、正式 Rules、Ownership、状态或目录拓扑：
+
+1. 读取 `00_system/collaboration_workflow.md`；
+2. Handbook 任务读取 `handbook_contract.md`；大规模正文重构再读 `handbook_writing_spec.md`；
+3. 检查 `ownership_matrix.md` 和相关 Atlas；
 4. 搜索重复定义和下游依赖；
-5. 只修改有权拥有的内容；
-6. 记录无法同时处理的依赖。
+5. 修改唯一 Owner；
+6. 必要时同步 Use / Bridge / Integration 链接；
+7. 只有真实成熟度变化才改 `状态：...`；
+8. 当前焦点变化才更新 `CURRENT.md`；
+9. 稳定更新结束后运行 progress / check；
+10. 明确报告仍待人工决定的结论。
 
-Owner 不明确时可以先留在 Inbox，不为了“有地方放”而创建第二份稳定真相。
+工具环境禁止写入时，不用 shell 绕过约束。
 
-## 9. AI Alignment Context
+## 15. Handbook 物理契约、Publication 与状态
 
-现有 Handbooks 不仅供人阅读，也用于让不同 AI 沿同一套母模型和术语工作。
+### 15.1 Handbook Package
 
-AI 阅读 Handbook 后应当：
+所有正式 `Atlas / Topic / Bridge / Integration` 必须使用：
 
-- 优先使用其中已经定义的对象和关系；
-- 明确指出何时采用了不同教材或工程模型；
-- 不随意更换核心术语；
-- 不把自己的通用总结覆盖成使用者的现有模型；
-- 发现模型冲突时提出差异，不静默改写。
+```text
+<Handbook Directory>/
+├── README.md          # Landing Page
+├── <Handbook>.tex     # Canonical Handbook Source
+└── assets/            # 可选
 
-## 10. Publication
+90_publish/
+└── <Handbook>.pdf     # Published View
+```
 
-- Markdown 是默认工作入口；
-- LaTeX/PDF 是较慢的发布视图；
-- 先修改 Canonical Handbook 或 Rules，再同步发布稿；
-- PDF 只能由对应 LaTeX 生成，不得手工修改；
-- 使用 `python3 ../scripts/compile_tex.py <目标.tex>` 编译；
-- 既有发布物在完成 Ownership 梳理前保持 `legacy-unregistered`；
-- 不因一次 Inbox 或一道错题立即重发 PDF；
-- 本项目长期认知手册没有默认四页限制。
+物理 Source of Truth 锁定为：
 
-## 11. 隐私
+```text
+Handbook Knowledge -> .tex
+Navigation / Hook  -> README.md
+Published Reading -> 90_publish/*.pdf
+Rules / Inbox      -> Markdown
+System Contracts   -> Markdown
+```
 
-公开仓库中的 Inbox、原始作答或案例必须去除姓名、联系方式、账号、准考证号和未公开试卷等敏感信息。无法安全脱敏的材料留在仓库外。
+**README 绝不能成为第二份简化正文。** 它只负责：
 
-## 12. 进度与结构检查
+- 一段让学生知道“为什么值得读”的引子；
+- 本册 Mother Question；
+- Scope / Owns / Uses / Stop Boundary；
+- 当前状态；
+- Canonical `.tex` 链接；
+- 已发布 PDF 链接；
+- 推荐前置与下一册。
 
-具体使用场景和文件更新矩阵以 `00_system/collaboration_workflow.md` 为唯一协议。
+完整定义、推导、机制生成、边界表、Worked Example、Problem Action 和压缩页只能进入 `.tex`。
 
-当一次工作改变了稳定资产、资产状态或当前项目焦点时，AI 必须：
+**过渡态判定规则**：若某 Topic 处于从旧 Markdown 向 LaTeX 迁移阶段、尚未建立 Canonical `.tex`，现有长篇 README 只能标注为 `legacy working draft`，Agent 生成或引用的任何结论均需明确标记为 `provisional model`，不得替代 Canonical 正文。
 
-1. 只在真实成熟度变化时修改对应入口的 `状态：...`；
-2. 当前焦点变化时更新 `CURRENT.md`；
-3. 运行 `python3 00_system/cognitive_system.py progress --write`；
-4. 运行 `python3 00_system/cognitive_system.py check`；
-5. 报告仍待人工确认的结论，不用进度数字代替认知证据。
+### 15.2 编译与发布
 
-Inbox 的日常追加不要求每次生成进度；周复盘或稳定更新时再统一刷新。
+从本目录 `common/考研/` 执行：
 
-## 13. AI 完成工作时的检查
+```bash
+python3 ../scripts/compile_tex.py "<target.tex>"
+```
 
-- [ ] 是否先暴露了使用者自己的理解，而不是直接替代；
-- [ ] 是否找到 First Divergence，而不只指出最终错误；
-- [ ] 是否区分事实、假设和建议；
-- [ ] 是否考虑 No Update；
-- [ ] 候选规则是否受到反例和成本检查；
-- [ ] 是否把快循环结果过早写入稳定 Handbook；
-- [ ] 修改稳定内容时是否确认 Owner 和依赖；
-- [ ] 是否保留了最终由使用者判断的空间；
-- [ ] 是否避免了不必要字段、标签和文档。
+脚本会多遍 XeLaTeX 编译并把最终 PDF 移动到 `90_publish/` 根目录；专题目录保持零同名 PDF。
 
-AI 的交付说明应简要报告：做了什么、为什么改这里、哪些仍是候选、哪些由人确认，以及还有什么没有证据。
+发布链只有：
+
+```text
+README Landing Page
+-> Canonical .tex
+-> compile_tex.py
+-> 90_publish/<same-stem>.pdf
+```
+
+- `.tex` 是 Handbook 唯一正文真相；
+- PDF 不得手工修改；
+- README 不得与 `.tex` 复制竞争；
+- 旧 Markdown 长篇手册在迁移完成前只能标记为 Source / legacy working draft；
+- 旧发布物在 Ownership 梳理前保持 `legacy-unregistered`；
+- “已发布”不等于“已采用”。
+
+进度入口：
+
+- `CURRENT.md`：人工维护的当前焦点；
+- `PROGRESS.md`：生成型资产状态快照。
+
+稳定更新结束后：
+
+```bash
+python3 00_system/cognitive_system.py progress --write
+python3 00_system/cognitive_system.py check
+```
+
+`cognitive_system.py check` 为项目自动化防线，硬性拦截 5 类异常：
+1. **包结构与状态契约**：缺 `.tex` 正文的 Topic 严禁虚报为 `已采用` / `Canonical`；
+2. **README 越权防护**：非 legacy README 超过 200 行上限自动报警；
+3. **Owner 唯一性与矩阵校验**：校验 `ownership_matrix.md` 引用及非 legacy H1 冲突；
+4. **断链防护**：扫描所有 Markdown（含 `Subject Rules`、Bridge、Integration）相对链接；
+5. **`CURRENT.md` 鲜活性**：确保当前焦点文件有效且已被更新。
+
+不要为了让进度数字增长而修改状态。
+
+## 16. 完成任务前自检
+
+### Knowledge / Writing
+
+- 找到唯一 Owner 了吗？
+- Topic / Bridge / Integration 职责混了吗？
+- 把 Extension 扩成主干了吗？
+- 应该加 Anti-Bridge 而不是再造连接吗？
+- 把 Rules 偷塞进 Handbook 了吗？
+- 重复定义已有机制了吗？
+
+### Learning / Diagnosis
+
+- 保留用户原始过程了吗？
+- 找的是 First Divergence 而不是最后错误吗？
+- 区分事实、假设和建议了吗？
+- 考虑 No Update 了吗？
+- 有没有把旧题即时重做冒充迁移证据？
+
+### Repository
+
+- 只改有职责的文件了吗？
+- 状态与真实成熟度一致吗？
+- 必要依赖同步了吗？
+- 是否避免扩大无关修改？
+- 可运行的结构检查执行了吗？
+
+## 17. 每次交付说明
+
+复杂仓库任务结束时简要说明：
+
+1. 当前场景和主要角色；
+2. 实际读取了哪些 Context / Source；
+3. 哪些是仓库事实、工作假设、人工决定；
+4. 最终是 No Update、Candidate 还是 Canonical Update；
+5. 修改了哪些文件，为什么是这些 Owner；
+6. 哪些仍待人工确认；
+7. 下一次最小动作。
+
+**核心底线：不是每遇到一个新知识或新题就增加一个节点，而是先判断它究竟在深化哪个 Topic、暴露哪个 Bridge、需要哪个 Integration，还是只形成一条 Control Rule。**
