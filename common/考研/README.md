@@ -130,8 +130,9 @@ $$
 | `handbook_contract.md` | 拥有 Handbooks 与 Rules 的最低完成标准 |
 | `evidence_promotion.md` | 拥有 Inbox、诊断和候选规则验证流程 |
 | `ownership_matrix.md` | 登记稳定概念和规则的归属 |
+| `agent_context_protocol.md` | 拥有 Agent 自动场景路由、Boot Core 与最小 Context Pack |
 | `collaboration_workflow.md` | 拥有具体使用场景、文件更新矩阵和协作结束条件 |
-| `AGENTS.md` | 拥有人与 AI 的协作行为规则 |
+| `AGENTS.md` | Agent 进入仓库后的 Boot Manifest；压缩说明架构、读取策略、Ownership 与人机协作行为 |
 
 其他文件只引用或简述这些规则，不另建一套定义。
 
@@ -148,7 +149,7 @@ $$
 - [Agent 场景路由与 Context Pack](00_system/agent_context_protocol.md)
 - [可重复交互入口](00_system/interaction_playbook.md)
 - [通用解题控制内核](01_control/problem_solving_kernel.md)
-- [人机协作规则](AGENTS.md)
+- [Agent 启动协议与人机协作规则](AGENTS.md)
 - [当前项目进度](PROGRESS.md)
 
 学科复习总览与导航：

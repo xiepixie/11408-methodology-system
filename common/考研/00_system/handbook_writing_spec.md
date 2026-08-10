@@ -15,7 +15,7 @@
 - **做题时应该在哪个节点调用它？**
 - **忘掉具体公式以后，能不能重新推出主要结论？**
 
-本规范拥有所有心智模型手册与专题手册的认知结构、写作原则与验收标准。排版与编译交付契约由 [`AGENTS.md`](../AGENTS.md) 定义。两者共同构成完整的写作–发布闭环。
+本规范拥有所有心智模型手册与专题手册的认知结构、写作原则与验收标准。仓库启动、协作、Ownership 与 Publication 的执行边界由 [`AGENTS.md`](../AGENTS.md) 统一路由；具体物理交付仍服从当前仓库继承到的发布/编译契约。
 
 ---
 
@@ -51,11 +51,13 @@
 
 负责回答：
 
-> 两个专题之间到底怎样连接？
+> 两个专题之间为什么真的能够连接？
 
 例如：Hessian ↔ 二次型；Jacobian ↔ 行列式；Socket ↔ OS I/O；Cache ↔ 虚拟内存；概率积分 ↔ 多重积分。
 
-桥梁册不重新教授两边全部内容，只解释 $\boxed{\text{Interface Contract}}$：左边输出什么，右边接收什么，中间保持什么不变量。
+桥梁册不重新教授两边全部内容，只解释 $\boxed{\text{Interface Contract}}$：左边输出什么，经过什么翻译，右边接收什么，中间保持什么不变量。
+
+建立 Bridge 前必须做“去题目测试”：删掉具体例子后，如果仍剩一条稳定、普遍、可复用的 A ↔ B 共享机制，才值得成为 Bridge；如果只剩多个模块共同完成一个问题，则应进入 Integration。
 
 ### 1.4 综合手册：Integration
 
@@ -66,6 +68,13 @@
 例如：一个网络请求的一生；一次 `read()` 的完整路径；一个参数统计推断从总体到检验的全过程；一条 LOAD 指令从 ISA 到 Cache Miss 的执行路径。
 
 综合册不拥有具体机制。它负责 $\boxed{\text{Composition}}$。
+
+### 1.5 Extension 与 Anti-Bridge：关系边界，不新增 Handbook 类型
+
+- **Extension**：真连接，但超出当前核心范围；只保留足够指向未来的最小解释。
+- **Anti-Bridge**：假连接或禁推关系；明确为什么容易混淆、真正判据和停止类比的位置。
+
+它们用于控制知识网络，而不是扩张目录。默认写在相关 Atlas / Topic / Bridge 的边界或扩展段落。
 
 ---
 
@@ -588,7 +597,7 @@ $$\boxed{\textbf{用尽可能少而稳定的生成性结构，重新生成尽可
 
 ## 26. 物理交付层
 
-本规范定义认知结构。排版与编译交付契约由 [`AGENTS.md`](../AGENTS.md) 定义。两者的关系是：
+本规范定义认知结构。进入物理交付阶段时，先按 [`AGENTS.md`](../AGENTS.md) 的 Publication 路由确认 Canonical 状态、发布 Owner 与当前继承的排版/编译契约。两层关系是：
 
 $$\boxed{\text{认知结构不合格} \implies \text{不允许进入排版}} \qquad \boxed{\text{排版不合格} \implies \text{不允许进入 90\_publish/}}$$
 
@@ -599,4 +608,4 @@ $$\boxed{\text{认知结构不合格} \implies \text{不允许进入排版}} \qq
 - 编译工具链：统一使用 `python3 common/scripts/compile_tex.py <target.tex>`；
 - 发布视图路由：`.tex` 源码在各自专题下保存，编译后的 PDF 自动同步推送到 `90_publish/` 根目录集中展现。
 
-详见 [`AGENTS.md`](../AGENTS.md) §七至§九。
+仓库级执行入口见 [`AGENTS.md`](../AGENTS.md) 的 Publication、稳定资产更新与交付自检部分。
