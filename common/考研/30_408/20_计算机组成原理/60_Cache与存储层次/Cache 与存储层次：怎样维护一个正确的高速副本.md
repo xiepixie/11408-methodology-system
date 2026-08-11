@@ -1,6 +1,8 @@
 # Cache 与存储层次：怎样维护一个正确的高速副本
 
-状态：工作稿，待人工确认。
+状态：Markdown 工作稿待迁入 LaTeX；Canonical LaTeX 正文未建。
+
+> **迁移提示**：本文件是旧 Markdown working source，不再承担 Handbook Owner。后续 Source Diff 后迁入本 Topic 的 Canonical `.tex`；最终 README 只保留 Landing Page。
 
 ## 1. 母问题
 

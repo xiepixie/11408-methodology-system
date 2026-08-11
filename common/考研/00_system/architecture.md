@@ -12,16 +12,19 @@
 
 因此，本项目不建设数据库，也不要求复杂 schema。
 
-## 2. 三个 Plane 与三个资产
+## 2. 三个 Plane、三个资产与一个发布投影
 
 Plane 是思考职责，资产是实际维护对象：
 
-| Plane | 实际资产 | 负责什么 |
-|---|---|---|
-| Knowledge | Handbooks | 保存稳定的世界模型 |
-| Control | Rules | 保存可执行的做题和考场动作 |
-| Learning | Inbox + 真实练习 | 暴露问题、形成假设、积累检验 |
-| Publication | LaTeX/PDF 视图 | 发布前三者中已经成熟的内容 |
+| Plane | 逻辑资产 | 默认物理载体 | 负责什么 |
+|---|---|---|---|
+| Knowledge | Handbooks | **Atlas: Markdown README**；**Topic/Bridge/Integration: `.tex` + README Landing** | 保存稳定的世界模型 |
+| Control | Rules | Markdown | 保存可执行的做题和考场动作 |
+| Learning | Inbox + 真实练习 | Markdown | 暴露问题、形成假设、积累检验 |
+
+**Publication View 不是第四个 Plane，也不是第四类资产。** 它只是把前三者中已经确认需要发布的内容投影成阅读视图；对 Handbook 来说，就是 `90_publish/*.pdf`。
+
+这里必须区分“逻辑资产”和“文件格式”。`Atlas / Topic / Bridge / Integration` 是认知职责，不要求共用一种载体：Atlas 的责任就是地图、关系和 Routing，因此 Canonical Source 直接使用 Markdown README；Topic / Bridge / Integration 需要长机制正文，Canonical Source 使用 LaTeX，README 只做入口。
 
 Learning Plane 不是独立知识库。Case、测试记录和反例都可以只作为 Inbox 或待验证规则的一部分存在；只有复杂问题才单独成文。
 
@@ -35,23 +38,41 @@ $$
 \text{Atlas} \to \text{Topic} \to \text{Bridge} \to \text{Integration}
 $$
 
-- **Atlas**：学科对象、母问题和专题地图；
+- **Atlas**：对象、母问题和专题地图；
 - **Topic**：一个机制为什么存在、怎样运转；
-- **Bridge**：两个专题在哪里交接、各自负责什么；
-- **Integration**：多个机制怎样共同完成一个真实过程。
+- **Bridge**：两个专题在哪里交接、为什么能够连接；
+- **Integration**：多个成熟机制怎样共同完成一个真实过程。
+
+Atlas 允许按范围分层。一个考试科目或课程可以有 **Course / Exam Atlas**，下面再连接多个 **Subject Atlas**。上层 Atlas 只负责地图、共享控制语言和跨学科接口，不强迫不同 Subject 共享一个“万能世界模型”。
 
 这个层级表示观察范围，不表示内容重复。Topic 拥有机制，Bridge 只拥有接口，Integration 只拥有协作轨迹。
 
-### 什么时候修改 Handbook
+### Bridge 与 Integration 的判别
 
-只在以下情况修改：
+架构层只固定责任边界：
 
-1. 原模型存在事实或边界错误；
-2. 一个重要新机制补全了旧模型；
-3. 新结构能够解释多个旧问题，并通过反例检查；
-4. 原组织方式已经妨碍理解或产生重复。
+$$
+\boxed{\text{Bridge}=\text{为什么能接}}
+\qquad
+\boxed{\text{Integration}=\text{怎样一起工作}}
+$$
 
-刚看完课程、刚读完一章或只做一道题，默认不修改 Handbook。
+是否构成 Bridge、以及真接口是否值得独立建册，不在本文件重复定义。统一执行 [`handbook_contract.md`](handbook_contract.md) §4 的 **Bridge Validity / Standalone Promotion** 两道 Gate。
+
+因此架构上的最小约束只有两条：
+
+- 仅仅“B 使用 A”时保持 `Use`，不要为了连接感另建 Bridge；
+- 追踪一个具体问题如何调用多个成熟模块时归 Integration，不把协作轨迹伪装成新接口。
+
+### Extension 与 Anti-Bridge
+
+`Extension` 和 `Anti-Bridge` 只是关系角色，不增加第五、第六种 Handbook，也不建立平行资产树。具体词义统一见 [`terminology.md`](terminology.md)；写入哪本 Handbook 由 Ownership 决定。
+
+因此稳定 Knowledge 资产仍只有 Atlas、Topic、Bridge、Integration 四类 Handbook。
+
+### Handbook 属于慢循环
+
+架构层只规定：**一次学习、一道题或一条新想法不会自动改 Handbook。** 是否已有足够理由修改稳定 Owner，交给 [`collaboration_workflow.md`](collaboration_workflow.md) 的稳定写入流程和 [`evidence_promotion.md`](evidence_promotion.md) 的证据判断；本文件不维护另一套更新门槛。
 
 ## 4. Control Plane
 
@@ -88,94 +109,58 @@ Learning 回答：“这次体验是否值得修改系统？”
 
 Inbox 是自由区。几句话、原始草稿或一段对话摘要都可以，不要求 ID、标签、YAML 或完整分类。
 
-### 五类诊断已经足够
+Learning Plane 只负责把一次体验变成**可检验的候选**，不直接决定稳定资产怎么改。诊断术语与 No Update 的含义见 [`terminology.md`](terminology.md)；错题、证据强度和规则晋升见 [`evidence_promotion.md`](evidence_promotion.md)。
 
-1. **模型问题**：对概念、机制或边界的理解错误；
-2. **识别问题**：知识存在，但没有识别题目结构；
-3. **路径问题**：知道是什么，但起手或候选路径选择不合理；
-4. **执行/检查/表达问题**：方向合理，但状态维护、计算、校验或得分链失控；
-5. **考试决策问题**：时间、退出、返回、风险或注意力策略错误。
+架构只坚持两条：
 
-诊断的目标不是给错误贴最精细的标签，而是决定下一步动作和修改位置。
+1. **允许 No Update。** 一次错误或一次新理解不必产生新节点；
+2. **快慢循环分离。** 观察、假设、复测可以快，修改 Handbook / 已采用 Rules 必须进入稳定写入流程。
 
-## 6. No Update 是正式结果
+具体场景怎样读取 Context 由 [`agent_context_protocol.md`](agent_context_protocol.md) 路由；场景结束后更新哪些文件由 [`collaboration_workflow.md`](collaboration_workflow.md) 决定。
 
-不是每个错误都值得改变系统。以下情况通常选择 No Update：
-
-- 偶发的简单计算错误；
-- 无法复原当时思路；
-- 没有稳定原因；
-- 想不出能降低未来风险的具体动作；
-- 规则成本明显高于可能收益。
-
-值得继续观察的通常是重复出现或具有明确机制的错误：它能被解释、能形成动作，也能在未来新题中被检验。
-
-## 7. 三个核心工作场景
-
-### 7.1 学完以后：Model Diff
-
-```text
-使用者先解释
--> AI 对照现有 Handbook
--> 只指出主干、混淆和缺口
--> AI 提边界问题和反例
--> 使用者重新解释
-```
-
-AI 不应先给完整总结，因为那会掩盖使用者真实模型。
-
-### 7.2 做题以后：First Divergence
-
-```text
-题目 + 原始过程 + 答案
--> AI 不先重做
--> 找到第一次偏离有效路径的位置
--> 判断五类问题
--> No Update 或候选规则
-```
-
-最后算错的位置不一定是真正犯错的位置。
-
-### 7.3 每周或专题结束：Batch Consolidation
-
-批量查看 Inbox 和真实表现，只处理：
-
-- 重复模式；
-- 已经经受反例攻击的规则；
-- 与 Handbook 冲突的证据；
-- 可以删除的无价值记录。
-
-这时才使用 Ownership Matrix 和依赖搜索更新稳定资产。
-
-## 8. Canonical Ownership 何时启用
+## 6. Canonical Ownership 何时启用
 
 Ownership 是慢循环的维护规则，不是每天记录 Inbox 的前置条件。
 
 当准备修改 Handbook 或正式 Rules 时，才需要确认：
 
 1. 谁拥有这个概念或规则；
-2. 当前文件是在 Own、Use、Bridge 还是 Integrate；
+2. 当前文件是在 Own、Use、Bridge、Integrate，还是只记录 Extension / Anti-Bridge 关系；
 3. 修改会影响哪些下游内容；
 4. 发布视图是否需要稍后同步。
 
 Inbox 中可以有重复、模糊和矛盾。Canonical 层不可以。
 
-## 9. Publication Plane
+## 7. Handbook 与 Publication 的架构关系
 
-Markdown 适合日常维护，LaTeX/PDF 适合阶段性阅读和发布。
+具体目录、状态和发布命令统一由 [`handbook_contract.md`](handbook_contract.md) 与 [`repository_integrity.md`](repository_integrity.md) 约束。架构层只固定 Source-of-Truth：
+
+```text
+Atlas:
+README.md = Canonical map + navigation
+optional poster/PDF = derived visual view
+
+Topic / Bridge / Integration:
+README.md = Landing Page
+.tex      = Canonical deep body
+PDF       = compiled reading view
+```
+
+因此 Publication 不创造新结论，也不拥有知识。Atlas 海报只能视觉化 README 已有关系；深度 Handbook PDF 只能展示 `.tex`。这样不会因为“Markdown 好改、PDF 好看”而演化成多份可修改真相。
 
 发布节奏应慢于 Rule，Rule 应慢于 Inbox：
 
 ```text
 Inbox: 随时
 Rules: 几天或每周整合
-Handbooks: 专题或阶段性更新
-PDF: 一轮学习或一次稳定修订后发布
+Atlas README: 拓扑/Owner/路由真实变化时更新
+Topic/Bridge/Integration .tex: 专题或阶段性更新
+PDF / Poster: 稳定修订后按需生成
 ```
 
-Publication 不创造新结论。PDF 不能因为排版完成就获得更高可信度。
+PDF 不能因为排版完成就获得更高可信度。
 
-## 10. 已接受的取舍
+## 8. 已接受的取舍
 
 ### 自由 Inbox，而不是结构化数据库
 
@@ -195,7 +180,7 @@ Publication 不创造新结论。PDF 不能因为排版完成就获得更高可�
 - **代价**：Inbox 中会暂时存在未解决问题；
 - **接受理由**：延迟判断比过早沉淀更安全。
 
-## 11. 非目标
+## 9. 非目标
 
 本项目不追求：
 

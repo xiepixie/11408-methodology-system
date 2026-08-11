@@ -1,41 +1,52 @@
-# 408 跨学科 Integration
+# 408 Cross-Subject Integration Layer
 
-状态：目录已建立，正文未建。
+状态：框架已采用；2 个核心 Integration 已建立骨架，综合发布物待按新 Ownership 纳管。
 
-本目录只拥有跨学科的完整协作轨迹，不拥有任何局部机制。
+本目录只拥有跨 Subject 的完整协作轨迹，不拥有局部机制。
 
-## 学科内部 Integration
+## X-I01｜一次 LOAD / Memory Access 的完整慢路径
 
-- 数据结构：《从问题需求到数据结构选择》；
-- 计组：《一条指令的一生》；
-- OS：《一次内核跨子系统过程》；
-- 网络：《一个网络请求的一生》。
-
-这些内容留在各自学科目录。
-
-## 全局规划母题
-
-### 程序读取网络数据的一生
+[入口](X-I01_LOAD与MemoryAccess慢路径/README.md)
 
 ```text
-Remote Application
--> Network Protocols
--> NIC / DMA
--> Interrupt or Poll
--> Kernel Network Stack
--> Socket Buffer
--> Wake Process
--> CPU executes copy/return path
--> User Program observes bytes
+Instruction
+-> Effective Address / VA
+-> TLB / Page Table
+-> PA
+-> Cache
+-> Memory
+
+slow path:
+Page Fault
+-> Kernel Repair
+-> PTE Update
+-> Retry
+-> Commit
 ```
 
-需要同时追踪：
+重点检验：TLB miss、Cache miss、Page Fault 的层级和责任差异。
 
-- 网络：packet、scope、protocol state 和 feedback；
-- 计组：DMA、interrupt、Cache/TLB/Memory 和 instruction timing；
-- OS：request、buffer、task state、wait/wakeup 和 scheduling；
-- 数据结构：queue、buffer、lookup table 等提供的操作能力。
+## X-I02｜一次 Blocking File `read()` 的完整生命周期
 
-## 完成条件
+[入口](X-I02_BlockingFileRead完整生命周期/README.md)
 
-全局 Integration 只有在相关 Topic 和 Bridge 已有稳定 Owner 后才开始正文。否则所谓“综合”只会复制未稳定的局部知识。
+```text
+User Process
+-> System Call
+-> fd/OFD/inode
+-> Page Cache / I-O Request
+-> Controller / DMA
+-> Interrupt / Completion
+-> Wakeup / Schedule
+-> Return
+```
+
+重点检验：OS 科内 read 轨迹怎样跨 X-B01/X-B03 接上硬件。
+
+## Extension
+
+`NIC -> kernel network stack -> socket -> process` 的完整网络接收路径暂不建立第三个 Core Integration；等 X-B04 的 Core 优先级和相关 Topic 通过真题/Coverage evidence 后再决定。
+
+## Legacy Source
+
+既有 `408四科统一方法论手册.tex`、`OS-I1_OS综合状态机_方法论手册.tex` 等发布物是 Source/legacy publication，不因已发布而拥有新的 Canonical 轨迹。

@@ -196,6 +196,68 @@ OS 则负责：
 系统调用、异常或中断首先造成的是\kw{控制权/特权级转换}。只有内核进一步发现当前执行实体不能继续、应该被抢占，或者主动选择另一个 runnable 实体时，才发生上下文切换。
 \end{exam}
 
+\subsection{中断优先级与屏蔽：谁先被响应，和谁能打断谁不是同一问题}
+
+当多个外部中断源竞争 CPU 时，不要把“中断来了”直接画成“CPU 立刻进入某个 ISR”。更完整的接口链是：
+\[
+\boxed{
+Request
+\rightarrow
+Pending
+\rightarrow
+Mask/Threshold\ Eligibility
+\rightarrow
+Arbitration
+\rightarrow
+Delivery/Entry
+\rightarrow
+Handler
+\rightarrow
+EOI/Return
+}
+\]
+
+这条链同时包含硬件机制与 OS 配置：设备/控制器产生并保存请求状态，控制器根据 mask、优先级或 threshold 判断哪些请求当前有资格递送，再从候选者中仲裁；CPU 完成可信入口后，内核 handler 才开始处理软件语义。
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} p{0.31\linewidth} X}
+\toprule
+概念 & 真正回答的问题 & 不要混成什么\\
+\midrule
+响应优先级 (Response Priority) & 多个\kw{当前可递送}请求同时竞争时，先选择哪一个进入 CPU & 不等于“这个 ISR 执行期间一定能压过所有低优先级 ISR”\\
+中断屏蔽 / Priority Threshold & 某个 pending/request 当前是否有资格向 CPU 递送或抢占 & 不等于把硬件的所有优先级编号重新排序；本质上先改变候选集合\\
+处理优先级 (Processing Priority) & 当前 handler 执行时，哪些新的中断允许嵌套/抢占它 & 由当前 mask/threshold、硬件优先级机制和 OS 策略共同形成，不应只看中断源的静态名字\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+在 408 经典中断屏蔽题里，经常把“响应优先级”看作硬件给出的基础仲裁顺序，再由 ISR 设置屏蔽字改变\kw{执行期间允许哪些中断进入}，于是实际处理/完成顺序可以不同于基础响应顺序。现代控制器还可能支持可编程 priority、threshold 与跨核 routing，所以工程上不要把“响应优先级永远固定”写成普遍规律。
+
+\begin{corebox}[控制器的最小职责模型]
+中断控制器至少要帮助系统完成四件事：\kw{记录/汇聚请求、筛掉当前不可递送请求、仲裁候选请求、把获胜请求递送/路由到 CPU}。PIC/APIC、不同 ISA 的具体寄存器和应答协议只是这个抽象的不同实现。
+\end{corebox}
+
+\begin{exam}[中断优先级/屏蔽题五步]
+\begin{enumerate}
+  \item 列出当前已经到达并仍然 pending 的中断请求；
+  \item 根据题设的 mask/屏蔽字/priority threshold，先确定\kw{当前可递送集合}；
+  \item 只在这个集合内部按响应优先级做仲裁，选出下一项；
+  \item 进入 ISR 后重新读取该 ISR 的屏蔽规则，判断哪些后续请求允许嵌套抢占；
+  \item ISR 返回时回到被打断的执行上下文；若仍有 pending 请求，再按题设规则重新判断，不要凭“原始优先级表”直接写最终完成顺序。
+\end{enumerate}
+\end{exam}
+
+\begin{warn}[两个常见过度简化]
+第一，\kw{masked 不必然等于“请求从此消失”}：请求是否保持 pending、何时重新递送依控制器与触发模式而定，408 题按题设模型判断。第二，\kw{Top/Bottom Half、softirq、workqueue} 是 OS 对中断后续工作的分层机制，不等于“软件把硬件响应优先级改成了另一张固定表”。
+\end{warn}
+
+\begin{method}[Bridge 停止规则]
+若题目问 IRQ 信号、pending、mask、priority arbitration、vector/routing，主要站在 CPU/中断控制器一侧；一旦 CPU 已进入 handler，继续问“唤醒哪个进程、是否触发调度、设备完成如何改变 Blocked/Ready”，就切回 OS-01/02 与 OS-05。\kw{Bridge 负责交接，不重新定义两侧专题。}
+\end{method}
+
 \subsection{x86 例子必须拆成两条路径：不要把 IDT 与 SYSCALL 混成一条}
 \begin{warn}[关键误区辨析：传统陷阱门 vs 快速 syscall]
 “CPU 查 IDT、自动切内核栈并压入 SS/ESP/EFLAGS/CS/EIP”适合描述\kw{传统 x86 中断/陷阱门跨特权级}的经典路径，但\kw{x86-64 的快速 SYSCALL 指令并不等价于 IDT interrupt gate}。Linux x86-64 也存在多种不同入口，它们的调用约定与栈处理并不完全相同。
@@ -595,6 +657,7 @@ Ready\rightarrow Running.
 “TLB hit 就是 1 cycle” & 命中很快，但具体 latency 是微架构参数；408 应掌握层次与额外访存次数。\\
 “A/D 位都由 MMU 自动维护” & x86 等架构常有硬件维护；跨架构应理解为页访问/脏状态由软硬件共同建立和使用。\\
 “CPU 每个固定 1ms/10ms 必然被 IRQ0 打断” & 经典周期 timer 是教学模型；现代系统还有 APIC timer、high-resolution timer 与 tickless 机制。\\
+“设置屏蔽字就是把中断响应优先级重新排序” & mask/threshold 首先改变当前可递送的候选集合；候选集合内部仍按题设的仲裁/响应优先级选择。屏蔽规则可以改变实际嵌套与完成顺序，但不能把这两层概念混成一张表。\\
 “DMA 不占任何系统资源” & DMA 减少 CPU 搬运指令，但仍消耗 memory/interconnect 带宽，并涉及 mapping、coherency、completion。\\
 “I/O 完成中断后等待进程立刻运行” & handler 通常只是使 waiter Ready/Runnable；什么时候 Running 由 scheduler 决定。\\
 “有原子指令就有高质量 mutex” & 原子 RMW 只提供竞争原语；阻塞 mutex 还需要等待队列、sleep/wakeup、调度与公平策略。\\
@@ -605,24 +668,25 @@ Ready\rightarrow Running.
 
 \section{408 跨计组/OS 解题检查表}
 
-\begin{method}[软硬件分工十问]
+\begin{method}[软硬件分工十一问]
 \begin{enumerate}
   \item 当前执行在 user 还是 kernel？
   \item 当前 CPU 上是谁？某个进程/线程，还是 interrupt context？
   \item 是同步事件还是异步事件？
+  \item 若有多个 IRQ，当前 pending 集合是什么？mask/threshold 后谁仍可递送，响应优先级如何仲裁？
   \item 硬件自动检查/保存/转换了什么？
   \item OS 在事件发生前预先配置了什么？
   \item 内核 handler 要读取哪些寄存器/表项/设备状态？
   \item 当前实体还能继续吗？若不能，是 Ready 还是 Blocked？
   \item 是否真的发生 context switch / page switch / I/O wait？
-  \item 这条路径是 快路径 还是 slow/exception path？
+  \item 这条路径是快路径还是 slow/exception path？
   \item 最终恢复时，哪些体系结构状态和内核不变量必须成立？
 \end{enumerate}
 \end{method}
 
 \begin{exam}[四类最常见综合题]
 \begin{itemize}
-  \item \kw{系统调用/中断 + 调度}：何时进入内核？是否必然切换？
+  \item \kw{系统调用/中断 + 调度}：何时进入内核？是否必然切换？若多个 IRQ 竞争，谁先进入、谁允许嵌套？
   \item \kw{TLB/Page Table + Page Fault}：硬件翻译到哪一步，OS 从哪一步接管？
   \item \kw{DMA + Interrupt + Process State}：谁搬数据？谁阻塞？谁唤醒？
   \item \kw{Atomic Instruction + Semaphore/Mutex}：硬件保证哪一步原子，OS 为什么还要等待队列和调度？

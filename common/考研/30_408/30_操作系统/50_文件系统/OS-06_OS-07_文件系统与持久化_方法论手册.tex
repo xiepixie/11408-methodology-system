@@ -243,13 +243,64 @@ Directory Entry & 把目录中的一个名字映射到对象标识 & 经典 inod
 408 中的\kw{目录项}通常指持久目录文件里的记录；Linux VFS 的 \code{struct dentry} 是\kw{内存中的路径组件/名称缓存对象}。Linux VFS 文档明确说明 dentry 存在于 RAM、用于 pathname lookup，不保存到磁盘。正式做题时先判断题目说的是“目录文件里的 entry”还是“VFS dentry”。
 \end{warn}
 
-\subsection{文件逻辑结构与访问方式}
-408 常把逻辑结构分为：
-\begin{itemize}
-  \item \kw{无结构字节流}：应用自己解释内容；UNIX 普通文件典型如此。
-  \item \kw{记录式文件}：固定长或可变长记录，由系统/应用维护记录边界。
-\end{itemize}
-访问方式再分为顺序访问、直接/随机访问、索引访问。要注意：\kw{逻辑结构}描述应用看到的数据组织；\kw{物理结构}描述这些数据怎样落到外存块上，两者不是一个维度。
+\subsection{文件逻辑结构、访问方式与物理分配的三层辨析}
+
+408 经常考查文件的不同维度，必须严格区分这三个独立概念：
+\[
+\boxed{
+\text{Logical Structure}
+\neq
+\text{Access Method}
+\neq
+\text{Physical Allocation}
+}
+\]
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} p{0.36\linewidth} p{0.36\linewidth}}
+\toprule
+文件系统维度 & 核心定义与视角 & 典型实现/分类形式\\
+\midrule
+逻辑结构 (Logical Structure) & **应用程序**看得到的数据组织形式 & 无结构流式字节文件、记录式文件（顺序/索引记录）\\
+访问方式 (Access Method) & **应用程序**从文件中读取/写入数据的接口模式 & 顺序访问 (Sequential)、直接/随机访问 (Direct/Random)、索引访问\\
+物理分配 (Physical Allocation) & **操作系统/文件系统**将数据安排落到外存块上的方法 & 连续分配 (Contiguous)、链接分配 (Linked)、索引分配 (Indexed)\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsection{文件保护模型：Access Matrix 与 ACL / Capability 投影}
+
+文件的保护与安全机制建立了“谁可以对哪个对象做什么动作”的边界。
+
+\paragraph{通用保护模型：访问矩阵 (Access Matrix)}
+任何系统保护抽象都可表示为一个二维访问矩阵 $\text{AccessMatrix}$：
+\[
+\boxed{\text{AccessMatrix}[\text{Subject / Domain}, \text{Object}] = \text{Rights}}
+\]
+其中行代表主体/保护域 (Subject/Domain，如用户、进程、角色)，列代表受保护对象 (Object，如文件、目录、设备)，矩阵元素表示具体的许可权限（如 \code{r}, \code{w}, \code{x}）。
+
+由于系统中的主体和对象极其庞大，矩阵通常非常稀疏。工程中有两种天然的二维存储投影：
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.24\linewidth} p{0.36\linewidth} p{0.34\linewidth}}
+\toprule
+投影方式 & 存储组织与定义 & 典型实例与特性\\
+\midrule
+按列 (Object) 存储 $\to$ \kw{ACL} & 将列上的主体及其权限挂在**对象 (File)** 下；形式为：$\code{Object} \to \{(\code{Subject}_i, \code{Rights}_i)\}$ & **访问控制列表 (Access Control List)**；如 Linux 文件 \code{rwxr-xr--}、posix ACL。删除文件时易一并回收。\\
+按行 (Subject) 存储 $\to$ \kw{Capability} & 将行上的对象及其权限挂在**主体 (Domain)** 手里；形式为：$\code{Subject} \to \{(\code{Object}_j, \code{Rights}_j)\}$ & **能力列表 (Capability List)**；进程持有一组令牌/凭证。传递与撤销权限粒度更细，但查询“某文件被谁有权访问”开销高。\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{corebox}[ACL 与 Capability 的统一本质]
+ACL 与 Capability 根本不是两个孤立无因的名词，它们是**同一个 Access Matrix 的两种存储切割与二维矩阵投影**！
+\end{corebox}
 
 \section{第 2 章：目录、路径与链接——从名字到对象}
 

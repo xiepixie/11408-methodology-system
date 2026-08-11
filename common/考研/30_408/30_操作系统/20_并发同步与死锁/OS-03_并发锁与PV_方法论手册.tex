@@ -194,6 +194,40 @@ T2: store 6
 看到“共享变量、共享缓冲区、文件写入、计数器”等，先找\kw{不允许交错的状态更新}；看到“有产品才能消费、A 完成后 B 才能做、资源数量有限”等，先找\kw{等待条件/前驱关系}。很多 PV 大题是两者叠加。
 \end{exam}
 
+\subsection{互斥的底座机制：关中断 vs 硬件原子指令}
+
+为了实现互斥（Critical Section），硬件与系统提供了从单核到多核的底座机制演进：
+
+\begin{enumerate}
+  \item \kw{关中断 (Disable Interrupt)}：单 CPU 运行环境下，CPU 通过关闭本地中断（cli），防止时钟中断触发调度切换，确保临界区代码不被同一 CPU 上的其他线程抢占。
+  \item \kw{硬件原子指令 (TestAndSet / CAS / LL-SC)}：现代多核 (SMP) 架构下，多 CPU 共享主存。关闭本地 CPU 的中断**无法阻止其他 CPU 核心访问共享内存**！必须依赖 CPU 硬件层面的原子读改写（RMW）指令与缓存一致性/总线锁。
+\end{enumerate}
+
+必须确立核心判定边界：
+\[
+\boxed{
+\text{Disable Local Interrupt}
+\not\Rightarrow
+\text{Multiprocessor Global Mutual Exclusion}
+}
+\]
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} p{0.36\linewidth} p{0.36\linewidth}}
+\toprule
+机制 / 方法 & 核心原理与适用场景 & 缺陷与代价\\
+\midrule
+Disable Interrupt & 关本地 CPU 中断，防调度抢占；适用于单核 CPU 极短内核操作 & 多核 (SMP) 无效；滥用关中断可能导致系统响应丧失与实时性破坏\\
+Software Peterson & 纯软件标志位 (flag + turn) 实现两线程互斥 & 存在 Busy-waiting（忙等）；依赖内存顺序，难以推广到 $N$ 线程\\
+TestAndSet (TAS) & 硬件指令原子性地“读旧值并写新值 1” & 存在 Busy-waiting 消耗 CPU 算力（Spinlock 自旋锁特征）\\
+Compare-And-Swap & 比较当前值是否等于期望值，相等则原子更新 & 存在 ABA 问题（需版本号解决）；自旋开销受高并发争用影响\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
 \section{信号量到底是什么：把并发约束映射为许可计数}
 
 \subsection{最稳定的理解：Permit Counter + Waiting Queue}
@@ -919,42 +953,40 @@ unlock(m);
 \]
 它的核心价值是把“共享状态及其合法同步协议”封装在一个模块中，减少调用者随意破坏不变量的机会。
 
-\section{死锁：PV 题的第二条主线}
+\section{死锁：从等待依赖到资源状态安全性}
 
-\subsection{从等待图而不是代码表面判断}
-
-若 $T_i$ 等待 $T_j$ 才能释放/制造的资源或条件，可画：
+\begin{corebox}[死锁分析核心控制流]
 \[
-T_i\to T_j.
+\boxed{
+\begin{aligned}
+\text{Resource State} &\to \text{Wait Dependency} \to \text{Deadlock Conditions} \to \text{State Classification} \\
+&\to \text{Prevention / Avoidance / Detection} \to \text{Recovery} \to \text{Cost}
+\end{aligned}
+}
 \]
-若形成闭环：
-\[
-T_1\to T_2\to\cdots\to T_k\to T_1
-\]
-就应高度警惕死锁。
+面对任何死锁题目，不再从盲目记忆算法步骤开始，而是固定问 5 个核心问题：
+\begin{enumerate}
+\item \kw{谁持有什么？}（$\text{Allocation}$）
+\item \kw{谁还在等什么？}（$\text{Request} / \text{Need}$）
+\item \kw{这个等待有没有形成不可消解的依赖？}（Wait Dependency / Cycle）
+\item \kw{题目是在问 Prevention、Avoidance 还是 Detection？}
+\item \kw{我现在掌握的是未来最大需求 $\text{Need}$，还是当前未满足请求 $\text{Request}$？}
+\end{enumerate}
+\end{corebox}
 
-\subsection{Coffman 四条件的角色}
+\subsection{死锁到底是什么}
 
-经典必要条件：互斥、请求并保持、不可剥夺、循环等待。学习时不要只背名字，而要问：\kw{我的设计破坏了哪一条？}
+死锁 (Deadlock) 的本质是\kw{并发执行流之间形成了不可消解的资源等待闭环}。多个执行流因相互等待对方持有的不可剥夺资源而全部处于阻塞状态，导致整个系统无法向前推进。
 
-\begingroup
-\small
-\renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.25\linewidth} X}
-\toprule
-死锁规避/预防策略 & 典型工程/算法思路与实现手段\\
-\midrule
-破坏请求并保持 & 一次性原子申请全部资源；若有任意一个资源不可用则释放已拿到的资源\\
-破坏循环等待 & 给系统所有资源类型建立全局唯一编号（全序），强制按递增顺序申请\\
-限制并发准入 & 哲学家进餐中限制最多允许 $N-1$ 人同时尝试获取资源\\
-避免不安全状态 & 动态分配前运行银行家算法 (Banker's Algorithm)，拒绝进入不安全状态\\
-检测后恢复机制 & 允许死锁发生，后台定期运行等待环检测算法，通过剥夺/撤销任务进行恢复\\
-\bottomrule
-\end{tabularx}
-\endgroup
+死锁不等于长时间等待 (Long wait)。长时间等待是暂时的，一旦持有资源的线程释放锁即可唤醒；而死锁的等待链形成了环且无法自动解除，属于永久性阻塞。
 
-\subsection{Deadlock / Livelock / Starvation}
+\begin{method}[死锁推理的前置假设：资源类型区分]
+分析死锁时，不能默认系统资源都是同一种模型，必须区分：
+\begin{itemize}
+  \item \kw{Reusable Resource（可重用资源）}：如 CPU、内存页、物理设备、锁/Mutex。一次只能被一个进程使用，使用完毕后被释放重用，总数保持不变。经典银行家算法与死锁检测建立在此模型上。
+  \item \kw{Consumable Resource（可消耗资源）}：如消息 (Message)、信号 (Signal)、事件许可 (Event Token)。由生产者创建，被消费者接收后即被消费消耗，数量动态变化。
+\end{itemize}
+\end{method}
 
 \begingroup
 \small
@@ -964,12 +996,293 @@ T_1\to T_2\to\cdots\to T_k\to T_1
 \toprule
 异常并发现象 & 本质驱动原因与系统表现\\
 \midrule
-死锁 (Deadlock) & 多个执行流因相互等待对方持有的锁/许可而全部阻塞，整个系统无法向前推进\\
-活锁 (Livelock) & 执行流持续改变状态/重试（未阻塞），但由于缺乏协调导致整体目标无法推进\\
-饥饿 (Starvation) & 系统整体有推进（无死锁），但某个特定执行流因调度不公长期拿不到资源\\
+死锁 (Deadlock) & 多个执行流因相互等待对方持有的许可而全部阻塞，系统整体与个体均无法推进\\
+活锁 (Livelock) & 执行流未阻塞且持续改变状态/重试，但由于缺乏协调（如持续对称退让）导致整体无法推进\\
+饥饿 (Starvation) & 系统整体在推进（无死锁），但特定执行流因调度策略不公长期拿不到资源\\
 \bottomrule
 \end{tabularx}
 \endgroup
+
+\subsection{等待图与资源分配图}
+
+分析死锁依赖时，不能仅看代码表面，必须区分两类依赖图：
+
+\begin{enumerate}
+\item \kw{Wait-for Graph（等待图）}：节点仅包含进程 $P_i$。边 $P_i \to P_j$ 表示 $P_i$ 正在等待只能由 $P_j$ 释放的资源。
+\item \kw{Resource-Allocation Graph（资源分配图）}：节点包含进程 $P_i$ 与资源类 $R_j$。请求边 $P_i \to R_j$ 表示 $P_i$ 正在申请资源 $R_j$；分配边 $R_j \to P_i$ 表示 $R_j$ 已被分配给 $P_i$。
+\end{enumerate}
+
+在不同资源实例模型下，图中是否存在“环 (Cycle)”的判定标准截然不同：
+
+\begin{itemize}
+\item \kw{单实例资源模型（每类资源仅 1 个实例）}：等待图或分配图中的环是死锁的充要条件：
+\[
+\boxed{\text{Single-Instance: } \text{Cycle} \iff \text{Deadlock}}
+\]
+\item \kw{多实例资源模型（每类资源有多个实例）}：环仅表示存在死锁风险（必要不充分条件）。环内进程可能等待环外持有同类资源且即将结束的进程释放资源，从而打破环。
+\end{itemize}
+
+因此，考场上必须牢记第一处判定边界：
+\[
+\boxed{\text{Cycle} \neq \text{Universal Deadlock Test}}
+\]
+
+\subsection{Coffman 四个必要条件}
+
+死锁形成必须同时满足 Coffman 四个必要条件：
+\[
+\boxed{\text{Deadlock} \implies \text{ME} \land \text{HW} \land \text{NP} \land \text{CW}}
+\]
+
+\begin{enumerate}
+\item \kw{互斥 (Mutual Exclusion, ME)}：资源一次只能被一个进程独占使用。
+\item \kw{请求并保持 (Hold and Wait, HW)}：进程至少持有一份资源，又提出了新资源请求，同时不释放已有资源。
+\item \kw{不可剥夺 (No Preemption, NP)}：资源只能由持有进程自愿释放，系统不能强行剥夺。
+\item \kw{循环等待 (Circular Wait, CW)}：存在进程等待链 $\{P_0, P_1, \dots, P_n\}$，使得 $P_i$ 等待 $P_{i+1}$ 持有的资源。
+\end{enumerate}
+
+学习这四个条件不要死记硬背名字，而要回答：\kw{为什么缺了一条件，依赖环就无法闭合？}
+
+例如对于不可剥夺 (NP)：如果资源可以被系统安全地剥夺并恢复现场，当 $P_1$ 请求 $R_2$ 受阻时，OS 可以剥夺 $P_1$ 已持有的 $R_1$ 并分配给其他进程，依赖链就被打破了！
+
+需要特别注意准确的边界表述：
+\[
+\boxed{\text{仅竞争可安全抢占的资源} \implies \text{不会因这些资源形成经典资源死锁}}
+\]
+不能绝对化地写成“系统只要出现可抢占资源就不会死锁”，因为进程完全可能同时持有着其他不可抢占的资源。
+
+\subsection{死锁处理的四种策略层级}
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.25\linewidth} X}
+\toprule
+死锁处理策略 & 核心逻辑与适用场景\\
+\midrule
+忽略 (Ostrich / 鸵鸟策略) & 假装死锁不发生。适用于死锁发生概率极低、预防/检测开销过高时（如通用桌面 OS）\\
+预防 (Prevention) & 在系统设计期破坏 Coffman 四条件之一，静态保证系统绝不发生死锁\\
+规避 (Avoidance) & 在运行时动态评估资源请求，若分配后系统处于安全状态才批准（如 Banker's Algorithm）\\
+检测与恢复 (Detection \& Recovery) & 允许死锁发生，后台定期运行检测算法，发现死锁后通过剥夺/撤销进程恢复\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+需要澄清一个工程误区：通用操作系统不运行全局 Banker 算法，不等于完全不做死锁工程防范：
+\[
+\boxed{\text{No universal Banker} \neq \text{No deadlock engineering}}
+\]
+例如 Linux 内核广泛采用固定的锁申请顺序 (Lock Ordering)，并使用 \code{lockdep} 工具在运行时对锁依赖环进行静态/动态检查。
+
+\subsection{Prevention：破坏必要条件的机制与代价}
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} p{0.38\linewidth} X}
+\toprule
+破坏的条件 & 典型实现机制 & 核心工程代价\\
+\midrule
+Mutual Exclusion & 将独占资源虚拟化/共享化（如 SPOOLing） & 许多物理资源本质上无法共享\\
+Hold and Wait & 静态一次性申请全部资源；或申请新资源前释放已有资源 & 资源利用率极低、等待时间显著增加\\
+No Preemption & 申请受阻时释放已持有的资源，稍后重新申请 & 仅适用于易保存恢复现场的资源（内存/寄存器），有 Rollback 开销\\
+Circular Wait & 给资源建立全局唯一编号，强制按递增顺序申请 & 降低编程灵活性，增加模块间耦合\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\begin{method}[SPOOLing 概念精确说明]
+SPOOLing 并没有把物理打印机本身变成共享资源。物理打印机依旧是独占设备；SPOOLing 是通过守护进程 (Spooler Daemon) 集中接管物理设备，使多个用户进程可以并发提交逻辑打印任务。
+\end{method}
+
+在真实工程中，\kw{全序资源申请 (Global Resource Ordering)} 是最广泛采用的死锁预防思想（例如 Linux 目录锁机制规定必须按 inode 地址或层级顺序加锁）。
+
+\subsection{State Classification：Safe / Unsafe / Deadlocked 集合关系}
+
+系统的资源分配状态可划分为三个包含关系的集合：
+
+\[
+\boxed{\text{Deadlocked} \subset \text{Unsafe} \subset \text{All Allocation States}}
+\]
+
+即：
+\[
+\boxed{\text{Deadlocked} \implies \text{Unsafe}} \quad \text{但} \quad \boxed{\text{Unsafe} \nRightarrow \text{Deadlocked}}
+\]
+
+\begin{corebox}[Unsafe 状态的本质含义]
+Unsafe State 不等于此刻系统已经陷入死锁！Unsafe 的真实含义是：\kw{从当前状态出发，系统无法保证无论未来进程如何提出请求，都一定存在一条能让所有进程顺利完成的安全序列}。
+
+如果未来进程实际提出的资源请求少于其声明的最大需求 $\text{Need}$，处于 Unsafe 状态的系统完全可能安全运行完毕而不发生死锁。
+\end{corebox}
+
+\subsection{Avoidance 与银行家算法 (Banker's Algorithm)}
+
+银行家算法的本质是\kw{状态转换试探 (Tentative Transition)}。
+
+\paragraph{核心数据结构}
+设系统有 $n$ 个进程，$m$ 类资源：
+\begin{itemize}
+\item $\text{Available}[j]$：资源 $R_j$ 当前未被分配的可用实例数。
+\item $\text{Max}[i, j]$：进程 $P_i$ 对资源 $R_j$ 的最大需求数。
+\item $\text{Allocation}[i, j]$：进程 $P_i$ 当前已分配到的资源 $R_j$ 实例数。
+\item $\text{Need}[i, j] = \text{Max}[i, j] - \text{Allocation}[i, j]$：进程 $P_i$ 未来还需要资源 $R_j$ 的最大数量。
+\end{itemize}
+
+\paragraph{资源请求 $\text{Request}_i$ 的三关校验}
+当进程 $P_i$ 发出资源请求 $\text{Request}_i$ 时，必须依次通过三关：
+
+\begin{enumerate}
+\item \kw{第一关：合法性校验}
+\[
+\text{Request}_i \le \text{Need}_i
+\]
+若违反，说明请求超过了其声明的最大需求，抛出非法请求错误。
+
+\item \kw{第二关：充沛性校验}
+\[
+\text{Request}_i \le \text{Available}
+\]
+若违反，说明“当前可用资源不足（$\boxed{\text{Insufficient Now}}$）”，$P_i$ 必须阻塞等待。注意：此时不是 Unsafe，只是暂时无法满足。
+
+\item \kw{第三关：试探分配与安全性测试}
+系统假设批准请求，试探性更新状态：
+\[
+\begin{aligned}
+\text{Available}' &= \text{Available} - \text{Request}_i \\
+\text{Allocation}_i' &= \text{Allocation}_i + \text{Request}_i \\
+\text{Need}_i' &= \text{Need}_i - \text{Request}_i
+\end{aligned}
+\]
+随后调用安全性算法 $\boxed{\text{SafetyTest}(\text{State}')}$：
+\begin{itemize}
+\item 若 $\text{State}'$ 安全 $\implies$ \kw{Commit}（正式批准分配）；
+\item 若 $\text{State}'$ 不安全 $\implies$ \kw{Rollback}（撤销试探分配，$P_i$ 恢复阻塞等待）。
+\end{itemize}
+\end{enumerate}
+
+\[
+\boxed{
+\text{Tentative Transition}
+\rightarrow
+\text{Safety Check}
+\rightarrow
+\text{Commit / Rollback}
+}
+\]
+
+\subsection{安全算法 (Safety Algorithm) 极简理解}
+
+安全算法通过模拟“进程按某种顺序依次获得所需全部资源并运行结束归还资源”来寻找安全序列：
+
+\begin{enumerate}
+\item 初始化：$\text{Work} = \text{Available}$，$\text{Finish}[i] = \text{false} \ (i=1,\dots,n)$。
+\item 寻找满足条件的进程 $P_i$：
+\[
+\text{Finish}[i] == \text{false} \quad \land \quad \text{Need}_i \le \text{Work}
+\]
+\item 若找到，模拟 $P_i$ 拿到 $\text{Need}_i$ 后运行完成，归还其持有的全部资源：
+\[
+\text{Work} \leftarrow \text{Work} + \text{Allocation}_i, \quad \text{Finish}[i] = \text{true}
+\]
+返回步骤 2。
+\item 若所有进程 $\text{Finish}[i] == \text{true}$，则系统处于安全状态；若最终仍有进程 $\text{Finish}[i] == \text{false}$，则处于不安全状态。
+\end{enumerate}
+
+\begin{corebox}[为什么 Work 递增的是 Allocation 而不是 Max？]
+学生最容易混淆为什么 $\text{Work}' = \text{Work} + \text{Allocation}_i$。
+
+因为 $P_i$ 运行需要从 $\text{Work}$ 中拿走它还缺少的 $\text{Need}_i$。$P_i$ 执行完成后归还的是它拿走的 $\text{Need}_i$ 以及原先已持有的 $\text{Allocation}_i$（共归还 $\text{Need}_i + \text{Allocation}_i$）。
+
+系统之前已经扣除了 $\text{Need}_i$，因此归还后系统的净资源增加量恰好就是 $P_i$ 原先占有的部分：
+\[
+\boxed{\text{Work}' = (\text{Work} - \text{Need}_i) + (\text{Need}_i + \text{Allocation}_i) = \text{Work} + \text{Allocation}_i}
+\]
+\end{corebox}
+
+\subsection{Avoidance vs Detection：考场核心辨析}
+
+死锁规避 (Banker) 与 死锁检测 (Detection) 在算法结构上相似，但语义与触发时机有本质不同。考场上必须对比澄清：
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} p{0.36\linewidth} p{0.36\linewidth}}
+\toprule
+对比维度 & 死锁规避 (Avoidance / Banker) & 死锁检测 (Deadlock Detection)\\
+\midrule
+触发时机 & 资源分配之前（事前试探） & 允许分配之后（事后定期/阻塞时检测）\\
+核心目的 & 保证系统绝不进入 Unsafe 状态 & 判断系统当前是否已经陷入死锁\\
+关键输入矩阵 & $\text{Need}$（未来最大需求） & $\text{Request}$（当前实际正在等待的请求）\\
+矩阵语义 & 进程未来最多还要再申请多少 & 进程此刻卡住正在等多少\\
+推演成功含义 & 存在安全序列，请求可批准 & 可消去所有进程，当前没有死锁\\
+推演失败含义 & Unsafe，拒绝当前分配试探 & 剩余无法消去的进程处于死锁状态\\
+一句话总结 & $\boxed{\text{Banker: Can everybody still finish?}}$ & $\boxed{\text{Detection: Who is already unable to finish?}}$\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\subsection{Deadlock Detection（死锁检测算法）}
+
+死锁检测算法不预测未来最大需求 $\text{Need}$，只关注\kw{此刻卡住的实际请求 $\text{Request}_i$ 能否被满足}。
+
+\paragraph{多实例资源检测（消去法）}
+\begin{enumerate}
+\item 初始化：$\text{Work} = \text{Available}$。对于 $\text{Allocation}_i \neq 0$ 的进程，$\text{Finish}[i] = \text{false}$；若 $\text{Allocation}_i == 0$，则 $\text{Finish}[i] = \text{true}$。
+\item 寻找进程 $P_i$ 满足：
+\[
+\text{Finish}[i] == \text{false} \quad \land \quad \text{Request}_i \le \text{Work}
+\]
+\item 若找到，说明 $P_i$ 当前请求可被满足，模拟其获得资源运行结束并释放已占有的资源：
+\[
+\text{Work} \leftarrow \text{Work} + \text{Allocation}_i, \quad \text{Finish}[i] = \text{true}
+\]
+重复步骤 2。
+\item 算法终止时，若存在 $\text{Finish}[i] == \text{false}$ 的进程，则这些进程处于死锁状态。
+\end{enumerate}
+
+消去法之所以不需要 $\text{Max}$ 矩阵，就是因为它只问“现在卡住的请求能否解决”，一旦解决即可假定其能归还资源。
+
+\subsection{Recovery：死锁恢复与代价评估}
+
+当检测算法确认存在死锁后，系统必须执行恢复。恢复途径分为进程终止与资源剥夺：
+
+\begin{enumerate}
+\item \kw{进程终止 (Process Termination)}：
+\begin{itemize}
+\item 一次性终止所有死锁进程（简单但代价极大）；
+\item 逐个终止进程，每终止一个重新运行检测算法，直到死锁环消除。
+\end{itemize}
+\item \kw{资源抢占 (Resource Preemption)}：
+\begin{itemize}
+\item 涉及三个核心决策：选择牺牲者 (Victim selection)、回滚 (Rollback) 与 避免饥饿 (Prevent starvation)。
+\end{itemize}
+\end{enumerate}
+
+恢复决策统一遵循代价最小化函数：
+\[
+\boxed{\text{Recovery Cost} = \text{LostWork} + \text{RollbackCost} + \text{ResourceCost} + \text{StarvationRisk}}
+\]
+
+选择牺牲者进程 (Victim) 时综合评估 6 个维度：进程优先级、已运行时间与已完成工作量、尚需多少时间完成、当前持有多少资源、终止可释放多少资源、已被回滚/剥夺的次数。
+
+\subsection{考场判题协议 (Exam Protocol)}
+
+\begin{exam}[\boxed{\text{先判问题类型，再选算法}}]
+在 408 考场上拿到死锁相关题目，按以下逻辑协议快速定位：
+\begin{itemize}
+\item 问“死锁形成的必要条件是什么？” $\implies$ \kw{Coffman 四条件（ME, HW, NP, CW）}
+\item 问“当前分配状态是否安全？” $\implies$ \kw{运行 Safety Algorithm（看 Need 矩阵）}
+\item 问“这个资源请求是否应被批准？” $\implies$ \kw{Resource-Request 三关 + Safety Algorithm}
+\item 问“系统现在是否已经陷入死锁？” $\implies$ \kw{运行 Deadlock Detection 消去法（看 Request 矩阵）}
+\item 问“资源分配图里有环就一定是死锁吗？” $\implies$ \kw{先看每类资源实例数（单实例 ⇔ 死锁，多实例 ≠ 充要）}
+\item 问“如何在设计/运行期保证死锁绝不发生？” $\implies$ \kw{Prevention（破坏 4 条件）/ Avoidance（Banker）}
+\item 问“死锁已经发生怎么处理？” $\implies$ \kw{Recovery（终止进程 / 抢占资源）}
+\end{itemize}
+\end{exam}
 
 \section{经典 PV 题不要背答案：把它们看成“并发结构模式库”}
 

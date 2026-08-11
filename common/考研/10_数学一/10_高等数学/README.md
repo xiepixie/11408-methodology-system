@@ -1,0 +1,133 @@
+# 高等数学 Subject Atlas
+
+> 类型：Atlas
+> 状态：已采用；README 是 Canonical Subject Atlas，Topic / Bridge / Integration 按当前路由逐册重构。
+
+> 本文件是高等数学工作态 Canonical 导航入口。既有 `00_学科总图/数学一_高等数学_心智模型手册_v2.tex` 继续作为 `legacy-unregistered` Publication；旧 `学习领域/归档/高等数学/` 只作为 Source Corpus。
+
+## 1. 学科母问题
+
+高等数学研究：变化怎样被局部描述、无限逼近、连续累积，以及怎样由局部规律恢复整体行为。
+
+$$
+\boxed{
+\text{Limit}
++
+\text{Local Model}
++
+\text{Accumulation}
++
+\text{Local}\leftrightarrow\text{Global}
++
+\text{Infinite Construction}
++
+\text{Dynamics}
+}
+$$
+
+这不是教材章节顺序，而是高数的生成结构。
+
+## 2. Topic 地图
+
+| # | Topic | 母问题 | Owns |
+|---|---|---|---|
+| 01 | [函数对象、表示与结构](01_函数对象_表示与结构/README.md) | 我们研究的函数对象是什么，怎样表示，哪些结构必须维护？ | 定义域、对应关系、复合/反函数、显式/隐式/参数表示、奇偶/周期/对称等函数结构 |
+| 02 | [极限与连续](02_极限与连续_邻域尺度与存在性/README.md) | 当尺度不断缩小时，对象是否稳定到唯一状态？ | 数列/函数极限、无穷小与阶、连续/间断 |
+| 03 | [一元局部模型](03_一元局部模型_导数微分与Taylor/README.md) | 一点附近怎样用线性或有限阶多项式模型代替函数？ | 导数、微分、高阶导数、有限阶 Taylor 局部模型 |
+| 04 | [局部到整体](04_局部到整体_中值定理与函数形状/README.md) | 局部或连续性信息怎样推出区间整体性质？ | 闭区间存在性、Rolle/Lagrange/Cauchy、单调/极值/凹凸/零点与形状 |
+| 05 | [一元累积](05_一元累积_原函数定积分与反常积分/README.md) | 局部贡献怎样稳定累积成整体量？ | 原函数、Riemann 积分、变上限积分、反常积分 |
+| 06 | [空间对象与方向表示](06_空间对象与方向表示/README.md) | 高维几何对象怎样进入可计算表示？ | 向量、空间曲线/曲面、显式/隐式/参数表示、方向接口 |
+| 07 | [多元局部模型](07_多元局部模型_可微梯度隐函数与极值/README.md) | 多元函数怎样线性化、二次化并处理约束？ | 可微、方向导数、梯度、隐函数、Hessian、多元极值/Lagrange 的高数机制 |
+| 08 | [高维累积](08_高维累积_区域坐标与Jacobian/README.md) | 区域怎样表示、扫描和换坐标，局部面积/体积怎样变化？ | 重积分、区域表示、换序、坐标变换与换元机制 |
+| 09 | [定向积分与向量场](09_定向积分与向量场/README.md) | 场沿曲线/曲面累积什么，边界与内部怎样转化？ | 四类曲线/曲面积分、保守场、Green/Stokes/Gauss |
+| 10 | [数项级数](10_数项级数_尾部与敛散/README.md) | 有限部分和的尾部能否稳定？ | 数项级数、绝对/条件收敛、判敛与余项 |
+| 11 | [函数展开](11_函数展开_幂级数Taylor与Fourier/README.md) | 无限基函数表示在哪里能够恢复原函数？ | 幂级数、Taylor series、Fourier 级数与恢复条件 |
+| 12 | [常微分方程](12_常微分方程_局部规律与整体轨迹/README.md) | 局部演化规律与初始信息怎样确定整体轨迹？ | 标量 ODE 的结构、解族、初值和典型求解机制 |
+
+## 3. 高数内部 Bridge
+
+高数内部只保留 Topic↔Topic 之间确实产生独立接口理论的 Bridge，并使用 `H-Bxx` 编号与数学一 Cross-Subject `Bxx` 区分。
+
+| ID | Bridge | 两侧 Owner | 独立责任 |
+|---|---|---|---|
+| H-B01 | [函数结构在运算中的传播](50_桥梁专题/H-B01_函数结构在运算中的传播/README.md) | 01 ↔ 02/03/05/11 | 奇偶、周期、对称等结构经过极限/微分/积分/展开时怎样保持或失效 |
+| H-B02 | [局部模型与区间定理](50_桥梁专题/H-B02_局部模型与区间定理_中值点余项与误差控制/README.md) | 03 ↔ 04 | Rolle 链怎样把局部模型变成区间余项/误差控制 |
+| H-B03 | [微分与累积](50_桥梁专题/H-B03_微分与累积_基本定理及正则性边界/README.md) | 03 ↔ 05 | 导数、原函数、Riemann 可积与变上限积分什么时候接得上 |
+| H-B04 | [连续无限累积与离散无限累积](50_桥梁专题/H-B04_连续无限累积与离散无限累积/README.md) | 05 ↔ 10 | 反常积分与级数共享的截断、尾部、比较和抵消机制 |
+| H-B05 | [有限 Taylor 模型与无限 Taylor 表示](50_桥梁专题/H-B05_有限Taylor模型与无限Taylor表示/README.md) | 03 ↔ 11 | Taylor polynomial 与 Taylor series 的边界，以及局部有限模型何时升级为函数表示 |
+
+### 不在高数内部重复拥有的跨 Subject Bridge
+
+以下内容统一由数学一 [Core Bridge Atlas](../50_桥梁专题/README.md) 拥有：
+
+- B00：内积、正交与投影；
+- B01：局部线性化；
+- B02：Jacobian 与行列式；
+- B03：Hessian 与二次型；
+- B04：梯度、正交与 Lagrange；
+- B05：线性方程与线性 ODE；
+- B08：Fourier 与正交基。
+
+高数 Topic 只 `Use` 这些接口，不维护第二份定义。
+
+### Extension
+
+“离散递推 ↔ 生成函数 ↔ ODE/代数方程”是真结构，但不是数学一核心主干。旧 `II-10` 的相关内容先标记为 Extension，不建立 H-B06；以后若学习范围变化再重新评估。
+
+## 4. 高数 Integration
+
+高数内部当前只保留一个组合过程：
+
+- [H-I01｜微积分建模：从局部微元到整体量](60_综合专题/H-I01_微积分建模_从局部微元到整体量/README.md)
+
+主线：
+
+$$
+\boxed{\text{Target Quantity}\to\text{Object/Coordinates}\to\text{Localize}\to dQ\to\int dQ\to\text{Geometry/Units Verification}}
+$$
+
+面积、体积、弧长、旋转体、质心、做功、压力和相关变化率是同一 Composition 的不同实例。
+
+## 5. Source Corpus 迁移原则
+
+旧笔记不是未来文件的一一映射。迁移时先拆成：
+
+$$
+\boxed{\text{Topic Source}+\text{Bridge Source}+\text{Integration Source}+\text{Rules Source}+\text{Extension Candidate}}
+$$
+
+规则：
+
+1. 先找 Canonical Owner，再迁内容；
+2. 机制进 Topic，接口进 Bridge，完整协作过程进 Integration；
+3. “题目信号 → 第一动作 → 换路/退出”进 `90_学科做题规则/`；
+4. 跨 Subject 接口必须上移到数学一 `50_桥梁专题/`；
+5. 真连接但超出核心范围标 Extension；
+6. 表面相似但不能互推的关系写 Anti-Bridge；
+7. 正文按认知结构组织，考纲只做 Coverage Check：
+   $$\boxed{MainText=Understanding,\qquad Appendix=Coverage}$$
+
+详细 Source 映射见 [00_迁移与重构规划](00_迁移与重构规划.md)。
+
+## 6. 建设顺序
+
+默认按依赖推进：
+
+1. 01 函数对象；
+2. 02 极限与连续；
+3. 03 一元局部模型；
+4. 04 局部到整体；
+5. 05 一元累积；
+6. H-B01～H-B05 中已具备两侧 Owner 的接口；
+7. 06～09 多元与向量微积分；
+8. 10 数项级数；
+9. 11 函数展开；
+10. 12 ODE；
+11. H-I01；
+12. 最后统一做 Cross-Subject Bridge、Rules 分流、Coverage 与 Publication 同步。
+
+## 7. 当前成熟度
+
+- **已确认**：12 Topic 一级边界、5 个高数内部 Bridge、1 个高数 Integration；Cross-Subject Bridge 上移到数学一层。
+- **尚未确认**：各 Topic 正文母模型、章节顺序、反例集、Rules 分流和附录覆盖。
+- **原则**：框架建立不是内容成熟证据；每册仍需 Source Diff、边界攻击和人工审阅后才能晋升。

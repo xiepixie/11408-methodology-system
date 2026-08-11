@@ -54,6 +54,8 @@ Inbox 不要求：
 
 ## 4. 五类诊断与去向
 
+五类问题的统一词义见 [`terminology.md`](terminology.md) §6。下表只负责给出典型表现和后续路由，不重新定义分类。
+
 | 诊断 | 典型表现 | 可能修改位置 |
 |---|---|---|
 | 模型问题 | 把 TLB miss 等同于 page fault | Topic Handbook |

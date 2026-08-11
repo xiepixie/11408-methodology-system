@@ -57,12 +57,27 @@
 并把有限 CPU 时间安全地分给多个执行流？
 \end{center}
 
-用受约束状态机表示：
+本册沿用整个 OS 知识体系的统一推演引擎：
+\[
+\boxed{
+\begin{aligned}
+\text{State} \rightarrow \text{Transition} &\rightarrow \text{Failure (Bad State)} \rightarrow \text{Property (Safety/Liveness)}\\
+&\rightarrow \text{Minimal Mechanism} \rightarrow \text{Tradeoff}
+\end{aligned}
+}
+\]
+对本专题而言，最常见的状态转移可以继续写成：
 \[
 \boxed{\text{当前状态}+\text{事件}\xrightarrow[\text{策略}]{\text{机制}}\text{新状态}}
 \]
-且每一步都必须满足保护、隔离、资源所有权与进展性等不变量。
+真正要检查的不是“背出了哪个状态图”，而是：\kw{这次事件改变了什么状态？什么坏状态必须被排除？内核用什么最小机制重新取得控制并维持安全性与进展性？}
 \end{corebox}
+
+\begin{method}[本册 Owner / Stop Boundary]
+本册只完整拥有：\kw{task、执行上下文、进程/线程状态、run/wait queue、CPU 调度、block/wakeup 与控制权交接}。
+
+同步协议、PV/管程与死锁由 OS-03 拥有；页表与换页由 OS-04 拥有；OFD、dentry/inode 与文件生命周期由 OS-06/07 拥有；设备请求与 DMA 完成路径由 OS-05 拥有。本册在 \code{fork/read/exec} 中只保留与\kw{进程状态或资源引用交接}直接相关的接口，不在这里重讲后续 Topic 的内部机制。
+\end{method}
 
 \tableofcontents
 \newpage
@@ -178,15 +193,15 @@ CPU 至少区分两类执行权限：
 \begin{center}
 \begingroup
 \small
-\begin{tikzpicture}[>=Stealth, node distance=1.6cm]
+\begin{tikzpicture}[>=Stealth, node distance=2.4cm]
 \tikzset{
-  n/.style={draw=mainblue, thick, fill=softblue, rounded corners=2mm, align=center, minimum width=2.6cm, minimum height=0.85cm, font=\bfseries}
+  n/.style={draw=mainblue, thick, fill=softblue, rounded corners=2mm, align=center, minimum width=2.4cm, minimum height=0.8cm, font=\small\bfseries}
 }
 \node[n] (u) {进程 A\\用户态};
 \node[n, right=of u] (k) {进程 A\\内核态};
 \node[n, right=of k] (u2) {进程 A\\用户态};
-\draw[->, thick, deepblue] (u) -- node[above=2pt, font=\small] {syscall / trap} (k);
-\draw[->, thick, deepblue] (k) -- node[above=2pt, font=\small] {sysret / iret} (u2);
+\draw[->, thick, deepblue] (u) -- node[above=2pt, font=\footnotesize] {\code{syscall / trap}} (k);
+\draw[->, thick, deepblue] (k) -- node[above=2pt, font=\footnotesize] {\code{sysret / iret}} (u2);
 \end{tikzpicture}
 \endgroup
 \end{center}
@@ -201,19 +216,19 @@ CPU 至少区分两类执行权限：
 \begin{center}
 \begingroup
 \small
-\begin{tikzpicture}[>=Stealth, node distance=1.1cm]
+\begin{tikzpicture}[>=Stealth, node distance=1.6cm]
 \tikzset{
-  n/.style={draw=mainblue, thick, fill=softblue, rounded corners=2mm, align=center, minimum width=2.1cm, minimum height=0.85cm, font=\bfseries}
+  n/.style={draw=mainblue, thick, fill=softblue, rounded corners=2mm, align=center, minimum width=1.7cm, minimum height=0.8cm, font=\small\bfseries}
 }
 \node[n] (a1) {A 用户态};
 \node[n, right=of a1] (a2) {A 内核态};
 \node[n, right=of a2, fill=softorange, draw=deeporange] (s) {调度器};
-\node[n, right=of s] (b2) {B 内核上下文};
+\node[n, right=of s] (b2) {B 内核态};
 \node[n, right=of b2] (b1) {B 用户态};
-\draw[->, thick, deepblue] (a1) -- (a2);
-\draw[->, thick, deepblue] (a2) -- node[above=2pt, font=\small] {A 阻塞} (s);
-\draw[->, thick, deepblue] (s) -- node[above=2pt, font=\small] {Context Switch} (b2);
-\draw[->, thick, deepblue] (b2) -- (b1);
+\draw[->, thick, deepblue] (a1) -- node[above=2pt, font=\footnotesize] {trap} (a2);
+\draw[->, thick, deepblue] (a2) -- node[above=2pt, font=\footnotesize] {A 阻塞} (s);
+\draw[->, thick, deepblue] (s) -- node[above=2pt, font=\footnotesize] {换 B} (b2);
+\draw[->, thick, deepblue] (b2) -- node[above=2pt, font=\footnotesize] {iret} (b1);
 \end{tikzpicture}
 \endgroup
 \end{center}
@@ -299,74 +314,183 @@ CPU 至少区分两类执行权限：
 \end{tabularx}
 \endgroup
 
-\section{进程拥有的资源到底怎样被内核表示：把 VFS 接入生命周期}
+\section{PCB：把“进程是什么”落实到内核可管理的数据结构}
 
-\subsection{不要背“三级表”，先看解耦目标}
+\subsection{PCB 不是进程本体，而是内核管理进程的控制记录}
 
-进程对文件的使用需要同时满足两个矛盾需求：
-\begin{enumerate}
-\item 对用户提供非常简单的整数句柄；
-\item 允许多个描述符/多个进程共享或独立维护“打开实例”的状态；
-\item 最终仍要指向同一个文件系统对象。
-\end{enumerate}
-
-因此可以抽象为：
+408 中可以把进程控制块（Process Control Block, PCB）理解为：
 \[
-\boxed{\text{fd}\rightarrow\text{打开文件描述（OFD）}\rightarrow\text{文件系统对象}}
+\boxed{
+\text{PCB}
+=
+\text{Identity}
++
+\text{Processor State}
++
+\text{Scheduling/Control}
++
+\text{Resource References}
+}
 \]
-在 Linux VFS 中，常见实现路径进一步表现为：
+它解决的问题不是“程序的数据放在哪里”，而是：\kw{内核怎样识别这个进程、暂停它、重新调度它，并找到它所拥有或引用的资源。}
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.23\linewidth} p{0.29\linewidth} X}
+\toprule
+PCB 信息类别 & 典型字段 / 信息 & 解决的问题\\
+\midrule
+进程描述信息 & PID、父进程关系、用户/权限标识等 & “它是谁，属于谁？”\\
+处理机状态信息 & PC、SP、PSW/状态寄存器、通用寄存器等需要保存的执行现场 & “下次从哪里、以什么 CPU 状态继续？”\\
+调度与控制信息 & 当前状态、优先级、时间片/调度参数、队列链接、等待原因等 & “现在能不能运行，排在哪里？”\\
+资源与管理信息 & 地址空间/页表相关引用、打开资源引用、I/O 或其他内核对象引用等 & “它依附于哪些资源环境？”\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\begin{exam}[最容易混淆的两层]
+\kw{PCB 保存的是管理信息与资源引用，不等于把进程的代码、堆、栈、文件内容都“装进 PCB”。} 地址空间、文件对象等由各自子系统维护，PCB/任务结构只持有能找到这些对象的状态或引用。
+\end{exam}
+
+\subsection{PCB 与线程上下文：教材抽象和现代实现要分层}
+
+单线程进程的教材模型常把“进程执行现场”一起归入 PCB；引入多线程后，更清楚的拆法是：
 \[
-\boxed{\text{fd table}\rightarrow\texttt{struct file}\rightarrow\text{dentry/inode}\rightarrow\text{data}}
+\boxed{\text{Process Resource Context}+\text{per-thread Execution Context}}
+\]
+每条线程必须有独立 PC、寄存器、栈和调度状态；共享地址空间、文件等进程级资源。工程实现中这些信息可能分散在 task/thread/process 等多个内核结构中，\kw{408 做题先守住语义，不要把某个具体内核结构名反过来当定义。}
+
+\subsection{TCB：把线程自己的执行状态单独拿出来}
+
+408 教材常用线程控制块（Thread Control Block, TCB）表示一条线程对应的控制记录。最稳妥的语义模型是：
+\[
+\boxed{
+\text{TCB}
+=
+\text{Thread Identity}
++
+\text{Execution Context}
++
+\text{Scheduling State}
++
+\text{Thread-local Metadata}
+}
 \]
 
-\subsection{第一层：文件描述符表是进程级引用表}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.20\linewidth} X X}
+\toprule
+判断问题 & PCB / 进程级状态 & TCB / 线程级状态\\
+\midrule
+“属于谁？” & PID、进程身份与权限、父子关系等 & TID、线程身份、所属进程关系等\\
+“资源世界是什么？” & 地址空间、打开资源等进程级上下文或其引用 & 通常不再复制一套独立进程资源世界\\
+“下一条从哪执行？” & 单线程教材模型可把执行现场并入 PCB & 每线程独立的 PC、SP、寄存器与栈\\
+“现在能否获得 CPU？” & 进程级教材模型可记录调度状态 & 内核可见线程模型下，每线程有自己的 Ready/Running/Blocked 等调度状态\\
+\bottomrule
+\end{tabularx}
+\endgroup
 
-\code{fd} 是一个进程内整数索引。\code{open()} 返回该进程当前未使用的最低文件描述符。
+\begin{corebox}[PCB / TCB 的判定口令]
+先问题目描述的是\kw{资源与保护环境}，还是\kw{一条独立执行路径的现场}。前者归到进程级上下文；后者归到线程级上下文。不要靠“字段名长得像 PCB 还是 TCB”猜答案。
+\end{corebox}
 
-\begin{warn}[文件描述符分配规则与 0/1/2 约定]
-标准输入(0)、标准输出(1)、标准错误(2)是 Unix/POSIX 系统的标准启动约定。内核分配 \code{fd} 的不变原则是“寻找当前未使用的最小非负整数”。只有当 0、1、2 已处于打开状态且无更小空缺时，新 \code{open()} 方才返回 3。
+\begin{warn}[TCB 是教材抽象，不是跨系统统一的结构体名字]
+不同 OS、线程库和运行时可能把线程状态拆进不同结构。考试中使用 PCB/TCB 术语没有问题；进入工程层后，应追踪“谁保存线程身份、寄存器现场、栈与调度状态”，而不是要求源码中一定存在一个名为 \code{TCB} 的独立对象。
 \end{warn}
 
-\subsection{第二层：打开文件描述代表“打开实例”}
+\section{进程通信 IPC：隔离之后怎样交换信息}
 
-POSIX 称这一抽象为打开文件描述（open file description，OFD）；Linux 通常用 \code{struct file} 实现相应的打开实例状态。
+\subsection{母问题：进程彼此隔离，为什么还能通信？}
 
-这一层保存与“这一次打开”相关的状态，例如当前文件偏移、某些状态标志以及指向具体文件对象的引用。
-
-重要语义：
-\begin{itemize}
-\item 两次独立 \code{open()} 同一路径通常得到两个独立的 OFD，因此文件偏移可以独立；
-\item \code{dup()} 产生新的 fd，但指向同一个 OFD，因此共享文件偏移；
-\item \code{fork()} 后父子各自拥有 fd 表，但对应 fd 通常仍引用同一个 OFD，因此共享该打开实例的文件偏移和相关状态。
-\end{itemize}
-
-\subsection{第三层：dentry 与 inode 不能压成一个东西}
-
-路径名解析主要处理：
+进程模型首先承诺隔离：一个进程不能默认把另一个进程的普通私有地址直接当作自己的内存读写。现实程序又必须协作，因此 OS 必须提供\kw{受控的跨进程信息通道}：
 \[
-\boxed{\text{Name}\rightarrow\text{dentry}\rightarrow\text{inode}}
+\boxed{
+\text{Isolation}
+\rightarrow
+\text{Communication Need}
+\rightarrow
+\left\{
+\begin{array}{l}
+\text{Shared State}\\
+\text{Kernel-mediated Transfer / Notification}
+\end{array}
+\right.
+}
 \]
-其中：
+
+这比背“管道、消息队列、共享内存、信号”更重要：先判断\kw{跨进程传递的究竟是共享状态、数据流/消息，还是事件通知}，再判断对应对象、队列和阻塞条件。
+
+\subsection{四类典型 IPC：看“共享什么、等什么”}
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.17\linewidth} p{0.22\linewidth} p{0.24\linewidth} X}
+\toprule
+IPC 形式 & 共享/传递的核心对象 & 典型等待条件 & 主要机制与代价\\
+\midrule
+共享内存 & 双方映射到同一共享内存对象/物理实现 & 数据本身不会自动产生“可读事件”；同步条件由程序协议定义 & 数据访问路径短，但共享写会产生 race，需要 OS-03 的同步机制；映射细节归 OS-04\\
+管道 (Pipe) & 内核维护的有序字节流与缓冲状态 & 读端遇到“当前无数据但仍可能有后续写入”；写端也可能因容量/语义受限而等待 & 通过内核对象连接读写端，天然具有 stream、buffer、block/wakeup 语义\\
+消息传递 & 内核/运行时维护的 message / mailbox / queue & 无可接收消息、队列容量不足或同步发送尚未匹配接收方 & 边界清楚，便于隔离；通常需要排队、复制或引用管理\\
+信号/事件通知 & “某事件发生”的控制信息 & 通常不是大块数据传输通道 & 信息量小但适合通知、唤醒或控制；具体递送语义依机制而异\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\begin{exam}[IPC 题第一动作：先画对象，再画状态]
+不要先问“这是哪一种 IPC 名字”。先写：\kw{通信对象在哪里？当前有什么状态？哪一方在等待什么条件？哪个事件会改变条件？} 例如匿名管道的进程侧轨迹可以压成：
+\[
+\texttt{read(pipe)}+\text{No Data}
+\rightarrow
+Blocked
+\xrightarrow{\text{writer produces data / closes endpoint}}
+Ready.
+\]
+注意最后通常只是 \kw{Ready}，并不保证读取者在事件发生瞬间立刻 Running。
+\end{exam}
+
+\subsection{共享内存为什么“快”，又为什么不等于“简单”}
+
+共享内存把主要数据访问变成普通 load/store，避免每次逻辑通信都必须经过“发送一份消息 $\to$ 内核缓冲 $\to$ 接收一份消息”的路径。但它只解决\kw{双方怎样看见同一份状态}，并没有自动解决：
 \begin{itemize}
-\item dentry 更接近“目录项/名称在内存中的缓存视图”；
-\item inode 表示文件系统对象及其元数据/操作；
-\item 多个 dentry 可以指向同一个 inode，例如硬链接。
+\item 两个执行流同时修改时谁先谁后；
+\item 一个线程/进程何时可以认为数据已经准备完成；
+\item 是否存在 race、lost update、可见性或一致性问题。
+\end{itemize}
+因此：
+\[
+\boxed{\text{Shared Memory IPC}\neq\text{Synchronization}}
+\]
+共享映射的建立与地址空间机制由 OS-04 解释；互斥、条件同步与 PV 由 OS-03 解释。本册只拥有\kw{“进程为何需要通信、通信对象如何影响 Blocked/Ready 状态”}这一层。
+
+\begin{method}[IPC 跨 Topic 停止规则]
+若题目问“两个进程怎样交换信息、谁会阻塞、什么事件唤醒”，留在本册；若继续追问共享页如何映射，转 OS-04；追问 mutex/PV/条件变量，转 OS-03；追问 fd/OFD/inode 生命周期，转 OS-06/07；追问 TCP/UDP socket 的运输层端点语义，转 Network。\kw{不要让 IPC 变成复制四个专题正文的借口。}
+\end{method}
+
+\section{进程资源接口：本册只追踪“引用怎样随生命周期交接”}
+
+进程确实需要保存打开文件等资源的引用，但根据本项目的 Topic 边界，本册只追到：
+\[
+\boxed{\text{Process}\rightarrow\text{fd table}\rightarrow\text{File-System Open State}}
+\]
+后一层的 OFD、offset、dentry/inode 与文件生命周期由文件系统专题完整解释。
+
+这里仅保留与进程生命周期直接相关的三条接口语义：
+\begin{itemize}
+\item \code{fork()}：子进程获得自己的进程管理状态与 fd 表语义副本；对应项可继续引用同一打开实例，因此资源可以跨父子进程共享；
+\item \code{exec()}：替换程序映像，不等于创建新进程；未被 close-on-exec 规则关闭的 fd 可以继续存在；
+\item \code{exit()}：结束进程执行并释放其持有的运行时引用；“文件对象何时真正消失”属于文件系统生命周期问题。
 \end{itemize}
 
-\begin{warn}[考点辨析：Memory Inode 唯一性与 VFS 机制]
-408 考试中应将 inode 理解为文件实体与元数据的核心代表；VFS 在内存中维护 inode cache，具体的缓存回收与生命周期管理由 OS 内核自动处理。
-\end{warn}
-
-\subsection{这张引用图为什么必须放在“进程的一生”里}
-
-因为它直接解释：
-\begin{itemize}
-\item \code{fork()} 后哪些文件状态会被共享；
-\item \code{dup/dup2()} 为什么共享 offset；
-\item \code{exec()} 后为什么许多 fd 仍可继续存在，而带 close-on-exec 的 fd 会关闭；
-\item \code{exit()} 关闭 fd 后为什么文件本体未必被删除；
-\item \code{unlink()} 删除名称后，已打开的文件为什么仍可能继续读写。
-\end{itemize}
+\begin{method}[跨 Topic 时的停止规则]
+当题目只问进程状态、调度或 \code{fork/exec}，追到“资源引用被继承/保留/释放”即可；只有题目继续追问 offset、硬链接、inode、unlink 或崩溃一致性时，才进入 OS-06/07 的文件系统模型。
+\end{method}
 
 \section{进程生命周期主线}
 
@@ -375,22 +499,26 @@ POSIX 称这一抽象为打开文件描述（open file description，OFD）；Li
 \begin{center}
 \begingroup
 \small
-\begin{tikzpicture}[>=Stealth, node distance=1.4cm and 1.8cm]
+\begin{tikzpicture}[>=Stealth, scale=0.95, transform shape]
 \tikzset{
-  state/.style={draw=mainblue, thick, fill=softblue, rounded corners=2.5mm, align=center, minimum width=2.2cm, minimum height=0.9cm, font=\bfseries}
+  state/.style={draw=mainblue, thick, fill=softblue, rounded corners=2mm, align=center, minimum width=1.8cm, minimum height=0.75cm, font=\small\bfseries}
 }
-\node[state] (new) {New};
-\node[state, right=of new] (ready) {Ready};
-\node[state, right=of ready] (run) {Running};
-\node[state, below=1.5cm of run] (block) {Blocked};
-\node[state, right=of run] (term) {Exit / Zombie};
 
-\draw[->, thick, deepblue] (new) -- node[above=2pt, font=\small] {admit} (ready);
-\draw[->, thick, deepblue] (ready.north east) -- node[above=2pt, font=\small] {dispatch} (run.north west);
-\draw[->, thick, deepblue] (run.south west) to[out=210, in=330] node[below=3pt, font=\small] {preempt / time slice} (ready.south east);
-\draw[->, thick, deepblue] (run) -- node[right=3pt, font=\small] {wait event} (block);
-\draw[->, thick, deepblue] (block) -- node[below left=2pt, font=\small] {event occurs} (ready);
-\draw[->, thick, deepblue] (run) -- node[above=2pt, font=\small] {exit} (term);
+% Nodes
+\node[state] (new) at (0, 0) {New\\(新建)};
+\node[state] (ready) at (3.6, 0) {Ready\\(就绪)};
+\node[state] (run) at (7.4, 0) {Running\\(运行)};
+\node[state] (exit) at (11.0, 0) {Exit\\(终止)};
+\node[state] (block) at (3.6, -2.0) {Blocked\\(阻塞)};
+
+% Arrows
+\draw[->, thick, deepblue] (new) -- node[above=1pt, font=\tiny] {创建 (admit)} (ready);
+\draw[->, thick, deepblue] (ready.15) -- node[above=1pt, font=\tiny] {调度 (dispatch)} (run.165);
+\draw[->, thick, deepblue] (run.195) -- node[below=1pt, font=\tiny] {抢占 / 时间片} (ready.345);
+\draw[->, thick, deepblue] (run) -- node[above=1pt, font=\tiny] {退出 (exit)} (exit);
+\draw[->, thick, deepblue] (run) -- node[below right=1pt, font=\tiny] {等待事件} (block);
+\draw[->, thick, deepblue] (block) -- node[left=2pt, font=\tiny] {事件发生 (唤醒)} (ready);
+
 \end{tikzpicture}
 \endgroup
 \end{center}
@@ -399,16 +527,107 @@ POSIX 称这一抽象为打开文件描述（open file description，OFD）；Li
 \kw{每条状态箭头都必须有事件依据。} 如果说不出事件，就不应随意改变状态。
 \end{corebox}
 
+\subsection{五态为什么还不够：挂起与七态模型}
+
+五态模型回答“任务能不能运行、是否正在运行”；当系统还要表达\kw{暂时移出内存/暂停参与调度}时，需要再增加 Suspend 维度：
+\[
+\boxed{\text{Runnable/Blocked 状态}\times\text{Resident/Suspended 状态}}
+\]
+
+扩展后的完整\kw{七态模型（包含就绪挂起与阻塞挂起）}结构如下：
+
+\begin{center}
+\begingroup
+\small
+\begin{tikzpicture}[>=Stealth, scale=0.92, transform shape]
+\tikzset{
+  st/.style={draw=mainblue, thick, fill=softblue, rounded corners=2mm, align=center, minimum width=1.8cm, minimum height=0.75cm, font=\small\bfseries},
+  susp/.style={draw=deeporange, thick, fill=softorange, rounded corners=2mm, align=center, minimum width=2.6cm, minimum height=0.75cm, font=\small\bfseries}
+}
+
+% Node Coordinates
+\node[st] (new) at (0, 0) {New\\(新建)};
+\node[st] (ready) at (4.0, 0) {Ready\\(就绪)};
+\node[st] (run) at (8.2, 0) {Running\\(运行)};
+\node[st] (exit) at (12.0, 0) {Exit\\(终止)};
+
+\node[susp] (rsusp) at (4.0, -2.4) {Ready-Suspend\\(就绪挂起)};
+\node[st] (block) at (8.2, -2.4) {Blocked\\(阻塞)};
+
+\node[susp] (bsusp) at (8.2, -4.8) {Blocked-Suspend\\(阻塞挂起)};
+
+% Primary Flow Arrows
+\draw[->, thick, deepblue] (new) -- node[above=1pt, font=\tiny] {创建} (ready);
+\draw[->, thick, deepblue] (new) -- node[below left=1pt, font=\tiny] {挂起创建} (rsusp);
+\draw[->, thick, deepblue] (ready.15) -- node[above=1pt, font=\tiny] {调度} (run.165);
+\draw[->, thick, deepblue] (run.195) -- node[below=1pt, font=\tiny] {抢占 / 时间片} (ready.345);
+\draw[->, thick, deepblue] (run) -- node[above=1pt, font=\tiny] {终止} (exit);
+\draw[->, thick, deepblue] (run) -- node[right=2pt, font=\tiny] {等待事件} (block);
+\draw[->, thick, deepblue] (block) -- node[above right=1pt, font=\tiny] {事件发生} (ready);
+
+% Swapping Vertical Arrows
+\draw[->, thick, deeporange] (ready.240) -- node[left=1pt, font=\tiny] {挂起 (swap out)} (rsusp.120);
+\draw[->, thick, deepgreen] (rsusp.60) -- node[right=1pt, font=\tiny] {激活 (swap in)} (ready.300);
+
+\draw[->, thick, deeporange] (block.240) -- node[left=1pt, font=\tiny] {挂起} (bsusp.120);
+\draw[->, thick, deepgreen] (bsusp.60) -- node[right=1pt, font=\tiny] {激活} (block.300);
+
+% Event occurs arrow in swapped state
+\draw[->, thick, deepblue] (bsusp) -- node[above right=1pt, font=\tiny] {事件发生} (rsusp);
+
+\end{tikzpicture}
+\endgroup
+\end{center}
+
+关键转换按“事件是否满足 + 是否重新激活”推：
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{>{\bfseries\raggedright}p{0.34\linewidth} >{\raggedright}p{0.22\linewidth} >{\raggedright\arraybackslash}X}
+\toprule
+状态转换 & 触发事件 & 转换原因与含义\\
+\midrule
+Ready $\rightarrow$ Ready-Suspend & suspend / swap out & 本来能运行，但暂时被调出内存\\
+Blocked $\rightarrow$ Blocked-Suspend & suspend / swap out & 等待事件的同时被调出内存\\
+Blocked-Suspend $\rightarrow$ Ready-Suspend & 所等事件发生 & 阻塞原因消失，但尚未激活回内存\\
+Ready-Suspend $\rightarrow$ Ready & activate / swap in & 已满足运行条件且重新调入内存就绪队列\\
+Blocked-Suspend $\rightarrow$ Blocked & activate (事件未发生) & 调回内存后仍然缺少等待条件\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\begin{exam}[Suspend 与 Blocked 不是一回事]
+Blocked 的判据是“\kw{即使现在给 CPU 也无法继续}”；Suspend 的判据是“\kw{当前被系统暂停/移出正常可调度驻留集合}”。因此事件可以让 Blocked-Suspend 先变成 Ready-Suspend，却不会凭空让它直接 Running。
+\end{exam}
+
+七态模型与后文\kw{中级调度}是同一件事的状态侧与机制侧：状态图告诉你“对象去了哪里”，中级调度告诉你“谁负责做这次挂起/激活”。
+
 \subsection{阶段 A：创建——从父进程产生新执行环境}
 
 Unix/POSIX 语义中，\code{fork()} 创建子进程。关键不是“复制所有物理内存”，而是创建一个新的进程语义实体，并让其初始状态看起来接近父进程。
+
+\code{fork()} 成功后，父子进程都会从“这次调用返回之后”继续执行，但返回值不同：
+\[
+\boxed{
+\text{parent: return child PID}
+\qquad
+\text{child: return }0
+}
+\]
+因此代码中的 \code{if (fork()==0)} 本质是在用返回值区分\kw{当前这条执行流到底属于父还是子}。
+
+\begin{exam}[连续 fork 题不要机械写 $2^n$]
+第一动作是沿控制流逐次问：\kw{当前有多少条执行流真正执行到了这一条 fork？} 每一个成功执行到的 \code{fork()} 才把对应执行流复制成父、子两条。若前面存在 \code{if/else}、\code{exit()}、循环或某些分支只有父/子能进入，就不能把源码中出现的 fork 个数直接代入 $2^n$。
+\end{exam}
 
 现代实现常通过 COW 优化：
 \[
 \text{初始共享物理页}+\text{只读保护}\xrightarrow{\text{首次写}}\text{复制对应页}
 \]
 
-文件资源采用另一套语义：父子有各自的 fd 表副本，但对应 fd 可以指向同一个 OFD。
+文件资源采用另一套语义：父子有各自的 fd 表语义副本，但对应条目可以继续引用同一个文件系统打开实例。这里追踪到“引用关系被继承”为止，打开实例内部状态交给文件系统专题。
 
 \subsection{阶段 B：exec——不是新建进程，而是替换进程映像}
 
@@ -490,6 +709,33 @@ Blocked 与 Ready 的核心区别：
 
 \section{调度：控制权已经回到内核，下一步给谁？}
 
+\subsection{先分清三级调度：它们选择的不是同一种“下一位”}
+
+“调度”不是只有 ready queue 里挑一个进程。408 经典模型按决策层次分为：
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} p{0.22\linewidth} p{0.24\linewidth} X}
+\toprule
+层次 & 又称 & 典型状态/位置变化 & 决策问题\\
+\midrule
+高级调度 & 作业调度 & 后备作业 $\to$ 被接纳进入系统/内存并建立进程 & “哪些作业现在可以进入执行系统？”\\
+中级调度 & 内存调度 / 对换相关调度 & Ready/Blocked $\leftrightarrow$ Ready-Suspend/Blocked-Suspend & “哪些进程暂时挂起，哪些重新激活？”\\
+低级调度 & 进程调度 / CPU 调度 & Ready $\to$ Running & “当前 CPU 下一步运行谁？”\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\begin{corebox}[一眼定位]
+看到“后备队列/作业接纳”先想\kw{高级调度}；看到“挂起、激活、对换”先想\kw{中级调度}；看到“就绪队列、时间片、CPU 分配”先想\kw{低级调度}。本册后续 FCFS/SJF/RR 等算法主要讨论低级 CPU 调度。
+\end{corebox}
+
+\begin{warn}[教材模型与现代系统边界]
+三级调度是 408 的经典抽象。现代通用操作系统未必存在传统批处理意义上的“作业调度”，挂起/换出机制也不会机械等同于整进程 swap。考试先按题设和教材模型作答，再区分工程实现。
+\end{warn}
+
 \subsection{机制与策略必须拆开}
 
 \begin{corebox}[机制 / 策略]
@@ -520,6 +766,32 @@ Blocked 与 Ready 的核心区别：
 
 不存在对所有工作负载同时最优的单一调度策略。
 
+\subsection{先识别工作负载，再决定“什么叫好”}
+
+调度题不应从算法名字开始，而应先确定系统最想保护的目标：
+\[
+\boxed{\text{Workload / System Goal}\rightarrow\text{Objective}\rightarrow\text{Scheduling Policy}}
+\]
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.23\linewidth} p{0.31\linewidth} X}
+\toprule
+典型系统/工作负载 & 首要关注目标 & 看到题目时的第一判断\\
+\midrule
+批处理 (Batch) & Throughput、Turnaround，尽量高效完成一批作业 & 更关心单位时间完成多少、平均多久完成，而不是每个任务立刻得到一次响应\\
+分时/交互式 (Time-sharing / Interactive) & Response、Fairness，同时控制切换开销 & 用户不能长时间感觉“系统没理我”，因此要让 runnable 任务周期性获得执行机会\\
+实时 (Real-time) & Deadline、Predictability / bounded latency & “平均很快”不等于合格；关键是关键任务能否在规定时间边界内完成或响应\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\begin{exam}[调度算法选择题的第一动作]
+先圈题干中的\kw{吞吐/周转、首次响应/交互、公平、截止时间}等目标词，再判断算法的偏好是否与目标一致。不要看到“现代系统”就条件反射选 RR/MLFQ，也不要看到“平均等待时间”就忽略题目给出的抢占条件与 burst 信息。
+\end{exam}
+
 \subsection{经典算法应按“偏好谁”来记}
 
 \begingroup
@@ -533,12 +805,33 @@ Blocked 与 Ready 的核心区别：
 FCFS & 先到先服务 & 实现简单、低调度系统开销 & Convoy Effect（护航效应），短任务久等\\
 SJF & 短 CPU Burst 优先 & 理论上可获得最小平均等待时间 & 难准确预测下一步 Burst，长任务易饥饿\\
 SRTF & 剩余时间短者优先 & 抢占式偏向短任务，降低响应时间 & 频繁抢占与上下文切换开销大\\
+HRRN & 当前响应比最高者优先 & 同时考虑等待时间与服务时间，长任务等待越久竞争力越强 & 非抢占式；仍需知道/估计服务时间，计算开销高于 FCFS\\
 Priority & 优先级高者优先 & 直观表达任务重要程度 & 低优先级任务长时期饥饿（需 Aging 机制）\\
 RR & 人人轮流切时间片 & 响应极佳、保证公平性 & 时间片 $q$ 过小导致频繁切换；过大退化为 FCFS\\
 MLFQ & 用历史行为推断类型 & 兼顾短交互任务与长计算任务 & 规则复杂，需要防范 Task Gaming 与饥饿\\
 \bottomrule
 \end{tabularx}
 \endgroup
+
+\subsection{HRRN：不要只背公式，要看“等待如何改变优先级”}
+
+高响应比优先（Highest Response Ratio Next, HRRN）在每次\kw{非抢占式}选择时计算：
+\[
+\boxed{
+R=\frac{W+S}{S}=1+\frac{W}{S}
+}
+\]
+其中 $W$ 是已经等待的时间，$S$ 是要求服务时间。选择当前 $R$ 最大的作业/进程。
+
+这个式子可以直接从两个极端理解：
+\begin{itemize}
+\item 若等待时间相近，$S$ 小的短任务响应比更高，保留了 SJF 偏爱短任务的倾向；
+\item 同一任务等待越久，$W$ 持续增大，响应比随之上升，因此经典模型下能显著缓解长任务饥饿。
+\end{itemize}
+
+\begin{exam}[HRRN 计算题第一动作]
+不要在所有时刻连续重算。\kw{只在 CPU 需要重新选择下一个任务的决策点}，对当时已经到达且尚未完成的候选者计算 $W$ 与 $R$；一旦选中，因为 HRRN 是非抢占式，该任务运行到本次服务结束。
+\end{exam}
 
 \begin{warn}[教材模型 vs 现代 Linux 调度算法]
 MLFQ 是 408 考纲常考的经典教学策略；现代 Linux 普通任务调度长期采用 CFS 的“公平 CPU”模型，当前内核正在向 EEVDF 方向演进。备考时需以经典 MLFQ 规则为准，理解现代算法对公平性的优化。
@@ -560,6 +853,29 @@ q\uparrow\Rightarrow Overhead\downarrow,
 \[
 \boxed{\text{Latency}\leftrightarrow\text{Throughput}\leftrightarrow\text{Fairness}\leftrightarrow\text{Overhead}}
 \]
+
+\subsection{有调度原因，不等于“现在这一条指令就能切换”}
+
+408 选择题常把三个概念混成一个：
+\[
+\boxed{\text{出现调度原因}\neq\text{允许立即调度}\neq\text{最终一定换人}}
+\]
+某个事件可以先产生 reschedule 的需求，但真正的上下文切换必须发生在内核允许切换的安全点。
+
+经典考试语境下，以下阶段通常不能把当前进程随意切走：
+\begin{enumerate}
+\item \kw{正在处理中断/异常的关键现场}：硬件与内核首先必须把当前处理路径维护到可安全返回或可调度的位置；定时器中断可以提出抢占需求，但不等于在中断处理任意一条指令处直接 context switch；
+\item \kw{正在执行不可抢占的内核临界区}：如果切走会暴露半更新的内核共享状态，就必须先离开该临界区；
+\item \kw{正在执行必须保持原子性的原语/关键原子操作}：既然语义要求不可分割，中途自然不能通过普通调度把它拆开。
+\end{enumerate}
+
+\begin{warn}[“处于临界区就绝不能调度”是错误绝对化]
+这里说的是\kw{不可抢占的内核临界区/原子区间}。普通用户程序进入自己的临界区，并不会因此自动获得“CPU 不可被抢占”的特权；用户临界区的互斥正确性必须自己由同步机制保证。
+\end{warn}
+
+\begin{corebox}[调度安全点模型]
+做题时分两步判断：先问“\kw{是否已经出现调度机会/调度请求？}”，再问“\kw{当前是否处在允许 context switch 的安全点？}”。只有第二问也成立，才继续判断调度器最终是否选择另一个执行实体。
+\end{corebox}
 
 \section{上下文切换：到底切了什么？}
 
@@ -592,6 +908,32 @@ A_{user}\rightarrow A_{kernel}\rightarrow Scheduler\rightarrow B_{kernel}\righta
 其中 scheduler 本身运行在内核控制路径中。
 
 \section{系统调用、中断、异常：控制流为什么会改变}
+
+\subsection{中断响应要拆成两层：硬件自动入口与软件处理程序}
+
+408 常把“CPU 响应中断”压成一句话，容易让学生把所有现场保存都误以为是硬件自动完成。更稳定的分层是：
+\[
+\boxed{\text{Hardware Entry}\rightarrow\text{Software Handler}\rightarrow\text{Return/Schedule}}
+\]
+
+\begin{enumerate}
+\item \kw{硬件自动入口（中断隐指令的教材抽象）}：CPU 在满足响应条件时建立一个可返回的受保护入口。408 经典表述通常概括为\kw{关中断/暂时屏蔽同级可屏蔽中断、保存断点与必要状态、根据中断向量引出处理程序}。抽象上至少要保证返回所需的 PC/状态信息不会丢失，并切入内核控制路径；
+\item \kw{软件入口保存现场}：中断处理程序的入口代码继续保存需要保护的通用寄存器、必要的控制状态/屏蔽信息等。\kw{“保存断点”与“保存完整现场”不是同一个动作}；
+\item \kw{执行中断服务}：确认中断源、处理设备/时钟事件、更新内核状态，必要时把等待任务从 Blocked 改为 Ready。若体系结构与内核策略允许中断嵌套，可以在建立好安全现场后重新允许更高优先级/合适类别的中断；
+\item \kw{恢复与返回}：恢复软件保存的现场，再通过体系结构规定的中断返回指令恢复硬件入口保存的返回状态。若这次中断产生了抢占需求，也应在允许调度的安全点先进入 scheduler，而不是在处理程序任意位置强行切走。
+\end{enumerate}
+
+\begin{exam}[408 高频辨析]
+\begin{itemize}
+\item 硬件保存\kw{最小返回状态}，不等于硬件替软件保存了所有通用寄存器；
+\item “中断到来”只意味着获得一次内核控制机会，不等于一定调度，更不等于一定换进程；
+\item 经典“关中断→保存断点→引出 ISR”是教材级抽象；不同体系结构对 PC/PSW、栈切换、屏蔽位的具体自动动作可以不同。
+\end{itemize}
+\end{exam}
+
+\begin{warn}[中断、异常与系统调用不要机械套同一条微观顺序]
+三者都可能进入受保护的内核入口，但来源与恢复语义不同：外部中断是异步事件，异常由当前指令触发，系统调用是程序主动请求。考试若明确问“中断隐指令”，按中断响应模型作答；若问缺页异常或 syscall，则沿各自的 trap/exception 语义推演。
+\end{warn}
 
 \subsection{一次系统调用的五阶段模板}
 
@@ -661,32 +1003,39 @@ Blocked\rightarrow Ready
 \item parent 的 \code{wait()} 获取退出信息并完成最终回收。
 \end{enumerate}
 
-\section{综合题二：一次阻塞 read 的状态路径}
+\section{综合题二：一次阻塞 read 的“进程侧投影”}
 
 假设进程 A 调用：
 \begin{verbatim}
 read(fd, buf, 4096)
 \end{verbatim}
-且数据当前无法立即取得。
+且底层条件使本次调用必须等待。这个专题只跟踪\kw{控制权与 task state}：
 
 \begin{enumerate}
-\item A 在用户态运行。
-\item 系统调用使 CPU 进入 A 的内核上下文。
-\item 内核根据 fd 查 A 的文件描述符表。
-\item fd 指向打开文件描述（OFD）；在 Linux 中通常对应 \code{struct file}，其中保存 offset 与对象引用。
-\item VFS/具体文件系统沿 dentry/inode、缓存和块映射路径处理请求。
-\item 数据若已经在页缓存：走快路径，复制并返回，A 不必阻塞。
-\item 本题设定 cache miss 且需要设备 I/O：内核提交 I/O。
-\item A 当前无法继续：Running → Blocked。
-\item scheduler 选择 B，发生 context switch。
-\item 设备通过 DMA/控制器完成数据传输，随后产生中断。
-\item 内核中断处理路径完成请求并 wake A：Blocked → Ready。
-\item A 并未必立即运行；等待调度。
-\item A 再次 Running 后从原系统调用睡眠点继续，完成 \code{read()}，最终返回用户态。
+\item A 在用户态 Running。
+\item syscall 使 CPU 进入 A 的内核上下文；\kw{此刻仍然是 A 在运行，不是已经切换进程}。
+\item 内核沿文件/I/O 子系统处理请求。若请求能立即完成，A 直接沿内核返回路径回到用户态，不发生 Blocked。
+\item 本题设定必须等待：A 暂时不能继续，故 Running $\to$ Blocked，并挂到相应等待结构；
+\item CPU 已经不能继续执行 A 的工作，scheduler 从 Ready 集合选择其他执行实体，必要时发生 context switch；
+\item 后续底层事件完成后，相关子系统调用 wakeup，使 A：Blocked $\to$ Ready；
+\item \kw{wakeup 不等于立刻获得 CPU}。A 仍要等待低级调度；
+\item A 再次被选中：Ready $\to$ Running，从原等待后的内核控制路径继续，最终完成 syscall 并返回用户态。
 \end{enumerate}
 
-\begin{exam}[一题串起的考点]
-一次阻塞 \code{read()} 可以同时考：系统调用、用户/内核态、fd、进程资源、运行/阻塞/就绪状态、调度、上下文切换、设备中断、DMA、文件缓存与唤醒。
+\begin{method}[为什么这里故意不展开 fd/OFD/DMA/Page Cache]
+这些对象分别由文件系统与 I/O 专题拥有。OS-01/02 只需要知道：\kw{某个外部条件未满足会使当前 task block；条件完成会使它 wake 到 Ready；何时再次 Running 由调度决定。} 若题目要求完整追踪 \code{read()} 的文件对象、缓存、块映射、DMA 与完成中断，应切换到 OS 综合专题，把各 Topic 的局部模型串起来。
+\end{method}
+
+\begin{exam}[本专题真正要拿下的链]
+\[
+\boxed{
+\begin{aligned}
+A_{\text{user}} \rightarrow A_{\text{kernel}} \rightarrow A_{\text{Blocked}} &\rightarrow \text{Scheduler} \rightarrow B\\
+&\xrightarrow{\text{Wake}(A)} A_{\text{Ready}} \rightarrow A_{\text{Running}}
+\end{aligned}
+}
+\]
+这条链同时检查 mode switch、block、wakeup、ready queue、调度机会与 context switch，但不把别的子系统细节重复背一遍。
 \end{exam}
 
 \section{线程实现模型：考试模型与现代实现边界}
@@ -722,44 +1071,64 @@ read(fd, buf, 4096)
 
 \section{408 解题检查表：从概念辨析到状态推演}
 
-\subsection{进程状态题六问}
+\subsection{进程状态题八问}
 \begin{enumerate}
-\item 当前实体是 Ready、Running 还是 Blocked？
-\item 它缺的是 CPU 还是外部事件？
-\item 发生了什么事件？
-\item 事件只改变状态，还是还会触发调度？
-\item 唤醒后是否只是进入 Ready？
-\item 是否混淆“进程在内核态执行”和“换成另一个进程”？
+\item 当前实体属于 New、Ready、Running、Blocked、Exit 中哪一类基本状态？
+\item 题目是否额外引入 Suspend？若引入，它现在是 Ready-Suspend 还是 Blocked-Suspend？
+\item 它当前缺的是 CPU、外部事件，还是“重新激活/换入”条件？
+\item 发生了什么事件？这条状态箭头是否有明确事件依据？
+\item 若等待事件发生，Blocked-Suspend 应先到 Ready-Suspend 还是可以直接 Running？
+\item 这次变化涉及高级、中级还是低级调度？
+\item 事件只是改变 task state，还是同时产生调度机会？
+\item 是否混淆“进程在内核态执行”和“已经换成另一个进程”？
 \end{enumerate}
 
-\subsection{调度计算题六步}
+\subsection{调度计算题九步}
 \begin{enumerate}
-\item 写出 arrival time、burst time、priority、quantum 等输入；
-\item 确定抢占/非抢占；
-\item 每个关键事件点重新确定 ready set；
-\item 按策略选择；
-\item 画 Gantt 图；
+\item 先判断题目讨论高级/中级/低级调度中的哪一层；经典算法计算题通常是低级 CPU 调度；
+\item 圈出题目真正优化的目标：throughput/turnaround、response/fairness，还是 deadline/predictability；
+\item 写出 arrival time、burst/service time、priority、quantum 等输入；
+\item 确定算法是抢占还是非抢占；
+\item 每个真正的决策事件点重新确定当前 ready set；
+\item 若是 HRRN，只在需要重新选任务时计算 $R=1+W/S$；
+\item 按策略选择，并明确同值时题目采用什么 tie-break；
+\item 画 Gantt 图并逐段检查到达、完成、抢占事件；
 \item 从完成时刻反推 turnaround / waiting / response，最后检查单位与定义。
 \end{enumerate}
 
-\subsection{系统调用/中断题七问}
+\subsection{系统调用/中断题九问}
 \begin{enumerate}
 \item 入口是 syscall、exception 还是 interrupt？
-\item 是同步还是异步？
-\item CPU 是否进入内核态？
-\item 当前还是原进程上下文吗？
-\item 当前任务能否继续？
-\item 若不能，进入哪个等待队列/状态？
-\item 最终是 return same task，还是 schedule another task？
+\item 是同步事件还是异步事件？
+\item 若题目问中断响应，哪些是硬件自动入口动作，哪些由软件 ISR 保存/恢复？
+\item CPU 是否发生 privilege/mode transition？
+\item 当前是否仍处于原进程的执行上下文？
+\item 当前任务处理完事件后还能继续吗？
+\item 若不能，它进入哪个等待队列/状态？
+\item 即使产生了调度请求，当前是否已经到允许 context switch 的安全点？
+\item 最终是 return same task，还是 scheduler 选择 another task？
 \end{enumerate}
 
-\subsection{文件描述符/fork 题五问}
+\subsection{PCB / TCB / 进程资源接口题八问}
 \begin{enumerate}
-\item fd 表是各自复制还是同一张？
-\item 两个 fd 是否指向同一个 OFD？
-\item 文件 offset 是共享还是独立？
-\item 最终是否指向同一个 inode/filesystem object？
-\item 操作是 \code{open}、\code{dup}、\code{fork} 还是 \code{exec}？四者的共享语义不同。
+\item 题目问的是进程身份、CPU 执行现场、调度状态，还是资源引用？先把 PCB 信息类别定位清楚；
+\item 当前信息属于整个进程的 resource/protection context，还是某一条线程的 execution context？若是后者，优先按 TCB 语义定位；
+\item 需要恢复执行的是 PC/寄存器/栈等 execution context，还是进程级 resource context？
+\item PCB/任务结构保存的是对象本体，还是能找到对象的引用与管理信息？
+\item \code{fork()} 后哪些进程管理状态新建，哪些资源引用按语义继承？
+\item 若代码根据 \code{fork()} 返回值分支，父进程得到 child PID、子进程得到 0 后，各自会走哪条控制流？
+\item \code{exec()} 是创建新进程，还是在同一进程身份下替换程序映像？
+\item 如果题目继续追问 offset、OFD、inode、unlink 等文件内部语义，立即切换到 OS-06/07，不在本专题继续猜。
+\end{enumerate}
+
+\subsection{IPC 题六问}
+\begin{enumerate}
+\item 两个进程之间要传递的是共享状态、数据流/消息，还是事件通知？
+\item 承载通信的对象在哪里：共享映射、pipe buffer、message queue/mailbox，还是 notification state？
+\item 当前哪一方缺少什么条件，因此可能 Blocked？
+\item 哪个事件改变了通信对象状态，并使 waiter 从 Blocked 变成 Ready？
+\item 如果是共享内存，题目是否已经从“能通信”进入了“怎样同步”？若是，切到 OS-03；
+\item 如果继续追问映射、OFD/inode 或 transport socket 内部语义，是否应该切到 OS-04、OS-06/07 或 Network？
 \end{enumerate}
 
 \section{知识树与专题接口}
@@ -772,7 +1141,7 @@ read(fd, buf, 4096)
 \node[n,below right=of ctrl,fill=softgreen] (event) {事件入口\\syscall/exception/IRQ};
 \node[n,below=14mm of ctrl,fill=softorange] (life) {生命周期\\ready/run/block/exit};
 \node[n,below left=of life] (sched) {调度\\policy + context switch};
-\node[n,below right=of life] (res) {资源引用\\address space + fd};
+\node[n,below right=of life] (res) {资源/通信接口\\fd + IPC};
 \node[n,below=of life,fill=softred] (next) {后续模块\\并发 / 虚存 / I/O / 文件系统};
 \draw[->] (ctrl)--(proc);\draw[->](ctrl)--(event);
 \draw[->](proc)--(life);\draw[->](event)--(life);
@@ -796,11 +1165,21 @@ read(fd, buf, 4096)
 \[
 \boxed{\text{什么事件？谁获得控制？当前还能继续吗？}}
 \]
-看到“调度”时应自动区分：
+看到“调度”时应自动先分层、再区分机制与策略：
 \[
+\boxed{\text{High / Medium / Low Scheduling}}
+\qquad
 \boxed{\text{Mechanism}\neq\text{Policy}}
 \]
-看到 \code{read/fork/exec} 时则应能沿着进程生命周期和资源引用图完整推演。
+看到“中断到来”时应自动拆开：
+\[
+\boxed{\text{Hardware Entry}\rightarrow\text{Software Handler}\rightarrow\text{Safe Return/Schedule Point}}
+\]
+看到“进程通信”时应自动先问：
+\[
+\boxed{\text{共享什么/传什么？}\rightarrow\text{谁在等什么？}\rightarrow\text{哪个事件改变状态？}}
+\]
+看到 \code{read/fork/exec} 时只完整推演本 Topic 拥有的\kw{控制权、task state、IPC 进程侧状态与资源引用交接}；进入同步协议、共享页映射、OFD、DMA 或运输层 socket 内部机制时，切换到对应 Topic，而不是在一本手册里重复所有子系统。
 \end{corebox}
 
 \section*{参考与工程边界来源}
@@ -808,8 +1187,8 @@ read(fd, buf, 4096)
 \begin{itemize}
 \item Remzi H. Arpaci-Dusseau, Andrea C. Arpaci-Dusseau, \emph{Operating Systems: Three Easy Pieces}：进程、受限直接执行、调度与并发的教学框架。
 \item MIT PDOS, \emph{xv6: a simple, Unix-like teaching operating system}：trap、scheduler、sleep/wakeup、process lifecycle 的实现级案例。
-\item POSIX / The Open Group：\code{fork()}、\code{open()}、\code{dup()}、\code{exec()} 对文件描述符与打开文件描述的规范语义。
-\item Linux Kernel Documentation：VFS 的 dentry/inode/file object 模型，以及 CFS/EEVDF 调度器的工程实现边界。
+\item POSIX / The Open Group：\code{fork()}、\code{exec()} 与进程资源继承/程序映像替换的规范语义。
+\item Linux Kernel Documentation：task、trap/interrupt、scheduler 以及 CFS/EEVDF 等工程实现边界。
 \end{itemize}
 
 \end{document}

@@ -21,7 +21,7 @@ $$
 | **Rules** | 做题和考试时具体怎样行动？ | 快 |
 | **Inbox** | 最近真实发生了什么，哪些想法还不确定？ | 随时 |
 
-Handbooks 包括学科总图、专题、桥梁和综合手册。Rules 包括学科做题规则和考场决策。Inbox 可以是几句话，不要求字段、标签或固定格式。
+Handbooks 包括 Atlas、Topic、Bridge 和 Integration，但物理格式按职责分开：**Atlas 的 Canonical Source 是 Markdown README**，因为它的正文就是地图、关系和导航；Topic / Bridge / Integration 的 Canonical Source 是 LaTeX (`.tex`)，同目录 README 只做 Landing Page。Rules 与 Inbox 继续使用 Markdown。
 
 目录可以比这三类更细，但不得把目录结构变成日常录入负担。
 
@@ -36,15 +36,15 @@ $$
 - **Knowledge Plane** 由 Handbooks 承担，保存相对稳定的世界模型；
 - **Control Plane** 由 Rules 承担，保存题目和考试中的行动规则；
 - **Learning Plane** 由 Inbox 和真实练习承担，负责暴露、攻击和验证候选想法；
-- **Publication Plane** 只是前三者的发布视图，不是另一份知识源。
+- **Publication View** 不是第四个 Plane，而是发布投影；Topic / Bridge / Integration 的 PDF 来自 Canonical `.tex`，Atlas 可选的 PDF/海报只视觉化 Canonical README，任何 PDF 都不是另一份知识源。
 
 ## 3. AI 的位置
 
 AI 不替使用者建立模型。它负责缩短模型迭代周期：
 
 $$
-\text{体验} \to \text{AI 帮助显化} \to \text{提出假设}
-\to \text{寻找反例} \to \text{新题检验} \to \text{正式沉淀}
+\text{体验} \to \text{AI 帮助说清发生了什么} \to \text{提出可证伪假设}
+\to \text{寻找反例} \to \text{新题检验} \to \text{人工决定是否更新唯一 Owner}
 $$
 
 AI 可以扮演：
@@ -120,7 +120,40 @@ $$
 
 不得把两个循环合并。每错一道题就修改正式手册，会让稳定模型不断抖动。
 
-## 7. 契约文件各自负责什么
+## 7. Handbook 的物理结构
+
+### Atlas：Markdown 就是地图本体
+
+```text
+<Atlas Directory>/
+├── README.md              # Canonical Atlas Source + Navigation Hub
+└── assets/
+    └── <Atlas>_Poster.tex # 可选视觉海报；不得拥有新结论
+```
+
+Atlas 要频繁改 Topic 状态、Owner 关系和路由，而且学生/Agent 需要直接点击进入下游资产，因此不再为同一地图维护第二份 `.tex` 正文。
+
+### Topic / Bridge / Integration：LaTeX 承担深度正文
+
+```text
+<Handbook Directory>/
+├── README.md          # Landing Page
+├── <Handbook>.tex     # Canonical deep body
+└── assets/            # 可选
+
+90_publish/
+└── <Handbook>.pdf
+```
+
+从 `common/考研/` 发布深度 Handbook：
+
+```bash
+python3 00_system/cognitive_system.py publish "<target.tex>"
+```
+
+该入口确认项目范围、Canonical 状态、唯一 Source 和发布冲突。Atlas 的可选视觉海报放在 `assets/`，使用 `python3 00_system/cognitive_system.py publish-view "<Atlas>/assets/<Atlas>_Poster.tex"`；它是派生视图，不参与知识 Ownership。
+
+## 8. 契约文件各自负责什么
 
 | 文件 | 唯一职责 |
 |---|---|
@@ -132,11 +165,12 @@ $$
 | `ownership_matrix.md` | 登记稳定概念和规则的归属 |
 | `agent_context_protocol.md` | 拥有 Agent 自动场景路由、Boot Core 与最小 Context Pack |
 | `collaboration_workflow.md` | 拥有具体使用场景、文件更新矩阵和协作结束条件 |
-| `AGENTS.md` | Agent 进入仓库后的 Boot Manifest；压缩说明架构、读取策略、Ownership 与人机协作行为 |
+| `repository_integrity.md` | 拥有 `check / audit / publish` 的机器可判定边界与仓库完整性规则 |
+| `AGENTS.md` | Agent 进入仓库后的 Boot Manifest；只保留启动顺序、契约路由和必须执行的安全入口 |
 
 其他文件只引用或简述这些规则，不另建一套定义。
 
-## 8. 项目入口
+## 9. 项目入口
 
 - [快速开始一次学习协作](QUICK_START.md)
 - [架构与日常更新路径](00_system/architecture.md)
@@ -156,10 +190,10 @@ $$
 
 - [数学一](10_数学一/README.md)
 - [英语一](20_英语一/README.md)
-- [408](30_408/408%20计算机综合复习总览.md)
+- [408](30_408/README.md)
 
-## 9. 当前阶段
+## 10. 当前阶段
 
-408 框架、协作场景、Rules/Inbox 入口和进度脚本已经建立。当前仍未完成的是：选择一个真实专题或错题，跑通第一次“输入 -> 诊断/攻击 -> 人工决定 -> Canonical Update / No Update”的完整闭环。
+数学一与 408 均已建立 Course / Subject Atlas、Topic/Bridge/Integration 与 Rules 入口。当前物理契约是：**Atlas = Canonical Markdown Map；Topic / Bridge / Integration = README Landing + Canonical LaTeX**。历史长 README 只有在承担深度机制正文时才需要迁入 LaTeX；真正属于 Atlas 的地图内容保留在 Markdown，不再为了格式统一重复制作 `.tex`。
 
 日常首先打开 [项目进度](PROGRESS.md)，再按当前场景进入 Handbook、Rules 或 Inbox。

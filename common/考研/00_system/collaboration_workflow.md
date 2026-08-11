@@ -44,6 +44,8 @@ Inbox + 待验证 Rules + 新题表现
 
 ### 发布循环：阶段
 
+Topic / Bridge / Integration：
+
 ```text
 Canonical .tex 内容已采用
 -> 检查 Owner 与依赖
@@ -52,7 +54,7 @@ Canonical .tex 内容已采用
 -> 更新 README Landing Page 与状态
 ```
 
-Publication 只同步已经确认的内容，不参与日常探索。
+Atlas 的 Canonical 内容直接在 README 更新；只有确实需要全景视觉海报时才生成派生视图。Publication 只同步已经确认的内容，不参与日常探索。
 
 ## 3. 进度从哪里看
 
@@ -62,20 +64,9 @@ Publication 只同步已经确认的内容，不参与日常探索。
 - “资产明细”来自各 Atlas/Topic/Bridge/Integration 入口顶部的 `状态：...`；
 - `PROGRESS.md` 由脚本生成，不手工修改。
 
-状态采用少量自然语言：
+Handbook 状态词义统一见 [`terminology.md`](terminology.md) §10；本工作流不再维护第二份状态词典。
 
-| 状态 | 含义 |
-|---|---|
-| 规划 | 只有母问题和位置 |
-| 目录已建立，正文未建 | 已有入口和边界，没有正文 |
-| 工作稿 | 正在形成模型，尚未人工采用 |
-| 待人工确认 | AI 或旧材料已整理，需要使用者判断 |
-| 已采用 | 当前被使用者接受为工作态 Canonical 内容 |
-| 旧发布物待纳管 | 有 LaTeX/PDF，但没有完成当前 Owner、边界和事实审查 |
-| 已发布 | 已采用内容存在对应发布视图 |
-| 需修订 | 发现事实、边界或依赖问题，尚未处理完 |
-
-“已发布”不是认知成熟度的替代品。“已采用”和“发布状态”必要时可以在一句状态中并列说明。
+这里只规定什么时候改状态：**只有物理资产或人工决定真实变化时才改。** 新建目录、写长 README、生成 PDF、做完一道题，都不能单独作为“已采用”的理由；发布同步与内容采用是两个不同事实。
 
 ## 4. 使用场景与更新动作
 
@@ -157,12 +148,12 @@ Publication 只同步已经确认的内容，不参与日常探索。
 1. **定位**：先判断 Atlas、Topic、Bridge、Integration 还是 Rules；若只是指出真实但超纲的连接或阻断伪连接，再标记为 Extension / Anti-Bridge 关系，不新建第五、第六类 Handbook；
 2. **找 Owner**：检查学科复习总览与导航和 `ownership_matrix.md`；
 3. **Handbook Diff**：与当前 Owner 比较重复、新增、冲突和越界；
-4. **拆分**：Knowledge、Control、Evidence、Publication 内容分别去正确位置；
+4. **拆分**：Knowledge 内容进入 Handbook Owner，Control 内容进入 Rules，Evidence 留在学习证据；若 Source 自带旧 PDF/排版稿，只把它登记为发布/Source 线索，不把 Publication View 当成新的知识 Owner；
 5. **人工决定**：接受哪些模型、保留哪些候选、拒绝哪些说法；
-6. **纳管**：Handbook 内容进入对应 Canonical `.tex`；README 只建立/更新 Landing Page。若旧正文来自 Markdown，先作为 Source 做 Diff，再迁入 `.tex`；
+6. **纳管**：先看类型。Atlas 的稳定地图内容进入 Canonical README；Topic / Bridge / Integration 的深度正文进入 Canonical `.tex`，README 只建立/更新 Landing Page。旧 Markdown 先作为 Source 做 Diff，不机械搬运；
 7. **状态**：更新该资产入口顶部的状态；
 8. **依赖**：只有产品拓扑或 Owner 改变时，才更新复习总览与导航/Ownership；
-9. **发布**：旧 LaTeX/PDF 先标为 legacy；新 Handbook 以 `.tex` 为正文 Owner，PDF 仅由脚本生成，不反向拥有知识；
+9. **发布**：旧 LaTeX/PDF 先标为 legacy；Topic / Bridge / Integration 以 `.tex` 为正文 Owner，Atlas 以 README 为地图 Owner；PDF 仅是派生阅读/视觉视图，不反向拥有知识；
 10. **检查**：运行 `progress --write` 和 `check`。
 
 ### 场景 F：修改稳定 Handbook
@@ -184,30 +175,18 @@ Publication 只同步已经确认的内容，不参与日常探索。
 
 ### 场景 G：形成跨专题理解
 
-先过 **Bridge Validity**，再过 **Standalone Promotion**，不能把“真连接”和“值得独立建册”混成同一个判断。
+本场景不重新定义 Bridge 判据。先读取 [`handbook_contract.md`](handbook_contract.md) §4，按其中 **Bridge Validity → Standalone Promotion** 两道 Gate 判断，再执行写入动作。
 
-**Gate 1｜Bridge Validity**
+结果只允许落到以下位置：
 
-1. 去掉具体题目后，两个独立 Owner 之间是否仍有稳定、可复用的 `A output -> translation/shared structure -> B input`？
-2. 如果只是 B 调用 A 的既有机制，没有新的交接责任，记为 `Use`；
-3. 如果只是多个成熟模块为了完成一个完整问题而按顺序协作，归 Integration；
-4. 如果只是名称、公式或直觉相似而不能互推，标 Anti-Bridge。
+- 通过两道 Gate：建立或更新 Bridge；
+- 只有单向调用：记录 `Use`；
+- 具体过程组合多个模块：进入 Integration；
+- 真连接但当前不值得独立维护：记录 Candidate / Extension；
+- 只能形成表面类比：记录 Anti-Bridge；
+- 证据还不足：留在 Inbox。
 
-**Gate 2｜Standalone Promotion**
-
-真接口只有同时出现明显 Ownership Pressure、重复调用、当前范围相关性和新的可调用推理价值时，才独立建立 Bridge。否则保留为 Bridge Note / Candidate / Extension。
-
-因此：
-
-- 真接口 + 值得独立维护：Bridge；
-- 真连接但只是单向调用：Use；
-- 追踪一个真实过程怎样组合：Integration；
-- 真实但超纲或当前不值得独立维护：Extension / Candidate；
-- 表面相似但结构不同：Anti-Bridge；
-- 仍只是新发现：Inbox；
-- 不在两个 Topic 中各复制一份完整解释。
-
-例如 Page Cache 的共享关系进入 VM x File Bridge，一次 `read()` 的完整轨迹进入 OS Integration。
+无论结果是哪一种，都不在两个 Topic 中复制同一套完整解释。
 
 ### 场景 H：专题/每周复盘
 
@@ -229,14 +208,20 @@ Publication 只同步已经确认的内容，不参与日常探索。
 
 ### 场景 J：编译与发布 Handbook
 
+先区分类型：Atlas 不需要 PDF 才算完成；Topic / Bridge / Integration 才进入常规正文发布链。
+
+Topic / Bridge / Integration：
+
 1. 确认目标 `.tex` 就是该 Handbook 的 Canonical Source；
 2. 确认 Owner、状态和依赖已经同步；
 3. README 只检查导航、引子、Scope 和 `.tex`/PDF 链接，不把正文复制进去；
-4. 从 `common/考研/` 使用 `python3 ../scripts/compile_tex.py "<目标.tex>"`；
-5. 确认编译成功，专题目录无同名 PDF，最终 PDF 位于 `90_publish/` 根目录；
+4. 从 `common/考研/` 使用 `python3 00_system/cognitive_system.py publish "<目标.tex>"`；不要直接调用公共 `compile_tex.py`；
+5. 确认编译成功，专题目录无同名 PDF，最终 PDF 位于 `90_publish/`；
 6. 检查交叉引用、页面、图表和发布链接；
 7. 只有真实达到对应成熟度才更新状态；
 8. 生成进度并运行系统检查。
+
+Atlas 如果制作视觉海报，海报必须完全派生自 Canonical README；海报缺失或暂未同步不降低 Atlas 的知识成熟度。
 
 ## 5. 文件更新矩阵
 
@@ -245,11 +230,12 @@ Publication 只同步已经确认的内容，不参与日常探索。
 | 学完新内容 | 通常无 | Inbox | PDF、Ownership |
 | 做题/错题 | Inbox 或 No Update | Rules、Exam Control | Handbook（未经验证） |
 | 规则验证 | Subject Rules | Inbox 清理 | Topic 机制定义 |
-| 导入旧手册 | README Landing + Canonical `.tex` 工作稿 | 复习总览与导航、Ownership、Rules | 把旧 Markdown/PDF 继续当正文 Owner |
+| 导入旧 Atlas | Canonical Atlas README | Ownership、Rules | 为同一地图再造一份 `.tex` 真相 |
+| 导入旧 Topic/Bridge/Integration | README Landing + Canonical `.tex` 工作稿 | 复习总览与导航、Ownership、Rules | 把旧 Markdown/PDF 继续当正文 Owner |
 | 修改 Topic | Canonical `.tex`、README 状态/链接 | Uses/Bridge/Integration、重新编译 PDF | 把完整正文写回 README |
 | 新建 Bridge | README Landing + Bridge `.tex` | Ownership、两侧链接、Anti-Bridge 边界 | 重讲两侧 Topic |
 | 新建 Integration | README Landing + Integration `.tex` | 复习总览与导航、参与 Owner 链接 | 重新拥有局部机制 |
-| 增加 Extension / Anti-Bridge | 对应 Handbook `.tex` 的关系段落 | README 仅在导航必要时提示 | 为它们新建平行 Handbook 树 |
+| 增加 Extension / Anti-Bridge | Atlas 写入 Canonical README；Topic/Bridge 写入 Canonical `.tex` | 入口导航 | 为它们新建平行 Handbook 树 |
 | 发布 | `90_publish/*.pdf`、README 发布链接、状态 | 依赖链接 | Inbox、手工编辑 PDF |
 | 周复盘 | CURRENT、Inbox/Rules 决策 | Handbook | 为了显得有进度而更新 |
 
@@ -264,22 +250,14 @@ AI 结束时简要回答：
 5. 哪些决定仍由使用者确认；
 6. 下一次最小验证动作是什么。
 
-## 7. 系统自动防线与简单命令
-
-`python3 00_system/cognitive_system.py check` 是项目资产一致性与规则防越权的自动化防线，硬性校验以下 5 项：
-
-1. **Handbook 包结构与状态一致性**：未建立 Canonical `<Handbook>.tex` 的 Topic/Bridge/Integration，其 `状态：...` 禁止虚报为 `已采用` / `Canonical` / `已发布`（必须标为 `legacy working draft` / `provisional model`）；
-2. **README 篇幅与越权检测**：非 legacy 的 Handbook `README.md` 篇幅不得超过 200 行上限，防范 README 沦为第二份简版正文；
-3. **Ownership Matrix 与唯一 Owner 冲突检查**：校验 `ownership_matrix.md` 中的文件引用真实存在；检测非 legacy 文件中是否存在相同的 H1 标题（防止对同一机制重复建立 Canonical Owner）；
-4. **悬空引用与做题规则/Bridge/Integration 链接完整性**：扫描所有 Markdown（包含 `Subject Rules`、Bridge、Integration）的相对链接，确保无断链或悬空引用；
-5. **`CURRENT.md` 存在性与更新状态**：确保 `CURRENT.md` 存在且包含 `# 当前焦点` 节点，防止其沦为无人维护的摆设。
-
-常用脚本命令：
+## 7. 简单命令
 
 ```bash
 python3 00_system/cognitive_system.py start <scenario> --subject <subject> --topic <topic>
 python3 00_system/cognitive_system.py progress --write
 python3 00_system/cognitive_system.py check
+python3 00_system/cognitive_system.py publish "<Topic-or-Bridge-or-Integration.tex>"
+python3 00_system/cognitive_system.py publish-view "<Atlas>/assets/<Atlas>_Poster.tex"
 python3 00_system/cognitive_system.py prompt model-diff
 python3 00_system/cognitive_system.py prompt first-divergence
 python3 00_system/cognitive_system.py prompt adversary

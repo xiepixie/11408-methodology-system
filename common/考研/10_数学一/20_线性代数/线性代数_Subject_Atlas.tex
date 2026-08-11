@@ -1,0 +1,464 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{145,154,163}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={线性代数 Subject Atlas：空间、映射、表示与不变量}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 线性代数 Subject Atlas}}
+\rhead{\small\color{deep}空间 · 映射 · 表示 · 不变量}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\tikzset{
+  atlas/.style={draw=deep,rounded corners=2mm,text width=3.25cm,minimum height=1.05cm,align=center,fill=soft,font=\small,inner sep=4pt},
+  topic/.style={draw=line,rounded corners=1.5mm,text width=4.0cm,minimum height=0.95cm,align=center,fill=white,font=\small,inner sep=4pt},
+  flow/.style={-{Latex[length=2mm]},thick,draw=deep},
+  useflow/.style={-{Latex[length=2mm]},thick,dashed,draw=purple}
+}
+
+\title{\vspace{-1.1cm}\textbf{线性代数 Subject Atlas}\\[0.4em]
+\large 空间、映射、表示与不变量}
+\author{数学一认知体系 · 线性代数学科总图}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：为什么同一个矩阵，有时做消元，有时谈相似，有时又必须做合同？}
+因为矩阵不是唯一的研究对象。它可能是一组向量的排列表，可能是线性映射在某组基下的坐标表示，也可能是二次型的系数矩阵。
+
+线性代数反复解决的是同一个更基本的问题：
+\[
+\boxed{
+\text{先认对象}
+\to \text{再看表示}
+\to \text{确定允许的变换}
+\to \text{寻找不变量}
+\to \text{化到最简合法表示}
+}
+\]
+这里“最简合法表示”不是说所有对象都有同一种标准形，而是：\kw{只在当前对象允许的变换范围内，把表示改得更容易读出结构。}
+\end{corebox}
+
+\section{本册负责什么}
+
+本册是线性代数的 \kw{Subject Atlas（学科总图）}。Atlas 的任务是告诉读者：每个对象在哪里、六个 Topic 为什么分开、它们怎样连接。具体定理、推导和题型机制由六册 Topic 各自拥有。
+
+\begin{itemize}
+  \item \kw{本册拥有：}一级母问题、对象地图、三类表示变换、核心不变量、六册 Topic 边界、跨册接口和压缩图。
+  \item \kw{本册使用：}各 Topic 中对基、矩阵、rank、方程组、特征结构和二次型的完整机制解释。
+  \item \kw{本册不拥有：}行列式展开技巧、参数题分类套路、对角化计算流程、二次型具体化简步骤和考场时间策略。
+\end{itemize}
+
+\section{第一层：先把对象和表示分开}
+
+\subsection{几个词先说清楚}
+
+\begin{itemize}
+  \item \kw{向量空间（vector space）：}一组对象的集合，并且对线性组合封闭。简单说，只要 $u,v$ 在空间里，那么 $\alpha u+\beta v$ 仍在空间里。
+  \item \kw{线性映射（linear map）：}保持线性组合的作用 $T:V\to W$，满足
+  \[
+  T(\alpha u+\beta v)=\alpha T(u)+\beta T(v).
+  \]
+  \item \kw{基（basis）：}一组既能生成整个空间、又没有线性冗余的向量。选定基后，抽象向量才能写成唯一坐标列。
+  \item \kw{表示（representation）：}同一个对象在选定基或选定变量下写成的数字形式，例如坐标列或矩阵。
+  \item \kw{线性算子（linear operator）：}定义域和陪域是同一个空间的线性映射，即 $T:V\to V$。因为输入和输出属于同一空间，换基时两端不能各选一套互不相关的基。
+  \item \kw{核（kernel）：}$\ker T=\{v\in V:T(v)=0\}$，记录被映射完全压成零的输入方向。
+  \item \kw{像（image）：}$\operatorname{Im}T=\{T(v):v\in V\}$，记录这个映射真正能够到达的全部输出。
+  \item \kw{秩（rank）：}$\dim\operatorname{Im}T$，也就是能够留下来的独立输出方向数；矩阵语言中的行秩、列秩最终都等于这个自由度。
+  \item \kw{二次型（quadratic form）：}形如 $q(x)=x^TAx$ 的二次标量表达式。它研究“一个方向代入后得到多大的二次量”，不是线性映射 $x\mapsto Ax$ 本身。
+  \item \kw{不变量（invariant）：}在\emph{规定的合法变换}下保持不变的量或性质。没有先说明“允许什么变换”，就不能谈“不变量”。
+\end{itemize}
+
+最重要的边界是：
+\[
+\boxed{\text{对象}\neq\text{对象的一份坐标表示}.}
+\]
+
+若 $V$ 的基为 $\mathcal B=(e_1,\dots,e_n)$，$W$ 的基为 $\mathcal C=(f_1,\dots,f_m)$，线性映射 $T:V\to W$ 在这两组基下可以写成矩阵 $A$：
+\[
+[T(v)]_{\mathcal C}=A[v]_{\mathcal B}.
+\]
+换基以后矩阵会改变，但抽象映射 $T$ 没有改变。
+
+\begin{methodbox}{表示什么时候是“无损”的？}
+“矩阵会变”不等于“矩阵不可靠”。如果基的信息也保留，那么坐标列和矩阵是对象的\kw{无损编码}：你可以从“矩阵 + 基”恢复原来的向量或映射。
+
+真正会丢信息的是进一步压缩，例如只保留 rank、特征值或惯性指数。它们回答特定问题，但不能恢复完整对象。
+\end{methodbox}
+
+\section{第二层：全书的统一观察链}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.85cm]
+\node[atlas] (obj) {\textbf{Object 对象}\\\scriptsize 向量组 / 映射 / 算子 / 二次型};
+\node[atlas,right=of obj] (rep) {\textbf{Representation 表示}\\\scriptsize 基 / 坐标 / 矩阵};
+\node[atlas,right=of rep] (tr) {\textbf{Allowed Transform}\\\scriptsize 允许怎样改写表示};
+\node[atlas,below=1.15cm of tr] (inv) {\textbf{Invariant 不变量}\\\scriptsize 什么必须保持};
+\node[atlas,left=of inv] (simple) {\textbf{Simplest Valid Form}\\\scriptsize 当前问题允许的最简表示};
+\draw[flow] (obj) -- (rep);
+\draw[flow] (rep) -- (tr);
+\draw[flow] (tr) -- (inv);
+\draw[flow] (inv) -- (simple);
+\end{tikzpicture}
+\end{center}
+
+这条链中的箭头表示\kw{判断顺序}，不是代数运算：
+
+\begin{enumerate}
+  \item \kw{先认对象。}同一个数表可以代表不同对象；对象不同，合法变换也不同。
+  \item \kw{再看表示。}问清矩阵和坐标依赖哪组基、哪组变量。
+  \item \kw{再确定允许的变换。}一般映射允许两端独立换基；算子换基时输入输出必须同步；二次型是同一个变量同时进入两个槽位。
+  \item \kw{再找不变量。}不变量是判断“变换前后仍在研究同一结构”的检查器。
+  \item \kw{最后才化简。}化简的目标不是把数字变漂亮，而是让与当前问题有关的结构直接显出来。
+\end{enumerate}
+
+\section{同一个矩阵，至少有四种身份}
+
+\begin{longtable}{L{3.2cm}L{3.3cm}L{5.2cm}L{3.7cm}}
+\toprule
+\textbf{矩阵当前身份} & \textbf{真正对象} & \textbf{首先问什么} & \textbf{主要去向}\\
+\midrule
+列向量排在一起 & 一组待组合的方向 & 能生成什么？有多少冗余？ & Topic 01：空间、基与坐标\\
+一般线性映射的矩阵 & $T:V\to W$ & 哪些输入被抹掉？哪些输出可达？ & Topic 02--04\\
+线性算子的矩阵 & $T:V\to V$ & 有没有不被混合的自然方向？ & Topic 05：特征结构\\
+二次型系数矩阵 & $q(x)=x^TAx$ & 怎样去掉交叉耦合？符号结构是什么？ & Topic 06：二次型\\
+\bottomrule
+\end{longtable}
+
+因此“看到矩阵就做初等变换”不是一个合法的统一策略。必须先知道：\kw{这次变换允许改变什么，题目又要求保护什么。}
+
+\section{六个 Topic：每册只回答一个根问题}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.75cm and 1.05cm]
+\node[topic] (t1) {\textbf{01 空间、生成、基与坐标}\\\scriptsize 最少多少独立方向才能无歧义表示对象？};
+\node[topic,right=of t1] (t2) {\textbf{02 线性映射、矩阵与行列式}\\\scriptsize 线性作用怎样进入坐标，何时丢失信息？};
+\node[topic,below=of t2] (t3) {\textbf{03 秩、基本子空间与等价}\\\scriptsize 输入自由度怎样分成“消失”和“可见”？};
+\node[topic,left=of t3] (t4) {\textbf{04 方程组：可达性与解空间}\\\scriptsize 给定输出能否到达，全部原像长什么样？};
+\node[topic,below=of t1] (t5) {\textbf{05 特征结构、相似与对角化}\\\scriptsize 算子有没有自己的自然方向？};
+\node[topic,right=of t5] (t6) {\textbf{06 二次型、合同、惯性与正定}\\\scriptsize 怎样消除二次耦合并保留符号结构？};
+\draw[flow] (t1) -- (t2);
+\draw[flow] (t2) -- (t3);
+\draw[flow] (t3) -- (t4);
+\draw[useflow] (t2) -- (t5);
+\draw[useflow] (t1) -- (t5);
+\draw[useflow] (t5) -- (t6);
+\draw[useflow] (t1) -- (t6);
+\end{tikzpicture}
+\end{center}
+
+\begin{longtable}{L{3.0cm}L{5.1cm}L{6.9cm}}
+\toprule
+\textbf{Topic} & \textbf{本册拥有} & \textbf{明确停止的位置}\\
+\midrule
+01 空间与表示 & 线性组合、span、相关/无关、基、维数、坐标、内积与正交的本体机制 & 不解释矩阵作为映射怎样作用；不拥有特征向量和二次型主轴\\
+02 映射与矩阵 & 线性映射、矩阵表示、复合、可逆、方阵行列式及其结构意义 & 不拥有 rank--nullity 的完整自由度分解；不解具体方程组\\
+03 秩与基本子空间 & rank、kernel/image、行列空间、矩阵等价及维数分解（rank--nullity） & 不拥有给定 $b$ 的完整解集；不进入相似与合同分类\\
+04 方程组 & $Ax=b$ 的可达性、齐次/非齐次解集、基础解系、参数相容性 & 不重新解释 rank 的本体；不把消元技巧提升成世界模型\\
+05 特征结构 & 特征值/向量、相似、对角化、实对称谱结构 & 不拥有二次型惯性；Jordan 计算不进入数学一主干\\
+06 二次型 & 合同、标准形/规范形、惯性、正定性 & 不拥有一般相似分类；Hessian 极值全过程属于跨科接口\\
+\bottomrule
+\end{longtable}
+
+\begin{warnbox}{为什么行列式没有单独拆成一个 Topic？}
+在本体系中，行列式不是一套孤立计算。它首先服务于方阵线性作用：是否压扁了满维空间、是否可逆、体积缩放是否为零。展开、代数余子式、伴随矩阵等具体计算仍由 Topic 02 处理；题中如何快速选计算路线则属于 Rules，而不是另建一个世界模型。
+\end{warnbox}
+
+\section{三类“标准化”：先问对象，再决定关系}
+
+线性代数里最容易混淆的不是公式本身，而是\kw{三种公式为什么对应三种不同研究对象}。
+
+\subsection{矩阵等价：一般映射两端可以独立换基}
+
+两个同为 $m\times n$ 的矩阵 $A,B$ 若存在可逆矩阵 $P,Q$ 使
+\[
+\boxed{B=PAQ},
+\]
+则称它们\kw{等价}。从线性映射看，这反映定义域和陪域可以分别换基；具体哪一个换基矩阵写成逆矩阵，取决于坐标约定，但“两端可以独立改变”这一结构不变。
+
+对固定尺寸的矩阵，等价分类最终只剩 rank：若 $r(A)=r$，可以通过等价变换化到
+\[
+\begin{pmatrix}
+I_r&0\\0&0
+\end{pmatrix}.
+\]
+
+\subsection{相似：同一个算子只能用同一套新基描述输入和输出}
+
+若 $T:V\to V$ 是同一空间上的线性算子，同一个算子在两组基下的矩阵满足
+\[
+\boxed{B=P^{-1}AP}.
+\]
+这叫\kw{相似}。它不是“左右都乘可逆矩阵”，而是同一个换基动作在输入端和输出端同步出现。
+
+相似保持特征多项式、特征值及其重数、迹、行列式、rank 等结构。但\kw{只有相同特征值并不足以保证相似}；完整相似分类需要比特征值更多的信息。数学一主干只进一步追问：当前算子是否有足够多线性无关的特征向量，从而可以对角化。
+
+\subsection{合同：同一个变量同时进入二次表达式的两个位置}
+
+实二次型
+\[
+q(x)=x^TAx
+\]
+在变量代换 $x=Py$ 下变成
+\[
+q(Py)=y^T(P^TAP)y.
+\]
+因此新系数矩阵为
+\[
+\boxed{B=P^TAP}.
+\]
+这叫\kw{合同}。对实对称二次型，合同真正保护的是正、负、零方向数，也就是\kw{惯性}；一般合同并不保持特征值的具体数值。
+
+\begin{longtable}{L{2.4cm}L{3.5cm}L{3.8cm}L{3.2cm}L{3.3cm}}
+\toprule
+\textbf{关系} & \textbf{研究对象} & \textbf{合法变换} & \textbf{核心不变量} & \textbf{当前范围内的最简表示}\\
+\midrule
+等价 & 一般映射 $V\to W$ & $B=PAQ$，两端独立 & rank & $\begin{psmallmatrix}I_r&0\\0&0\end{psmallmatrix}$\\
+相似 & 算子 $T:V\to V$ & $B=P^{-1}AP$，同一空间同步换基 & 特征结构、rank、trace、det & 可对角化时为对角矩阵\\
+合同 & 实二次型 & $B=P^TAP$，同一变量代换 & 惯性、rank、正定性 & $\operatorname{diag}(I_p,-I_q,0)$\\
+\bottomrule
+\end{longtable}
+
+\begin{methodbox}{正交变换为什么是一个特殊交汇点？}
+若 $Q$ 是正交矩阵，则 $Q^{-1}=Q^T$。因此对实对称矩阵，
+\[
+Q^{-1}AQ=Q^TAQ
+\]
+同一个数值变换可以同时被解释为“算子换到正交特征基”和“二次型换到正交主轴”。
+
+这并不表示相似和合同变成了同一种关系。它只说明：\kw{在正交变换这个特殊子类里，两种矩阵公式恰好一致，而研究对象仍然不同。}
+\end{methodbox}
+
+\section{不变量是“问题专用的压缩”，不是对象本身}
+
+不变量的价值在于：不用保存所有矩阵元素，也能回答某类结构问题。但压缩越强，丢失的信息越多。
+
+\begin{longtable}{L{2.8cm}L{4.2cm}L{4.4cm}L{4.2cm}}
+\toprule
+\textbf{压缩量} & \textbf{它能回答什么} & \textbf{它没有保留什么} & \textbf{不能做出的反推}\\
+\midrule
+rank & 有多少独立输入方向留下可见输出；是否满秩 & 具体作用方向、特征结构、元素位置 & 同 rank $\nRightarrow$ 相似\\
+$\det A$ & 方阵是否发生满维塌缩；是否可逆的一个标量探针 & kernel/image 的具体方向及大部分矩阵结构 & 同非零 determinant 只能推出都满秩；同为 $0$ 时甚至不推出同 rank，更不推出相似\\
+特征值（含重数） & 算子在特征方向上的伸缩候选；可逆性等结构线索 & 特征向量如何组织；缺陷空间结构 & 同特征值 $\nRightarrow$ 相似\\
+惯性 $(p,q,z)$ & 二次型正、负、零方向分别有多少 & 每个方向上的具体系数大小 & 同惯性 $\nRightarrow$ 相似，也不要求同特征值\\
+\bottomrule
+\end{longtable}
+
+\begin{corebox}{压缩原则}
+\[
+\boxed{\text{Invariant}=\text{在指定关系下仍可靠的结构摘要}.}
+\]
+所以做判断时必须把“不变量”与“允许的变换”成对出现。脱离等价/相似/合同去问“什么不变”，问题本身就不完整。
+\end{corebox}
+
+\section{三个贯穿母例：让总图真正运行一次}
+
+\subsection{母例 A：三个向量里只有两个独立方向}
+
+令
+\[
+\alpha_1=(1,1,1)^T,\qquad
+\alpha_2=(1,2,3)^T,\qquad
+\alpha_3=\alpha_1+\alpha_2.
+\]
+第三个向量没有增加新的生成方向，所以
+\[
+\operatorname{span}\{\alpha_1,\alpha_2,\alpha_3\}
+=\operatorname{span}\{\alpha_1,\alpha_2\},
+\qquad r(\alpha_1,\alpha_2,\alpha_3)=2.
+\]
+这个例子首先属于 Topic 01；当三向量作为矩阵的列时，它又会进入 Topic 03 的列空间与 rank。Atlas 在这里不展开计算，只展示\kw{同一个结构怎样被不同 Topic 从不同角度读取}。
+
+\subsection{母例 B：同一个矩阵，在三种问题里得到三种“最简”}
+
+令
+\[
+A=\begin{pmatrix}1&1\\1&1\end{pmatrix}.
+\]
+作为一般线性映射，它的 rank 为 $1$，所以在矩阵等价下可化为
+\[
+\begin{pmatrix}1&0\\0&0\end{pmatrix}.
+\]
+作为线性算子，它有特征值 $2,0$，因此在相似关系下可化为
+\[
+\begin{pmatrix}2&0\\0&0\end{pmatrix}.
+\]
+作为实二次型的系数矩阵，它有一个正方向和一个零方向，合同规范形可以进一步归一化为
+\[
+\begin{pmatrix}1&0\\0&0\end{pmatrix}.
+\]
+
+同一个数表出现了两个不同的对角结果，不是矛盾，而是因为\kw{研究对象和允许变换不同}。这就是本 Atlas 最核心的分流能力。
+
+\subsection{母例 C：实对称矩阵把特征方向和二次型主轴接起来}
+
+令
+\[
+S=\begin{pmatrix}2&1\\1&2\end{pmatrix}.
+\]
+它的两个正交特征方向可以取 $(1,1)^T$ 与 $(1,-1)^T$，对应特征值 $3,1$。单位化后组成正交矩阵 $Q$，有
+\[
+Q^TSQ=Q^{-1}SQ=\operatorname{diag}(3,1).
+\]
+
+在线性算子视角，这说明找到了算子的自然方向；在二次型视角，这说明找到了消除交叉项的主轴；因为两个主轴系数都为正，二次型还是正定的。
+
+这里真正连接 Topic 05 与 Topic 06 的不是“都在算特征值”，而是\kw{实对称矩阵存在正交特征基}这一结构事实。
+
+\section{跨 Topic 与跨学科接口}
+
+\subsection{学科内部的主要依赖}
+
+\begin{itemize}
+  \item Topic 01 提供基、坐标、维数和正交语言；其他各册都要使用它，但不能重复拥有这些定义。
+  \item Topic 02 把抽象线性映射变成矩阵作用；Topic 03 再从 kernel/image 读出自由度保留与丢失。
+  \item Topic 04 把 $Ax=b$ 解释为给定输出 $b$ 的逆像问题，因此使用 Topic 03 的 image/kernel，而不重新发明 rank。
+  \item Topic 05 把一般映射收窄为 $T:V\to V$ 的算子问题，寻找不混合的特征方向。
+  \item Topic 06 把研究对象换成标量值的二次型，并调用 Topic 01 的正交语言与 Topic 05 的实对称谱定理。
+\end{itemize}
+
+\subsection{需要上移到数学一 Cross-Subject Bridge 的接口}
+
+以下连接是真接口，但不由线代 Subject Atlas 重新展开：
+
+\begin{itemize}
+  \item \kw{B00 内积、正交与投影：}线代中的内积结构怎样成为几何和函数投影的共同语言；
+  \item \kw{B01 局部线性化：}高数的可微为什么可以用线性映射表示；
+  \item \kw{B02 Jacobian 与行列式：}坐标变换时局部面积/体积缩放为什么调用 determinant；
+  \item \kw{B03 Hessian 与二次型：}二阶局部形状为什么由二次型和正定性控制；
+  \item \kw{B04 梯度、正交与 Lagrange：}约束极值中的法方向怎样进入线性子空间几何；
+  \item \kw{B05 线性方程与线性微分方程：}“特解 + kernel”的共享结构；
+  \item \kw{B08 Fourier 与正交基：}函数展开怎样调用正交投影语言。
+\end{itemize}
+
+\begin{warnbox}{两个必须主动阻断的伪连接}
+\begin{itemize}
+  \item \kw{线性无关 $\neq$ 概率独立。}前者讨论向量线性组合是否存在冗余，后者讨论联合概率是否分解；它们的对象、判据和结论都不同。
+  \item \kw{正交 $\neq$ 概率独立。}正交是内积为零；随机变量不相关也只对应某种二阶摘要为零。只有在额外结构（例如联合 Gaussian）下，才可能推出更强结论。
+\end{itemize}
+\end{warnbox}
+
+\section{概念边界：真正的分流判据}
+
+\small
+\begin{longtable}{L{3.15cm}L{3.15cm}L{3.65cm}L{3.15cm}L{2.7cm}}
+\toprule
+\textbf{A $\neq$ B} & \textbf{为什么容易混} & \textbf{真正判据} & \textbf{题面信号} & \textbf{混淆后果}\\
+\midrule
+向量 $\neq$ 坐标列 & 题目常直接给数字列 & 是否已经固定一组基；换基后数字会不会变 & “在基 $\mathcal B$ 下坐标”“过渡矩阵” & 把坐标变化误当对象变化\\
+线性映射 $\neq$ 矩阵 & 计算几乎都在矩阵上完成 & 矩阵必须连同定义域、陪域和所选基才完整表示映射 & “不同基下矩阵”“同一线性变换” & 乱用相似/等价公式\\
+矩阵等价 $\neq$ 相似 & 都有可逆矩阵乘在左右 & 两端是否可独立换基；还是同一算子的同基换坐标 & rank/初等行列变换 vs 特征值/对角化 & 把 rank 不变量误当完整算子结构\\
+相似 $\neq$ 合同 & 都可出现 $P$ 与矩阵的组合 & 研究的是算子换基，还是二次型变量代换 & 特征结构 vs 二次型/正定 & 错把特征值当合同不变量\\
+同特征值 $\neq$ 相似 & 特征值是最显眼的不变量 & 相似要求完整算子结构一致；同谱只是必要条件 & “是否相似”“是否可对角化” & 用必要条件冒充充分条件\\
+可对角化 $\neq$ 特征值互异 & 互异特征值确实保证可对角化 & 是否存在 $n$ 个线性无关特征向量 & 重根、特征子空间维数 & 见重根就误判不可对角化\\
+rank $\neq$ 非零元素个数 & 两者都像在“计数量” & rank 计独立方向，不计元素数量 & 初等变换、极大无关组、列空间 & 用元素多少判断自由度\\
+$Ax=b$ 有解 $\neq$ $A$ 可逆 & 可逆时确实对所有 $b$ 都有唯一解 & 当前 $b$ 是否属于 $\operatorname{Im}A$；可逆要求所有输出都可达且 kernel 为零 & “给定 $b$ 是否有解” vs “任意 $b$” & 把局部可达误成全局可逆\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{学习导航：遇到新内容先问五个问题}
+
+下面五问是\kw{知识导航}，用于决定应该打开哪一本 Topic；它不是已经经过真题验证的考场 SOP。
+
+\begin{enumerate}
+  \item \kw{对象是什么？}是向量组、一般映射、同空间算子、方程逆像，还是二次型？
+  \item \kw{现在看到的是对象还是表示？}如果是坐标/矩阵，它依赖哪组基或变量？
+  \item \kw{允许怎样改变表示？}两端独立换基、同基相似，还是变量合同？
+  \item \kw{当前真正可靠的不变量是什么？}rank、特征结构、惯性，还是只需要可逆性？
+  \item \kw{目标是什么？}判断存在性、计算自由度、构造坐标，还是寻找当前关系下的最简表示？
+\end{enumerate}
+
+如果第 1 问还没有答案，不要急着选矩阵技巧；如果第 3 问没有答案，不要急着使用“不变量”。
+
+\section{传统考纲怎样映射到这张图}
+
+\begin{longtable}{L{3.7cm}L{5.2cm}L{6.9cm}}
+\toprule
+\textbf{传统内容} & \textbf{主要 Owner} & \textbf{Atlas 中的定位}\\
+\midrule
+向量、相关性、基、维数、正交 & Topic 01 & 建立空间的坐标骨架\\
+矩阵运算、逆、行列式 & Topic 02 & 把线性作用写成坐标形式，并检查是否丢失满维信息\\
+矩阵秩、向量组秩、等价 & Topic 03 & 测量可见自由度并建立一般映射的分类\\
+齐次/非齐次线性方程组 & Topic 04 & 研究输出的逆像结构\\
+特征值、特征向量、相似、对角化 & Topic 05 & 为同空间算子寻找自然坐标\\
+二次型、合同、惯性、正定 & Topic 06 & 去掉二次耦合并读出符号几何\\
+\bottomrule
+\end{longtable}
+
+\section{一页压缩：忘掉章节名以后怎样重建线代}
+
+\begin{corebox}{一句话}
+\[
+\boxed{\text{线性代数研究：对象怎样被坐标表示，以及在合法换表示后什么结构仍然可靠。}}
+\]
+\end{corebox}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.75cm]
+\node[atlas] (a) {\textbf{对象}\\\scriptsize Space / Map / Operator / Quadratic Form};
+\node[atlas,right=of a] (b) {\textbf{表示}\\\scriptsize Basis / Coordinates / Matrix};
+\node[atlas,right=of b] (c) {\textbf{合法变换}\\\scriptsize Equivalence / Similarity / Congruence};
+\node[atlas,below=1.0cm of c] (d) {\textbf{不变量}\\\scriptsize Rank / Eigenstructure / Inertia};
+\node[atlas,left=of d] (e) {\textbf{最简合法表示}\\\scriptsize 让目标结构直接显现};
+\draw[flow] (a) -- (b);
+\draw[flow] (b) -- (c);
+\draw[flow] (c) -- (d);
+\draw[flow] (d) -- (e);
+\end{tikzpicture}
+\end{center}
+
+要从这一页重建全书，只问：
+
+\begin{enumerate}
+  \item 为什么向量和坐标不能等同？
+  \item 为什么一般映射、线性算子和二次型分别对应等价、相似、合同？
+  \item rank、特征结构、惯性分别压缩了哪类结构，又丢了什么信息？
+  \item 为什么 $Ax=b$ 是 image 可达性 + kernel 自由度的问题？
+  \item 为什么实对称矩阵能把正交特征方向和二次型主轴接起来？
+\end{enumerate}
+
+能从这五问重新画出对象地图，再去打开具体 Topic，说明 Atlas 已经发挥作用。
+
+\end{document}

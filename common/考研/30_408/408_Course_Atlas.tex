@@ -1,0 +1,317 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.8cm,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.35em}
+\setlist[itemize]{itemsep=0.2em,topsep=0.3em}
+\setlist[enumerate]{itemsep=0.2em,topsep=0.3em}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!50!black}
+
+\definecolor{mainblue}{RGB}{45,86,140}
+\definecolor{deepblue}{RGB}{30,62,102}
+\definecolor{softblue}{RGB}{238,245,252}
+\definecolor{softgreen}{RGB}{238,249,243}
+\definecolor{softorange}{RGB}{253,246,233}
+\definecolor{softred}{RGB}{253,239,239}
+\definecolor{softgray}{RGB}{246,247,249}
+\definecolor{deepgreen}{RGB}{35,105,75}
+\definecolor{deeporange}{RGB}{165,98,22}
+\definecolor{deepred}{RGB}{150,55,55}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{408 Course Atlas}
+\rhead{四科世界模型与跨科接口}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1][]{colback=softblue,colframe=mainblue,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{bridgebox}[1][]{colback=softgreen,colframe=deepgreen,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{exam}[1][]{colback=softorange,colframe=deeporange,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warn}[1][]{colback=softred,colframe=deepred,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{method}[1][]{colback=softgray,colframe=black!45,title=#1,fonttitle=\bfseries,boxrule=0.6pt,arc=2mm}
+
+\newcommand{\kw}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\title{\vspace{-1.2cm}\textbf{408 Course Atlas}\\[0.45em]
+\large 四科世界模型、接口与综合路径}
+\author{408 计算机综合方法论总册}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}[母问题：408 到底在研究什么？]
+408 不是四本教材的并排目录。它研究的是：\kw{数据怎样被组织，程序语义怎样落到机器，操作系统怎样管理执行与资源，独立机器又怎样通过网络通信。}
+
+可以把观察路径压缩成：
+\[
+\boxed{
+\text{Data}
+\to \text{Program}
+\to \text{Machine}
+\to \text{Operating System}
+\to \text{Network}
+}
+\]
+但这条链只是\kw{系统观察路径}，不是一个万能世界模型。四科必须保留自己的对象、状态和推理语言。
+\end{corebox}
+
+\section{为什么不能用一种语言强行统一四科}
+
+同一道综合题会跨越多个层级，但不同学科真正关心的变量不同。若强行用“对象--状态--机制”一套抽象吞掉全部细节，很容易得到漂亮但不可操作的总图。
+
+\begin{center}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{2.5cm} X X}
+\toprule
+学科 & 学科母问题 & 首先观察什么 \\
+\midrule
+数据结构 & 怎样按 Workload 组织关系，使关键操作以可接受代价完成？ & Relation / Representation / Operation / Invariant / Cost \\
+计算机组成原理 & 怎样用有限硬件实现 ISA 对软件承诺的程序语义？ & State / Location / Path / Resource / Timing / Commit \\
+操作系统 & 怎样在并发、有限资源和异步事件下提供受保护的执行环境？ & Object / Relation / Queue / Event / Mechanism / Policy \\
+计算机网络 & 没有共享内存和全局即时状态时，独立机器怎样完成通信？ & Scope / Name / State Owner / Event / Transition / Feedback \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{method}[共同语言只用于切换镜头]
+四科可以共享一组跨科观察槽：
+\[
+\boxed{
+\text{Object / State / Scope / Mapping / Resource / Event / Invariant / Cost}
+}
+\]
+它们只帮助你判断当前应该切到哪门学科，不替代任何 Subject Atlas 的本体模型。
+\end{method}
+
+\section{数据结构：从 Workload 反推表示}
+
+\begin{corebox}[Data Structure Mother Model]
+\[
+\boxed{
+\text{Workload}
+\to \text{Logical Relation}
+\to \text{Required Operations}
+\to \text{Representation}
+\to \text{Invariant}
+\to \text{Algorithm}
+\to \text{Cost}
+}
+\]
+\end{corebox}
+
+数据结构的根本判断不是“这题属于链表还是树”，而是：\kw{当前关系是什么、要支持哪些操作、为了这些操作值得维护什么结构、维护成本是多少。}
+
+复杂度、渐进分析、Cost Vector、Workload-first 与 `Relation $\neq$ Representation` 属于 Atlas Foundation，而不是独立机制 Topic。
+
+核心 Topic 依次覆盖：线性关系与存储表示、栈队列、串与模式匹配、树、Heap、Union-Find、图表示与遍历、图结构算法、查找与有序索引、Hash、内部排序、外部排序。
+
+\section{计算机组成原理：从 ISA 语义到精确提交}
+
+\begin{corebox}[Computer Organization Mother Model]
+\[
+\boxed{
+\text{ISA Semantic}
+\to \text{Data Movement}
+\to \text{Hardware Path}
+\to \text{Timing}
+\to \text{Architectural State Commit}
+}
+\]
+\end{corebox}
+
+硬件内部可以缓存、重叠、等待甚至进行局部推测，但最终必须保持软件可见的 ISA 语义。
+
+本学科的八个核心 Topic 是：数据表示与运算、ISA 与机器级程序、CPU 数据通路与控制、流水线、主存硬件、Cache、地址翻译硬件、总线与 I/O 硬件。
+
+\begin{method}[计组起手六问]
+\begin{enumerate}
+\item 当前软件可见状态是什么？
+\item 数据现在在哪里？
+\item 它经过哪条硬件路径？
+\item 需要哪些共享资源？
+\item 数据何时可用，何时锁存？
+\item 最终何时改变体系结构状态？
+\end{enumerate}
+\end{method}
+
+\section{操作系统：在状态变化中维护安全与进展}
+
+\begin{corebox}[Operating System Mother Model]
+OS 统一状态可写成：
+\[
+S=(Objects,Relations,Queues)
+\]
+推演主线是：
+\[
+\boxed{
+\text{State}
+\to \text{Transition}
+\to \text{Bad State}
+\to \text{Safety / Liveness}
+\to \text{Minimal Mechanism}
+\to \text{Tradeoff}
+}
+\]
+\end{corebox}
+
+OS Atlas Foundation 负责解释 abstraction、virtualization、protection、user/kernel、程序运行环境等共同入口；真正的机制 Topic 只有五个：执行实体与调度、并发同步与死锁、虚拟内存、I/O、文件系统。
+
+\begin{warn}[不要把 Foundation 伪装成第六个机制 Topic]
+基础概念是后续机制共同使用的坐标系。它没有必要为了目录整齐与五个机制 Topic 平级竞争 Ownership。
+\end{warn}
+
+\section{计算机网络：没有全局即时状态的通信}
+
+\begin{corebox}[Computer Network Mother Model]
+\[
+\boxed{
+\text{Scope}
+\to \text{State}
+\to \text{Event}
+\to \text{Transition}
+\to \text{Feedback}
+\to \text{Cost}
+}
+\]
+\end{corebox}
+
+网络中的同一个词只有放回作用域才有意义：一跳、端到端、一个 AS、整个 Internet，分别由不同对象保存状态并作出决策。
+
+八个核心 Topic 是：通信基础与性能、单跳交付、可靠传输、IP 与分组转发、路由、UDP/TCP、拥塞控制、应用层服务语义。
+
+\begin{method}[网络起手八问]
+先确认：Scope、通信对象、名字、状态所有者、事件、状态/封装变化、反馈信号、时间/带宽/队列成本。
+\end{method}
+
+\section{Bridge：只有真实交接才值得独立建册}
+
+Bridge 不是“两个知识点有联系”。它必须先通过 Validity，再通过 Standalone Promotion。
+
+\begin{bridgebox}[Gate 1：这是不是一个真实接口？]
+删除具体题目后，仍应存在稳定的：
+\[
+\boxed{
+A\ \text{output}
+\to \text{translation/shared structure}
+\to B\ \text{input}
+}
+\]
+如果只是 B 使用了 A 的既有机制，优先记为 Use；如果只是多个模块完成一个具体过程，则归 Integration。
+\end{bridgebox}
+
+\begin{bridgebox}[Gate 2：它值得独立建册吗？]
+继续检查四项：\kw{Ownership Pressure / Reuse / Current-Scope Relevance / New Inference}。
+
+真连接但没有独立维护必要，不占一个 Canonical Bridge Owner。
+\end{bridgebox}
+
+当前三个 Core Cross-Subject Bridge 为：
+
+\begin{enumerate}
+\item \kw{X-B01 Privilege / Exception / System Call $\times$ OS Control}：硬件控制转移怎样成为内核接管执行的入口；
+\item \kw{X-B02 Hardware Address Translation $\times$ OS Virtual Memory}：OS 建立映射，硬件消费映射，缺失时 fault 回到 OS 修复；
+\item \kw{X-B03 Interrupt / DMA $\times$ OS I/O}：设备完成怎样从硬件事件变成内核 completion 与进程 wakeup。
+\end{enumerate}
+
+X-B04 Process / Socket $\times$ Transport Endpoint 结构上是真接口，但是否晋升 Core 仍需 408 真题和 Coverage evidence 支撑。
+
+\begin{warn}[Anti-Bridge：几个常见误区]
+\begin{itemize}
+\item Hardware Cache $\neq$ OS Page Cache；
+\item TLB miss $\neq$ Cache miss $\neq$ Page Fault；
+\item Routing algorithm uses graph ideas $\neq$ routing protocol is literally a data-structure algorithm；
+\item “系统里用了 Queue/Tree/Hash”通常只是 Use，不自动产生 Data Structure $\times$ Systems Bridge。
+\end{itemize}
+\end{warn}
+
+\section{Integration：完整过程怎样组合成熟模块}
+
+Integration 拥有具体协作轨迹，不重新定义局部机制。
+
+\begin{bridgebox}[X-I01：一次 LOAD / Memory Access 的完整慢路径]
+\[
+\text{Instruction}
+\to \text{Effective Address}
+\to \text{VA}
+\to \text{TLB/Page Table}
+\to \text{PA}
+\to \text{Cache}
+\to \text{Memory}
+\]
+如果发生 Page Fault：
+\[
+\text{Fault}
+\to \text{Kernel}
+\to \text{VM Repair}
+\to \text{PTE Update}
+\to \text{Retry}
+\to \text{Commit}
+\]
+\end{bridgebox}
+
+\begin{bridgebox}[X-I02：一次 Blocking File read 的完整生命周期]
+\[
+\text{User Process}
+\to \text{System Call}
+\to \text{fd/OFD/inode}
+\to \text{Page Cache / I/O Request}
+\to \text{Block}
+\to \text{DMA/Interrupt}
+\to \text{Completion}
+\to \text{Wakeup}
+\to \text{Return}
+\]
+\end{bridgebox}
+
+\section{做题控制：先切对学科，再调机制}
+
+\begin{exam}[综合题的第一动作]
+不要先问“这是哪一章”。先问：\kw{题目现在要求我追踪的是关系、硬件路径、OS 状态，还是分布式通信状态？}
+
+一旦确定当前层：
+\begin{itemize}
+\item 数据结构：Relation $\to$ Representation $\to$ Operation $\to$ Invariant $\to$ Cost；
+\item 计组：State $\to$ Location $\to$ Path $\to$ Timing $\to$ Commit；
+\item OS：Object/Queue $\to$ Event $\to$ Mechanism/Policy $\to$ New State；
+\item 网络：Scope/Name/Owner $\to$ Event $\to$ Transition/Feedback。
+\end{itemize}
+\end{exam}
+
+\section{怎样使用这本总册}
+
+\begin{enumerate}
+\item 第一次学习某一科时，只把本册当地图，不用先背全部跨科关系；
+\item 进入对应 Subject Atlas，建立那门学科自己的世界模型；
+\item 学到某个 Topic 时，先掌握局部机制；
+\item 只有两个 Owner 真正交换状态、数据或控制权时，打开 Bridge；
+\item 只有要追踪一个完整真实过程时，打开 Integration；
+\item 做完题以后，把失误归到模型、识别、路径、执行/检查/表达或考试决策，而不是无限扩张知识分类。
+\end{enumerate}
+
+\begin{corebox}[一页压缩]
+408 的主干不是“记住四科所有章节”，而是：
+\[
+\boxed{
+\text{Separate Subject Models}
++ \text{Explicit Interfaces}
++ \text{Canonical Processes}
++ \text{Executable Control}
+}
+\]
+
+四科先各自讲清，接口只在真实交接处出现，综合只追踪真实过程。这样既能覆盖考试，又不会为了“统一”制造第二套模糊知识。
+\end{corebox}
+
+\end{document}

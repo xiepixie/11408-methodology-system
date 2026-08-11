@@ -1,6 +1,7 @@
-# 计算机组成原理复习总览与导航
+# 计算机组成原理 Subject Atlas
 
-当前状态：框架已采用；Atlas、八个 Topic 与 Integration 已形成工作稿，待逐册人工确认。
+> 类型：Atlas
+> 状态：已采用；README 是 Canonical Subject Atlas，八个 Topic 的Markdown 工作稿仍是 Source，深度正文按册迁入 Canonical LaTeX。
 
 ## 学科母问题
 
@@ -16,9 +17,9 @@ $$
 
 硬件内部可以重叠、缓存和推测，但对软件可见的程序语义必须保持。
 
-## Atlas
+## 旧 Deep Map / Source
 
-[计组学科总图](00_学科总图/README.md)负责统一 State、Location、Path、Resource、Timing 与 Commit。
+[计组学科总图旧稿](00_学科总图/README.md)保留 State、Location、Path、Resource、Timing 与 Commit 的详细展开，可用于 Source Diff；当前唯一 Subject Atlas Owner 是本 README。
 
 ## 八个核心 Topic
 
@@ -69,13 +70,17 @@ VPN/offset、PTE 硬件可见格式、TLB、page walk、VA/PA 位划分以及 TL
 
 bus transaction、arbitration、timing、controller registers、port addressing、polling、中断硬件路径和 DMA controller/transfer。
 
-## Bridge 与 Integration
+## Internal Bridge 与 Integration
 
-- 科内 [Bridge 与 Integration](85_科内桥梁与综合/计组科内桥梁与综合：从%20C%20语句到一次精确提交.md)：《C x ISA x CPU》与《一条指令的一生》；
-- 全局 Bridge：`Cache x VM x OS`；
-- 全局 Bridge：`Interrupt / DMA x OS`；
+新的 Canonical 入口：
 
-全局入口见 [跨学科 Bridge](../50_桥梁专题/408%20跨学科%20Bridge.md)。
+- [CO-B01｜ISA Semantic × Datapath](85_科内桥梁/CO-B01_ISA语义与数据通路/README.md)：指令承诺的状态变化怎样翻译成微操作、通路与控制；
+- [CO-B02｜Address Translation × Cache Access](85_科内桥梁/CO-B02_地址翻译与Cache访问/README.md)：VA/PA 位怎样进入 TLB/Page Table 与 Cache 的组合访问路径；
+- [CO-I01｜一条指令的一生](86_综合专题/CO-I01_一条指令的一生/README.md)：优先以 LOAD 追踪 ISA -> CPU -> Pipeline -> Translation -> Cache/Memory -> Commit。
+
+`C -> ISA` 的机器级映射仍由 ISA Topic Own，不再把 `C × ISA × CPU` 建成跨科 Bridge。原 `85_科内桥梁与综合/` 旧稿保留为 Source/legacy work draft，不再拥有新的 Bridge/Integration 定义。
+
+Cross-Subject Bridge 统一上移到 [408 Cross-Subject Bridge Atlas](../50_桥梁专题/README.md)：Privilege/Exception × OS、Hardware Address Translation × OS VM、Interrupt/DMA × OS I/O。
 
 ## 性能的归属
 

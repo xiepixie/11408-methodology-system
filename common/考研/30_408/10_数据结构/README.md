@@ -1,100 +1,90 @@
-# 数据结构复习总览与导航
+# 数据结构 Subject Atlas
 
-当前状态：框架已采用，专题正文待建。
+> 类型：Atlas
+> 状态：已采用；README 是 Canonical Subject Atlas，Atlas Foundation、12 个 Topic、3 个 internal Bridge、1 个 Integration 已锁定，下游深度 Handbook 按册建设。
 
-## 学科母问题
+## 1. 学科母问题
 
-数据结构研究的是：面对某种数据关系与操作需求，怎样组织信息，使关键操作以可接受的代价完成。
-
-$$
-\text{Problem}
-\to \text{Logical Relation}
-\to \text{Required Operations}
-\to \text{Representation}
-\to \text{Algorithm}
-\to \text{Invariant}
-\to \text{Cost}
-$$
-
-不存在脱离 workload 的“最好数据结构”。逻辑结构与存储表示必须分开，算法必须在修改表示时保持或恢复不变量。
-
-## Atlas
-
-[数据结构学科总图](00_学科总图/README.md)负责统一 Relation、Representation、Operation、Invariant 与 Cost，不展开十四个专题。
-
-## 知识域与规划 Owner
-
-| 知识域 | Topic | 唯一母问题 |
-|---|---|---|
-| 基础方法 | 算法复杂度与操作成本模型 | 输入规模变化时，决定成本的基本操作执行多少次？ |
-| 线性结构 | 线性表：连续与链接表示 | 同一线性关系为什么需要两种物理表示？ |
-| 线性结构 | 栈与队列 | 怎样通过限制操作建立过程的时间秩序？ |
-| 线性结构 | 数组、地址映射与特殊矩阵压缩 | 多维下标怎样映射到线性地址，怎样利用冗余压缩？ |
-| 树结构 | 树与二叉树 | 层次关系怎样被递归表示和系统遍历？ |
-| 树结构 | 编码、集合与优先级 | 树形表示怎样分别服务 Huffman、DSU 和 Heap？ |
-| 图结构 | 图的表示与遍历 | 任意关系怎样表示，并用 frontier 系统访问？ |
-| 图结构 | 图算法 | 怎样在图上维护连通、距离、偏序和时序不变量？ |
-| 查找与索引 | 静态查找 | 已知多少有序性，能减少多少搜索？ |
-| 查找与索引 | 动态有序索引 | 怎样付出更新成本来控制高度并保护查找成本？ |
-| 查找与索引 | Hash | 怎样用空间和冲突管理换取近似直接访问？ |
-| 查找与索引 | KMP | mismatch 后怎样复用已经匹配的信息？ |
-| 排序 | 内部排序 | 怎样通过局部操作逐步制造全局有序？ |
-| 排序 | 外部排序 | 当瓶颈变成磁盘 I/O，怎样减少数据遍历轮数？ |
-
-知识域入口：[基础方法](10_基础方法/README.md)、[线性结构](20_线性结构/README.md)、[树结构](30_树结构/README.md)、[图结构](40_图结构/README.md)、[查找与索引](50_查找与索引/README.md)、[排序](60_排序/README.md)。具体 Topic 正文仍未建立。
-
-## 科内 Bridge
-
-| Bridge | 只负责什么 |
-|---|---|
-| 遍历统一模型 | 连接 recursion、stack、queue、tree traversal、DFS 和 BFS 的 frontier 语义 |
-| 有序性、索引与查找代价 | 比较预维护结构对 Search、Update、Space 和 I/O 的影响 |
-| Heap、Union-Find 与图算法 | 解释图算法调用这些结构提供的高效操作 |
-
-## Integration
-
-最终综合题不是“链表 + 树 + 图大杂烩”，而是：
-
-$$
-\text{Workload}
-\to \text{Required Operations}
-\to \text{Candidate Structures}
-\to \text{Cost Comparison}
-\to \text{Choice}
-$$
-
-规划产品：《从问题需求到数据结构选择》。入口见[数据结构桥梁与综合](70_桥梁与综合/README.md)。
-
-## Question Control Adapter
-
-做题时依次确认：
-
-1. 当前数据是什么逻辑关系？
-2. 采用什么存储表示？
-3. 题目要求什么操作？
-4. 操作前后必须保持什么不变量？
-5. 当前哪些位置或元素已经确定？
-6. 空结构、单节点、首尾和重复元素怎样处理？
-7. 时间和空间代价是多少？
-
-规则入口：[数据结构做题规则](90_做题规则/README.md)。
-
-## 推荐建设顺序
+数据结构研究：面对某种数据关系与 workload，怎样选择表示并维护必要不变量，使关键操作以可接受的代价完成。
 
 ```text
-Atlas
--> 复杂度与成本模型
--> 线性表
--> 栈与队列
--> 树
--> 图
--> 查找与索引
--> 排序
--> 从需求到结构选择
+Workload
+-> Logical Relation
+-> Required Operations
+-> Representation
+-> Invariant
+-> Algorithm
+-> Cost Vector
 ```
 
-排序放在后期，用“不变量 + 元素移动 + 成本”检验整个专题体系是否成熟。
+不存在脱离 workload 的“最好数据结构”。
 
-## 覆盖提醒
+## 2. Atlas Foundation
 
-覆盖检查必须包含并查集、堆、红黑树、B/B+ 树、KMP 与外部排序；这些列项只决定不能漏学，不决定专题怎样组织。
+以下内容由 Atlas Own，不再建立独立“算法复杂度 Topic”：
+
+- input size 与 basic operation；
+- time / space complexity；
+- asymptotic comparison；
+- worst / average cost；
+- operation cost vector；
+- Logical Relation ≠ Representation；
+- Workload first；
+- Invariant before code；
+- Boundary 是合法状态集合的一部分。
+
+这些是后续所有 Topic 的分析与度量语言，不是一个独立数据结构机制。
+
+## 3. 12 个 Topic
+
+| ID | Topic | 母问题 |
+|---|---|---|
+| DS01 | [线性关系与存储表示](01_线性关系与存储表示/README.md) | 同一线性关系为什么需要连续与链接等不同物理表示？ |
+| DS02 | [栈、队列与受限访问](02_栈队列与受限访问/README.md) | 限制访问位置为什么能够编码过程的时间秩序？ |
+| DS03 | [串与模式匹配](03_串与模式匹配/README.md) | mismatch 后怎样复用已经得到的匹配信息？ |
+| DS04 | [树与二叉树](04_树与二叉树/README.md) | 层次关系怎样被递归表示、遍历和重组？ |
+| DS05 | [Heap 与优先队列](05_Heap与优先队列/README.md) | 怎样不维护完全有序，却始终高效取得极值？ |
+| DS06 | [Union-Find 与集合划分](06_UnionFind与集合划分/README.md) | 怎样动态维护“哪些元素属于同一集合”？ |
+| DS07 | [图的表示与遍历](07_图的表示与遍历/README.md) | 任意关系怎样编码，并确保目标节点被系统访问？ |
+| DS08 | [图上的结构算法](08_图上的结构算法/README.md) | 怎样在图上维护连通、路径、代价和偏序不变量？ |
+| DS09 | [查找与有序索引](09_查找与有序索引/README.md) | 愿意预先维护多少有序结构，可以换取多少查询能力？ |
+| DS10 | [Hash 与直接定位](10_Hash与直接定位/README.md) | 怎样用空间和冲突管理把搜索逼近直接访问？ |
+| DS11 | [内部排序](11_内部排序/README.md) | 怎样通过局部操作逐步制造全局有序？ |
+| DS12 | [外部排序](12_外部排序/README.md) | 当真正昂贵的是块 I/O 时，算法应该怎样改变？ |
+
+Huffman 留在 Tree Topic 作为树构造/编码应用；Heap 与 Union-Find 各自拥有独立母问题，不再并入“编码、集合与优先级”。
+
+## 4. Internal Bridge
+
+- [DS-B01 Frontier Traversal](50_科内桥梁/DS-B01_FrontierTraversal/README.md)
+- [DS-B02 Index Strategy × Workload](50_科内桥梁/DS-B02_IndexStrategy与Workload/README.md)
+- [DS-B03 Heap / Union-Find × Graph Algorithm](50_科内桥梁/DS-B03_辅助结构与图算法/README.md)
+
+Bridge 只解释接口；Tree/Graph/Heap/Union-Find 本体仍由各 Topic Own。
+
+## 5. Integration
+
+- [DS-I01｜从 Workload 到数据结构选择](60_综合专题/DS-I01_从Workload到数据结构选择/README.md)
+
+```text
+Workload
+-> Required Operations
+-> Candidate Structures
+-> Invariants
+-> Cost Vector
+-> Choice
+```
+
+## 6. Control Adapter
+
+```text
+Relation
+-> Workload
+-> Representation
+-> Operation
+-> Invariant
+-> Boundary
+-> Cost
+```
+
+Rules：[数据结构做题规则](90_做题规则/README.md)。

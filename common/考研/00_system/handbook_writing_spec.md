@@ -15,7 +15,7 @@
 - **做题时应该在哪个节点调用它？**
 - **忘掉具体公式以后，能不能重新推出主要结论？**
 
-本规范拥有所有心智模型手册与专题手册的认知结构、写作原则与验收标准。仓库启动、协作、Ownership 与 Publication 的执行边界由 [`AGENTS.md`](../AGENTS.md) 统一路由；具体物理交付仍服从当前仓库继承到的发布/编译契约。
+本规范拥有所有心智模型手册与专题手册的认知结构、写作原则与验收标准。`AGENTS.md` 只负责把任务路由到正确契约；协作写入见 [`collaboration_workflow.md`](collaboration_workflow.md)，Ownership 见 [`ownership_matrix.md`](ownership_matrix.md)，Handbook 物理交付见 [`handbook_contract.md`](handbook_contract.md)，仓库发布一致性见 [`repository_integrity.md`](repository_integrity.md)。
 
 ---
 
@@ -262,21 +262,19 @@ Cost 不仅是时间复杂度，还可能是：空间、I/O、通信、延迟、
 
 ---
 
-## 11. 第十原则：建立 Canonical Owner，控制重复
+## 11. 第十原则：正文只承担本册的 Ownership 责任
 
-任何重要概念必须问：**哪一本手册真正拥有解释责任？**
+Ownership 角色的统一词义见 [`terminology.md`](terminology.md) §7，具体 Owner 台账见 [`ownership_matrix.md`](ownership_matrix.md)。本规范不再维护第二份角色定义。
 
-分三类：
+写正文前只做一个检查：**这段话在本册属于哪种责任？**
 
-| 职责 | 含义 |
-|---|---|
-| **Own** | 本册负责完整解释 |
-| **Use** | 本册会使用，但默认前置知识已经建立 |
-| **Bridge** | 本册只解释它和另一个专题的接口 |
+- `Own`：可以展开完整定义、机制、边界和反例；
+- `Use`：只写当前推理必需的最小摘要，并链接 Owner；
+- `Bridge`：只写两侧怎样交接，不重讲两侧 Topic；
+- `Integrate`：只追踪多个 Owner 怎样按顺序协作；
+- `Extension / Anti-Bridge`：只保留扩展指针或禁推边界，不扩成平行主干。
 
-例如同一个"Page Cache"可能出现在 I/O、文件系统、VM、综合 read 路径，但它们回答的问题不同。Ownership 最好按照**解释问题**分配，而不是按照**名词**分配。
-
-详细台账见 [`ownership_matrix.md`](ownership_matrix.md)。
+例如 Page Cache 可以同时出现在 I/O、文件系统、VM 和一次 `read()` 的完整过程里，但只有一个位置负责修改它的定义；其他位置按各自责任引用。**同一个名词出现多次不等于重复定义，多个文件都声称能修改同一定义才是重复 Owner。**
 
 ---
 
@@ -445,29 +443,17 @@ $$\boxed{\textbf{统一写作方法，不统一学科本体。}}$$
 
 ---
 
-## 21. 第二十原则：手册必须设计为可局部更新
+## 21. 第二十原则：手册必须支持局部修改
 
-手册不是一次性交付物。它必须设计为可局部更新的结构——新证据进来时，知道改哪里、不改哪里、改完以后周围的内容是否仍然自洽。
+手册不是一次性交付物。正文结构必须让后续修改能够回答三件事：**改哪一段、哪些相邻结论受影响、哪些引用方不需要复制修改。**
 
-### 21.1 更新隔离
+因此：
 
-每个概念的 Canonical Owner（§11）确定后，更新只在 Owner 文件中进行。所有 Use 和 Bridge 引用方通过链接获取，不复制内容。
+- 一个机制的完整解释集中在唯一 Owner；
+- Use / Bridge / Integration 通过最小摘要和链接调用，不复制整段定义；
+- 章节标题和内部结构要足够稳定，让新反例或边界能够插入明确位置，而不是每次重写整册。
 
-### 21.2 更新触发条件
-
-| 触发 | 行动 |
-|---|---|
-| 新证据改变了某个机制的理解 | 更新 Owner 文件中的对应段落 |
-| 发现概念边界不完整 | 补充边界表格的缺失行 |
-| 做题暴露了母模型的盲区 | 在 Owner 文件中增加反例或 Failure Case |
-| Owner 变更 | 旧 Owner 降级为 Use 并增加指向新 Owner 的链接 |
-
-### 21.3 不更新条件
-
-- 一次性计算失误：不改手册，不入画像；
-- 还不确定是否稳定的观察：先进 Inbox，经 [`evidence_promotion.md`](evidence_promotion.md) 流程验证后再决定。
-
-更新节奏与证据晋升流程详见 [`handbook_contract.md`](handbook_contract.md) §9 和 [`evidence_promotion.md`](evidence_promotion.md)。
+**什么时候允许更新 Handbook、Owner 变化后同步哪些文件，不由本写作规范决定。** 稳定写入动作见 [`collaboration_workflow.md`](collaboration_workflow.md)，证据是否足以推动更新见 [`evidence_promotion.md`](evidence_promotion.md)。
 
 ---
 
@@ -595,17 +581,16 @@ $$\boxed{\textbf{用尽可能少而稳定的生成性结构，重新生成尽可
 
 ---
 
-## 26. 物理交付层
+## 26. 从认知正文到物理交付
 
-本规范定义认知结构。进入物理交付阶段时，先按 [`AGENTS.md`](../AGENTS.md) 的 Publication 路由确认 Canonical 状态、发布 Owner 与当前继承的排版/编译契约。两层关系是：
+本规范只拥有“正文怎样写才合格”。Handbook 的物理 package、状态语义、编译发布和仓库检查分别服从：
 
-$$\boxed{\text{认知结构不合格} \implies \text{不允许进入排版}} \qquad \boxed{\text{排版不合格} \implies \text{不允许进入 90\_publish/}}$$
+- [`handbook_contract.md`](handbook_contract.md)：Handbook 物理职责与最低契约；
+- [`terminology.md`](terminology.md)：Canonical、Landing Page、状态等术语；
+- [`repository_integrity.md`](repository_integrity.md)：发布文件和仓库一致性检查。
 
-具体交付约束包括：
+两层关系只有：
 
-- LaTeX 排版标准：TikZ 图表规范（节点固定 `text width`、前实后虚、标签避让）；
-- 概念边界表格标准：5 列 `Concept A | ≠ | Concept B | Difference | Consequences`；
-- 编译工具链：统一使用 `python3 common/scripts/compile_tex.py <target.tex>`；
-- 发布视图路由：`.tex` 源码在各自专题下保存，编译后的 PDF 自动同步推送到 `90_publish/` 根目录集中展现。
+$$\boxed{\text{认知结构不合格} \implies \text{不进入正式正文}} \qquad \boxed{\text{物理交付不合格} \implies \text{不标记为已发布}}$$
 
-仓库级执行入口见 [`AGENTS.md`](../AGENTS.md) 的 Publication、稳定资产更新与交付自检部分。
+本规范仍拥有正文内部的写作/排版要求，例如 TikZ 图表可读性、概念边界表格和压缩页设计；但不再复制 README、`.tex`、PDF 的 Source-of-Truth 或编译命令。

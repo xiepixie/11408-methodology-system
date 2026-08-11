@@ -16,42 +16,58 @@ Agent 必须自动判断场景和角色。只有学科、题目或原始过程�
 
 ## 2. 四层最小 Context Pack
 
-Agent 不应为了显得全面而通读整个仓库。每次只读取与任务有关的四层：
+Agent 不应为了显得全面而通读整个仓库。上下文加载分为 **Boot Core + Task Context**。
 
-### L0：系统契约
+### L0：Boot Core
 
-默认由 `AGENTS.md` 提供。需要术语或更新判断时再读：
+每次新的仓库任务固定建立三项启动上下文：
 
-- `00_system/terminology.md`；
-- `00_system/collaboration_workflow.md`；
-- `00_system/handbook_contract.md`；
-- `00_system/evidence_promotion.md`。
+1. `AGENTS.md`：压缩后的项目架构、Ownership、协作与读取规则；
+2. `CURRENT.md`：当前焦点、正在推进的资产和待人工决定；
+3. 本文件 `00_system/agent_context_protocol.md`：场景路由与最小 Context Pack。
+
+`AGENTS.md` 是启动清单，不要求 Agent 每次全文读取整个 `00_system/`。
+
+只有任务触发时再升级读取权威契约：
+
+- 稳定资产写入、导入、状态/拓扑变化：`collaboration_workflow.md`；
+- Handbook/Rules 新建或重构：`handbook_contract.md`；
+- 大规模 Handbook 正文打磨：`handbook_writing_spec.md`；
+- Owner、重复定义和依赖：`ownership_matrix.md`；
+- 错题、规则晋升、周复盘：`evidence_promotion.md`；
+- 系统架构变化：`architecture.md`；
+- 术语冲突：`terminology.md`；
+- 脚本、`check / audit / publish` 或仓库一致性：`repository_integrity.md`。
+
+`PROGRESS.md` 是生成型资产状态快照：涉及更新、导入、复盘、规划时读取；纯局部解题或讲解可不读。
 
 ### L1：当前项目状态
 
-- `CURRENT.md`：当前焦点与待人工决定；
-- `PROGRESS.md`：资产状态和可用 Handbook。
-
-纯解一道题时可以只读 CURRENT；涉及更新、导入或复盘时必须读两者。
+Boot Core 已经包含 `CURRENT.md`。如果本任务需要判断全局成熟度、可用资产或状态变化，再补读 `PROGRESS.md`。
 
 ### L2：学科基线
 
-读取对应学科复习总览与导航、Atlas 和 Subject Rules。它们告诉 Agent：
+先读取对应 Course / Subject Atlas `README.md` 和 Subject Rules。显式声明 `类型：Atlas` 的 README 本身就是 Canonical Atlas Source，Agent 应直接从这里取得：
 
-- 这门学科用什么母模型；
-- 当前有哪些 Topic；
-- 哪些模型只是规划，哪些已经存在；
-- 做题时采用什么 Adapter；
+- 学科 Mother Question；
+- Topic / Bridge / Integration 地图；
+- Foundation 与关键关系；
+- 当前 Routing 与 Stop Boundary；
+- 哪些深度 Handbook 仍是规划或 Source；
 - 当前有哪些待验证或已采用规则。
+
+**不要为了调用 Atlas 再寻找一份同义 `.tex`。** Atlas 的可选海报/PDF只是视觉视图，不增加知识。只有进入 Topic / Bridge / Integration 时，才继续寻找其 Canonical `.tex`。
 
 ### L3：当前任务
 
-- 最接近的 Topic Handbook；
-- 必要的 Bridge/Integration；
-- 用户提供的题目、原始过程和答案；
-- 与本场景有关的 Inbox 或候选 Rule。
+若当前资产是 Atlas，直接读取其 Canonical README；若当前资产是 Topic / Bridge / Integration，则按顺序读取：
 
-如果 Topic 只有“目录已建立，正文未建”，Agent 必须明确说明当前没有成熟 Canonical 模型。此时可以基于 Atlas、教材和讨论建立工作假设，但不能假装在调用已有 Handbook。
+1. 当前目录的 `README.md` Landing Page；
+2. 同目录或 Landing Page 指向的 Canonical `.tex`；
+3. 用户提供的题目、原始过程和答案；
+4. 与本场景有关的 Rules / Inbox / Source。
+
+Topic / Bridge / Integration 如果没有 Canonical `.tex`，或者状态明确为“README 旧工作稿待迁移 / 正文未建”，Agent 必须说明当前没有成熟深度 Handbook。旧长 README 只能当 Source 使用，不能假装在调用仓库现有模型。
 
 ## 3. 场景路由表
 
@@ -59,7 +75,7 @@ Agent 不应为了显得全面而通读整个仓库。每次只读取与任务�
 
 | 场景 | 典型表达 | 主要角色 | 必读 Context | 默认结果 |
 |---|---|---|---|---|
-| `explore` | 还没有模型、想深入讨论 | Mapper + Socratic Tutor | 学科复习总览与导航、Atlas、相邻 Topic | provisional model + 反例 + 用户复述 |
+| `explore` | 还没有模型、想深入讨论 | Mapper + Socratic Tutor | 学科复习总览与导航、Atlas、相邻 Topic | 临时工作模型（provisional model）+ 反例 + 用户复述 |
 | `model-diff` | 刚学完，这是我的理解 | Socratic Tutor + Mapper | Atlas、Topic | 主干/混淆/缺口/边界 |
 | `solve` | 这题不会，按现有模型讲 | Model-Grounded Solver | Atlas、Topic、Subject Rules | 模型锚点 + 解题链 + 校验 + 复原问题 |
 | `wrong` | 这是错题和原过程 | Debugger | Topic、Rules、Evidence 协议 | First Divergence + 诊断假设 + 最小复测 |
@@ -67,7 +83,7 @@ Agent 不应为了显得全面而通读整个仓库。每次只读取与任务�
 | `practice` | 针对这个断点出题 | Coach | Topic、Rules、已确认断点 | 少量诊断题 + 每题观察目标 |
 | `import` | 导入新手册/旧稿 | Mapper + Editor | Handbook Contract、Ownership、复习总览与导航 | Handbook Diff + 人工决策点 |
 | `review` | 周复盘/专题复盘 | Adversary + Editor + Coach | Inbox、Rules、CURRENT、PROGRESS | 删除/继续/采用/更新建议 |
-| `publish` | 同步 LaTeX/PDF | Editor | Canonical Owner、依赖、发布源 | 发布同步与验证 |
+| `publish` | 编译并发布 Topic / Bridge / Integration | Editor | Canonical `.tex`、Owner、依赖、Landing Page | PDF 编译验证 + 发布链接 |
 
 ## 4. 三个核心学习场景
 
@@ -127,17 +143,26 @@ Observable Facts
 
 ### 408
 
-- 总复习总览：`30_408/408 计算机综合复习总览.md`；
-- 数据结构：`30_408/10_数据结构/README.md`；
-- 计组：`30_408/20_计算机组成原理/README.md`；
-- OS：`30_408/30_操作系统/操作系统复习总览.md`；
-- 网络：`30_408/40_计算机网络/README.md`。
+408 区分 Course Atlas 与四个 Subject Atlas。Agent 应按任务范围读取最小上下文：
+
+- Course / Cross-Subject：`30_408/README.md` + `30_408/50_桥梁专题/README.md` + `30_408/60_综合专题/README.md`；
+- 数据结构：`30_408/README.md` + `30_408/10_数据结构/README.md` + 数据结构 Rules；
+- 计组：`30_408/README.md` + `30_408/20_计算机组成原理/README.md` + 计组 Rules；
+- OS：`30_408/README.md` + `30_408/30_操作系统/README.md` + OS Rules；
+- 网络：`30_408/README.md` + `30_408/40_计算机网络/README.md` + 网络 Rules。
+
+Cross-Subject Bridge / Integration 问题只在需要时读取四科相关 Owner，不无差别加载所有 Topic。旧 408 综合复习总览入口已清退，统一由 `30_408/README.md` 路由。
 
 ### 数学一
 
-- 复习总览与导航：`10_数学一/README.md`；
-- 已有概率统计 Atlas：`10_数学一/30_概率论/README.md`；
-- 概率统计 Rules：`10_数学一/90_学科做题规则/概率统计.md`。
+数学一现在区分 Course Atlas 与三个 Subject Atlas。Agent 应按任务范围读取最小上下文：
+
+- Course / Cross-Subject：`10_数学一/README.md` + `10_数学一/50_桥梁专题/README.md` + `10_数学一/60_综合专题/README.md`；
+- 高等数学：`10_数学一/README.md` + `10_数学一/10_高等数学/README.md` + 数学 Rules；
+- 线性代数：`10_数学一/README.md` + `10_数学一/20_线性代数/README.md` + 数学 Rules；
+- 概率论与数理统计：`10_数学一/README.md` + `10_数学一/30_概率论/README.md` + `10_数学一/90_学科做题规则/概率统计.md`。
+
+自动路由 Subject：`math / calculus / linear-algebra / probability`。Cross-Subject Bridge 或 Integration 问题使用 `math`；单科问题优先使用对应 Subject，避免无差别加载三科世界模型。
 
 ### 英语一
 
@@ -159,9 +184,9 @@ Observable Facts
 
 用户不需要提供角色名、Owner、Plane、成熟度或更新文件列表。这些由 Agent 根据项目协议判断。
 
-## 7. Agent 的反馈速度要求
+## 7. Agent 的首轮反馈要求
 
-第一次回复优先给高价值反馈，不先做长篇项目介绍：
+第一次回复先给**能直接改变下一步动作的信息**，不先做长篇项目介绍：
 
 - `solve`：先给 Model Anchor 和起手；
 - `wrong`：先给 First Divergence；

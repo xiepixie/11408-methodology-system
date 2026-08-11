@@ -1,10 +1,12 @@
 # 计算机网络统一总图：分布式状态、作用域与报文的一生
 
-状态：工作稿，待人工确认。
+状态：Source；Atlas Deep Map 工作稿，待与根目录 Canonical Subject Atlas README 做 Source Diff。
+
+> **迁移提示**：以下内容保留为网络 Atlas 的旧 Deep Map Source，用来检查根 Atlas 是否漏掉重要母模型、作用域边界或路由。当前正式 Subject Atlas 已由 `../README.md` 直接拥有，不再把这份旧稿迁成第二份 Atlas `.tex`。
 
 ## 0. Position
 
-本 Atlas 为计算机网络提供坐标系：解释网络机制为什么出现、八个 Topic 分别拥有哪个问题，以及陌生题应先观察什么。
+本文件是 [Computer Network Subject Atlas](../README.md) 的 **Atlas Deep Map Supplement**，不是第二个独立 Atlas Owner。根 `README.md` 拥有正式 Topic/Bridge/Integration 导航；本文件保留更展开的网络坐标系：解释网络机制为什么出现、八个 Topic 分别拥有哪个问题，以及陌生题应先观察什么。
 
 本册拥有六个根本矛盾、Scope 模型、封装责任、命名与交付链、状态所有者、Data/Control Plane、Reliability/Flow/Congestion 三分和网络八问。
 

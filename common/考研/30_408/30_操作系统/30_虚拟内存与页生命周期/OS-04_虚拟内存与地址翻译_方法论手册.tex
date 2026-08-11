@@ -230,14 +230,84 @@ VPN_A\to PFN_{37},\qquad VPN_B\to PFN_{37}
 语言层面的静态变量、栈变量、heap 动态分配，讨论的是\kw{对象何时取得存储空间}；静态/动态重定位讨论的是\kw{程序地址在什么时候变成物理地址}。两组术语不能混成同一维度。
 \end{exam}
 
-\subsection{连续分配的问题：物理连续性成为束缚}
-如果每个进程必须占用一段连续物理区，就会出现外部碎片：
+\subsection{连续分配与空闲分区管理：分配、切割、回收与合并}
+
+如果进程必须占用一段连续物理内存区，系统必须记录空闲分区表/链。空闲区状态转换链：
 \[
-\sum Free_i \ge Request
-\quad\text{但}\quad
-\max Free_i<Request.
+\boxed{
+\text{Free Block}
+\xrightarrow{\text{Allocation}}
+\text{Split (Allocated + Remainder)}
+\xrightarrow{\text{Recycle}}
+\text{Merge (Adjacent Free Blocks)}
+}
 \]
-这促使系统放弃“进程在物理内存必须连续”的要求。
+
+常用的适配算法（First Fit, Best Fit, Worst Fit, Next Fit）只是不同的找块策略。连续分配无法避免在分区之间产生微小、不连续的物理空闲区，即\kw{外部碎片 (External Fragmentation)}：
+\[
+\sum Free_i \ge Request \quad\text{但}\quad \max Free_i < Request.
+\]
+
+\begin{method}[Overlay vs Swapping 核心辨析]
+\[
+\boxed{\text{Overlay} \neq \text{Swapping}}
+\]
+\begin{itemize}
+  \item \kw{Overlay（覆盖）}：发生在同一个程序内部，程序员/编译器划分逻辑模块，让互斥模块共享同一块内存区。主要是\kw{程序逻辑组织}问题。
+  \item \kw{Swapping（对换）}：由 OS 自动控制，将暂时不运行的整个进程或页面换出到外存对换区。主要是\kw{内存资源管理}问题。
+\end{itemize}
+\end{method}
+
+\subsection{分段 (Segmentation)：表达程序的逻辑模块结构}
+
+分页成功消除了外部碎片，但强制把内存按固定大小打碎，破坏了程序的自然逻辑结构。分段按逻辑模块（代码段、数据段、堆栈段）划分子空间：
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} p{0.36\linewidth} p{0.36\linewidth}}
+\toprule
+对比维度 & 分页机制 (Paging) & 分段机制 (Segmentation)\\
+\midrule
+划分驱动因素 & 系统物理管理驱动（固定大小 Page/Frame） & 程序员/编译器逻辑驱动（可变大小 Segment）\\
+主要解决问题 & 消灭外部碎片，提高物理内存利用率 & 天然表达逻辑结构，方便段级共享与保护\\
+地址空间维度 & 一维（对程序员透明，线性虚拟地址） & 二维（显式指定 Segment No + Offset）\\
+碎片类型 & 存在页内**内部碎片 (Internal Fragmentation)** & 存在段间**外部碎片 (External Fragmentation)**\\
+段/页表结构 & PTE 包含 PFN + Permission & 段表包含 Segment Base + Limit + Access Rights\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\paragraph{段表字段结构与地址翻译}
+段表是将逻辑段号映射到实际物理地址的入口，每个段表项包含：
+\[
+\boxed{\text{Segment Table Entry} = \text{Segment Base} \mid \text{Segment Limit} \mid \text{Present} \mid \text{Access Rights} \mid \text{Dirty} \mid \text{Swap Addr}}
+\]
+翻译三步走：
+\begin{enumerate}
+  \item 越界检查：校验 Offset $< \text{Segment Limit}$；若否，触发段越界异常（Segmentation Fault）；
+  \item 权限校验：校验 Access Rights（如尝试写入只读代码段则触发权限异常）；
+  \item 地址生成：$\text{PA} = \text{Segment Base} + \text{Offset}$。
+\end{enumerate}
+
+\subsection{段页式 (Segmented Paging)：兼顾逻辑结构与物理利用率}
+
+段页式内存管理融合了分段与分页的优势：
+\[
+\boxed{
+\text{Logical Segment (User View)}
+\xrightarrow{\text{Segment Table}}
+\text{Page Table (Logical Pages)}
+\xrightarrow{\text{Page Table}}
+\text{Physical Frames (MMU View)}
+}
+\]
+逻辑地址格式为：$\code{Segment No} \mid \code{Page No} \mid \code{Page Offset}$。
+\begin{itemize}
+  \item 对程序员：呈现逻辑分段，方便按段共享代码与设置独立权限；
+  \item 对 MMU：段内按物理页离散分配，彻底消除外部碎片！
+\end{itemize}
 
 \subsection{分页的关键跨越：固定粒度 + 非连续物理放置}
 分页把：
@@ -515,6 +585,29 @@ Lazy allocation 并没有消灭成本，而是把：
 \subsection{先问为什么需要 replacement}
 只要 resident working sets 的总需求长期逼近/超过可用 frames，就必须回收一些页面。Replacement 是\kw{选择 victim 的 policy}，而 page fault / page-in / PTE update 是实现机制。
 
+\subsection{缺页率 (Page Fault Rate) 的多因素控制模型}
+
+学生最容易产生的错误直觉是：“缺页率高，一定是因为置换算法选得不好。”必须建立综合结果模型：
+\[
+\boxed{
+\text{Page Fault Rate} = f(
+\text{Locality},
+\text{Frame Allocation},
+\text{Page Size},
+\text{Replacement Policy},
+\text{Working Set}
+)
+}
+\]
+缺页率由 5 个变量共同决定：
+\begin{enumerate}
+  \item \kw{程序局部性 (Locality)}：时间与空间局部性越好，缺页率越低；
+  \item \kw{页框配额 (Frame Allocation)}：分配给进程的物理页框越多，缺页率越低（未遇到 Belady 异常时）；
+  \item \kw{页面大小 (Page Size)}：页大可包含更多数据（但页内碎片可能增加），对缺页率有综合影响；
+  \item \kw{置换算法 (Replacement Policy)}：越贴合未来访问趋势（如 OPT/LRU），缺页率越低；
+  \item \kw{工作集大小 (Working Set Size)}：物理页框低于工作集阈值时将发生抖动 (Thrashing)，缺页率急剧上升。
+\end{enumerate}
+
 \subsection{四个经典策略的思想，而不是口号}
 \begingroup
 \small
@@ -526,11 +619,17 @@ Lazy allocation 并没有消灭成本，而是把：
 \midrule
 OPT (最佳置换) & 淘汰未来最长时间内不会被访问的页面 & 理想极限下界；需已知未来访存序列，用于评估性能上界\\
 FIFO (先进先出) & 淘汰最早进入内存的页面 & 简单但盲目；可能出现 Belady 异常 (框增多缺页反增)\\
-LRU (最近最少使用) & 淘汰最长时间未被访问的页面 & 利用时间局部性；精确维护访问次序的实现成本较高\\
+LRU (最近最少使用) & 淘汰最长时间未被访问的页面 & 利用时间局部性；精确维护全序访问的硬件/软件开销极高\\
 CLOCK (时钟算法) & 用 Reference Bit 近似 LRU (Second Chance) & 工程可行性极佳；访问页重置标志，再给一次机会\\
 \bottomrule
 \end{tabularx}
 \endgroup
+
+\begin{method}[为什么明明 LRU 效果好，现实系统却采用 CLOCK？]
+精确 LRU 要求系统在\kw{每一次访问内存时}都更新页面访问的时间戳或调整双向链表/硬件栈。在 CPU 频率极高的快路径下，每次访存维护全序关系的代价过高。
+
+CLOCK / 二次机会算法利用 PTE 中的 Reference Bit，将“精确的时间全序”退化为“分批重置的访问标志（Approximate Recency）”，在牺牲极微小准确度的前提下，消除了每次访存维护链表的开销！
+\end{method}
 
 \subsection{Dirty Page 为什么影响置换代价}
 若 victim 是 clean page，若有可靠后备对象，通常可以直接丢弃映射并未来重新获得；dirty page 则可能需要 write-back：

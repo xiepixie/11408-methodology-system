@@ -1,0 +1,548 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{145,154,163}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={向量空间：生成、基与坐标}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 线性代数 Topic 01}}
+\rhead{\small\color{deep}向量空间 · 生成 · 基 · 坐标}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\tikzset{
+  nodebox/.style={draw=deep,rounded corners=2mm,text width=3.0cm,minimum height=1.0cm,align=center,fill=soft,font=\small,inner sep=4pt},
+  flow/.style={-{Latex[length=2mm]},thick,draw=deep},
+  dashedflow/.style={-{Latex[length=2mm]},thick,dashed,draw=purple}
+}
+
+\title{\vspace{-1.1cm}\textbf{向量空间：生成、基与坐标}\\[0.4em]
+\large 从“能覆盖”到“唯一表示”的空间骨架}
+\author{数学一 · 线性代数 Topic 01}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：怎样用最少的独立方向覆盖一个空间，并让每个对象都有唯一坐标？}
+如果只要求“能表示”，可以不断往生成组里加向量；但向量一多就会出现冗余，同一个对象会有多套系数表示。
+
+本 Topic 解决的根矛盾是：
+\[
+\boxed{\text{覆盖全部对象}\quad +\quad \text{表示必须唯一}}
+\]
+于是主线自然生成：
+\[
+\boxed{
+\text{线性组合}
+\to \text{生成空间}
+\to \text{去掉冗余}
+\to \text{基}
+\to \text{维数}
+\to \text{唯一坐标}
+}
+\]
+\end{corebox}
+
+\section{本册负责什么}
+
+\begin{itemize}
+  \item \kw{Owns：}线性组合、span、线性相关/无关、极大无关组、向量组等价、向量空间/子空间、基、维数、坐标、换基、内积、正交、Gram--Schmidt 正交化和正交矩阵的基础几何性质。
+  \item \kw{Uses：}实数域上的向量加法、数乘与基本矩阵运算。
+  \item \kw{Does not own：}矩阵作为线性映射怎样作用；kernel/image 与矩阵 rank 的统一机制；特征向量；二次型主轴。
+\end{itemize}
+
+本册向后提供三类接口：\kw{方向骨架、坐标语言、正交语言}。Topic 02--06 都会调用它们，但不应重新定义。
+
+\section{第一步：线性组合回答“这些方向能到哪里”}
+
+给定向量 $v_1,\dots,v_k$，表达式
+\[
+a_1v_1+\cdots+a_kv_k
+\]
+叫作它们的\kw{线性组合}。系数 $a_i$ 可以自由改变，所以真正的问题不是某一次组合等于什么，而是：\kw{所有可能组合能够到达哪些向量？}
+
+所有可达向量构成
+\[
+\operatorname{span}\{v_1,\dots,v_k\}.
+\]
+这里 span 指“由这组向量生成的全部线性组合”。因此
+\[
+x\in\operatorname{span}\{v_1,\dots,v_k\}
+\]
+与“$x$ 能由 $v_1,\dots,v_k$ 线性表示”是同一件事。
+
+\begin{methodbox}{向量组等价到底在比较什么？}
+两组向量等价，不是要求元素一样，也不是要求向量个数一样，而是要求它们的\kw{生成能力相同}：
+\[
+\operatorname{span}(A)=\operatorname{span}(B).
+\]
+若 $A$ 中每个向量都能由 $B$ 表示，只能先得到
+\[
+\operatorname{span}(A)\subseteq\operatorname{span}(B).
+\]
+要得到“等价”，还必须证明反向包含。
+\end{methodbox}
+
+\section{为什么“能生成”还不够：冗余会破坏唯一表示}
+
+设存在不全为零的系数，使
+\[
+a_1v_1+\cdots+a_kv_k=0.
+\]
+那么这组向量\kw{线性相关}。它的真正含义是：生成系统中存在冗余方向。
+
+如果 $a_j\neq0$，就可以把 $v_j$ 写成其余向量的线性组合。于是从生成组中删掉 $v_j$，span 不会改变。
+
+反过来，如果只有零系数能满足上述齐次关系，这组向量\kw{线性无关}。这表示每个方向都提供了无法由其他方向替代的新信息。
+
+\begin{warnbox}{线性相关不是“看起来方向差不多”}
+两个非零向量时，线性相关等价于成比例；三个及以上向量时不再成立。
+
+例如 $(1,0)^T,(0,1)^T,(1,1)^T$ 任意两向量都不成比例，但第三个等于前两个之和，因此整体线性相关。
+\end{warnbox}
+
+\section{基为什么必然同时解决“覆盖”和“唯一”}
+
+一组向量 $\mathcal B=(b_1,\dots,b_n)$ 是空间 $V$ 的\kw{基（basis）}，当且仅当它同时满足：
+
+\begin{enumerate}
+  \item \kw{生成：}$\operatorname{span}\{b_1,\dots,b_n\}=V$，所以任何 $v\in V$ 都能写出来；
+  \item \kw{无关：}$b_1,\dots,b_n$ 线性无关，所以这种写法的系数唯一。
+\end{enumerate}
+
+于是
+\[
+\boxed{\text{Basis}=\text{Spanning}+\text{Independence}.}
+\]
+
+这不是两个互不相关的条件：生成解决“会不会漏”，无关解决“会不会重复”。
+
+\subsection{极大线性无关组是给定生成系统中的“信息骨架”}
+
+在一个给定向量组中，选出一组线性无关向量，并且不能再从剩余向量中加入任何一个而保持无关，这叫该向量组的\kw{极大线性无关组}。
+
+“极大”只相对于\kw{当前给定向量组}，不表示它是整个空间里某种唯一最大集合。不同极大无关组可能包含不同向量，但它们：
+
+\begin{itemize}
+  \item 生成与原向量组相同的 span；
+  \item 所含向量个数相同。
+\end{itemize}
+
+这个共同个数就是向量组真正包含的独立方向数。矩阵/映射 rank 的统一解释由 Topic 03 负责；本 Topic 只把它作为后续接口。
+
+\section{向量空间与子空间：哪些集合允许继续做线性组合？}
+
+\kw{向量空间}要求对线性组合封闭。对一个已经存在的空间 $V$，若子集 $U\subseteq V$ \kw{非空}，并且满足
+\[
+\forall u,v\in U,\quad \forall\alpha,\beta\in\mathbb R,
+\qquad \alpha u+\beta v\in U,
+\]
+则 $U$ 是 $V$ 的\kw{线性子空间}。
+
+“非空”不能省略；在此基础上，这个判据把“加法封闭”和“数乘封闭”合成一次检查。取 $\alpha=\beta=0$ 就得到 $0\in U$。
+
+\begin{warnbox}{齐次解集与非齐次解集为什么性质不同？}
+$Ax=0$ 的解集对线性组合封闭，所以是子空间；若 $Ax=b$ 且 $b\neq0$，两个解的线性组合通常不再满足同一个右端项，因此解集一般不是子空间。
+
+非齐次解集更准确的结构是“一个特解 + 齐次解空间”，其完整机制由 Topic 04 负责。本 Topic 只用这个边界说明：\kw{子空间必须经过原点并对线性组合封闭。}
+\end{warnbox}
+
+\section{维数：为什么所有基的长度都一样？}
+
+有限维空间中，任何两组基所含向量数相同。这个共同数字叫空间的\kw{维数（dimension）}，记作 $\dim V$。
+
+维数不是“矩阵有多少行”或“向量写了多少个分量”，而是：\kw{描述这个空间至少需要多少个彼此独立的方向。}
+
+因此，在 $n$ 维空间中有一个非常重要的有限维结构：
+
+\begin{itemize}
+  \item $n$ 个向量若线性无关，则它们已经构成一组基；
+  \item $n$ 个向量若能生成整个空间，则它们也已经构成一组基。
+\end{itemize}
+
+因为一旦已经有 $n$ 个独立方向，就不可能再缺少新的方向；一旦 $n$ 个方向已经覆盖整个 $n$ 维空间，也不可能还存在冗余而不降低独立方向数。
+
+\section{坐标：基把抽象对象变成唯一数字编码}
+
+设 $\mathcal B=(b_1,\dots,b_n)$ 是 $V$ 的一组\kw{有序基}。对任意 $v\in V$，存在唯一一组系数
+\[
+v=x_1b_1+\cdots+x_nb_n.
+\]
+系数列
+\[
+[v]_{\mathcal B}=(x_1,\dots,x_n)^T
+\]
+叫 $v$ 在基 $\mathcal B$ 下的\kw{坐标}。
+
+“有序”很重要：交换两根基向量，坐标分量的位置也会交换。
+
+\begin{corebox}{对象和坐标必须分开}
+\[
+\boxed{v\neq[v]_{\mathcal B}.}
+\]
+$v$ 是空间中的对象；$[v]_{\mathcal B}$ 是在选定基后得到的数字编码。换基时坐标会变，向量本身不会变。
+\end{corebox}
+
+\section{换基：先说清“哪套坐标到哪套坐标”}
+
+把基向量按列排成基矩阵。设旧基
+\[
+\mathcal B=(b_1,\dots,b_n),
+\]
+新基
+\[
+\mathcal B'=(b'_1,\dots,b'_n),
+\]
+并约定
+\[
+\mathcal B'=\mathcal BP.
+\]
+那么 $P$ 的第 $j$ 列就是新基向量 $b'_j$ 在旧基 $\mathcal B$ 下的坐标。
+
+同一个向量满足
+\[
+v=\mathcal B[v]_{\mathcal B}
+=\mathcal B'[v]_{\mathcal B'}
+=\mathcal BP[v]_{\mathcal B'},
+\]
+因此
+\[
+\boxed{[v]_{\mathcal B}=P[v]_{\mathcal B'},
+\qquad
+[v]_{\mathcal B'}=P^{-1}[v]_{\mathcal B}.}
+\]
+
+\begin{methodbox}{不要背 $P$ 在哪边：读列向量含义}
+若 $\mathcal B'=\mathcal BP$，$P$ 的列写的是“新基在旧基中的坐标”。因此 $P$ 接收\kw{新基坐标}，输出\kw{旧基坐标}。
+
+先把这句话写清，$P^{-1}$ 的方向自然确定。
+\end{methodbox}
+
+\begin{examplebox}{坐标变了，对象没有变}
+在 $\mathbb R^2$ 中取旧基 $\mathcal B=(e_1,e_2)$，新基
+\[
+\mathcal B'=(e_1+e_2,\ e_1-e_2).
+\]
+于是
+\[
+P=\begin{pmatrix}1&1\\1&-1\end{pmatrix},
+\qquad \mathcal B'=\mathcal BP.
+\]
+对向量 $v=(3,1)^T$，旧坐标是 $(3,1)^T$。由
+\[
+[v]_{\mathcal B'}=P^{-1}[v]_{\mathcal B}
+\]
+得到
+\[
+[v]_{\mathcal B'}=(2,1)^T.
+\]
+检查：
+\[
+2(e_1+e_2)+(e_1-e_2)=3e_1+e_2=v.
+\]
+两组数字不同，但重构出的向量相同。
+\end{examplebox}
+
+\section{内积：在线性结构上额外加入长度和角度}
+
+只有向量加法和数乘时，我们可以谈生成、无关、基和维数，却没有“垂直”“长度”“夹角”这些概念。
+
+在 $\mathbb R^n$ 的标准几何中，使用标准内积
+\[
+\langle x,y\rangle=x^Ty.
+\]
+它定义长度
+\[
+\|x\|=\sqrt{\langle x,x\rangle},
+\]
+并定义正交：
+\[
+x\perp y\iff \langle x,y\rangle=0.
+\]
+
+\kw{正交}比线性无关更强：一组非零、两两正交的向量必线性无关。原因可以直接推出：若 $\sum_i c_iq_i=0$，两边与 $q_j$ 取内积，就得到
+\[
+c_j\langle q_j,q_j\rangle=0.
+\]
+因为 $q_j\neq0$，所以 $c_j=0$；对每个 $j$ 都成立，于是所有系数只能为零。反过来，线性无关向量不一定正交。
+
+\subsection{投影是什么？}
+
+对非零方向 $u$，向量 $v$ 在 $u$ 上的正交投影为
+\[
+\operatorname{proj}_u(v)
+=\frac{\langle v,u\rangle}{\langle u,u\rangle}u.
+\]
+它表示：从 $v$ 中取出沿 $u$ 方向的那一部分。
+
+这一公式在本 Topic 中用于构造正交基；“投影如何连接几何、函数展开等其他学科”由数学一 B00 Bridge 负责。
+
+\section{为什么任意基还不够干净：坐标方向会互相耦合}
+
+一组普通基已经能提供唯一坐标，但提取某个坐标分量时，其他基方向可能同时参与，几何关系也不透明。
+
+如果基是\kw{规范正交基}（两两正交且每个向量长度为 $1$），坐标会直接变成投影系数：
+\[
+[v]_{\mathcal Q,i}=\langle v,q_i\rangle.
+\]
+每个方向可以独立读取，不需要联立求解全部系数。
+
+因此新的问题是：\kw{能不能在不改变生成空间的前提下，把一组线性无关方向换成彼此正交的方向？}
+
+\section{Gram--Schmidt：保持 span，逐步消除投影分量}
+
+给定线性无关向量 $a_1,\dots,a_k$，先令
+\[
+u_1=a_1.
+\]
+第 $j$ 步，把 $a_j$ 在已经得到的正交方向 $u_1,\dots,u_{j-1}$ 上的投影全部减掉：
+\[
+\boxed{
+u_j
+=a_j-\sum_{i=1}^{j-1}
+\frac{\langle a_j,u_i\rangle}{\langle u_i,u_i\rangle}u_i.}
+\]
+这样得到的 $u_j$ 与前面每个 $u_i$ 都正交，并且
+\[
+\operatorname{span}\{u_1,\dots,u_j\}
+=\operatorname{span}\{a_1,\dots,a_j\}.
+\]
+
+最后再单位化：
+\[
+q_i=\frac{u_i}{\|u_i\|}.
+\]
+于是 $q_1,\dots,q_k$ 构成同一子空间的一组规范正交基。
+
+\begin{corebox}{Problem $\to$ Failure $\to$ Mechanism}
+\begin{itemize}
+  \item \kw{Problem：}已有一组能唯一表示的基，但方向彼此耦合，坐标提取不干净。
+  \item \kw{Naive：}直接把原基当几何坐标轴使用。
+  \item \kw{Failure：}不同方向不正交，一个分量会泄漏到其他方向；投影和长度判断复杂。
+  \item \kw{Mechanism：}逐步减去已有方向上的投影，在保持 span 的同时制造正交方向。
+\end{itemize}
+\end{corebox}
+
+\begin{warnbox}{Gram--Schmidt 的结果不是唯一对象}
+正交化依赖：
+\begin{itemize}
+  \item 使用了哪一个内积；
+  \item 原向量的输入顺序；
+  \item 最后单位向量允许的符号选择。
+\end{itemize}
+所以真正保持的是\kw{生成子空间}，不是每一次计算得到的具体正交基。
+\end{warnbox}
+
+\begin{examplebox}{把两根耦合方向改造成正交骨架}
+取
+\[
+a_1=(1,1,0)^T,\qquad a_2=(1,0,1)^T.
+\]
+先令 $u_1=a_1$。因为
+\[
+\frac{\langle a_2,u_1\rangle}{\langle u_1,u_1\rangle}
+=\frac{1}{2},
+\]
+所以
+\[
+u_2=a_2-\frac12u_1
+=\left(\frac12,-\frac12,1\right)^T.
+\]
+把 $u_2$ 乘以 $2$ 不改变方向，可取 $(1,-1,2)^T$。检查：
+\[
+(1,1,0)\cdot(1,-1,2)=0.
+\]
+单位化后可取
+\[
+q_1=\frac1{\sqrt2}(1,1,0)^T,
+\qquad
+q_2=\frac1{\sqrt6}(1,-1,2)^T.
+\]
+它们与原来的 $a_1,a_2$ 生成同一个二维子空间，但坐标方向已经彼此解耦。
+\end{examplebox}
+
+\section{正交矩阵：把一组规范正交基装进矩阵}
+
+若方阵 $Q=(q_1,\dots,q_n)$ 的列向量构成 $\mathbb R^n$ 的规范正交基，则
+\[
+Q^TQ=I,
+\qquad Q^{-1}=Q^T.
+\]
+这样的矩阵叫\kw{正交矩阵}。
+
+它保持标准内积：
+\[
+\langle Qx,Qy\rangle=x^TQ^TQy=\langle x,y\rangle.
+\]
+因此也保持长度和夹角。
+
+这个性质以后会被 Topic 05 的实对称矩阵正交对角化和 Topic 06 的正交合同使用；本 Topic 只拥有“为什么 $Q^TQ=I$ 表示规范正交基”这一本体机制。
+
+\section{母例：三个向量，两个方向}
+
+令
+\[
+\alpha_1=(1,1,1)^T,\qquad
+\alpha_2=(1,2,3)^T,\qquad
+\alpha_3=(2,3,4)^T=\alpha_1+\alpha_2.
+\]
+
+从生成角度，$\alpha_3$ 没有扩张 span：
+\[
+\operatorname{span}\{\alpha_1,\alpha_2,\alpha_3\}
+=\operatorname{span}\{\alpha_1,\alpha_2\}.
+\]
+从无关角度，$\alpha_1,\alpha_2$ 是一组极大无关组，因此原向量组只有两个独立方向。
+
+如果取
+\[
+\mathcal B=(\alpha_1,\alpha_2),
+\]
+那么
+\[
+[\alpha_3]_{\mathcal B}=(1,1)^T.
+\]
+换另一组基后坐标会变化，但：
+
+\begin{itemize}
+  \item 向量 $\alpha_3$ 没变；
+  \item 它所在的二维子空间没变；
+  \item 子空间维数没变；
+  \item 原向量组的独立方向数没变。
+\end{itemize}
+
+这四个“不变”分别为后面的 Topic 提供接口，但本 Topic 不提前展开矩阵 rank、kernel 或方程解结构。
+
+\section{概念边界：每次分流看真正判据}
+
+\small
+\begin{longtable}{L{3.15cm}L{3.15cm}L{3.65cm}L{3.15cm}L{2.7cm}}
+\toprule
+\textbf{A $\neq$ B} & \textbf{为什么容易混} & \textbf{真正判据} & \textbf{题面信号} & \textbf{混淆后果}\\
+\midrule
+生成 $\neq$ 线性无关 & 基同时要求两者 & 生成看 span 是否覆盖目标；无关看齐次关系是否只有零解 & “能否表示全部向量” vs “表示是否唯一” & 把冗余生成组误叫基\\
+线性无关 $\neq$ 两两不成比例 & 两个向量时二者等价 & 三个以上必须检查整体线性关系 & 三个及以上向量 & 漏掉整体冗余\\
+极大无关组 $\neq$ 唯一向量组 & “极大”容易被听成“唯一最大” & 只要求在原向量组中不能再加入剩余向量；不同选择可生成同一 span & “求一个极大无关组” & 把不同合法答案误判冲突\\
+向量 $\neq$ 坐标 & 题目常直接给数字列 & 是否已指定基；换基后数字会不会改变 & “在某基下坐标” & 把编码变化当对象变化\\
+基矩阵 $\neq$ 过渡矩阵 & 两者都把向量按列排成矩阵 & 基矩阵把坐标送到实际向量；过渡矩阵连接两套坐标 & “新基由旧基表示” & 把 $P$ 和 $P^{-1}$ 方向颠倒\\
+线性无关 $\neq$ 正交 & 正交非零组一定无关 & 无关只禁止线性冗余；正交还要求两两内积为零 & “正交”“规范正交” & 对普通基误用投影坐标公式\\
+正交 $\neq$ 单位化 & 规范正交同时需要两者 & 正交看夹角；单位化只看长度是否为 $1$ & “单位向量”“正交向量组” & 以为单位向量自动互相垂直\\
+子空间 $\neq$ 非齐次解集 & 二者都可能是无限集合 & 子空间必须含零且对任意线性组合封闭 & $Ax=0$ vs $Ax=b\neq0$ & 把平移后的仿射集合当线性空间\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{与其他 Owner 的接口}
+
+\begin{itemize}
+  \item \kw{给 Topic 02：}有序基、坐标和换基语言，使抽象线性映射可以写成矩阵。
+  \item \kw{给 Topic 03：}span、独立方向数和维数语言；矩阵/映射 rank 的统一机制由 Topic 03 接管。
+  \item \kw{给 Topic 05：}基、坐标、正交矩阵；特征方向与对角化由 Topic 05 接管。
+  \item \kw{给 Topic 06：}正交基和正交矩阵；二次型主轴、合同和惯性由 Topic 06 接管。
+  \item \kw{给 B00：}内积、正交、投影的线代本体。B00 只负责把这些概念翻译到几何/函数投影等跨学科语境。
+\end{itemize}
+
+\begin{warnbox}{Anti-Bridge：线性无关不等于概率独立}
+“independence”在不同学科中可能都翻译成“独立”，但线性无关讨论的是\kw{向量生成系统是否存在冗余}；概率独立讨论的是\kw{联合概率是否能够分解}。它们没有直接互推关系。
+\end{warnbox}
+
+\section{知识调用协议：先决定你在解决哪一层问题}
+
+这六步是本 Topic 的\kw{知识导航}，不是已经通过真题验证的固定考场 SOP：
+
+\begin{enumerate}
+  \item 目标是在问“能否生成”“有没有冗余”“抽取骨架”“求坐标”还是“制造正交基”？
+  \item 如果问生成，先翻译成 span；如果问冗余，先翻译成齐次线性关系。
+  \item 如果已经知道空间维数，再比较“向量个数”和“独立方向数”，利用有限维约束减少重复证明。
+  \item 如果换基，先写“新基由旧基怎样表示”，再决定 $P$ 与 $P^{-1}$ 的方向。
+  \item 如果要求正交骨架，先确认原向量无关，再逐步减投影；最后才单位化。
+  \item 检查时问：生成空间有没有保持？坐标能否重构同一个向量？正交化后内积是否为零？
+\end{enumerate}
+
+\section{独立校验：不用原计算再算一遍}
+
+\begin{itemize}
+  \item \kw{线性关系：}把候选系数代回，是否真的得到零向量？
+  \item \kw{极大无关组：}它是否能表示原向量组中的每个向量？
+  \item \kw{坐标：}两套坐标分别与各自基重构后，是否得到同一个 $v$？
+  \item \kw{正交化：}逐对内积是否为 $0$？每一步 span 是否保持？
+  \item \kw{规范正交：}除正交外，每个向量范数是否为 $1$？
+\end{itemize}
+
+\section{一页压缩：从两个问题重建整册}
+
+\begin{corebox}{一句话}
+\[
+\boxed{\text{基是无冗余的生成系统；坐标是对象在有序基下的唯一编码。}}
+\]
+\end{corebox}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.8cm]
+\node[nodebox] (lc) {\textbf{线性组合}\\\scriptsize 能到哪里？};
+\node[nodebox,right=of lc] (sp) {\textbf{Span}\\\scriptsize 覆盖范围};
+\node[nodebox,right=of sp] (ind) {\textbf{Independence}\\\scriptsize 去掉冗余};
+\node[nodebox,below=1.0cm of ind] (basis) {\textbf{Basis}\\\scriptsize 覆盖 + 唯一};
+\node[nodebox,left=of basis] (dim) {\textbf{Dimension}\\\scriptsize 独立方向数};
+\node[nodebox,left=of dim] (coord) {\textbf{Coordinates}\\\scriptsize 唯一数字编码};
+\draw[flow] (lc) -- (sp);
+\draw[flow] (sp) -- (ind);
+\draw[flow] (ind) -- (basis);
+\draw[flow] (basis) -- (dim);
+\draw[flow] (dim) -- (coord);
+\end{tikzpicture}
+\end{center}
+
+加入内积以后再多一条支线：
+\[
+\boxed{\text{Independent basis}\to\text{remove projections}\to\text{Orthogonal basis}\to\text{normalize}.}
+\]
+
+忘掉公式时，依次问：
+\begin{enumerate}
+  \item 我现在缺的是“覆盖”，还是“唯一”？
+  \item 这一步改变了空间中的对象，还是只改变了表示骨架？
+  \item 当前真正必须保持的是 span、维数，还是内积几何？
+\end{enumerate}
+
+\end{document}

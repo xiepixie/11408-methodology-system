@@ -469,6 +469,32 @@ I/O 通道 & 否 & 通道执行 I/O 程序并组织设备操作 & CPU 提交更�
 它回答的不是“某个磁盘怎么转”，而是“无论设备型号如何，上层都希望拥有统一的 open/read/write、保护、命名、缓冲、错误返回和资源分配语义”。这与 VFS、网络 socket 抽象、虚拟内存中的地址间接层是同一种复杂度控制思想。
 \end{exam}
 
+\subsection{Cache vs Buffer：A $\neq$ B 核心功能辨析}
+
+考场与实际系统中，缓存 (Cache) 与 缓冲 (Buffer) 经常被混淆。必须用一句话精准区分它们的本质目的：
+\[
+\boxed{\text{Cache: “下次可能还要，所以留下副本”}}
+\]
+\[
+\boxed{\text{Buffer: “现在速度/粒度对不上，所以暂存”}}
+\]
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
+\toprule
+对比维度 & 缓存 (Cache) & 缓冲 (Buffer)\\
+\midrule
+核心目的 & 利用时间/空间局部性，**减少未来的重复访问延迟** & 协调两端**速率 mismatch、粒度差异与同步交错**\\
+数据独立性 & 强调是物理主存/后备对象的**副本 (Copy)** & 暂存**传输中**的数据，不一定强调副本概念\\
+典型场景 & Page Cache、TLB、指令/数据 Cache & 磁盘写缓冲、网络 Socket 发送/接收 Buffer、打印缓冲\\
+兼具兼顾场景 & \multicolumn{2}{p{0.75\linewidth}}{真实 OS 内存区（如 Linux Page Cache）可**同时承担双重职责**：既作为 I/O 磁盘读写的速度/粒度缓冲，又保留映射作为后续读访问的缓存副本。}\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
 \subsection{字符设备与块设备：不同工作负载产生不同接口}
 \begingroup
 \small

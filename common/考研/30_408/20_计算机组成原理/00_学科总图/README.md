@@ -1,6 +1,10 @@
 # 计算机组成原理学科总图：ISA 语义如何成为硬件时序
 
-状态：工作稿，待人工确认。
+状态：Source；Atlas Deep Map 工作稿，待与根目录 Canonical Subject Atlas README 做 Source Diff。
+
+> **迁移提示**：以下内容保留为计组 Atlas 的旧 Deep Map Source，用来检查根 Atlas 是否漏掉重要母模型、边界或路由。当前正式 Subject Atlas 已由 `../README.md` 直接拥有，不再把这份旧稿迁成第二份 Atlas `.tex`。
+
+> Position：本文件是 [Computer Organization Subject Atlas](../README.md) 的 **Atlas Deep Map Supplement**。根 `README.md` 是唯一 Subject Atlas 导航 Owner；本文件保留更展开的学科母模型、边界与调用协议工作稿。
 
 ## 1. 学科母问题
 

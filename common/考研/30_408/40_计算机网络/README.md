@@ -1,6 +1,7 @@
-# 计算机网络复习总览与导航
+# 计算机网络 Subject Atlas
 
-当前状态：框架已采用；Atlas、八个 Topic 与 Integration 已形成工作稿，待逐册人工确认。
+> 类型：Atlas
+> 状态：已采用；README 是 Canonical Subject Atlas，八个 Topic 的Markdown 工作稿仍是 Source，深度正文按册迁入 Canonical LaTeX。
 
 ## 学科母问题
 
@@ -17,9 +18,9 @@ $$
 \to \text{Cost}
 $$
 
-## Atlas
+## 旧 Deep Map / Source
 
-[网络统一总图](00_网络统一总图/README.md)负责六个根本矛盾、作用域、封装、命名交付链和八个 Topic 的导航。
+[网络统一总图旧稿](00_网络统一总图/README.md)保留六个根本矛盾、作用域、封装和命名交付链的详细展开，可用于 Source Diff；当前唯一 Subject Atlas Owner 是本 README。
 
 ## 八个核心 Topic
 
@@ -85,9 +86,20 @@ $$
 W_{send}=\min(rwnd,cwnd)
 $$
 
+## Internal Bridge
+
+网络内部建立四座稳定接口：
+
+- [NET-B01｜IP Forwarding × Single-Hop Delivery](50_科内桥梁/NET-B01_IPForwarding与SingleHop/README.md)；
+- [NET-B02｜Routing × Forwarding](50_科内桥梁/NET-B02_Routing与Forwarding/README.md)；
+- [NET-B03｜Reliable Transfer × TCP](50_科内桥梁/NET-B03_ReliableTransfer与TCP/README.md)；
+- [NET-B04｜Flow Control × Congestion Control](50_科内桥梁/NET-B04_FlowControl与CongestionControl/README.md)。
+
+Graph Algorithm × Routing 当前只作为 Routing Topic 对数据结构图算法的 `Use / Candidate Connection`，不因为 Dijkstra/Bellman-Ford 类比漂亮就建立 Cross-Subject Core Bridge。
+
 ## Integration
 
-规划产品：[《一个网络请求的一生：从域名到网页返回》](60_综合专题/README.md)。
+Canonical product：[NET-I01｜一个网络请求的一生](60_综合专题/NET-I01_一个网络请求的一生/README.md)。
 
 它只追踪：
 
@@ -105,9 +117,11 @@ URL
 
 同时维护 Name/Address、Encapsulation、Distributed State 和 Scope 四条轨迹，不重写任何协议机制。
 
-## 跨学科 Bridge
+## Cross-Subject Bridge
 
-`OS x Network：Socket、网络栈、中断与进程` 放在全局 [跨学科 Bridge](../50_桥梁专题/408%20跨学科%20Bridge.md)，因为它同时依赖 OS 和 Network Owner。
+`Process / Socket × Transport Endpoint` 已确认为真实 OS ↔ Network 接口，但当前状态为 **Candidate Core**：结构成立，是否作为 408 核心独立 Bridge 的优先级还需真题/覆盖证据。工程化的完整 kernel stack / NIC 路径只作 Extension。
+
+全局入口见 [408 Cross-Subject Bridge Atlas](../50_桥梁专题/README.md)。
 
 ## Question Control Adapter：网络八问
 

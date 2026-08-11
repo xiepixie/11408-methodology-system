@@ -1,8 +1,10 @@
 # 计组科内桥梁与综合：从 C 语句到一次精确提交
 
-状态：工作稿，待人工确认。
+状态：legacy-unregistered Source；不再作为 Canonical Bridge / Integration Owner。
 
-## 1. 这份 Integration 解决什么
+> 新的唯一 Owner 已拆分为 `85_科内桥梁/CO-B01`、`85_科内桥梁/CO-B02` 与 `86_综合专题/CO-I01`。本文件保留旧工作稿内容供 Source Diff，不再继续在这里新增稳定定义。
+
+## 1. 这份旧稿原来试图解决什么
 
 八个 Topic 分别拥有稳定机制，本册只拥有它们之间的接口：
 

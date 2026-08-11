@@ -1,12 +1,12 @@
 # 数据结构学科总图
 
-状态：目录已建立，正文未建。
+状态：Source；Atlas Foundation / Deep Map 旧工作稿，待与 Canonical Data Structure Subject Atlas README 做 Source Diff；不再迁成第二份 Atlas LaTeX。
 
 标题：《408 数据结构学科总图：关系、表示、操作、不变量与代价》。
 
 ## Position
 
-本 Atlas 为所有数据结构 Topic 提供共同语言，不拥有具体算法步骤。
+本文件是 [Data Structure Subject Atlas](../README.md) 的 **Atlas Foundation / Deep Map Supplement**，不是第二个独立 Atlas Owner。根 `README.md` 拥有正式 Topic/Bridge/Integration 导航；本文件集中展开所有数据结构 Topic 共用的 Relation、Representation、Workload、Invariant 与 Cost 语言，不拥有具体算法步骤。
 
 ## 核心模型
 

@@ -1,6 +1,8 @@
 # 单跳交付：帧、MAC、局域网与交换机
 
-状态：工作稿，待人工确认。
+状态：Markdown 工作稿待迁入 LaTeX；Canonical LaTeX 正文未建。
+
+> **迁移提示**：以下长篇内容是此前误写在 README 中的 working source。它可用于后续 Source Diff，但不再视为 Handbook 正文。正式手册必须迁入同目录 `.tex`；迁移完成后本 README 将压缩为引子、范围、边界和阅读链接。
 
 ## 0. 本册定位
 
