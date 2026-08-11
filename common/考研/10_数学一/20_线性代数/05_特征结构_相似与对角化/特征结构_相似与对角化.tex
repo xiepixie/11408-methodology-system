@@ -1,0 +1,769 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={特征结构：相似与对角化}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 线性代数 Topic 05}}
+\rhead{\small\color{deep}特征结构 · 相似 · 对角化}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\tikzset{
+  nodebox/.style={draw=deep,rounded corners=2mm,text width=3.0cm,minimum height=1.0cm,align=center,fill=soft,font=\small,inner sep=4pt},
+  flow/.style={-{Latex[length=2mm]},thick,draw=deep},
+  dashedflow/.style={-{Latex[length=2mm]},thick,dashed,draw=purple}
+}
+
+\title{\vspace{-1.1cm}\textbf{特征结构：相似与对角化}\\[0.4em]
+\large 找到算子自己的方向，再问这些方向能不能组成完整坐标系}
+\author{数学一 · 线性代数 Topic 05}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：一个线性算子有没有“不被混合”的自然方向？这些方向是否足够组成一组基？}
+一般向量经过矩阵 $A$ 后，会被多个坐标方向混合。最理想的方向满足
+\[
+Av=\lambda v,
+\qquad v\neq0,
+\]
+也就是作用后仍停留在原来的一维方向里，只改变伸缩倍数。
+
+于是本册的生成链是
+\[
+\boxed{
+\text{同空间算子}
+\to Av=\lambda v
+\to (A-\lambda I)v=0
+\to \chi_A(\lambda)=0
+\to E_\lambda=\ker(A-\lambda I)
+\to \text{自然方向能否组成基}
+\to \text{对角化}
+}
+\]
+\end{corebox}
+
+\section{本册负责什么}
+
+\begin{itemize}
+  \item \kw{Owns：}线性算子、相似、特征值/特征向量/特征子空间、特征多项式、代数/几何重数、可对角化判据、矩阵多项式与幂、实对称矩阵的正交谱结构、可交换矩阵保持特征子空间的机制。
+  \item \kw{Uses：}Topic 01 的基、坐标、正交与 Schmidt；Topic 02 的一般换基、determinant、逆矩阵；Topic 03 的 kernel、rank；Topic 04 的齐次方程求 kernel。
+  \item \kw{Does not own：}一般矩阵等价、Jordan 标准形计算、二次型合同/惯性/正定。
+\end{itemize}
+
+本册只研究\kw{同一个空间上的算子} $T:V\to V$。如果定义域和陪域是两个独立空间，允许两端独立换基，回到 Topic 02--03 的一般映射/等价语言。
+
+\section{为什么同空间算子对应相似，而不是一般等价}
+
+Topic 02 已得到一般线性映射两端换基公式
+\[
+A'=Q^{-1}AP.
+\]
+若研究的是同一空间算子 $T:V\to V$，并且用同一组新基描述输入和输出，那么两端换基必须同步，即 $Q=P$。于是
+\[
+\boxed{A'=P^{-1}AP.}
+\]
+
+这就是\kw{矩阵相似}：两张矩阵不是两个不同的作用，而是\kw{同一个算子在两组坐标中的记录}。
+
+\begin{corebox}{相似的语义先于公式}
+\[
+\boxed{B=P^{-1}AP
+\quad\Longleftrightarrow\quad
+\text{same operator, different coordinates}.}
+\]
+因此相似关系应该保持算子本身的结构；元素位置和特征向量的坐标可以变化。
+\end{corebox}
+
+\section{特征向量：寻找算子不混合的一维方向}
+
+若
+\[
+Av=\lambda v,
+\qquad v\neq0,
+\]
+则由 $v$ 张成的一维子空间
+\[
+\operatorname{span}\{v\}
+\]
+在 $A$ 作用下保持不变。$v$ 叫\kw{特征向量}，$\lambda$ 叫对应的\kw{特征值}。
+
+注意“$v\neq0$”不能删掉，因为零向量对任意 $\lambda$ 都满足 $A0=\lambda0$，却不能定义一个方向。
+
+移项得到
+\[
+(A-\lambda I)v=0.
+\]
+所以给定 $\lambda$ 的全部特征向量连同零向量组成
+\[
+\boxed{E_\lambda=\ker(A-\lambda I),}
+\]
+称为\kw{特征子空间}。
+
+这说明：特征向量问题本质上仍然在调用 Topic 03--04 的 kernel 语言，只是 kernel 的矩阵从 $A$ 换成了 $A-\lambda I$。
+
+\section{特征方程为什么是 determinant 归零}
+
+想让
+\[
+(A-\lambda I)v=0
+\]
+存在非零解，必须有
+\[
+r(A-\lambda I)<n.
+\]
+对 $n\times n$ 方阵，Topic 02 告诉我们这等价于
+\[
+\boxed{\det(\lambda I-A)=0.}
+\]
+
+定义\kw{特征多项式}
+\[
+\chi_A(t)=\det(tI-A).
+\]
+它的根就是特征值。
+
+所以“先解特征方程、再求特征向量”不是两套算法：
+\begin{itemize}
+  \item 第一步只是在寻找哪些 $\lambda$ 会让 $A-\lambda I$ 突然失去可逆性；
+  \item 第二步真正进入 kernel，寻找此时暴露出的不变方向。
+\end{itemize}
+
+\begin{methodbox}{为什么只求出特征值还远远不够？}
+特征值只告诉你“哪些伸缩因子可能出现”；真正决定算子能否被这些自然方向完整拆开的，是每个
+\[
+E_\lambda=\ker(A-\lambda I)
+\]
+到底有几维。
+\end{methodbox}
+
+\section{相似到底保持什么}
+
+若
+\[
+B=P^{-1}AP,
+\]
+则
+\[
+tI-B=P^{-1}(tI-A)P.
+\]
+因此
+\[
+\chi_B(t)
+=\det(tI-B)
+=\det(P^{-1})\det(tI-A)\det P
+=\chi_A(t).
+\]
+所以相似矩阵有相同的特征多项式和特征值（含代数重数）。同时它们还保持 rank、determinant 和 trace。
+
+\kw{迹（trace）}定义为方阵对角元之和：
+\[
+\operatorname{tr}A=\sum_{i=1}^n a_{ii}.
+\]
+按代数重数记全部特征值为 $\lambda_1,\dots,\lambda_n$，由特征多项式系数得到
+\[
+\boxed{
+\sum_{i=1}^{n}\lambda_i=\operatorname{tr}A,
+\qquad
+\prod_{i=1}^{n}\lambda_i=\det A.
+}
+\]
+
+但这些都只是压缩摘要。相似还要求每个特征值附近的方向结构一致。
+
+\begin{examplebox}{母例：秩一矩阵的迹与特征值}
+对于 rank-one 矩阵 $A = uv^T$，它只有一个独立方向。因此它至多只有一个非零特征值，其余 $n-1$ 个特征值均为 $0$。
+根据迹的性质，这唯一可能的非零特征值恰好等于它的迹：
+\[
+\lambda_1 = \operatorname{tr}(A) = \operatorname{tr}(uv^T) = v^Tu.
+\]
+于是外积矩阵立即满足一个强力的自乘公式：$A^2 = (uv^T)(uv^T) = u(v^Tu)v^T = \operatorname{tr}(A) A$。
+\end{examplebox}
+
+事实上，若 $Av=\lambda v$，则
+\[
+B(P^{-1}v)=P^{-1}Av=\lambda P^{-1}v,
+\]
+所以
+\[
+\boxed{E_\lambda(B)=P^{-1}E_\lambda(A).}
+\]
+特征向量的\kw{坐标}会变，但特征子空间的维数保持。
+
+\begin{corebox}{同一个 $P$ 才能把整个矩阵表达式一起搬到新坐标}
+若
+\[
+B=P^{-1}AP,
+\]
+那么对任意多项式 $f$，
+\[
+\boxed{f(B)=P^{-1}f(A)P.}
+\]
+因为每个 $B^k$ 都等于 $P^{-1}A^kP$，中间的 $PP^{-1}$ 会逐次消掉。
+
+但如果只知道
+\[
+X\sim X',\qquad Y\sim Y',
+\]
+而两组相似关系由不同的换基矩阵实现，就不能直接推出
+\[
+X+Y\sim X'+Y'.
+\]
+相似不是“每个局部都差不多就能一起运算”，而是\kw{同一对象的整套坐标变换必须一致}。
+\end{corebox}
+
+迹也提供一个很实用的顺序边界。尺寸相容时
+\[
+\boxed{\operatorname{tr}(AB)=\operatorname{tr}(BA),}
+\]
+更一般地乘积中的因子可以循环移位；但这不是任意交换律，例如一般没有
+\[
+\operatorname{tr}(ABC)=\operatorname{tr}(ACB).
+\]
+所以 trace 能忽略的是“从哪里开始读这一圈复合”，不是矩阵作用次序本身。
+
+\section{不同特征值的特征向量为什么自动线性无关}
+
+设 $v_1,\dots,v_k$ 分别对应互异特征值 $\lambda_1,\dots,\lambda_k$。
+若存在最短的非平凡关系
+\[
+a_1v_1+\cdots+a_kv_k=0,
+\qquad a_k\neq0,
+\]
+对两边作用 $A-\lambda_k I$：
+\[
+a_1(\lambda_1-\lambda_k)v_1+\cdots+a_{k-1}(\lambda_{k-1}-\lambda_k)v_{k-1}=0.
+\]
+因为特征值互异，系数仍非零，这就得到一个更短的非平凡关系，与“最短”矛盾。
+
+因此
+\[
+\boxed{\text{互异特征值对应的特征向量必线性无关}.}
+\]
+
+于是 $n$ 阶矩阵若有 $n$ 个互异特征值，一定拥有 $n$ 个独立特征方向，因此可对角化。但这只是\kw{充分条件}，不是必要条件。
+
+\section{代数重数与几何重数：重根真正缺的是什么}
+
+对特征值 $\lambda$：
+
+\begin{itemize}
+  \item \kw{代数重数 $m_a(\lambda)$：}$\lambda$ 作为 $\chi_A(t)$ 的根出现多少次；
+  \item \kw{几何重数 $m_g(\lambda)$：}特征子空间的维数
+  \[
+  m_g(\lambda)=\dim E_\lambda=\dim\ker(A-\lambda I).
+  \]
+\end{itemize}
+
+总有
+\[
+1\le m_g(\lambda)\le m_a(\lambda).
+\]
+几何重数回答的是：这个重复特征值实际提供了多少条独立自然方向。
+
+\begin{examplebox}{同样是重根，为什么一个能对角化，一个不能？}
+令
+\[
+A_1=\begin{pmatrix}2&0\\0&2\end{pmatrix},
+\qquad
+A_2=\begin{pmatrix}2&1\\0&2\end{pmatrix}.
+\]
+两者特征多项式都是 $(t-2)^2$，所以 $m_a(2)=2$。
+
+但
+\[
+E_2(A_1)=\mathbb R^2,
+\qquad m_g(2)=2,
+\]
+而
+\[
+E_2(A_2)=\ker\begin{pmatrix}0&1\\0&0\end{pmatrix}
+=\operatorname{span}\left\{\begin{pmatrix}1\\0\end{pmatrix}\right\},
+\qquad m_g(2)=1.
+\]
+所以 $A_1$ 有两条独立特征方向，$A_2$ 只有一条。
+\end{examplebox}
+
+\section{对角化：自然方向能不能组成完整坐标系}
+
+若存在 $n$ 个线性无关特征向量
+\[
+v_1,\dots,v_n,
+\]
+令
+\[
+P=(v_1,\dots,v_n),
+\qquad
+\Lambda=\operatorname{diag}(\lambda_1,\dots,\lambda_n).
+\]
+逐列写 $Av_i=\lambda_i v_i$，就得到
+\[
+\boxed{AP=P\Lambda.}
+\]
+因为 $P$ 的列线性无关，所以 $P$ 可逆，进而
+\[
+\boxed{P^{-1}AP=\Lambda.}
+\]
+
+这说明对角化没有任何神秘：\kw{只是把新基选成一组特征向量。}
+
+因此以下说法等价：
+\[
+\boxed{
+\begin{aligned}
+&A\text{ 可对角化}\\
+\Longleftrightarrow{}&\mathbb R^n\text{ 有一组由特征向量组成的基}\\
+\Longleftrightarrow{}&\sum_{\lambda}\dim E_\lambda=n\\
+\Longleftrightarrow{}&m_g(\lambda)=m_a(\lambda)\text{ 对每个特征值都成立}.
+\end{aligned}}
+\]
+
+\begin{methodbox}{构造 $P$ 时优先检查 $AP=P\Lambda$}
+$P$ 的第 $j$ 列必须是对应 $\lambda_j$ 的特征向量。先检查
+\[
+AP=P\Lambda
+\]
+可以逐列验证这一点，通常比先硬算 $P^{-1}$ 更直接，也更容易发现列顺序与特征值顺序错配。
+\end{methodbox}
+
+\subsection{抽象作用关系怎样变成一个可计算的表示矩阵？}
+
+题目有时不直接给 $A$ 的数表，而是给一组向量上的作用，例如
+\[
+A\alpha_1=\alpha_2,
+\qquad
+A\alpha_2=-2\alpha_1+3\alpha_2.
+\]
+若 $\alpha_1,\alpha_2$ 线性无关，令
+\[
+P_1=(\alpha_1,\alpha_2),
+\]
+就可以把两条作用关系一次合并成
+\[
+A P_1=P_1
+\begin{pmatrix}
+0&-2\\
+1&3
+\end{pmatrix}.
+\]
+记右侧小矩阵为 $B$，立即得到
+\[
+\boxed{P_1^{-1}AP_1=B.}
+\]
+
+这正是 Topic 02“矩阵是映射在一组基下的表示”在谱题中的运行：\kw{先把抽象作用翻译成具体表示，再在这张小矩阵上寻找自然方向。}
+
+若继续找到 $P_2$ 使
+\[
+P_2^{-1}BP_2=\Lambda,
+\]
+则
+\[
+\boxed{(P_1P_2)^{-1}A(P_1P_2)=\Lambda.}
+\]
+也就是说，$B$ 的特征向量 $\beta$ 会通过 $P_1$ 被送回 $A$ 的特征向量 $P_1\beta$。这比记“抽象题该乘 $P_1P_2$ 还是 $P_1P_2^{-1}$”更稳定。
+
+\section{同特征值为什么不够证明相似}
+
+相似必然同谱，但同谱一般不够。
+
+最小反例是
+\[
+A=I_2,
+\qquad
+B=\begin{pmatrix}1&1\\0&1\end{pmatrix}.
+\]
+两者特征多项式都是 $(t-1)^2$，trace、determinant 都相同；但
+\[
+\dim E_1(A)=2,
+\qquad
+\dim E_1(B)=1.
+\]
+所以它们不相似。
+
+\begin{corebox}{什么时候“同谱”终于够用？}
+若 $A,B$ \kw{都可对角化}，并且具有相同的特征值多重集合，那么它们都相似于同一张对角矩阵（只差对角元排列），因此
+\[
+\boxed{A\sim B.}
+\]
+所以“同谱不足”的真正缺口是：\kw{你还不知道每个特征值是否提供了足够的独立方向。}
+\end{corebox}
+
+\section{在特征方向上，矩阵运算退化成标量运算}
+
+若
+\[
+Av=\lambda v,
+\]
+则递推得到
+\[
+A^kv=\lambda^k v.
+\]
+更一般地，对多项式
+\[
+p(t)=a_0+a_1t+\cdots+a_mt^m,
+\]
+有
+\[
+\boxed{p(A)v=p(\lambda)v.}
+\]
+
+于是：
+\begin{itemize}
+  \item 若 $A$ 可逆，则 $\lambda\neq0$，且 $A^{-1}v=\lambda^{-1}v$；
+  \item $A^T$ 与 $A$ 有相同特征多项式，因此特征值相同；
+  \item 若 $p(A)=0$，则每个特征值都必须满足 $p(\lambda)=0$。
+\end{itemize}
+
+\subsection{零化多项式什么时候还能直接推出可对角化？}
+
+只知道 $p(A)=0$，只能先限制特征值；但若 $p$ 在当前数域上已经分裂成\kw{互不相同的一次因子}
+\[
+p(t)=c(t-\mu_1)\cdots(t-\mu_s),
+\qquad \mu_i\neq\mu_j,
+\]
+那么 $A$ 一定可对角化。
+
+一个不调用 Jordan 计算的理解方式是构造插值多项式
+\[
+\ell_i(t)=\prod_{j\neq i}\frac{t-\mu_j}{\mu_i-\mu_j},
+\]
+它满足 $\ell_i(\mu_j)=\delta_{ij}$。令
+\[
+P_i=\ell_i(A),
+\]
+则这些算子把空间分解成不同根对应的方向部分，并满足
+\[
+I=P_1+\cdots+P_s,
+\qquad
+AP_i=\mu_iP_i.
+\]
+因此整个空间由各个特征子空间直和生成。
+
+对数学一最常用的三类条件：
+\[
+A^2=A
+\Rightarrow
+A(A-I)=0
+\Rightarrow
+\lambda\in\{0,1\},
+\]
+\[
+A^2=I
+\Rightarrow
+(A-I)(A+I)=0
+\Rightarrow
+\lambda\in\{1,-1\},
+\]
+\[
+A^3=A
+\Rightarrow
+A(A-I)(A+I)=0
+\Rightarrow
+\lambda\in\{0,1,-1\}.
+\]
+三个零化多项式都无重根，所以三种情形的矩阵都可对角化。
+
+其中幂等情形还得到
+\[
+\boxed{\mathbb R^n=\operatorname{Im}A\oplus\ker A,}
+\]
+因为任意 $x$ 都可写成
+\[
+x=Ax+(I-A)x,
+\]
+第一项在 $\operatorname{Im}A$，第二项满足 $A(I-A)x=0$；对合情形则由
+\[
+P_+=\frac{I+A}{2},
+\qquad
+P_-=\frac{I-A}{2}
+\]
+得到 $E_1$ 与 $E_{-1}$ 的互补分解。
+
+\begin{warnbox}{所有特征值落在某个集合里，不一定反推出原多项式恒等式}
+例如特征值全是 $0$ 的矩阵不一定等于零；它可能是非零幂零矩阵。要从“谱集合”反推出 $p(A)=0$，通常还需要可对角化或更强结构。
+\end{warnbox}
+
+\subsection{Extension：Cayley--Hamilton 为什么保证高次幂最终可降阶？}
+若
+\[
+\chi_A(t)=t^n+c_{n-1}t^{n-1}+\cdots+c_0
+\]
+是特征多项式，Cayley--Hamilton 定理给出
+\[
+\chi_A(A)=0.
+\]
+于是 $A^n$ 可以写成 $I,A,\dots,A^{n-1}$ 的线性组合，再乘 $A$ 可继续递推所有更高次幂。
+
+数学一主线只保留这个“高次幂可被一个矩阵多项式关系压缩”的接口；最小多项式和 Jordan 块计算留在 Extension。
+
+若 $A=P\Lambda P^{-1}$，则
+\[
+\boxed{A^k=P\Lambda^kP^{-1},}
+\]
+矩阵幂被降成每个特征方向上的标量幂。这是对角化最直接的计算收益之一。
+
+\begin{warnbox}{“所有特征值都是 0”不等于“矩阵是 0”}
+非零幂零矩阵
+\[
+N=\begin{pmatrix}0&1\\0&0\end{pmatrix}
+\]
+的唯一特征值也是 $0$，但 $N\neq0$，并且只有一个独立特征方向，所以不可对角化。
+
+若一个矩阵既可对角化又只有特征值 $0$，它才必须等于零矩阵。
+\end{warnbox}
+
+\section{实对称矩阵：为什么自然方向可以选成彼此正交}
+
+现在加入额外结构
+\[
+A^T=A.
+\]
+这不是一般算子的性质，而是“算子与欧氏内积相容”的特殊情形。
+
+若
+\[
+Au=\lambda u,
+\qquad
+Av=\mu v,
+\]
+则
+\[
+\lambda u^Tv
+=(Au)^Tv
+=u^TA^Tv
+=u^TAv
+=\mu u^Tv.
+\]
+因此
+\[
+(\lambda-\mu)u^Tv=0.
+\]
+若 $\lambda\neq\mu$，得到
+\[
+\boxed{u^Tv=0.}
+\]
+所以实对称矩阵不同特征值对应的特征子空间彼此正交。
+
+更强的\kw{实对称谱定理}告诉我们：实对称矩阵的特征值全部为实数，并且存在一组标准正交特征基。把这些单位特征向量按列排成正交矩阵 $Q$，得到
+\[
+\boxed{Q^TAQ=Q^{-1}AQ=\Lambda.}
+\]
+
+重特征值并不会造成障碍：只需在同一个 $E_\lambda$ 内部选择一组标准正交基；不同特征子空间本来就已经彼此正交。
+
+\begin{examplebox}{母例：$\begin{psmallmatrix}2&1\\1&2\end{psmallmatrix}$ 的自然轴}
+令
+\[
+A=\begin{pmatrix}2&1\\1&2\end{pmatrix}.
+\]
+特征值为 $3,1$，对应方向可取
+\[
+v_1=\begin{pmatrix}1\\1\end{pmatrix},
+\qquad
+v_2=\begin{pmatrix}1\\-1\end{pmatrix}.
+\]
+两者天然正交。单位化后
+\[
+Q=\frac1{\sqrt2}
+\begin{pmatrix}1&1\\1&-1\end{pmatrix},
+\]
+于是
+\[
+Q^TAQ=\begin{pmatrix}3&0\\0&1\end{pmatrix}.
+\]
+在线性算子视角，这表示找到了两条互不混合的自然方向；同一数值公式在 Topic 06 还会被重新解释为二次型的正交主轴变换。
+\end{examplebox}
+
+\begin{warnbox}{正交相似与合同数值相同，不等于对象相同}
+对正交矩阵 $Q$，$Q^{-1}=Q^T$，所以
+\[
+Q^{-1}AQ=Q^TAQ.
+\]
+但 Topic 05 研究的是\kw{同一算子换到正交特征基}；Topic 06 研究的是\kw{二次型变量代换}。公式重合不能抹掉对象边界。
+\end{warnbox}
+
+\subsection{Extension：统摄对称与正交的正规矩阵 (Normal Matrix)}
+实对称矩阵（$A^T = A$）、反对称矩阵（$A^T = -A$）以及正交矩阵（$A^T A = I$）表面看似不同，但它们都属于\kw{正规矩阵（Normal Matrix）}，即满足 $A^T A = A A^T$ 的矩阵。
+正规矩阵是所有能够“提供一组标准正交特征基（谱定理）”的矩阵的最本质集合。实对称矩阵只是在这个集合中，特征值进一步被限制在实数域上的特例而已。
+
+\section{可交换矩阵：先得到“保持特征子空间”，再谈同时对角化}
+
+若
+\[
+AB=BA
+\]
+且 $v\in E_\lambda(A)$，那么
+\[
+A(Bv)=B(Av)=B(\lambda v)=\lambda Bv.
+\]
+因此
+\[
+\boxed{B(E_\lambda(A))\subseteq E_\lambda(A).}
+\]
+也就是说，$B$ 不会把 $A$ 的某个特征子空间扔到另一个特征值空间去。
+
+这才是“可交换”的核心结构结论。
+
+同样的计算还告诉我们 $B$ 会保持 Topic 03 的两个基本空间：
+\[
+x\in\ker A
+\Rightarrow
+A(Bx)=B(Ax)=0,
+\]
+所以
+\[
+B(\ker A)\subseteq\ker A;
+\]
+若 $y=Ax\in\operatorname{Im}A$，则
+\[
+By=BAx=ABx\in\operatorname{Im}A.
+\]
+因此 commute 的统一含义可以说成：\kw{$B$ 不会跨越 $A$ 已经划出的自然不变子空间。}
+
+若进一步已经选到 $A$ 的特征基，使
+\[
+A=\operatorname{diag}(\lambda_1,\dots,\lambda_n),
+\qquad B=(b_{ij}),
+\]
+那么
+\[
+(AB-BA)_{ij}=(\lambda_i-\lambda_j)b_{ij}.
+\]
+于是
+\[
+\boxed{AB=BA\iff(\lambda_i-\lambda_j)b_{ij}=0\ \text{ 对所有 }i,j.}
+\]
+这直接把“保持特征子空间”变成坐标结构：不同特征值之间的非对角耦合必须消失；只有同一重特征值对应的块内部还能自由混合。
+
+由此继续得到：
+\begin{itemize}
+  \item 若 $A$ 有 $n$ 个互异特征值，每个 $E_\lambda(A)$ 都是一维，则 $B$ 在同一组 $A$ 的特征向量基下也是对角矩阵；
+  \item 若 $A,B$ 在同一数域上都可对角化且 $AB=BA$，则可以在每个 $A$ 的特征子空间内部继续选择 $B$ 的特征基，从而得到共同特征基，即二者可同时对角化。
+\end{itemize}
+
+但只知道 $AB=BA$ 不够。取
+\[
+A=I_2,
+\qquad
+B=\begin{pmatrix}1&1\\0&1\end{pmatrix},
+\]
+显然可交换，但 $B$ 自己不可对角化，因此不可能同时对角化。
+
+\begin{corebox}{Extension：中心化子与李代数视角}
+当研究所有与 $A$ 可交换的矩阵时，我们实际上在研究 $A$ 的\kw{中心化子（Centralizer）} $\mathcal{C}(A) = \{X \mid AX = XA\}$。
+从算子理论来看，可引入交换子操作 $\operatorname{ad}_A(X) = AX - XA$，那么可交换的条件就变成了求 $\operatorname{ad}_A$ 的核。这是通向更高级的李代数和系统控制理论（如 Sylvester 方程解的存在性）的关键心智模型。
+\end{corebox}
+
+\section{Jordan 形放在哪里：只保留边界，不进入数学一主线}
+
+不可对角化并不表示“完全没有结构”，只表示算子无法被拆成一组彼此独立的一维特征方向。更高等的线性代数会引入广义特征向量与 Jordan 标准形，把剩余耦合压到最简单的链式结构。
+
+本项目把 Jordan 计算留在 Extension：它用于解释“对角化失败以后发生了什么”，不进入数学一当前计算主干。
+
+\section{概念边界：谱结构最容易在哪一步被过度反推}
+
+\begin{longtable}{L{2.5cm}L{3.0cm}L{3.8cm}L{3.2cm}L{\dimexpr\linewidth-13.1cm\relax}}
+\toprule
+\textbf{A $\neq$ B} & \textbf{为什么容易混} & \textbf{真正判据} & \textbf{题面信号} & \textbf{混淆后果}\\
+\midrule
+特征向量 $\neq$ 任意非零向量 & 都是空间方向 & 必须满足 $Av\in\operatorname{span}\{v\}$ & “不变方向”“$Av=\lambda v$” & 把混合方向当自然轴\\
+特征值 $\neq$ 特征向量 & 常按两步连续计算 & 前者找使 $A-\lambda I$ 奇异的标量，后者找其 kernel & 特征方程 / 齐次方程 & 求到根就停止\\
+代数重数 $\neq$ 几何重数 & 都在“数重数” & 前者看多项式根，后者看 eigenspace 维数 & 重根 & 见重根就误判对角化\\
+同特征值 $\neq$ 相似 & 谱是强不变量 & 还需匹配方向结构；同谱只必要 & “是否相似” & 用必要条件冒充充分条件\\
+可对角化 $\neq$ 特征值互异 & 互异确实保证可对角化 & 真判据是有 $n$ 个独立特征向量 & 重特征值 & 见重根就判不可对角化\\
+相似 $\neq$ 等价 & 都有可逆矩阵参与 & 相似同步换同一空间基；等价两端独立换基 & $P^{-1}AP$ / $PAQ$ & 用 rank 分类算子\\
+相似 $\neq$ 合同 & 正交时公式恰重合 & 研究对象分别是算子和二次型 & 特征值 / 惯性 & 错把谱当合同不变量\\
+可交换 $\neq$ 同时对角化 & 同时对角化必可交换 & 反向还需要足够特征方向 & $AB=BA$ & 忽略不可对角化情形\\
+\bottomrule
+\end{longtable}
+
+\section{看到什么信号时调用本册模型}
+
+\begin{itemize}
+  \item 看到“同一线性变换在不同基下”：先切到算子视角，调用相似 $P^{-1}AP$；
+  \item 看到“特征值”：先把它解释成 $A-\lambda I$ 失去可逆性的标量，再求对应 kernel；
+  \item 看到重特征值：下一动作不是猜能否对角化，而是求 $\dim E_\lambda$；
+  \item 看到“可对角化”：直接问全部 eigenspace 能否提供 $n$ 个独立方向；
+  \item 构造 $P$：按列放特征向量，并用 $AP=P\Lambda$ 检查列顺序；
+  \item 看到 $A^k$ 或矩阵多项式：若已可对角化，转到特征方向逐坐标计算；
+  \item 看到实对称：立即切换到“存在标准正交特征基”，重根只需在对应 eigenspace 内正交化；
+  \item 看到 $AB=BA$：先写 $B(E_\lambda(A))\subseteq E_\lambda(A)$，再判断是否有条件升级为共同特征基。
+\end{itemize}
+
+\section{一页压缩：从自然方向到自然坐标}
+
+\begin{center}
+\begin{tikzpicture}[node distance=6mm and 7mm]
+\node[nodebox] (op) {同空间算子\\$A:V\to V$};
+\node[nodebox,right=of op] (eig) {寻找自然方向\\$Av=\lambda v$};
+\node[nodebox,right=of eig] (kernel) {$A-\lambda I$ 奇异\\$E_\lambda=\ker(A-\lambda I)$};
+\node[nodebox,below=of kernel] (count) {数独立方向\\$\sum\dim E_\lambda$};
+\node[nodebox,left=of count] (diag) {足够 $n$ 条\\特征基 / 对角化};
+\node[nodebox,left=of diag] (sym) {若实对称\\标准正交特征基};
+\draw[flow] (op) -- (eig);
+\draw[flow] (eig) -- (kernel);
+\draw[flow] (kernel) -- (count);
+\draw[flow] (count) -- (diag);
+\draw[flow] (diag) -- (sym);
+\end{tikzpicture}
+\end{center}
+
+最终压成四句话：
+\[
+\boxed{E_\lambda=\ker(A-\lambda I).}
+\]
+\[
+\boxed{\chi_A(\lambda)=0\text{ 只找到候选伸缩因子，eigenspace 才给方向}.}
+\]
+\[
+\boxed{A\text{ 可对角化}\iff\sum_\lambda\dim E_\lambda=n.}
+\]
+\[
+\boxed{A^T=A\Longrightarrow\text{存在标准正交特征基}.}
+\]
+
+如果忘掉公式，重新问：\kw{这个算子有哪些方向不会被混合？每种伸缩因子实际提供几条独立方向？这些方向够不够组成整个空间的坐标轴？}
+
+\end{document}

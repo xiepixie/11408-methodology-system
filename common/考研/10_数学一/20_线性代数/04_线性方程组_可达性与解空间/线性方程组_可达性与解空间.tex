@@ -1,0 +1,727 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{145,154,163}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={线性方程组：可达性与解空间}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 线性代数 Topic 04}}
+\rhead{\small\color{deep}线性方程组 · 可达性 · 逆像}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\tikzset{
+  nodebox/.style={draw=deep,rounded corners=2mm,text width=3.0cm,minimum height=1.0cm,align=center,fill=soft,font=\small,inner sep=4pt},
+  flow/.style={-{Latex[length=2mm]},thick,draw=deep},
+  dashedflow/.style={-{Latex[length=2mm]},thick,dashed,draw=purple}
+}
+
+\title{\vspace{-1.1cm}\textbf{线性方程组：可达性与解空间}\\[0.4em]
+\large 从“把未知量算出来”升级为“研究一个点的全部逆像”}
+\author{数学一 · 线性代数 Topic 04}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：给定目标 $b$，它能不能被 $A$ 到达？若能，所有到达它的输入组成什么结构？}
+把
+\[
+Ax=b
+\]
+只理解成“解未知数 $x$”，会把无解、唯一解、无穷多解、基础解系和非齐次通解拆成许多规则。
+
+把 $A$ 看成线性映射以后，问题统一成
+\[
+\boxed{\text{求点 }b\text{ 的逆像 }A^{-1}(\{b\}).}
+\]
+于是只需要连续问两个问题：
+\[
+\boxed{
+\text{$b$ 是否属于 }\operatorname{Im}A?
+\quad\longrightarrow\quad
+\text{若属于，}\ker A\text{ 还有多少自由度？}
+}
+\]
+如果 $x_0$ 是一个特解，那么所有解一次写完：
+\[
+\boxed{\mathcal S_b=x_0+\ker A.}
+\]
+\end{corebox}
+
+\section{本册负责什么}
+
+\begin{itemize}
+  \item \kw{Owns：}$Ax=b$ 的可达性、齐次/非齐次解集、基础解系、特解+齐次通解、参数方程组、给定多个解时的结构关系、同解/包含、Cramer 法则、矩阵方程的逆像解释。
+  \item \kw{Uses：}Topic 02 的矩阵/逆矩阵/determinant 与行变换语义；Topic 03 的 image、kernel、rank--nullity 和 row space。
+  \item \kw{Does not own：}rank 本体和矩阵等价；特征方程；二次型方程。
+\end{itemize}
+
+本册只在“具体目标 $b$”进入问题以后接管。若题目只问一个映射本身保留/丢失多少自由度，仍属于 Topic 03。
+
+\section{第一问永远是可达性：$b$ 在不在 Image？}
+
+设
+\[
+A=(a_1,\dots,a_n)\in\mathbb R^{m\times n}.
+\]
+因为
+\[
+Ax=x_1a_1+\cdots+x_na_n,
+\]
+所以
+\[
+Ax=b
+\]
+有解当且仅当
+\[
+\boxed{b\in\operatorname{Col}(A)=\operatorname{Im}A.}
+\]
+
+把 $b$ 作为新列加到 $A$ 后，如果它没有增加新的独立方向，则可达；如果它制造了一个新主元，就说明 $b$ 在原 image 之外。因此计算语言是
+\[
+\boxed{Ax=b\text{ 有解}\iff r(A)=r(A\mid b).}
+\]
+
+\begin{corebox}{增广 rank 的真正含义}
+$r(A\mid b)>r(A)$ 并不是“增广矩阵比较大所以 rank 可能大”。它精确表示：\kw{$b$ 引入了原列空间无法生成的新方向。}
+
+所以 $r(A)=r(A\mid b)$ 只是“$b\in\operatorname{Im}A$”的消元版本。
+\end{corebox}
+
+\section{齐次方程：目标是零，所以逆像就是 Kernel}
+
+当 $b=0$ 时，
+\[
+Ax=0
+\quad\Longleftrightarrow\quad
+x\in\ker A.
+\]
+零向量永远可达，所以齐次系统至少有零解。
+
+若 $A$ 有 $n$ 列、rank 为 $r$，Topic 03 给出
+\[
+\dim\ker A=n-r.
+\]
+因此
+\[
+\boxed{
+\begin{aligned}
+Ax=0\text{ 只有零解}&\iff r(A)=n,\\
+Ax=0\text{ 有非零解}&\iff r(A)<n.
+\end{aligned}}
+\]
+
+\subsection{基础解系到底是什么}
+
+\kw{基础解系}就是 $\ker A$ 的一组基。因此它必须同时满足：
+\begin{itemize}
+  \item 每个向量都满足 $Ax=0$；
+  \item 这些向量线性无关；
+  \item 它们生成全部齐次解。
+\end{itemize}
+
+若 $A$ 有 $n$ 个未知量、rank 为 $r$，任意基础解系都恰有
+\[
+\boxed{n-r}
+\]
+个向量。具体基可以不唯一，但向量个数和生成的 kernel 唯一。
+
+\section{非齐次方程：一个特解平移整个 Kernel}
+
+假设 $Ax_0=b$。若 $h\in\ker A$，则
+\[
+A(x_0+h)=Ax_0+Ah=b.
+\]
+所以 $x_0+\ker A$ 中每个点都是解。
+
+反过来，若 $x$ 也是解，
+\[
+A(x-x_0)=Ax-Ax_0=b-b=0,
+\]
+所以 $x-x_0\in\ker A$。因此
+\[
+\boxed{\mathcal S_b=x_0+\ker A.}
+\]
+
+这里 $x_0+\ker A$ 叫作 kernel 的\kw{仿射平移}：它和 kernel 有完全相同的方向结构，但整体可能离开原点。
+
+\begin{warnbox}{非齐次解集通常不是子空间}
+当 $b\neq0$ 时，$0$ 不可能满足 $A0=b$，所以解集不含零向量，也不会对任意线性组合封闭。
+
+真正保持的是\kw{仿射组合}：系数和为 $1$ 的组合仍留在同一个平移集合中。
+\end{warnbox}
+
+\section{多个已知解怎样自动生成齐次结构}
+
+若 $x_1,x_2$ 都满足
+\[
+Ax_i=b,
+\]
+则
+\[
+\boxed{x_1-x_2\in\ker A.}
+\]
+所以考试中给出多个非齐次解时，不要只把它们当“几个答案”；\kw{任选一个作基点，其余解减去它，立即得到齐次方向。}
+
+更一般地，若 $x_1,\dots,x_k$ 都是 $Ax=b$ 的解，则
+\[
+A\left(\sum_{i=1}^{k}c_ix_i\right)
+=\left(\sum_{i=1}^{k}c_i\right)b.
+\]
+因此：
+
+\begin{itemize}
+  \item 若 $\sum c_i=1$，则 $\sum c_ix_i$ 仍是同一个非齐次系统的解；
+  \item 若 $\sum c_i=0$，则 $\sum c_ix_i$ 是对应齐次系统的解；
+  \item 若 $b\neq0$，想让组合仍满足 $Ax=b$，必须有 $\sum c_i=1$。
+\end{itemize}
+
+\begin{methodbox}{什么时候多个非齐次解能直接给出基础解系？}
+选一个特解 $x_0$，把其他解写成
+\[
+x_i-x_0.
+\]
+这些差向量全在 kernel 中。若你已经得到恰好 $n-r(A)$ 个线性无关的差向量，那么它们就是一组基础解系。
+
+判断关键不是“给了几个解”，而是\kw{差向量有多少独立方向}。
+\end{methodbox}
+
+\section{无解、唯一解、无穷多解：其实只有两个开关}
+
+对 $A\in\mathbb R^{m\times n}$：
+
+\begin{longtable}{L{4.0cm}L{4.0cm}L{\dimexpr\linewidth-8.5cm\relax}}
+\toprule
+\textbf{可达性} & \textbf{Kernel 自由度} & \textbf{结论}\\
+\midrule
+$r(A)\neq r(A\mid b)$ & 无需再看 & 无解\\
+$r(A)=r(A\mid b)$ & $n-r(A)=0$ & 唯一解\\
+$r(A)=r(A\mid b)$ & $n-r(A)>0$ & 无穷多解\\
+\bottomrule
+\end{longtable}
+
+因此
+\[
+\boxed{
+\text{解的分类}
+=\text{目标是否可达}
++\text{kernel 是否还有自由度}.
+}
+\]
+
+\begin{warnbox}{方程个数和未知数个数不能直接决定解的个数}
+“方程多于未知数”不自动无解，“未知数多于方程”也不自动有无穷多解。真正决定结构的是独立约束数，也就是 rank，以及具体 $b$ 是否进入 image。
+\end{warnbox}
+
+\section{消元的语义：可逆重写约束，不改变原未知量的解集}
+
+对增广矩阵
+\[
+(A\mid b)
+\]
+做初等行变换，相当于左乘可逆矩阵 $E$：
+\[
+(A\mid b)\mapsto(EA\mid Eb).
+\]
+由于
+\[
+EAx=Eb
+\iff
+Ax=b,
+\]
+新旧方程组解集完全相同。
+
+这解释了为什么解方程时可以自由做\kw{行变换}，却不能只对系数矩阵任意做列变换而仍把未知量 $x$ 当成原来的坐标。列变换对应变量方向重编码；若要使用，必须同步跟踪变量代换。
+
+\subsection{自由变量不是“没算出来的未知数”}
+
+阶梯形中没有主元约束的变量可以自由选取，它们正是在给 kernel 选择坐标。若有 $n-r$ 个自由变量，就对应 $\dim\ker A=n-r$。
+
+构造基础解系时，依次把一个自由变量设为 $1$、其余自由变量设为 $0$，求出对应主变量，就得到一组 kernel 基。
+
+\begin{examplebox}{母例 1：从自由变量直接读出“特解 + Kernel”}
+考虑
+\[
+\begin{pmatrix}
+1&1&0\\
+0&1&1
+\end{pmatrix}x
+=
+\begin{pmatrix}1\\2\end{pmatrix}.
+\]
+方程为
+\[
+x_1+x_2=1,
+\qquad
+x_2+x_3=2.
+\]
+令自由变量 $x_2=t$，则
+\[
+x_1=1-t,
+\qquad
+x_3=2-t.
+\]
+因此
+\[
+x=
+\begin{pmatrix}1\\0\\2\end{pmatrix}
++t
+\begin{pmatrix}-1\\1\\-1\end{pmatrix}.
+\]
+这里
+\[
+\begin{pmatrix}1\\0\\2\end{pmatrix}
+\]
+是一个特解，而
+\[
+\begin{pmatrix}-1\\1\\-1\end{pmatrix}
+\]
+正是 $\ker A$ 的一组基。计算结果直接回到了
+\[
+\mathcal S_b=x_0+\ker A.
+\]
+\end{examplebox}
+
+\section{同一个 $A$，不同目标 $b$ 为什么命运不同}
+
+再看
+\[
+A=\begin{pmatrix}1&1\\1&1\end{pmatrix}.
+\]
+其 image 是
+\[
+\operatorname{span}\left\{\begin{pmatrix}1\\1\end{pmatrix}\right\},
+\]
+kernel 是
+\[
+\operatorname{span}\left\{\begin{pmatrix}1\\-1\end{pmatrix}\right\}.
+\]
+
+若
+\[
+b_1=\begin{pmatrix}2\\2\end{pmatrix},
+\]
+则 $b_1$ 可达，一个特解为 $(2,0)^T$：
+\[
+\mathcal S_{b_1}
+=\begin{pmatrix}2\\0\end{pmatrix}
++t\begin{pmatrix}1\\-1\end{pmatrix}.
+\]
+若
+\[
+b_2=\begin{pmatrix}1\\0\end{pmatrix},
+\]
+则 $b_2\notin\operatorname{Im}A$，无解。
+
+所以
+\[
+\boxed{A\text{ 奇异}\not\Rightarrow Ax=b\text{ 无解}.}
+\]
+奇异只说明 $A$ 不是双射；某个具体 $b$ 是否有逆像仍取决于它是否落在 image 中。
+
+\section{局部问题与全局问题必须分开}
+
+“这个 $b$ 有没有解”和“任意 $b$ 有没有解”不是同一问题。
+
+对 $A:\mathbb R^n\to\mathbb R^m$：
+\begin{itemize}
+  \item 对\kw{某个给定 $b$} 有解：$b\in\operatorname{Im}A$；
+  \item 对\kw{每个 $b\in\mathbb R^m$} 都有解：$\operatorname{Im}A=\mathbb R^m$，即 $r(A)=m$；
+  \item 每个可达 $b$ 至多一个逆像：$\ker A=\{0\}$，即 $r(A)=n$；
+  \item 对每个 $b$ 都唯一可解：同时满射和单射，只可能 $m=n=r(A)$，也就是方阵可逆。
+\end{itemize}
+
+这条分层能阻断“看到某个 $b$ 有解，就误判 $A$ 可逆”的常见混淆。
+
+\section{参数方程组：先找结构跳变，再谈具体解}
+
+含参数时要同时追踪
+\[
+r(A),\qquad r(A\mid b),\qquad n-r(A).
+\]
+
+例如
+\[
+\begin{pmatrix}
+1&1\\
+1&a
+\end{pmatrix}
+\begin{pmatrix}x_1\\x_2\end{pmatrix}
+=
+\begin{pmatrix}1\\c\end{pmatrix}.
+\]
+
+若 $a\neq1$，系数矩阵 determinant 为 $a-1\neq0$，所以唯一解。
+
+若 $a=1$，两条方程左侧相同：
+\[
+x_1+x_2=1,
+\qquad
+x_1+x_2=c.
+\]
+于是再分：
+\begin{itemize}
+  \item $c=1$：两条约束重复，rank 为 $1<n$，有无穷多解；
+  \item $c\neq1$：左侧同一约束却要求两个不同右端，$r(A\mid b)>r(A)$，无解。
+\end{itemize}
+
+参数题真正发生的是“独立约束与目标相容性在特殊参数点发生跳变”，不是未知数突然出现新的求法。
+
+\section{Cramer 法则：可逆方阵情形的一套显式坐标公式}
+
+若 $A$ 是 $n\times n$ 方阵且
+\[
+\det A\neq0,
+\]
+则系统对任意 $b$ 唯一可解。
+
+由 Topic 02 的
+\[
+A^{-1}=\frac{1}{\det A}\operatorname{adj}(A)
+\]
+可把 $x=A^{-1}b$ 的第 $i$ 个分量整理成
+\[
+\boxed{x_i=\frac{\det A_i}{\det A},}
+\]
+其中 $A_i$ 表示把 $A$ 的第 $i$ 列替换为 $b$ 得到的矩阵。
+
+因此 Cramer 法则并不是另一套方程组世界模型；它只是\kw{方阵可逆、唯一解}这一特殊情形的显式坐标表达。欠定、超定、奇异或只问解空间结构时，rank/kernel 语言更通用。
+
+\section{矩阵方程：把它拆回多个向量逆像问题}
+
+若
+\[
+AX=B,
+\qquad
+B=(b_1,\dots,b_k),
+\]
+把
+\[
+X=(x_1,\dots,x_k)
+\]
+按列拆开，就得到
+\[
+Ax_j=b_j
+\qquad(j=1,\dots,k).
+\]
+所以 $AX=B$ 有解，当且仅当 $B$ 的每一列都属于 $\operatorname{Im}A$。
+
+如果已有一个矩阵特解 $X_0$，全部解可写成
+\[
+X=X_0+Z,
+\qquad AZ=0,
+\]
+也就是 $Z$ 的每一列都在 $\ker A$ 中。
+
+若 $A$ 可逆，当然退化成唯一解
+\[
+X=A^{-1}B.
+\]
+
+对
+\[
+XA=B,
+\]
+若 $A$ 可逆，应在\kw{右侧}乘 $A^{-1}$：
+\[
+X=BA^{-1}.
+\]
+也可以转置为
+\[
+A^TX^T=B^T
+\]
+按列理解。逆矩阵乘在哪一侧由矩阵乘法的复合方向决定，不能交换。
+
+\section{同解与解集包含：比较的是方向空间和基点}
+
+\subsection{先把“公共解”写成一个更大的齐次系统}
+
+对
+\[
+Ax=0,
+\qquad
+Bx=0,
+\]
+公共解必须同时满足两组约束，所以
+\[
+\boxed{
+\ker A\cap\ker B
+=
+\ker\begin{pmatrix}A\\B\end{pmatrix}.
+}
+\]
+若 $A,B$ 都有 $n$ 列，则存在\kw{非零}公共解当且仅当
+\[
+\boxed{
+r\begin{pmatrix}A\\B\end{pmatrix}<n.}
+\]
+公共解空间维数就是
+\[
+\boxed{
+\dim(\ker A\cap\ker B)
+=n-r\begin{pmatrix}A\\B\end{pmatrix}.
+}
+\]
+这和 Topic 01 的“公共对象 = 两种条件同时成立”是同一翻译，只是这里的对象已经变成方程解。
+
+\subsection{齐次包含：解越少，独立约束越多}
+
+若 $A,B$ 有相同未知量空间，则
+\[
+\mathcal S_A=\ker A,
+\qquad
+\mathcal S_B=\ker B.
+\]
+因此
+\[
+\boxed{\mathcal S_A\subseteq\mathcal S_B
+\iff
+\ker A\subseteq\ker B.}
+\]
+在标准内积下 Topic 03 给出
+\[
+\ker A=\operatorname{Row}(A)^\perp,
+\]
+所以取正交补会把包含方向反过来：
+\[
+\boxed{
+\ker A\subseteq\ker B
+\iff
+\operatorname{Row}(B)\subseteq\operatorname{Row}(A).
+}
+\]
+也就是说：\kw{解空间越小，约束行空间越大。}
+
+把这个几何判据变成计算语言，$B$ 的每一行都必须由 $A$ 的行生成，因此
+\[
+\boxed{
+\ker A\subseteq\ker B
+\iff
+r\begin{pmatrix}A\\B\end{pmatrix}=r(A).
+}
+\]
+等价地，存在某个矩阵 $L$ 使
+\[
+B=LA.
+\]
+这里 $L$ 不要求方阵，更不要求可逆；它只是在说“$B$ 的约束都是 $A$ 已有约束的线性组合”。
+
+\subsection{齐次同解：不仅 rank 要相同，行空间也必须相同}
+
+两齐次系统同解当且仅当
+\[
+\ker A=\ker B
+\iff
+\operatorname{Row}(A)=\operatorname{Row}(B).
+\]
+于是得到非常实用的 rank 判据：
+\[
+\boxed{
+\ker A=\ker B
+\iff
+r(A)=r(B)=r\begin{pmatrix}A\\B\end{pmatrix}.
+}
+\]
+若 $A,B$ 形状完全相同，这也等价于它们具有相同的行最简形，或可通过初等行变换互相得到。若行数不同，则不要滥用“行等价”一词；此时稳定对象仍然是\kw{行空间相同}。
+
+\begin{warnbox}{同 rank 不等于齐次同解}
+rank 只告诉 kernel 的\kw{维数}，不告诉 kernel 的\kw{方向}。
+例如
+\[
+x_1=0
+\qquad\text{与}\qquad
+x_2=0
+\]
+对应系数矩阵都 rank 1，但两条解直线不同。
+
+参数题也因此不能只做到 $r(A)=r(B)$ 就停；还要检查纵向拼接以后是否增加新的独立行。
+\end{warnbox}
+
+\subsection{非齐次包含：把右端项一起当成约束的一部分}
+
+令
+\[
+\mathcal S_A=\{x:Ax=b\},
+\qquad
+\mathcal S_B=\{x:Bx=c\}.
+\]
+先假设 $\mathcal S_A\neq\varnothing$。若要求
+\[
+\mathcal S_A\subseteq\mathcal S_B,
+\]
+那么 $B$ 的每条约束连同右端常数，都必须能由 $A$ 的增广约束线性生成。因此
+\[
+\boxed{
+\mathcal S_A\subseteq\mathcal S_B
+\iff
+r\begin{pmatrix}A&b\\B&c\end{pmatrix}=r(A\mid b).
+}
+\]
+等价地，存在矩阵 $L$ 使
+\[
+B=LA,
+\qquad
+c=Lb.
+\]
+
+\begin{warnbox}{为什么必须先说 $\mathcal S_A$ 非空？}
+若 $Ax=b$ 无解，则 $\mathcal S_A=\varnothing$，按集合论它对任何集合都满足
+\[
+\varnothing\subseteq\mathcal S_B.
+\]
+这时上面的“约束由另一组约束生成”已经不是这个真空包含的必要条件。考试讨论非齐次解集包含时，先确认被包含的一侧确实有解。
+\end{warnbox}
+
+\subsection{非齐次同解：方向相同 + 基点落在同一平移上}
+
+若两个系统都非空：
+\[
+\mathcal S_1=x_0+\ker A,
+\qquad
+\mathcal S_2=y_0+\ker B,
+\]
+那么
+\[
+\boxed{
+\mathcal S_1=\mathcal S_2
+\iff
+\begin{cases}
+\ker A=\ker B,\\
+x_0-y_0\in\ker A.
+\end{cases}}
+\]
+第一条保证“方向一样”，第二条保证两个基点其实落在同一条仿射平移上。
+
+等价地，只要已经找到一个公共解 $z$，就有
+\[
+\mathcal S_1=z+\ker A,
+\qquad
+\mathcal S_2=z+\ker B,
+\]
+此时同解只剩 kernel 是否相同。
+
+若两组增广矩阵具有相同列数，还可以统一检查它们的\kw{增广行空间}；形状相同时，行最简形相同就是最直接的计算证据。
+
+因此“一个公共解”本身仍不够；两条相交直线可以有公共点，却不是同一条直线。
+
+\subsection{Extension：矩阵空间里的方程仍然是“特解 + Kernel”}
+更高阶的 Sylvester 方程
+\[
+AX+XB=C
+\]
+看起来已经不像普通 $Ax=b$，但若把矩阵 $X$ 所在空间本身看成一个向量空间，并定义
+\[
+\mathcal L(X)=AX+XB,
+\]
+它仍然只是
+\[
+\mathcal L(X)=C.
+\]
+所以一旦存在特解 $X_0$，全部解仍是
+\[
+X_0+\ker\mathcal L.
+\]
+Kronecker、谱分离和 Lyapunov 稳定性属于线性代数 Extension；这里保留它只是为了说明“逆像 + kernel”母模型不会因为未知对象从向量变成矩阵而失效。
+
+\section{概念边界：方程组最容易把哪两层混在一起}
+
+\begin{longtable}{L{2.4cm}L{3.0cm}L{3.8cm}L{3.2cm}L{\dimexpr\linewidth-13.0cm\relax}}
+\toprule
+\textbf{A $\neq$ B} & \textbf{为什么容易混} & \textbf{真正判据} & \textbf{题面信号} & \textbf{混淆后果}\\
+\midrule
+有解 $\neq$ 唯一解 & 可逆时二者同时成立 & 先判 $b$ 可达，再看 kernel 是否为零 & $r(A)$ 与 $r(A|b)$ & 跳过自由度判断\\
+非齐次解集 $\neq$ 子空间 & 都是一组向量集合 & 非齐次通常是 $x_0+\ker A$，不含原点 & “通解”“特解” & 对任意线性组合误判封闭\\
+特解 $\neq$ 通解 & 一个具体解最显眼 & 通解还必须加上整个 kernel & “求全部解” & 漏掉自由变量\\
+基础解系 $\neq$ 任意几组齐次解 & 都满足 $Ax=0$ & 必须无关且生成 kernel，个数为 $n-r$ & “基础解系” & 解向量冗余或不完整\\
+同 rank $\neq$ 同解 & rank 也决定解空间维数 & 同解还要求 kernel 方向一致 & 两齐次系统比较 & 用维数代替子空间本身\\
+一个公共解 $\neq$ 非齐次同解 & 公共点容易让图像重合 & 还需方向空间相同 & 两非齐次系统 & 把相交仿射集当同一集合\\
+行变换 $\neq$ 列变换 & 都能化简矩阵 & 行变换可逆重写约束；列变换改变变量坐标 & 增广矩阵 & 丢失原未知量含义\\
+$A$ 奇异 $\neq$ $Ax=b$ 无解 & 奇异意味着不可逆 & 特定 $b$ 仍可能属于 image & “det=0”且给定 $b$ & 把全局非双射误成局部不可达\\
+\bottomrule
+\end{longtable}
+
+\section{看到什么信号时调用本册模型}
+
+\begin{itemize}
+  \item 看到 $Ax=b$：先问 $b\in\operatorname{Im}A$，再问 $\ker A$ 有几维；
+  \item 看到齐次系统：直接把“全部解”翻译成 kernel，把“基础解系”翻译成 kernel 的基；
+  \item 看到多个非齐次解：先相减制造齐次方向，再判断这些差是否足够张成 kernel；
+  \item 看到“无解/唯一/无穷多”：只检查可达性与 nullity 两个开关；
+  \item 看到参数：先定位 $r(A)$ 或 $r(A|b)$ 的结构跳变点，再分类；
+  \item 看到矩阵方程 $AX=B$：按列拆成多个 $Ax_j=b_j$；
+  \item 看到同解/包含：齐次比较 kernel，非齐次比较“kernel + 基点”；
+  \item 看到 Cramer：先确认方阵且 determinant 非零，再把它当唯一解的显式公式，而不是通用求解框架。
+\end{itemize}
+
+\section{一页压缩：所有线性方程组只剩“可达 + 平移”}
+
+\begin{center}
+\begin{tikzpicture}[node distance=6mm and 7mm]
+\node[nodebox] (eq) {$Ax=b$\\求 $b$ 的逆像};
+\node[nodebox,right=of eq] (reach) {$b\in\operatorname{Im}A?$\\可达性};
+\node[nodebox,right=of reach] (none) {否\\无解};
+\node[nodebox,below=of reach] (yes) {是\\找一个特解 $x_0$};
+\node[nodebox,left=of yes] (kernel) {$\ker A$\\齐次方向};
+\node[nodebox,left=of kernel] (all) {全部解\\$x_0+\ker A$};
+\draw[flow] (eq) -- (reach);
+\draw[flow] (reach) -- (none);
+\draw[flow] (reach) -- (yes);
+\draw[flow] (yes) -- (kernel);
+\draw[flow] (kernel) -- (all);
+\end{tikzpicture}
+\end{center}
+
+最终压成三句话：
+\[
+\boxed{Ax=b\text{ 是求点 }b\text{ 的逆像}.}
+\]
+\[
+\boxed{Ax=b\text{ 有解}\iff b\in\operatorname{Im}A\iff r(A)=r(A|b).}
+\]
+\[
+\boxed{\text{若 }Ax_0=b,\quad\mathcal S_b=x_0+\ker A.}
+\]
+
+如果忘掉具体公式，重新问：\kw{目标 $b$ 到得了吗？若到得了，从一个特解出发还能沿 kernel 往哪些方向移动？}
+
+\end{document}

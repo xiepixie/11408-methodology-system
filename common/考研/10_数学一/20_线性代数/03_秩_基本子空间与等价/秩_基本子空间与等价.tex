@@ -1,0 +1,808 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{145,154,163}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={秩、基本子空间与等价}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 线性代数 Topic 03}}
+\rhead{\small\color{deep}秩 · Kernel / Image · 等价}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\tikzset{
+  nodebox/.style={draw=deep,rounded corners=2mm,text width=3.0cm,minimum height=1.0cm,align=center,fill=soft,font=\small,inner sep=4pt},
+  flow/.style={-{Latex[length=2mm]},thick,draw=deep},
+  dashedflow/.style={-{Latex[length=2mm]},thick,dashed,draw=purple}
+}
+
+\title{\vspace{-1.1cm}\textbf{秩、基本子空间与等价}\\[0.4em]
+\large 一份输入自由度，怎样分成“留下的”和“被抹掉的”}
+\author{数学一 · 线性代数 Topic 03}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：一个线性作用到底保留了多少独立自由度，又把多少自由度压掉了？}
+给一个矩阵 $A$，只说“它有多少个非零元素”几乎没有结构意义。真正重要的是：输入空间中有多少彼此独立的方向能够在输出端留下可区分的信息，又有多少方向被映射完全抹掉。
+
+因此本册的母模型不是“rank 有几种算法”，而是
+\[
+\boxed{
+\text{输入自由度}
+=\text{被抹除的自由度}
++\text{留下可见输出的自由度}
+}
+\]
+在线性映射 $T:V\to W$ 上，这句话精确写成
+\[
+\boxed{
+\dim V=\dim\ker T+\dim\operatorname{Im}T.
+}
+\]
+其中
+\[
+\operatorname{rank}T=\dim\operatorname{Im}T,
+\qquad
+\operatorname{nullity}T=\dim\ker T.
+\]
+\end{corebox}
+
+\section{本册负责什么}
+
+\begin{itemize}
+  \item \kw{Owns：}rank、kernel/image 的自由度机制、rank--nullity、行秩=列秩、主元/最大非零子式等 rank 观测方式、矩阵等价、rank 运算规律、乘积的中间瓶颈、低秩结构、伴随矩阵的 rank 分层。
+  \item \kw{Uses：}Topic 01 的 span/基/维数/正交；Topic 02 的线性映射、两端换基、初等矩阵、determinant 与 adjugate 恒等式。
+  \item \kw{Does not own：}给定 $b$ 的相容性与完整解集；相似和特征结构；二次型惯性。
+\end{itemize}
+
+Topic 04 会直接调用本册提供的两个输出：
+\[
+\boxed{b\in\operatorname{Im}A?}
+\qquad
+\boxed{\dim\ker A=n-r(A).}
+\]
+但“某个具体 $b$ 是否可达，以及所有逆像怎样写”属于 Topic 04。
+
+\section{先认两个主角：Kernel 与 Image}
+
+设
+\[
+A\in\mathbb R^{m\times n},
+\qquad
+A:\mathbb R^n\to\mathbb R^m.
+\]
+
+\kw{Kernel / 零空间}是
+\[
+\ker A=\{x\in\mathbb R^n:Ax=0\}.
+\]
+它记录所有被作用完全压成零的输入方向。
+
+\kw{Image / 像空间}是
+\[
+\operatorname{Im}A=\{Ax:x\in\mathbb R^n\}.
+\]
+若把 $A$ 的列写成 $a_1,\dots,a_n$，则
+\[
+Ax=x_1a_1+\cdots+x_na_n,
+\]
+所以
+\[
+\boxed{\operatorname{Im}A=\operatorname{Col}(A).}
+\]
+
+于是矩阵的秩可以直接定义为
+\[
+\boxed{r(A)=\dim\operatorname{Im}A=\dim\operatorname{Col}(A).}
+\]
+它不是“非零元素个数”，而是输出端真正能够留下的独立方向数。
+
+\begin{examplebox}{母例 1：二维输入被压成一维}
+取
+\[
+A=\begin{pmatrix}1&1\\1&1\end{pmatrix}.
+\]
+所有输出都形如
+\[
+Ax=(x_1+x_2)\begin{pmatrix}1\\1\end{pmatrix},
+\]
+所以
+\[
+\operatorname{Im}A
+=\operatorname{span}\left\{\begin{pmatrix}1\\1\end{pmatrix}\right\},
+\qquad r(A)=1.
+\]
+同时
+\[
+Ax=0\iff x_1+x_2=0,
+\]
+故
+\[
+\ker A
+=\operatorname{span}\left\{\begin{pmatrix}1\\-1\end{pmatrix}\right\}.
+\]
+二维输入里，一个自由方向留下可见输出，一个自由方向被压掉：
+\[
+\boxed{2=1+1.}
+\]
+\end{examplebox}
+
+\section{Rank--Nullity 为什么必然成立}
+
+不要把
+\[
+n=r(A)+\dim\ker A
+\]
+当成一个需要背的维数公式。它可以直接从“给 kernel 选基，再把它扩充成整个输入空间的基”推出。
+
+设
+\[
+k_1,\dots,k_s
+\]
+是 $\ker T$ 的一组基。把它扩充为 $V$ 的一组基：
+\[
+k_1,\dots,k_s,v_1,\dots,v_r.
+\]
+于是
+\[
+\dim V=s+r.
+\]
+
+现在看 $T(v_1),\dots,T(v_r)$。
+
+\subsection{它们生成整个 Image}
+任意 $x\in V$ 可写成
+\[
+x=\sum_{j=1}^{s}b_jk_j+\sum_{i=1}^{r}a_iv_i.
+\]
+作用 $T$ 后，kernel 部分全部消失：
+\[
+T(x)=\sum_{i=1}^{r}a_iT(v_i).
+\]
+所以 $T(v_1),\dots,T(v_r)$ 生成 $\operatorname{Im}T$。
+
+\subsection{它们还线性无关}
+若
+\[
+\sum_{i=1}^{r}a_iT(v_i)=0,
+\]
+则
+\[
+T\left(\sum_{i=1}^{r}a_iv_i\right)=0,
+\]
+所以 $\sum a_iv_i\in\ker T$。但
+\[
+k_1,\dots,k_s,v_1,\dots,v_r
+\]
+是一组基，表示唯一；一个只含 $v_i$ 的组合若又落在由 $k_j$ 张成的 kernel 中，只能所有 $a_i=0$。
+
+因此 $T(v_1),\dots,T(v_r)$ 是 $\operatorname{Im}T$ 的一组基，故
+\[
+\dim\operatorname{Im}T=r.
+\]
+最终得到
+\[
+\boxed{
+\dim V
+=\dim\ker T+\dim\operatorname{Im}T.
+}
+\]
+
+\begin{corebox}{Rank--Nullity 的真正含义}
+它不是说每根输入基向量单独“选择留下或消失”。真正的结构是：\kw{可以选择一组适合 kernel 的输入基，使一部分基方向正好张成 kernel，其余方向的像恰好成为 image 的基。}
+
+因此“被抹除自由度 + 可见自由度 = 输入自由度”是一份可以通过选基显式看见的分解。
+\end{corebox}
+
+\section{同一个 rank 为什么会有这么多观测方式}
+
+对 $A\in\mathbb R^{m\times n}$，下面这些数字最终都相同：
+
+\begin{longtable}{L{4.2cm}L{\dimexpr\linewidth-4.7cm\relax}}
+\toprule
+\textbf{观测方式} & \textbf{它在看什么}\\
+\midrule
+列向量组的极大无关组个数 & 输出端能生成多少独立方向\\
+$\dim\operatorname{Col}(A)$ & image 的维数\\
+$\dim\operatorname{Row}(A)$ & 独立行约束 / 输入线性函数有多少独立方向\\
+阶梯形中的主元个数 & 消元后剩下多少独立结构\\
+最大非零子式的阶数 & 最大能截出多大的可逆方块\\
+线性映射的 rank & 作用后保留下来的自由度\\
+\bottomrule
+\end{longtable}
+
+这些不是六个互相独立的定义，而是同一份“独立信息维数”在向量、空间、消元、determinant 和映射语言中的不同投影。
+
+\section{为什么行秩等于列秩}
+
+对矩阵做可逆行变换。Topic 02 已说明：左乘可逆矩阵不会改变列之间的线性关系，因此列 rank 不变；同时新旧行互为可逆线性组合，所以行空间维数也不变。
+
+把 $A$ 化为行阶梯形 $R$。若 $R$ 有 $r$ 个非零行，则：
+
+\begin{itemize}
+  \item 非零行的首非零位置逐级右移，因此这 $r$ 行线性无关，行 rank 为 $r$；
+  \item 恰有 $r$ 个主元列，主元列线性无关，其余列由它们生成，因此列 rank 也为 $r$。
+\end{itemize}
+
+于是
+\[
+\boxed{\dim\operatorname{Row}(A)=\dim\operatorname{Col}(A)=r(A).}
+\]
+
+\begin{warnbox}{行空间和列空间不是同一个集合}
+它们只有\kw{维数相等}。若 $A$ 是 $m\times n$ 非方阵，
+\[
+\operatorname{Row}(A)\subseteq\mathbb R^n,
+\qquad
+\operatorname{Col}(A)\subseteq\mathbb R^m,
+\]
+甚至生活在不同环境空间里，不能写成“行空间=列空间”。
+\end{warnbox}
+
+\section{最大非零子式与主元：为什么它们也能测 rank}
+
+一个 $r$ 阶子式非零，表示从 $A$ 中选出的 $r$ 行、$r$ 列组成一个可逆方阵，因此至少存在 $r$ 个独立方向：
+\[
+r(A)\ge r.
+\]
+
+如果所有 $(r+1)$ 阶子式都为零，就不可能再截出一个 $(r+1)$ 维可逆作用，因此
+\[
+r(A)\le r.
+\]
+所以
+\[
+\boxed{
+r(A)=r
+\iff
+\begin{cases}
+\text{至少一个 $r$ 阶子式非零},\\
+\text{所有 $(r+1)$ 阶子式为零}.
+\end{cases}}
+\]
+
+这也是 determinant 与 rank 的责任分界：对 $n\times n$ 方阵，$\det A\neq0$ 只说明 $r(A)=n$；若 $\det A=0$，具体是 $n-1$ 还是更低，必须继续由 rank 判断。
+
+\section{矩阵等价：把 kernel 与 image 都换到最干净的坐标}
+
+Rank--Nullity 的基扩充证明还能继续生成一件更强的事。
+
+对 $T:V_n\to W_m$，沿用 Rank--Nullity 中得到的两组方向，但为了让标准形的单位块出现在左上角，把输入基\kw{重新排序}为
+\[
+v_1,\dots,v_r,k_1,\dots,k_{n-r},
+\]
+其中 $k_j$ 张成 kernel，而 $T(v_1),\dots,T(v_r)$ 是 image 的一组基。再在输出端把
+\[
+T(v_1),\dots,T(v_r)
+\]
+扩充成 $W$ 的一组基。
+
+在这两组“适配映射结构”的基下，前 $r$ 个输入基向量依次送到前 $r$ 个输出基向量，后 $n-r$ 个 kernel 基向量全部送到零，因此 $T$ 的矩阵直接变成
+\[
+\boxed{
+J_r=
+\begin{pmatrix}
+I_r&0\\
+0&0
+\end{pmatrix}_{m\times n}.
+}
+\]
+
+这张矩阵把映射的全部本质压缩成一句话：\kw{前 $r$ 个输入方向被无损保留，其余 $n-r$ 个输入方向被压成零。}
+
+一般矩阵等价写成
+\[
+B=PAQ,
+\]
+其中 $P,Q$ 可逆。它允许输入端和输出端独立重编码，因此
+\[
+\boxed{A\sim_{\mathrm{eq}}B\iff r(A)=r(B)}
+\]
+（同型矩阵）。
+
+原因已经不是“初等变换碰巧保持 rank”，而是：每个 rank 为 $r$ 的映射都能选基化成同一个 $J_r$。
+
+\begin{warnbox}{同 rank 只保证等价，不保证相似}
+矩阵等价允许两端独立换基；相似要求同一空间算子在输入/输出端同步换同一组基。因此
+\[
+\text{同 rank}\Longrightarrow\text{等价},
+\]
+但一般不能推出相似。
+
+例如 $I_2$ 与 $\operatorname{diag}(1,2)$ 都 rank 2，因此等价；但特征值不同，所以不相似。
+\end{warnbox}
+
+\section{初等变换到底保护哪些子空间}
+
+设 $P,Q$ 可逆。
+
+\begin{longtable}{L{2.7cm}L{4.1cm}L{\dimexpr\linewidth-7.3cm\relax}}
+\toprule
+\textbf{变换} & \textbf{稳定的东西} & \textbf{会怎样移动}\\
+\midrule
+$A\mapsto PA$ & rank、列间线性关系、row space & $\operatorname{Col}(PA)=P\operatorname{Col}(A)$，具体输出方向会移动\\
+$A\mapsto AQ$ & rank、column space & $\ker(AQ)=Q^{-1}\ker A$，row space 在输入坐标中被 $Q$ 重编码\\
+$A\mapsto PAQ$ & rank & 输入/输出两侧的具体方向都可以变，只保留自由度数量\\
+\bottomrule
+\end{longtable}
+
+因此“初等变换保持什么”必须带对象：\kw{rank 始终保持；具体子空间的位置未必保持。}
+
+\subsection{分块 rank：把普通初等变换提升到块层面}
+
+分块矩阵里出现单位块或可逆主块时，不要把“大块”重新展开成逐元素消元。块行 / 块列变换仍然只是左乘 / 右乘可逆矩阵，因此同样保持 rank。
+
+最常用的可逆块初等矩阵是
+\[
+L=\begin{pmatrix}I&0\\-Y&I\end{pmatrix},
+\qquad
+R=\begin{pmatrix}I&-X\\0&I\end{pmatrix},
+\]
+它们的逆只需把 $-Y,-X$ 改成 $Y,X$。于是对尺寸相容的块矩阵
+\[
+M=\begin{pmatrix}I&X\\Y&Z\end{pmatrix},
+\]
+先做块行消元，再做块列消元：
+\[
+LMR
+=
+\begin{pmatrix}
+I&0\\
+0&Z-YX
+\end{pmatrix}.
+\]
+因此
+\[
+\boxed{
+r(M)=r(I)+r(Z-YX).
+}
+\]
+
+这里的核心不是记一条新公式，而是识别：\kw{单位块给出了一个不会丢失自由度的主元，可以用它把同一行 / 列上的其他块消掉。}
+
+更一般地，若左上块 $A$ 可逆，同样的块消元给出
+\[
+\boxed{
+r\begin{pmatrix}A&B\\C&D\end{pmatrix}
+=r(A)+r(D-CA^{-1}B).}
+\]
+右端的 $D-CA^{-1}B$ 是消去 $A$ 所负责方向以后剩余的有效作用。这里仅把它作为 rank 消元接口；一般 Schur 补理论不进入数学一主干。
+
+\begin{warnbox}{块消元也必须满足乘法顺序与尺寸}
+块不是标量。消去左下块时出现的是 $CA^{-1}$，消去右上块时出现的是 $A^{-1}B$；不能交换次序。若主块不可逆，也不能为了套公式写 $A^{-1}$，应改用其他可逆块、普通初等变换或已有零块结构。
+\end{warnbox}
+
+\section{四个基本子空间：主干只有一对，另外两个是正交镜像}
+
+在标准内积下，矩阵还自然带出 row space 与 $N(A^T)$：
+\[
+\operatorname{Row}(A)=\operatorname{Col}(A^T).
+\]
+
+对任意 $x$，$Ax=0$ 等价于 $x$ 与 $A$ 的每一行都正交，因此
+\[
+\boxed{\ker A=\operatorname{Row}(A)^\perp.}
+\]
+同理
+\[
+\boxed{\ker A^T=\operatorname{Col}(A)^\perp.}
+\]
+于是
+\[
+\mathbb R^n=\operatorname{Row}(A)\oplus\ker A,
+\]
+\[
+\mathbb R^m=\operatorname{Col}(A)\oplus\ker A^T.
+\]
+
+\begin{methodbox}{数学一里怎样给这四个空间排优先级？}
+真正反复生成题目的是
+\[
+\boxed{\ker A\quad\text{和}\quad\operatorname{Im}A=\operatorname{Col}(A).}
+\]
+row space 主要用于解释行秩、独立约束和齐次同解；$\ker A^T$ 主要解释“输出空间中与所有可达方向正交的部分”。
+
+所以不要把“四大基本子空间”再学成四份并列名词表。它们是 kernel/image 主模型在标准内积下的两组正交镜像。
+\end{methodbox}
+
+\section{Rank-one：最小的非零信息通道}
+
+令
+\[
+A=uv^T,
+\qquad u\neq0,\ v\neq0.
+\]
+则
+\[
+Ax=u(v^Tx).
+\]
+输入 $x$ 先被压缩成一个标量 $v^Tx$，再沿 $u$ 方向输出。因此
+\[
+\operatorname{Im}A=\operatorname{span}\{u\},
+\qquad r(A)=1,
+\]
+而
+\[
+\ker A=\{x:v^Tx=0\}=v^\perp.
+\]
+
+这给“低秩”的最小直觉：\kw{低秩不是元素少，而是作用只通过少量独立标量通道传递信息。}
+
+若进一步是方阵 $A=uv^T\in\mathbb R^{n\times n}$，记
+\[
+g=v^Tu=\operatorname{tr}A.
+\]
+那么外积可以直接闭合：
+\[
+A^2=uv^Tuv^T=(v^Tu)uv^T=gA,
+\]
+因此
+\[
+A^1=A,
+\qquad
+\boxed{A^k=g^{k-1}A\qquad(k\ge2).}
+\]
+这样写可以避免 $g=0$、$k=1$ 时出现 $0^0$ 的形式歧义；真正的结构结论仍是：从二次幂开始，所有高次幂都压回同一条 rank-one 通道。
+
+\begin{corebox}{方阵 rank-one 的迹为什么是谱接口？}
+因为 $Au=gu$，所以 $g$ 是一个特征值；而
+\[
+\ker A=v^\perp
+\]
+维数为 $n-1$，因此 $0$ 至少提供 $n-1$ 个独立特征方向。
+
+于是：
+\begin{itemize}
+  \item 若 $g\neq0$，$\mathbb R^n=\operatorname{span}\{u\}\oplus\ker A$，$A$ 可对角化，谱为 $g,0,\dots,0$；
+  \item 若 $g=0$ 且 $A\neq0$，则 $A^2=0$，全部特征值都是 $0$，但 $\ker A$ 只有 $n-1$ 维，所以不可对角化。
+\end{itemize}
+完整“多项式关系为什么控制可对角化”的机制由 Topic 05 接管；这里把 rank-one 作为跨册母例输出。
+\end{corebox}
+
+\begin{methodbox}{怎样从数表识别 rank one？}
+对非零矩阵，下列信号都在表达同一件事：所有输出只剩一条独立方向。
+\begin{itemize}
+  \item 所有非零列彼此成比例；
+  \item 所有非零行彼此成比例；
+  \item 可以直接写成外积 $uv^T$；
+  \item 所有 $2\times2$ 子式都为 $0$。
+\end{itemize}
+最后一条只能先推出 $r(A)\le1$，还必须排除 $A=0$ 才能断言 $r(A)=1$。
+\end{methodbox}
+
+\begin{examplebox}{Extension：奇异值分解 (SVD) 的高级镜头}
+Rank-one 矩阵的外积结构 $A = uv^T$ 实际上是所有矩阵最底层的“乐高积木”。根据奇异值分解 (SVD) 定理，任何矩阵都可以写成一系列 rank-one 矩阵的加权和：
+\[
+A = \sigma_1 u_1 v_1^T + \sigma_2 u_2 v_2^T + \cdots + \sigma_r u_r v_r^T.
+\]
+这里 $\sigma_i$ 是非零奇异值，$u_i$ 和 $v_i$ 分别是输出空间和输入空间的一组标准正交基。
+这给出了 rank 的终极统一视角：\kw{矩阵的 rank 恰好等于其非零奇异值的个数}，而每一个 rank-one 分量都代表着一个独立的信息传输通道。
+\end{examplebox}
+
+\section{乘积的 rank：真正的瓶颈是 $\operatorname{Im}B$ 撞上 $\ker A$}
+
+设
+\[
+B:\mathbb R^p\to\mathbb R^n,
+\qquad
+A:\mathbb R^n\to\mathbb R^m.
+\]
+复合为 $AB$。先由 $B$ 把输入送进 $\operatorname{Im}B$，再由 $A$ 作用。真正会在第二段继续消失的，是
+\[
+\operatorname{Im}B\cap\ker A.
+\]
+
+把 $A$ 限制在 $\operatorname{Im}B$ 上，对这个限制映射使用 rank--nullity：
+\[
+\boxed{
+r(AB)
+=r(B)-\dim\bigl(\operatorname{Im}B\cap\ker A\bigr).
+}
+\]
+
+这条式子一次生成所有常用边界。
+
+\subsection{上界}
+显然
+\[
+r(AB)\le r(B).
+\]
+同时 $AB$ 的 image 位于 $A$ 的 image 中，所以
+\[
+r(AB)\le r(A).
+\]
+故
+\[
+\boxed{r(AB)\le\min\{r(A),r(B)\}.}
+\]
+
+\subsection{Sylvester 下界}
+中间空间维数为 $n$，而
+\[
+\dim\ker A=n-r(A).
+\]
+所以
+\[
+\dim(\operatorname{Im}B\cap\ker A)
+\le n-r(A),
+\]
+从而
+\[
+\boxed{r(AB)\ge r(A)+r(B)-n.}
+\]
+
+\subsection{什么时候上下界真正取到？}
+主公式
+\[
+r(AB)=r(B)-\dim(\operatorname{Im}B\cap\ker A)
+\]
+不仅给范围，也直接给取等条件。
+
+若希望第二段作用\kw{完全不再丢方向}，即
+\[
+r(AB)=r(B),
+\]
+必须且只需
+\[
+\boxed{\operatorname{Im}B\cap\ker A=\{0\}.}
+\]
+
+若希望 Sylvester 下界取等，交集必须达到它可能的最大维数 $\dim\ker A=n-r(A)$，即
+\[
+\boxed{\ker A\subseteq\operatorname{Im}B.}
+\]
+此时 $B$ 已经产生了 $A$ 所有会抹掉的方向，第二段把这部分自由度全部损失掉。
+
+另一侧若已知 $r(A)\le r(B)$，上界 $r(AB)=r(A)$ 等价于 $A$ 在 $\operatorname{Im}B$ 上已经能产生自己的全部 image；可写成
+\[
+\boxed{\operatorname{Im}B+\ker A=\mathbb R^n.}
+\]
+这些条件都比“记住何时取等”更稳定，因为它们只是同一个交集公式的不同边界情形。
+
+\subsection{Frobenius 不等式}
+复合结构还能生成更一般的三矩阵乘积下界。对于复合 $ABC$，有：
+\[
+\boxed{r(ABC) \ge r(AB) + r(BC) - r(B).}
+\]
+Sylvester 不等式其实是令 $B = I_n$ 时的特殊情况。只要盯住“前面保留的图像，有多少继续被后面的核空间吃掉”，所有秩不等式都能从子空间交集的维数中读出。
+
+\subsection{$AB=0$ 为什么能直接变成 rank 约束}
+\[
+AB=0
+\iff
+\operatorname{Im}B\subseteq\ker A.
+\]
+因此
+\[
+r(B)\le n-r(A),
+\]
+即
+\[
+\boxed{r(A)+r(B)\le n.}
+\]
+
+\begin{corebox}{不要背 $r(AB)$ 的一堆孤立公式}
+先写
+\[
+\boxed{\operatorname{Im}B\xrightarrow{A}\operatorname{Im}(AB)}
+\]
+再问：$B$ 已经产生的方向中，有多少正好落入 $\ker A$？所有乘积 rank 结论都围绕这个交集展开。
+\end{corebox}
+
+\section{和、转置与 Gram 型矩阵的 rank}
+
+若 $A,B$ 同型，则每个 $(A+B)x$ 都属于
+\[
+\operatorname{Im}A+\operatorname{Im}B,
+\]
+因此
+\[
+\boxed{r(A+B)\le r(A)+r(B).}
+\]
+这只是上界；两个 image 大量重叠或相互抵消时，实际 rank 可以更小。
+
+由行秩=列秩，
+\[
+\boxed{r(A^T)=r(A).}
+\]
+
+在实数域，
+\[
+\ker(A^TA)=\ker A.
+\]
+因为
+\[
+A^TAx=0
+\Longrightarrow
+x^TA^TAx=\|Ax\|^2=0
+\Longrightarrow Ax=0,
+\]
+反向显然成立。两者列数相同，所以 rank--nullity 给出
+\[
+\boxed{r(A^TA)=r(A).}
+\]
+同理
+\[
+\boxed{r(AA^T)=r(A).}
+\]
+
+而且 $A^TA$ 不只是“与 $A$ 同 rank”。对任意 $x$，
+\[
+x^TA^TAx=\|Ax\|^2\ge0,
+\]
+所以它天然是半正定矩阵；进一步
+\[
+\boxed{
+A^TA\succ0
+\iff
+\ker A=\{0\}
+\iff
+r(A)=n
+}
+\]
+（这里 $A$ 有 $n$ 列）。也就是说，$A^TA$ 正定恰好表示 $A$ 的输入端没有任何方向被压掉。正定性的完整分类仍由 Topic 06 拥有，本册只提供这个由 kernel 直接生成的接口。
+
+这类结论不是“转置以后 rank 神秘保持”，而是 kernel / image 结构没有产生新的自由度损失。
+
+\section{伴随矩阵的 rank：Topic 02 的恒等式怎样在这里继续生长}
+
+Topic 02 已有
+\[
+A\operatorname{adj}(A)=(\det A)I.
+\]
+对 $n\times n$ 矩阵（$n\ge2$），rank 分三层：
+\[
+\boxed{
+r(\operatorname{adj}A)=
+\begin{cases}
+ n,&r(A)=n,\\
+ 1,&r(A)=n-1,\\
+ 0,&r(A)\le n-2.
+\end{cases}}
+\]
+
+\begin{itemize}
+  \item 若 $r(A)=n$，则 $\det A\neq0$，且
+  \[
+  \operatorname{adj}(A)=(\det A)A^{-1},
+  \]
+  所以满秩；
+  \item 若 $r(A)\le n-2$，所有 $(n-1)$ 阶子式都为 $0$，所以每个 cofactor 都为 $0$，即 $\operatorname{adj}(A)=0$；
+  \item 若 $r(A)=n-1$，至少一个 $(n-1)$ 阶子式非零，所以 adjugate 非零；又因 $\det A=0$，
+  \[
+  A\operatorname{adj}(A)=0,
+  \]
+  adjugate 每一列都落入一维的 $\ker A$，故 rank 至多 $1$。非零再迫使 rank 恰为 $1$。
+\end{itemize}
+
+\section{含参数 rank：为什么只需要盯住结构跳变点}
+
+rank 是整数，不会随着参数连续地“慢慢变化”。它改变的时刻，必然有某个原本非零的关键主元或子式变成零。
+
+例如
+\[
+A(a)=\begin{pmatrix}1&a\\a&1\end{pmatrix}.
+\]
+其 determinant 为
+\[
+1-a^2.
+\]
+所以
+\[
+r(A)=2\quad(a\neq\pm1),
+\]
+而当 $a=\pm1$ 时 determinant 归零，但矩阵并非零矩阵，因此
+\[
+r(A)=1.
+\]
+
+这说明含参数 rank 的核心不是“每个参数值重新算一遍”，而是：\kw{找出哪些参数让当前独立结构失效。}
+
+具体消元时，不能未经分类就除以可能为零的参数因子。路线优先级属于 Rules；本册只负责解释为什么要分支。
+
+\section{概念边界：rank 最容易被什么伪装}
+
+\begin{longtable}{L{2.4cm}L{3.0cm}L{3.8cm}L{3.2cm}L{\dimexpr\linewidth-13.0cm\relax}}
+\toprule
+\textbf{A $\neq$ B} & \textbf{为什么容易混} & \textbf{真正判据} & \textbf{题面信号} & \textbf{混淆后果}\\
+\midrule
+rank $\neq$ 非零元素个数 & 都像在“计数量” & rank 只计独立方向 & 稀疏/满元素矩阵 & 用元素多少误判自由度\\
+rank $\neq$ 非零行数 & 阶梯形里两者恰好相同 & 只有化到阶梯形后非零行才自动无关 & 消元、主元 & 未消元就数行\\
+行空间 $\neq$ 列空间 & 行秩=列秩 & 相等的是维数，不是集合 & 非方阵、转置 & 把不同环境空间写成同一集合\\
+行变换保 rank $\neq$ 保列空间 & 都涉及左乘可逆矩阵 & $\operatorname{Col}(PA)=P\operatorname{Col}(A)$ & 行初等变换 & 错把输出方向当作不变\\
+同 rank $\neq$ 相似 & 两者都是矩阵关系 & 同 rank 完全分类“等价”，相似还保谱 & $PAQ$ vs $P^{-1}AP$ & 用 rank 判断算子相似\\
+$\det A=0$ $\neq$ rank 已知 & determinant 也测退化 & det 只告诉方阵 rank $<n$ & 奇异方阵 & 把 $n-1$ 与更低 rank 混为一谈\\
+$r(AB)$ $\neq r(A)r(B)$ & 标量乘法直觉 & 看 $\operatorname{Im}B\cap\ker A$ & 矩阵乘积、$AB=0$ & 背错误乘法公式\\
+$AB=0$ $\neq A=0$ 或 $B=0$ & 数域没有零因子 & 只需 $\operatorname{Im}B\subseteq\ker A$ & 零乘积 & 错过非零矩阵乘积为零\\
+\bottomrule
+\end{longtable}
+
+\section{看到什么信号时调用本册模型}
+
+\begin{itemize}
+  \item 看到“秩、极大无关组、主元、最大非零子式”：统一翻译成“独立信息有几维”；
+  \item 看到齐次方程自由变量个数：先回到 $n-r(A)=\dim\ker A$，完整解集转 Topic 04；
+  \item 看到两个矩阵做行列初等变换：若目标是分类，问它们是否只在独立重编码输入/输出，从而进入矩阵等价；
+  \item 看到 $AB$：先画 $\operatorname{Im}B$ 与 $\ker A$，不要先猜 rank 公式；
+  \item 看到 $AB=0$：立即翻译为 $\operatorname{Im}B\subseteq\ker A$；
+  \item 看到 $A^TA$、$AA^T$：优先比较 kernel，而不是展开元素；
+  \item 看到 adjugate 与 rank：先按 $r(A)=n,n-1,\le n-2$ 分层；
+  \item 看到含参数 rank：先定位主元/非零子式何时失效，再分支。
+\end{itemize}
+
+\section{一页压缩：rank 是一份“自由度账本”}
+
+\begin{center}
+\begin{tikzpicture}[node distance=6mm and 7mm]
+\node[nodebox] (input) {输入空间\\$\dim V=n$};
+\node[nodebox,right=of input] (split) {选择适配基\\kernel + complement};
+\node[nodebox,right=of split] (kernel) {被抹除\\$\dim\ker T=n-r$};
+\node[nodebox,below=of kernel] (image) {可见输出\\$\dim\operatorname{Im}T=r$};
+\node[nodebox,left=of image] (standard) {矩阵等价标准形\\$J_r$};
+\node[nodebox,left=of standard] (product) {复合瓶颈\\$\operatorname{Im}B\cap\ker A$};
+\draw[flow] (input) -- (split);
+\draw[flow] (split) -- (kernel);
+\draw[flow] (split) -- (image);
+\draw[flow] (image) -- (standard);
+\draw[flow] (standard) -- (product);
+\end{tikzpicture}
+\end{center}
+
+最终压成四句话：
+\[
+\boxed{r(A)=\dim\operatorname{Im}A.}
+\]
+\[
+\boxed{n=r(A)+\dim\ker A.}
+\]
+\[
+\boxed{A\sim_{\mathrm{eq}}B\iff r(A)=r(B)\quad\text{(同型矩阵)}.}
+\]
+\[
+\boxed{r(AB)=r(B)-\dim(\operatorname{Im}B\cap\ker A).}
+\]
+
+如果忘掉具体公式，重新问：\kw{输入有多少自由度？哪些方向被压没？哪些方向还能被输出看见？复合时中间 image 有多少撞进下一步 kernel？}
+
+\end{document}

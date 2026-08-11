@@ -238,8 +238,9 @@ SUBJECTS = {
         "root": Path("10_数学一/20_线性代数"),
         "context": [
             Path("10_数学一/README.md"),
-            Path("10_数学一/20_线性代数/README.md"),
+            Path("10_数学一/20_线性代数/线性代数 Subject Atlas：空间、映射、表示与不变量.md"),
             Path("10_数学一/90_学科做题规则/README.md"),
+            Path("10_数学一/90_学科做题规则/线性代数.md"),
         ],
     },
     "probability": {
@@ -562,6 +563,8 @@ def status_bucket(status: str) -> str:
         return "废弃/Source 导航"
     if normalized.startswith("Candidate") or "Candidate Core" in status:
         return "Candidate"
+    if normalized.startswith("待验证"):
+        return "待验证"
     if "待人工确认" in status:
         return "待人工确认"
     if explicit_working_draft:

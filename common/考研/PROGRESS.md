@@ -5,7 +5,7 @@
 ## 当前焦点
 
 - **已完成**：考研数学一三门核心主干手册 (高等数学 v2、线性代数 v2、概率论与数理统计 v2) 的图表拓扑重构、出版级 5 列【概念边界】长表格升级与 100% 编译发布。
-- **当前阶段**：Handbook 物理契约已按解释责任重切：`Atlas = Canonical Markdown README`；`Topic / Bridge / Integration = README Landing + Canonical .tex -> safe publish -> PDF`。Atlas 不再为了格式统一重复维护 `.tex` 正文；旧 Atlas LaTeX/PDF 只作为 Source / 旧视觉视图。深度 Handbook 仍通过 `cognitive_system.py publish` 安全发布。
+- **当前阶段**：线性代数已完成第二轮旧稿 Source Migration：`学习领域/归档/线性代数/` 的 11 篇高质量个人笔记已逐篇做 Source Diff / Owner Diff，高价值主干已拆入 Topic01–06 Canonical `.tex`，考试动作已收敛到线性代数待验证 Rules；高级/超纲内容继续留作 Source / Extension。下一阶段进入真题与陌生题攻击，不再继续无证据扩写。
 
 ## 当前已完成
 
@@ -17,15 +17,15 @@
 - 数学一 Course Atlas、Cross-Subject Core Bridge Atlas、Integration Layer，以及 Extension / Anti-Bridge 边界规则。
 - 高数旧库 Source Routing 表、12 Topic + 5 internal Bridge + H-I01 骨架，并完成 Jacobian/Hessian 等跨学科 Owner 上移。
 - 概率统计 Subject Atlas 已明确以 README 作为 Canonical Atlas 候选，当前待人工确认；八个 Topic 仍是 Source 工作稿，后续逐册迁入 Canonical LaTeX。
-- 线性代数 Subject Atlas 已回归 Markdown Canonical Map，当前待人工确认；上一轮 `线性代数_Subject_Atlas.tex` / PDF 降为扩展排版 Source。Topic01《向量空间：生成、基与坐标》仍是有效 Canonical LaTeX Topic 并已发布；Topic02–06 继续逐册迁移。
+- 线性代数 Subject Atlas 继续作为 Markdown Canonical Map；Topic01–06 已完成两轮 Source Diff / Model Diff 并全部重新发布。第二轮完整审阅归档旧稿约 9,000 行：补入子空间和/交、determinant 合法计算边界、rank-one 与乘积 rank 取等、同解/包含的拼接 rank 判据、零化多项式与抽象表示对角化、可交换子空间结构、配方法失败分支与二次型零点分类；SVD/伪逆、Sherman–Morrison/Woodbury、Kronecker/Sylvester/Lyapunov、Courant–Fischer 等保留为 Extension / Source。线性代数 Rules 已建立 21 条待验证规则与 5 条已否定规则。
 - 计算机网络 Atlas/八个 Topic 的旧 README 工作稿已明确降为 Source 待迁移；NET-B01–B04 internal Bridge 与 NET-I01 Integration 骨架保留。
 - 计算机组成原理 Atlas/Topic 的旧 README/Markdown 工作稿已明确降为 Source 待迁移；旧 `C × ISA × CPU` 已拆为 CO-B01/CO-B02 internal Bridge 与 CO-I01《一条指令的一生》Integration。
 
 ## 下一步候选
 
-1. 继续线性代数逐册 Model Diff：进入 Topic02《线性映射、矩阵与行列式》，重点验证“映射对象 ≠ 矩阵表示”、行列式是否只作为方阵映射的结构量，以及与 Topic03 rank / Topic04 方程组的边界；
-2. 逐册审查概率统计 Topic，优先确认“随机世界 / 观察函数 / 信息操作”是否作为长期一级术语；
-3. 用陌生题攻击数学一待验证 Rules，并检查 Topic 的调用协议是否真正能生成起手；
+1. 用考研真题/陌生题攻击线性代数 21 条待验证 Rules，重点先测 determinant 路由、齐次/非齐次同解、重根可对角化、三阶实对称速解与二次型方法选择；根据真实表现晋升、收窄或否定 Rule。
+2. 做线性代数六册跨册验收，重点攻击 Topic02→03→04 的“映射—自由度—逆像”交接，以及 Topic05→06 的“相似谱—合同惯性”边界；只有真题暴露真实模型缺口才继续改 Canonical。
+3. 逐册审查概率统计 Topic，优先确认“随机世界 / 观察函数 / 信息操作”是否作为长期一级术语；
 4. 从数据结构 DS01《线性关系与存储表示》开始 Source Diff，并直接生成 Canonical LaTeX Handbook package；
 5. 从计组 CO03 开始把旧 README Source 迁入 `.tex`，随后建设 CO-B01 与 CO-I01，优先攻击“ISA semantic -> datapath -> timing -> commit”；
 6. 从 OS Atlas Foundation + OS01 开始纳管旧 LaTeX 手册，再验证 OS-B01 Wait/Block/Wakeup；
@@ -51,9 +51,10 @@
 | Candidate | 2 |
 | Handbook Source 待迁移 | 33 |
 | 工作稿 | 5 |
-| 已发布 | 1 |
+| 已发布 | 7 |
 | 已采用 | 14 |
-| 待人工确认 | 2 |
+| 待人工确认 | 1 |
+| 待验证 | 1 |
 | 旧发布物待纳管 | 6 |
 | 框架/目录已建立 | 76 |
 
@@ -83,13 +84,18 @@
 | 数学一 / 高等数学 | [H-I01｜微积分建模：从局部微元到整体量](10_%E6%95%B0%E5%AD%A6%E4%B8%80/10_%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/H-I01_%E5%BE%AE%E7%A7%AF%E5%88%86%E5%BB%BA%E6%A8%A1_%E4%BB%8E%E5%B1%80%E9%83%A8%E5%BE%AE%E5%85%83%E5%88%B0%E6%95%B4%E4%BD%93%E9%87%8F/README.md) | 目录已建立，正文未建 |
 | 数学一 / 高等数学 | [高等数学 Integration Layer](10_%E6%95%B0%E5%AD%A6%E4%B8%80/10_%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/README.md) | 框架已采用，正文未建 |
 | 数学一 / 高等数学 | [高等数学 Subject Atlas](10_%E6%95%B0%E5%AD%A6%E4%B8%80/10_%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/README.md) | 已采用；README 是 Canonical Subject Atlas，Topic / Bridge / Integration 按当前路由逐册重构 |
-| 数学一 / 线性代数 | [向量空间：生成、基与坐标](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/01_%E5%90%91%E9%87%8F%E7%A9%BA%E9%97%B4_%E7%94%9F%E6%88%90%E5%9F%BA%E4%B8%8E%E5%9D%90%E6%A0%87/README.md) | 待人工确认；Canonical LaTeX 第一版正文已建立，PDF 已生成 |
-| 数学一 / 线性代数 | [线性映射、矩阵与行列式](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/02_%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84_%E7%9F%A9%E9%98%B5%E4%B8%8E%E8%A1%8C%E5%88%97%E5%BC%8F/README.md) | Markdown 工作稿待迁入 LaTeX；已完成映射表示、复合、可逆与行列式机制的 Source 工作稿，待迁入 Canonical LaTeX 后再由使用者审查 |
-| 数学一 / 线性代数 | [秩、基本子空间与等价](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/03_%E7%A7%A9_%E5%9F%BA%E6%9C%AC%E5%AD%90%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%AD%89%E4%BB%B7/README.md) | Markdown 工作稿待迁入 LaTeX；已完成自由度分解、四大基本子空间与等价机制的 Source 工作稿，待迁入 Canonical LaTeX 后再由使用者审查 |
-| 数学一 / 线性代数 | [线性方程组：可达性与解空间](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/04_%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B%E7%BB%84_%E5%8F%AF%E8%BE%BE%E6%80%A7%E4%B8%8E%E8%A7%A3%E7%A9%BA%E9%97%B4/README.md) | Markdown 工作稿待迁入 LaTeX；已完成逆像模型、解集结构与同解边界的 Source 工作稿，待迁入 Canonical LaTeX 后再由使用者审查 |
-| 数学一 / 线性代数 | [特征结构：相似与对角化](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/05_%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%84_%E7%9B%B8%E4%BC%BC%E4%B8%8E%E5%AF%B9%E8%A7%92%E5%8C%96/README.md) | Markdown 工作稿待迁入 LaTeX；已完成自然方向、相似、对角化、实对称谱结构与可交换边界的 Source 工作稿，待迁入 Canonical LaTeX 后再由使用者审查 |
-| 数学一 / 线性代数 | [二次型：合同、惯性与正定](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/06_%E4%BA%8C%E6%AC%A1%E5%9E%8B_%E5%90%88%E5%90%8C%E6%83%AF%E6%80%A7%E4%B8%8E%E6%AD%A3%E5%AE%9A/README.md) | Markdown 工作稿待迁入 LaTeX；已完成去耦合、合同、惯性与正定机制的 Source 工作稿，待迁入 Canonical LaTeX 后再由使用者审查 |
-| 数学一 / 线性代数 | [线性代数 Subject Atlas：空间、映射、表示与不变量](线性代数%20Subject%20Atlas：空间、映射、表示与不变量.md) | 已采用；README 是 Canonical Subject Atlas |
+| 数学一 / 线性代数 | [向量空间：生成、基与坐标](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/01_%E5%90%91%E9%87%8F%E7%A9%BA%E9%97%B4_%E7%94%9F%E6%88%90%E5%9F%BA%E4%B8%8E%E5%9D%90%E6%A0%87/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
+| 数学一 / 线性代数 | [线性映射、矩阵与行列式](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/02_%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84_%E7%9F%A9%E9%98%B5%E4%B8%8E%E8%A1%8C%E5%88%97%E5%BC%8F/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
+| 数学一 / 线性代数 | [线性映射、矩阵与行列式](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/02_%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84_%E7%9F%A9%E9%98%B5%E4%B8%8E%E8%A1%8C%E5%88%97%E5%BC%8F/%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84%E3%80%81%E7%9F%A9%E9%98%B5%E4%B8%8E%E8%A1%8C%E5%88%97%E5%BC%8F.md) | Source；第一轮 Markdown 工作稿已迁入 Canonical LaTeX，仅保留作 Source Diff 记录，不再作为正文 Owner |
+| 数学一 / 线性代数 | [秩、基本子空间与等价](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/03_%E7%A7%A9_%E5%9F%BA%E6%9C%AC%E5%AD%90%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%AD%89%E4%BB%B7/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
+| 数学一 / 线性代数 | [秩、基本子空间与等价](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/03_%E7%A7%A9_%E5%9F%BA%E6%9C%AC%E5%AD%90%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%AD%89%E4%BB%B7/%E7%A7%A9%E3%80%81%E5%9F%BA%E6%9C%AC%E5%AD%90%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%AD%89%E4%BB%B7.md) | Source；原 README 工作稿，保留作 Topic03 Source Diff 记录，不再作为 Canonical 正文 |
+| 数学一 / 线性代数 | [线性方程组：可达性与解空间](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/04_%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B%E7%BB%84_%E5%8F%AF%E8%BE%BE%E6%80%A7%E4%B8%8E%E8%A7%A3%E7%A9%BA%E9%97%B4/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
+| 数学一 / 线性代数 | [线性方程组：可达性与解空间](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/04_%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B%E7%BB%84_%E5%8F%AF%E8%BE%BE%E6%80%A7%E4%B8%8E%E8%A7%A3%E7%A9%BA%E9%97%B4/%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B%E7%BB%84%EF%BC%9A%E5%8F%AF%E8%BE%BE%E6%80%A7%E4%B8%8E%E8%A7%A3%E7%A9%BA%E9%97%B4.md) | Source；原 README 工作稿，保留作 Topic04 Source Diff 记录，不再作为 Canonical 正文 |
+| 数学一 / 线性代数 | [特征结构：相似与对角化](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/05_%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%84_%E7%9B%B8%E4%BC%BC%E4%B8%8E%E5%AF%B9%E8%A7%92%E5%8C%96/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
+| 数学一 / 线性代数 | [特征结构：相似与对角化](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/05_%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%84_%E7%9B%B8%E4%BC%BC%E4%B8%8E%E5%AF%B9%E8%A7%92%E5%8C%96/%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%84%EF%BC%9A%E7%9B%B8%E4%BC%BC%E4%B8%8E%E5%AF%B9%E8%A7%92%E5%8C%96.md) | Source；原 README 工作稿，保留作 Topic05 Source Diff 记录，不再作为 Canonical 正文 |
+| 数学一 / 线性代数 | [二次型：合同、惯性与正定](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/06_%E4%BA%8C%E6%AC%A1%E5%9E%8B_%E5%90%88%E5%90%8C%E6%83%AF%E6%80%A7%E4%B8%8E%E6%AD%A3%E5%AE%9A/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
+| 数学一 / 线性代数 | [二次型：合同、惯性与正定](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/06_%E4%BA%8C%E6%AC%A1%E5%9E%8B_%E5%90%88%E5%90%8C%E6%83%AF%E6%80%A7%E4%B8%8E%E6%AD%A3%E5%AE%9A/%E4%BA%8C%E6%AC%A1%E5%9E%8B%EF%BC%9A%E5%90%88%E5%90%8C%E3%80%81%E6%83%AF%E6%80%A7%E4%B8%8E%E6%AD%A3%E5%AE%9A.md) | Source；原 README 工作稿，保留作 Topic06 Source Diff 记录，不再作为 Canonical 正文 |
+| 数学一 / 线性代数 | [线性代数 Subject Atlas：空间、映射、表示与不变量](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0%20Subject%20Atlas%EF%BC%9A%E7%A9%BA%E9%97%B4%E3%80%81%E6%98%A0%E5%B0%84%E3%80%81%E8%A1%A8%E7%A4%BA%E4%B8%8E%E4%B8%8D%E5%8F%98%E9%87%8F.md) | 已采用；README 是 Canonical Subject Atlas |
 | 数学一 / 概率统计 | [随机世界：事件与概率](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/01_%E9%9A%8F%E6%9C%BA%E4%B8%96%E7%95%8C_%E4%BA%8B%E4%BB%B6%E4%B8%8E%E6%A6%82%E7%8E%87/README.md) | Markdown 工作稿待迁入 LaTeX；已完成母模型、边界与调用协议的 Source 工作稿，待迁入 Canonical LaTeX 后再由使用者审查 |
 | 数学一 / 概率统计 | [条件概率、独立性与 Bayes：信息怎样重分配概率](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/02_%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87_%E7%8B%AC%E7%AB%8B%E6%80%A7%E4%B8%8EBayes/README.md) | Markdown 工作稿待迁入 LaTeX；已完成信息更新母模型与主要边界的 Source 工作稿，待迁入 Canonical LaTeX 后再由使用者审查 |
 | 数学一 / 概率统计 | [随机变量与一维分布：把随机世界映射到数轴](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/03_%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F%E4%B8%8E%E4%B8%80%E7%BB%B4%E5%88%86%E5%B8%83/README.md) | Markdown 工作稿待迁入 LaTeX；已完成观察函数与分布表示母模型的 Source 工作稿，待迁入 Canonical LaTeX 后再由使用者审查 |
@@ -115,6 +121,7 @@
 | 数学一 / 跨科 Integration | [I03｜线性常微分方程组](10_%E6%95%B0%E5%AD%A6%E4%B8%80/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/I03_%E7%BA%BF%E6%80%A7%E5%B8%B8%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B%E7%BB%84/README.md) | 目录已建立，正文未建；部分内容属于 Extension 验收 |
 | 数学一 / 跨科 Integration | [数学一 Integration Layer](10_%E6%95%B0%E5%AD%A6%E4%B8%80/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/README.md) | 框架已采用，Integration 正文未建 |
 | 数学一 / 数学 Rules | [数学一 学科做题规则](10_%E6%95%B0%E5%AD%A6%E4%B8%80/90_%E5%AD%A6%E7%A7%91%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/README.md) | 目录已建立，规则正在积累 |
+| 数学一 / 数学 Rules | [线性代数 学科做题规则](10_%E6%95%B0%E5%AD%A6%E4%B8%80/90_%E5%AD%A6%E7%A7%91%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0.md) | 待验证；由旧线性代数 Source 中的做题经验重新路由形成，尚未经过本系统的陌生题/真题攻击 |
 | 数学一 | [数学一认知体系总架构](10_%E6%95%B0%E5%AD%A6%E4%B8%80/README.md) | 已采用；README 是 Canonical Course / Exam Atlas，Subject Topic / Bridge / Integration 正文分阶段建设中 |
 | 408 / 总图 | [408 学科架构：Canonical Topology 设计依据](30_408/00_%E7%BB%9F%E4%B8%80%E6%80%BB%E5%9B%BE/408%20%E5%AD%A6%E7%A7%91%E6%9E%B6%E6%9E%84.md) | 框架已采用；本文件记录为什么这样切，不承担日常导航。日常入口见 408 Course Atlas |
 | 408 / 数据结构 | [数据结构学科总图](30_408/10_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/00_%E5%AD%A6%E7%A7%91%E6%80%BB%E5%9B%BE/README.md) | Source；Atlas Foundation / Deep Map 旧工作稿，待与 Canonical Data Structure Subject Atlas README 做 Source Diff；不再迁成第二份 Atlas LaTeX |

@@ -25,7 +25,7 @@ Stable Handbook types remain `Atlas / Topic / Bridge / Integration`. Foundation 
 
 ## Load Contracts Only When Triggered
 | Task | Read |
-|---|---|
+| ------------------------ | ------------------------------------ |
 | stable write/import/topology/status | `00_system/collaboration_workflow.md` |
 | create/restructure Handbook or Rules | `00_system/handbook_contract.md` |
 | large Handbook body rewrite | `00_system/handbook_writing_spec.md` |

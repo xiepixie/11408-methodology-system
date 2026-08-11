@@ -159,7 +159,7 @@ Cross-Subject Bridge / Integration 问题只在需要时读取四科相关 Owner
 
 - Course / Cross-Subject：`10_数学一/README.md` + `10_数学一/50_桥梁专题/README.md` + `10_数学一/60_综合专题/README.md`；
 - 高等数学：`10_数学一/README.md` + `10_数学一/10_高等数学/README.md` + 数学 Rules；
-- 线性代数：`10_数学一/README.md` + `10_数学一/20_线性代数/README.md` + 数学 Rules；
+- 线性代数：`10_数学一/README.md` + `10_数学一/20_线性代数/线性代数 Subject Atlas：空间、映射、表示与不变量.md` + `10_数学一/90_学科做题规则/README.md` + `10_数学一/90_学科做题规则/线性代数.md`；
 - 概率论与数理统计：`10_数学一/README.md` + `10_数学一/30_概率论/README.md` + `10_数学一/90_学科做题规则/概率统计.md`。
 
 自动路由 Subject：`math / calculus / linear-algebra / probability`。Cross-Subject Bridge 或 Integration 问题使用 `math`；单科问题优先使用对应 Subject，避免无差别加载三科世界模型。

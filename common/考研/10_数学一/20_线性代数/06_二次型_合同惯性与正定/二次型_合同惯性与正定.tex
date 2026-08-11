@@ -1,0 +1,719 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={二次型：合同、惯性与正定}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 线性代数 Topic 06}}
+\rhead{\small\color{deep}二次型 · 合同 · 惯性 · 正定}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\tikzset{
+  nodebox/.style={draw=deep,rounded corners=2mm,text width=3.0cm,minimum height=1.0cm,align=center,fill=soft,font=\small,inner sep=4pt},
+  flow/.style={-{Latex[length=2mm]},thick,draw=deep},
+  dashedflow/.style={-{Latex[length=2mm]},thick,dashed,draw=purple}
+}
+
+\title{\vspace{-1.1cm}\textbf{二次型：合同、惯性与正定}\\[0.4em]
+\large 从交叉耦合到主轴，再压缩成不随坐标改变的符号骨架}
+\author{数学一 · 线性代数 Topic 06}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：怎样消除二次项之间的耦合，并识别换坐标以后仍然不变的正、负、零方向结构？}
+二次型
+\[
+q(x)=x^TAx
+\]
+和线性映射 $x\mapsto Ax$ 使用同一张矩阵，却不是同一个对象。二次型把同一个变量放进左右两个槽位，最终输出一个标量。
+
+因此它的核心不是“$A$ 怎样作用在向量上”，而是：\kw{在不同方向上，这个二次量是正、负还是退化；能否换变量把交叉耦合彻底去掉？}
+
+生成链是
+\[
+\boxed{
+\text{二次表达式}
+\to \text{对称矩阵}
+\to \text{变量代换 }x=Py
+\to P^TAP
+\to \text{去掉交叉项}
+\to \text{标准形}
+\to \text{惯性 / 正定性}
+}
+\]
+\end{corebox}
+
+\section{本册负责什么}
+
+\begin{itemize}
+  \item \kw{Owns：}二次型的对称矩阵表示、变量代换与合同、配方法与正交主轴、标准形/规范形、Sylvester 惯性定理、正负惯性指数、正定/负定/半正定/不定、Sylvester 正定判据。
+  \item \kw{Uses：}Topic 01 的正交语言；Topic 02 的 determinant；Topic 03 的 rank；Topic 05 的实对称谱定理。
+  \item \kw{Does not own：}一般算子相似分类、多元函数极值全过程、Hessian 的微积分本体。
+\end{itemize}
+
+Rayleigh quotient 和 Hessian 只作为结构接口说明，不升级成当前数学一二次型主线。
+
+\section{从二次表达式到唯一的对称矩阵}
+
+一般实二次型写成
+\[
+q(x_1,\dots,x_n)
+=\sum_{i=1}^{n}a_{ii}x_i^2
++2\sum_{i<j}a_{ij}x_ix_j.
+\]
+令
+\[
+A=(a_{ij})=A^T,
+\]
+就有
+\[
+\boxed{q(x)=x^TAx.}
+\]
+
+题面若写交叉项
+\[
+c_{ij}x_ix_j\qquad(i\neq j),
+\]
+则矩阵中必须放
+\[
+\boxed{a_{ij}=a_{ji}=\frac{c_{ij}}2,}
+\]
+因为 $x^TAx$ 会同时贡献 $a_{ij}x_ix_j$ 和 $a_{ji}x_jx_i$。
+
+\begin{warnbox}{为什么二次型总可以只看对称部分？}
+若一开始用任意方阵 $B$ 写 $x^TBx$，分解
+\[
+B=\frac{B+B^T}{2}+\frac{B-B^T}{2}=S+K,
+\]
+其中 $S^T=S$、$K^T=-K$。对反对称部分，标量
+\[
+x^TKx=(x^TKx)^T=x^TK^Tx=-x^TKx,
+\]
+所以 $x^TKx=0$。
+
+因此
+\[
+\boxed{x^TBx=x^TSx,\qquad S=\frac{B+B^T}{2}.}
+\]
+真正属于二次型的矩阵可以唯一取成实对称矩阵。
+\end{warnbox}
+
+\section{为什么变量代换必然产生合同}
+
+令
+\[
+x=Py,
+\]
+则
+\[
+q(x)=q(Py)
+=(Py)^TA(Py)
+=y^T(P^TAP)y.
+\]
+所以新坐标中的二次型矩阵是
+\[
+\boxed{B=P^TAP.}
+\]
+
+若 $P$ 可逆，称 $A,B$ \kw{合同（congruent）}。它表达：\kw{同一个二次型，在不同变量坐标中的系数矩阵。}
+
+这里 $P^T$ 不是另一条要背的公式，而是同一个变量代换 $x=Py$ 同时进入左右两个槽位后的必然结果。
+
+\begin{corebox}{合同和相似为什么不是同一件事？}
+\[
+\boxed{\text{相似 }P^{-1}AP\text{：同一线性算子换基}}
+\]
+\[
+\boxed{\text{合同 }P^TAP\text{：同一二次型变量代换}}
+\]
+只有 $P=Q$ 为正交矩阵时 $Q^{-1}=Q^T$，两个数值公式才重合；研究对象仍然不同。
+\end{corebox}
+
+\section{化标准形：真正目标是把方向之间的二次耦合拆开}
+
+交叉项 $x_ix_j$ 表示不同坐标方向的二次贡献混在一起。我们希望找到可逆变量代换，使
+\[
+P^TAP=D=\operatorname{diag}(d_1,\dots,d_n),
+\]
+于是
+\[
+q=d_1y_1^2+\cdots+d_ny_n^2.
+\]
+这叫二次型的\kw{标准形}。
+
+标准形的意义不是“式子更漂亮”，而是不同新方向之间已经完全解耦：每个方向只贡献自己的平方项。
+
+\subsection{路径一：配方法构造一般可逆变量代换}
+
+例如
+\[
+q=x_1^2+4x_1x_2+5x_2^2
+\]
+可以写成
+\[
+q=(x_1+2x_2)^2+x_2^2.
+\]
+令
+\[
+y_1=x_1+2x_2,
+\qquad y_2=x_2,
+\]
+就得到
+\[
+q=y_1^2+y_2^2.
+\]
+
+从 $x=Py$ 的方向写，
+\[
+x_1=y_1-2y_2,
+\qquad x_2=y_2,
+\qquad
+P=\begin{pmatrix}1&-2\\0&1\end{pmatrix},
+\]
+而原矩阵
+\[
+A=\begin{pmatrix}1&2\\2&5\end{pmatrix}
+\]
+满足
+\[
+P^TAP=I_2.
+\]
+
+配方法本质上是在手工构造一个一般可逆 $P$；它能快速去耦合，但新坐标通常不保持长度、角度。
+
+\begin{methodbox}{如果当前没有非零平方项，配方法为什么仍然不会卡住？}
+有时某一步所有对角项暂时都是 $0$，但仍存在非零交叉项
+\[
+2a_{ij}x_ix_j,
+\qquad a_{ij}\neq0.
+\]
+此时不能因为“没有 $x_i^2$”就停止。令
+\[
+u=x_i+x_j,
+\qquad
+v=x_i-x_j,
+\]
+则
+\[
+x_i=\frac{u+v}{2},
+\qquad
+x_j=\frac{u-v}{2},
+\]
+从而
+\[
+\boxed{2a_{ij}x_ix_j=\frac{a_{ij}}2(u^2-v^2).}
+\]
+一次可逆变量代换就制造出一正一负两个平方方向，之后可以继续普通配方。
+
+所以配方法的稳定协议不是“永远从某个平方项开始”，而是：\kw{有非零对角主元就消去其耦合；没有主元但有交叉项，就先把交叉项变成一正一负两个平方项。}
+\end{methodbox}
+
+若某个变量既没有平方项，也没有任何相关交叉项，那么它根本没有进入二次型，直接对应规范形中的零方向。
+
+\subsection{路径二：实对称谱定理给出正交主轴}
+
+Topic 05 已知：实对称 $A$ 存在正交矩阵 $Q$ 使
+\[
+Q^TAQ=\Lambda
+=\operatorname{diag}(\lambda_1,\dots,\lambda_n).
+\]
+令 $x=Qy$，得到
+\[
+q=\lambda_1y_1^2+\cdots+\lambda_ny_n^2.
+\]
+
+因为 $Q$ 正交，这条路径不仅去掉耦合，还保持欧氏长度与角度；新轴就是矩阵的标准正交特征方向。因此正交标准形的系数恰好是特征值。
+
+\begin{warnbox}{配方法得到的对角系数一般不是特征值}
+上面的
+\[
+A=\begin{pmatrix}1&2\\2&5\end{pmatrix}
+\]
+经一般合同变换变成 $I_2$，但 $A$ 的特征值是
+\[
+3\pm2\sqrt2,
+\]
+并不是 $1,1$。
+
+所以\kw{“化成了对角形”不自动等于“完成了相似对角化”}。只有正交变换时，合同与相似同时发生，标准形系数才直接等于原矩阵特征值。
+\end{warnbox}
+
+\section{标准形与规范形：从具体强度继续压缩成符号骨架}
+
+一般合同得到
+\[
+D=\operatorname{diag}(d_1,\dots,d_n).
+\]
+对每个非零 $d_i$，再缩放对应变量，可以把它归一为 $+1$ 或 $-1$。最终得到
+\[
+\boxed{
+\operatorname{diag}(I_p,-I_q,0)
+}
+\]
+或等价地
+\[
+z_1^2+\cdots+z_p^2
+-z_{p+1}^2-\cdots-z_{p+q}^2.
+\]
+这叫\kw{规范形}。
+
+于是：
+\begin{itemize}
+  \item 标准形还保留某一次去耦合后的具体对角系数；
+  \item 规范形只保留正、负、零三类方向数量。
+\end{itemize}
+
+记
+\[
+p=\text{正惯性指数},
+\qquad
+q=\text{负惯性指数}.
+\]
+零方向数为
+\[
+n-p-q.
+\]
+并且
+\[
+\boxed{r(A)=p+q.}
+\]
+
+\section{Sylvester 惯性定理：合同真正保留的是正负方向数量}
+
+\kw{Sylvester 惯性定理}指出：对实二次型，不论使用哪一个可逆变量代换得到标准形，正平方项个数 $p$、负平方项个数 $q$、零项个数都不改变。
+
+所以二次型在一般合同下真正稳定的不是特征值，而是
+\[
+\boxed{(p,q,n-p-q).}
+\]
+这就是\kw{惯性（inertia）}。
+
+进一步，两个同阶实对称矩阵合同，当且仅当它们具有相同的惯性。因此惯性不是“若干必要信息”，而是实对称矩阵合同分类的完整标签。
+
+\begin{methodbox}{为什么惯性比某一组标准形系数更本质？}
+一般可逆缩放可以把任意正系数改成任意另一个正系数，也可以把任意负系数改成任意另一个负系数；但实数的平方缩放永远不能把正方向变成负方向，也不能把非零方向变成零方向。
+
+所以具体数值强度会动，正/负/零的类型不会动。
+\end{methodbox}
+
+\section{合同下 determinant 和 rank 到底怎样变化}
+
+若
+\[
+B=P^TAP,
+\]
+则
+\[
+r(B)=r(A),
+\]
+因为左右乘的 $P^T,P$ 都可逆。
+
+同时
+\[
+\boxed{\det B=(\det P)^2\det A.}
+\]
+因为 $(\det P)^2>0$，在实数域中：
+\begin{itemize}
+  \item determinant 是否为零保持；
+  \item determinant 的\kw{符号}保持；
+  \item determinant 的具体数值通常不保持。
+\end{itemize}
+
+这与相似形成鲜明对比：相似直接保持 determinant 的具体值；合同只通过正平方因子缩放它。
+
+\section{正定：不是“系数大多为正”，而是所有非零方向都为正}
+
+实对称矩阵 $A$ 对应二次型
+\[
+q(x)=x^TAx.
+\]
+定义
+\[
+\boxed{A\succ0
+\iff x^TAx>0\quad\forall x\neq0.}
+\]
+这叫\kw{正定}。
+
+同理：
+\begin{itemize}
+  \item $A\prec0$：对所有非零 $x$ 都有 $x^TAx<0$，叫负定；
+  \item $A\succeq0$：对所有 $x$ 有 $x^TAx\ge0$，叫正半定；
+  \item 若存在方向使二次型取正值，也存在方向取负值，叫不定。
+\end{itemize}
+
+在正交主轴坐标下
+\[
+q=\lambda_1y_1^2+\cdots+\lambda_ny_n^2.
+\]
+于是立刻得到：
+\[
+\boxed{A\succ0\iff \lambda_i>0\ \forall i\iff p=n.}
+\]
+\[
+\boxed{A\succeq0\iff \lambda_i\ge0\ \forall i.}
+\]
+不定则等价于惯性中 $p>0$ 且 $q>0$。
+
+\subsection{半定二次型为什么自动带一个 Cauchy--Schwarz 不等式}
+
+若 $A\succeq0$，则对任意向量 $x,y$ 和任意实数 $t$，都有
+\[
+(x+ty)^TA(x+ty)\ge0.
+\]
+把它看成关于 $t$ 的一元二次式：
+\[
+(y^TAy)t^2+2(x^TAy)t+x^TAx\ge0.
+\]
+若 $y^TAy>0$，其判别式不能为正；若 $y^TAy=0$，要想对所有 $t$ 都非负，线性项 $x^TAy$ 必须为 $0$。两种情形统一得到
+\[
+\boxed{
+(x^TAy)^2\le (x^TAx)(y^TAy).
+}
+\]
+这就是由正半定矩阵诱导出的 Cauchy--Schwarz 型不等式。
+
+若 $A\preceq0$，对 $-A\succeq0$ 使用同一结论，仍得到完全相同的不等式。反过来，如果上式对所有 $x,y$ 都成立，那么 $x^TAx$ 不可能在不同方向上一个取正、一个取负；否则右端为负而左端非负。于是实对称 $A$ 必须是正半定或负半定。
+
+\begin{corebox}{全称矩阵不等式真正检测的是“有没有混合符号方向”}
+\[
+\boxed{
+(x^TAy)^2\le (x^TAx)(y^TAy)\quad\forall x,y
+}
+\]
+对实对称矩阵而言，本质上等价于二次型不含同时存在的正、负方向，也就是 $A\succeq0$ 或 $A\preceq0$。
+
+考试参数题中，可以先用标准基或简单特殊向量快速抽出必要条件，再回到“半定型”完成充分性；这种先特殊化再回到结构的动作属于 Rules，本册只拥有为什么这个不等式与半定性相连。
+\end{corebox}
+
+\begin{warnbox}{$\det A>0$ 远远不够推出正定}
+\[
+A=-I_2
+\]
+有
+\[
+\det A=1>0,
+\]
+但
+\[
+x^TAx=-\|x\|^2<0\qquad(x\neq0),
+\]
+所以它是负定矩阵。
+
+determinant 只看所有主轴强度的\kw{乘积}，正定要求每一个主轴强度都为正。
+\end{warnbox}
+
+\section{Sylvester 正定判据：连续去耦合时每一层枢轴都为正}
+
+记实对称 $A$ 的左上角 $k$ 阶\kw{顺序主子式}为
+\[
+\Delta_k.
+\]
+Sylvester 判据为
+\[
+\boxed{
+A\succ0
+\iff
+\Delta_1>0,\Delta_2>0,\dots,\Delta_n>0.
+}
+\]
+
+这个判据最容易被背成一串 determinant 条件。更好的机制理解是连续配平方对应的 $LDL^T$ 分解。
+
+当各顺序主子式非零时，可以写
+\[
+A=LDL^T,
+\]
+其中 $L$ 可逆下三角，$D$ 为对角矩阵，并且若约定 $\Delta_0=1$，则
+\[
+\boxed{d_k=\frac{\Delta_k}{\Delta_{k-1}}.}
+\]
+令
+\[
+y=L^Tx,
+\]
+就得到
+\[
+x^TAx=y^TDy=\sum_{k=1}^{n}d_ky_k^2.
+\]
+因此全部 $\Delta_k>0$ 会逐层迫使
+\[
+d_k>0,
+\]
+最终把二次型化成全正平方和。反过来，正定矩阵的每个前 $k$ 维坐标限制仍正定，所以对应 $\Delta_k>0$。
+
+这才是 Sylvester 判据的生成结构：\kw{每一次消去交叉项以后留下的新二次枢轴都必须为正。}
+
+\subsection{负定怎样判断}
+
+$A$ 负定等价于 $-A$ 正定，所以
+\[
+\boxed{A\prec0\iff (-1)^k\Delta_k>0\quad(k=1,\dots,n).}
+\]
+也就是顺序主子式符号交替：
+\[
+\Delta_1<0,\ \Delta_2>0,\ \Delta_3<0,\dots
+\]
+
+\begin{warnbox}{半正定不能把 Sylvester 的 $>$ 机械改成 $\ge$}
+“全部顺序主子式 $\ge0$”并不足以判正半定。
+
+例如
+\[
+A=\begin{pmatrix}0&0\\0&-1\end{pmatrix}
+\]
+的顺序主子式为
+\[
+\Delta_1=0,\qquad\Delta_2=0,
+\]
+都非负，但 $A$ 显然不是正半定。
+
+对实对称矩阵，正半定最稳的主干判据是\kw{全部特征值非负}。若使用子式判据，需要检查\kw{全部主子式}非负，而不只是顺序主子式。
+\end{warnbox}
+
+\section{两条去耦合路线到底各自产出什么}
+
+\begin{longtable}{L{3.0cm}L{4.3cm}L{\dimexpr\linewidth-7.8cm\relax}}
+\toprule
+\textbf{路线} & \textbf{允许的变换} & \textbf{你能可靠读取什么}\\
+\midrule
+配方法 / 一般合同 & 任意可逆 $P$，$P^TAP=D$ & 标准形、惯性、rank；计算往往较短，但 $D$ 的具体系数不是原特征值\\
+正交对角化 & 正交 $Q$，$Q^TAQ=\Lambda$ & 特征值、标准正交主轴、惯性；同时属于相似与合同\\
+继续缩放成规范形 & 一般可逆缩放 & 只留下 $+1,-1,0$ 的数量，得到完整合同分类\\
+\bottomrule
+\end{longtable}
+
+所以方法选择先由目标决定：若只问惯性或任意标准形，不必为了“高级”强行求谱；若题目要求正交变换、主轴或特征信息，必须走实对称谱结构。
+
+具体考试中“哪条路线更省算”属于 Rules，本册只负责解释两条路线为什么合法以及各自保留什么。
+
+\section{母例：同一张实对称矩阵的算子身份和二次型身份}
+
+令
+\[
+A=\begin{pmatrix}2&1\\1&2\end{pmatrix}.
+\]
+Topic 05 已找到标准正交特征方向
+\[
+q_1=\frac1{\sqrt2}\begin{pmatrix}1\\1\end{pmatrix},
+\qquad
+q_2=\frac1{\sqrt2}\begin{pmatrix}1\\-1\end{pmatrix},
+\]
+特征值为 $3,1$。组成
+\[
+Q=(q_1,q_2),
+\]
+有
+\[
+Q^TAQ=\begin{pmatrix}3&0\\0&1\end{pmatrix}.
+\]
+
+作为算子：这是正交相似，表示新坐标轴沿两条不变方向。
+
+作为二次型：令 $x=Qy$，得到
+\[
+q(x)=3y_1^2+y_2^2.
+\]
+因此
+\[
+p=2,\qquad q=0,
+\]
+二次型正定。
+
+同一个数值公式在两本 Topic 中出现，但解释责任不同：Topic 05 Own “自然方向与谱”，Topic 06 Own “主轴、惯性和符号”。
+
+\section{相似与合同之间到底能推出什么}
+
+对一般矩阵，不要混用两个关系。
+
+对\kw{实对称矩阵}，有一个特殊加强：若 $A,B$ 相似，那么它们有相同特征值多重集合；又因为二者都可正交对角化，所以可以把它们正交对角化到同一张对角矩阵，从而它们实际上\kw{正交相似}，因此也合同。
+
+但合同不能反推相似。
+
+例如
+\[
+A=I_2,
+\qquad B=2I_2.
+\]
+二者惯性都是 $(2,0,0)$，所以合同。事实上取
+\[
+P=\frac1{\sqrt2}I_2,
+\]
+就有
+\[
+P^TBP=I_2=A.
+\]
+但它们的特征值分别为 $1,1$ 与 $2,2$，所以不相似。
+
+\begin{corebox}{三类关系最后再压一次}
+\[
+\boxed{\text{等价：一般映射，两端独立换基，完整分类看 rank}}
+\]
+\[
+\boxed{\text{相似：同空间算子，同步换基，核心结构看谱/特征子空间}}
+\]
+\[
+\boxed{\text{合同：二次型变量代换，完整分类看惯性}}
+\]
+不要从公式长得像不像判断关系；先问当前研究对象是谁。
+\end{corebox}
+
+\section{Rayleigh quotient：一个方向上的二次强度（结构接口）}
+
+对实对称矩阵，定义
+\[
+R_A(x)=\frac{x^TAx}{x^Tx},
+\qquad x\neq0.
+\]
+若在标准正交特征基中写 $x=Qy$，则
+\[
+R_A(x)=
+\frac{\sum_i\lambda_i y_i^2}{\sum_i y_i^2}.
+\]
+右边是特征值的加权平均，所以
+\[
+\boxed{
+\lambda_{\min}\le R_A(x)\le\lambda_{\max}.
+}
+\]
+在特征方向上取到等号。
+
+这段只承担一个结构接口：特征值可以理解为二次型在主轴方向上的强度边界。它连接 Hessian / 局部曲率时，由数学一 B03 Bridge Own 跨学科翻译；不在本册展开多元极值判定。
+
+\section{二次型方程 $x^TAx=0$：惯性到底控制了什么？}
+
+把二次型先化到规范形
+\[
+z_1^2+\cdots+z_p^2
+-z_{p+1}^2-\cdots-z_{p+q}^2=0.
+\]
+这时是否存在非零解完全由正、负、零方向的组合决定。
+
+\begin{itemize}
+  \item 若 $A$ 正定或负定，所有非零方向二次值都严格同号，因此
+  \[
+  x^TAx=0\iff x=0.
+  \]
+  \item 若 $A$ 正半定或负半定，二次值只能在 kernel 方向降到 $0$，所以
+  \[
+  \boxed{x^TAx=0\iff x\in\ker A.}
+  \]
+  \item 若 $A$ 不定，即 $p>0$ 且 $q>0$，正负平方项可以互相抵消，因此一定存在非零解，而且通常形成无穷多方向。
+\end{itemize}
+
+\begin{examplebox}{为什么“不定”会自动产生非零零点？}
+规范形中只取一个正方向和一个负方向，例如
+\[
+z_1^2-z_{p+1}^2=0.
+\]
+取 $z_1=z_{p+1}=1$，其余坐标为 $0$，就得到一个非零解。于是“不定”不仅意味着二次型能取正、负值，也意味着零水平集会穿过非零方向。
+\end{examplebox}
+
+因此遇到 $x^TAx=0$ 时，不应该先随意把某个变量设成 $0$；先按惯性判断定、半定还是不定，再决定零点结构。
+
+\section{概念边界：二次型最容易在哪一步偷换成算子问题}
+
+\begin{longtable}{L{2.5cm}L{3.0cm}L{3.8cm}L{3.2cm}L{\dimexpr\linewidth-13.1cm\relax}}
+\toprule
+\textbf{A $\neq$ B} & \textbf{为什么容易混} & \textbf{真正判据} & \textbf{题面信号} & \textbf{混淆后果}\\
+\midrule
+二次型 $\neq$ 线性映射 $x\mapsto Ax$ & 使用同一张矩阵 & 前者输出标量且变量进入两次；后者输出向量 & $x^TAx$ / $Ax$ & 把合同写成相似\\
+合同 $\neq$ 相似 & 都含可逆矩阵 & $P^TAP$ 保惯性；$P^{-1}AP$ 保算子谱 & 二次型 / 同一算子换基 & 用特征值判断一般合同\\
+标准形 $\neq$ 规范形 & 都没有交叉项 & 标准形保留对角系数；规范形只留 $\pm1,0$ & “标准形”“规范形” & 误判标准形唯一\\
+配方法系数 $\neq$ 特征值 & 都可能得到对角矩阵 & 一般合同不保谱；正交合同才同时是相似 & “配方法”“正交变换” & 把任意对角系数当谱\\
+$\det A>0$ $\neq$ 正定 & determinant 是特征值乘积 & 正定要求每个特征值都正 & determinant / 正定 & $-I_2$ 被误判正定\\
+正半定 $\neq$ 正定 & 都不出现负值 & 半正定允许非零方向取 $0$ & “$\ge0$” / “$>0$” & 忽略 kernel 方向\\
+顺序主子式 $\neq$ 任意主子式 & 都是主子式 & Sylvester 正定判据只需左上角逐级子式；半正定不能只看它们 & 正定 / 半正定 & 把 $>$ 机械改成 $\ge$\\
+正交对角化 $\neq$ 任意化标准形 & 都能去交叉项 & 前者保长度角度、系数=特征值；后者只要求可逆 & “正交变换” & 用配平方冒充正交主轴\\
+\bottomrule
+\end{longtable}
+
+\section{看到什么信号时调用本册模型}
+
+\begin{itemize}
+  \item 看到二次表达式：先构造唯一对称矩阵，交叉项系数除以 $2$；
+  \item 看到变量代换：直接写 $x=Py\Rightarrow P^TAP$，不要套相似；
+  \item 只问任意标准形/惯性：优先考虑配方法或合同，不必自动求特征值；
+  \item 明确要求正交变换/主轴：调用 Topic 05 的标准正交特征基；
+  \item 看到合同分类：直接比较 $(p,q,n-p-q)$，而不是比较特征值；
+  \item 看到正定：先切成“所有非零方向是否为正”，再选特征值或 Sylvester；
+  \item 看到顺序主子式：正定用 $\Delta_k>0$；半正定不要机械改成 $\ge0$；
+  \item 看到 Hessian / 曲率：这里只输出二次型符号结构，跨科解释交给 B03。
+\end{itemize}
+
+\section{一页压缩：去耦合以后只剩正、负、零方向}
+
+\begin{center}
+\begin{tikzpicture}[node distance=6mm and 7mm]
+\node[nodebox] (quad) {二次型\\$q(x)=x^TAx$};
+\node[nodebox,right=of quad] (change) {变量代换\\$x=Py$};
+\node[nodebox,right=of change] (cong) {合同\\$P^TAP$};
+\node[nodebox,below=of cong] (diag) {去掉耦合\\标准形 $D$};
+\node[nodebox,left=of diag] (inertia) {继续归一\\$I_p,-I_q,0$};
+\node[nodebox,left=of inertia] (sign) {惯性 / 正定\\方向符号结构};
+\draw[flow] (quad) -- (change);
+\draw[flow] (change) -- (cong);
+\draw[flow] (cong) -- (diag);
+\draw[flow] (diag) -- (inertia);
+\draw[flow] (inertia) -- (sign);
+\end{tikzpicture}
+\end{center}
+
+最终压成四句话：
+\[
+\boxed{x=Py\Longrightarrow A\mapsto P^TAP.}
+\]
+\[
+\boxed{\text{合同的完整分类标签是惯性 }(p,q,n-p-q).}
+\]
+\[
+\boxed{A\succ0\iff\lambda_i>0\ \forall i\iff\Delta_k>0\ \forall k.}
+\]
+\[
+\boxed{\text{正交对角化时合同=相似，但对象仍然不同}.}
+\]
+
+如果忘掉公式，重新问：\kw{现在研究的是标量二次量还是向量作用？允许怎样换变量？交叉耦合消掉后还剩多少正方向、负方向和零方向？}
+
+\end{document}

@@ -77,6 +77,10 @@ class StatusSemanticsTests(unittest.TestCase):
         status = "Candidate Core；接口结构已确认，独立 Core 优先级待真题证据"
         self.assertEqual(MODULE.status_bucket(status), "Candidate")
 
+    def test_rule_pending_validation_uses_pending_bucket(self):
+        status = "待验证；由旧 Source 中的做题经验重新路由形成"
+        self.assertEqual(MODULE.status_bucket(status), "待验证")
+
     def test_deprecated_navigation_uses_deprecated_bucket(self):
         status = "废弃入口，仅保留导航指针"
         self.assertEqual(MODULE.status_bucket(status), "废弃/Source 导航")
@@ -88,6 +92,19 @@ class StatusSemanticsTests(unittest.TestCase):
     def test_rules_directory_is_not_handbook_area(self):
         path = Path("30_408/10_数据结构/90_做题规则/README.md")
         self.assertFalse(MODULE.is_handbook_area(path))
+
+
+class ContextRoutingTests(unittest.TestCase):
+    def test_linear_algebra_context_uses_canonical_atlas_and_subject_rules(self):
+        context = MODULE.SUBJECTS["linear-algebra"]["context"]
+        expected_atlas = Path(
+            "10_数学一/20_线性代数/线性代数 Subject Atlas：空间、映射、表示与不变量.md"
+        )
+        expected_rules = Path("10_数学一/90_学科做题规则/线性代数.md")
+        self.assertIn(expected_atlas, context)
+        self.assertIn(expected_rules, context)
+        self.assertTrue((MODULE.PROJECT_ROOT / expected_atlas).exists())
+        self.assertTrue((MODULE.PROJECT_ROOT / expected_rules).exists())
 
 
 class AtlasFormatTests(unittest.TestCase):

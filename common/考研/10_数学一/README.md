@@ -45,7 +45,7 @@ $$
 }
 $$
 
-### 1.2 [线性代数](线性代数%20Subject%20Atlas：空间、映射、表示与不变量.md)
+### 1.2 [线性代数](20_线性代数/线性代数%20Subject%20Atlas：空间、映射、表示与不变量.md)
 
 母问题：面对线性空间中的对象，怎样区分对象与坐标表示，选择不改变当前问题本质的表示变换，并从不变量读出结构？
 
@@ -249,13 +249,13 @@ $$
 | 模块 | 工作入口 | 既有发布物 |
 |---|---|---|
 | 高等数学 | [10_高等数学](10_高等数学/README.md) | `00_学科总图/数学一_高等数学_心智模型手册_v2.tex` / `90_publish` PDF |
-| 线性代数 | [20_线性代数](线性代数%20Subject%20Atlas：空间、映射、表示与不变量.md) | Canonical Atlas = `20_线性代数/README.md`；上一版 Atlas `.tex`/PDF 与旧 v2 均保留为 Source / legacy visual |
+| 线性代数 | [20_线性代数](20_线性代数/线性代数%20Subject%20Atlas：空间、映射、表示与不变量.md) | Canonical Atlas = `20_线性代数/线性代数 Subject Atlas：空间、映射、表示与不变量.md`；Topic01–06 均已建立 Canonical LaTeX / PDF，当前待人工确认；旧 Atlas `.tex`/PDF 与旧 v2 保留为 Source / legacy visual |
 | 概率论与数理统计 | [30_概率论](30_概率论/README.md) | `00_学科总图/数学一_概率论与数理统计_心智模型手册_v2.tex` / `90_publish` PDF |
 | Cross-Subject Bridge | [50_桥梁专题](50_桥梁专题/README.md) | 尚无独立发布物 |
 | Integration | [60_综合专题](60_综合专题/README.md) | 尚无独立发布物 |
 | Control Rules | [90_学科做题规则](90_学科做题规则/README.md) | 既有方法论 LaTeX/PDF |
 
-旧数学 v2 PDF 在对应新 Owner 完成迁移前继续标记为 `legacy-unregistered`。Atlas 是否 Canonical 由 README 地图决定，不由 PDF 决定；当前线性代数 Topic01 已通过新的深度 Handbook 链建立并发布。
+旧数学 v2 PDF 在对应新 Owner 完成迁移前继续标记为 `legacy-unregistered`。Atlas 是否 Canonical 由当前地图 Owner 决定，不由 PDF 决定；当前线性代数 Topic01–06 已全部通过新的深度 Handbook 链建立并发布。
 
 ## 9. 当前建设顺序
 

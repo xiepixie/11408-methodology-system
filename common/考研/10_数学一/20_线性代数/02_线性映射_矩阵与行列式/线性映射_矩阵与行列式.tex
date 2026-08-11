@@ -1,0 +1,805 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{145,154,163}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={线性映射、矩阵与行列式}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 线性代数 Topic 02}}
+\rhead{\small\color{deep}线性映射 · 矩阵 · 行列式}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\tikzset{
+  nodebox/.style={draw=deep,rounded corners=2mm,text width=3.0cm,minimum height=1.0cm,align=center,fill=soft,font=\small,inner sep=4pt},
+  flow/.style={-{Latex[length=2mm]},thick,draw=deep},
+  dashedflow/.style={-{Latex[length=2mm]},thick,dashed,draw=purple}
+}
+
+\title{\vspace{-1.1cm}\textbf{线性映射、矩阵与行列式}\\[0.4em]
+\large 从抽象作用到坐标计算，再到满维信息是否塌缩}
+\author{数学一 · 线性代数 Topic 02}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：怎样把抽象线性作用变成可计算的有限数据？方阵又怎样判断满维信息是否被压扁？}
+线性映射 $T:V\to W$ 是一个对整个空间起作用的规则。如果逐个记录所有输入的输出，既不可能，也没有利用线性结构。
+
+线性性告诉我们：只要知道一组基怎样被送走，就知道所有向量怎样被送走。于是第一条生成链是
+\[
+\boxed{
+\text{线性映射}
+\to \text{选定两端基}
+\to \text{记录基向量的像}
+\to \text{矩阵表示}
+\to \text{矩阵运算}
+}
+\]
+当定义域与陪域同维、矩阵为方阵时，还会出现第二个问题：\kw{这个作用有没有把某个满维方向压没？} 行列式正是回答这个问题的标量探针：
+\[
+\boxed{
+\text{方阵作用}
+\to \text{有向体积缩放}
+\to \det A
+\to \text{是否发生满维塌缩}
+}
+\]
+\end{corebox}
+
+\section{本册负责什么}
+
+\begin{itemize}
+  \item \kw{Owns：}线性映射、矩阵表示、矩阵加法/数乘/乘法的映射意义、两端换基公式、初等矩阵、逆矩阵、行列式的代数与几何机制、余子式展开、伴随矩阵，以及三角/分块等直接服务这些机制的矩阵结构。
+  \item \kw{Uses：}Topic 01 的基、坐标、线性无关、内积与正交语言。
+  \item \kw{Does not own：}rank--nullity、kernel/image 的完整分解、矩阵等价的 rank 分类、给定 $Ax=b$ 的完整解集、相似对角化、二次型合同。
+\end{itemize}
+
+本册向后提供三个稳定接口：
+\[
+\boxed{\text{矩阵表示语言}\quad\text{可逆性语言}\quad\text{determinant 语言}}
+\]
+Topic 03 接管“到底保留多少自由度”，Topic 04 接管“某个具体 $b$ 是否可达”，Topic 05 接管“同一空间算子换基后哪些谱结构保持”。
+
+\section{为什么一组基的像就足够决定整个线性映射}
+
+设 $V$ 有基
+\[
+\mathcal B=(b_1,\dots,b_n),
+\]
+任意 $v\in V$ 都有唯一坐标
+\[
+v=x_1b_1+\cdots+x_nb_n.
+\]
+若 $T:V\to W$ 线性，则
+\[
+T(v)=x_1T(b_1)+\cdots+x_nT(b_n).
+\]
+因此一旦知道 $T(b_1),\dots,T(b_n)$，整个 $T$ 已被唯一确定。
+
+再给 $W$ 选一组基
+\[
+\mathcal C=(c_1,\dots,c_m).
+\]
+把每个 $T(b_j)$ 在 $\mathcal C$ 下的坐标作为第 $j$ 列：
+\[
+A=
+\begin{pmatrix}
+[T(b_1)]_{\mathcal C}&\cdots&[T(b_n)]_{\mathcal C}
+\end{pmatrix}.
+\]
+于是对任意 $v$，
+\[
+\boxed{[T(v)]_{\mathcal C}=A[v]_{\mathcal B}.}
+\]
+
+\begin{corebox}{矩阵不是抽象线性映射本身}
+矩阵 $A$ 完整表达的是
+\[
+\boxed{T+\text{定义域基 }\mathcal B+\text{陪域基 }\mathcal C.}
+\]
+基一换，数字矩阵会变；映射 $T$ 可以完全不变。因此看到“同一线性变换在不同基下的矩阵”，第一反应应当是\kw{表示变了，对象没变}。
+\end{corebox}
+
+\subsection{矩阵尺寸来自输入和输出维数}
+
+若
+\[
+T:V_n\to W_m,
+\]
+那么它在选定基下的矩阵一定属于
+\[
+A\in\mathbb R^{m\times n}.
+\]
+列数 $n$ 来自输入坐标的自由度，行数 $m$ 来自输出坐标的分量数。这不是排版约定，而是映射方向的记录。
+
+\section{矩阵运算为什么长成现在这样}
+
+\subsection{加法和数乘：只有同一输入/输出类型才能相加}
+
+若 $S,T:V\to W$，在同一对基下矩阵分别为 $A,B$，则
+\[
+(S+T)(v)=S(v)+T(v)
+\]
+对应
+\[
+[S+T]=A+B.
+\]
+同理
+\[
+[\lambda T]=\lambda A.
+\]
+
+所以不同尺寸矩阵不能相加，并不是“规定如此”，而是对应的映射输入/输出类型不同，根本没有定义逐点相加的共同对象。
+
+\subsection{矩阵乘法：复合映射强迫出来的运算}
+
+设
+\[
+T:U\to V,\qquad S:V\to W,
+\]
+在匹配基下矩阵分别为 $A,B$。那么
+\[
+(S\circ T)(u)=S(T(u))
+\]
+在坐标中变成
+\[
+[u]\xmapsto{A}A[u]\xmapsto{B}B(A[u])=(BA)[u].
+\]
+因此
+\[
+\boxed{[S\circ T]=BA.}
+\]
+
+这同时解释两件事：
+\begin{itemize}
+  \item 乘法尺寸要求来自“前一个输出必须能成为后一个输入”；
+  \item $AB$ 与 $BA$ 一般不同，因为“先做谁、后做谁”本来就不同。
+\end{itemize}
+
+\begin{methodbox}{按列读 $AB$}
+若 $B=(b_1,\dots,b_k)$，则
+\[
+AB=(Ab_1,\dots,Ab_k).
+\]
+也就是说，$AB$ 的第 $j$ 列就是 $A$ 对 $B$ 第 $j$ 列的作用。遇到矩阵乘积时，这个视角常比逐项公式更接近真正对象。
+\end{methodbox}
+
+\subsection{矩阵幂：同一个算子的重复作用}
+
+只有方阵才能自然写 $A^2,A^3,\dots$，因为只有 $T:V\to V$ 才能把自己的输出继续作为自己的输入。
+\[
+A^k\quad\Longleftrightarrow\quad T^k=T\circ\cdots\circ T.
+\]
+如何利用特征结构快速计算 $A^k$ 由 Topic 05 接管；这里仅负责“矩阵幂为什么代表重复作用”。
+
+\section{两端换基：一般线性映射为什么出现左右两个可逆矩阵}
+
+这是本册最重要的表示变换公式。
+
+设旧基为 $\mathcal B$、$\mathcal C$，新基为 $\mathcal B'$、$\mathcal C'$。约定
+\[
+\mathcal B'=\mathcal BP,
+\qquad
+\mathcal C'=\mathcal CQ,
+\]
+也就是说，$P$ 的列是\kw{新定义域基在旧定义域基中的坐标}，$Q$ 的列是\kw{新陪域基在旧陪域基中的坐标}。
+
+由 Topic 01 的换基关系，
+\[
+[v]_{\mathcal B}=P[v]_{\mathcal B'},
+\qquad
+[w]_{\mathcal C'}=Q^{-1}[w]_{\mathcal C}.
+\]
+若旧矩阵 $A$ 满足
+\[
+[T(v)]_{\mathcal C}=A[v]_{\mathcal B},
+\]
+则
+\[
+[T(v)]_{\mathcal C'}
+=Q^{-1}[T(v)]_{\mathcal C}
+=Q^{-1}AP[v]_{\mathcal B'}.
+\]
+因此新矩阵为
+\[
+\boxed{A'=Q^{-1}AP.}
+\]
+
+\begin{corebox}{为什么一般映射不是“相似变换”？}
+对一般 $T:V\to W$，定义域和陪域是两个不同位置，两端基可以独立选择，因此出现两个彼此独立的可逆矩阵 $P,Q$。
+
+只有当研究对象进一步收窄成同一空间算子 $T:V\to V$，并要求输入与输出使用\kw{同一组新基}时，才有 $Q=P$，公式退化为
+\[
+A'=P^{-1}AP.
+\]
+这就是 Topic 05 的相似变换入口。
+\end{corebox}
+
+\begin{examplebox}{母例 1：同一映射，两端都换基}
+设标准坐标下
+\[
+A=\begin{pmatrix}1&2\\3&1\end{pmatrix}.
+\]
+取新定义域基矩阵
+\[
+P=\begin{pmatrix}1&0\\1&1\end{pmatrix},
+\]
+新陪域基矩阵
+\[
+Q=\begin{pmatrix}1&1\\0&1\end{pmatrix}.
+\]
+于是
+\[
+A'=Q^{-1}AP
+=\begin{pmatrix}1&-1\\0&1\end{pmatrix}
+\begin{pmatrix}1&2\\3&1\end{pmatrix}
+\begin{pmatrix}1&0\\1&1\end{pmatrix}
+=\begin{pmatrix}-1&1\\4&1\end{pmatrix}.
+\]
+数字矩阵已经改变，但它仍然表示同一个抽象 $T$。变化的是“输入和输出分别用哪套数字描述”。
+\end{examplebox}
+
+\section{左乘、右乘和初等矩阵：先问当前语境是什么}
+
+三类初等行/列操作都可以写成乘法。一次初等行变换对应左乘某个可逆初等矩阵 $E$：
+\[
+A\mapsto EA.
+\]
+一次初等列变换对应右乘可逆初等矩阵 $F$：
+\[
+A\mapsto AF.
+\]
+
+但\kw{同一个数值动作在不同语境中含义不同}。
+
+\begin{longtable}{L{2.8cm}L{4.2cm}L{\dimexpr\linewidth-7.5cm\relax}}
+\toprule
+\textbf{语境} & \textbf{写法} & \textbf{真正发生了什么}\\
+\midrule
+固定坐标下的映射 & $EA$ & 变成新映射 $E\circ T$，不是“同一个 $T$ 自动不变”\\
+固定坐标下的映射 & $AF$ & 变成新映射 $T\circ F$\\
+换基表示 & $Q^{-1}AP$ & 对象 $T$ 不变，只改变两端坐标编码\\
+方程组 & $(A\mid b)\mapsto(EA\mid Eb)$ & 对全部约束做可逆线性重写，因此原未知量的解集不变\\
+\bottomrule
+\end{longtable}
+
+\begin{warnbox}{“行变换保持一切”是危险说法}
+行变换保持的是特定问题中的特定结构。例如：
+\begin{itemize}
+  \item 对增广矩阵同步做行变换，保持 $Ax=b$ 的解集；
+  \item 对矩阵单独左乘可逆矩阵，保持 rank，但一般会改变列空间在固定输出坐标中的具体位置；
+  \item 在固定基下，$A$ 与 $EA$ 一般代表不同映射。
+\end{itemize}
+rank 与矩阵等价的完整机制由 Topic 03 负责，方程组解集由 Topic 04 负责。
+\end{warnbox}
+
+\subsection{为什么初等矩阵一定可逆}
+
+三类初等操作都能用另一条初等操作撤销：交换再交换、乘非零数后乘其倒数、加某行倍数后减回去。因此每个初等矩阵都可逆。
+
+一个方阵 $A$ 可通过有限次初等行变换化为 $I$，当且仅当存在初等矩阵 $E_k,\dots,E_1$ 使
+\[
+E_k\cdots E_1A=I.
+\]
+于是
+\[
+A^{-1}=E_k\cdots E_1.
+\]
+这就是 Gauss--Jordan 求逆的结构来源：
+\[
+(A\mid I)\longrightarrow(I\mid A^{-1}).
+\]
+
+\section{逆矩阵：可逆就是“这个作用可以被完全撤销”}
+
+对于同维有限维空间上的线性映射 $T:V\to V$，若存在 $T^{-1}$ 满足
+\[
+T^{-1}\circ T=T\circ T^{-1}=I,
+\]
+则称 $T$ 可逆。
+
+在同一坐标约定下，若 $T$ 的矩阵为 $A$，则
+\[
+[T^{-1}]=A^{-1},
+\]
+其中
+\[
+AA^{-1}=A^{-1}A=I.
+\]
+
+\begin{corebox}{可逆不是“元素都能取倒数”}
+逆矩阵是\kw{逆映射的矩阵}，不是把每个元素逐个取倒数。真正要撤销的是整个线性作用，包括方向之间的混合。
+\end{corebox}
+
+对方阵，可逆性的许多等价说法会分别从后续 Topic 出现：满 rank、kernel 为零、每个 $b$ 唯一可达等。本册不重新证明这些自由度结论，只负责两个自身可生成的判据：
+\[
+\boxed{A\text{ 可逆}\iff \det A\neq0}
+\]
+以及由初等矩阵得到的可逆构造。
+
+\begin{warnbox}{方阵语境不能偷偷丢掉}
+对矩形矩阵，“左逆”和“右逆”可能只存在一边，而且没有普通行列式。数学一常见的 $A^{-1}$、$\det A$ 默认都要求方阵；不要把方阵结论无条件搬到 $m\times n$ 矩阵。
+\end{warnbox}
+
+\section{为什么需要行列式：我们想用一个标量检测满维塌缩}
+
+现在限定 $A\in\mathbb R^{n\times n}$。把它的列写成
+\[
+A=(a_1,\dots,a_n).
+\]
+我们希望找到一个标量 $D(a_1,\dots,a_n)$，满足三种自然要求：
+
+\begin{enumerate}
+  \item \kw{对每一列线性：}某一输入方向缩放或叠加时，满维体积按相同线性规则变化；
+  \item \kw{交换两列变号：}交换两个坐标方向会翻转定向；
+  \item \kw{单位归一：}$D(e_1,\dots,e_n)=1$。
+\end{enumerate}
+
+满足这三条的唯一函数就是\kw{行列式（determinant）}：
+\[
+\det A=D(a_1,\dots,a_n).
+\]
+
+这套定义同时拥有两个视角：
+\begin{itemize}
+  \item \kw{代数视角：}det 是交替多线性函数；
+  \item \kw{几何视角：}$|\det A|$ 是标准有向单位体积经过 $A$ 后的体积倍数，符号记录定向是否翻转。
+\end{itemize}
+
+\begin{methodbox}{为什么 $\det A=0$ 正好表示“满维塌缩”？}
+若列向量线性相关，其中一列可写成其余列的线性组合。利用多线性展开后，每一项都会出现两列平行/相同的情形，而交替性迫使这些项为零，所以 $\det A=0$。
+
+反过来，若 $\det A\neq0$，列向量不可能相关，因此 $n$ 个列向量构成 $\mathbb R^n$ 的一组基，线性作用可逆。
+
+因此
+\[
+\boxed{\det A\neq0\iff \text{列向量无关}\iff A\text{ 可逆}.}
+\]
+这里没有告诉你奇异矩阵的 rank 到底是 $n-1$ 还是更低；精确自由度交给 Topic 03。
+\end{methodbox}
+
+\subsection{排列公式是精确定义，不是大题默认算法}
+
+行列式也可写成
+\[
+\boxed{
+\det A=\sum_{\sigma\in S_n}\operatorname{sgn}(\sigma)
+\prod_{i=1}^{n}a_{i,\sigma(i)}
+}
+\]
+其中 $S_n$ 是 $1,\dots,n$ 的全排列集合，$\operatorname{sgn}(\sigma)=(-1)^{\tau(\sigma)}$，$\tau(\sigma)$ 是逆序数。
+
+这条公式说明 determinant 为什么由“每行每列各取一个元素”组成，并精确固定符号；真正计算高阶行列式时通常利用结构，而不是枚举 $n!$ 项。
+
+\section{行列式性质不是口诀：它们都从交替多线性长出来}
+
+由定义立即生成：
+
+\begin{itemize}
+  \item 交换两行或两列：det 变号；
+  \item 某一行或列乘 $k$：det 乘 $k$；
+  \item 某一行或列加另一行或列的 $k$ 倍：det 不变；
+  \item 对应地，三类初等矩阵的 determinant 分别为 $-1$、所乘非零常数 $k$、$1$；
+  \item 两行/列相同或成比例：det 为 $0$；
+  \item 三角矩阵：$\det A$ 等于对角元乘积；
+  \item $\det A^T=\det A$：行和列的角色对称；
+  \item $\det(AB)=\det A\det B$：复合映射的满维体积因子相乘；
+  \item 若 $A$ 可逆，$\det A^{-1}=1/\det A$。
+\end{itemize}
+
+尤其注意
+\[
+\boxed{\det(kA)=k^n\det A,}
+\]
+因为 $kA$ 等于把 $n$ 列都同时缩放 $k$ 倍，而不是只缩放一列。
+
+\begin{warnbox}{“对一列线性”不能偷换成“对整个矩阵线性”}
+多线性精确地说是：\kw{固定其余 $n-1$ 列以后，determinant 对当前这一列线性}。因此
+\[
+D(\dots,\alpha u+\beta v,\dots)
+=\alpha D(\dots,u,\dots)+\beta D(\dots,v,\dots),
+\]
+但一般
+\[
+\boxed{\det(A+B)\neq\det A+\det B.}
+\]
+这是 determinant 题最容易发生的层级偷换：一列的线性性质不能直接升级成整个矩阵空间上的线性函数。
+\end{warnbox}
+
+\begin{examplebox}{母例 2：初等操作为什么能把 determinant 计算变短}
+计算
+\[
+D=\det\begin{pmatrix}
+1&1&1\\
+1&2&3\\
+1&3&6
+\end{pmatrix}.
+\]
+做
+\[
+R_2\leftarrow R_2-R_1,
+\qquad
+R_3\leftarrow R_3-R_1,
+\]
+行列式不变，得到
+\[
+D=\det\begin{pmatrix}
+1&1&1\\
+0&1&2\\
+0&2&5
+\end{pmatrix}.
+\]
+再做 $R_3\leftarrow R_3-2R_2$：
+\[
+D=\det\begin{pmatrix}
+1&1&1\\
+0&1&2\\
+0&0&1
+\end{pmatrix}=1.
+\]
+这里每一步都不是“神奇化简”：向一行加另一行倍数对应剪切，保持有向体积，因此 determinant 不变。
+\end{examplebox}
+
+\subsection{顺序初等变换与“同时替换”不是一回事}
+
+初等行变换的性质是对\kw{一次}可逆局部操作的描述。例如连续执行
+\[
+R_2\leftarrow R_2+R_1,
+\qquad
+R_3\leftarrow R_3+R_2
+\]
+时，第二步使用的是\kw{已经更新后的} $R_2$；整个过程是两个初等矩阵依次左乘。
+
+若题目却定义“同时把所有新行都用旧行计算”，那是一次整体线性变换
+\[
+A\mapsto MA,
+\]
+其 determinant 变化为
+\[
+\det(MA)=\det M\det A.
+\]
+除非 $\det M=1$，否则不能把它当作若干“倍加所以不变”的顺序初等变换。
+
+\begin{methodbox}{常见结构只是计算表示，不是新的 determinant 定义}
+高阶 determinant 的计算应先识别结构，再选择能够暴露零或递推的表示：
+\begin{itemize}
+  \item 三角 / 块三角：直接读对角元或对角块 determinant 的乘积；
+  \item 某行/列稀疏：沿该行/列 Laplace 展开；
+  \item 相邻行列呈重复/渐变：用相邻差分制造零，再判断是否出现三角或三对角结构；
+  \item 三对角：按首行/末行展开通常生成低阶 determinant 递推；
+  \item Vandermonde 型：其差积公式来自“两个参数相等时两行/列重合，因此相应差因子必整除 determinant”；
+  \item 无明显结构：先用可追踪的初等变换制造稀疏，再展开。
+\end{itemize}
+具体题面该优先走哪一条属于 Rules；这里保留它们共同的合法性来源。
+\end{methodbox}
+
+\begin{examplebox}{抽象 determinant：先恢复合法乘法顺序}
+若 $A,B$ 都可逆，则
+\[
+A^{-1}+B^{-1}
+=A^{-1}(A+B)B^{-1}.
+\]
+右端不能凭“看起来对称”任意交换次序；直接展开可验证
+\[
+A^{-1}(A+B)B^{-1}
+=B^{-1}+A^{-1}.
+\]
+于是
+\[
+\det(A^{-1}+B^{-1})
+=\frac{\det(A+B)}{\det A\,\det B}.
+\]
+这个例子体现的不是一个孤立技巧，而是：\kw{先把抽象矩阵式改写成已知乘积结构，再让 determinant 使用乘法性。}
+\end{examplebox}
+
+\section{换基以后 determinant 到底保持不保持？}
+
+前面已经得到一般线性映射的换基公式
+\[
+A'=Q^{-1}AP.
+\]
+若 $A$ 是 $n\times n$ 方阵，则
+\[
+\det A'
+=\frac{\det P}{\det Q}\det A.
+\]
+因此对一般 $V\to W$ 且两端独立换基的问题，\kw{determinant 的具体数值并不是矩阵等价不变量}。不过由于 $P,Q$ 可逆，
+\[
+\det A=0\iff\det A'=0,
+\]
+所以“是否满维塌缩”仍然保持。
+
+若对象进一步是同一空间算子，并且两端同步换同一组基，则 $Q=P$：
+\[
+A'=P^{-1}AP,
+\]
+从而
+\[
+\boxed{\det A'=\det A.}
+\]
+这解释了为什么 determinant 会成为 Topic 05 中的相似不变量，却不是一般矩阵等价分类的完整不变量。
+
+\begin{warnbox}{“det 是线性映射的不变量”必须说明语境}
+对抽象 $T:V\to W$，若 $V,W$ 是两个独立的 $n$ 维空间，没有固定同一个体积标准，那么 determinant 的数值依赖两端基/体积单位。只有在同一空间算子按同步换基，或已经固定两端体积单位时，才可以把 determinant 数值当成稳定对象量。
+\end{warnbox}
+
+\section{余子式展开：把 $n$ 维 determinant 降成 $(n-1)$ 维}
+
+删去第 $i$ 行、第 $j$ 列得到的 $(n-1)$ 阶行列式记作\kw{余子式}
+\[
+M_{ij}.
+\]
+对应的\kw{代数余子式（cofactor）}为
+\[
+C_{ij}=(-1)^{i+j}M_{ij}.
+\]
+
+沿第 $i$ 行展开：
+\[
+\boxed{\det A=\sum_{j=1}^{n}a_{ij}C_{ij}.}
+\]
+沿第 $j$ 列展开：
+\[
+\boxed{\det A=\sum_{i=1}^{n}a_{ij}C_{ij}.}
+\]
+
+为什么会出现 $(-1)^{i+j}$？把 $a_{ij}$ 移到当前展开的“第一位置”需要跨过相应数量的行/列交换，每交换一次定向翻转一次，于是产生棋盘式符号。
+
+\begin{methodbox}{展开不是默认动作，而是结构降维}
+Laplace 展开的价值是：某行/列有大量零时，只剩极少数低阶 determinant。若没有稀疏结构，先通过不改变或可追踪改变 determinant 的初等操作制造零，通常更能体现机制。
+
+具体考试中先选哪种计算路线属于 Rules；本册只解释每种路线为什么合法。
+\end{methodbox}
+
+\subsection{Extension：广义 Laplace 与 Binet--Cauchy}
+
+当需要按 $k$ 行同时展开（例如处理复杂的零分块矩阵）时，可以使用\kw{广义 Laplace 展开定理}。它允许从 $n$ 阶方阵中一次性选定 $k$ 行，提取所有可能的 $k$ 阶子式与其代数余子式的乘积之和。
+
+而对于非方阵的乘积 $AB$（其中 $A \in \mathbb R^{m\times n}, B \in \mathbb R^{n\times m}$，且 $m \le n$），$\det(AB)$ 的计算无法直接拆为 $\det A \det B$。此时需要调用\kw{Binet--Cauchy 公式}：它等于从 $A$ 中选取所有 $m$ 阶主子式与 $B$ 中对应主子式乘积的总和。这是普通行列式乘法法则的非方阵泛化，也是向量外积和多维体积在坐标系下计算的代数基础。
+
+\section{伴随矩阵：把全部 cofactor 组织成一个矩阵恒等式}
+
+把 cofactor 矩阵转置得到\kw{伴随矩阵（adjugate）}
+\[
+\operatorname{adj}(A)=(C_{ji}).
+\]
+矩阵乘积 $A\operatorname{adj}(A)$ 的对角元正好是某一行与自己 cofactor 的展开，因此等于 $\det A$；非对角元相当于“拿另一行替换后展开”，出现两行相同，因此为 $0$。于是
+\[
+\boxed{
+A\operatorname{adj}(A)
+=\operatorname{adj}(A)A
+=(\det A)I.
+}
+\]
+
+当 $\det A\neq0$ 时可以除：
+\[
+\boxed{A^{-1}=\frac{1}{\det A}\operatorname{adj}(A).}
+\]
+
+当 $\det A=0$ 时，恒等式仍然成立，只是\kw{不能再除以 determinant}。
+
+\begin{examplebox}{母例 3：奇异时 adjugate 恒等式仍然工作}
+取
+\[
+A=\begin{pmatrix}1&1\\1&1\end{pmatrix},
+\qquad
+\operatorname{adj}(A)=
+\begin{pmatrix}1&-1\\-1&1\end{pmatrix}.
+\]
+因为 $\det A=0$，确有
+\[
+A\operatorname{adj}(A)=0.
+\]
+但这不允许写 $A^{-1}=\operatorname{adj}(A)/\det A$。至于奇异时 $\operatorname{adj}(A)$ 的 rank 为什么会分成 $1$ 或 $0$，那是 Topic 03 的 rank 机制，不在本册重复证明。
+\end{examplebox}
+
+\section{转置与常见结构：只保留本册真正需要的含义}
+
+若 $A\in\mathbb R^{m\times n}$，则
+\[
+A^T\in\mathbb R^{n\times m}.
+\]
+在标准欧氏内积下，转置满足
+\[
+\langle Ax,y\rangle=\langle x,A^Ty\rangle,
+\]
+所以 $A^T$ 是反向传递内积信息的矩阵。Topic 03 会用它连接 row/column space 与正交补。
+
+转置的基本运算全部由“行列角色互换”生成：
+\[
+(A+B)^T=A^T+B^T,
+\qquad
+(\lambda A)^T=\lambda A^T,
+\qquad
+(A^T)^T=A,
+\]
+而复合时顺序必须反转：
+\[
+\boxed{(AB)^T=B^TA^T.}
+\]
+这是因为 $AB$ 表示“先 $B$ 后 $A$”，取伴随后反向传递内积信息，自然变成“先 $A^T$ 后 $B^T$”。若 $A$ 可逆，还得到
+\[
+(A^{-1})^T=(A^T)^{-1}.
+\]
+
+\subsection{单位矩阵、数量矩阵与其他常见结构}
+
+\kw{单位矩阵} $I$ 是恒等映射的矩阵：
+\[
+Ix=x,
+\qquad
+AI=IA=A.
+\]
+因此它是矩阵乘法的单位元，并且
+\[
+\det I=1.
+\]
+
+\kw{数量矩阵} $\lambda I$ 表示“每个方向都按同一个比例 $\lambda$ 缩放”：
+\[
+(\lambda I)x=\lambda x.
+\]
+它与任意同阶矩阵 $A$ 可交换，
+\[
+A(\lambda I)=(\lambda I)A=\lambda A,
+\]
+并且
+\[
+\det(\lambda I)=\lambda^n,
+\qquad
+\lambda I\text{ 可逆}\iff\lambda\neq0.
+\]
+这也解释了 Topic 05 为什么反复研究
+\[
+A-\lambda I:
+\]
+它是在比较算子 $A$ 与“所有方向都统一缩放 $\lambda$”之间还剩多少不能被抵消的作用；当它不可逆时，就出现对应的特征方向。
+
+\begin{itemize}
+  \item \kw{对角/三角矩阵：}determinant 可直接读为对角元乘积；矩阵幂也较易处理。
+  \item \kw{正交矩阵：}$Q^TQ=I$，由 Topic 01 的几何机制可知 $Q^{-1}=Q^T$；因此 $\det Q=\pm1$。
+  \item \kw{对称矩阵：}$A^T=A$。它为什么具有实谱和正交特征基由 Topic 05 负责，本册不提前拥有。
+  \item \kw{反对称矩阵：}$A^T=-A$。若 $n$ 为奇数，则
+  \[
+  \det A=\det A^T=\det(-A)=(-1)^n\det A=-\det A,
+  \]
+  因而 $\det A=0$。
+\end{itemize}
+
+\begin{warnbox}{转置不是逆矩阵}
+$A^T$ 只是交换行列角色；只有正交矩阵才有 $A^{-1}=A^T$。把“有转置”误当“可逆”，会把一个内积关系错误升级成逆映射关系。
+\end{warnbox}
+
+\section{分块矩阵：把类型匹配保留下来再做大矩阵运算}
+
+分块不是“随便画几条线”，而是把一个大线性作用拆成若干输入/输出子空间之间的子作用。
+
+如果尺寸匹配，分块乘法仍然遵守普通乘法：
+\[
+\begin{pmatrix}A&B\\C&D\end{pmatrix}
+\begin{pmatrix}E&F\\G&H\end{pmatrix}
+=
+\begin{pmatrix}
+AE+BG&AF+BH\\
+CE+DG&CF+DH
+\end{pmatrix}.
+\]
+
+对块对角或块三角矩阵（对角块均为方阵），
+\[
+\det\begin{pmatrix}A&0\\0&D\end{pmatrix}=\det A\det D,
+\]
+并且块三角矩阵同样有“det 等于各对角块 determinant 的乘积”。
+
+若 $A,D$ 都可逆，则
+\[
+\begin{pmatrix}A&0\\0&D\end{pmatrix}^{-1}
+=
+\begin{pmatrix}A^{-1}&0\\0&D^{-1}\end{pmatrix}.
+\]
+这些结论的共同原因是：两个子空间的作用已经解耦。
+
+\section{概念边界：不是记“不能”，而是知道错在哪一层}
+
+\begin{longtable}{L{2.5cm}L{3.1cm}L{4.0cm}L{3.4cm}L{\dimexpr\linewidth-13.8cm\relax}}
+\toprule
+\textbf{A $\neq$ B} & \textbf{为什么容易混} & \textbf{真正判据} & \textbf{题面信号} & \textbf{混淆后果}\\
+\midrule
+线性映射 $\neq$ 矩阵 & 计算都落在数表上 & 是否同时固定定义域、陪域与两端基 & “同一变换在不同基下” & 把表示变化当对象变化\\
+$AB\neq BA$ & 都由同两矩阵出现 & 哪个映射先作用，尺寸是否匹配 & 复合、矩阵方程、乘积 & 把逆矩阵乘错侧\\
+左乘 $\neq$ 右乘 & 都像“做初等变换” & 改变输出侧还是输入侧；当前是在换基、改映射还是重写方程 & 行/列变换、$PAQ$ & 错判保持的结构\\
+$A^T\neq A^{-1}$ & 都可能出现在正交矩阵 & 转置是内积伴随；逆矩阵撤销作用 & $Q^TQ=I$ 才能合并 & 普通矩阵误写 $A^{-1}=A^T$\\
+$\det(A+B)\neq\det A+\det B$ & det 对每行/列线性 & 多线性是“固定其余列后对一列线性”，不是对整矩阵线性 & determinant 与矩阵和 & 乱拆 determinant\\
+$\det(kA)\neq k\det A$ & 单行缩放会乘 $k$ & $kA$ 同时缩放了 $n$ 行/列 & 整矩阵提公因子 & 少乘 $k^{n-1}$\\
+$\det A=0\neq A=0$ & 都表示某种退化 & det 只检测是否丢失满维独立性 & 奇异、不可逆 & 把“至少一个方向塌缩”误成“全部归零”\\
+可逆 $\neq$ 元素全非零 & 元素级直觉过强 & 是否存在整体逆映射 / det 是否非零 & “非零元素很多” & 全 1 矩阵误判可逆\\
+\bottomrule
+\end{longtable}
+
+\section{看到什么信号时调用本册模型}
+
+本册不替 Rules 决定“先算哪一步”，但它提供稳定的第一观察方式：
+
+\begin{itemize}
+  \item 看到“某线性变换在两组基下的矩阵”：先写清两端坐标方向，再生成 $Q^{-1}AP$，不要背逆矩阵位置；
+  \item 看到矩阵乘积：先读成复合，确认右侧先作用以及中间维数是否匹配；
+  \item 看到行/列初等变换：先问当前目标是方程解集、rank，还是同一映射的坐标表示；
+  \item 看到方阵是否可逆：determinant 可以作为本册的标量探针；若题目追问丢失了多少自由度，转 Topic 03；
+  \item 看到 determinant：先识别它是在检测塌缩、利用复合乘法，还是利用多线性/交替性做结构化计算；
+  \item 看到 adjugate：先回到 $A\operatorname{adj}(A)=(\det A)I$，再按 $\det A$ 是否为零分层。
+\end{itemize}
+
+\section{一页压缩：从对象到可计算表示}
+
+\begin{center}
+\begin{tikzpicture}[node distance=6mm and 6mm]
+\node[nodebox] (map) {抽象线性映射\\$T:V\to W$};
+\node[nodebox,right=of map] (basis) {选择两端基\\$\mathcal B,\mathcal C$};
+\node[nodebox,right=of basis] (matrix) {矩阵表示\\$[Tv]_{\mathcal C}=A[v]_{\mathcal B}$};
+\node[nodebox,below=of matrix] (ops) {矩阵运算\\加法 / 复合 / 逆};
+\node[nodebox,left=of ops] (change) {两端换基\\$A'=Q^{-1}AP$};
+\node[nodebox,left=of change] (det) {方阵 determinant\\满维是否塌缩};
+\draw[flow] (map) -- (basis);
+\draw[flow] (basis) -- (matrix);
+\draw[flow] (matrix) -- (ops);
+\draw[flow] (matrix) -- (change);
+\draw[flow] (change) -- (det);
+\end{tikzpicture}
+\end{center}
+
+最终只压成三句话：
+\[
+\boxed{\text{矩阵是“线性映射 + 两端基”的坐标记录。}}
+\]
+\[
+\boxed{\text{矩阵乘法记录复合；左右两侧记录不同接口。}}
+\]
+\[
+\boxed{\text{determinant 只对方阵定义，检测满维体积是否塌缩；精确丢失多少维交给 rank。}}
+\]
+
+如果忘掉公式，重新问：\kw{对象是什么？基在哪两端？当前乘法在组合什么？这个方阵有没有把满维信息压扁？}
+
+\end{document}
