@@ -1,6 +1,6 @@
 # X-B03｜Interrupt / DMA × OS I/O
 
-状态：目录已建立，正文未建。
+状态：已采用；Canonical Bridge 正文已建立并发布。
 
 ## Owners
 CO08 总线与 I/O 硬件 ↔ OS04 I/O，并连接 OS01 Process/Control。
@@ -17,3 +17,10 @@ CO08 总线与 I/O 硬件 ↔ OS04 I/O，并连接 OS01 Process/Control。
 
 ## Boundary
 Wait/Block/Wakeup 的 OS 科内统一接口由 OS-B01 Own；本 Bridge 只拥有软硬件完成 handoff。
+
+## Manual
+- [Canonical 正文](X-B03_InterruptDMA与OSIO_桥梁手册.tex)
+- [Published PDF](../../../90_publish/X-B03_InterruptDMA与OSIO_桥梁手册.pdf)
+
+## Review v1
+已核对 buffer ownership、DMA address、completion evidence、interrupt/polling 分支和 wake 边界；下一轮用阻塞 read 与异步设备完成题验证。

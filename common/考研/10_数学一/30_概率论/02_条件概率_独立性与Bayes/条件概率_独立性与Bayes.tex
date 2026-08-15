@@ -1,0 +1,412 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor,fancyhdr,hyperref,microtype}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\definecolor{deep}{RGB}{42,58,73}\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={条件概率、独立性与 Bayes}}
+\pagestyle{fancy}\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 概率统计 Topic 02}}
+\rhead{\small\color{deep}条件化 · 路径 · 独立 · Bayes}\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\title{\vspace{-1.1cm}\textbf{条件概率、独立性与 Bayes}\\[0.4em]
+\large 信息怎样限制世界、合成路径并重分配权重}
+\author{数学一 · 概率统计 Topic 02}\date{}
+
+\begin{document}\maketitle
+
+\begin{corebox}{母问题：得到新信息以后，怎样在不破坏概率一致性的前提下重述随机世界？}
+已知 $B$ 发生后，$B^c$ 中的结果已被排除；但剩余质量仍须重新归一化。于是
+\[
+\boxed{\Omega\xrightarrow{\text{observe }B}B\xrightarrow{\text{renormalize}}P(\cdot\mid B)}.
+\]
+沿多步路径相乘得到联合概率；把隐藏来源的互斥路径相加得到全概率；观察结果后把路径权重重新归一化得到 Bayes。独立性回答反向问题：加入某条信息后，概率是否完全没有变化？
+\end{corebox}
+
+\section{Owner 边界与对象}
+\begin{itemize}
+\item \kw{Owns：}事件层条件概率、乘法公式、完备事件组、全概率、Bayes、事件独立、两两/相互独立、条件独立及事件关联。
+\item \kw{Uses：}Topic 01 的 $(\Omega,\mathcal F,P)$、事件代数和互斥可加性。
+\item \kw{Outputs：}向 Topic 03/04 提供“信息限制并归一化”的机制；联合密度的支撑计算由 Topic 04 Owns。
+\item \kw{Stops：}不把条件概率写成因果干预，也不把 Bayes 的事件后验混成 Topic 08 的参数似然估计。
+\end{itemize}
+
+\section{条件概率：在缩小世界中重新称量}
+
+设 $P(B)>0$，定义
+\[
+\boxed{P(A\mid B)=\frac{P(A\cap B)}{P(B)}}.
+\]
+分子只保留同时满足 $A,B$ 的结果，分母把新世界 $B$ 的总质量归一化为一。固定 $B$ 后，$A\mapsto P(A\mid B)$ 仍满足非负性、规范性和可列可加性；因此条件概率不是临时技巧，而是一套新的概率测度。
+
+直接得到
+\begin{align*}
+P(A^c\mid B)&=1-P(A\mid B),\\
+A_1\subseteq A_2&\Longrightarrow P(A_1\mid B)\le P(A_2\mid B),\\
+P(A_1\cup A_2\mid B)&=P(A_1\mid B)+P(A_2\mid B)-P(A_1\cap A_2\mid B).
+\end{align*}
+注意补集仍相对于原 $\Omega$，只是条件世界把 $B$ 外部质量视为零。一般 $P(A\mid B)\ne P(B\mid A)$，因为分母分别是 $P(B)$ 与 $P(A)$。
+
+\begin{warnbox}{定义的存在条件}
+初等条件概率要求条件事件正概率。连续模型中的非空零概率事件不能直接代入分母；遇到此类问题必须使用更高级的正则条件概率理论，不能假装 $0/0$ 有意义。
+\end{warnbox}
+
+\begin{examplebox}{骰子条件化}
+骰子结果等可能，$A=\{4,5,6\}$，$B=\{2,4,6\}$。则 $A\cap B=\{4,6\}$，故
+\[
+P(A\mid B)=\frac{2/6}{3/6}=\frac23.
+\]
+条件世界只剩 $\{2,4,6\}$；不是把原概率表上的 $P(A)$ 直接改名。
+\end{examplebox}
+
+\section{乘法公式：一条路径的质量}
+
+从定义移项得
+\[
+\boxed{P(A\cap B)=P(A\mid B)P(B)=P(B\mid A)P(A)}.
+\]
+多事件链式法则为
+\[
+\boxed{P\!\left(\bigcap_{i=1}^nA_i\right)=P(A_1)\prod_{k=2}^{n}P\!\left(A_k\mid\bigcap_{i=1}^{k-1}A_i\right)},
+\]
+每个条件都必须有定义。它的结构是“先进入第一阶段，再在已经发生的全部历史下继续前进”，不是把所有概率无条件相乘。
+
+\section{完备事件组与全概率}
+
+若 $B_1,\ldots,B_n$ 两两互斥且 $\bigcup_iB_i=\Omega$，则任何事件 $A$ 都有唯一互斥分解
+\[
+A=\mathbin{\dot\bigcup}_{i=1}^{n}(A\cap B_i).
+\]
+因此
+\[
+\boxed{P(A)=\sum_{i=1}^{n}P(A\cap B_i)=\sum_{i=1}^{n}P(B_i)P(A\mid B_i)}.
+\]
+这就是全概率公式。它不要求 $A$ 与 $B_i$ 独立；它要求的是来源分类互斥且完备。可数分割时使用相应的可数和；若 $P(B_i)=0$，初等条件概率 $P(A\mid B_i)$ 未必有定义，此时应保留联合概率形式或删去零质量分支。
+
+\subsection{概率树与分割选择}
+
+一棵概率树把每条路径的条件概率相乘，把到达同一终点的互斥路径相加。好的分割满足：每条结果恰好落入一个类别；类别能让条件概率容易计算；类别数量不过多。分割不能因方便而重叠，也不能因粗略而漏掉来源。
+
+\begin{methodbox}{全概率的结果校验}
+将 $P(A)$ 看作条件概率的加权平均，必有
+\[
+\min_iP(A\mid B_i)\le P(A)\le\max_iP(A\mid B_i).
+\]
+若算出的总概率超出这些界，说明分割、路径或条件方向有误。
+\end{methodbox}
+
+\section{Bayes：观察结果后重分配来源权重}
+
+若已经观察到 $A$，希望反推 $B_j$，由条件概率、乘法与全概率得到
+\[
+\boxed{P(B_j\mid A)=\frac{P(A\mid B_j)P(B_j)}{\displaystyle\sum_{i=1}^{n}P(A\mid B_i)P(B_i)}}.
+\]
+四个对象必须分开：先验 $P(B_j)$、似然 $P(A\mid B_j)$、证据 $P(A)$、后验 $P(B_j\mid A)$。似然是“假设固定时结果出现的相容性”，不是关于假设自动归一化的概率分布。
+
+比例与赔率形式揭示更新机制：
+\[
+P(B_j\mid A)\propto P(A\mid B_j)P(B_j),
+\]
+\[
+\boxed{\frac{P(B_j\mid A)}{P(B_k\mid A)}=\frac{P(A\mid B_j)}{P(A\mid B_k)}\frac{P(B_j)}{P(B_k)}}.
+\]
+后验排序由“似然乘先验”决定。贝叶斯公式只是概率更新，不自动建立因果关系。
+
+\subsection{二元 Bayes 与基础率}
+
+当来源为 $B,B^c$ 时，
+\[
+P(B\mid A)=\frac{P(A\mid B)P(B)}{P(A\mid B)P(B)+P(A\mid B^c)P(B^c)},
+\]
+\[
+\frac{P(B\mid A)}{P(B^c\mid A)}=\frac{P(A\mid B)}{P(A\mid B^c)}\frac{P(B)}{P(B^c)}.
+\]
+医学检测中，$P(A\mid B)$ 是灵敏度，$P(A^c\mid B^c)$ 是特异度，$P(B\mid A)$ 是阳性预测值；三者不能互换。
+
+\begin{examplebox}{罕见病的自然频数解释}
+患病率 $P(B)=0.001$，灵敏度 $P(A\mid B)=0.99$，特异度 $0.95$，所以假阳性率为 $0.05$。在 $100000$ 人中，真阳性 $99$ 人，假阳性 $4995$ 人，阳性总数 $5094$ 人，故
+\[
+P(B\mid A)=\frac{99}{5094}\approx1.94\%.
+\]
+高灵敏度并不意味着阳性后验高；基础率决定健康人群能产生多少假阳性。
+\end{examplebox}
+
+\begin{examplebox}{质量追溯}
+三工厂供货比例为 $0.30,0.50,0.20$，次品率为 $0.10,0.05,0.15$。次品路径权重分别为 $0.030,0.025,0.030$，故 $P(D)=0.085$，观察次品后来自第三厂的概率为 $0.030/0.085\approx35.3\%$。后验提高来自“先验供货量”和“次品相容性”的共同作用。
+\end{examplebox}
+
+\section{独立性：信息没有概率收益}
+
+事件 $A,B$ 独立的定义是
+\[
+\boxed{P(A\cap B)=P(A)P(B)}.
+\]
+若 $P(B)>0$，等价于 $P(A\mid B)=P(A)$；若 $0<P(B)<1$，还等价于 $P(A\mid B^c)=P(A)$。独立是概率关系，不是因果关系。
+
+独立事件的补事件仍独立：$A\perp B$ 蕴含 $A^c\perp B$、$A\perp B^c$、$A^c\perp B^c$。概率为 $0$ 或 $1$ 的事件与任意事件独立，但这属于退化独立，不能用条件概率反向解释，因为某些条件概率没有定义。
+
+正概率独立事件必有正交集概率，因而不能互斥。两个事件既互斥又独立，当且仅当至少一个事件概率为零。
+
+\subsection{两两独立与相互独立}
+
+两两独立只要求任意二元子集满足乘积；相互独立要求任意 $k\ge2$ 个子集都满足
+\[
+P(A_{i_1}\cap\cdots\cap A_{i_k})=\prod_{r=1}^{k}P(A_{i_r}).
+\]
+三事件需同时检查三个二交和一个三交。抛两次公平硬币，令 $A=$第一次正面，$B=$第二次正面，$C=$两次相同，则三者两两独立，但
+\[
+P(A\cap B\cap C)=\frac14\ne\frac18=P(A)P(B)P(C),
+\]
+因此不相互独立。$n\ge4$ 时，即使所有两两交和全交都符合乘积，也仍可能缺少中间阶数的子族条件。
+
+\begin{examplebox}{真题闸门：1999 Q五 的容斥不能越级}
+设 $A,B,C$ 两两独立，$A\cap B\cap C=\varnothing$，且三者概率均为 $p<1/2$。容斥只允许对二重交使用两两独立：
+\[
+P(A\cup B\cup C)=3p-3p^2+P(ABC)=3p-3p^2.
+\]
+若该并集为 $9/16$，则 $3p^2-3p+9/16=0$，根为 $1/4,3/4$，由参数范围取 $p=1/4$。关键不是解二次方程，而是识别题面给的是二阶信息，三重交已经另行给定为零；不能擅自写成 $p^3$。
+\end{examplebox}
+
+\begin{examplebox}{条件方向比较的共同核心：1998 Q五、2017 Q七}
+若 $0<P(A),P(B)<1$，则条件概率方向可以统一还原为交集偏离量：
+\[
+P(A\mid B)-P(A\mid B^c)
+=\frac{P(A\cap B)-P(A)P(B)}{P(B)P(B^c)}.
+\]
+因此
+\[
+P(A\mid B)>P(A\mid B^c)
+\Longleftrightarrow P(A\cap B)>P(A)P(B)
+\Longleftrightarrow P(B\mid A)>P(B\mid A^c).
+\]
+特别地，若 $P(B\mid A)=P(B\mid A^c)$，全概率先给 $P(B)=P(B\mid A)$，再得 $P(A\cap B)=P(A)P(B)$，所以 $A,B$ 独立。比较条件概率时不要直接交换条件方向；先通分，才能看出它们其实共享同一个联合结构。
+\end{examplebox}
+
+\section{关联与条件独立}
+
+定义事件偏离独立的量
+\[
+\Delta(A,B)=P(A\cap B)-P(A)P(B).
+\]
+$\Delta>0$ 为正关联，$\Delta<0$ 为负关联，$\Delta=0$ 为独立。若 $0<P(A)<1$，正关联等价于
+\[
+P(B\mid A)>P(B)>P(B\mid A^c),
+\]
+负关联则不等号反向。关联只描述概率变化，不是因果结论。
+
+用指示变量 $I_A=\mathbf1_A$，有
+\[
+E(I_A)=P(A),\quad E(I_AI_B)=P(A\cap B),\quad
+\operatorname{Cov}(I_A,I_B)=\Delta(A,B).
+\]
+因此对事件而言，指示变量协方差为零等价于独立；这条等价不能推广到一般随机变量（一般“不相关”不推出独立）。
+
+若 $P(C)>0$，条件独立定义为
+\[
+\boxed{P(A\cap B\mid C)=P(A\mid C)P(B\mid C)}.
+\]
+在相应分母正时，也可写为 $P(A\mid B\cap C)=P(A\mid C)$。无条件独立与给定 $C$ 的条件独立互不蕴含；加入背景信息可能创造依赖，也可能消除依赖。
+
+\begin{methodbox}{条件独立的混合边界：层内乘法不等于边缘乘法}
+条件独立只给出每一层的乘法。若 $C$ 有多个可能层 $C_i$，则
+\[
+P(A\cap B)=\sum_iP(C_i)P(A\mid C_i)P(B\mid C_i),
+\]
+而 $P(A)P(B)$ 是两个加权和的乘积，两者一般不同。最小反例是 $C\sim\operatorname{Bernoulli}(1/2)$ 且 $A=B=C$：给定 $C$ 后两事件都是常值，故条件独立；但 $P(A\cap B)=1/2\ne1/4=P(A)P(B)$。看到“在每个组内独立”时，必须先分层混合，不能直接删掉边缘协方差。
+\end{methodbox}
+
+\begin{examplebox}{真题动作链：2021 Q十六 的状态转移制造相关}
+甲、乙两盒各有 2 个红球、2 个白球。先从甲盒取球，记
+$X=1$ 表示取到红球；将该球放入乙盒后，再从乙盒取球，记
+$Y=1$ 表示取到红球。第一步改变了第二步的组成，因此不能把
+$X,Y$ 当作独立指标。先写条件层：
+\[
+P(X=1)=\frac12,\qquad
+P(Y=1\mid X=1)=\frac35,\qquad
+P(Y=1\mid X=0)=\frac25.
+\]
+全概率给出边缘概率
+\[
+P(Y=1)=\frac12\cdot\frac35+\frac12\cdot\frac25=\frac12.
+\]
+若题目继续问相关性，必须保留联合路径而不是只看两个边缘：
+\[
+E(XY)=P(X=1,Y=1)=\frac12\cdot\frac35=\frac3{10},
+\]
+\[
+\operatorname{Cov}(X,Y)=\frac3{10}-\frac12\cdot\frac12=\frac1{20},
+\qquad
+D(X)=D(Y)=\frac14,
+\qquad \rho_{XY}=\frac15.
+\]
+\kw{模型句：}边缘概率相同只说明混合后“平均位置”相同；只要条件分布随前一阶段状态改变，联合交叉矩就会留下依赖。若目标只问 $P(Y=1)$，在全概率闭合处停止；若问协方差或独立性，继续保留 $P(X,Y)$ 的路径账本。
+\end{examplebox}
+
+\begin{examplebox}{2012 真题：指数竞争必须沿“另一者尚未发生”积分}
+设 $X\sim\operatorname{Exp}(1)$、$Y\sim\operatorname{Exp}(4)$ 且相互独立，求 $P(X<Y)$。固定 $X=x$ 时，事件 $X<Y$ 要求第二个等待时间仍未结束，因此
+\[
+P(X<Y)=\int_0^\infty P(Y>x)f_X(x)\,dx
+ =\int_0^\infty e^{-4x}e^{-x}\,dx=\frac15.
+\]
+一般地，若 $X\sim\operatorname{Exp}(\lambda_X)$、$Y\sim\operatorname{Exp}(\lambda_Y)$ 独立，则
+\[
+P(X<Y)=\int_0^\infty e^{-\lambda_Yx}\lambda_Xe^{-\lambda_Xx}\,dx
+ =\frac{\lambda_X}{\lambda_X+\lambda_Y}.
+\]
+这里的速率决定“先发生”的竞争优势；不能比较均值 $1/\lambda_X$、$1/\lambda_Y$ 后直接写概率，也不能把 $\lambda_X$ 当成概率。\textbf{停止条件：}只问先后概率时，生存函数与密度积分闭合即可；若继续问最小等待时间或胜者条件分布，再转入 P03/P04。
+\end{examplebox}
+
+\begin{examplebox}{2022 真题：条件正态先翻译成共享信号模型}
+若 $X\sim N(0,1)$，且给定 $X=x$ 时 $Y\mid X=x\sim N(x,1)$，不要把条件均值 $E(Y\mid X)=X$ 直接当成恒等式 $Y=X$。等价的生成表示是
+\[
+Y=X+\varepsilon,\qquad \varepsilon\sim N(0,1),\quad \varepsilon\perp X.
+\]
+于是条件层给出的边缘方差为
+\[
+E(Y)=E[X]=0,\qquad
+\operatorname{Var}(Y)=E[\operatorname{Var}(Y\mid X)]+\operatorname{Var}(E[Y\mid X])=1+1=2,
+\]
+而共享信号留下
+\[
+\operatorname{Cov}(X,Y)=\operatorname{Cov}(X,X+\varepsilon)=\operatorname{Var}(X)=1,
+\qquad
+\rho_{XY}=\frac1{\sqrt2}.
+\]
+所以 $X,Y$ 虽然都是正态边缘，却不独立；独立噪声只说明在给定 $X$ 后的剩余波动，不会消除 $X$ 同时进入 $Y$ 所产生的联合依赖。若题目只问 $Y$ 的边缘矩，在全方差分解闭合处停止；若继续问联合分布、协方差或独立性，必须保留这条共享信号路径并交给 P04/P05 的接口。
+\end{examplebox}
+
+\begin{examplebox}{真题分工：2018 Q十四 的独立与互斥各管一段}
+题设 $A\perp B$、$A\perp C$、$B\cap C=\varnothing$、$P(A)=P(B)=1/2$，且
+\[
+P(AC\mid AB\cup C)=1/4.
+\]
+令 $c=P(C)$。独立性给出 $P(AC)=c/2$、$P(AB)=1/4$；互斥性给出 $AB\cap C=\varnothing$，所以分母为 $1/4+c$。于是
+\[
+\frac{c/2}{1/4+c}=\frac14\Longrightarrow c=\frac14.
+\]
+不能把 $A\perp B$ 与 $A\perp C$ 合并成 $B\perp C$；本题正是用互斥而不是独立来处理分母。
+\end{examplebox}
+
+\begin{examplebox}{事件指示变量先恢复四格表：2004 Q二十二}
+令 $X=\mathbf1_A,Y=\mathbf1_B$。题设 $P(A)=1/4$、$P(B\mid A)=1/3$、$P(A\mid B)=1/2$，先由路径乘法反解
+\[
+P(AB)=\frac1{12},\qquad P(B)=\frac{P(AB)}{P(A\mid B)}=\frac16.
+\]
+于是四格联合分布为
+\[
+P(1,1)=\frac1{12},\quad P(1,0)=\frac16,
+\quad P(0,1)=\frac1{12},\quad P(0,0)=\frac23.
+\]
+再计算
+\[
+\operatorname{Cov}(X,Y)=\frac1{12}-\frac14\cdot\frac16=\frac1{24},\quad
+\rho_{XY}=\frac{1/24}{\sqrt{(3/16)(5/36)}}=\frac1{\sqrt{15}}.
+\]
+条件概率给的是联合表的约束；只有四格表闭合后，相关性和独立性判断才有依据。
+\end{examplebox}
+
+\section{重复试验与可靠性：独立性的结构化应用}
+
+Bernoulli 试验只有成功/失败两种结果，成功概率为 $p$。独立重复 $n$ 次，成功次数 $X\sim\operatorname{Bin}(n,p)$：
+\[
+P(X=k)=\binom nkp^k(1-p)^{n-k},\qquad
+P(X\ge1)=1-(1-p)^n.
+\]
+“至少 $k$ 次”既可直接求尾和，也可对 $0,\ldots,k-1$ 次使用补事件。
+
+若部件正常事件 $A_i$ 相互独立，串联系统正常需全部正常：
+\[
+R_{\rm series}=P(\cap_iA_i)=\prod_ip_i.
+\]
+并联系统只需至少一个正常：
+\[
+R_{\rm parallel}=1-P(\cap_iA_i^c)=1-\prod_i(1-p_i).
+\]
+串并联公式的前提不是“看起来像系统”，而是部件事件的独立结构；有共同原因或共享环境时，必须回到条件概率/全概率模型。
+
+\section{统一解题流程与错误边界}
+
+\begin{enumerate}
+\item 圈出“已知、在……条件下、观察到、来自哪个来源”等信息词，定义目标事件和条件事件。
+\item 检查条件事件或每个分割分支是否具有正概率；零概率分支不要硬套条件概率。
+\item 判断方向：原因到结果用路径乘法/全概率，结果到原因用 Bayes。
+\item 若用全概率，先验证分类互斥且完备；若用独立，先验证乘积结构，不能凭直觉。
+\item 写联合路径 $P(B_i)P(A\mid B_i)$，再求和或归一化；不要直接交换 $P(A\mid B)$ 与 $P(B\mid A)$。
+\item 检查结果在 $[0,1]$，后验和为 $1$，加权平均落在条件概率最小值与最大值之间。
+\end{enumerate}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{L{4.2cm}Y}
+\toprule
+错误信号 & 纠偏问题 \\
+\midrule
+$P(A\mid B)$ 与 $P(B\mid A)$ 混用 & 当前分母代表哪个有效世界？ \\
+似然直接当后验 & 是否乘了先验并除以全部证据？ \\
+分支重叠或遗漏 & 每个结果是否恰好落入一个 $B_i$？ \\
+互斥当独立 & 交集为空是集合关系，还是乘积关系？ \\
+两两独立当相互独立 & 是否检查了所有非空子族？ \\
+关联当因果 & 题目是否真的改变了生成机制？ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{可复原的心智模型}
+\begin{center}
+\begin{tikzpicture}[>=Stealth]
+  \tikzset{
+    flowstage/.style={draw=deep, fill=white, rounded corners=1.5mm, minimum height=0.72cm, align=center, font=\small\sffamily\bfseries\color{deep}, line width=0.6pt, inner xsep=6pt, inner ysep=3.5pt},
+    flowarr/.style={->, >=Stealth, line width=0.75pt, draw=accent}
+  }
+  \node[flowstage] (n1) at (0,0) {1. 限制世界};
+  \node[flowstage, right=0.45cm of n1] (n2) {2. 沿路径相乘};
+  \node[flowstage, right=0.45cm of n2] (n3) {3. 跨路径相加};
+  \node[flowstage, below=0.6cm of n3] (n4) {4. 按证据归一化};
+  \node[flowstage, left=0.45cm of n4] (n5) {5. 检查信息是否改变概率};
+
+  \draw[flowarr] (n1) -- (n2);
+  \draw[flowarr] (n2) -- (n3);
+  \draw[flowarr] (n3) -- (n4);
+  \draw[flowarr] (n4) -- (n5);
+\end{tikzpicture}
+\end{center}
+条件概率是“限制并归一化”；全概率是“把隐藏路径合成”；Bayes 是“观察终点后重新分配路径”；独立性是“信息没有改变权重”。
+
+\begin{examplebox}{条件概率为 1 先翻译成包含关系：2006 真题}
+若 $P(B)>0$ 且 $P(A\mid B)=1$，则
+\[
+P(B\setminus A)=P(B)-P(AB)=P(B)\bigl[1-P(A\mid B)\bigr]=0.
+\]
+因此 $B\subseteq A$ 几乎处处，$A\cup B$ 与 $A$ 只差一个零概率集合，故 $P(A\cup B)=P(A)$。这不是“条件概率等于 1 就能把两个事件写成相等”，而是概率意义下的包含。
+\end{examplebox}
+
+\begin{examplebox}{早期真题：来源分割与 Bayes 分母（1987）}
+随机等概率选三箱，白球率分别为 $1/5,1/2,5/8$。先算证据概率
+\[
+P(W)=\frac13\left(\frac15+\frac12+\frac58\right)=\frac{53}{120},
+\]
+再得
+\[
+P(\text{箱2}\mid W)=\frac{(1/3)(1/2)}{53/120}=\frac{20}{53}.
+\]
+先验权重、似然和证据分母必须分开；似然不是后验。
+\end{examplebox}
+
+\end{document}

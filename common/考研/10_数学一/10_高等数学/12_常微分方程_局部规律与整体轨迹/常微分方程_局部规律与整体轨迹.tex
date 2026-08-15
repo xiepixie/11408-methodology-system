@@ -1,0 +1,246 @@
+\documentclass[11pt,a4paper,fontset=fandol]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={常微分方程：局部规律与整体轨迹}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 高等数学 Topic 12}}
+\rhead{\small\color{deep}结构识别 · 解空间 · 定解}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\begin{document}
+\begin{center}
+{\LARGE\textbf{常微分方程：局部规律与整体轨迹}}\\[0.4em]
+{\large 从“变化率约束”到“解族与定解条件”}
+\end{center}
+\vspace{0.4em}
+\begin{quote}
+微分方程题的核心不是积分技巧本身，而是：已知局部变化率，如何识别隐藏结构、选择不改变解集的变换，并用初值或边界条件从解族中裁出唯一轨迹。
+\end{quote}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\setcounter{section}{-1}
+\section{本册定位}
+本册承接 Topic03 的导数与局部变化率、Topic05 的积分和变限积分、Topic11 的级数型函数表示。主线覆盖数学一常见一阶方程、可降阶方程、常系数线性高阶方程、非齐次特解与共振、初值/边值和分段缝合。
+
+\subsection{Own}
+\begin{itemize}
+  \item 方程阶数、线性/非线性、齐次/非齐次的结构语言；
+  \item 可分离变量、一阶线性、齐次型、恰当、伯努利和整体代换；
+  \item 不显含 $x$ 或 $y$ 的降阶；
+  \item 高阶线性方程的解空间、基础解系、Wronskian 与“通解 = 齐次 + 特解”；
+  \item 常系数特征根、非齐次待定系数、共振降阶与分段缝合；
+  \item 初值/边值条件、定义区间、丢解和结果代回。
+\end{itemize}
+
+\subsection{Uses / Stop Boundary}
+\begin{itemize}
+  \item Topic03 提供导数、链式法则和局部变化率；Topic05 提供原函数、变限积分与反常积分；
+  \item Topic11 提供幂级数解的接口；B05 解释“特解 + kernel”的跨学科结构；
+  \item 矩阵指数、相平面定性理论、非线性稳定性与数值 ODE 只作 Extension；
+  \item 题目触发信号、第一动作、检查点和停止条件只由《高等数学做题规则》维护。
+\end{itemize}
+
+\section{母模型：规律、变换与定解}
+\[
+\boxed{\begin{gathered}
+\text{Equation Class}\to\text{Legal Transformation}\to\text{Integral / Kernel}\\
+\to\text{General Solution}\to\text{Initial or Boundary Data}\to\text{Domain / Residual Check}
+\end{gathered}}
+\]
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.52cm and 0.5cm,
+  box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.0cm,minimum height=0.92cm,align=center,fill=soft,font=\small},
+  arr/.style={-{Latex[length=2mm]},thick,draw=deep}
+]
+\node[box] (a) {识别结构\\一阶/高阶};
+\node[box,right=of a] (b) {合法变换\\代换/因子};
+\node[box,right=of b] (c) {积分或算子\\恢复解族};
+\node[box,below=of c] (d) {定解条件\\裁剪常数};
+\node[box,left=of d] (e) {定义域与残差\\代回复核};
+\draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d); \draw[arr] (d)--(e);
+\end{tikzpicture}
+\end{center}
+
+\section{第一关：一阶方程结构识别}
+面对 $F(x,y,y')=0$，先问“哪个组合在重复出现”，而不是先把 $y'$ 当作可分离的符号。
+
+\begin{tabularx}{\linewidth}{L{0.24\linewidth}L{0.31\linewidth}Y}
+\toprule
+类型 & 识别信号 & 第一动作 \\
+\midrule
+可分离 & $y'=g(x)h(y)$ & 先查 $h(y)=0$ 的常值解，再分离并积分 \\
+一阶线性 & $y'+P(x)y=Q(x)$ & 积分因子 $\mu=e^{\int Pdx}$，化为 $(\mu y)'=\mu Q$ \\
+齐次型 & $y'=F(y/x)$ 或同次 $Mdx+Ndy=0$ & 令 $y=vx$，$y'=v+xv'$ \\
+恰当 & $Mdx+Ndy=0$ 且 $M_y=N_x$ & 求势函数 $\Phi_x=M,\Phi_y=N$ \\
+伯努利 & $y'+Py=Qy^\alpha$ & 令 $z=y^{1-\alpha}$，先保留 $y=0$ 等退化支 \\
+整体代换 & 反复出现 $ax+by+c$ 或组合量 & 令 $u=ax+by+c$，同步替换导数与自变量 \\
+\bottomrule
+\end{tabularx}
+
+\begin{methodbox}{一阶线性方程的积分因子}
+\[
+y'+P(x)y=Q(x),\qquad \mu(x)=e^{\int P(x)\,dx},
+\]
+则
+\[
+(\mu y)'=\mu Q,\qquad
+y=\frac{1}{\mu(x)}\left(C+\int \mu(x)Q(x)\,dx\right).
+\]
+变限形式
+\[
+y(x)=e^{-\int_{x_0}^{x}P(t)\,dt}\left[y_0+\int_{x_0}^{x}e^{\int_{x_0}^{s}P(t)\,dt}Q(s)\,ds\right]
+\]
+天然吸收初值，适合做存在性与稳定性检查。
+\end{methodbox}
+
+\begin{warnbox}{变形不改变解集是硬条件}
+除以 $y,h(y),x$ 或最高阶系数之前，先检查它们为零的分支；平方、开方和取对数后要回代。解必须连同定义区间报告，初值点不能落在系数奇点上。
+\end{warnbox}
+
+\section{第二关：降阶与一阶非线性}
+若二阶方程不显含 $y$，令 $p=y'$，则 $y''=dp/dx$；若不显含 $x$，令 $p(y)=y'$，则 $y''=p\,dp/dy$。降阶后回到一阶结构，积分两次并补足常数。
+
+对齐次型 $y'=F(y/x)$，令 $v=y/x$ 后得到 $y'=v+xv'$，通常可分离；直线解 $y=Cx$ 需要在代换前后单独检查。伯努利方程的代换把非线性幂变成线性，但 $y=0$ 等被除掉的支不能遗漏。
+
+\section{第三关：高阶线性方程的解空间}
+线性方程写成
+\[
+L[y]=a_n(x)y^{(n)}+\cdots+a_1(x)y'+a_0(x)y=f(x).
+\]
+在系数连续、最高阶系数不为零的区间上，齐次解集是 $n$ 维向量空间；给定一组合法的 $n$ 个初值，局部解唯一。非齐次解集是一个仿射平移：
+\[
+\boxed{y=y_h+y_p},
+\]
+其中 $y_h$ 解 $L[y]=0$，$y_p$ 是任一特解。
+
+二阶齐次方程的基础解系 $y_1,y_2$ 可用 Wronskian
+\[
+W(y_1,y_2)=\begin{vmatrix}y_1&y_2\\y_1'&y_2'\end{vmatrix}
+\]
+检查线性无关。不要把“二阶”机械理解为任意情况下都恰有两个自由常数；退化点和奇异区间先过资格门。
+
+\section{第四关：常系数、特征根与共振}
+对 $a_ny^{(n)}+\cdots+a_0y=0$，试探 $y=e^{rx}$ 得特征方程
+\[
+a_nr^n+\cdots+a_1r+a_0=0.
+\]
+\begin{tabularx}{\linewidth}{L{0.28\linewidth}Y}
+\toprule
+根型 & 齐次解块 \\
+\midrule
+不同实根 $r_1,r_2$ & $C_1e^{r_1x}+C_2e^{r_2x}$ \\
+二重实根 $r$ & $(C_1+C_2x)e^{rx}$ \\
+共轭根 $\alpha\pm\beta i$ & $e^{\alpha x}(C_1\cos\beta x+C_2\sin\beta x)$ \\
+\bottomrule
+\end{tabularx}
+
+非齐次右端 $g(x)$ 先按指数、多项式、正弦余弦及其乘积分解，再猜特解。若试探项已出现在齐次解中，乘以 $x^s$，其中 $s$ 是对应特征根的重数；这就是共振修正。
+
+\begin{examplebox}{贯穿母例：共振方程从结构识别到定解}
+求解
+\[
+y''-2y'+y=e^x,\qquad y(0)=0,quad y'(0)=0.
+\]
+算子为 $L[D]=(D-1)^2$，齐次解是 $(C_1+C_2x)e^x$。右端 $e^x$ 对应二重根 $r=1$，故普通试探 $Ae^x$ 或 $Axe^x$ 都落在齐次核中；乘足 $x^2$，取 $y_p=Ax^2e^x$，代回得 $2Ae^x=e^x$，所以 $A=1/2$。通解
+\[
+y=e^x\left(C_1+C_2x+\frac{x^2}{2}\right)
+\]
+经两个初值裁剪为 $C_1=C_2=0$。最后直接代回原方程得到残差 $e^x$，并核对两个初值。
+
+这条轨迹完整经过“结构识别 $\to$ 合法试探 $\to$ 齐次空间加特解 $\to$ 定解裁剪 $\to$ 残差复核”。最典型的第一次偏离是共振时没有乘够 $x$ 的次数，导致试探项仍被齐次算子消掉。
+\end{examplebox}
+
+\section{第五关：定解、分段缝合与稳定性接口}
+初值条件用于确定通解常数；边界条件要把所有候选解同时代入，可能无解或多解。分段右端项时，在切换点分别求左右解，再按题设连续性/可导性缝合；不能把一个区间的常数直接沿用到另一区间。
+
+对二阶常系数齐次方程，根的实部控制指数包络：实部为负时自由响应衰减，为正时增长，纯虚根对应持续振荡。周期强迫项在共振时会出现额外的 $x$ 因子；稳定性与周期解只作为应用接口，不替代定解计算。
+
+\begin{corebox}{求解结束的五项复核}
+\begin{enumerate}
+  \item 方程阶数、线性/非线性和齐次含义是否识别正确；
+  \item 变换是否丢掉了零解、直线解或奇异支；
+  \item 通解自由常数个数是否与解空间维数匹配；
+  \item 初值/边值是否全部代入且定义区间合法；
+  \item 将结果代回原方程，检查残差、连续性和共振次数。
+\end{enumerate}
+\end{corebox}
+
+\section{诊断流程与证据回链}
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.42cm and 0.55cm,
+  box/.style={draw=deep,rounded corners=1mm,minimum width=3.3cm,minimum height=0.8cm,align=center,fill=soft,font=\small},
+  arr/.style={-{Latex[length=1.8mm]},thick,draw=deep}
+]
+\node[box] (a) {识别阶数与类型};
+\node[box,below=of a] (b) {合法代换/积分因子};
+\node[box,below=of b] (c) {积分或特征根};
+\node[box,right=of c] (d) {齐次解 + 特解};
+\node[box,right=of d] (e) {初值/边值裁剪};
+\node[box,above=of e] (f) {定义域/残差复核};
+\draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d); \draw[arr] (d)--(e); \draw[arr] (e)--(f);
+\end{tikzpicture}
+\end{center}
+
+\begin{tabularx}{\linewidth}{L{0.28\linewidth}Y}
+\toprule
+来源段落 & 本册保留的机制与边界 \\
+\midrule
+I-13 §1--§4 & 阶数、线性/非线性、解族、定解条件、丢解与定义域 \\
+I-13 §5--§10 & 一阶结构识别、分离、积分因子、齐次型、恰当、伯努利、整体代换 \\
+I-13 §13--§24 & 降阶、高阶线性解空间、Wronskian、非齐次仿射结构 \\
+I-13 §25--§37 & 常系数特征根、待定系数、共振与算子接口 \\
+I-13 §38--§55 & 分段缝合、Euler--Cauchy、反推/积分方程、稳定性（主干 + Extension 边界） \\
+\bottomrule
+\end{tabularx}
+
+\begin{corebox}{一句话压缩}
+\textbf{先辨认变化率方程的结构，再用不丢解的变换恢复解族；高阶线性统一为“齐次空间 + 特解”，最后由初值、边值和定义区间裁出可用轨迹。}
+\end{corebox}
+
+\section{陌生题验证协议}
+\begin{enumerate}
+  \item 写出阶数、线性/非线性、齐次/齐次型的判定依据；
+  \item 变换前列出可能为零的因子，变换后回代特殊支；
+  \item 一阶题先走结构表，高阶线性先求特征根和齐次解；
+  \item 非齐次题按右端类型猜特解，遇到共振乘足够次数的 $x$；
+  \item 初值/边值全部代入，分段题在接口点执行连续性/可导性缝合；
+  \item 最后做定义域、残差、常数个数和增长/衰减包络复核。
+\end{enumerate}
+
+\end{document}

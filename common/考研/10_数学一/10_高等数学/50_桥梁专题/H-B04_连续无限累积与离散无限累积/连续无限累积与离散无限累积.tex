@@ -1,0 +1,42 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage{../../../../../../common/ipara}
+\usepackage{amsmath,amssymb,booktabs,tabularx}
+\begin{document}
+\section*{H-B04\quad 连续无限累积与离散无限累积}
+\textbf{边界：}本桥翻译共同的“有限截断到无限对象”构造，不把积分判别法和级数判别法混成一套公式。
+\begin{tcolorbox}[title=共同骨架]
+有限截断 $\longrightarrow$ 尾部稳定（Cauchy）$\longrightarrow$ 比较/抵消
+$\longrightarrow$ 取极限 $\longrightarrow$ 记录收敛类型。
+\end{tcolorbox}
+\begin{tabularx}{\linewidth}{@{}lXX@{}}
+\toprule
+对象 & 截断 & 尾部检查\\ \midrule
+反常积分 & $\int_a^R f,\ R\to\infty$ 或 $\int_{a+\varepsilon}^b f,\ \varepsilon\to0^+$ & 任意两个截断的差趋零；奇点与无穷远分开\\
+数项级数 & $S_N=\sum_{n=1}^{N}a_n,\ N\to\infty$ & $\sum_{n=m}^{N}a_n$ 对 $m,N$ 足够大趋零\\
+\bottomrule
+\end{tabularx}
+\subsection*{1.\ 积分判别接口}
+若 $f$ 在 $[1,\infty)$ 非负、连续且单调递减，则
+\[
+\sum_{n=1}^{\infty}f(n)\ \text{与}\ \int_1^\infty f(x)\,dx
+\]
+同敛散，并可用积分夹逼尾部。条件缺一时，只能回到相应的直接比较或 Cauchy 判别。
+\subsection*{2.\ 绝对与条件}
+\[
+\sum |a_n|<\infty\Rightarrow\sum a_n\text{ 收敛},
+\]
+但反向不成立；积分同样要区分绝对收敛与条件抵消。对称截断、主值或换序都必须声明额外条件。
+\subsection*{3.\ 最小例子与调用}
+取 $f(x)=x^{-p}$。当 $p>0$ 时它在 $[1,\infty)$ 连续、非负且递减，故
+\[
+\sum_{n=1}^{\infty}\frac1{n^p}\quad\text{与}\quad
+\int_1^\infty x^{-p}\,dx
+\]
+同敛散，临界点都是 $p=1$。题面在反常积分与正项级数之间比较尾部时，先核对积分判别资格。
+
+\subsection*{4.\ 迁移时的反桥}
+连续变量的奇点位置、离散序列的尾部索引、单调性和非负性分别核对。共享“尾部稳定”思想，不意味着可把某个比较常数或端点估计直接复制。
+\begin{tcolorbox}[title=检查句]
+先写截断对象和极限方向，再写尾部标准；最后才选择比较、积分判别或绝对收敛工具。
+\end{tcolorbox}
+\end{document}

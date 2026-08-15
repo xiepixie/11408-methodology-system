@@ -1,0 +1,39 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage[a4paper,margin=1.75cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx}
+\usepackage[most]{tcolorbox}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
+\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\begin{document}
+\section*{B06B\quad 期望、联合概率与边缘化：概率的积分语言}
+\textbf{依赖：}B06A。概率积分的核心是“对质量加权并沿未保留维度汇总”。
+\begin{tcolorbox}[title=母接口]
+\[
+E[g(X)]=\int g(x)\,dP_X,\quad
+P((X,Y)\in D)=\iint_D f_{X,Y}\,dxdy,\quad
+f_X(x)=\int f_{X,Y}(x,y)\,dy.
+\]
+\end{tcolorbox}
+\subsection*{1.\ 期望是加权汇总}
+对离散变量用 $\sum g(x_i)p_i$，连续变量用 $\int g(x)f_X(x)\,dx$。线性性允许先拆函数再计算，但存在性要求 $E|g(X)|<\infty$。期望不是几何平均，也不要求 $g$ 保持正值。
+\subsection*{2.\ 联合、边缘与条件}
+联合密度在支持域 $D$ 上归一化；边缘化是沿“被忽略坐标”积分，条件密度则还要除以边缘概率。顺序不能交换对象：
+\[
+f_{X|Y}(x|y)=\frac{f_{X,Y}(x,y)}{f_Y(y)}.
+\]
+全期望把层级重新接回整体：
+\[
+E[X]=E\{E[X\mid Y]\}.
+\]
+\subsection*{3.\ 折叠与卷积}
+若 $Z=X+Y$，卷积来自约束线 $x+y=z$ 上所有贡献的汇总，而不是额外魔法公式；先写支持域再决定积分上下限。
+\subsection*{4.\ 最小例子与调用}
+令联合密度在 $0<y<x<1$ 上为 $2$。沿 $y$ 消去得到
+\[
+f_X(x)=\int_0^x2\,dy=2x,\qquad E[X]=\int_0^1x\,2x\,dx=\frac23.
+\]
+题面出现非矩形支持、边缘密度或期望时，先画域并标记保留/消去维度。
+\begin{corebox}{检查句}
+我在保留哪个变量、消去哪个变量？条件化是否除以正确的边缘？支持域、归一化和可积性是否都已核对？
+\end{corebox}
+\end{document}

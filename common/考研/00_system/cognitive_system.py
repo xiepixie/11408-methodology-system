@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import subprocess
 import sys
@@ -29,6 +30,7 @@ CURRENT_PATH = PROJECT_ROOT / "CURRENT.md"
 PROGRESS_PATH = PROJECT_ROOT / "PROGRESS.md"
 PUBLISH_DIR = PROJECT_ROOT / "90_publish"
 COMMON_COMPILE_SCRIPT = PROJECT_ROOT.parent / "scripts" / "compile_tex.py"
+SYSTEM_TEX_TEMPLATES = {PROJECT_ROOT / "00_system" / "handbook_template.tex"}
 
 # README 是导航页，不是正文。行数阈值只用于发现明显越界，不用于判断内容质量。
 COURSE_OR_SUBJECT_README_MAX_LINES = 600
@@ -82,7 +84,7 @@ PROMPTS = {
         当前角色：Mapper + Socratic Tutor。
 
         我还没有形成这个专题的稳定心智模型。下面是我目前的直觉和困惑。
-        请先读取现有学科复习总览与导航和 Atlas，并明确仓库当前是否已有成熟 Topic。
+        请先读取对应 Course / Subject Atlas，并明确仓库当前是否已有成熟 Topic。
 
         不要直接写完整讲义。请从母问题开始，建立最小对象/关系/过程，
         用一个生成性例子运行它，再改变条件攻击它，最后让我重新解释。
@@ -1205,6 +1207,14 @@ def publish_view_preflight(tex_path: Path) -> list[Finding]:
     return findings
 
 
+def project_compile_env() -> dict[str, str]:
+    """Expose the project root to nested LaTeX sources without hard-coded ../../ paths."""
+    env = os.environ.copy()
+    existing = env.get("TEXINPUTS", "")
+    env["TEXINPUTS"] = f"{PROJECT_ROOT}:{existing}"
+    return env
+
+
 def command_publish(raw_path: str, keep_aux: bool = False) -> int:
     tex_path = resolve_publish_target(raw_path)
     findings = publish_preflight(tex_path)
@@ -1219,7 +1229,7 @@ def command_publish(raw_path: str, keep_aux: bool = False) -> int:
         command.append("--keep-aux")
 
     print(f"[PUBLISH] preflight passed: {tex_path.relative_to(PROJECT_ROOT)}")
-    result = subprocess.run(command, cwd=PROJECT_ROOT)
+    result = subprocess.run(command, cwd=PROJECT_ROOT, env=project_compile_env())
     if result.returncode != 0:
         print(f"[ERROR][P-COMPILE] shared compiler exited with code {result.returncode}.")
         return result.returncode or 1
@@ -1280,7 +1290,7 @@ def command_publish_view(raw_path: str, keep_aux: bool = False) -> int:
         command.append("--keep-aux")
 
     print(f"[PUBLISH-VIEW] preflight passed: {tex_path.relative_to(PROJECT_ROOT)}")
-    result = subprocess.run(command, cwd=PROJECT_ROOT)
+    result = subprocess.run(command, cwd=PROJECT_ROOT, env=project_compile_env())
     if result.returncode != 0:
         print(f"[ERROR][PV-COMPILE] shared compiler exited with code {result.returncode}.")
         return result.returncode or 1
@@ -1359,7 +1369,8 @@ def audit_missing_tex() -> list[Finding]:
         relative = readme.relative_to(PROJECT_ROOT)
         if not is_handbook_area(relative) or not STATUS_RE.search(readme.read_text(encoding="utf-8")):
             continue
-        if is_atlas_readme(readme):
+        status = status_text(readme)
+        if is_atlas_readme(readme) or status_is_source_only(status):
             continue
         if handbook_tex_files(readme):
             continue
@@ -1408,6 +1419,8 @@ def audit_atlas_duplicate_tex() -> list[Finding]:
 def audit_tex_without_readme() -> list[Finding]:
     findings: list[Finding] = []
     for source in tex_files():
+        if source in SYSTEM_TEX_TEMPLATES:
+            continue
         if not (source.parent / "README.md").exists():
             findings.append(
                 Finding(

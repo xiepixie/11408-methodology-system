@@ -1,6 +1,6 @@
 # 计算机网络 Integration Layer
 
-状态：框架已采用；NET-I01 已建立目录，已有综合 Source 待按新 Bridge 边界复核，Canonical LaTeX 正文未建。
+状态：框架已采用；NET-I01 已完成组合边界复核并发布 Canonical LaTeX 阅读版。
 
 当前只建立：
 

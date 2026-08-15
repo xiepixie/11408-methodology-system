@@ -1,6 +1,6 @@
 # 大数定律与中心极限定理：稳定位置与剩余波动
 
-> 状态：Markdown 工作稿待迁入 LaTeX；已有笔记对应文件为空，本 Source 工作稿依据 Atlas 母模型补建，待迁入 Canonical LaTeX 后再由使用者审查。
+> 状态：Canonical LaTeX 工作稿；P06-A 已按 Source Diff 重构并进入逐项核销，尚未完成跨册与人工确认，不视为成熟手册。
 
 ## 0. 本册定位
 
@@ -40,7 +40,7 @@ $$
 
 $$
 P(|\bar X_n-\mu|\ge\varepsilon)
-\le\frac{\sigma^2}{n\varepsilon^2}	o0.
+\le\frac{\sigma^2}{n\varepsilon^2}\to0.
 $$
 
 因此
@@ -161,4 +161,3 @@ $$
 $$
 
 复原问题：稳定到哪里？剩余误差的尺度是什么？为何要中心化和标准化？当前条件允许哪一版定理？
-

@@ -29,6 +29,30 @@ $$
 - 同时出现多个 miss/fault 时，先区分它们属于哪一层、由谁处理；
 - 画时间线、状态表或数据路径之前，先说明图中每一列代表什么。
 
+### 408 首次定位链
+
+这条链是通用九问在 408 状态/路径题中的候选适配，不替代各科 Adapter：
+
+```text
+Target
+-> Subject / Scope
+-> Given State
+-> Event / Operation
+-> Invariant / Boundary
+-> Mechanism / Path
+-> Cost
+```
+
+- `Target`：先确定要求数值、状态、结构选择还是完整路径；
+- `Subject / Scope`：先切到数据结构、计组、OS 或网络的正确观察语言；
+- `Given State`：抄出真正会变化的表、队列、寄存器、指针、窗口或缓存行；
+- `Event / Operation`：没有触发依据，不擅自改变状态；
+- `Invariant / Boundary`：先区分相邻但不同的状态机，再调用机制；
+- `Mechanism / Path`：只画当前题实际经过的最小路径；
+- `Cost`：最后把路径换算成比较、cycle、I/O、时延或吞吐。
+
+候选停止条件：若前三步已经唯一定位到某一 Subject Topic，立即切换到该学科 Rules，不继续机械填写七项。
+
 ## 已否定
 
 暂无。

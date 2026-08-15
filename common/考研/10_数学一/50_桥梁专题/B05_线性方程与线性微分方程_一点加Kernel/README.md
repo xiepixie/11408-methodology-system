@@ -1,6 +1,6 @@
 # B05｜线性方程与线性微分方程：一点 + Kernel
 
-状态：目录已建立，正文未建。
+状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
 ## Position
 
@@ -36,6 +36,14 @@ $$
 
 常系数 ODE 特征根 ↔ companion matrix eigenvalue、matrix exponential 都是真连接，但不作为数学一主干展开。
 
-## 待重构
+## Source Diff
 
-以旧 I-13 与线代方程组/特征结构 Topic 做 Source Diff。
+I-13 与线代 Topic04 的解空间正文已完成 Owner 复核；正文只保留“一点 + Kernel”接口。
+
+## Manual
+
+- Canonical Source：[线性方程与线性微分方程_一点加Kernel.tex](线性方程与线性微分方程_一点加Kernel.tex)
+- Published View：[线性方程与线性微分方程_一点加Kernel.pdf](../../../90_publish/线性方程与线性微分方程_一点加Kernel.pdf)
+
+## Review v1
+已核对非齐次解集是特解加齐次核的仿射平移，并区分有限维矩阵与微分算子。下一轮用非线性 ODE 反例、初值唯一性和解空间维数题验证。

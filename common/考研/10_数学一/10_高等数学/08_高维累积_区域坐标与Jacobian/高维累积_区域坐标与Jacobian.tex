@@ -1,0 +1,419 @@
+\documentclass[11pt,a4paper,fontset=fandol]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={高维累积：区域、坐标与 Jacobian}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 高等数学 Topic 08}}
+\rhead{\small\color{deep}区域 · 扫描 · 坐标 · 累积}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\begin{document}
+\begin{center}
+{\LARGE\textbf{高维累积：区域、坐标与 Jacobian}}\\[0.4em]
+{\large 从“多写一层积分”到“给几何域选择可计算表示”}
+\end{center}
+\vspace{0.5em}
+
+\begin{quote}
+本册只追问一个根本问题：\textbf{局部贡献分布在二维或三维区域上时，怎样选择扫描方向或坐标系统，把同一个几何域编码成合法积分限，并在重表达后仍保持累积量不变？} 重积分的核心难点不在积分符号的层数，而在区域、坐标、微元和覆盖关系是否同时闭合。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\setcounter{section}{-1}
+\section{本册定位}
+
+本册是高等数学 Subject Atlas 下的 Topic08。Topic06 提供空间对象和曲面表示，Topic07 提供多元可微与 Jacobian matrix；本册把这些局部表示组织成区域上的有限累积。
+
+\subsection{Own}
+\begin{itemize}
+  \item 二重/三重积分对象、常用存在与换序资格；
+  \item 平面区域的竖直/水平扫描、空间区域的投影/切片表示；
+  \item 换序、分区、对称性与坐标选择；
+  \item 极坐标、柱坐标、球坐标及一般变量变换的积分使用；
+  \item 面积、体积、质量、质心、矩与转动惯量的累积模型；
+  \item 收缩区域平均值、尺度固定化、整体积分常数降维和矩形混合偏导积分。
+\end{itemize}
+
+\subsection{Uses / Stop Boundary}
+\begin{itemize}
+  \item Jacobian matrix 到 determinant 的局部面积/体积缩放解释归 B02；
+  \item 行列式的线性代数语义归线性代数 Topic02；
+  \item 随机变量变换中的概率质量守恒归 B07；
+  \item 第一型曲线/曲面积分和带方向的 Green/Gauss/Stokes 机制归 Topic09；
+  \item 一般测度论、非绝对可积重积分和一般流形坐标不进入数学一主干；
+  \item 题目信号、第一动作、检查点和退出条件进入《高等数学做题规则》。
+\end{itemize}
+
+\section{母模型：先编码区域，再累积局部贡献}
+
+\[
+\boxed{\begin{gathered}
+\text{Quantity / Region}
+\to\text{Geometric Encoding}
+\to\text{Scan / Coordinate Choice}
+\to\text{Bounds / Measure}\\
+\text{Accumulate}
+\to\text{Dimension Reduction}
+\to\text{Invariant Check}
+\end{gathered}}
+\]
+
+\begin{enumerate}
+  \item \kw{Quantity / Region}：确认累积对象、密度与真实几何域；
+  \item \kw{Geometric Encoding}：把曲线/曲面条件转成不等式与投影；
+  \item \kw{Scan / Coordinate Choice}：选择使区域和被积函数共同变简单的表示；
+  \item \kw{Bounds / Measure}：写入口/出口、参数范围和面积/体积微元；
+  \item \kw{Accumulate}：先做对称、分区与可积性判断，再计算；
+  \item \kw{Dimension Reduction}：综合题尽量降到一维极限、代数常数或边界值；
+  \item \kw{Invariant Check}：用面积、量纲、符号、覆盖次数和粗界复核。
+\end{enumerate}
+
+\begin{corebox}{重积分是一份“区域编码 + 测度守恒”协议}
+同一个区域可以被竖直扫描、水平扫描或新坐标网格描述。积分次序改变的是编码，坐标换元改变的是局部网格；累积量保持不变的前提是：新积分限恰好覆盖原区域，局部微元按 Jacobian 绝对值修正，且没有遗漏或重复分支。
+\end{corebox}
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.58cm and 0.58cm,
+  box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.05cm,minimum height=1.0cm,align=center,fill=soft,font=\small},
+  arr/.style={-{Latex[length=2mm]},thick,draw=deep}
+]
+\node[box] (a) {数量与区域\\密度/面积/体积};
+\node[box,right=of a] (b) {几何编码\\不等式/投影/截面};
+\node[box,right=of b] (c) {扫描或换坐标\\简化域与函数};
+\node[box,below=of c] (d) {积分限与微元\\入口/出口/Jacobian};
+\node[box,left=of d] (e) {累积与降维\\计算/极限/边界};
+\node[box,left=of e] (f) {不变量检查\\覆盖/符号/量纲};
+\draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d);
+\draw[arr] (d)--(e); \draw[arr] (e)--(f);
+\end{tikzpicture}
+\end{center}
+
+\section{积分对象与合法性：先确认能否交换表示}
+
+对平面区域 $D$ 和空间区域 $\Omega$，
+\[
+\iint_D f\,dA,
+\qquad
+\iiint_\Omega f\,dV
+\]
+分别累积二维和三维局部贡献。$f\equiv1$ 给面积/体积；密度给质量；坐标或到轴距离的加权给矩、质心与转动惯量。
+
+常见考试情形中，$f$ 在有界闭区域上连续时，重积分存在且可写成合法累次积分。更一般地，非负函数可用 Tonelli，绝对可积函数可用 Fubini。若区域无界、函数无界或仅条件收敛，换序不再是免费动作，必须回到逐段极限与绝对可积性。
+
+\begin{warnbox}{对象资格不能被计算熟练度替代}
+把 $dx\,dy$ 调换、把极坐标代入或把两个广义积分相减，都隐含了存在性、覆盖与极限次序。正常有界连续题可使用标准定理；一旦出现奇点、无界域或条件抵消，应先停下检查资格。
+\end{warnbox}
+
+\section{二维区域扫描：一根针只穿过一个线段}
+
+若竖直扫描时每条针从 $y=\varphi_1(x)$ 进入、从 $y=\varphi_2(x)$ 离开，则
+\[
+D=\{(x,y):a\le x\le b,\ \varphi_1(x)\le y\le\varphi_2(x)\},
+\]
+\[
+\iint_D f\,dA=\int_a^b\int_{\varphi_1(x)}^{\varphi_2(x)}f(x,y)\,dy\,dx.
+\]
+水平扫描同理：固定 $y$，左右边界给内层 $x$ 的入口与出口。
+
+必须分区的根本信号是：同一根扫描针与区域的交集不再是一个连续线段。边界交换、孔洞、交点改变拓扑，以及绝对值、$\max/\min$ 的符号曲线都可能造成这一情况。
+
+\section{换序：不是交换微分，而是重写同一区域}
+
+换序流程为：从原积分限恢复不等式，求交点并画域，改变扫描方向，读取新入口/出口，再判断是否分段。
+
+\begin{examplebox}{贯穿母例：不可直接积分的内层因换序而消失}
+\[
+I=\int_0^1\int_x^1e^{-y^2}\,dy\,dx,
+\qquad D=\{0\le x\le y\le1\}.
+\]
+水平重写为
+\[
+I=\int_0^1\int_0^y e^{-y^2}\,dx\,dy
+=\int_0^1ye^{-y^2}\,dy=\frac{1-e^{-1}}2.
+\]
+原表示先给出区域不等式，水平扫描保持同一三角域，再让困难变量成为外层常参数；正值和 $I<|D|=1/2$ 给出独立数量级检查。不可积结构只是考虑换序的信号；若只把 $dx,dy$ 对调而不重写边界，就已经改变积分对象。
+\end{examplebox}
+
+\section{对称性：区域与密度必须共同不变}
+
+若变换 $S$ 保持区域且 $|\det DS|=1$，则可以比较 $f$ 与 $f\circ S$。例如 $D$ 关于 $y$ 轴对称时，关于 $x$ 的奇函数积分为零；若 $D$ 在 $(x,y)\leftrightarrow(y,x)$ 下不变，则
+\[
+\iint_D f(x,y)\,dA
+=\frac12\iint_D\bigl[f(x,y)+f(y,x)\bigr]dA.
+\]
+圆盘上的旋转对称还给出
+\[
+\iint_D x^2\,dA=\iint_D y^2\,dA
+=\frac12\iint_D(x^2+y^2)\,dA.
+\]
+只看被积函数奇偶而不检查区域，是最常见的第一次偏离。
+
+\section{坐标换元：域、函数与微元必须一起搬运}
+
+设 $T:(u,v)\mapsto(x(u,v),y(u,v))$ 在新区域 $D'$ 上分片一一、足够光滑且 Jacobian 非退化，则
+\[
+\boxed{
+\iint_D f(x,y)\,dx\,dy
+=\iint_{D'}f\bigl(T(u,v)\bigr)
+\left|\frac{\partial(x,y)}{\partial(u,v)}\right|du\,dv.}
+\]
+绝对值保证无向面积为正；正变换/逆变换的选择必须与实际代入方向一致。为什么 determinant 测量局部面积/体积缩放，由 B02 唯一解释；本册只维护换元的积分机制。
+
+好的换元同时简化区域边界与“被积函数 $\times$ 微元”。只简化其中一个而让另一个爆炸，通常不是有效表示。
+
+\subsection{极坐标与广义极坐标}
+\[
+x=r\cos\theta,\qquad y=r\sin\theta,
+\qquad dA=r\,dr\,d\theta.
+\]
+圆、圆环、射线和 $x^2+y^2$ 是强信号。椭圆
+\[
+\frac{x^2}{a^2}+\frac{y^2}{b^2}\le1
+\]
+可用 $x=ar\cos\theta,y=br\sin\theta$，此时 $dA=ab r\,dr\,d\theta$。
+
+\subsection{边界族诱导的坐标}
+
+边界为 $x+y=\text{常数}$ 与 $x-y=\text{常数}$ 时，可令 $u=x+y,v=x-y$；边界为 $xy=\text{常数}$ 与 $y/x=\text{常数}$ 时，可考虑对应双曲坐标。选择原则不是记名称，而是让新坐标线贴合边界族。
+
+非全局一一的变换必须限制象限/符号分支或拆分逆像。Jacobian 非零只给局部资格，不能替代全局覆盖检查。
+
+\section{三维区域：投影与切片是两种降维接口}
+
+若沿 $z$ 轴穿针，
+\[
+\Omega=\{(x,y,z):(x,y)\in D_{xy},\ z_1(x,y)\le z\le z_2(x,y)\},
+\]
+则
+\[
+\iiint_\Omega f\,dV
+=\iint_{D_{xy}}\int_{z_1}^{z_2}f\,dz\,dA.
+\]
+若固定高度 $z$ 的截面 $D_z$ 更简单，则
+\[
+\iiint_\Omega f\,dV
+=\int_c^d\left(\iint_{D_z}f\,dA\right)dz.
+\]
+当 $f=f(z)$ 时，这直接降为 $\int_c^d f(z)A(z)\,dz$。六种直角坐标次序的选择，本质仍是比较“内层入口/出口、外层投影、函数可积性”三项复杂度。
+
+\subsection{柱坐标与球坐标}
+
+柱坐标：
+\[
+x=r\cos\theta,\quad y=r\sin\theta,\quad z=z,
+\qquad dV=r\,dr\,d\theta\,dz.
+\]
+球坐标采用 $\phi$ 为与正 $z$ 轴夹角：
+\[
+\begin{aligned}
+x&=\rho\sin\phi\cos\theta,\\
+y&=\rho\sin\phi\sin\theta,\\
+z&=\rho\cos\phi,
+\end{aligned}
+\qquad
+dV=\rho^2\sin\phi\,d\rho\,d\phi\,d\theta.
+\]
+球坐标的主要风险常在角度范围而非计算：必须把半空间、圆锥和球壳条件逐条翻译为 $\rho,\phi,\theta$ 的范围。
+
+\section{物理量：先写局部贡献与单位}
+
+对二维密度 $\rho$，
+\[
+M=\iint_D\rho\,dA,
+\qquad
+\bar x=\frac1M\iint_D x\rho\,dA,
+\qquad
+\bar y=\frac1M\iint_D y\rho\,dA.
+\]
+到坐标轴距离平方的加权给转动惯量，例如
+\[
+I_x=\iint_D y^2\rho\,dA,
+\qquad
+I_O=\iint_D(x^2+y^2)\rho\,dA.
+\]
+三维公式只需把 $dA$ 换为 $dV$ 并使用相应距离。量纲检查会直接暴露密度、微元或距离因子的遗漏。
+
+\section{收缩区域：平均值先锁定主阶}
+
+若正面积区域 $D_t$ 收缩到 $\mathbf x_0$，$\operatorname{diam}(D_t)\to0$，且 $f$ 在该点连续，则
+\[
+\boxed{
+\frac1{|D_t|}\iint_{D_t}f\,dA\to f(\mathbf x_0),
+\qquad
+\iint_{D_t}f\,dA=f(\mathbf x_0)|D_t|+o(|D_t|).}
+\]
+证明只需用连续性把 $|f-f(\mathbf x_0)|$ 一致压到 $\varepsilon$，再乘区域面积。这比追踪一个随 $t$ 变化的中值点更稳健。
+
+若 $D_t=\mathbf x_0+tD$，尺度换元把变化区域固定：
+\[
+\iint_{D_t}f(\mathbf x)\,dA
+=t^2\iint_D f(\mathbf x_0+t\mathbf u)\,d\mathbf u.
+\]
+当 $f(\mathbf x_0)=0$ 时，最低非零 Taylor 项与区域矩共同决定主阶；中心对称区域会自动消去一次项。不能因为分子是趋零积分就直接使用洛必达。
+
+\begin{examplebox}{收缩圆盘的首阶}
+若 $D_t=\{x^2+y^2\le t^2\}$ 且 $f$ 在原点连续，则
+\[
+\iint_{D_t}f\,dA=\pi t^2f(0,0)+o(t^2).
+\]
+若 $f(0,0)=0$，再升级到 Taylor 与圆盘的对称矩，而不是先对参数积分求导。
+\end{examplebox}
+
+\section{综合题降维：把未知整体量和导数积分压到边界}
+
+\subsection{未知整体积分先设为常数}
+
+若
+\[
+A=\iint_D wf\,dA,
+\qquad f=h+cA,
+\]
+代回得
+\[
+\biggl(1-\iint_D wc\,dA\biggr)A=\iint_D wh\,dA.
+\]
+这把函数问题降为标量代数方程，但必须分类检查系数是否为零：可能唯一、无解，也可能不能唯一确定。其秩一算子类比只作 Bridge Note，不在本册展开线性代数机制。
+
+\subsection{矩形上的混合偏导是二维基本定理}
+
+若 $R=[a,b]\times[c,d]$ 且 $f_{xy}$ 连续，则
+\[
+\boxed{
+\iint_R f_{xy}\,dA
+=f(b,d)-f(a,d)-f(b,c)+f(a,c).}
+\]
+带权情形可按已知边界条件选择分部次序。非矩形区域会产生移动边界与链式项，应考虑重新分区或调用 Topic09 的 Green/边界积分接口；Green 机制不在本册复制。
+
+\section{专题执行协议}
+\begin{enumerate}
+  \item \kw{Object}：确认区域、密度、目标量和正常/广义积分资格；
+  \item \kw{Encode}：把边界写成不等式，找交点、投影和截面；
+  \item \kw{Choose}：比较直角扫描、换序、对称、极柱球或一般换元；
+  \item \kw{Bounds}：逐层写入口/出口与参数范围，必要时分区；
+  \item \kw{Measure}：同步搬运被积函数与 $dA/dV$，核对 Jacobian 方向、绝对值和分支；
+  \item \kw{Reduce}：先利用对称、平均值、尺度、整体常数或边界降维，再计算；
+  \item \kw{Verify}：用 $f\equiv1$、符号、量纲、粗界、覆盖次数与替代次序复核。
+\end{enumerate}
+
+\section{高频失败路径：第一次偏离发生在哪里？}
+\begin{itemize}
+  \item 不恢复几何域，只把 $dx,dy$ 字面交换；
+  \item 一根扫描针穿过多段区域，却仍强行使用一组上下限；
+  \item 只看函数奇偶，不检查区域是否在变换下保持不变；
+  \item 换元只代函数，漏掉新区域、Jacobian 绝对值或逆像分支；
+  \item 把 Jacobian 非零误当成全局一一覆盖；
+  \item 极坐标漏 $r$，球坐标漏 $\sin\phi$ 或角度约定混乱；
+  \item 三重积分机械选投影法，不比较截面积降维；
+  \item 收缩区域中点值为零就直接洛必达，忽略尺度与区域矩；
+  \item 设整体积分为常数后默认方程必有唯一解；
+  \item 把非矩形上的混合偏导积分机械套用矩形四角公式；
+  \item 把曲面面积元、Green/Gauss 定向机制或概率密度变换复制进本册。
+\end{itemize}
+
+\section{传统章节与 Source Corpus 映射}
+\begin{longtable}{L{2.65cm}L{5.25cm}L{\dimexpr\linewidth-7.90cm\relax}}
+\toprule
+\textbf{Source / 传统内容} & \textbf{进入本册} & \textbf{分流与拒绝复制}\\
+\midrule
+II-04 重积分对象/资格 & 局部贡献、常用 Fubini/Tonelli 边界 & 一般测度论不进入主干\\
+II-04 区域与换序 & 扫描针、入口/出口、分区与换序 & 考场触发动作进入 Rules\\
+II-04 对称性 & 区域与函数共同变换 & 概率对称性不在本册复制\\
+II-04 二维/三维换元 & 极柱球坐标、边界族坐标与覆盖审计 & determinant 缩放解释归 B02\\
+II-04 应用 & 面积、体积、质量、质心与转动惯量 & 第一型曲线/曲面积分归 Topic09\\
+II-04.1 收缩区域 & 平均值主阶、尺度固定化与区域矩 & 参数求导只保留资格接口\\
+II-04.1 未知整体积分 & 设常数并分类求解退化方程 & 秩一算子类比只作 Bridge Note\\
+II-04.1 混合偏导 & 矩形四角公式与分部次序 & Green 边界机制归 Topic09\\
+II-04.1 二重积分中值 & 连续区域上的存在性与平均值边界 & 不用于定位具体中值点\\
+\bottomrule
+\end{longtable}
+
+\section{一页压缩：忘掉公式后怎样重建？}
+\begin{corebox}{一句话}
+重积分先把真实区域编码成扫描或坐标网格，再用入口/出口与微元累积；换序保持区域，换元同时改变区域、函数和局部尺度。复杂题的目标通常不是硬算，而是降到一维、常数方程或边界数据。
+\end{corebox}
+
+\subsection{三个重建公式}
+\[
+\iint_D f\,dA
+=\int_{\text{扫描范围}}
+\int_{\text{入口}}^{\text{出口}}f\,d(\text{内层})\,d(\text{外层}),
+\]
+\[
+\iint_D f(x,y)\,dx\,dy
+=\iint_{D'}f\bigl(T(u,v)\bigr)|\det DT|\,du\,dv,
+\]
+\[
+\frac1{|D_t|}\iint_{D_t}f\,dA\to f(\mathbf x_0)
+\quad(D_t\to\{\mathbf x_0\}).
+\]
+
+\subsection{重建问题}
+\begin{enumerate}
+  \item 当前累积的是面积、体积、质量、矩还是普通函数值？
+  \item 原边界能否写成单段扫描，扫描针会不会穿过多个线段？
+  \item 换序、对称或换坐标中，哪一个同时简化区域和密度？
+  \item 新坐标范围是否一一覆盖，Jacobian 是否使用正确方向与绝对值？
+  \item 三维区域更适合投影穿针，还是按截面积切片？
+  \item 收缩区域是否先用面积主阶，点值为零后才升级 Taylor？
+  \item 未知整体积分的标量方程是否退化，混合偏导是否真的在矩形上？
+  \item 最终符号、量纲、粗界、对称中心和覆盖次数是否合理？
+  \item 是否已经越界到 B02、B07 或 Topic09？
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\appendix
+\section{高维累积 Coverage 锚点}
+\begin{center}
+\begin{tabular}{L{2.55cm}L{5.15cm}L{\dimexpr\linewidth-7.70cm\relax}}
+\toprule
+层级/对象 & 核心资格 & 输出\\
+\midrule
+二维扫描 & 每根针与子区域交于单线段 & 合法累次积分限\\
+换序/对称 & 同一区域、合法可积、变换保持域 & 简化后的等值积分\\
+坐标换元 & 分片一一、足够光滑、微元修正 & 新区域上的等值累积\\
+三维表示 & 投影/截面完整且不重不漏 & 六次序或柱球坐标积分\\
+收缩区域 & 直径趋零、点处连续/足够光滑 & 平均值主阶与高阶区域矩\\
+综合降维 & 标量方程不漏退化；矩形边界资格 & 代数常数或边界值\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+本册覆盖二重/三重积分、区域扫描与换序、对称性、极柱球坐标、一般换元、物理量、收缩区域和综合降维；B02 拥有 determinant 的局部尺度解释，B07 拥有概率质量守恒，Topic09 拥有边界定向积分。
+
+\end{document}

@@ -1,6 +1,6 @@
 # B06A｜PDF 与 CDF：局部概率密度 × 累积
 
-状态：目录已建立，正文未建。
+状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
 ## Position
 
@@ -47,6 +47,14 @@ $$
 
 测度/Radon–Nikodym 视角不进入当前主干。
 
-## 待重构
+## Source Diff
 
-以后用概率 Topic 与高数 B03/FTC 相关材料做 Source Diff。
+概率一维分布 Topic 与高数 FTC 相关材料已完成 Owner 复核；正文只保留 CDF/PDF 层级和正则性边界。
+
+## Manual
+
+- Canonical Source：[PDF与CDF_局部概率密度与累积.tex](PDF与CDF_局部概率密度与累积.tex)
+- Published View：[PDF与CDF_局部概率密度与累积.pdf](../../../90_publish/PDF与CDF_局部概率密度与累积.pdf)
+
+## Review v1
+已核对 CDF、PDF、区间概率和 FTC 正则性，明确密度值不是点概率。下一轮用含跳点 CDF、无密度分布和端点概率题验证。

@@ -1,0 +1,528 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor,fancyhdr,hyperref,microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={随机世界：事件与概率}}
+\pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{数学一 · 概率统计 Topic 01}}
+\rhead{\small\color{deep}随机世界 · 事件 · 概率}\cfoot{\small\thepage}\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\tikzset{
+  nodebox/.style={draw=deep,rounded corners=2mm,text width=2.65cm,minimum height=1.0cm,align=center,fill=soft,font=\small,inner sep=4pt},
+  flow/.style={-{Latex[length=2mm]},thick,draw=deep}
+}
+
+\title{\vspace{-1.1cm}\textbf{随机世界：事件与概率}\\[0.4em]
+\large 从记录规则到概率质量守恒}
+\author{数学一 · 概率统计 Topic 01}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：怎样把一次不确定试验组织成能够一致推理的数学世界？}
+概率不是一个先验存在、拿来就算的数字。它必须作用在已经定义好的事件上，而事件又依赖于我们如何记录试验结果：
+\[
+\boxed{
+\text{随机试验}
+\longrightarrow \text{记录协议}
+\longrightarrow \Omega
+\longrightarrow \mathcal F
+\xrightarrow{\;P\;}[0,1]
+}
+\]
+这条链区分了三件经常被混在一起的事：世界中可能发生什么、我们关心哪些结果、这些结果获得多少概率质量。事件代数负责表达逻辑，概率公理负责保证无论怎样合法拆分，质量都守恒。
+\end{corebox}
+
+\section{本册的 Owner 边界}
+
+\begin{itemize}
+  \item \kw{Owns：}随机试验与记录规则、样本点与样本空间、事件域、事件代数、Kolmogorov 公理、直接推论、古典概型、几何概型、概率界与概率连续性。
+  \item \kw{Uses：}集合运算、有限计数、长度/面积/体积等测度直觉。
+  \item \kw{Stops：}一旦加入新信息并重分配概率，转 Topic 02；一旦用数值函数观察样本点，转 Topic 03。
+\end{itemize}
+
+本册向后续 Topic 输出的不是一张公式表，而是一个合法概率空间 $(\Omega,\mathcal F,P)$。
+
+\section{先决定记录什么，再决定世界是什么}
+
+\subsection{随机试验的四个条件}
+
+一次观察或操作称为随机试验，通常要求：条件可说明、试验可重复、全部可能结果可预先描述、单次具体结果不能事先唯一确定。这里的“不确定”是相对于现有信息而言；它不等于没有规律。
+
+试验完成后产生一个样本点 $\omega$，全部可能样本点构成样本空间：
+\[
+\omega\in\Omega.
+\]
+有限、可数无限和不可数样本空间分别对应骰子点数、首次成功的等待次数、灯泡寿命等结构。只有有限或可数空间才可以列写为 $\{\omega_1,\omega_2,\ldots\}$。
+
+\subsection{记录协议决定粒度}
+
+同一物理过程没有唯一的样本空间。连续掷两次硬币，若保留顺序，
+\[
+\Omega_1=\{HH,HT,TH,TT\};
+\]
+若只记录正面数，
+\[
+\Omega_2=\{0,1,2\}.
+\]
+映射 $HH\mapsto2$、$HT,TH\mapsto1$、$TT\mapsto0$ 把精细世界压缩为粗粒度世界。粗化可以简化计算，却会永久丢掉顺序信息。因此样本空间必须由“当前问题需要区分什么”来决定。
+
+一个可用的样本空间必须同时满足：结果无遗漏；不同样本点互斥；每次结果唯一归属；样本点按协议可区分；粒度足够而不过度。比如 $\{\text{奇数},\text{大于 }4\}$ 不是骰子的样本空间，因为点数 $5$ 会重复归属。
+
+\begin{methodbox}{模型起点的最小检查}
+先问四件事：是否区分顺序？是否区分个体？是否记录时间？记录到什么精度？这四个选择会改变 $\Omega$，也会改变后续补集、计数分母和事件表达。
+\end{methodbox}
+
+\section{事件不是结果，而是对结果的分类}
+
+\subsection{从样本点到事件域}
+
+事件 $A$ 是一组我们关心的结果。实际样本点为 $\omega$ 时，
+\[
+\boxed{A\text{ 发生}\Longleftrightarrow \omega\in A.}
+\]
+所以 $\omega$ 是元素，$\{\omega\}$ 才是单点事件。严格地说，可赋概率的事件组成 $\sigma$-代数 $\mathcal F$：
+\[
+\Omega\in\mathcal F,\qquad
+A\in\mathcal F\Rightarrow A^c\in\mathcal F,\qquad
+A_i\in\mathcal F\Rightarrow\bigcup_{i=1}^{\infty}A_i\in\mathcal F.
+\]
+由 De Morgan 律可得 $\varnothing\in\mathcal F$ 以及对可数交封闭。在常见有限或可数离散模型中常取 $\mathcal F=2^\Omega$，于是每个子集都是事件；这只是初等模型的便利，不是一般定义。
+
+\subsection{特殊事件与零概率边界}
+
+\[
+P(\Omega)=1,\qquad P(\varnothing)=0.
+\]
+但是反向蕴含一般不成立。在 $[0,1]$ 上均匀取点，$\{1/2\}$ 非空而概率为零；删去有限或可数个点后得到的真子集仍可具有概率一。因此必须分清：
+\[
+\text{集合上不可能}\quad\text{与}\quad\text{概率上几乎不发生}.
+\]
+同样，$P(A\cap B)=0$ 不一定说明 $A\cap B=\varnothing$。
+
+\section{事件代数：先把语言变成集合}
+
+\subsection{运算、关系与相对补集}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{L{2.2cm}L{3.0cm}Y}
+\toprule
+语言 & 集合表达 & 精确含义 \\
+\midrule
+$A$ 或 $B$ & $A\cup B$ & 至少一个发生，允许同时发生 \\
+$A$ 且 $B$ & $A\cap B$ & 同时发生 \\
+$A$ 而非 $B$ & $A\setminus B=A\cap B^c$ & 只保留 $A$ 中不属于 $B$ 的部分 \\
+$A$ 不发生 & $A^c=\Omega\setminus A$ & 补集依赖当前样本空间 \\
+恰好一个 & $A\triangle B$ & $(A\cap B^c)\cup(A^c\cap B)$ \\
+状态相同 & $(A\triangle B)^c$ & $(A\cap B)\cup(A^c\cap B^c)$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+包含 $A\subseteq B$ 表示 $A$ 发生必有 $B$ 发生，但不表达因果。互斥只要求 $A\cap B=\varnothing$；对立还要求 $A\cup B=\Omega$。完备事件组是一族两两互斥且并为 $\Omega$ 的事件，它将在 Topic 02 成为全概率公式的分割。
+
+事件代数服从交换、结合、分配、幂等和吸收律。最重要的压缩工具是
+\begin{align*}
+(A\cup B)^c&=A^c\cap B^c, & (A\cap B)^c&=A^c\cup B^c,\\
+\left(\bigcup_iA_i\right)^c&=\bigcap_iA_i^c,
+&\left(\bigcap_iA_i\right)^c&=\bigcup_iA_i^c,
+\end{align*}
+以及按事件 $B$ 的真假作互斥分解：
+\[
+\boxed{A=(A\cap B)\mathbin{\dot\cup}(A\cap B^c).}
+\]
+后一个恒等式是差事件、全概率和许多分类讨论的共同骨架。
+
+\subsection{两个、三个与 $n$ 个事件的量词翻译}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{L{3.2cm}Y}
+\toprule
+自然语言 & 事件表达式 \\
+\midrule
+全部发生 & $\displaystyle\bigcap_{i=1}^{n}A_i$ \\
+至少一个发生 & $\displaystyle\bigcup_{i=1}^{n}A_i$ \\
+全部不发生 & $\displaystyle\bigcap_{i=1}^{n}A_i^c=\left(\bigcup_{i=1}^{n}A_i\right)^c$ \\
+至少一个不发生 & $\displaystyle\bigcup_{i=1}^{n}A_i^c=\left(\bigcap_{i=1}^{n}A_i\right)^c$ \\
+恰好一个发生 & $\displaystyle\bigcup_{i=1}^{n}\left(A_i\cap\bigcap_{j\ne i}A_j^c\right)$ \\
+至多一个发生 & $\displaystyle\bigcap_{i<j}(A_i\cap A_j)^c$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+三事件“恰好两个发生”是
+\[
+(A\cap B\cap C^c)\cup(A\cap B^c\cap C)\cup(A^c\cap B\cap C),
+\]
+“至少两个发生”则是 $(A\cap B)\cup(A\cap C)\cup(B\cap C)$，其中已经包含三者同时发生。$A\cap B\cap C=\varnothing$ 只说明三者不能同时发生，不说明两两互斥。
+
+\section{概率公理：质量守恒的最小约束}
+
+完整概率空间写作
+\[
+(\Omega,\mathcal F,P),\qquad P:\mathcal F\to[0,1].
+\]
+Kolmogorov 公理要求非负性、规范性与可列可加性：
+\[
+P(A)\ge0,\qquad P(\Omega)=1,
+\]
+若 $A_i$ 两两互斥，则
+\[
+P\!\left(\bigcup_{i=1}^{\infty}A_i\right)=\sum_{i=1}^{\infty}P(A_i).
+\]
+这三条不是待背诵的孤立规定，而是在说：总质量为一；不重叠部分可以相加；同一质量不能重复计算。
+
+\subsection{从互斥分解复原常用性质}
+
+由 $\Omega=A\mathbin{\dot\cup}A^c$ 得
+\[
+P(A^c)=1-P(A).
+\]
+由 $B=(A\cap B)\mathbin{\dot\cup}(B\setminus A)$ 得
+\[
+P(B\setminus A)=P(B)-P(A\cap B).
+\]
+若 $A\subseteq B$，上式退化为 $P(B\setminus A)=P(B)-P(A)\ge0$，故
+\[
+A\subseteq B\Longrightarrow P(A)\le P(B).
+\]
+这个蕴含不能反向使用；概率大小不会恢复集合包含结构。即使 $A\subseteq B$ 且 $P(A)=P(B)$，也只得到 $P(B\setminus A)=0$，不必有 $A=B$。
+
+\subsection{容斥：重叠部分只计一次}
+
+把 $A\cup B$ 拆成互斥部分可得
+\[
+\boxed{P(A\cup B)=P(A)+P(B)-P(A\cap B).}
+\]
+三事件时，单项加、两两交减、三重交加：
+\begin{align*}
+P(A\cup B\cup C)
+={}&P(A)+P(B)+P(C)\\
+&-P(A\cap B)-P(A\cap C)-P(B\cap C)\\
+&+P(A\cap B\cap C).
+\end{align*}
+一般 $n$ 事件继续按交集阶数交替加减。若事件两两互斥，所有交项消失，才可以直接相加。
+
+对三事件，若目标是“恰好一个发生”，可以把交集阶数看成发生次数的记账器。令
+\[
+N=I_A+I_B+I_C,
+\]
+则
+\[
+\boxed{P(N=1)=P(A)+P(B)+P(C)-2\{P(AB)+P(AC)+P(BC)\}+3P(ABC).}
+\]
+验证方法是逐个代入 $N=0,1,2,3$：多项式 $N-2\binom N2+3\binom N3$ 在 $N=1$ 时为 $1$，在其余三种状态时均为 $0$。因此不能因为题面只给了两两交就擅自令三重交为零；只有三重交由集合关系或题设确定后，目标概率才闭合。
+
+\begin{examplebox}{2020 真题：恰好一个发生的阶数记账}
+已知
+\[
+P(A)=P(B)=P(C)=\frac14,\quad P(AB)=0,\quad P(AC)=P(BC)=\frac1{12}.
+\]
+由 $AB=\varnothing$ 可知 $ABC=\varnothing$，故
+\[
+P(N=1)=\frac34-2\left(0+\frac1{12}+\frac1{12}\right)=\frac5{12}.
+\]
+这里 $P(A)+P(B)+P(C)$ 是单次记账，两个交集各被单项重复计算一次，所以要减去两倍；不是把“恰好一个”当作并集直接套容斥。
+\end{examplebox}
+
+\begin{examplebox}{同一错误的结构解释}
+抛两次公平硬币，令 $H_1,H_2$ 分别表示第一次、第二次为正面。“至少一次正面”是 $H_1\cup H_2$。若直接算 $1/2+1/2$，样本点 $HH$ 被计了两次。容斥扣回一次后
+\[
+P(H_1\cup H_2)=\frac12+\frac12-\frac14=\frac34.
+\]
+错误不在算术，而在没有先看事件是否重叠。
+\end{examplebox}
+
+\section{均匀模型：计数与测度是同一构造}
+
+\subsection{古典概型}
+
+若 $\Omega$ 有限，且每个基本事件确实等可能，则
+\[
+\boxed{P(A)=\frac{|A|}{|\Omega|}.}
+\]
+“有限”和“等可能”缺一不可。非均匀骰子即使只有六个结果，也必须按各点概率加权，不能只数个数。计数时还要统一样本点粒度：分子、分母必须基于同一个记录协议。
+
+\begin{methodbox}{计数题先判生成机制：三条不能互换的路径}
+看到“次数、恰好、至少”时，先问计数是怎样生成的，再决定样本空间与公式：
+\begin{enumerate}
+  \item \kw{固定次数、每次二分类且相互独立}：每条长度为 $n$ 的成功/失败路径概率相同，成功次数才可用
+  $\binom nkp^k(1-p)^{n-k}$；
+  \item \kw{固定次数、每次多分类且相互独立}：一次试验的类别互斥，类别计数联合服从多项式结构；负协方差来自同一次试验的总数约束；
+  \item \kw{有限总体不放回}：各次抽取条件分布改变，不能再使用独立乘法；若只问某一位置的边际，利用位置交换对称，仍等于总体中该类比例；若问总数，使用超几何计数。
+\end{enumerate}
+三者都可能出现“次数”字样，但路径概率、支持集和协方差来源不同。先写出“是否独立、是否放回、类别是否互斥、总次数是否固定”，再计数。
+\end{methodbox}
+
+\begin{examplebox}{2016 真题：多类别计数的负协方差}
+一次试验的三个结果 $A_1,A_2,A_3$ 两两不相容，且各以 $1/3$ 概率发生；独立重复两次。令 $X$、$Y$ 分别为两次中 $A_1$、$A_2$ 的次数。逐次写成指标变量：
+\[
+X=I_{\{A_1\text{第1次}\}}+I_{\{A_1\text{第2次}\}},qquad
+Y=I_{\{A_2\text{第1次}\}}+I_{\{A_2\text{第2次}\}}.
+\]
+同一次试验中 $A_1$ 与 $A_2$ 互斥，所以对应指标乘积为 $0$；不同试验相互独立。因此
+\[
+EX=EY=\frac23,qquad DX=DY=2\cdot\frac13\frac23=\frac49,
+\]
+\[
+E(XY)=2\cdot\frac13\frac13=\frac29,qquad
+\operatorname{Cov}(X,Y)=\frac29-\frac23\frac23=-\frac29.
+\]
+于是
+\[
+\rho_{XY}=\frac{-2/9}{4/9}=-\frac12.
+\]
+负相关不是来自跨次依赖；它来自每一次试验的总数约束：同一次结果不能同时计入两个类别。一般 $n$ 次、类别概率 $p_i,p_j$ 时，独立多分类计数满足
+\[
+\operatorname{Cov}(N_i,N_j)=-np_ip_j\quad(i\ne j).
+\]
+\textbf{停止条件：}题目只问相关系数时，指标展开到 $E(XY)$、$DX$、$DY$ 闭合即可；不要把多项式联合分布整表列出。
+\end{examplebox}
+
+\begin{examplebox}{不放回抽样的边际守恒：1993 Q十(1)}
+有 $10$ 个正品、$2$ 个次品，随机抽取两次且不放回。第二次为次品的概率可按路径计算：
+\[
+P(D_2)=P(D_1)P(D_2\mid D_1)+P(D_1^c)P(D_2\mid D_1^c)
+=\frac{2}{12}\frac1{11}+\frac{10}{12}\frac2{11}=\frac16.
+\]
+它也等于总体次品比例 $2/12$：随机排列使每个位置对称。\textbf{但这不表示两次独立}，例如
+\[
+P(D_2\mid D_1)=\frac1{11}\ne\frac16,
+\qquad \operatorname{Cov}(I_{D_1},I_{D_2})=-\frac{10}{121}<0.
+\]
+“边际比例不变”和“条件概率不变”是两个不同命题。
+\end{examplebox}
+
+\begin{examplebox}{独立重复计数：2007 Q九与 1997 Q九}
+若每次命中事件独立且概率为 $p$，第四次恰为第二次命中，必须是前 $3$ 次恰有一次命中且第 $4$ 次命中：
+\[
+P=\binom31p(1-p)^2\,p=3p^2(1-p)^2.
+\]
+若只问 $3$ 次中红灯次数，则 $X\sim\operatorname{Bin}(3,2/5)$；这里的二项式来自固定次数的独立二分类生成，而不是来自“有三个位置”这一表面。
+\end{examplebox}
+
+\begin{examplebox}{固定次数与停止时刻必须分流：1987 Q十(1)、2015 Q二十二}
+固定进行 $n$ 次独立试验时，“至少一次”与“至多一次”属于二项计数：
+\[
+P(N\ge1)=1-(1-p)^n,\qquad
+P(N\le1)=(1-p)^n+np(1-p)^{n-1}.
+\]
+若改成“直到第 $r$ 次成功才停止”，观察对象已变成等待时刻 $T$，其一条路径必须满足最后一次是成功、此前恰有 $r-1$ 次成功：
+\[
+P(T=k)=\binom{k-1}{r-1}p^r(1-p)^{k-r},\qquad k\ge r.
+\]
+二者表面都问“成功次数”，但一个固定样本量、一个固定成功数；支持集和路径约束不同，不能共用同一公式。
+2015 Q二十二中观测密度为 $f(x)=2^{-x}\ln2$（$x>0$），成功事件是 $X>3$，因此
+\[
+p=P(X>3)=\int_3^\infty2^{-x}\ln2\,dx=2^{-3}=\frac18.
+\]
+若 $Y$ 是直到第二个成功出现时的观测次数，则
+\[
+P(Y=k)=\binom{k-1}{1}\left(\frac18\right)^2
+\left(\frac78\right)^{k-2},\quad k=2,3,\ldots,
+\qquad E(Y)=\frac2{1/8}=16.
+\]
+这一步把“分布参数来自题面事件概率”与“停止变量的支持从 $2$ 开始”同时回检。
+\end{examplebox}
+
+\begin{examplebox}{首次失败即停止：2000 Q十二}
+若产品独立且每件不合格概率为 $p$，第一次停机时已生产的件数 $T$ 不是固定次数下的二项计数，而是“前 $k-1$ 件合格、第 $k$ 件不合格”的等待时刻：
+\[
+P(T=k)=(1-p)^{k-1}p,\quad k=1,2,\ldots,
+\qquad E(T)=\frac1p,\quad D(T)=\frac{1-p}{p^2}.
+\]
+最后一步的失败事件必须保留；若把它误写成“直到第 $k$ 次才统计的成功数”，会同时错置支持集和参数方向。
+\end{examplebox}
+
+\begin{methodbox}{多阶段不放回：先生成状态，再对下一阶段混合}
+若抽取结果会被转移到下一容器，不能把整个过程压成一次“总体比例”计算。先把第一阶段留下的状态变量列出，再按状态条件化，最后混合。
+
+以 2003 年第十一题为例：甲箱有 $3$ 件正品、$3$ 件次品，从甲箱不放回抽 $3$ 件放入原有 $3$ 件正品的乙箱。令 $X$ 为转入乙箱的次品数，则
+\[
+P(X=k)=\frac{\binom{3}{k}\binom{3}{3-k}}{\binom{6}{3}},
+\qquad k=0,1,2,3,
+\]
+故
+\[
+P(X=0,1,2,3)=\frac1{20},\frac9{20},\frac9{20},\frac1{20},
+\qquad E(X)=3\cdot\frac36=\frac32.
+\]
+乙箱此时共有 $6$ 件产品，给定 $X=k$ 时再抽到次品的概率为 $k/6$，所以
+\[
+P(\text{乙箱再抽到次品})
+=\sum_{k=0}^3\frac{k}{6}P(X=k)
+=\frac{E(X)}6=\frac14.
+\]
+这里的关键不是背超几何公式，而是保留“第一阶段状态 $X$”这条信息链；直接把乙箱次品率写成一个未定义的固定比例，会漏掉随机转移。
+\end{methodbox}
+
+\subsection{几何概型}
+
+若样本点在有限非零测度的区域 $\Omega$ 上按测度均匀分布，则
+\[
+\boxed{P(A)=\frac{\mu(A)}{\mu(\Omega)}}
+\]
+其中 $\mu$ 可以是长度、面积、体积等。它要求事件可测、$0<\mu(\Omega)<\infty$，并且“均匀”有明确含义。能画出区域不等于可以套几何概型；在整个无界直线上也不存在平移不变且总质量为一的均匀分布。
+
+\begin{corebox}{统一视角}
+古典概型用计数测度，几何概型用几何测度；二者都是
+\[
+P(A)=\frac{\text{$A$ 的基础测度}}{\text{$\Omega$ 的基础测度}}
+\]
+在有限总测度下的归一化。它们是概率测度的具体构造，不是新的概率公理。
+\end{corebox}
+
+\begin{examplebox}{几何测度先画补集：2007 Q十六}
+在单位正方形内独立均匀取 $(X,Y)$，事件 $|X-Y|<1/2$ 的概率等于面积比。补事件由两 个直角三角形组成，每个直角边长为 $1/2$，故
+\[
+P(|X-Y|<1/2)=1-2\cdot\frac12\left(\frac12\right)^2=\frac34.
+\]
+这里的分母是整个正方形面积；先画补集比直接对不等式分区更不易漏掉两侧对称区域。
+\end{examplebox}
+
+\section{信息不足时仍能做什么：概率界}
+
+并事件的精确交叠未知时，次可加性给出
+\[
+\boxed{P\!\left(\bigcup_{i=1}^{\infty}A_i\right)\le\sum_{i=1}^{\infty}P(A_i).}
+\]
+两事件取等的充要条件是 $P(A\cap B)=0$，它弱于集合互斥。仅知道 $P(A),P(B)$ 时，联合结构被限制在 Fr\'echet 界内：
+\begin{align*}
+\max\{0,P(A)+P(B)-1\}
+&\le P(A\cap B)\le\min\{P(A),P(B)\},\\
+\max\{P(A),P(B)\}
+&\le P(A\cup B)\le\min\{1,P(A)+P(B)\}.
+\end{align*}
+下界 $P(A\cap B)\ge P(A)+P(B)-1$ 是两事件 Bonferroni 不等式。另有
+\[
+P(A)P(A^c)=p(1-p)\le\frac14,
+\]
+等号当且仅当 $p=1/2$。这些界的意义是：在依赖结构未知时，不虚构独立性，仍给出所有合法联合模型都必须满足的范围。
+
+\section{无限逼近：概率的连续性}
+
+若 $A_n\uparrow A$，即事件递增且 $A=\bigcup_nA_n$，则
+\[
+\lim_{n\to\infty}P(A_n)=P(A).
+\]
+若 $A_n\downarrow A$，即事件递减且 $A=\bigcap_nA_n$，则同样有
+\[
+\lim_{n\to\infty}P(A_n)=P(A).
+\]
+一般测度从上连续还要求首项测度有限；概率空间中 $P(A_1)\le1$，条件自动满足。这里允许“把极限移入概率”的原因是事件序列具有单调结构，而不是概率符号与极限总能交换。
+
+\begin{examplebox}{零概率事件怎样从连续性出现}
+在 $[0,1]$ 均匀取点，令
+\[
+A_n=\left[\frac12-\frac1n,\frac12+\frac1n\right]\cap[0,1].
+\]
+则 $A_n\downarrow\{1/2\}$，而 $P(A_n)\to0$，所以 $P(\{1/2\})=0$。集合没有消失，消失的是其概率质量。
+\end{examplebox}
+
+\section{贯穿模型：骰子世界如何随记录改变}
+
+在精细样本空间 $\Omega=\{1,2,3,4,5,6\}$ 中令
+\[
+A=\{2,4,6\},\quad B=\{4,5,6\},\quad C=\{1,2\},\quad D=\{5,6\}.
+\]
+则 $A\cap B=\{4,6\}$，$A\triangle B=\{2,5\}$，$C\cap D=\varnothing$ 但 $C\cup D\ne\Omega$，所以 $C,D$ 互斥却不对立。若骰子公平，$P(A)=1/2$；若骰子不均匀，事件集合完全不变，改变的是 $P$。
+
+若改成 $\Omega'=\{\text{奇},\text{偶}\}$，原来的事件 $A$ 变成粗模型中的一个样本点。这个例子同时说明：
+\begin{itemize}
+  \item $\Omega$ 决定能表达哪些区分；
+  \item $\mathcal F$ 决定哪些分类可赋概率；
+  \item $P$ 决定同一事件结构上的质量分配；
+  \item 改变其中一层，不能默默沿用另一层的公式。
+\end{itemize}
+
+\section{概念边界与反例}
+
+\small
+\begin{longtable}{L{2.5cm}L{2.2cm}L{3.0cm}L{4.0cm}L{3.1cm}}
+\toprule
+\textbf{概念 A} & \textbf{$\ne$} & \textbf{概念 B} & \textbf{判别条件或反例} & \textbf{混淆后果}\\
+\midrule
+样本点 $\omega$ & $\ne$ & 单点事件 $\{\omega\}$ & 元素与集合分层；$P$ 的输入是事件 & 对象类型错误\\
+有限空间 & $\ne$ & 等可能空间 & 非均匀骰子有限但不等可能 & 错套计数比\\
+互斥 & $\ne$ & 对立 & 对立还要求并为 $\Omega$ & 错把概率和写成一\\
+互斥 & $\ne$ & 独立 & 正概率互斥事件必不独立 & 同时错套加法与乘法\\
+$P(A)=0$ & $\ne$ & $A=\varnothing$ & 连续均匀模型中的单点 & 把“几乎不发生”写成不可能\\
+$P(A)=1$ & $\ne$ & $A=\Omega$ & 删除零概率集合仍可满概率 & 把几乎必然写成必然\\
+$P(A)=P(B)$ & $\ne$ & $A=B$ & 骰子的奇数事件与偶数事件 & 用数值相等反推集合相等\\
+$P(A)\le P(B)$ & $\ne$ & $A\subseteq B$ & 概率序关系不能恢复集合位置 & 逆用单调性\\
+$P(A\cap B)=0$ & $\ne$ & $A\cap B=\varnothing$ & 非空零测集可作交集 & 把概率互不重叠当集合互斥\\
+三者不同时发生 & $\ne$ & 两两互斥 & $A\cap B\cap C=\varnothing$ 不限制两两交 & 错删两两交项\\
+能画区域 & $\ne$ & 几何概型 & 还需可测、有限非零总测度与均匀性 & 用面积比替代未知分布\\
+事件包含 & $\ne$ & 因果导致 & $A\subseteq B$ 只是逻辑蕴含 & 引入题目没有的机制\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{可复原的建模闭环}
+
+\begin{enumerate}
+  \item 写明试验条件与记录协议，确定是否区分顺序、个体、时间和精度。
+  \item 构造 $\Omega$，检查完备、互斥、唯一归属和适当粒度。
+  \item 把题目语言翻译成事件，先做集合代数，不急于代概率。
+  \item 确认 $P$ 的来源：公理给定、离散加权、有限等可能或几何均匀。
+  \item 先找互斥分解、补事件或容斥；信息不足时改求概率界。
+  \item 检查结果是否在 $[0,1]$、是否满足包含导致的单调性、是否重复或漏计。
+\end{enumerate}
+
+\begin{corebox}{最小恢复线索}
+下次看到基础概率题，不从公式名开始，而从一句话恢复全链：
+\[
+\boxed{\text{记录协议定义世界，事件代数定义问题，概率公理守恒质量。}}
+\]
+只有当题目加入“已知某事发生”时，本册才停止并把控制权交给 Topic 02。
+\end{corebox}
+
+\begin{examplebox}{不放回的边际守恒不是独立：1997 真题}
+袋中 50 个球有 20 个黄球，连续不放回取两球。第二次取到黄球的概率为
+\[
+\frac{20}{50}\frac{19}{49}+\frac{30}{50}\frac{20}{49}=\frac25.
+\]
+它等于总体黄球比例，是随机排列下的位置交换对称；但第一次结果会改变第二次的条件概率，所以两次并不独立。看到“不放回”时，先区分“单个位置的边际”与“多个位置的联合”。
+\end{examplebox}
+
+\begin{examplebox}{早期真题：量词先翻译成计数事件（1987/1988）}
+独立重复 $n$ 次、单次成功概率为 $p$ 时，
+\[
+P(N\ge1)=1-(1-p)^n,\qquad P(N\le1)=(1-p)^n+np(1-p)^{n-1}.
+\]
+1988 年三次试验给 $1-(1-p)^3=19/27$，先取合法根 $p=1/3$。这里“至少一次”和“至多一次”对应不同事件层，不能共用补集公式。
+\end{examplebox}
+
+\begin{examplebox}{早期真题：几何概率先确定总区域（1991）}
+半圆 $y^2=2ax-x^2$ 的极坐标边界为 $r=2a\cos\theta$，有效角域为 $0<\theta<\pi/2$。原点连线与 $x$ 轴夹角小于 $\pi/4$ 的面积比为
+\[
+\frac{\frac12\int_0^{\pi/4}(2a\cos\theta)^2d\theta}{\frac12\int_0^{\pi/2}(2a\cos\theta)^2d\theta}
+=\frac12+\frac1\pi.
+\]
+几何概型的分母是总面积，不是角度区间长度。
+\end{examplebox}
+
+\end{document}

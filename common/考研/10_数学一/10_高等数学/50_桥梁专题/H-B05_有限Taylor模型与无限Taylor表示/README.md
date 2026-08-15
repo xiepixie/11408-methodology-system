@@ -1,6 +1,6 @@
 # H-B05｜有限 Taylor 模型与无限 Taylor 表示
 
-状态：目录已建立，正文未建。
+状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
 ## Position
 
@@ -27,3 +27,11 @@ Topic03、Topic11。
 ## Source Pack
 
 旧 `I-06` 中 Taylor 局部模型、`II-09` 幂级数相关内容为主要来源。
+
+## Manual
+
+- Canonical Source：[有限Taylor模型与无限Taylor表示.tex](有限Taylor模型与无限Taylor表示.tex)
+- Published View：[有限Taylor模型与无限Taylor表示.pdf](../../../../90_publish/有限Taylor模型与无限Taylor表示.pdf)
+
+## Review v1
+已核对有限阶局部模型、余项趋零与无限表示的升级条件；保留“有任意阶导数不等于 Taylor 展开成功”的 Anti-Bridge。下一轮用光滑但非解析函数和收敛域题验证。

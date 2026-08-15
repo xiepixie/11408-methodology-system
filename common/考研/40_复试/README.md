@@ -17,7 +17,7 @@
 
 | 分支 | 入口 | 当前目的 | 状态 |
 |---|---|---|---|
-| AI / Machine Learning / Deep Learning | [人工智能与机器学习](10_人工智能与机器学习/README.md) | 先铺 Search、Probability、ML、Optimization、DL、RL、Generative AI 的横向主干，再观察研究兴趣 | Atlas 工作稿，待人工确认 |
+| Artificial Intelligence | [人工智能与机器学习](10_人工智能与机器学习/README.md) | 八个 Core Area 与 Leaf Topic Boundary v1 已锁定；后续只在真实学习触发时建立 Leaf Handbook，并通过 Integration / Direction 观察研究兴趣 | Area + Leaf Boundary v1 已采用 |
 
 ## 与现有初试体系的关系
 

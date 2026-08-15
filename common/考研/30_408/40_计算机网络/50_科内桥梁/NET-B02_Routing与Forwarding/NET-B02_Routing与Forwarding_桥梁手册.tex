@@ -1,0 +1,49 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\usepackage{amsmath,booktabs,tabularx,hyperref}
+\handbooksetup{NET-B02 Routing × Forwarding}{408 · Network Internal Bridge}{Control Plane · FIB · Lookup · Action}
+\begin{document}
+\handbooktitle{Routing × Forwarding}{分布式控制知识怎样沉淀为每个 packet 可执行的转发表}{408 · NET-B02}
+\begin{corebox}{Mother Interface}
+\[
+\boxed{\text{Distributed Control Knowledge}\to\text{Forwarding State/FIB}\to\text{LPM Lookup}\to\text{Packet Action}}
+\]
+Routing 解决“全局路径知识怎样形成”，Forwarding 解决“当前 packet 下一步怎么走”。Bridge 只拥有知识到快速查表状态的交接。
+\end{corebox}
+\begin{methodbox}{Owners 与边界}
+NET05 Owns DV/LS/路由协议与控制收敛；NET04 Owns FIB/LPM、next hop、TTL 与 packet action。本册 Owns control-plane output 如何成为 data-plane input，不重新教授路由算法。
+\end{methodbox}
+\section{抽象状态与时间尺度}
+路由协议产生可达性与代价信息，经过选路、策略和收敛，安装为 FIB。转发查表必须使用某个已安装版本；控制平面更新不等于每个正在处理的 packet 都同时观察到新版本。
+\begin{handbooktable}{L{2.5cm} Y Y}
+\toprule
+交接对象 & NET05 输出 & NET04 输入/动作\\
+\midrule
+Destination scope & selected prefix & destination IP 与前缀包含关系\\
+Next-hop resolution & selected next hop / outgoing interface & recursive resolution 后的可执行邻接/接口\\
+Action attributes & discard、local、forward 等语义 & LPM 命中后的逐包 action\\
+Version/time & selection/install event & packet 到达时可见的 installed FIB 版本\\
+\bottomrule
+\end{handbooktable}
+
+\section{Handoff 不变量与失败分支}
+
+Bridge 不是简单把 RIB 复制成 FIB。安装前至少保持四个条件：selected route 的 prefix 与 action 可表示；next hop 能递归解析到直连接口或显式失败；同一时刻的 FIB 版本内部可执行；删除旧 route 与安装新 route 的顺序不能被假定为全网原子。
+
+\begin{itemize}
+  \item \kw{控制面已有结论、FIB 尚未安装：}后续 packet 仍可能消费旧状态；
+  \item \kw{selected route 无法解析 next hop：}不能把“RIB 有条目”直接写成“可转发”；
+  \item \kw{FIB install 已完成、邻接信息缺失：}NET04/NET-B01 仍可能触发 ARP/ND 或暂存/失败分支；
+  \item \kw{多设备异步安装：}单机新 FIB 不证明全网已收敛，可能出现 transient loop 或 black hole。
+\end{itemize}
+
+\section{最小可验证例子}
+
+路由器原来选择 `10.0.0.0/8 -> R1`，收到更具体的 `10.1.0.0/16 -> R2` 并完成策略选择。只有当 `/16` 对应 action 安装进 FIB 后，新到达的 `10.1.2.3` 才通过 LPM 命中 R2；安装前仍可能命中旧 `/8`。若 R2 的 next hop 无法解析，控制面的 `/16` 候选真实存在，也不产生一条可执行转发路径。
+\begin{warnbox}{Anti-Bridge}
+“使用图算法”不等于“路由协议就是图算法”；控制面收敛与数据面逐包动作有不同状态、参与者和时间尺度。
+\end{warnbox}
+\begin{corebox}{Compression}
+这条信息是谁产生的？何时安装进 FIB？packet 查哪一版状态？lookup 失败或冲突时 action 是什么？
+\end{corebox}
+\end{document}

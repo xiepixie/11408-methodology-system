@@ -1,0 +1,30 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage[a4paper,margin=1.75cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx}
+\usepackage[most]{tcolorbox}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
+\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\begin{document}
+\section*{B03\quad Hessian 与二次型：二阶局部形状与正定性}
+\textbf{依赖：}B01。二阶信息在驻点处先去掉一阶项，再由二次型判断局部形状。
+\begin{tcolorbox}[title=母接口]
+$f(x+h)=f(x)+\nabla f(x)^Th+\frac12h^TH(x)h+o(\|h\|^2)$；
+驻点 $\nabla f(x)=0$ 时，局部形状由 $q(h)=h^THh$ 主导。
+\end{tcolorbox}
+\subsection*{1.\ 符号结构}
+对称 Hessian $H$ 若正定，则 $q(h)>0$（$h\ne0$），给出严格局部极小；负定给出严格局部极大；不定则存在升降两条方向，必为鞍点。半正定/半负定只能说明二阶项未否定，不能直接推出极值。
+\subsection*{2.\ 代数与几何翻译}
+合同变换 $H\mapsto P^THP$ 改变坐标表示但保留惯性；特征值符号是正定性的快速证据。二维判据 $\det H>0$ 且 $f_{xx}>0$ 对应正定，$\det H<0$ 对应不定；$\det H=0$ 必须检查高阶项或特殊路径。
+\subsection*{3.\ 约束与边界}
+若驻点不在开域内部，不能只看 Hessian；边界、约束切向和可行路径需要转交 B04 或高数 Topic07。Hessian 是点处导数对象，二次型是局部模型中的代数函数，两者不可混称。
+\subsection*{4.\ 最小例子与调用}
+对 $f(x,y)=x^2+4xy+5y^2$，原点是驻点，且
+\[
+h^THh=2h_1^2+8h_1h_2+10h_2^2
+=2(h_1+2h_2)^2+2h_2^2>0\quad(h\ne0).
+\]
+所以原点严格局部极小。题面出现二阶偏导表、二次型或特征值符号时，先验证驻点，再调用此符号翻译。
+\begin{corebox}{检查句}
+是否先验证驻点？二次型是否在所有非零方向同号？退化时是否停止二阶判别并转向高阶项/边界？
+\end{corebox}
+\end{document}

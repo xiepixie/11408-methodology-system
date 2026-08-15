@@ -1,7 +1,7 @@
 # 操作系统 Subject Atlas
 
 > 类型：Atlas
-> 状态：已采用；README 是 Canonical Subject Atlas，五个 Core Topic 的历史 LaTeX/发布物待逐册纳管。
+> 状态：已采用；README 是 Canonical Subject Atlas。OS-00 与五个 Core Topic 的 Source Diff / Owner Diff 已完成，六册 Canonical LaTeX 均已纳管并有发布视图；新增 Rules 仍待真题验证与人工确认。
 
 > 一个程序看起来像在“独占机器”，但真实系统里 CPU、内存、设备和文件都在被多个执行流共享。OS 的核心不是背功能列表，而是追踪：**谁拥有状态、什么事件改变状态、什么坏状态必须被阻止、最小机制怎样恢复 Safety / Liveness。**
 
@@ -21,6 +21,10 @@ State
 ```
 
 本 README 直接拥有 Subject Atlas 地图。
+
+OS 状态坐标压缩为 `S = (Objects, Relations, Queues)`：先列内核管理的对象、引用/映射关系和等待队列，再用 `Event + Mechanism + Policy` 推演新状态。任何转换都必须说明触发事件，并分别检查 Safety / Liveness、不变量与成本。
+
+OS 的五项上位职责是 Control、Virtualization、Coordination、Protection 与 Persistence。它们只是跨 Topic 的导航坐标：控制权进入进程/调度，协调进入调度/并发/I/O，保护进入权限与 VM，持久化进入文件系统；不据此新增第五册之外的平行机制 Topic。
 
 ## Atlas Foundation
 

@@ -1,0 +1,40 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage{../../../../../../common/ipara}
+\usepackage{amsmath,amssymb,booktabs,tabularx}
+\begin{document}
+\section*{H-B05\quad 有限 Taylor 模型与无限 Taylor 表示}
+\textbf{边界：}有限阶近似服务于局部误差控制；无限级数表示还要证明收敛、余项消失以及定义域边界。
+\subsection*{1.\ 两个层次}
+\[
+f(x)=P_n(x)+R_n(x),\qquad
+P_n(x)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k
+\]
+是有限模型。若存在 $R_n(x)\to0$ 且级数在目标点收敛，才可升级为
+\[
+f(x)=\sum_{k=0}^{\infty}\frac{f^{(k)}(a)}{k!}(x-a)^k.
+\]
+\begin{tcolorbox}[title=升级资格]
+余项趋零 + 收敛半径覆盖目标点 + 端点单独判定 + 和函数确为原函数。
+\end{tcolorbox}
+\subsection*{2.\ 典型路由}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+问题信号 & 先调用\\ \midrule
+只需近似、估计误差或求极限 & Topic03 的有限 Taylor 模型\\
+要求展开区间、端点或逐项积分 & Topic11 的幂级数机制\\
+既要局部误差又要函数表示 & 先用 Topic03 定余项，再用 Topic11 验收收敛域\\
+\bottomrule
+\end{tabularx}
+\subsection*{3.\ 最小例子与调用}
+对 $f(x)=1/(1-x)$，有限恒等式为
+\[
+\frac1{1-x}=1+x+\cdots+x^n+\frac{x^{n+1}}{1-x}.
+\]
+固定 $|x|<1$ 时余项趋零，才升级为 $\sum_{k\ge0}x^k$；在 $x=1$ 公式无定义，在 $x=-1$ 余项不趋零。题面从有限近似跳到函数表示时调用这条升级资格。
+
+\subsection*{4.\ 失败边界}
+任意阶可导不保证 Taylor 级数等于原函数；形式级数只说明系数，不自动说明和函数；在收敛区间端点必须重新判定。
+\begin{tcolorbox}[title=检查句]
+我现在是在“近似一个值”，还是在“证明一个函数表示”？若是后者，余项、半径和端点是否都已交代？
+\end{tcolorbox}
+\end{document}

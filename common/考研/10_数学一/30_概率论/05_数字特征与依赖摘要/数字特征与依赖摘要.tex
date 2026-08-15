@@ -1,0 +1,647 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{145,154,163}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={数字特征与依赖摘要}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 概率统计 Topic 05}}
+\rhead{\small\color{deep}期望 · 方差 · 协方差 · 相关系数 · 条件期望}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\title{\vspace{-1.1cm}\textbf{数字特征与依赖摘要}\\[0.4em]
+\large 怎样高效压缩概率分布而不遗忘关键结构与信息损失？}
+\author{数学一 · 概率统计 Topic 05}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：怎样高效压缩概率分布而不遗忘关键结构与信息损失？}
+完整概率分布包含了无限维信息。数字特征是用少数几个关键标量（中心位置、波动幅度、线性关联度）对分布进行最佳数值压缩。
+
+主线推演逻辑：
+\[
+\boxed{
+\text{分布 } P_X \xrightarrow{\text{加权平均}} E(X) \xrightarrow{\text{二阶中心矩}} \operatorname{Var}(X) \xrightarrow{\text{交叉二阶矩}} \operatorname{Cov}(X,Y) \xrightarrow{\text{标准化}} \rho_{XY}
+}
+\]
+\end{corebox}
+
+\section{本册定位与职责划分}
+
+\begin{itemize}
+  \item \kw{本册拥有（Owns）：}数学期望 $E(X)$、方差 $\operatorname{Var}(X)$、协方差 $\operatorname{Cov}(X,Y)$、相关系数 $\rho_{XY}$、矩（原点矩与中心矩）、条件期望 $E(Y \mid X)$ 与全期望公式。
+  \item \kw{本册使用（Uses）：}一维分布与二维联合分布。
+  \item \kw{本册不拥有（Does not own）：}大数定律与中心极限定理的收敛证明（Topic 06 负责）、统计量样本方差的抽样分布（Topic 07 负责）。
+  \item \kw{输出目标（Output）：}分布标量特征的完整算子性质与计算链条。
+\end{itemize}
+
+\section{第一层：期望、矩、形状与存在性}
+
+数字特征是有损压缩：同一组均值和方差可以对应完全不同的分布。因此每次使用矩时，必须同时问“这个矩是否存在”和“它能表达什么信息”。
+
+离散型与具有密度的连续型随机变量分别用
+\[
+E(X)=\sum_kx_kp_k,\qquad E(X)=\int_{-\infty}^{\infty}xf_X(x)\,dx,
+\]
+并要求 $E|X|<\infty$，才能把期望作为有限实数使用。更一般的 LOTUS 公式是
+\[
+\boxed{E[g(X)]=\sum_kg(x_k)p_k\quad\text{或}\quad E[g(X)]=\int g(x)f_X(x)\,dx},
+\]
+它只调用 $X$ 的分布，不要求先求 $g(X)$ 的完整分布。期望是线性算子：只要各项存在，
+\[
+E\!\left(\sum_i a_iX_i+b\right)=\sum_i a_iE(X_i)+b,
+\]
+这里不需要独立性；独立性只在乘积拆分、卷积或协方差消失等更强动作中出现。
+
+\begin{methodbox}{LOTUS 与线性的证据骨架}
+离散情形把 $g(X)$ 取值相同的样本点合并：
+\[
+E[g(X)]=\sum_y yP(g(X)=y)=\sum_xg(x)P(X=x).
+\]
+连续情形把求和换成对 $X$ 的分布积分；因此只要目标是期望，就不必先构造 $g(X)$ 的完整分布。线性性来自积分/求和的可加性和常数可提出，整个推导没有使用 $X,Y$ 独立。使用前仍需检查相应绝对可积性，不能用形式线性掩盖发散。
+\end{methodbox}
+\begin{methodbox}{先找逐点恒等式，再决定是否需要独立性}
+数字特征题的第一动作不是立即写分布，而是把目标随机变量在每个样本点上的表达式化简。例如
+\[
+\max(X,Y)\min(X,Y)=XY,
+\qquad
+(X-\mu)^2=X^2-2\mu X+\mu^2.
+\]
+若题目只问 $E[\max(X,Y)\min(X,Y)]$，先用该恒等式和独立性得到 $E(XY)=E(X)E(Y)$；只有要求 $\max$、$\min$ 的分布或其他非线性输出时，才进入联合分布/顺序统计量路线。这样既避免无谓构造中间分布，也避免把“代数恒等式”误当成独立性结论。
+\end{methodbox}
+
+\begin{methodbox}{高阶矩先做归一化与分布识别：2010 Q十四}
+若题目以级数形式给出离散分布，先检查总质量，再决定用逐项求和还是已知分布矩。题面
+\[
+P(X=k)=\frac{C}{k!},\qquad k=0,1,2,\ldots
+\]
+要求 $\sum_kP(X=k)=1$，故 $Ce=1$、$C=e^{-1}$，这正是 $X\sim\operatorname{Pois}(1)$。于是
+\[
+E(X^2)=\operatorname{Var}(X)+[E(X)]^2=1+1=2.
+\]
+也可直接用级数验证：$E(X^2)=e^{-1}\sum_{k\ge1}k^2/k!=e^{-1}(\sum k(k-1)/k!+\sum k/k!)=2$。第一种路径揭示生成机制，第二种路径可作为不依赖分布表的独立回检；不能在 $C$ 尚未归一化时直接套矩公式。
+\end{methodbox}
+
+\begin{examplebox}{只问数字特征时直接压缩：1990、1992、1995 真题}
+若 $X\sim\operatorname{Pois}(2)$、$Z=3X-2$，线性性直接给出 $E(Z)=4$，不必先求 $Z$ 的完整分布。若 $X\sim\operatorname{Exp}(1)$，则
+\[
+E(X+e^{-2X})=E(X)+E(e^{-2X})=1+\int_0^\infty e^{-3x}\,dx=\frac43.
+\]
+若 $X\sim\operatorname{Bin}(10,0.4)$，二阶矩走方差分流：
+\[
+E(X^2)=\operatorname{Var}(X)+[EX]^2=10(0.4)(0.6)+4^2=18.4.
+\]
+三题的共同决策是先看目标是否只要求数字特征；若是，优先 LOTUS、线性性或二阶矩恒等式，停止构造不必要的中间分布。
+\end{examplebox}
+
+\begin{examplebox}{2011 真题：乘积高阶矩先拆独立，再辨认原点矩}
+设 $X,Y$ 相互独立，且分别服从 $N(\mu,\sigma^2)$，求 $E(XY^2)$。这里目标是乘积矩，不是线性组合；第一步必须使用独立性：
+\[
+E(XY^2)=E(X)E(Y^2).
+\]
+正态变量的二阶\textbf{原点矩}为
+\[
+E(Y^2)=\operatorname{Var}(Y)+[E(Y)]^2=\sigma^2+\mu^2,
+\qquad E(X)=\mu,
+\]
+所以
+\[
+\boxed{E(XY^2)=\mu(\mu^2+\sigma^2)}.
+\]
+易错边界是把 $E(Y^2)$ 误写成方差 $\sigma^2$；只有中心二阶矩 $E[(Y-\mu)^2]$ 才等于 $\sigma^2$。若 $X,Y$ 不独立，边缘正态分布本身不足以确定 $E(XY^2)$，必须回到联合分布。
+\end{examplebox}
+
+\begin{examplebox}{中心化成对和：2001 Q十二 的协方差展开}
+令 $A_i=X_i+X_{n+i}$，全样本容量为 $2n$。则
+\[
+E(A_i-2\bar X)=0,\quad D(A_i)=2\sigma^2,\quad D(2\bar X)=2\sigma^2,
+\quad \operatorname{Cov}(A_i,2\bar X)=\frac{2\sigma^2}{n}.
+\]
+因此
+\[
+D(A_i-2\bar X)=2\sigma^2\left(1-\frac1n\right),
+\qquad
+E\sum_{i=1}^n(A_i-2\bar X)^2=2(n-1)\sigma^2.
+\]
+这里目标只是期望，不需要求整组括号项的联合分布；但不能把它们当成独立项，因为它们共享 $\bar X$ 并受中心化约束。
+\end{examplebox}
+
+\subsection{原点矩、中心矩与绝对矩}
+
+对 $r>0$，定义 $r$ 阶原点矩、绝对矩和中心矩：
+\[
+\mu'_r=E(X^r),\qquad m_r=E(|X|^r),\qquad
+\mu_r=E[(X-\mu)^r],\quad \mu=E(X).
+\]
+二阶中心矩就是方差：$\mu_2=\operatorname{Var}(X)$；一阶中心矩恒为 $0$。标准化矩为
+\[
+\eta_r=E\left[\left(\frac{X-\mu}{\sigma}\right)^r\right],\qquad 0<\sigma^2<\infty.
+\]
+三阶标准化中心矩是偏度，四阶标准化中心矩是峰度：
+\[
+\gamma_1=\frac{\mu_3}{\sigma^3},\qquad
+\beta_2=\frac{\mu_4}{\sigma^4},\qquad \gamma_2=\beta_2-3.
+\]
+正态分布的 $\gamma_1=0,\gamma_2=0$；$\gamma_1=0$ 不推出对称，峰度也不只是“峰顶高度”。
+
+若 $0<r<s$ 且 $E|X|^s<\infty$，则由 Hölder/Lyapunov 不等式
+\[
+\left(E|X|^r\right)^{1/r}\leq\left(E|X|^s\right)^{1/s}.
+\]
+所以高阶绝对矩存在会推出低阶绝对矩存在，反向一般不成立。Cauchy 分布就是典型边界：位置参数存在，但一阶期望和二阶方差均不存在，不能机械代入“均值—方差”公式。
+
+\begin{methodbox}{绝对偏差先按中心分层}
+目标 $E|X-c|$ 不是标准差，也不能由 $E(X)$ 或 $D(X)$ 单独确定。先确认中心 $c$ 是题目给定的常数还是 $E(X)$，再按 $X<c$、$X=c$、$X>c$ 分层：
+\[
+E|X-c|=E[(c-X)I_{\{X<c\}}]+E[(X-c)I_{\{X>c\}}].
+\]
+连续变量用两侧积分；离散变量按每个取值的质量求和。若 $X$ 为整数型且 $c$ 为整数，$X=c$ 项贡献为零，但不能把它从概率质量守恒中“删掉”；它只是在绝对偏差和中系数为零。最后检查结果非负，并区分精确数字特征与由方差给出的上界。
+\end{methodbox}
+
+\begin{examplebox}{2023 真题：Poisson(1) 的绝对偏差}
+若 $X\sim\operatorname{Pois}(1)$，则 $EX=1$。按 $0,1,\{2,3,\ldots\}$ 三层记账：
+\[
+\begin{aligned}
+E|X-1|
+&=P(X=0)+\sum_{k=2}^{\infty}(k-1)P(X=k)\\
+&=e^{-1}+e^{-1}\sum_{k=2}^{\infty}\frac{k-1}{k!}
+=2e^{-1}.
+\end{aligned}
+\]
+也可用 $E|X-1|=E(X-1)+2E[(1-X)I_{\{X=0\}}]$ 回检同一结果。不能把该量写成 $\sqrt{D(X)}=1$；标准差与绝对偏差是不同的损失/摘要。
+\end{examplebox}
+
+\begin{examplebox}{2009 真题：二项总体中“均值减方差”构造 $np^2$}
+若 $X_i\sim\operatorname{Bin}(n,p)$，$\bar X$ 与 $S^2$ 分别为样本均值和无偏样本方差，则
+\[
+E(\bar X)=np,\qquad E(S^2)=D(X)=np(1-p).
+\]
+目标参数可重写为
+\[
+np^2=np-np(1-p)=E(X)-D(X).
+\]
+因此
+\[
+E(\bar X-S^2)=np-np(1-p)=np^2,
+\]
+从而题目中的 $k=-1$。这不是偶然系数：$\bar X$ 提供总体均值摘要，$S^2$ 提供总体方差摘要；若把 $S^2$ 误当成 $np^2$ 的直接估计，就会丢失二项分布的方差项。该题只问无偏系数，在线性期望与 $E(S^2)=D(X)$ 闭合处停止，不需要构造估计量的完整抽样分布。
+\end{examplebox}
+
+\subsection{示性变量：把计数变成期望}
+
+事件 $A$ 的示性变量 $I_A$ 满足
+\[
+I_A=\begin{cases}1,&A\text{发生},\\0,&A^c\text{发生},\end{cases}\qquad E(I_A)=P(A),\qquad I_A^2=I_A.
+\]
+若 $N=\sum_{i=1}^nI_{A_i}$ 是满足条件的对象数，则
+\[
+E(N)=\sum_{i=1}^nP(A_i)
+\]
+不需要事件独立。二阶矩则会引入交叉项：
+\[
+E(N^2)=\sum_iP(A_i)+2\sum_{i<j}P(A_i\cap A_j).
+\]
+这一区分解释了“期望易算而方差需处理依赖”的常见现象。
+
+\subsection{尾和与尾积分}
+
+若 $X\geq0$，Tonelli 定理给出
+\[
+\boxed{E(X)=\int_0^{\infty}P(X>t)\,dt}.
+\]
+若 $X$ 为非负整数值，
+\[
+\boxed{E(X)=\sum_{k=1}^{\infty}P(X\geq k)}.
+\]
+一般可积变量可拆为正负部分：
+\[
+E(X)=\int_0^\infty P(X>t)\,dt-\int_0^\infty P(X<-t)\,dt.
+\]
+等待时间、寿命、最大值和停止时刻问题，往往先写尾概率比直接求密度更短；但必须先确认非负性或绝对可积性。
+
+\section{第二层：方差、标准化与最小二乘几何}
+
+\subsection{方差的定义、性质与计算链}
+
+当 $E(X^2)<\infty$ 时，
+\[
+\operatorname{Var}(X)=E[(X-\mu)^2]=E(X^2)-\mu^2\geq0,\qquad \operatorname{SD}(X)=\sqrt{\operatorname{Var}(X)}.
+\]
+方差为零当且仅当 $X=\mu$ 几乎处处。平移不改变方差，缩放使方差乘以系数平方：
+\[
+\operatorname{Var}(aX+b)=a^2\operatorname{Var}(X).
+\]
+对有限个二阶可积变量，
+\[
+\operatorname{Var}\left(\sum_{i=1}^na_iX_i\right)
+=\sum_{i=1}^na_i^2\operatorname{Var}(X_i)
++2\sum_{i<j}a_ia_j\operatorname{Cov}(X_i,X_j).
+\]
+只有在独立或至少两两不相关时，交叉项才能消失。
+
+\begin{methodbox}{方差恒等式的计算推导}
+令 $\mu=E(X)$，对任意常数 $a$ 展开平方：
+\[
+E[(X-a)^2]
+=E[(X-\mu)+(\mu-a)]^2
+=\operatorname{Var}(X)+(\mu-a)^2,
+\]
+因为 $E(X-\mu)=0$，交叉项恰好消失。取 $a=0$ 得
+$\operatorname{Var}(X)=E(X^2)-\mu^2$；对和式逐项展开则得到协方差交叉项。这个推导同时说明了方差非负、均值的平方损失最优性和“方差不是线性算子”的边界。
+\end{methodbox}
+
+\subsection{均值是平方损失下的最优常数}
+
+对任意常数 $a$，
+\[
+\boxed{E[(X-a)^2]=\operatorname{Var}(X)+(\mu-a)^2}.
+\]
+因此 $a=\mu$ 唯一（除退化情形外）最小化均方误差；这不是说均值必然是最可能取值，而是说它对应平方损失的最佳常数预测。
+
+若 $0<\sigma^2<\infty$，标准化 $Z=(X-\mu)/\sigma$ 满足 $E(Z)=0,\operatorname{Var}(Z)=1$，但不会因此变成标准正态。变异系数
+\[
+\operatorname{CV}(X)=\frac{\sigma}{|\mu|}\quad(\mu\neq0)
+\]
+是无量纲的相对波动指标；均值接近零或允许负均值时，解释必须谨慎。
+
+\section{第三层：协方差、相关与矩阵}
+
+\subsection{协方差的双线性结构}
+
+若二阶矩存在，
+\[
+\operatorname{Cov}(X,Y)=E[(X-EX)(Y-EY)]=E(XY)-E(X)E(Y).
+\]
+它对称、双线性，且 $\operatorname{Cov}(X,X)=\operatorname{Var}(X)$、$\operatorname{Cov}(X,c)=0$。特别地，
+\[
+\operatorname{Var}(X\pm Y)=\operatorname{Var}(X)+\operatorname{Var}(Y)\pm2\operatorname{Cov}(X,Y).
+\]
+
+由 Cauchy--Schwarz，
+\[
+|\operatorname{Cov}(X,Y)|\leq\sigma_X\sigma_Y.
+\]
+当两边方差正且有限时，相关系数
+\[
+\rho_{XY}=\frac{\operatorname{Cov}(X,Y)}{\sigma_X\sigma_Y}\in[-1,1].
+\]
+$|\rho|=1$ 当且仅当 $Y=aX+b$ 几乎处处成立，其中 $a$ 的正负决定相关系数的符号。
+
+\subsection{独立、不相关与非线性依赖}
+
+独立且二阶矩存在 $\Rightarrow \operatorname{Cov}(X,Y)=0$，但逆命题一般不成立。例：$X\sim U(-1,1),Y=X^2$ 时，奇偶对称使 $E(XY)=E(X^3)=0$，故不相关；然而 $Y$ 完全由 $X$ 决定，显然不独立。只有联合正态这一特殊结构把“不相关”升级为“独立”。
+
+\subsection{协方差矩阵与线性组合}
+
+对随机向量 $\boldsymbol X=(X_1,\ldots,X_p)^{\mathsf T}$，
+\[
+\boldsymbol\mu=E(\boldsymbol X),\qquad
+\boxed{\boldsymbol\Sigma=E[(\boldsymbol X-\boldsymbol\mu)(\boldsymbol X-\boldsymbol\mu)^{\mathsf T}]}.
+\]
+第 $(i,j)$ 个元素是 $\operatorname{Cov}(X_i,X_j)$。矩阵对称半正定，因为对任意 $\boldsymbol a$：
+\[
+\boldsymbol a^{\mathsf T}\boldsymbol\Sigma\boldsymbol a
+=\operatorname{Var}(\boldsymbol a^{\mathsf T}\boldsymbol X)\geq0.
+\]
+这把“方差如何随线性组合变化”压缩成一个矩阵算子，是多维正态、回归和统计推断的接口；本册只拥有其概率定义，统计估计留给 Topic 07/08。
+
+\subsection{线性组合方差的 Rayleigh 商接口}
+
+当题目把线性组合的系数限制为单位长度，例如
+\[
+a^2+b^2=1,\qquad T=aX+bY,
+\]
+目标已经不是“展开一次方差”，而是要在所有观察方向中寻找波动最大的方向。令
+\[
+\boldsymbol a=\begin{pmatrix}a\\b\end{pmatrix},\qquad
+\boldsymbol\Sigma=\begin{pmatrix}
+\operatorname{Var}(X)&\operatorname{Cov}(X,Y)\\
+\operatorname{Cov}(X,Y)&\operatorname{Var}(Y)
+\end{pmatrix},
+\]
+则
+\[
+\operatorname{Var}(aX+bY)=\boldsymbol a^{\mathsf T}\boldsymbol\Sigma\boldsymbol a,
+\qquad \boldsymbol a^{\mathsf T}\boldsymbol a=1.
+\]
+对称协方差矩阵的 Rayleigh 商满足
+\[
+\lambda_{\min}(\boldsymbol\Sigma)\leq
+\boldsymbol a^{\mathsf T}\boldsymbol\Sigma\boldsymbol a\leq
+\lambda_{\max}(\boldsymbol\Sigma),
+\]
+等号方向分别是对应特征向量。因此“单位系数下方差最大”应先转成最大特征值问题，而不是把一个系数硬设为正后做单变量求导。
+
+\begin{methodbox}{二维标准化正态的直接推导}
+若 $\operatorname{Var}(X)=\operatorname{Var}(Y)=1$ 且 $\operatorname{Cov}(X,Y)=\rho$，则
+\[
+\boldsymbol\Sigma=\begin{pmatrix}1&\rho\\\rho&1\end{pmatrix},\qquad
+\lambda_{\pm}=1\pm\rho.
+\]
+由于最大特征值为 $1+|\rho|$，
+\[
+\max_{a^2+b^2=1}\operatorname{Var}(aX+bY)=1+|\rho|.
+\]
+等号方向是 $a=b$ 或 $a=-b$ 的特征方向，具体选择由 $\rho$ 的符号决定。
+\end{methodbox}
+
+边界检查：协方差矩阵必须半正定；若题目没有单位长度约束，方差通常没有有限最大值；若系数约束改成一般二次型，应转为广义 Rayleigh 商并检查约束矩阵正定性。该接口连接 Topic 05 的概率摘要与线性代数 Topic 05/06 的谱、正定结构，但不把协方差矩阵重新归入线代 Owner。
+
+\section{第四层：条件期望、迭代与方差分解}
+
+\subsection{条件期望的两种读法}
+
+离散 $Y$ 下，
+\[
+E(X\mid Y=y)=\sum_xxP(X=x\mid Y=y),
+\]
+连续情形下，
+\[
+E(X\mid Y=y)=\int xf_{X\mid Y}(x\mid y)\,dx.
+\]
+更一般地，$E(X\mid\mathcal G)$ 是对信息 $\mathcal G$ 可测且满足
+\[
+E[I_AX]=E[I_AE(X\mid\mathcal G)]\qquad(A\in\mathcal G)
+\]
+的随机变量。直观上，它是在已知信息下对 $X$ 的最佳平方可积预测；代价是条件层之间的信息被保留，而非条件期望只保留总体平均。
+
+\subsection{全期望、全方差与全协方差}
+
+迭代期望（全期望）为
+\[
+\boxed{E[E(X\mid Y)]=E(X)}.
+\]
+全方差公式：
+\[
+\boxed{\operatorname{Var}(X)=E[\operatorname{Var}(X\mid Y)]+\operatorname{Var}[E(X\mid Y)]}.
+\]
+第一项是层内平均噪声，第二项是层间均值差异；两项均非负，不能漏掉任何一项。二元推广为
+\[
+\boxed{\operatorname{Cov}(X,Z)=E[\operatorname{Cov}(X,Z\mid Y)]+\operatorname{Cov}(E[X\mid Y],E[Z\mid Y])}.
+\]
+若条件独立，则第一项为零，但第二项仍可能不为零；这解释了条件独立不等于无条件独立。
+
+\begin{methodbox}{全方差公式的计算推导}
+记 $m(Y)=E(X\mid Y)$。把总偏差拆成
+\[
+X-E(X)=\bigl(X-m(Y)\bigr)+\bigl(m(Y)-E(X)\bigr).
+\]
+平方后取期望，第一项给 $E[\operatorname{Var}(X\mid Y)]$，第二项给 $\operatorname{Var}(m(Y))$；交叉项为零，因为
+\[
+E[X-m(Y)\mid Y]=0.
+\]
+因此全方差不是记忆公式，而是“层内噪声 + 层间均值差异”的正交分解。全协方差完全沿同一拆分，只需把平方换成交叉乘积。
+\end{methodbox}
+
+\begin{examplebox}{真题对照：随机选择的混合 vs 取平均}
+2014 Q八 中，$Y_1$ 以概率 $1/2$ 选择 $X_1$ 或 $X_2$，而 $Y_2=(X_1+X_2)/2$。令 $G\sim\operatorname{Bernoulli}(1/2)$ 独立于 $(X_1,X_2)$，则 $Y_1=GX_1+(1-G)X_2$。条件分解给出
+\[
+\begin{aligned}
+E(Y_1)&=\tfrac12(E X_1+E X_2),\\
+\operatorname{Var}(Y_1)&=\tfrac12(\operatorname{Var}X_1+\operatorname{Var}X_2)
+ +\tfrac14(E X_1-E X_2)^2,\\
+\operatorname{Var}(Y_2)&=\tfrac14(\operatorname{Var}X_1+\operatorname{Var}X_2)
+\quad(X_1\perp X_2).
+\end{aligned}
+\]
+额外的层间均值差异使混合的方差通常大于平均值的方差；“均值相同”不意味着波动相同。
+
+2020 Q二十二进一步构造 $Y=X_3X_1+(1-X_3)X_2$，其中 $X_1,X_2$ 为独立标准正态，$X_3$ 等概率取 $0,1$。分层可知 $Y\sim N(0,1)$，但
+\[
+\operatorname{Cov}(X_1,Y)=E(X_1Y)=\tfrac12E(X_1^2)+\tfrac12E(X_1X_2)=\tfrac12\ne0.
+\]
+所以即使两个边缘都标准正态，也不能从“看起来同分布”推出独立；必须回到联合生成链。
+\end{examplebox}
+
+\begin{examplebox}{真题动作链：2024 Q九 的条件均匀与全协方差}
+设 $X$ 的密度为 $f_X(x)=2(1-x)$（$0<x<1$），且给定 $X=x$ 时
+$Y\mid X=x\sim U(x,1)$。条件分布的区间随 $x$ 改变，不能把 $Y$
+直接当作固定区间上的均匀变量。先取条件均值：
+\[
+E(Y\mid X=x)=\frac{x+1}{2},\qquad EX=\int_0^1 2x(1-x)\,dx=\frac13,
+\]
+\[
+DX=\int_0^1x^2\,2(1-x)\,dx-\left(\frac13\right)^2=\frac1{18}.
+\]
+全协方差公式在这里写成
+\[
+\operatorname{Cov}(X,Y)
+=E[\operatorname{Cov}(X,Y\mid X)]
+ +\operatorname{Cov}(E[X\mid X],E[Y\mid X]).
+\]
+第一项为 $0$，因为给定 $X$ 后 $X$ 是常数；第二项为
+\[
+\operatorname{Cov}\left(X,\frac{X+1}{2}\right)=\frac12DX=\frac1{36}.
+\]
+若题目改问 $DY$，则不能在此停止，还要使用
+\[
+DY=E[\operatorname{Var}(Y\mid X)]+\operatorname{Var}\left(\frac{X+1}{2}\right),
+\qquad \operatorname{Var}(Y\mid X=x)=\frac{(1-x)^2}{12},
+\]
+把层内均匀噪声与层间均值波动分别记账。\kw{模型句：}条件均值保留了由 $X$ 传递到 $Y$ 的线性信号；条件方差描述给定 $X$ 后剩余的层内噪声。
+\end{examplebox}
+
+\section{第五层：由矩推出概率界}
+
+\subsection{Cauchy--Schwarz 与 Jensen}
+
+若二阶矩存在，
+\[
+E|XY|\leq\sqrt{E(X^2)E(Y^2)},\qquad |\operatorname{Cov}(X,Y)|\leq\sigma_X\sigma_Y.
+\]
+若 $\varphi$ 为凸函数且期望存在，Jensen 不等式为
+\[
+\boxed{\varphi(EX)\leq E[\varphi(X)]}.
+\]
+严格凸时等号通常要求 $X$ 几乎处处为常数。典型地，$[E(X)]^2\leq E(X^2)$。
+
+\subsection{Markov、Chebyshev 与 Cantelli}
+
+若 $X\geq0,a>0$，Markov：
+\[
+\boxed{P(X\geq a)\leq\frac{E(X)}a}.
+\]
+若 $E(X)=\mu,\operatorname{Var}(X)=\sigma^2<\infty$，Chebyshev：
+\[
+\boxed{P(|X-\mu|\geq\varepsilon)\leq\frac{\sigma^2}{\varepsilon^2}}.
+\]
+单侧偏离用 Cantelli：
+\[
+\boxed{P(X-\mu\geq a)\leq\frac{\sigma^2}{\sigma^2+a^2}},\qquad a>0.
+\]
+选择规则是：非负量先看 Markov；双侧偏差看 Chebyshev；明确单侧方向时检查 Cantelli。它们只给上界，不给事件的精确概率；Chebyshev 连接 Topic 06 的弱大数律，但极限定理证明不在本册。
+
+\begin{methodbox}{概率界的最小证明链}
+若 $X\ge0$，事件指标满足 $I_{\{X\ge a\}}\le X/a$，取期望即得 Markov。对一般 $X$，把 $|X-\mu|\ge\varepsilon$ 应用于非负量 $(X-\mu)^2$，得到 Chebyshev。单侧 Cantelli 则对任意 $c>0$ 写出
+\[
+P(X-\mu\ge a)\le\frac{E[(X-\mu+c)^2]}{(a+c)^2}
+=\frac{\sigma^2+c^2}{(a+c)^2},
+\]
+再对 $c$ 优化，最小值在 $c=\sigma^2/a$ 处给出
+\[
+P(X-\mu\ge a)\le\frac{\sigma^2}{\sigma^2+a^2}.
+\]
+三者都只由已知矩推出上界；若题目给出完整分布，不能用界替代精确概率。
+\end{methodbox}
+
+\section{常见分布的数字特征速查表}
+
+\begin{longtable}{L{3.5cm}L{4.0cm}L{4.5cm}}
+\toprule
+\textbf{分布模型} & \textbf{期望 $E(X)$} & \textbf{方差 $\operatorname{Var}(X)$}\\
+\midrule
+0--1 分布 $B(1,p)$ & $p$ & $p(1-p)$\\
+二项分布 $B(n,p)$ & $np$ & $np(1-p)$\\
+泊松分布 $P(\lambda)$ & $\lambda$ & $\lambda$\\
+几何分布 $G(p)$ & $1/p$ & $(1-p)/p^2$\\
+均匀分布 $U(a,b)$ & $(a+b)/2$ & $(b-a)^2/12$\\
+指数分布 $\operatorname{Exp}(\lambda)$ & $1/\lambda$ & $1/\lambda^2$\\
+正态分布 $N(\mu,\sigma^2)$ & $\mu$ & $\sigma^2$\\
+$\chi^2(n)$ 分布 & $n$ & $2n$\\
+$t(n)$ 分布 ($n>2$) & 0 & $n/(n-2)$\\
+$F(m,n)$ 分布 ($n>2$) & $n/(n-2)$ & 较复杂\\
+Gamma $(\alpha,\lambda)$（率参数） & $\alpha/\lambda$ & $\alpha/\lambda^2$\\
+Cauchy $(x_0,\gamma)$ & 不存在 & 不存在\\
+\bottomrule
+\end{longtable}
+
+指数、Gamma、卡方、正态等分布的生成关系与卷积机制归 Topic 04；本表只提供数字特征接口。$t$ 分布的方差要求自由度 $n>2$，$F(m,n)$ 的期望要求 $n>2$，不同参数约定必须先核对。
+
+\section{第六层：总体特征与样本统计接口}
+
+本册讨论总体随机变量的特征；统计学中的样本量化对象由 Topic 07 负责。对应关系如下：
+\begin{center}
+\begin{tabularx}{\linewidth}{L{3.1cm}L{4.2cm}Y}
+\toprule
+总体特征 & 常用样本对象 & 归属边界\\
+\midrule
+$\mu=E(X)$ & $\bar X=n^{-1}\sum_iX_i$ & 其抽样分布与无偏性在 Topic 07\\
+$\sigma^2=\operatorname{Var}(X)$ & $S^2=(n-1)^{-1}\sum_i(X_i-\bar X)^2$ & $n-1$ 修正及正态平方和在 Topic 07\\
+$E(X^k)$ & $A_k=n^{-1}\sum_iX_i^k$ & 矩估计在 Topic 08 调用\\
+$E[(X-\mu)^k]$ & $B_k=n^{-1}\sum_i(X_i-\bar X)^k$ & 样本中心矩不自动无偏\\
+$\operatorname{Cov}(X,Y)$ & 样本协方差 & 总体定义在本册，估计性质在 Topic 08\\
+$\rho_{XY}$ & 样本相关系数 & 仅描述线性关联，不能替代独立性检验\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{第七层：统一解题工作流与边界检查}
+
+\begin{enumerate}
+  \item 先锁定对象：是总体分布的期望、方差、协方差、高阶矩，还是样本统计量；不要把 $S^2$ 当作总体 $\sigma^2$。
+  \item 检查存在性：$E|X|<\infty$ 才能谈有限期望，$E(X^2)<\infty$ 才能使用方差和相关系数；重尾模型先停在边界检查。
+  \item 选择最短表示：函数期望优先 LOTUS，计数优先示性变量，分层信息优先全期望/全方差，线性组合优先协方差展开。
+  \item 只在需要时使用独立：期望线性性不需要独立；乘积拆分、卷积、交叉协方差消失才需要相应独立或不相关条件。
+  \item 做结果校验：方差非负，$|\rho|\leq1$，条件方差分解两项非负，单位与尺度变换一致，概率界不超过 $1$。
+\end{enumerate}
+
+\begin{methodbox}{高频结构到动作}
+\begin{tabularx}{\linewidth}{L{4.3cm}Y}
+\toprule
+题面信号 & 首选动作与停止条件\\
+\midrule
+“满足条件的个数/至少一个” & 写 $N=\sum I_{A_i}$；期望阶段不展开独立性，只有题目问方差时再处理交叉项。\\
+“非负寿命、等待时间” & 先试尾积分/尾和；若尾部积分发散，停止使用有限期望公式。\\
+“已知某类/某阶段/某组” & 写条件期望，先算层内再按层权重合成；全方差必须保留层内与层间两项。\\
+“线性组合的方差” & 展开协方差矩阵；确认独立、两两不相关或仅有一般相关。\\
+“只给均值和方差求概率上界” & 选择 Markov/Chebyshev/Cantelli；明确这是界而非精确值。\\
+“判断独立或相关” & 零协方差只给线性信息；回到联合分布，联合正态才可用等价结论。\\
+\bottomrule
+\end{tabularx}
+\end{methodbox}
+
+\begin{warnbox}{必须保留的反向边界}
+相同数字特征不确定分布；标准化不产生正态性；高阶矩不存在时偏度/峰度无意义；有偏估计量不能仅凭“有偏”判废，需比较 MSE、效率和相合性；总体数字特征与样本统计量的数值形式相似，但随机性与抽样分布不同。
+\end{warnbox}
+
+\section{贯穿母例：分层测量中的位置、波动与依赖}
+
+\begin{examplebox}{母例：先分组再测量}
+设 $G\sim\operatorname{Bern}(p)$ 表示测量来自普通组（$G=0$）还是高位组（$G=1$）。给定组别后，测量值 $X$ 满足
+\[
+E(X\mid G=0)=1,\quad E(X\mid G=1)=4,\quad
+\operatorname{Var}(X\mid G=0)=\operatorname{Var}(X\mid G=1)=1.
+\]
+先做条件分解，而不是把两组混成一个分布：
+\[
+E(X)=E[E(X\mid G)]=1+3p,
+\]
+\[
+\operatorname{Var}(X)=E[\operatorname{Var}(X\mid G)]
+ +\operatorname{Var}(E[X\mid G])
+ =1+9p(1-p).
+\]
+若把组别写成示性变量 $G$，则
+\[
+\operatorname{Cov}(X,G)=\operatorname{Cov}(E[X\mid G],G)=3p(1-p).
+\]
+当只知道均值和方差而要求偏离概率时，最多先给出 Chebyshev 上界；不能把这个上界当作混合分布的精确概率。这个例子把本册的四个动作串起来：LOTUS/全期望给位置，全方差给层内与层间波动，协方差识别组别依赖，不等式提供信息不足时的保守结论。
+\end{examplebox}
+
+\section{一页压缩}
+
+\begin{corebox}{一句话总结}
+\[
+\boxed{\text{期望是线性加权，方差是波动平方，协方差度量线性交叠，全期望分解层级复杂性。}}
+\]
+\end{corebox}
+
+\begin{examplebox}{先做逐点恒等式，再做期望：2011 真题}
+若 $U=\max\{X,Y\}$、$V=\min\{X,Y\}$，则对每个样本点都有 $UV=XY$。因此
+\[
+E(UV)=E(XY)=E(X)E(Y)
+\]
+（最后一步才使用独立性）。只求数字特征时，先寻找逐点恒等式和 LOTUS，通常不需要构造次序统计量的完整联合分布。
+\end{examplebox}
+
+\begin{examplebox}{早期真题：目标只问期望时直接走 LOTUS（1992）}
+若 $X\sim\operatorname{Exp}(1)$，则
+\[
+E(X+e^{-2X})=E(X)+E(e^{-2X})=1+\int_0^\infty e^{-3x}dx=\frac43.
+\]
+题目只要求数字特征时，不必先构造 $X+e^{-2X}$ 的完整分布；这是“输出层决定计算成本”的直接证据。
+\end{examplebox}
+
+\end{document}

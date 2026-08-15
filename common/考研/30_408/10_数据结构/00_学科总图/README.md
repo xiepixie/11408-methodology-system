@@ -1,6 +1,6 @@
 # 数据结构学科总图
 
-状态：Source；Atlas Foundation / Deep Map 旧工作稿，待与 Canonical Data Structure Subject Atlas README 做 Source Diff；不再迁成第二份 Atlas LaTeX。
+状态：Source；非 Handbook Owner；Atlas Foundation / Deep Map 旧工作稿，待与 Canonical Data Structure Subject Atlas README 做 Source Diff；不再迁成第二份 Atlas LaTeX。
 
 标题：《408 数据结构学科总图：关系、表示、操作、不变量与代价》。
 

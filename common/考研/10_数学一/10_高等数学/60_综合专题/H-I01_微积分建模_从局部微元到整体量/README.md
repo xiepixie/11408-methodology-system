@@ -1,6 +1,6 @@
 # H-I01｜微积分建模：从局部微元到整体量
 
-状态：目录已建立，正文未建。
+状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
 ## Position
 
@@ -33,3 +33,8 @@ $$
 ## Source Pack
 
 旧 `I-10_微积分应用` 及其 Canvas 为核心来源；旧题型技巧需继续分流到 Rules。
+
+## Manual
+
+- Canonical Source：[微积分建模_从局部微元到整体量.tex](微积分建模_从局部微元到整体量.tex)
+- Published View：[微积分建模_从局部微元到整体量.pdf](../../../../90_publish/微积分建模_从局部微元到整体量.pdf)

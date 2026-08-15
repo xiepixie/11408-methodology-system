@@ -1,7 +1,7 @@
 # 数学一 Core Bridge Atlas
 
 > 类型：Atlas
-> 状态：已采用；README 是 Canonical Bridge Atlas，下游 Bridge 仍按规划逐册建设。
+> 状态：已采用；README 是 Canonical Bridge Atlas，B00--B08 Canonical Bridge 工作稿已建立，均待人工确认。
 
 ## 1. 定位
 
@@ -58,3 +58,7 @@ Anti-Bridge 不单独建树。具体禁推条件写回最相关 Bridge 的 Bound
 ## 5. Extension Policy
 
 真实但超纲的连接放入对应 Bridge 的 `Extension` 段，例如 Fourier ↔ Hilbert space、ODE ↔ matrix exponential。只有未来学习范围变化时，才重新评估是否升级为核心 Owner。
+
+## Review v1
+
+B00--B08 已完成首轮接口审阅：每册均保留两侧 Owner、共享结构、最小例子与 Anti-Bridge；下一轮统一用陌生题攻击变换方向、正则性、support、收敛和投影资格边界。数学一 Cross-Subject Bridge 的正文仍以各下级 `.tex` 为唯一 Owner。

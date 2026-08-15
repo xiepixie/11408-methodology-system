@@ -1,0 +1,519 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{145,154,163}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={总体、样本与抽样分布}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 概率统计 Topic 07}}
+\rhead{\small\color{deep}总体 · 样本 · 统计量 · 三大抽样分布}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\title{\vspace{-1.1cm}\textbf{总体、样本与抽样分布}\\[0.4em]
+\large 统计量为什么仍然随机？正态总体下的四大抽样标尺}
+\author{数学一 · 概率统计 Topic 07}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：统计量为什么仍然随机？正态总体下的四大抽样标尺}
+看到数据以后容易忘记它原本会变化。简单随机样本 $X_1,\dots,X_n$ 是总体分布的独立同分布副本；统计量是样本的函数。正态总体下，样本均值与样本方差拥有特殊的独立性与三大精确抽样分布（$\chi^2, t, F$）。
+
+主线推演逻辑：
+\[
+\boxed{
+\text{总体 } X \xrightarrow{\text{i.i.d. 抽样}} \text{样本 } (X_1,\dots,X_n) \xrightarrow{\text{压缩}} \text{统计量 } \bar X, S^2 \xrightarrow{\text{正态精确推导}} \chi^2(n-1) \text{ 与 } t(n-1) \text{ 与 } F(m,n)
+}
+\]
+\end{corebox}
+
+\section{本册定位与职责划分}
+
+\begin{itemize}
+  \item \kw{本册拥有（Owns）：}总体、简单随机样本（i.i.d.）、统计量、样本均值 $\bar X$、样本方差 $S^2$、样本矩、三大抽样分布（$\chi^2$ 分布、$t$ 分布、$F$ 分布）、正态总体的抽样分布定理（Fisher 定理）。
+  \item \kw{本册使用（Uses）：}二维分布与数字特征。
+  \item \kw{本册不拥有（Does not own）：}点估计构造与区间/检验反演（Topic 08 负责）。
+  \item \kw{输出目标（Output）：}统计量的精确分布律与临界分位数标尺。
+\end{itemize}
+
+\section{第一层：总体、样本与二重性}
+
+总体不是“所有可能取值的集合”，而是带有概率规律的模型 $X\sim F(x;\theta)$；$\theta$ 是固定但未知的参数。容量为 $n$ 的简单随机样本要求同分布与相互独立：
+\[
+X_1,\ldots,X_n\overset{\mathrm{i.i.d.}}{\sim}F(x;\theta).
+\]
+连续总体的联合密度、离散总体的联合质量分别为
+\[
+f_{\boldsymbol X}(x_1,\ldots,x_n;\theta)=\prod_{i=1}^nf(x_i;\theta),\qquad
+P_\theta(\boldsymbol X=\boldsymbol x)=\prod_{i=1}^np(x_i;\theta).
+\]
+抽样前 $\boldsymbol X$ 与 $T(\boldsymbol X)$ 是随机对象；抽样后 $\boldsymbol x$ 与 $T(\boldsymbol x)$ 是确定观测值。统计量是只含样本、不含未知参数的可测函数；其抽样分布仍然可以依赖 $\theta$。只有当该统计量被用于估计某个参数时，才称为估计量。
+
+有限总体不放回抽样通常引入相关性，不应默认 i.i.d.；只有有放回抽样、独立重复观测或明确的超总体模型才能直接使用乘积联合分布。
+
+\section{第二层：样本数字特征与平方和分解}
+
+记
+\[
+\bar X=\frac1n\sum_{i=1}^nX_i,\qquad
+A_k=\frac1n\sum_{i=1}^nX_i^k,\qquad
+B_k=\frac1n\sum_{i=1}^n(X_i-\bar X)^k,
+\]
+\[
+S^2=\frac1{n-1}\sum_{i=1}^n(X_i-\bar X)^2,\qquad B_2=\frac1n\sum_{i=1}^n(X_i-\bar X)^2.
+\]
+若总体均值和方差为 $\mu,\sigma^2$，则
+\[
+E(\bar X)=\mu,\qquad \operatorname{Var}(\bar X)=\frac{\sigma^2}{n},\qquad E(S^2)=\sigma^2,
+\]
+而 $E(B_2)=(n-1)\sigma^2/n$。$S^2$ 无偏不代表 $S$ 对 $\sigma$ 无偏，因为平方根是非线性变换。
+
+核心恒等式为
+\[
+\boxed{\sum_{i=1}^n(X_i-\bar X)^2=\sum_{i=1}^nX_i^2-n\bar X^2},
+\]
+以及围绕真实均值的分解
+\[
+\boxed{\sum_{i=1}^n(X_i-\mu)^2=\sum_{i=1}^n(X_i-\bar X)^2+n(\bar X-\mu)^2}.
+\]
+第二式的交叉项消失源于 $\sum_i(X_i-\bar X)=0$。离差向量因此落在一个 $n-1$ 维子空间，解释了 $S^2$ 的分母与卡方自由度。
+
+\begin{methodbox}{中心化残差的几何约束与协方差}
+令 $Y_i=X_i-\bar X$。中心化不是逐个独立变换：恒等式
+\[
+\sum_{i=1}^nY_i=0
+\]
+给出一个确定的线性约束，因此残差向量只在维数 $n-1$ 的子空间内波动。若 $X_i$ i.i.d. 且 $\operatorname{Var}(X_i)=\sigma^2$，则
+\[
+\operatorname{Var}(Y_i)=\sigma^2\left(1-\frac1n\right),\qquad
+\operatorname{Cov}(Y_i,Y_j)=-\frac{\sigma^2}{n}\quad(i\ne j).
+\]
+第二式也可由对固定 $i$ 的关系 $0=\operatorname{Cov}(Y_i,\sum_jY_j)$ 推出。正态性只保证 $\bar X$ 与整个残差向量（或残差子空间的正交投影）独立，不保证不同 $Y_i$ 之间独立；这正是“残差自由度为 $n-1$”的协方差版本。
+\end{methodbox}
+
+若 $E(X^4)<\infty$，样本方差的一般方差为
+\[
+\boxed{\operatorname{Var}(S^2)=\frac1n\left(\mu_4-\frac{n-3}{n-1}\sigma^4\right)},
+\]
+其中 $\mu_4=E[(X-\mu)^4]$。正态总体下 $\mu_4=3\sigma^4$，于是 $\operatorname{Var}(S^2)=2\sigma^4/(n-1)$；四阶矩条件不能省略。
+
+\section{第三层：顺序统计量与经验分布}
+
+将样本排列为 $X_{(1)}\le\cdots\le X_{(n)}$。最大值、最小值的 CDF 为
+\[
+F_{X_{(n)}}(x)=[F(x)]^n,\qquad F_{X_{(1)}}(x)=1-[1-F(x)]^n.
+\]
+第 $k$ 个顺序统计量满足
+\[
+F_{X_{(k)}}(x)=\sum_{j=k}^n\binom njF(x)^j[1-F(x)]^{n-j}.
+\]
+若总体连续且有密度 $f$，则
+\[
+f_{X_{(k)}}(x)=\frac{n!}{(k-1)!(n-k)!}F(x)^{k-1}[1-F(x)]^{n-k}f(x).
+\]
+\begin{methodbox}{顺序统计量密度的计算骨架}
+事件 $X_{(k)}\le x$ 等价于“至少 $k$ 个样本不超过 $x$”，因此 CDF 是参数为 $F(x)$ 的二项尾和。对连续总体求导时，恰好有 $k-1$ 个样本落在 $(-\infty,x)$、一个样本落在 $[x,x+dx)$、其余落在 $(x,\infty)$；乘上三段概率和排列数，再除以 $dx$，得到上式。连续性是这里把“邻域内一个”转成密度的前提；有原子时必须回到 CDF 或离散计数。
+\end{methodbox}
+\begin{methodbox}{离散顺序统计量：回到 CDF 与原子计数}
+离散总体没有连续密度可供“在 $x$ 附近取一个”求导。对最大值仍直接使用
+\[
+P(X_{(n)}\le x)=F(x)^n,
+\]
+再由相邻 CDF 值取原子质量：
+\[
+P(X_{(n)}=x)=F(x)^n-F(x^-)^n.
+\]
+对联合最大值/最小值，先写支持 $y\le x$；若 $x=y$，所有样本落在该点的路径只有相等路径，若 $x>y$，要把不同排列路径相加。不要把连续顺序统计量密度公式中的 $f(x)$ 直接替换成 PMF；离散问题的基本单位是原子质量与排列计数。
+\end{methodbox}
+连续 CDF 变换给出 $F(X_{(k)})\sim\operatorname{Beta}(k,n-k+1)$；均匀总体时 $X_{(k)}$ 本身即为该 Beta 分布。密度公式的机制是“左边 $k-1$ 个、邻域内一个、右边 $n-k$ 个”再乘排列数，不能误解为连续变量在单点有正概率。
+
+经验分布函数为
+\[
+F_n(x)=\frac1n\sum_{i=1}^nI_{\{X_i\le x\}}.
+\]
+固定 $x$ 时，$nF_n(x)\sim\operatorname{Bin}(n,F(x))$，所以
+\[
+E[F_n(x)]=F(x),\qquad \operatorname{Var}[F_n(x)]=\frac{F(x)[1-F(x)]}{n}.
+\]
+逐点由强大数律 $F_n(x)\to F(x)$ 几乎必然；整体则有 Glivenko--Cantelli 一致收敛 $\sup_x|F_n(x)-F(x)|\to0$ 几乎必然。重复观测值出现 $m$ 次时 EDF 跳跃高度是 $m/n$，不是固定的 $1/n$。
+
+\section{第四层：三大分布的生成、密度与分位点}
+
+若 $Z_1,\ldots,Z_\nu$ 独立标准正态，$Y=\sum Z_i^2\sim\chi^2(\nu)$，且
+\[
+f_Y(y)=\frac{y^{\nu/2-1}e^{-y/2}}{2^{\nu/2}\Gamma(\nu/2)},\quad y>0,
+\qquad E(Y)=\nu,\quad \operatorname{Var}(Y)=2\nu.
+\]
+独立卡方可加：$\sum_jY_j\sim\chi^2(\sum_j\nu_j)$。它是 $\operatorname{Gamma}(\nu/2,1/2)$（率参数）特例。
+
+若 $Z\sim N(0,1)$、$Y\sim\chi^2(\nu)$ 且独立，则
+\[
+T=\frac{Z}{\sqrt{Y/\nu}}\sim t(\nu).
+\]
+$t$ 关于零对称，$E(T)=0$ 需 $\nu>1$，$\operatorname{Var}(T)=\nu/(\nu-2)$ 需 $\nu>2$，且 $t(\nu)\Rightarrow N(0,1)$ 当 $\nu\to\infty$。还要记住 $T^2\sim F(1,\nu)$。
+
+若 $U\sim\chi^2(\nu_1)$、$V\sim\chi^2(\nu_2)$ 独立，则
+\[
+F=\frac{U/\nu_1}{V/\nu_2}\sim F(\nu_1,\nu_2),\qquad \frac1F\sim F(\nu_2,\nu_1).
+\]
+$F$ 的支持为正，分子、分母自由度不可交换；倒数关系决定分位点换序。
+
+三大分布的密度与矩存在边界也属于抽样分布接口。$t(\nu)$ 密度为
+\[
+f_T(t)=\frac{\Gamma((\nu+1)/2)}{\sqrt{\nu\pi}\,\Gamma(\nu/2)}
+\left(1+\frac{t^2}{\nu}\right)^{-(\nu+1)/2},\qquad t\in\mathbb R,
+\]
+其尾部比正态更厚。$F(\nu_1,\nu_2)$ 密度为
+\[
+f_F(x)=\frac{\Gamma((\nu_1+\nu_2)/2)}{\Gamma(\nu_1/2)\Gamma(\nu_2/2)}
+\left(\frac{\nu_1}{\nu_2}\right)^{\nu_1/2}
+\frac{x^{\nu_1/2-1}}{(1+\nu_1x/\nu_2)^{(\nu_1+\nu_2)/2}},\qquad x>0.
+\]
+$F$ 的期望要求 $\nu_2>2$，且 $E(F)=\nu_2/(\nu_2-2)$；方差还要求 $\nu_2>4$。卡方 MGF 为 $(1-2t)^{-\nu/2}$（$t<1/2$），可加性也可由 MGF 乘积复原。
+
+对上 $\alpha$ 分位点 $c_\alpha$，约定 $P(Y>c_\alpha)=\alpha$。常用关系为
+\[
+\chi^2_{1-\alpha}(\nu)\ne\chi^2_{\alpha}(\nu)\text{ 的简单负号关系},
+\qquad
+t_{1-\alpha}(\nu)=-t_\alpha(\nu),
+\]
+\[
+F_{1-\alpha}(\nu_1,\nu_2)=\frac1{F_\alpha(\nu_2,\nu_1)}.
+\]
+查表前先确认是上尾还是下尾，双侧问题要拆成 $\alpha/2$。
+
+\section{第五层：正态总体的正交分解与精确抽样分布}
+
+若 $X_i\overset{\mathrm{i.i.d.}}\sim N(\mu,\sigma^2)$，则
+\[
+\bar X\sim N\left(\mu,\frac{\sigma^2}{n}\right),\qquad
+\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1),\qquad \bar X\perp S^2.
+\]
+几何上，样本向量分解为常数方向 $(1,\ldots,1)$ 的均值投影和其正交残差空间；正态向量的正交投影独立。于是
+\[
+\frac{\bar X-\mu}{S/\sqrt n}\sim t(n-1).
+\]
+均值已知时，$\sum_i(X_i-\mu)^2/\sigma^2\sim\chi^2(n)$；均值未知时估计一个方向，残差自由度降为 $n-1$。
+
+\begin{methodbox}{$\chi^2/t/F$ 的生成链}
+把样本向量分解为均值方向与残差子空间后，正态向量的正交投影独立；残差子空间维数为 $n-1$，所以平方和标准化后是 $n-1$ 个独立标准正态平方的和，即 $\chi^2(n-1)$。再用独立的 $Z$ 除以 $\sqrt{\chi^2(\nu)/\nu}$ 得 $t(\nu)$，两个独立的标准化卡方比值得 $F$。因此自由度不是表格记号，而是剩余独立随机方向数；正态性和样本独立性缺失时，这条精确生成链停止，只能转向渐近标尺。
+\end{methodbox}
+
+\begin{methodbox}{自由度账本：先校准尺度，再数方向}
+\begin{tabularx}{\linewidth}{L{0.25\linewidth}L{0.28\linewidth}L{0.35\linewidth}}
+\toprule
+抽样条件 & 统计量结构 & 可输出的精确标尺 \\
+\midrule
+均值 $\mu$ 已知 & $\sum(X_i-\mu)^2/\sigma^2$ & $\chi^2(n)$ \\
+均值未知 & $\sum(X_i-\bar X)^2/\sigma^2$ & $\chi^2(n-1)$ \\
+两独立正态样本 & $(S_1^2/\sigma_1^2)/(S_2^2/\sigma_2^2)$ & $F(n-1,m-1)$ \\
+配对观测 & $D_i=X_i-Y_i$ 后对 $D_i$ 抽样 & 单样本 $t(n-1)$（满足正态差值） \\
+\bottomrule
+\end{tabularx}
+
+表中每个自由度都来自独立随机方向数，而不是来自样本量的机械代换。方差比例已知时可以精确校准；不等方差未知时只能使用 Welch 近似，不能把它倒填入精确 $F/t$ 表。
+\end{methodbox}
+
+\begin{examplebox}{2017 真题：平方和必须先校准尺度}
+设 $X_1,\ldots,X_n\overset{\mathrm{i.i.d.}}\sim N(\mu,1)$。判断下列量是否为卡方分布：
+\[
+\sum_{i=1}^n(X_i-\mu)^2,\quad 2(X_n-X_1)^2,\quad
+\sum_{i=1}^n(X_i-\bar X)^2,\quad n(\bar X-\mu)^2.
+\]
+前者是 $n$ 个独立标准正态方向的平方和，服从 $\chi^2(n)$；残差平方和是正交残差子空间的 $n-1$ 个方向，服从 $\chi^2(n-1)$；均值方向满足 $\sqrt n(\bar X-\mu)\sim N(0,1)$，故其平方服从 $\chi^2(1)$。但 $X_n-X_1\sim N(0,2)$，所以
+\[
+\frac{(X_n-X_1)^2}{2}\sim\chi^2(1),\qquad
+2(X_n-X_1)^2=4\,\chi^2(1),
+\]
+并非 $\chi^2(1)$。得分链不是“看到平方就数自由度”，而是“先恢复标准正态尺度，再数独立方向”。
+\end{examplebox}
+
+\section{第六层：两个独立正态总体与配对结构}
+
+若两组独立正态样本的方差已知，则
+\[
+\frac{(\bar X-\bar Y)-(\mu_1-\mu_2)}{\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}}\sim N(0,1).
+\]
+方差比的枢轴量为
+\[
+\frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}\sim F(n_1-1,n_2-1).
+\]
+等方差未知时定义
+\[
+S_p^2=\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2},
+\]
+则
+\[
+\frac{(\bar X-\bar Y)-(\mu_1-\mu_2)}{S_p\sqrt{1/n_1+1/n_2}}\sim t(n_1+n_2-2).
+\]
+方差不等时不能硬套合并方差 $t$，应使用 Welch 统计量
+\[
+T_W=\frac{(\bar X-\bar Y)-(\mu_1-\mu_2)}{\sqrt{S_1^2/n_1+S_2^2/n_2}},
+\]
+其 Welch--Satterthwaite 自由度是近似值。配对数据先取 $D_i=X_i-Y_i$，再对 $D_i$ 使用单样本 $t$，不能当作两组独立样本。
+
+显式的 Welch 自由度近似为
+\[
+\nu_W\approx
+\frac{(S_1^2/n_1+S_2^2/n_2)^2}
+{(S_1^2/n_1)^2/(n_1-1)+(S_2^2/n_2)^2/(n_2-1)}.
+\]
+若观测是成对的 $(X_i,Y_i)$，总体相关性不能被忽略；应先分析差值 $D_i$ 的均值、方差和正态性，配对结构的优势是消除个体内共同波动，而不是增加样本独立性。
+
+\begin{examplebox}{真题动作链：2021 Q九 的配对均值差}
+设 $(X_i,Y_i)$ 是二维正态总体的简单随机样本，跨 $i$ 独立，而同一对内相关系数为 $\rho$。令 $D_i=X_i-Y_i$，则
+\[
+\hat\theta=\bar X-\bar Y=\frac1n\sum_{i=1}^nD_i,
+\quad E(D_i)=\mu_1-\mu_2,
+\quad \operatorname{Var}(D_i)=\sigma_1^2+\sigma_2^2-2\rho\sigma_1\sigma_2.
+\]
+因此
+\[
+E(\hat\theta)=\mu_1-\mu_2,
+\qquad \operatorname{Var}(\hat\theta)=\frac{\sigma_1^2+\sigma_2^2-2\rho\sigma_1\sigma_2}{n}.
+\]
+若继续做检验，应把 $D_1,\ldots,D_n$ 当作一个正态总体的单样本，而不是把 $\bar X$、$\bar Y$ 当作两个独立样本；只有跨对独立，不能删除同对协方差。配对设计先压缩为差值，再决定单样本标尺。
+\end{examplebox}
+
+\begin{methodbox}{配对与独立两样本的边界}
+独立两样本的均值差方差为 $\sigma_1^2/n_1+\sigma_2^2/n_2$；配对数据必须保留 $-2\operatorname{Cov}(X_i,Y_i)$。2021 Q九属于配对接口；2023 Q九则是独立正态样本且方差比已知的精确 $F$ 接口。两题都出现“两组数据”，但生成结构、统计量和可用分布完全不同。
+\end{methodbox}
+
+\subsection{二元总体的样本均值接口}
+
+若每个观测是随机向量 $(X_i,Y_i)$，均值向量为 $(\mu_X,\mu_Y)$，协方差为 $\operatorname{Cov}(X,Y)=\sigma_{XY}$，且样本对之间独立，则
+\[
+E(\bar X,\bar Y)=(\mu_X,\mu_Y),
+\]
+\[
+\operatorname{Cov}(\bar X,\bar Y)=\frac{\sigma_{XY}}{n},\qquad
+\operatorname{Corr}(\bar X,\bar Y)=\operatorname{Corr}(X,Y).
+\]
+因此样本均值可以降低共同波动的绝对量级，但不能自动消除原总体的相关结构；二维正态时均值向量仍为二维正态，协方差矩阵缩小为原矩阵的 $1/n$。
+
+\section{第七层：精确与渐近分流}
+
+正态总体给出任意 $n$ 的精确 $Z,\chi^2,t,F$；一般总体若方差有限，只能由 LLN、CLT 与 Slutsky 得到大样本近似。于是
+\[
+\frac{\sqrt n(\bar X-\mu)}{S}\xrightarrow{d}N(0,1)
+\]
+通常不是精确 $t$。抽样分布研究的是统计量的理论随机性，不能与某一次数据的经验分布混淆。
+
+\section{第八层：统一工作流与边界}
+
+\begin{enumerate}
+  \item 先写总体、样本量、独立性、正态性和方差条件；有限总体不放回时不能默认 i.i.d.。
+  \item 判断统计量是样本函数还是已经代入观测值；检查公式中是否含未知参数。
+  \item 均值/方差问题先使用样本恒等式；顺序问题先转成二项计数；EDF 问题先写示性变量平均。
+  \item 正态样本中先拆均值方向与残差方向，再匹配 $\chi^2,t,F$；自由度等于独立随机方向数。
+  \item 两样本先分清独立/配对、等方差/不等方差，最后确认精确分布还是渐近近似与分位点尾部。
+\end{enumerate}
+
+\begin{warnbox}{不可省略的边界}
+$t,\chi^2,F$ 的精确结论依赖正态总体；$\bar X$ 与 $S^2$ 的独立性不是一般分布事实；$S^2$ 无偏不等于 $S$ 无偏；分母自由度和 F 分布参数顺序不能凭记忆交换；CLT 的渐近正态不能替代有限样本精确分布。
+\end{warnbox}
+
+\section{第九层：真题证明链——从随机方向到估计校准}
+
+本节把几个容易被压缩成“背分布表”的真题还原成可检查的生成过程。每题的共同入口不是题号，而是：\emph{先确认统计量由哪些随机方向组成，再确认尺度、自由度和评价目标}。
+
+\begin{examplebox}{2005 Q十四：一个选项同时考尺度、独立性与自由度}
+设 $X_i\overset{\mathrm{i.i.d.}}\sim N(0,1)$，$\bar X$ 为均值，$S^2$ 为无偏样本方差。由
+\[
+\sqrt n\,\bar X\sim N(0,1),\qquad (n-1)S^2\sim\chi^2(n-1),
+\]
+且 $\bar X\perp S^2$，可得
+\[
+\frac{\sqrt n\,\bar X}{S}
+ =\frac{Z}{\sqrt{\chi^2(n-1)/(n-1)}}\sim t(n-1).
+\]
+因此 $n\bar X$ 不能直接当标准正态，$nS^2$ 不能直接当 $\chi^2(n)$；$t$ 的分子必须是标准正态方向，不能只因为“均值与方差独立”就任意拼接。该题的检查顺序是“标准化尺度 $\to$ 独立性 $\to$ 自由度”。
+\end{examplebox}
+
+\begin{examplebox}{2005 Q二十三与 2008 Q二十三：中心化会制造约束，但仍能构造无偏估计}
+令 $Y_i=X_i-\bar X$。因为 $\sum_iY_i=0$，对 $i\ne j$ 有
+\[
+\operatorname{Var}(Y_i)=\sigma^2\left(1-\frac1n\right),\qquad
+\operatorname{Cov}(Y_i,Y_j)=-\frac{\sigma^2}{n}.
+\]
+所以残差分量不独立；正态性只把均值方向与残差子空间分开。另一方面，正态样本中
+\[
+E(\bar X^2)=\mu^2+\frac{\sigma^2}{n},\qquad E(S^2)=\sigma^2,
+\]
+故
+\[
+T=\bar X^2-\frac{S^2}{n}
+\quad\text{满足}\quad E(T)=\mu^2.
+\]
+当 $\mu=0,\sigma=1$ 时，$\bar X^2\sim\chi^2(1)/n$，且与 $S^2$ 独立，从而
+\[
+\operatorname{Var}(T)=\frac{2}{n^2}+\frac1{n^2}\frac{2}{n-1}
+ =\frac{2}{n(n-1)}.
+\]
+同一组样本既显示“残差不能当独立分量”，又显示“均值方向与残差标尺可以独立组合”。
+\end{examplebox}
+
+\begin{examplebox}{2011 Q二十三：均值是否已知决定损失几个方向}
+若总体为 $N(\mu_0,\sigma^2)$ 且 $\mu_0$ 已知，方差的最大似然估计为
+\[
+\widehat{\sigma^2}=\frac1n\sum_{i=1}^n(X_i-\mu_0)^2,
+\qquad \frac{n\widehat{\sigma^2}}{\sigma^2}\sim\chi^2(n).
+\]
+因此 $E(\widehat{\sigma^2})=\sigma^2$、$\operatorname{Var}(\widehat{\sigma^2})=2\sigma^4/n$。只有在用 $\bar X$ 估计未知均值时，才把一个方向用于中心化，改为 $n-1$ 个残差方向。看到“已知均值”必须在套卡方表前先改自由度。
+\end{examplebox}
+
+\begin{examplebox}{2013 Q八：平方变换要保留两个原像}
+若 $X\sim t(n)$、$Y\sim F(1,n)$，则 $Y\overset d=X^2$。当 $c>0$ 且 $P(X>c)=\alpha$ 时，$t$ 分布关于零对称，故
+\[
+P(Y>c^2)=P(|X|>c)=P(X>c)+P(X<-c)=2\alpha.
+\]
+这里的 $2$ 不是记忆常数，而是平方映射 $x\mapsto x^2$ 的两个原像 $c$ 与 $-c$；若忘记非单调变换的原像数量，就会把答案误写成 $\alpha$。
+\end{examplebox}
+
+\begin{examplebox}{2023 Q九：方差比已知时是精确 $F$，不能外推成 Welch}
+若两独立正态总体的方差分别为 $\sigma^2$ 与 $2\sigma^2$，样本方差为 $S_1^2,S_2^2$，则
+\[
+\frac{(n-1)S_1^2}{\sigma^2}\sim\chi^2(n-1),\qquad
+\frac{(m-1)S_2^2}{2\sigma^2}\sim\chi^2(m-1),
+\]
+且二者独立。因此
+\[
+\frac{S_1^2}{S_2^2/2}\sim F(n-1,m-1).
+\]
+必须先除以各自真实方差，再形成独立卡方比。题面给定方差比时这是有限样本精确结论；两方差都未知且不等时，均值比较的 Welch 自由度只是近似值，不能由本题偷换得到精确 $t$。
+\end{examplebox}
+
+\begin{examplebox}{顺序统计量的跨模型证据：1996、2003、2023、2024}
+离散总体中，最大值必须从 $F(x)^n$ 的跳跃得到原子质量；联合最大/最小还需区分 $x=y$ 的相等路径与 $x>y$ 的两种排列（1996 Q十一）。连续总体中，若 $X_{(1)}$ 是带参数下界 $\theta$ 的最小值，先求其 CDF/密度再取期望，不能把最小值直接视为无偏估计（2003 Q十二）。若
+\[
+F(x;\theta)=\frac{x^3}{\theta^3},\quad 0<x<\theta,
+\]
+则 $n=3$ 时最大值密度为
+\[
+f_{X_{(3)}}(t)=3F(t)^2f(t)=\frac{9t^8}{\theta^9},\quad 0<t<\theta,
+\]
+于是 $E[X_{(3)}]=9\theta/10$，无偏系数为 $10/9$（2023 Q二十三）。均匀总体最大值也先由同一 CDF 计数得到分布，但无偏系数与最小 MSE 系数分别为 $(n+1)/n$ 与 $(n+2)/(n+1)$（2024 Q二十二）。所以稳定接口是
+\[
+\boxed{\text{CDF/原子计数}\;\to\;\text{分布}\;\to\;E(T),E(T^2)\;\to\;\text{无偏或 MSE 校准}}.
+\]
+对 2024 Q二十二 的均匀总体 $X_i\sim U(0,\theta)$，令 $T=X_{(n)}$，则
+\[
+E(T)=\frac{n}{n+1}\theta,\qquad E(T^2)=\frac{n}{n+2}\theta^2.
+\]
+对线性估计量 $cT$，无偏条件直接给出
+\[
+E(cT)=\theta\quad\Longrightarrow\quad c_{\rm unb}=\frac{n+1}{n}.
+\]
+若目标改为最小化均方误差，必须保留完整风险函数：
+\[
+\begin{aligned}
+h(c)&=E[(cT-\theta)^2]\\
+&=c^2\frac{n}{n+2}\theta^2-2c\frac{n}{n+1}\theta^2+\theta^2.
+\end{aligned}
+\]
+这是关于 $c$ 的严格凸二次函数，令 $h'(c)=0$ 得
+\[
+c_{\rm MSE}=\frac{n+2}{n+1},\qquad h(c_{\rm MSE})=\frac{\theta^2}{(n+1)^2}.
+\]
+因此两个系数来自两个不同的输出目标，不能把无偏系数当成最小 MSE 系数。
+\end{examplebox}
+
+\begin{methodbox}{2016 真题：参数支撑使最大值的幂次变为 $9$}
+若 $X_i$ 的密度为
+\[
+f(x;\theta)=\frac{3x^2}{\theta^3}I_{(0,\theta)}(x),\qquad i=1,2,3,
+\]
+则总体 CDF 为 $F(x)=(x/\theta)^3$。最大值 $T=X_{(3)}$ 满足
+\[
+F_T(t)=P(T\le t)=F(t)^3=\left(\frac{t}{\theta}\right)^9,
+\quad 0<t<\theta,
+\]
+故
+\[
+f_T(t)=\frac{9t^8}{\theta^9},\qquad
+\int_0^\theta f_T(t)\,dt=1,
+\]
+并且
+\[
+E(T)=\int_0^\theta t\frac{9t^8}{\theta^9}\,dt=\frac9{10}\theta.
+\]
+若要求 $aT$ 无偏估计 $\theta$，必须单独解 $aE(T)=\theta$，得到
+\[
+a=\frac{10}{9}.
+\]
+指数 $9$ 来自“总体 CDF 的三次幂再叠加样本最大值的三次计数”，不是把样本量 $3$ 机械写进密度。该题只要求无偏校准，完成 $E(T)$ 后停止，不需要继续计算 MSE。
+\end{methodbox}
+
+\section{贯穿母例：一组正态样本的三种随机标尺}
+
+\begin{examplebox}{母例：从样本到 $\chi^2$、$t$ 与区间入口}
+设 $X_1,\ldots,X_n\overset{\mathrm{i.i.d.}}\sim N(\mu,\sigma^2)$。抽样前先区分对象：$\bar X$ 和 $S^2$ 是统计量，观测到 $\bar x,s^2$ 后才是数值。平方和分解给出
+\[
+\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1),\qquad \bar X\perp S^2.
+\]
+均值方向标准化为 $Z=(\bar X-\mu)/(\sigma/\sqrt n)$，与独立的残差标尺组合得到
+\[
+T=\frac{\bar X-\mu}{S/\sqrt n}\sim t(n-1).
+\]
+所以同一个样本可以分别提供方差标尺、均值标尺和后续区间/检验的枢轴入口；若总体不正态，不能保留这些有限样本精确结论，只能根据 Topic 06 的条件改用渐近路径。
+\end{examplebox}
+
+\section{一页压缩}
+
+\begin{corebox}{一句话总结}
+\[
+\boxed{\text{样本均值除以未知方差生成 } t \text{ 分布，样本方差除以总体方差生成 } \chi^2 \text{ 分布，正态样本均值与方差独立。}}
+\]
+\end{corebox}
+
+\begin{examplebox}{完全相关的正态变量先校准斜率：2008 真题}
+若 $X\sim N(0,1)$、$Y\sim N(1,4)$ 且 $\rho_{XY}=1$，则完全正相关意味着
+\[
+Y-1=\frac{\sigma_Y}{\sigma_X}(X-0)=2X
+\quad\text{a.s.},
+\]
+即 $Y=2X+1$。相关系数达到 $1$ 时要同时校准标准差给出的斜率和均值给出的截距，不能只凭“正相关”写成 $Y=X$。
+\end{examplebox}
+
+\end{document}

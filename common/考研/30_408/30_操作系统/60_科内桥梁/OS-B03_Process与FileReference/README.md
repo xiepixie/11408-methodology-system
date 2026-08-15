@@ -1,6 +1,6 @@
 # OS-B03｜Process × File Reference
 
-状态：目录已建立，正文未建。
+状态：已采用；Canonical Bridge 正文已建立并发布。
 
 ## Owners
 OS01 Process/Control ↔ OS05 File System。
@@ -13,3 +13,10 @@ fork、dup、close、unlink 等操作怎样在 task、fd table、OFD、inode 不
 
 ## Boundary
 process 本体由 OS01 Own；pathname/inode/OFD/file lifetime 语义由 File Topic Own；本 Bridge 只拥有引用交接与“哪个操作改变哪一层”。
+
+## Manual
+- [Canonical 正文](OS-B03_Process与FileReference_桥梁手册.tex)
+- [Published PDF](../../../../90_publish/OS-B03_Process与FileReference_桥梁手册.pdf)
+
+## Review v1
+已核对 fd table、OFD、inode 三层对象及 fork/dup/close/unlink 的引用变化；下一轮用共享 offset 与 unlink-after-open 题验证。

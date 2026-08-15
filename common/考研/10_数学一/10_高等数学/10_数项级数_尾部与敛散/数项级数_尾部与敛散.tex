@@ -1,0 +1,258 @@
+\documentclass[11pt,a4paper,fontset=fandol]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={数项级数：尾部与敛散}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 高等数学 Topic 10}}
+\rhead{\small\color{deep}部分和 · 尾项 · 抵消}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\begin{document}
+\begin{center}
+{\LARGE\textbf{数项级数：尾部与敛散}}\\[0.4em]
+{\large 从“部分和是否稳定”到“比较尺度与抵消机制”}
+\end{center}
+\vspace{0.4em}
+\begin{quote}
+本册只追问一个根本问题：\textbf{无限项相加能否由有限部分稳定逼近，若能，误差如何被尾项控制？} 因而看到级数时，第一动作不是套判别法，而是先看部分和、通项极限与最终的符号结构。
+\end{quote}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\setcounter{section}{-1}
+\section{本册定位}
+本册是高等数学 Subject Atlas 下的 Topic10。Topic05 提供反常积分的截断与尾部极限；本册把这些“无限对象的收敛/误差”语言专门化为数项级数。幂级数的收敛域、展开与和函数转入 Topic11，Fourier 级数作为扩展接口，常微分方程转入 Topic12。
+
+\subsection{Own}
+\begin{itemize}
+  \item 部分和、尾项与 Cauchy 收敛准则；
+  \item 通项必要条件、正项基准级数、比较与等价比较；
+  \item 比值/根值判别与 $\rho=1$ 的失效边界；
+  \item 绝对收敛、条件收敛、交错抵消及重排边界；
+  \item 积分判别、尾项双侧估计、Leibniz 余项；
+  \item Abel 变换及 Dirichlet/Abel 判别；有限线性运算、分组和乘积的资格。
+\end{itemize}
+
+\subsection{Uses / Stop Boundary}
+\begin{itemize}
+  \item Topic05 提供反常积分、截断极限与“先局部后整体”的尾部思想；
+  \item Topic11 Own 幂级数的半径、端点、逐项微积分和 Fourier 接口；
+  \item Topic12 Own 用级数/递推构造微分方程解的轨道；
+  \item Stirling、Euler--Maclaurin 与生成函数只作为 Extension/Bridge，不在本册承担主线证明；
+  \item 题目触发信号、第一动作、检查点与退出条件只在《高等数学做题规则》中维护。
+\end{itemize}
+
+\section{母模型：部分和与尾部稳定性}
+\[
+\boxed{\begin{gathered}
+\text{Partial Sums}\to\text{Necessary Decay}\to\text{Compare Scale}\\
+\text{Absolute / Cancellation Split}\to\text{Tail Control}\to\text{Operation Audit}
+\end{gathered}}
+\]
+\begin{enumerate}
+  \item \kw{Partial Sums}：$S_N=\sum_{n=1}^{N}u_n$ 是否趋于有限值；
+  \item \kw{Necessary Decay}：若级数收敛，必须有 $u_n\to0$；
+  \item \kw{Compare Scale}：先识别 $p$ 级数、几何级数、对数修正和阶乘指数尺度；
+  \item \kw{Absolute / Cancellation}：先查 $\sum|u_n|$，失败后才研究符号抵消；
+  \item \kw{Tail Control}：把余项 $R_N=S-S_N$ 变成积分界或首个遗漏项界；
+  \item \kw{Operation Audit}：任何拆项、分组、重排和乘积都要检查资格。
+\end{enumerate}
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.52cm and 0.5cm,
+  box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.0cm,minimum height=0.95cm,align=center,fill=soft,font=\small},
+  arr/.style={-{Latex[length=2mm]},thick,draw=deep}
+]
+\node[box] (a) {部分和\\$S_N$};
+\node[box,right=of a] (b) {通项极限\\$u_n\to0$};
+\node[box,right=of b] (c) {基准尺度\\$p$/几何/阶乘};
+\node[box,below=of c] (d) {绝对收敛\\$\sum|u_n|$};
+\node[box,left=of d] (e) {抵消机制\\Leibniz / D / A};
+\node[box,left=of e] (f) {尾项与运算\\误差 / 重排};
+\draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d);
+\draw[arr] (d)--(e); \draw[arr] (e)--(f);
+\end{tikzpicture}
+\end{center}
+
+\section{第一关：部分和、必要条件与层级}
+数项级数 $\sum_{n=1}^{\infty}u_n$ 的定义是部分和序列 $S_N$ 的极限。等价地，任意 $\varepsilon>0$ 都存在 $N_0$，使 $m>n\ge N_0$ 时
+\[
+\left|\sum_{k=n+1}^{m}u_k\right|<\varepsilon.
+\]
+这就是 Cauchy 尾部准则：远处任意一段的和都必须小，而不只是单个项小。
+
+\begin{corebox}{必要不充分：通项必须归零}
+\[
+\sum u_n\text{ 收敛}\quad\Longrightarrow\quad u_n=S_n-S_{n-1}\longrightarrow0.
+\]
+反例是调和级数 $\sum 1/n$：通项归零，但部分和像 $\ln N$ 一样无界。看到 $\lim u_n\ne0$ 时可立即停在“发散”；看到 $\lim u_n=0$ 时只能进入下一关。
+\end{corebox}
+
+\[
+\text{绝对收敛}\Rightarrow\text{收敛},\qquad
+\text{条件收敛}=\text{收敛但 }\sum|u_n|\text{ 发散}.
+\]
+绝对收敛保留重排、分组和通常的乘积运算；条件收敛依赖抵消，重排甚至可能改变和或破坏收敛。
+
+\section{第二关：正项尺度与失效边界}
+\subsection{基准级数}
+\[
+\sum q^n\text{ 收敛}\iff |q|<1,\qquad
+\sum\frac1{n^p}\text{ 收敛}\iff p>1,
+\]
+\[
+\sum\frac1{n(\ln n)^\alpha}\text{（从 }n\ge2\text{ 起）收敛}\iff\alpha>1.
+\]
+对最终保号的 $u_n\ge0$，比较方向必须完整写出：$0\le u_n\le Cv_n$ 用“大收小收”，$u_n\ge cv_n\ge0$ 用“小发大不收”。若 $u_n/v_n\to L\in(0,\infty)$，两者同敛散。
+
+\begin{methodbox}{比值与根值：只在边界外给结论}
+令
+\[
+\rho=\lim_{n\to\infty}\left|\frac{u_{n+1}}{u_n}\right|,
+\qquad
+\rho=\limsup_{n\to\infty}\sqrt[n]{|u_n|}.
+\]
+若 $\rho<1$，级数绝对收敛；若 $\rho>1$，通项不趋零因而发散；$\rho=1$ 时判别法失效，必须换尺度（比较、积分、交错或 Abel 变换）。比值法尤其适合阶乘/指数竞争，根值法适合 $n$ 次幂整体。
+\end{methodbox}
+
+\subsection{等价阶与 Taylor 只取所需阶}
+当 $u_n=f(1/n)$ 或由初等函数复合而来，先展开到首个非零项：若 $u_n\sim Cn^{-p}$，直接继承 $p$ 级数结论。展开的目标是获得可比较的首项，不是把整个函数写成幂级数；幂级数本身的收敛域由 Topic11 接管。
+
+\section{第三关：绝对收敛失败后的抵消}
+\subsection{Leibniz 交错判别}
+若 $u_n=(-1)^{n-1}a_n$，且 $a_n\ge0$、最终单调递减、$a_n\to0$，则级数收敛，并且
+\[
+|R_N|=|S-S_N|\le a_{N+1}.
+\]
+有限项不影响敛散性，但“最终单调”不能省略。绝对值级数发散只说明不是绝对收敛，不能直接断言原级数发散。
+
+\subsection{Abel 变换：把乘积拆成边界项与差分}
+令 $A_n=\sum_{k=1}^{n}a_k$，则
+\[
+\sum_{n=1}^{N}a_nb_n=A_Nb_N+\sum_{n=1}^{N-1}A_n(b_n-b_{n+1}).
+\]
+\begin{itemize}
+  \item Dirichlet：$A_n$ 有界，$b_n$ 单调且趋于 $0$，则 $\sum a_nb_n$ 收敛；
+  \item Abel：$\sum a_n$ 收敛，$b_n$ 单调有界，则 $\sum a_nb_n$ 收敛。
+\end{itemize}
+判别的核心不是“有界振荡”四个字，而是边界项 $A_Nb_N$ 和差分级数 $\sum A_n\Delta b_n$ 都能被控制。
+
+\begin{examplebox}{贯穿母例：绝对值失败后才寻找抵消}
+考察
+\[
+\sum_{n=1}^{\infty}\frac{(-1)^{n-1}}{\sqrt n}.
+\]
+通项趋于零，只通过必要条件；绝对值级数 $\sum n^{-1/2}$ 是 $p=1/2$ 的发散级数，所以绝对收敛失败，但不能据此宣布原级数发散。由于 $n^{-1/2}\searrow0$，Leibniz 判别给出条件收敛，并有
+\[
+|R_N|\le\frac1{\sqrt{N+1}}.
+\]
+这条链完整经过“必要衰减 $\to$ 绝对值尺度 $\to$ 抵消资格 $\to$ 尾项控制”。最典型的误路是把“绝对值级数发散”误译为“原级数发散”；只有在绝对收敛失败后，才调用交错、Dirichlet 或 Abel 的抵消机制。
+\end{examplebox}
+
+\section{第四关：尾项、运算与不变量}
+若正项 $f(n)$ 连续、非负、最终递减且 $\sum f(n)$ 收敛，则
+\[
+\int_{N+1}^{\infty}f(x)\,dx\le R_N\le\int_N^{\infty}f(x)\,dx.
+\]
+这同时给出收敛判别与数值误差。交错级数则优先使用 $|R_N|\le a_{N+1}$，并注意余项符号与首个遗漏项相同。
+
+\begin{methodbox}{运算资格审计}
+\begin{itemize}
+  \item 两个收敛级数的有限线性组合仍收敛；收敛加发散必发散，发散加发散不确定；
+  \item 不改变顺序的分组：原级数收敛时可保持和；逆命题不成立；
+  \item 绝对收敛允许重排、交换求和次序和 Cauchy 乘积；条件收敛下这些操作必须另证；
+  \item 若 $\sum|u_n|<\infty$ 且 $|v_n|\le M$，则 $\sum u_nv_n$ 绝对收敛。仅有界而无绝对收敛时，结论不自动成立。
+\end{itemize}
+\end{methodbox}
+
+\begin{warnbox}{四个高频误判}
+\begin{enumerate}
+  \item $u_n\to0$ 被误当成充分条件；
+  \item 比值/根值算到 $1$ 仍强行下结论；
+  \item $\sum|u_n|$ 发散被误写成原级数发散；
+  \item 未检查单调性、闭合性或奇点就套 Leibniz、Dirichlet/Abel 或积分判别。
+\end{enumerate}
+\end{warnbox}
+
+\section{诊断流程：把“判别法选择”变成决策}
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.45cm and 0.55cm,
+  box/.style={draw=deep,rounded corners=1mm,minimum width=3.25cm,minimum height=0.78cm,align=center,fill=soft,font=\small},
+  arr/.style={-{Latex[length=1.8mm]},thick,draw=deep}
+]
+\node[box] (a) {通项不归零?\\发散};
+\node[box,below=of a] (b) {先查绝对值级数};
+\node[box,below=of b] (c) {正项尺度：比较/比值/根值/积分};
+\node[box,below=of c] (d) {绝对收敛\\停止};
+\node[box,right=of d] (e) {绝对发散：交错？};
+\node[box,right=of e] (f) {Dirichlet / Abel / 部分和};
+\node[box,above=of f] (g) {尾项与重排审计};
+\draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d); \draw[arr] (d)--(e); \draw[arr] (e)--(f); \draw[arr] (f)--(g);
+\end{tikzpicture}
+\end{center}
+核心停止条件：通项不归零时立即停；绝对收敛已证时停止寻找更高级判别；只有绝对值发散且原级数仍可能抵消时，才进入交错或 Abel 变换。
+
+\section{证据回链与压缩结论}
+\begin{tabularx}{\linewidth}{L{0.25\linewidth}Y}
+\toprule
+来源段落 & 本册保留的机制与边界 \\
+\midrule
+II-09 §1--§2 & 部分和、必要条件、基准级数、比较/比值/根值、Taylor 等价阶 \\
+II-09 §3--§4 & Abel 变换、Dirichlet/Abel、正项与任意项诊断流程、常见陷阱 \\
+II-09 §5 & 线性运算、分组、绝对收敛下的乘积与有界乘子 \\
+II-09 附录 A--B & 积分比较、尾项估计、Euler 常数与 Stirling（仅作 Extension） \\
+II-09 §6、附录 C & 转 Topic11：幂级数收敛域、展开、和函数与逐项运算 \\
+\bottomrule
+\end{tabularx}
+
+\begin{corebox}{一句话压缩}
+\textbf{先让部分和过必要条件，再用基准尺度判绝对收敛；绝对值失败后才寻找有资格的抵消，最后用尾项界和运算资格确认结果可被使用。}
+\end{corebox}
+
+\section{陌生题验证协议}
+对任意新级数，按以下顺序写在草稿第一行：
+\begin{enumerate}
+  \item 写 $u_n$ 与 $S_N$，先算 $\lim u_n$；
+  \item 若归零，先问 $\sum|u_n|$ 是否能与基准级数比较；
+  \item 比值/根值只在 $\rho\ne1$ 时结案；
+  \item 绝对发散时明确写出抵消条件（交错单调、部分和有界或 Abel 单调有界）；
+  \item 若题目要近似值，补上 $R_N$ 的积分界或 Leibniz 界；
+  \item 任何重排、分组、逐项操作完成后，回查绝对收敛与端点/尾部资格。
+\end{enumerate}
+
+\end{document}

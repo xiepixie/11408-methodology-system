@@ -160,6 +160,8 @@ python3 00_system/cognitive_system.py publish "<target.tex>"
 | `architecture.md` | 拥有系统边界、三类资产和快慢循环的结构决策 |
 | `terminology.md` | 拥有核心术语定义 |
 | `handbook_writing_spec.md` | 拥有所有心智模型手册与专题手册的认知结构、写作原则与验收标准 |
+| `latex_design_system.md` | 考研子项目的 LaTeX 路由 Stub；全局 Family/Profile/Variant、依赖与 Semantic API Owner 位于 `../latex/README.md` |
+| `latex_layout_spec.md` | 拥有 LaTeX 的具体字体、版心、表格、代码、图示与视觉迁移参数 |
 | `handbook_contract.md` | 拥有 Handbooks 与 Rules 的最低完成标准 |
 | `evidence_promotion.md` | 拥有 Inbox、诊断和候选规则验证流程 |
 | `ownership_matrix.md` | 登记稳定概念和规则的归属 |
@@ -176,6 +178,10 @@ python3 00_system/cognitive_system.py publish "<target.tex>"
 - [架构与日常更新路径](00_system/architecture.md)
 - [统一术语](00_system/terminology.md)
 - [手册写作规范（认知结构与验收标准）](00_system/handbook_writing_spec.md)
+- [I.P.A.R.A LaTeX Design System（全局 Canonical Owner）](../latex/README.md)
+- [LaTeX 开源项目 Source Reference Pool（全局 Research Log）](../latex/reference_pool.md)
+- [考研 LaTeX 路由 Stub](00_system/latex_design_system.md)
+- [LaTeX 视觉与布局规范](00_system/latex_layout_spec.md)
 - [Handbook 与 Rule 契约](00_system/handbook_contract.md)
 - [Canonical Ownership 台账](00_system/ownership_matrix.md)
 - [Inbox 与规则验证协议](00_system/evidence_promotion.md)
@@ -186,7 +192,7 @@ python3 00_system/cognitive_system.py publish "<target.tex>"
 - [Agent 启动协议与人机协作规则](AGENTS.md)
 - [当前项目进度](PROGRESS.md)
 
-学科复习总览与导航：
+Course / Subject Atlas 入口：
 
 - [数学一](10_数学一/README.md)
 - [英语一](20_英语一/README.md)

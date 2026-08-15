@@ -238,6 +238,7 @@ Handbook 既给人看，也为 AI 提供长期对齐上下文。为此应当：
 - Atlas 若制作视觉海报，必须由 Canonical README 派生；海报源放在 `assets/`，使用 `python3 00_system/cognitive_system.py publish-view "<Atlas>/assets/<Atlas>_Poster.tex"`，并且不得新增 README 没有的定义或边界；
 - 世界模型修改必须发生在对应 Canonical Owner：Atlas 改 README，Topic / Bridge / Integration 改 `.tex`；不得只改 PDF；
 - 既有 LaTeX/PDF 在完成 Ownership 梳理前标记为 `legacy-unregistered`；
-- 旧长 README 只有在承载 Topic / Bridge / Integration 深度正文时才需要迁入 `.tex`。真正属于 Atlas 的地图内容保留在 Markdown。
+- 旧长 README 只有在承载 Topic / Bridge / Integration 深度正文时才需要迁入 `.tex`。真正属于 Atlas 的地图内容保留在 Markdown；
+- 当前过渡期的新建 Canonical Topic / Bridge / Integration `.tex` 可使用根目录 Prototype `ipara-handbook.sty`；长期 Family/Profile/依赖/Semantic API 与 KOMA/CTeX 技术底座统一由全局 [`common/latex/README.md`](../../latex/README.md) 拥有，本仓库仅通过 [`latex_design_system.md`](latex_design_system.md) 路由；具体字体、表格、代码、TikZ 与版心参数见 [`latex_layout_spec.md`](latex_layout_spec.md)。已有 Canonical `.tex` 不为追求视觉一致而批量重排，只在本来发生较大正文修订或存在真实排版/字体维护问题时迁移。
 
 发布前检查 Owner、引用、编译和关键排版即可。本项目的长期认知手册没有默认四页限制。

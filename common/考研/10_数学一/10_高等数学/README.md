@@ -3,7 +3,7 @@
 > 类型：Atlas
 > 状态：已采用；README 是 Canonical Subject Atlas，Topic / Bridge / Integration 按当前路由逐册重构。
 
-> 本文件是高等数学工作态 Canonical 导航入口。既有 `00_学科总图/数学一_高等数学_心智模型手册_v2.tex` 继续作为 `legacy-unregistered` Publication；旧 `学习领域/归档/高等数学/` 只作为 Source Corpus。
+> 本文件是高等数学 Canonical Subject Atlas。旧 `学习领域/归档/高等数学/` 仅作为 Source Corpus；历史 v2 总图已完成 Source Diff，不再参与当前导航、Ownership 或状态判断。
 
 ## 1. 学科母问题
 

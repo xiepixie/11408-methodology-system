@@ -1,0 +1,211 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\handbooksetup{DS-08 图上的结构算法}{408 · 数据结构 DS-08}{Goal · Candidate · Commit · Invariant}
+\begin{document}
+\handbooktitle{图上的结构算法}{不要背七段代码：追踪候选域、提交时刻与仍然成立的事实}{408 · 数据结构 Topic DS-08}
+
+\begin{corebox}{母问题：图上的“下一步”凭什么不会破坏全局目标？}
+所有算法先压缩为同一条生成链：
+\[
+\boxed{\text{Goal}\to\text{Candidate Domain}\to\text{Local Action}
+\to\text{Commit Point}\to\text{Invariant}\to\text{Global Result}}
+\]
+最容易混淆的不是循环语法，而是“候选对象是谁、何时可以永久确定”。
+Prim 与 Kruskal 都求最小生成树，却分别在单棵树边界与全图森林之间选择；
+Dijkstra、Bellman--Ford 与 Floyd 都做松弛，却分别固定顶点、路径边数上界与允许经过的中间点集合。
+\end{corebox}
+
+\begin{methodbox}{本册定位与 Owner 边界}
+\begin{itemize}
+  \item \kw{Owns：}Prim/Kruskal、Dijkstra/Bellman--Ford/Floyd、拓扑排序与 AOE 关键路径的目标、不变量、提交条件和失败证据。
+  \item \kw{Uses：}DS07 提供图表示与遍历状态；Kruskal 直接复用 DS06 Union-Find；Prim/Dijkstra 复用 DS05 的“按优先级取候选”抽象契约。
+  \item \kw{接口事实：}当前 Prim 用数组扫描，Dijkstra 用标准库最小优先队列，并未直接复用 DS05 的整数最大堆类；不能把概念依赖写成代码依赖。
+  \item \kw{Stops：}堆、并查集和图存储内部机制不在本册重讲；工程路由协议只可调用最短路模型。
+\end{itemize}
+\end{methodbox}
+
+\tableofcontents
+\newpage
+
+\section{先认候选域，再认算法名}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{1.8cm}Y Y Y Y}
+\toprule
+算法 & 目标对象 & 候选域 & 提交时刻 & 失败证据 \\
+\midrule
+Prim & 一棵 MST & 当前树到树外的割边 & 树外顶点以最小跨边权加入 & 仍有顶点却无有限割边 \\
+Kruskal & 一棵 MST & 全图尚未处理的边 & 最小边连接两个不同分量 & 处理完仍不足 $V-1$ 条边 \\
+Dijkstra & 单源最短路 & 未过期的暂定距离 & 最小暂定距离出队 & 出现负权边 \\
+Bellman--Ford & 单源最短路 & 每一轮的全部有向边 & 第 $i$ 轮保证至多 $i$ 条边的最短路 & $V-1$ 轮后仍可松弛 \\
+Floyd & 全源最短路 & 所有点对 $(i,j)$ & 中间点集合由前 $k-1$ 个扩为前 $k$ 个 & 最终存在 $d[i][i]<0$ \\
+拓扑排序 & 约束合法序列 & 当前入度为零的顶点 & 顶点出队并释放后继约束 & 输出顶点数小于 $V$ \\
+关键路径 & AOE 最长工期与零时差活动 & 拓扑序上的事件和活动 & 正向、反向两遍完成后判时差 & 图有环或工期为负 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{corebox}{统一记忆锚点}
+不要记“某算法总是取最小”。先补完整句子：
+\emph{从哪个候选域，按什么量取谁；取出后是暂时用于传播，还是从此永久确定？}
+只要候选域或提交时刻答错，代码即使长得像模板，证明也已经失效。
+\end{corebox}
+
+\section{最小生成树：同一目标，两种生长几何}
+
+\subsection{Prim：一棵树向外吞并}
+设 $S$ 为已经进入树的顶点集合，\code{best[v]} 表示从 $S$ 跨到顶点 $v$ 的最轻边权。
+每轮选择树外 \code{best} 最小的顶点加入 $S$，再用它的邻边缩小其他顶点的 \code{best}。
+
+\begin{methodbox}{循环不变量}
+已提交顶点始终连成一棵树；每个未提交顶点的 \code{best} 是当前割 $(S,V-S)$ 上到该点的最轻已知边。
+割性质保证本轮最轻跨边是安全边。若树外仍有顶点而所有 \code{best} 都是无穷大，证据不是“程序没找到”，而是图不连通。
+\end{methodbox}
+
+\lstinputlisting[language=C++,firstline=32,lastline=67,firstnumber=32,numbers=left,caption={Prim：候选域是当前树的边界}]{30_408/10_数据结构/08_图上的结构算法/code/ds08_graph_algorithms.hpp}
+
+\subsection{Kruskal：多棵树逐步合并}
+Kruskal 不维护“当前树”，而维护无环森林。边按权从小到大扫描；只有两端属于不同连通分量时，才把边提交并合并分量。
+
+\begin{examplebox}{同一张图为什么会产生两种轨迹}
+边为 $01(1),12(2),23(1),03(8)$。从顶点 $0$ 出发的 Prim 轨迹是
+\[
+\{0\}\to\{0,1\}\to\{0,1,2\}\to\{0,1,2,3\};
+\]
+Kruskal 则可先同时形成分量 $\{0,1\}$ 与 $\{2,3\}$，再用 $12(2)$ 合并。
+两者总权都为 $4$，但状态几何完全不同：\kw{Prim 是单树扩张，Kruskal 是森林合并}。
+\end{examplebox}
+
+\lstinputlisting[language=C++,firstline=69,lastline=91,firstnumber=69,numbers=left,caption={Kruskal：Union-Find 维护森林分量}]{30_408/10_数据结构/08_图上的结构算法/code/ds08_graph_algorithms.hpp}
+
+\section{最短路：同一个松弛式，三种“已经解决”}
+
+对边 $(u,v,w)$，三种算法共享局部动作
+\[
+d[v]\leftarrow\min\{d[v],d[u]+w\},
+\]
+但局部动作相同不代表外层循环可以互换。外层循环决定每一步之后究竟固定了什么。
+
+\subsection{Dijkstra：固定当前最近的顶点}
+非负权保证未来绕路只会继续增加长度。因此，当未过期的最小暂定距离 $(d,u)$ 出队时，不存在一条经未确定顶点绕回来使 $d[u]$ 更小的路径。
+
+\begin{methodbox}{读代码时只盯三个状态}
+\begin{enumerate}
+  \item \code{distance[v]}：目前最好上界，不等于所有时刻都已最终确定；
+  \item \code{pending}：可能含同一顶点的旧候选；
+  \item \code{current\_distance != distance[current]}：丢弃过期候选，只有未过期最小项才承担提交语义。
+\end{enumerate}
+负权边会破坏“取出即确定”的证明，所以实现必须在运行前拒绝它，而不是算完再碰碰运气。
+\end{methodbox}
+
+\lstinputlisting[language=C++,firstline=93,lastline=128,firstnumber=93,numbers=left,caption={Dijkstra：非负权、最小候选与过期项过滤}]{30_408/10_数据结构/08_图上的结构算法/code/ds08_graph_algorithms.hpp}
+
+\subsection{Bellman--Ford：固定路径允许使用的边数}
+第 $i$ 轮扫描全部边后，可以保证所有“至多含 $i$ 条边”的最短路已被传播。
+没有可达负环时，简单最短路至多含 $V-1$ 条边；因此 $V-1$ 轮后若仍能松弛，就得到一个可达负环证据。
+
+\begin{corebox}{最常漏掉的保护条件}
+若 $d[u]=\infty$，边 $u\to v$ 不可参与加法，更不能据此更新 $v$。
+“无穷大不参与算术”同时是语义规则和防溢出规则。
+\end{corebox}
+
+\lstinputlisting[language=C++,firstline=130,lastline=164,firstnumber=130,numbers=left,caption={Bellman--Ford：轮数就是路径边数上界}]{30_408/10_数据结构/08_图上的结构算法/code/ds08_graph_algorithms.hpp}
+
+\subsection{Floyd：固定允许经过的中间点集合}
+令 $D^{(k)}[i][j]$ 表示只允许前 $k$ 个顶点作为中间点时，$i$ 到 $j$ 的最短距离，则
+\[
+D^{(k)}[i][j]
+=\min\left(D^{(k-1)}[i][j],
+D^{(k-1)}[i][k]+D^{(k-1)}[k][j]\right).
+\]
+因此 \code{middle} 必须放在最外层：完成第 $k$ 层之后，整张矩阵才具有统一的“允许中间点集合”语义。
+
+\lstinputlisting[language=C++,firstline=166,lastline=198,firstnumber=166,numbers=left,caption={Floyd：最外层循环扩张允许中间点集合}]{30_408/10_数据结构/08_图上的结构算法/code/ds08_graph_algorithms.hpp}
+
+\begin{methodbox}{三算法一眼分流}
+\begin{itemize}
+  \item \kw{Dijkstra：}固定顶点；需要非负权；适合单源。
+  \item \kw{Bellman--Ford：}固定路径边数上界；允许负边；可检测源点可达负环。
+  \item \kw{Floyd：}固定允许的中间点集合；处理所有点对；对角线负值暴露负环。
+\end{itemize}
+看到“松弛”还不能选算法，必须再问：题目要求固定哪一种状态？
+\end{methodbox}
+
+\section{DAG：从释放约束到识别零时差活动}
+
+\subsection{拓扑排序：删除的不是点，而是前置约束}
+入度为零表示一个顶点的全部前置约束已经释放。顶点出队后，对每条出边将后继入度减一；只有减到零的后继才进入候选队列。
+若队列耗尽但仍有顶点未输出，这些顶点之间存在无法释放的循环依赖。
+
+\lstinputlisting[language=C++,firstline=200,lastline=230,firstnumber=200,numbers=left,caption={Kahn 拓扑排序：候选域是当前零入度点}]{30_408/10_数据结构/08_图上的结构算法/code/ds08_graph_algorithms.hpp}
+
+\subsection{关键路径：正向求最早，反向求最迟}
+AOE 网中，顶点是事件，边是有持续时间的活动。沿拓扑序正向做最长路松弛：
+\[
+ve[v]=\max_{u\to v}\{ve[u]+w(u,v)\}.
+\]
+项目工期是所有事件最早发生时间的最大值。再以工期初始化 $vl$，沿逆拓扑序反向收紧：
+\[
+vl[u]=\min_{u\to v}\{vl[v]-w(u,v)\}.
+\]
+对活动 $u\to v$，其最早开始与最迟开始分别为
+\[
+e=ve[u],\qquad l=vl[v]-w(u,v).
+\]
+只有 $e=l$，即总时差为零，活动才是关键活动。
+
+\begin{corebox}{为什么只算正向最长路还不够}
+正向一遍只能回答“项目最早多久完成”；它不能判断某条活动能否延迟而不影响总工期。
+关键活动判断必须依赖反向的最迟时间。代码若只返回 \code{earliest}，就没有完成关键路径算法。
+\end{corebox}
+
+\lstinputlisting[language=C++,firstline=232,lastline=281,firstnumber=232,numbers=left,caption={关键路径：最早、最迟与零时差边}]{30_408/10_数据结构/08_图上的结构算法/code/ds08_graph_algorithms.hpp}
+
+\section{测试不是报喜，而是攻击不变量}
+
+\lstinputlisting[language=C++,firstline=29,lastline=72,firstnumber=29,numbers=left,caption={同目标对照、失败边界与完整关键路径断言}]{30_408/10_数据结构/08_图上的结构算法/code/ds08_graph_algorithms_test.cpp}
+
+测试按容易混淆的接口成对设计：Prim 与 Kruskal 在同图上应得到同一 MST 总权；Dijkstra 与 Bellman--Ford 在非负图上应得到相同单源距离；负边只拒绝 Dijkstra，负环才拒绝 Bellman--Ford；拓扑排序输出序列，关键路径还必须输出 $ve$、$vl$ 与关键边。
+
+路径代价使用 \code{long long}，并用两条 $2\times10^9$ 的边验证结果为 $4\times10^9$，避免算法逻辑正确却被 32 位整数边界破坏。
+
+\section{复杂度与适用边界}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.3cm}C{2.4cm}Y Y}
+\toprule
+算法 & 本实现复杂度 & 正确性前提 & 显式失败 \\
+\midrule
+Prim & $O(V^2+E)$ & 无向连通带权图 & 非连通 \\
+Kruskal & $O(E\log E)$ & 无向连通带权图 & 非连通 \\
+Dijkstra & $O((V+E)\log V)$ & 有向图边权非负 & 负边 \\
+Bellman--Ford & $O(VE)$ & 允许负边 & 源可达负环 \\
+Floyd & $O(V^3)$ & 距离加法不溢出 & 任意负环 \\
+拓扑排序 & $O(V+E)$ & 有向无环图 & 有环 \\
+关键路径 & 当前实现 $O(VE)$ & AOE 网为 DAG，工期非负 & 有环、负工期 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{考场与代码复原协议}
+
+遇到图算法题，按五步写在草稿上：
+\begin{enumerate}
+  \item \kw{Goal：}要树、单源距离、全源距离、合法顺序，还是总工期与关键活动？
+  \item \kw{Candidate：}候选是跨割边、全局边、暂定距离、全部边、点对，还是零入度点？
+  \item \kw{Commit：}本轮结束后，哪个对象从“候选”变为“永久成立”？
+  \item \kw{Update：}更新距离、入度、分量、跨边权，还是最早/最迟时间？
+  \item \kw{Failure：}负边、负环、非连通、有环、不可达与溢出分别怎样显式出现？
+\end{enumerate}
+
+\begin{corebox}{压缩复原}
+只记五问：\kw{求什么？候选是谁？何时提交？提交后什么永真？什么证据让证明失效？}
+当五问能在新图上独立回答，代码才真正被压缩成心智模型；只会背函数名和循环层数，还没有形成模型。
+\end{corebox}
+
+\begin{methodbox}{代码证据}
+完整实现位于 \codepath{code/ds08_graph_algorithms.hpp}，断言测试位于
+\codepath{code/ds08_graph_algorithms_test.cpp}。正文中的行号引用与当前 C++17 实现同步。
+\end{methodbox}
+
+\end{document}

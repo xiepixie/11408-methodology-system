@@ -1,6 +1,6 @@
 # DS-I01｜从 Workload 到数据结构选择
 
-状态：目录已建立，正文未建。
+状态：Canonical 正文已建立；Published PDF 见下方链接。
 
 ## Initial Problem
 给定数据关系、操作频率、规模与资源约束，选择合适的数据结构与表示。
@@ -16,3 +16,7 @@ Data Structure Atlas Foundation、DS01–DS12、DS-B01–DS-B03。
 
 ## Verification
 检查是否遗漏主要操作、边界条件、最坏成本、空间/I-O 代价，以及选择理由是否随 workload 改变而改变。
+
+## Manual
+- Canonical：[DS-I01_从Workload到数据结构选择_方法论手册.tex](DS-I01_从Workload到数据结构选择_方法论手册.tex)
+- Published：[DS-I01_从Workload到数据结构选择_方法论手册.pdf](../../../../90_publish/DS-I01_从Workload到数据结构选择_方法论手册.pdf)

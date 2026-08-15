@@ -1,0 +1,75 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\handbooksetup{NET-B06 MTU × Segmentation}{408 · Network Internal Bridge}{Message · MSS · Packet · Frame}
+\begin{document}
+\handbooktitle{MTU × Segmentation}{路径尺寸怎样约束传输层分段}{408 · NET-B06}
+
+\begin{corebox}{Mother Interface}
+\[
+\boxed{Application\ bytes\xrightarrow{TCP\ MSS}segments
+\xrightarrow{IP\ MTU}packets\xrightarrow{link\ framing}frames}
+\]
+Segmentation 主动把 byte stream 切成传输单元；fragmentation 被动把过大的 IP packet 适配链路 MTU。两者的 Owner、首部、序号与重组位置不同。
+\end{corebox}
+
+\begin{methodbox}{Owners 与停止边界}
+NET06 Owns TCP stream/segment 与 MSS；NET04 Owns IP packet、MTU、fragmentation 和 PMTU。本桥 Owns 尺寸预算与失败路由。Ethernet/PPP frame 开销回到 NET02，具体可靠重传回到 NET-B03。
+\end{methodbox}
+
+\section{四层边界不能混算}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.2cm}Y Y Y}
+\toprule
+对象 & 尺寸参数 & 谁切/封装 & 谁重组/解释\\
+\midrule
+Application message & 应用自定义 & application & application\\
+TCP segment & MSS 限制 TCP data & source TCP & destination TCP 按 byte SEQ 重排\\
+IP packet/fragment & MTU 限制整个 IP packet & source；IPv4 router 在允许时也可分片 & final IP destination\\
+Link frame & frame payload/format & each-hop link adapter & next-hop link endpoint\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+TCP 是 byte stream，不保留 application write boundary；一个 write 可成为多个 segments，多个 write 也可能合并。MSS 是每个 TCP segment 的最大 data 部分，不含 TCP/IP headers。经典无选项 IPv4 预算常写：
+\[
+MSS\le PMTU-H_{IP}-H_{TCP}.
+\]
+若 PMTU 为 1500 B、IPv4/TCP 首部各 20 B，则 MSS 为 1460 B；有 IP/TCP options、IPv6 extension headers 或隧道外层时必须重新扣除实际开销。
+
+\section{为什么优先分段而不是依赖 IP 分片}
+
+TCP 在源端按合适 MSS 生成不超过 PMTU 的 packet，可避免中途 IP fragmentation。若一个大 IPv4 packet 已形成且输出 MTU 更小，允许时 router 可分片；所有 fragments 只在最终 IP destination 重组，router 不逐段恢复 TCP。任一 fragment 丢失会使该原 packet 无法交给 TCP，TCP 最终重传的通常是相关字节数据，可能再次生成新的 packet，而不是让中间 router 重传一个 fragment。
+
+IPv6 router 不分片：收到 Packet Too Big 后，source 调整 packet size/PMTU，并在必要时由 source 使用 Fragment header。故“IPv6 不分片”缺少 Owner，是错误压缩。
+
+\section{封装开销会改变有效 MTU}
+
+隧道在原 packet 外再增加 outer header。若物理 egress MTU 不变，inner packet 可用预算随外层开销减少：
+\[
+MTU_{inner}\le MTU_{egress}-H_{outer}.
+\]
+Mobile IP、VPN 或其他隧道题若只沿用原 MSS，可能在封装后超限。链路 frame 的 header/trailer 通常不计入 IP MTU，但题设若给的是“最大帧长”而不是 MTU，必须先扣链路开销得到网络层 payload budget。
+
+\section{数值母例}
+
+应用写入 4000 B，TCP MSS=1460 B，则可形成 data 长度 $1460,1460,1080$ B 的三个 TCP segments，各自拥有 TCP header 与连续 byte SEQ。若其中一个 1500 B IPv4 packet 之后遇到 MTU 620 B，IPv4 header 20 B 且允许 router 分片，则非末片 payload 取不超过 600 B 的 8-byte 整数倍；这是对整个 IP payload（含 TCP header/data）的 IP fragmentation，不是 TCP 再按 MSS 分段。
+
+\section{调用协议与 First Divergence}
+
+\begin{enumerate}
+\item 写题设给的是 application bytes、MSS、IP MTU 还是 maximum frame size；
+\item 逐层扣除对应 header，绝不跨层重复扣或漏扣；
+\item 判断是 source TCP segmentation、IPv4 fragmentation 还是 IPv6 PMTU 分支；
+\item 分段按 TCP byte SEQ 推进；分片按 Identification/Offset/MF 推进；
+\item 明确重组 Owner，并检查隧道外层是否再次消耗 MTU。
+\end{enumerate}
+
+\begin{warnbox}{Anti-Bridge}
+把 MSS 说成最大 TCP segment 总长度，是漏了首部；把 fragment offset 当 TCP SEQ，是混淆两个坐标系；router 收齐 fragments 再转发，是写错重组 Owner；链路最大帧长直接当 IP MTU，是忽略 frame overhead；IPv6 router 主动分片，是写错责任边界。
+\end{warnbox}
+
+\begin{corebox}{Compression}
+当前对象是哪一层？尺寸上限包含哪些首部？谁切分、用什么坐标、谁重组？外层封装是否缩小 inner budget？
+\end{corebox}
+\end{document}

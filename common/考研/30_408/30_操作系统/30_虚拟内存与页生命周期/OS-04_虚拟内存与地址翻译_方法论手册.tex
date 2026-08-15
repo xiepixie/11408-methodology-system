@@ -110,6 +110,7 @@
 同一个“分配”一词，至少可能指五件完全不同的事：
 
 \begin{center}
+
 \begingroup
 \small
 \renewcommand{\arraystretch}{1.25}
@@ -134,6 +135,7 @@
 
 \subsection{本册统一五层模型}
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=0.9cm]
@@ -406,6 +408,7 @@ VPN\to PFN/permission.
 
 \subsection{快路径 与 慢路径}
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=1.8cm and 3.2cm]
@@ -477,6 +480,7 @@ MMU 在正常 快路径 不能完成访问时触发 page-fault exception。内�
 
 \subsection{统一处理流程}
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=1.8cm and 3.2cm]
@@ -646,13 +650,40 @@ T_{fault}\approx T_{victim\ write}+T_{page\ in}+T_{restart}.
 \end{itemize}
 这是“资源配额”与“局部选择策略”两个层次。
 
+\subsection{最小页框数与有效驻留集：正确性底线不等于性能目标}
+
+页框需求至少有两条不同的约束线：
+\begin{itemize}
+  \item \kw{指令可完成的最小驻留需求}：由题设 ISA、指令/操作数可能跨页以及是否允许在一条指令执行中途处理 fault 等语义共同限定；它回答“能否正确推进”。不能脱离题设背一个固定数字。
+  \item \kw{当前局部性的有效驻留需求}：由最近访问集合和阶段性工作集决定；它回答“能否以可接受缺页率推进”，会随时间变化。
+\end{itemize}
+
+因此“页框不少于硬件底线”只是正确性条件，不保证性能；“页框接近当前工作集”是性能目标，也不是永久不变的常数。
+
+\subsection{Working Set 与 PFF：一个预测模型，一个反馈控制器}
+
+工作集用最近窗口内访问过的不同页面近似下一阶段需要保留的集合：
+\[
+W(t,\Delta)=\{\text{在窗口 }(t-\Delta,t]\text{ 内被访问的页面}\}.
+\]
+窗口过小会漏掉仍有用的页面，过大又会把已经离开的局部性阶段保留过久。
+
+Page-Fault Frequency (PFF) 不直接猜页面集合，而是观察结果并调整配额：
+\[
+\boxed{
+\text{fault rate too high}\Rightarrow\text{try more frames/admission control},\qquad
+\text{fault rate very low}\Rightarrow\text{frames may be reclaimable}.
+}
+\]
+它们的关系是“工作集提供对象层预测，PFF 提供结果层反馈”。两者都只能说明风险与调节方向，不能推出“某个瞬间工作集总和超过内存就必然已经发生颠簸”。
+
 \section{Working Set 与 Thrashing：负载过高时越调度越慢}
 
 \subsection{局部性为什么支持虚拟内存}
 程序通常在某一时间窗口只频繁使用较小页面集合，称为工作集的思想基础。只要这些热点页大部分驻留，page fault rate 就可以保持较低。
 
 \subsection{Thrashing 的本质}
-若：
+若运行中各进程的活跃工作集总需求长期超过可用页框，系统就有很高的颠簸风险：
 \[
 \sum_i WorkingSet_i > AvailableFrames,
 \]
@@ -774,6 +805,7 @@ VA\arr PageFault\arr File/PageCache\arr PhysicalFrame\arr PTE.
 \section{综合题一：一次虚拟地址访问}
 
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=1.8cm and 3.2cm]
@@ -813,6 +845,7 @@ VA\arr PageFault\arr File/PageCache\arr PhysicalFrame\arr PTE.
 
 \section{综合题二：一个页面的生命周期}
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=2.0cm and 3.2cm]
@@ -943,6 +976,7 @@ Page Fault 异常 & 请求分页缺页、访问越界 & 广泛依赖 Fault 实�
 
 \section{跨科桥梁：计组与 OS 在一次访存中怎样接力}
 \begin{bridge}[软硬件状态所有权]
+
 \begingroup
 \small
 \renewcommand{\arraystretch}{1.25}

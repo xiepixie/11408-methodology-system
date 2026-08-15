@@ -1,0 +1,45 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage[a4paper,margin=1.75cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx}
+\usepackage[most]{tcolorbox}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
+\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\begin{document}
+\section*{B07\quad 随机变量变换与 Jacobian：概率质量守恒}
+\textbf{依赖：}B02+B06A/B06B。只解释变换方向、支持迁移和质量守恒。
+\begin{tcolorbox}[title=母接口]
+原坐标区域的概率质量不变：
+\[
+f_{U,V}(u,v)=f_{X,Y}(x(u,v),y(u,v))
+\left|\frac{\partial(x,y)}{\partial(u,v)}\right|.
+\]
+\end{tcolorbox}
+\subsection*{1.\ 一一变换}
+先写 $(u,v)=T(x,y)$ 的逆像 $(x,y)=T^{-1}(u,v)$ 与新支持域，再使用逆变换 Jacobian。矩阵和行列式方向必须与“密度乘微元保持不变”
+\[
+f_{X,Y}\,dxdy=f_{U,V}\,dudv
+\]
+一致。
+\subsection*{2.\ 一维与多分支}
+若 $Y=g(X)$ 在目标区间单调，
+\[
+f_Y(y)=f_X(g^{-1}(y))\left|\frac{d}{dy}g^{-1}(y)\right|.
+\]
+非单调时按所有满足 $g(x_i)=y$ 的分支求和，并分别检查原支持。
+\subsection*{3.\ 失败边界}
+\begin{itemize}
+\item 只换公式不换 support 会产生错误概率；
+\item Jacobian 为零或变换非光滑时不能机械套公式；
+\item 多对一映射必须分支求和，不能挑一个逆函数。
+\end{itemize}
+\subsection*{4.\ 最小例子与调用}
+若 $X\sim U(-1,1)$ 且 $Y=X^2$，对 $0<y<1$ 有两个逆像 $\pm\sqrt y$，故
+\[
+f_Y(y)=\frac12\frac{1}{2\sqrt y}+\frac12\frac{1}{2\sqrt y}
+=\frac{1}{2\sqrt y}.
+\]
+题面出现非单调变换时，先列完整原像与新支持，再对所有分支求和。
+\begin{corebox}{检查句}
+守恒等式中的微元方向是什么？新域是否是完整逆像？是否存在多个分支、奇异点或边界缺口？
+\end{corebox}
+\end{document}

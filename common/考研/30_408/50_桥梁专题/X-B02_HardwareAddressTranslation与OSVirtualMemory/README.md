@@ -1,6 +1,6 @@
 # X-B02｜Hardware Address Translation × OS Virtual Memory
 
-状态：目录已建立，正文未建。
+状态：已采用；Canonical Bridge 正文已建立并发布。
 
 ## Owners
 CO07 地址翻译硬件 ↔ OS03 Virtual Memory。
@@ -17,3 +17,17 @@ OS 怎样把地址空间策略编码成硬件可消费 mapping；硬件何时能
 
 ## Anti-Bridge
 `TLB miss != Page Fault`；`Hardware Cache != OS Page Cache`。
+
+## Manual
+
+- [Canonical deep body](X-B02_HardwareAddressTranslation与OSVirtualMemory_桥梁手册.tex)
+- [Published PDF](../../../90_publish/X-B02_HardwareAddressTranslation与OSVirtualMemory_桥梁手册.pdf)
+- [首轮调研证据包](../../../80_evidence/archive/review_log/2026-08-12/2026-08-12_X-B02_跨学科Bridge调研证据包.md)
+
+## Current Model
+
+首轮采用“配置—消费—失败—修复—重试”模型：OS 输出页表/PTE 状态，MMU/TLB 消费并输出 `PA + permission` 或 fault；可修复 fault 经现场保存、映射更新与旧翻译处理后回到明确 retry 点。不同 ISA 的寄存器与 page-walk 细节仍由各自 Owner 负责。
+
+## Review v1
+
+已核对 mapping/PTE、MMU/TLB、Page Fault、OS repair 与 retry 的责任链，并阻断 TLB miss、Page Fault、Cache miss 和 Page Cache 的混同。下一轮用不同 ISA 的 trap/translation 失效规则，以及 X-I01 的 LOAD 慢路径题验证。

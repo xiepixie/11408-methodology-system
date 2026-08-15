@@ -4,7 +4,7 @@ LaTeX 自动化编译、智能发布与契约校验工具 (compile_tex.py)
 
 功能：
 1. 自动多遍编译（Double/Triple Pass），确保 \zpageref{LastPage}、目录与交叉引用页码 100% 准确。
-2. 环境变量智能配置：自动注入 common/ 与 common/templates 寻址路径，支持深层子目录免算相对路径直接 \usepackage{ipara}。
+2. 环境变量智能配置：自动注入 common/、common/latex 与 common/templates 寻址路径，支持深层子目录免算相对路径直接加载 I.P.A.R.A 公共 package/class。
 3. 智能发布视图路由：当编译 90_publish/tex/ 下的源码时，自动同步将 PDF 输出至对应的 90_publish/pdf/ 目录。
 4. 物理契约校验：自动检测标准教案/学案是否严格满足【4 页精排（一界一页）】契约，偏离时发出显式警报。
 5. 捕获并解析 xelatex 日志中的 Warning、Error 与 Undefined References。
@@ -81,11 +81,14 @@ def compile_single_tex(tex_path: Path, keep_aux: bool = False) -> bool:
     pdf_name = tex_path.stem + ".pdf"
     pdf_path = target_dir / pdf_name
 
-    # 1. 智能注入 TEXINPUTS 环境变量 (包含 common/ 与 common/templates)
+    # 1. 智能注入 TEXINPUTS 环境变量
+    #    common/latex 是全局 LaTeX Design System 的公开 package/class 入口。
     common_dir = Path(__file__).resolve().parent.parent
     env = os.environ.copy()
-    texinputs = env.get("TEXINPUTS", "")
-    env["TEXINPUTS"] = f".:{target_dir}:{common_dir}:{common_dir}/templates:{texinputs}"
+    # 暂时禁用自定义 TEXINPUTS 以避免包查找冲突
+    # texinputs = env.get("TEXINPUTS", "")
+    # kaoyan_dir = common_dir / "考研"
+    # env["TEXINPUTS"] = f".:{target_dir}:{common_dir}:{common_dir}/latex:{common_dir}/templates:{kaoyan_dir}:{texinputs}"
 
     print(f"\n==========================================")
     print(f"📄 开始编译: {tex_path}")

@@ -177,6 +177,8 @@ python3 00_system/cognitive_system.py publish "<target.tex>"
 6. 全项目没有另一个 `.tex` 使用相同 stem；
 7. `90_publish/` 与共享编译脚本都真实存在。
 
+调用共享编译器时，项目安全入口会把 `common/考研/` 根目录加入 `TEXINPUTS`，因此当前过渡期任意深度的 Canonical `.tex` 都可以直接 `\usepackage{ipara-handbook}`，不需要维护脆弱的多层 `../../` 路径。`ipara-handbook.sty` 目前属于 Handbook Prototype；正式 Core/Class 架构与迁移 Gate 由全局 [`common/latex/README.md`](../../latex/README.md) 拥有，本仓库的发布/搜索路径安全仍由本文件拥有。共享编译器继续加入目标目录与 `common/` 级搜索路径。
+
 编译返回成功后继续验证：
 
 - `90_publish/<same-stem>.pdf` 真实存在；

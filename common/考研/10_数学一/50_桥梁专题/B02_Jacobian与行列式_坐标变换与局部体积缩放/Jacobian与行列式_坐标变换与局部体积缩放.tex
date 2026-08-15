@@ -1,0 +1,43 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage[a4paper,margin=1.75cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx}
+\usepackage[most]{tcolorbox}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
+\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\begin{document}
+\section*{B02\quad Jacobian 与行列式：坐标变换与局部体积缩放}
+\textbf{依赖：}B01。这里只拥有“局部线性化 $\to$ determinant $\to$ 微元缩放”的接口。
+\begin{tcolorbox}[title=母接口]
+非线性坐标变换 $\xrightarrow{\text{局部化}}$ 线性映射
+$\xrightarrow{\det}$ 有向面积/体积缩放。
+\end{tcolorbox}
+\subsection*{1.\ Jacobian matrix 与 determinant 分层}
+若 $T(u)=\bigl(x(u),y(u)\bigr)$，则
+\[
+J_T(u)=\begin{pmatrix}x_u&x_v\\y_u&y_v\end{pmatrix},\qquad
+dA_{xy}=\left|\det J_T(u)\right|\,du\,dv.
+\]
+矩阵记录每个输入方向被送到哪里；determinant 记录平行小平行四边形的有向面积因子。三维同理得到体积因子。
+\subsection*{2.\ 换元公式的方向}
+若积分被写成 $(x,y)=T(u,v)$，密度仍是原坐标函数的复合：
+\[
+\iint_{\Omega_{xy}}f(x,y)\,dxdy
+=\iint_{\Omega_{uv}}f(x(u,v),y(u,v))\,|\det J_T|\,dudv.
+\]
+若题目给的是逆变换，则必须使用对应方向的 Jacobian；不能看到一个 determinant 就凭记忆取倒数。
+\subsection*{3.\ 失效边界}
+\begin{itemize}
+\item $\det J_T=0$ 表示局部压缩到低维，通常不能直接用普通换元公式；
+\item 变换可能多对一，需分片或按分支求和；
+\item 换元后必须同步搬运区域、函数复合、微元和方向/绝对值。
+\end{itemize}
+\subsection*{4.\ 最小例子与调用}
+极坐标变换 $T(r,\theta)=(r\cos\theta,r\sin\theta)$ 满足
+\[
+\det J_T=\begin{vmatrix}\cos\theta&-r\sin\theta\\\sin\theta&r\cos\theta\end{vmatrix}=r,
+\]
+故 $dA=r\,drd\theta$。$r=0$ 处 determinant 为零，说明原点的角度表示退化；题面出现坐标换元或密度变换时先写变换方向和新域。
+\begin{corebox}{检查句}
+矩阵维度是否方阵？我用的是正变换还是逆变换？新域是否真的是原域的完整逆像？Jacobian 的绝对值和分支是否交代？
+\end{corebox}
+\end{document}

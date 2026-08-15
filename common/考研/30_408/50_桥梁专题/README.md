@@ -36,7 +36,7 @@ Gate 2: Standalone Promotion
 
 [入口](X-B02_HardwareAddressTranslation与OSVirtualMemory/README.md)
 
-计组地址翻译硬件 ↔ OS VM。拥有 OS 构造 mapping/PTE、硬件消费 mapping、translation 无法继续时 fault 回到 OS 修复、随后 retry 的交接。
+计组地址翻译硬件 ↔ OS VM。拥有 OS 构造 mapping/PTE、硬件消费 mapping、translation 无法继续时 fault 回到 OS 修复、随后 retry 的交接。首轮正文已按“配置—消费—失败—修复—重试”模型建立；[进入 X-B02](X-B02_HardwareAddressTranslation与OSVirtualMemory/README.md)。
 
 ### X-B03｜Interrupt / DMA × OS I/O
 
@@ -87,4 +87,8 @@ Data structure appears in system != automatic cross-subject Bridge
 
 ## 6. Legacy Source
 
-旧 `OS-B1_CPU与OS桥梁_方法论手册.tex` 只作为 Source/legacy publication input。接口已分拆归入 X-B01–X-B04，不再让一册旧“CPU × OS 大桥”拥有多个接口。
+旧 `OS-B1_CPU与OS桥梁_方法论手册.tex` 不再是 Owner，接口骨架统一归入 X-B01–X-B04；但其中机制/策略、入口协议、DMA 与原子性等细节仍需逐项 Source Diff，因此旧 `.tex` / PDF 暂时保留，不作为平行总册使用。
+
+## Review v1
+
+X-B01、X-B02、X-B03 已完成首轮升级并发布；X-B04 通过接口有效性但继续 Candidate，已完成一次覆盖核对并保留 Promotion Evidence Gate。审阅统一采用“输出—翻译—输入—不变量—失败/恢复”模板，并保留旧总册等待逐项 Source Diff，不删除旧 Source。

@@ -1,0 +1,28 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\usepackage{amsmath,booktabs,tabularx,hyperref}
+\handbooksetup{OS-B04 VM × File × I/O}{408 · OS Internal Bridge}{File Page · Residency · Fault · Writeback}
+\begin{document}
+\handbooktitle{VM × File × I/O}{文件内容怎样成为可映射页面，并在缺页、回写和完成事件中保持身份}{408 · OS-B04}
+\begin{corebox}{Mother Interface}
+\[
+\boxed{\text{File Offset/Identity}\to\text{Page Identity}\to\text{Mapping}\to\text{Resident or Miss}\to\text{I/O}\to\text{Complete/Writeback}}
+\]
+本 Bridge 只拥有 file、page、mapping 与 I/O request 的交接；页表硬件进入 X-B02，设备完成进入 X-B03。
+\end{corebox}
+\begin{methodbox}{责任分层}
+File Owner 提供内容身份与文件偏移；VM Owner 提供虚拟映射、页驻留与 fault-side 状态；I/O Owner 把装入或回写变成设备请求并报告完成。本册 Owns“同一文件页在三层状态中的身份保持”。
+\end{methodbox}
+\section{同一内容的三个名字}
+文件偏移决定内容身份；page cache/page object 代表内核可共享的页；某进程的 VA mapping 只是访问该页的一种视图。mapping 存在不代表页已驻留，页在 cache 中也不代表当前 VA 已建立权限正确的映射。
+\section{缺页与回写轨迹}
+\[
+\text{VA access}\to\text{file-backed miss}\to\text{I/O request}\to\text{DMA/completion}\to\text{page resident}\to\text{retry}.
+\]
+脏页回写则方向相反：页状态先标记需要持久化，I/O 完成后才能清除相应 dirty/in-flight 状态。等待 I/O 的线程进入 OS-B01，不由本册重新拥有 wakeup。
+\section{最小例子与 Anti-Bridge}
+两个进程 mmap 同一文件页：它们的 VA 可以不同，但 file offset 对应同一 page identity。一个进程首次访问可能触发装入，另一个随后命中已驻留页。\code{page fault} $\neq$ “文件不存在”；Hardware Cache $\neq$ Page Cache；mapping $\neq$ residency。
+\begin{corebox}{Compression}
+内容身份由什么确定？当前访问缺的是 mapping、驻留页还是设备数据？谁拥有 request？完成后哪个状态变为可继续？
+\end{corebox}
+\end{document}

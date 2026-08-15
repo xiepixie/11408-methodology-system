@@ -246,16 +246,16 @@ $$
 
 ## 8. 模块状态与发布
 
-| 模块 | 工作入口 | 既有发布物 |
+| 模块 | Canonical 入口 | 当前正文 / 发布状态 |
 |---|---|---|
-| 高等数学 | [10_高等数学](10_高等数学/README.md) | `00_学科总图/数学一_高等数学_心智模型手册_v2.tex` / `90_publish` PDF |
-| 线性代数 | [20_线性代数](20_线性代数/线性代数%20Subject%20Atlas：空间、映射、表示与不变量.md) | Canonical Atlas = `20_线性代数/线性代数 Subject Atlas：空间、映射、表示与不变量.md`；Topic01–06 均已建立 Canonical LaTeX / PDF，当前待人工确认；旧 Atlas `.tex`/PDF 与旧 v2 保留为 Source / legacy visual |
-| 概率论与数理统计 | [30_概率论](30_概率论/README.md) | `00_学科总图/数学一_概率论与数理统计_心智模型手册_v2.tex` / `90_publish` PDF |
-| Cross-Subject Bridge | [50_桥梁专题](50_桥梁专题/README.md) | 尚无独立发布物 |
-| Integration | [60_综合专题](60_综合专题/README.md) | 尚无独立发布物 |
-| Control Rules | [90_学科做题规则](90_学科做题规则/README.md) | 既有方法论 LaTeX/PDF |
+| 高等数学 | [10_高等数学](10_高等数学/README.md) | Subject Atlas 已采用；Topic01–12、H-B01–H-B05、H-I01 均已建立 Canonical `.tex` 候选正文并按需发布 |
+| 线性代数 | [20_线性代数](20_线性代数/线性代数%20Subject%20Atlas：空间、映射、表示与不变量.md) | Subject Atlas 为 Canonical Map；Topic01–06 已建立并发布 Canonical `.tex` 候选正文，当前待人工确认 |
+| 概率论与数理统计 | [30_概率论](30_概率论/README.md) | Subject Atlas 为 Canonical Map；Topic01–08 已建立 Canonical `.tex` 工作稿，Published View 依当前 TeX 环境逐步同步 |
+| Cross-Subject Bridge | [50_桥梁专题](50_桥梁专题/README.md) | B00–B08 已建立 Canonical 工作稿并按需发布 |
+| Integration | [60_综合专题](60_综合专题/README.md) | 作为跨模块组合层按成熟 Owner 逐步建立 |
+| Control Rules | [90_学科做题规则](90_学科做题规则/README.md) | Markdown Control Rules；候选规则必须经真题/陌生题验证后再升级 |
 
-旧数学 v2 PDF 在对应新 Owner 完成迁移前继续标记为 `legacy-unregistered`。Atlas 是否 Canonical 由当前地图 Owner 决定，不由 PDF 决定；当前线性代数 Topic01–06 已全部通过新的深度 Handbook 链建立并发布。
+历史 v2 总图及其旧 PDF 仅作为已完成 Source Diff 的 Git 历史，不再参与当前导航、Ownership、状态判断或发布判断。Atlas 是否 Canonical 只由当前 Atlas Owner 决定，Topic / Bridge / Integration 的正文状态只由当前 Canonical `.tex` 与 Landing Page 决定。
 
 ## 9. 当前建设顺序
 

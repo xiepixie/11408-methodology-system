@@ -1,23 +1,47 @@
 # 函数展开：幂级数、Taylor 与 Fourier
 
-状态：目录已建立，正文未建。
+> 状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
-## 职责
+## Hook
 
-研究复杂函数怎样通过无限基函数表示，以及这种表示在哪些点、哪些条件下能够恢复原函数。
+函数展开不是把公式写长，而是先确认表示的有效域：幂级数的半径与端点、Taylor 的余项资格、Fourier 的延拓与跳跃点恢复。
 
-## 规划拥有
+## Mother Question
 
-幂级数、收敛半径/端点、和函数、逐项微积分、Taylor series、Fourier 级数、延拓与恢复条件。
+复杂函数如何被基函数坐标化；这种表示在哪些点恢复原函数，逐项运算何时仍然合法？
 
-## Uses / Bridges
+主线：
 
-- Topic10：数项级数收敛前置；
-- H-B05：有限 Taylor 局部模型 ↔ 无限 Taylor 表示；
-- 数学一 B08：Fourier ↔ 正交基/投影。
+$$
+\boxed{\text{基函数/系数}\to\text{半径或区间}\to\text{端点/跳跃审计}\to\text{逐项运算}\to\text{恢复}}
+$$
 
-## 不拥有
+## Scope / Stop Boundary
 
-- 有限阶 Taylor polynomial 与局部误差模型由 Topic03 拥有；
-- Fourier 的正交投影线代接口由数学一 B08 拥有；
-- 生成函数、单位根筛选等旧稿扩展默认标记为 Extension，不作为数学一主干。
+本册负责幂级数半径与端点、基本母函数、代换与逐项微积分、Taylor 从有限局部模型到无限表示的资格、Fourier 的正交系数、奇偶延拓、正弦/余弦级数和 Dirichlet 恢复。
+
+- Topic10 提供数项级数判别与尾项控制；
+- Topic03 Own 有限阶 Taylor 多项式与局部误差；
+- B08 Own 正交投影的线代解释；
+- Topic12 Own 级数递推与常微分方程解；
+- 复分析、Hilbert 空间完备性和 PDE 谱理论不进入数学一主干。
+
+## Owns / Uses
+
+- **Owns**：幂级数收敛域与逐项运算，Taylor 无限化资格，Fourier 延拓/正交/恢复。
+- **Uses**：Topic10 的数项级数、Topic03 的局部 Taylor、B08 的内积正交。
+
+## Read Next
+
+1. [Topic10｜数项级数](../10_数项级数_尾部与敛散/README.md)
+2. [B08｜Fourier 与正交投影](../../50_桥梁专题/B08_Fourier与正交基_函数表示与正交投影/README.md)
+3. [Topic12｜常微分方程](../12_常微分方程_局部规律与整体轨迹/README.md)
+
+## Manual
+
+- Canonical Source：[函数展开_幂级数Taylor与Fourier.tex](函数展开_幂级数Taylor与Fourier.tex)
+- Published View：[函数展开_幂级数Taylor与Fourier.pdf](../../../90_publish/函数展开_幂级数Taylor与Fourier.pdf)
+
+## Status
+
+归档笔记 II-09（幂级数部分）与 II-11（Fourier 级数）已完成第一轮 Owner/Source Diff；正文、Rules 与陌生题验证仍需人工审阅，当前不标记为“已采用”。

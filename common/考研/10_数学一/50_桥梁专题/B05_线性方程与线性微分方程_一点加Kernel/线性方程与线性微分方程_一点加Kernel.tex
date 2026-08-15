@@ -1,0 +1,89 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{xcolor,fancyhdr,hyperref,bookmark,microtype}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
+\definecolor{deep}{RGB}{42,58,73}\definecolor{soft}{RGB}{245,247,249}\definecolor{warn}{RGB}{136,68,63}\definecolor{greenish}{RGB}{57,92,76}\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,pdftitle={B05 线性方程与线性微分方程：一点加 Kernel}}
+\pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{数学一 · Bridge B05}}\rhead{\small\color{deep}一点 + Kernel}\cfoot{\small\thepage}\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+\begin{document}
+\begin{center}{\LARGE\textbf{B05｜线性方程与线性微分方程：一点 + Kernel}}\\[0.4em]
+{\large 同一个线性算子，为什么“一个解”能生成全部解？}\end{center}
+\vspace{0.4em}
+\begin{quote}本 Bridge 不拥有线代方程组或 ODE 的完整求解技巧，只解释一条可反复调用的接口：先找一个满足目标的特解，再沿着齐次核的自由方向移动。\end{quote}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\section{Position 与两侧 Owner}
+线代 Topic04 Owns $Ax=b$ 的可达性、kernel 和仿射解集；高数 Topic12 Owns $L[y]=f$ 的解族、初值与特解。B05 只 Own 两侧之间的共享结构和调用边界。
+
+\section{Mother Interface：一点 + Kernel}
+设 $T:V\to W$ 是线性算子。若 $x_0$ 满足 $T(x_0)=b$，任意另一个解 $x$ 满足
+\[
+T(x-x_0)=T(x)-T(x_0)=b-b=0,
+\]
+所以 $x-x_0\in\ker T$，从而
+\[
+\boxed{T^{-1}(b)=x_0+\ker T.}
+\]
+这不是类比，而是同一条线性证明：\textbf{一个特解负责命中目标，kernel 负责保持输出不变的自由度}。
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.55cm and 0.75cm,box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.15cm,minimum height=0.9cm,align=center,fill=soft,font=\small},arr/.style={-{Latex[length=2mm]},thick,draw=deep}]
+\node[box] (a) {目标 $b$\\或 $f(x)$};
+\node[box,right=of a] (b) {找一个特解\\$x_0$ 或 $y_p$};
+\node[box,right=of b] (c) {齐次核\\$\ker T$ 或 $y_h$};
+\node[box,below=of c] (d) {全部解\\一点 + Kernel};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);
+\end{tikzpicture}
+\end{center}
+
+\section{线代端：逆像的仿射平移}
+对 $Ax=b$，若 $x_0$ 是一个特解，齐次解空间 $\ker A=\{z:Az=0\}$ 给出
+\[
+\boxed{x=x_0+z,\quad z\in\ker A.}
+\]
+因此非齐次解集通常不经过原点，也不是线性子空间；只有 $b=0$ 时解集本身就是 kernel。存在性由 $b\in\operatorname{Im}A$ 决定，自由度由 $\ker A$ 决定。
+
+\section{ODE 端：齐次解空间的平移}
+对线性微分算子 $L$，若 $L[y_p]=f$，则
+\[
+L[y_p+y_h]=f+0=f,\qquad y_h\in\ker L=\{y:L[y]=0\}.
+\]
+于是
+\[
+\boxed{\{y:L[y]=f\}=y_p+\ker L.}
+\]
+初值条件不是重新定义方程，而是在这组仿射解中选取一条轨迹。若系数连续且最高阶系数不为零，$n$ 阶初值通常给出 $n$ 个独立线性条件，裁掉 $n$ 个自由常数。
+
+\begin{examplebox}{最小验证例}
+线代 $\begin{bmatrix}1&1\end{bmatrix}x=1$ 的一个特解为 $(1,0)^T$，kernel 由 $(1,-1)^T$ 张成，故 $x=(1,0)^T+t(1,-1)^T$。ODE $y'-y=e^x$ 的一个特解为 $xe^x$，齐次核为 $Ce^x$，故 $y=(x+C)e^x$。两题的“自由方向”不同，但接口完全相同。
+\end{examplebox}
+
+\section{调用条件与 Anti-Bridge}
+\begin{tabularx}{\linewidth}{L{0.28\linewidth}Y}
+\toprule
+调用信号 & 应保持的不变量 \\
+\midrule
+已知一个解，要求全部解 & 两个候选解之差必须落在齐次核 \\
+已知非齐次系统，要求初值解 & 先写仿射解族，再用条件裁剪常数 \\
+比较线代/ODE 的“特解 + 通解” & 只翻译算子、输入输出和核，不翻译对象维数 \\
+\bottomrule
+\end{tabularx}
+\begin{warnbox}{不要把接口扩大成错误定理}
+“特解 + kernel”依赖线性。一般非线性 ODE 的解集不必对加法封闭；ODE 的微分算子也不等于某个有限维矩阵。特征根与 companion matrix、matrix exponential 是真实 Extension，不是本 Bridge 的主干。
+\end{warnbox}
+
+\section{Compression 与陌生题检查}
+忘掉公式时只复原三问：\textbf{目标输出是什么？已有哪个特解命中它？哪些输入方向经过算子后变成零？} 最后分别验证一个特解代回、每个 kernel 方向代回和全部条件是否独立。
+\end{document}

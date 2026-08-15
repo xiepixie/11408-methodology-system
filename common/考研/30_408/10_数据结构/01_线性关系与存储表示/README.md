@@ -1,6 +1,6 @@
 # DS01｜线性关系与存储表示
 
-状态：目录已建立，正文未建。
+状态：LaTeX 工作稿，待人工确认；已建立并发布 Canonical 深度正文。
 
 ## Position
 数据结构 Topic。
@@ -19,3 +19,12 @@ Atlas Foundation 的 complexity / cost vector。
 
 ## Does Not Own
 栈队列的受限访问语义；数组地址映射若只是计算技巧进入 Rules/附录。
+
+## Manual
+
+- Canonical 正文：[DS01_线性关系与存储表示_方法论手册.tex](DS01_线性关系与存储表示_方法论手册.tex)
+- Published View：[DS-01_线性关系与存储表示_方法论手册.pdf](../../../90_publish/DS01_线性关系与存储表示_方法论手册.pdf)
+- 完整实现：[ds01_linear_list.hpp](code/ds01_linear_list.hpp)
+- 断言测试：[ds01_linear_list_test.cpp](code/ds01_linear_list_test.cpp)
+
+正文主线是 `Linear Relation -> Operation Contract -> Representation -> Local Update -> Invariant -> Cost Vector`，重点区分“已知位置/已知前驱”和“仍需查找”。

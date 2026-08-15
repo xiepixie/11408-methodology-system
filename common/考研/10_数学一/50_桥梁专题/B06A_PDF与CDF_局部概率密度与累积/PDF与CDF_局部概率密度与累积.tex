@@ -1,0 +1,36 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage[a4paper,margin=1.75cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx}
+\usepackage[most]{tcolorbox}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
+\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\begin{document}
+\section*{B06A\quad PDF 与 CDF：局部概率密度与累积}
+\textbf{定位：}连接高数 FTC 与概率一维分布；不把离散质量伪装成普通密度。
+\begin{tcolorbox}[title=母接口]
+\[
+F(x)=P(X\le x)\quad\longleftrightarrow\quad
+F(x)=\int_{-\infty}^{x}f(t)\,dt,\qquad F'(x)=f(x)
+\]
+最后一式只在具备相应正则性时成立。
+\end{tcolorbox}
+\subsection*{1.\ 三层对象}
+CDF $F$ 总是单调不减、右连续且有端点极限；PDF $f$ 是连续型分布的局部密度；区间概率由
+\[
+P(a<X\le b)=F(b)-F(a)=\int_a^b f(x)\,dx
+\]
+给出。密度值本身不是概率，必须乘以区间长度并取极限才有局部解释。
+\subsection*{2.\ 正则性边界}
+连续型分布下 $F$ 绝对连续时几乎处处 $F'=f$；但一般 CDF 可能含跳跃或奇异部分，不能默认存在处处 PDF。离散型变量用点质量 $P(X=x_i)$，不能写成普通函数在点处的“密度值”。
+\subsection*{3.\ 反向使用}
+给定 PDF 先核对非负性与全域积分为 $1$，再累积成 CDF；给定 CDF 求区间概率时优先做差，只有在可导并且题目要求密度时才求导。
+\subsection*{4.\ 最小例子与调用}
+若 $f(x)=e^{-x}\mathbf1_{x\ge0}$，则
+\[
+F(x)=\begin{cases}0,&x<0,\\1-e^{-x},&x\ge0.\end{cases}
+\]
+在 $x>0$ 上 $F'=f$，但端点 $0$ 仍应按 CDF 的右连续性检查。题面出现区间概率或“由 $F$ 求 $f$”时，先确定对象类型与支持。
+\begin{corebox}{检查句}
+当前对象是 CDF、PDF 还是点质量？边界点是否有跳跃？归一化和支持集是否闭合？
+\end{corebox}
+\end{document}

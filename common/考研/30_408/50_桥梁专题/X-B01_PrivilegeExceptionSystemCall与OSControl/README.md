@@ -1,6 +1,6 @@
 # X-B01｜Privilege / Exception / System Call × OS Control
 
-状态：目录已建立，正文未建。
+状态：已采用；Canonical Bridge 正文已建立并发布。
 
 ## Owners
 CO02/CO03 ISA & CPU ↔ OS01 Process/Control，并使用 OS Atlas Foundation 的 user/kernel 基础语义。
@@ -17,3 +17,10 @@ CO02/CO03 ISA & CPU ↔ OS01 Process/Control，并使用 OS Atlas Foundation 的
 
 ## Boundary
 调度、同步、VM 修复由 OS Topic Own；中断/DMA 设备完成路径进入 X-B03。
+
+## Manual
+- [Canonical 正文](X-B01_PrivilegeExceptionSystemCall与OSControl_桥梁手册.tex)
+- [Published PDF](../../../90_publish/X-B01_PrivilegeExceptionSystemCall与OSControl_桥梁手册.pdf)
+
+## Review v1
+已核对 syscall/exception/interrupt 的触发差异、保存现场、内核分流、retry/terminate 与 context switch 边界；下一轮用系统调用、缺页、外部中断题验证。

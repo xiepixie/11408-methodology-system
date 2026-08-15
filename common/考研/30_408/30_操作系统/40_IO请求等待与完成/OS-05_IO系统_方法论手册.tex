@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{ctexart}
+\documentclass[UTF8,fontset=fandol,11pt,a4paper]{ctexart}
 \usepackage[a4paper,margin=1.72cm,headheight=14pt]{geometry}
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage{booktabs,tabularx,longtable,array,multirow}
@@ -111,6 +111,7 @@ I/O 系统的任务，是把“请求、等待、搬运、完成、缓存、排�
 I/O 不是“CPU 外面挂几个设备”这么简单。它之所以形成完整子系统，是因为至少同时存在五种矛盾。
 
 \begin{center}
+
 \begingroup
 \small
 \renewcommand{\arraystretch}{1.25}
@@ -191,6 +192,7 @@ I/O 不是“CPU 外面挂几个设备”这么简单。它之所以形成完整
 
 \subsection{中断、同步异常与“Trap”术语边界}
 \begin{center}
+
 \begingroup
 \small
 \renewcommand{\arraystretch}{1.25}
@@ -334,6 +336,7 @@ A:\text{Ready}\arr\text{Running}\arr\text{return to user}
 
 \subsection{DMA 四阶段模型}
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=1.8cm and 3.2cm]
@@ -376,6 +379,32 @@ DMA \kw{不是“完全不需要 CPU”}，而是把大块数据搬运的逐字�
 \begin{eng}[工程边界：DMA address 不一定等于 CPU physical address]
 现代平台常存在 IOMMU 或总线地址翻译。驱动通常通过 DMA API 得到设备可使用的 DMA address；设备使用该地址访问内存，必要时再由 IOMMU 翻译到真实系统内存。不要把“DMA 直接写物理地址”当成所有平台的绝对实现。
 \end{eng}
+
+\subsection{DMA 映射生命周期：设备看见的内存必须在传输期间保持稳定}
+
+来源笔记中“DMA 期间不能让页框被回收或改作他用”的直觉是正确的，但不能把它简化为“所有体系结构的 PTE 都有一个 pinned bit”。稳定的接口契约是：
+\[
+\boxed{
+\text{prepare buffer}
+\arr\text{establish DMA-visible mapping}
+\arr\text{transfer}
+\arr\text{complete/synchronize}
+\arr\text{unmap or release}
+}
+\]
+
+在这段生命周期内必须保持：
+\begin{itemize}
+  \item 设备使用的 DMA address 仍映射到预期内存，相关页面/缓冲不能被回收并复用于别的对象；
+  \item 传输方向与 ownership 清楚，CPU 和设备何时可以读取或修改缓冲必须符合 DMA API 与一致性要求；
+  \item mapping/pinning 与 unmapping/unpinning 成对出现，失败路径也要回收资源。
+\end{itemize}
+
+若用户缓冲在虚拟地址上连续、物理上离散，可以使用 scatter--gather 描述多个片段；设备能力或地址限制不允许时，可能需要 bounce buffer。二者解决的是“设备怎样看到可访问的地址序列”，并不取消映射生命周期。
+
+\begin{warn}[三个不能绝对化的旧稿说法]
+DMA 设备不一定只看到裸 CPU physical address（可能经 IOMMU）；pinning 的实现状态不一定存放在 PTE 固定位；内核分配的普通内存也不能仅凭分配函数名称推断 DMA 可达、物理连续或无需映射。考试题按给定教材模型作答，工程边界以平台 DMA API 为准。
+\end{warn}
 
 \subsection{408 经典：DMA 的几种总线使用方式}
 不同教材术语略有差异，但核心权衡是“DMA 连续占用互连多长时间”。
@@ -441,6 +470,7 @@ I/O 通道 & 否 & 通道执行 I/O 程序并组织设备操作 & CPU 提交更�
 
 \subsection{经典 I/O 软件层次}
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=0.8cm]
@@ -469,7 +499,25 @@ I/O 通道 & 否 & 通道执行 I/O 程序并组织设备操作 & CPU 提交更�
 它回答的不是“某个磁盘怎么转”，而是“无论设备型号如何，上层都希望拥有统一的 open/read/write、保护、命名、缓冲、错误返回和资源分配语义”。这与 VFS、网络 socket 抽象、虚拟内存中的地址间接层是同一种复杂度控制思想。
 \end{exam}
 
-\subsection{Cache vs Buffer：A $\neq$ B 核心功能辨析}
+\subsection{设备标识也要分层：逻辑名字、设备号与驱动实例}
+
+设备独立性不表示内核不再区分具体设备，而是把“上层怎样命名”与“哪个驱动处理哪个实例”隔开。在类 UNIX 教学模型中，设备结点可携带
+\[
+\boxed{device\ id=(major,minor)}.
+\]
+其中 major 通常选择驱动/设备类别的处理入口，minor 再由该驱动解释为具体实例、分区或子设备。稳定链条是：
+\[
+\text{logical/device name}
+\arr\text{device identity}
+\arr\text{driver dispatch}
+\arr\text{concrete instance}.
+\]
+
+\begin{warn}[不要把两组“主从”混在一起]
+major/minor number 是 OS 的分类与实例标识；总线语境中的 bus master/slave 描述谁发起、谁响应一次传输。名称相似，但对象、关系和可推出结论都不同。
+\end{warn}
+
+\subsection{Cache vs Buffer：\texorpdfstring{$A\neq B$}{A != B} 核心功能辨析}
 
 考场与实际系统中，缓存 (Cache) 与 缓冲 (Buffer) 经常被混淆。必须用一句话精准区分它们的本质目的：
 \[
@@ -511,6 +559,13 @@ OS 系统重点 & 流控、字符缓冲、终端行规程、事件到达 & 块�
 \end{tabularx}
 \endgroup
 实际设备/驱动接口比这更丰富，但这一区分有助于理解为什么磁盘能形成 页缓存 与块层，而键盘不适合用“随机访问块”理解。
+
+\subsection{网络设备：流量包与设备队列的接口层}
+网络接口既不是普通字符流，也不是可任意寻址的磁盘块。驱动通常面对接收/发送描述符环、数据包缓冲区和设备完成事件；上层通过统一的网络设备 API 把包提交给协议栈，协议栈再把端点、顺序、重传等语义交给网络协议 Owner。本册只追踪 I/O 侧的对象：
+\[
+\text{RX/TX descriptor}\to\text{buffer ownership}\to\text{device progress}\to\text{completion}\to\text{wake/notify}.
+\]
+发送时必须明确 CPU/驱动何时放弃缓冲所有权，接收时必须明确设备何时把填好的缓冲交还内核；不能把“收到一个中断”直接当成应用已经收到完整消息。网络设备可用 DMA 批量搬运，也可在非阻塞 API 下立即返回“当前无包/队列满”，这与字符设备的流式读取共享控制路径，但数据单元和排队策略不同。
 
 \subsection{I/O 保护：为什么设备寄存器和 DMA 也需要权限边界}
 I/O 设备能够读写外部世界，某些设备还能直接 DMA 到内存，因此它们天然具有强权限。系统必须控制：
@@ -641,6 +696,26 @@ B_0\to B_1\to\cdots\to B_{N-1}\to B_0
 \]
 这已经自然连接到生产者-消费者问题：数据结构只是容器，正确性仍需要处理“空/满、读写索引、并发更新”。
 
+\subsection{经典缓冲池：不要背三条队列，要追踪 buffer 状态}
+
+教材常把一组公共缓冲区组织成空闲队列、输入队列与输出队列。真正稳定的模型不是队列名称，而是：
+\[
+\boxed{
+\text{Free}
+\xrightarrow{\text{reserve for input}}
+\text{Filling}
+\xrightarrow{\text{input complete}}
+\text{Ready-for-consumer}
+\xrightarrow{\text{release}}
+\text{Free}
+}
+\]
+输出方向同理，只是 producer/consumer 的角色交换。每次队列迁移必须同时回答：当前 buffer 由谁拥有、内容是否有效、谁可能等待、什么事件触发下一次迁移。
+
+\begin{exam}[缓冲池题的固定检查]
+先画 buffer 状态与队列，再模拟“申请、装入、提取、释放”。若没有空缓冲，申请者等待的是 buffer 资源；若目标输入/输出队列为空，消费者等待的是数据条件。两种等待不能只因为都出现阻塞而合并。
+\end{exam}
+
 \begin{exam}[缓冲题不要死背总时间公式]
 不同教材题目对“设备填充、内核复制、用户处理哪些阶段可以重叠”的假设不同。稳妥做法是：\kw{先画时间线/甘特图，再根据互斥和可重叠关系计算}。公式只在假设一致时成立。
 \end{exam}
@@ -704,7 +779,7 @@ B_0\to B_1\to\cdots\to B_{N-1}\to B_0
 这是文件系统、页缓存 和存储设备层次最重要的边界之一。应用若需要明确的持久性语义，需要使用相应 durability 接口；文件系统/块层还可能需要 flush/FUA 等机制把设备易失缓存推进到非易失介质。
 \end{warn}
 
-\subsection{\code{fsync()} 不是简单的 Write-through}
+\subsection{\texorpdfstring{\code{fsync()}}{fsync()} 不是简单的 Write-through}
 Write-through 是缓存策略术语，强调每次写缓存同时推进 backing store；\code{fsync()} 更适合作为一个\kw{显式持久性边界请求}理解：调用方要求该文件相关的数据及必要元数据达到接口规定的持久状态。两者不能机械画等号。
 
 \subsection{回收 页缓存：问“丢掉以后怎样恢复”}
@@ -741,6 +816,7 @@ Spooling 的核心可以写成：
 
 \subsection{经典输出 Spooling 架构模型}
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=1.6cm and 3.0cm]
@@ -839,6 +915,23 @@ R_1,R_2,\ldots,R_n\arr\boxed{\text{One/Finite Device Queue}}
 
 \section{第 11 章：HDD 成本模型与经典磁盘调度}
 
+\subsection{LBA：先把块编号与设备物理几何分开}
+
+上层块 I/O 更希望看到从 0 开始的逻辑块地址序列，而不是让每个调用者直接操作柱面、磁头和扇区：
+\[
+\boxed{
+\text{file offset/LBN}
+\arr\text{filesystem block mapping}
+\arr\text{device LBA}
+\arr\text{controller/firmware physical placement}
+}
+\]
+在经典固定几何题中，可以按题设在 CHS 与 LBA 间换算；在现代设备上，控制器还可能重映射坏块、执行磨损均衡或内部调度，因此
+\[
+\boxed{\text{consecutive LBA}\nRightarrow\text{guaranteed consecutive physical placement}.}
+\]
+这条边界也解释了为什么“文件逻辑块连续”“设备逻辑地址连续”“磁盘表面物理相邻”是三个不同判断。
+
 \subsection{先有物理成本，再有调度策略}
 经典机械硬盘访问时间：
 \[
@@ -904,7 +997,7 @@ T_{seek}\approx 0,\qquad T_{rotation}\approx 0
 现代 Linux 块层支持 mq-deadline、BFQ、Kyber、none 等 I/O scheduler；选择取决于设备和目标。工程实现会变化，但问题保持不变：\kw{多个 I/O 请求在有限服务能力下如何排序，并权衡吞吐、延迟和公平性}。
 \end{eng}
 
-\section{第 12 章：综合题——一次阻塞 \code{read()} 的完整路径}
+\section{第 12 章：综合题——一次阻塞 \texorpdfstring{\code{read()}}{read()} 的完整路径}
 
 \subsection{场景设定}
 假设进程 A 执行：
@@ -915,6 +1008,7 @@ read(fd, buf, 4096);
 
 \subsection{完整流程架构图}
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=1.6cm and 2.4cm]

@@ -33,6 +33,8 @@ Agent 不应为了显得全面而通读整个仓库。上下文加载分为 **Bo
 - 稳定资产写入、导入、状态/拓扑变化：`collaboration_workflow.md`；
 - Handbook/Rules 新建或重构：`handbook_contract.md`；
 - 大规模 Handbook 正文打磨：`handbook_writing_spec.md`；
+- LaTeX Family/Profile/依赖/Semantic API：`../../latex/README.md`（全局 Owner；本仓库路由见 `latex_design_system.md`）；
+- LaTeX 字体/表格/图示/版心：`latex_layout_spec.md`；
 - Owner、重复定义和依赖：`ownership_matrix.md`；
 - 错题、规则晋升、周复盘：`evidence_promotion.md`；
 - 系统架构变化：`architecture.md`；
@@ -75,13 +77,13 @@ Topic / Bridge / Integration 如果没有 Canonical `.tex`，或者状态明确�
 
 | 场景 | 典型表达 | 主要角色 | 必读 Context | 默认结果 |
 |---|---|---|---|---|
-| `explore` | 还没有模型、想深入讨论 | Mapper + Socratic Tutor | 学科复习总览与导航、Atlas、相邻 Topic | 临时工作模型（provisional model）+ 反例 + 用户复述 |
+| `explore` | 还没有模型、想深入讨论 | Mapper + Socratic Tutor | Course / Subject Atlas、相邻 Topic | 临时工作模型（provisional model）+ 反例 + 用户复述 |
 | `model-diff` | 刚学完，这是我的理解 | Socratic Tutor + Mapper | Atlas、Topic | 主干/混淆/缺口/边界 |
 | `solve` | 这题不会，按现有模型讲 | Model-Grounded Solver | Atlas、Topic、Subject Rules | 模型锚点 + 解题链 + 校验 + 复原问题 |
 | `wrong` | 这是错题和原过程 | Debugger | Topic、Rules、Evidence 协议 | First Divergence + 诊断假设 + 最小复测 |
 | `adversary` | 攻击这条理解/规则 | Adversary | Topic 或 Rules、已有表现 | 反例、失效条件、成本与下一次测试 |
 | `practice` | 针对这个断点出题 | Coach | Topic、Rules、已确认断点 | 少量诊断题 + 每题观察目标 |
-| `import` | 导入新手册/旧稿 | Mapper + Editor | Handbook Contract、Ownership、复习总览与导航 | Handbook Diff + 人工决策点 |
+| `import` | 导入新手册/旧稿 | Mapper + Editor | Handbook Contract、Ownership、对应 Course / Subject Atlas | Handbook Diff + 人工决策点 |
 | `review` | 周复盘/专题复盘 | Adversary + Editor + Coach | Inbox、Rules、CURRENT、PROGRESS | 删除/继续/采用/更新建议 |
 | `publish` | 编译并发布 Topic / Bridge / Integration | Editor | Canonical `.tex`、Owner、依赖、Landing Page | PDF 编译验证 + 发布链接 |
 
@@ -166,7 +168,7 @@ Cross-Subject Bridge / Integration 问题只在需要时读取四科相关 Owner
 
 ### 英语一
 
-- 复习总览与导航：`20_英语一/README.md`；
+- Course / Subject Atlas 入口：`20_英语一/README.md`；
 - 当前 Topic 与 Rules 尚未形成时，Agent 必须说明这一事实。
 
 ## 6. 用户最少需要提供什么

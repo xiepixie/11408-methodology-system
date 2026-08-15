@@ -1,6 +1,6 @@
 # B07｜随机变量变换与 Jacobian：概率质量守恒
 
-状态：目录已建立，正文未建。
+状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
 ## Position
 
@@ -49,6 +49,14 @@ B02、B06A/B06B、概率联合分布 Topic。
 
 一般非一一变换、多分支变换只在考纲需要范围内讨论。
 
-## 待重构
+## Source Diff
 
-以后以概率变量变换 Topic 和 B02 的成熟正文为前置。
+概率变量变换 Topic 与 B02 已完成 Owner 复核；正文只保留质量守恒、support 迁移和多分支边界。
+
+## Manual
+
+- Canonical Source：[随机变量变换与Jacobian_概率质量守恒.tex](随机变量变换与Jacobian_概率质量守恒.tex)
+- Published View：[随机变量变换与Jacobian_概率质量守恒.pdf](../../../90_publish/随机变量变换与Jacobian_概率质量守恒.pdf)
+
+## Review v1
+已核对变量重表达、Jacobian 方向、support 迁移和多分支求和；明确守恒的是区域概率质量而非密度数值。下一轮用非一一变换和边界 support 题验证。

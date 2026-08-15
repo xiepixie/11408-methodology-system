@@ -1,6 +1,6 @@
 # B08｜Fourier 与正交基：函数表示 × 正交投影
 
-状态：目录已建立，正文未建。
+状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
 ## Position
 
@@ -49,6 +49,14 @@ B00、高数函数展开 Topic、线代向量空间 Topic。
 
 Hilbert space、完备性、Parseval 的一般函数空间理论属于真实 Extension，不进入主干证明体系。
 
-## 待重构
+## Source Diff
 
-待高数 Fourier Topic 与线代正交内容确认后完成 Source Diff。
+高数 Topic11 与线代 Topic01/B00 的接口已完成 Owner 复核；Canonical 正文仍需陌生题验证。
+
+## Manual
+
+- Canonical Source：[Fourier与正交基_函数表示与正交投影.tex](Fourier与正交基_函数表示与正交投影.tex)
+- Published View：[Fourier与正交基_函数表示与正交投影.pdf](../../../90_publish/Fourier与正交基_函数表示与正交投影.pdf)
+
+## Review v1
+已核对 Fourier 系数作为正交投影坐标的接口，并阻断有限维展开、无限级数收敛与逐点恢复的混同。下一轮用奇偶延拓、端点跳跃和收敛方式题验证。

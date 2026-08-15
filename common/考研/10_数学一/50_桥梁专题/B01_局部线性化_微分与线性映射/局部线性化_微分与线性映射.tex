@@ -1,0 +1,51 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage[a4paper,margin=1.75cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx,tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage[most]{tcolorbox}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
+\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\begin{document}
+\section*{B01\quad 局部线性化：微分 $\times$ 线性映射}
+\textbf{定位：}本 Bridge 解释多元可微为何产生唯一的最佳局部线性映射，并把它交给矩阵表示。
+\begin{tcolorbox}[title=母接口]
+$F(x+h)=F(x)+DF_x(h)+o(\|h\|)$；可微的核心不是“偏导都存在”，而是存在一个统一线性主部。
+\end{tcolorbox}
+\begin{center}
+\begin{tikzpicture}[node distance=9mm,every node/.style={draw,rounded corners,align=center,minimum width=3.0cm,minimum height=8mm,font=\small},>=Latex]
+\node (a) {非线性映射\\$F(x+h)$};
+\node (b) [right=of a] {线性主部\\$DF_x(h)$};
+\node (c) [right=of b] {矩阵表示\\$J_F(x)h$};
+\draw[->,thick] (a)--(b); \draw[->,thick] (b)--(c);
+\end{tikzpicture}
+\end{center}
+\subsection*{1.\ 统一误差条件}
+对 $F:\mathbb R^n\to\mathbb R^m$，可微意味着存在线性映射 $L$ 使
+\[
+\lim_{\|h\|\to0}\frac{\|F(x+h)-F(x)-Lh\|}{\|h\|}=0.
+\]
+若偏导在邻域连续，$L$ 的矩阵就是 Jacobian $J_F(x)$。链式法则变成
+\[
+D(G\circ F)_x=DG_{F(x)}\circ DF_x,\qquad
+J_{G\circ F}=J_G(F(x))J_F(x).
+\]
+\subsection*{2.\ 为什么偏导存在不够}
+偏导只沿坐标轴观察，不能控制所有方向的统一余项。若某点的路径 $h=t v(t)$ 使
+\[
+\frac{\|F(x+h)-F(x)-Lh\|}{\|h\|}
+\not\to0,
+\]
+则不存在同一个最佳局部线性映射，即使每个坐标偏导都存在。
+\subsection*{3.\ 与下游接口}
+B02 取 $J_F$ 的 determinant 解释局部体积缩放；B03 取二阶余项形成 Hessian 二次型；B04 把一阶线性主部限制到切空间。矩阵只是表示，不能把 $F$ 本身误认成线性。
+\subsection*{4.\ 最小例子与调用}
+令 $F(x,y)=(x^2+xy,e^y)$。在 $(1,0)$ 处
+\[
+J_F(1,0)=\begin{pmatrix}2&1\\0&1\end{pmatrix},\qquad
+F(1+h,k)=F(1,0)+J_F(1,0)\binom hk+o(\sqrt{h^2+k^2}).
+\]
+题面要求“小增量近似、误差传播、复合映射导数”时，先寻找这个统一线性主部，而不是逐坐标猜变化。
+\begin{corebox}{检查句}
+我是否控制了所有方向的余项？矩阵的行列尺寸是否等于输入/输出维度？复合时因子顺序是否保持？
+\end{corebox}
+\end{document}

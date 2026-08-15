@@ -1,0 +1,176 @@
+\documentclass[UTF8,fontset=fandol,11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.75cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,matrix}
+\usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\definecolor{deep}{RGB}{38,58,72}\definecolor{soft}{RGB}{244,247,248}\definecolor{greenish}{RGB}{52,91,74}\definecolor{warnc}{RGB}{136,61,58}\definecolor{purple}{RGB}{84,72,112}\definecolor{rulegray}{RGB}{110,116,120}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=purple,pdftitle={CO-05 主存与存储硬件}}
+\pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{408 · 计算机组成原理 CO-05}}\rhead{\small\color{deep}Address · Array · Timing · Bandwidth}\cfoot{\small 第 \thepage\ 页 / 共 \pageref{LastPage} 页}\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warnc,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}\newcommand{\code}[1]{\texttt{#1}}
+\tikzset{co/.style={draw=deep,rounded corners=1.5mm,text width=2.6cm,minimum height=0.9cm,align=center,fill=soft,font=\small,inner sep=3pt},state/.style={co,double,double distance=1.2pt,fill=white},flow/.style={-{Latex[length=2mm]},thick,draw=deep},ref/.style={-{Latex[length=2mm]},dashed,draw=rulegray}}
+\title{\vspace{-1.1cm}\textbf{主存与存储硬件}\\[0.4em]\large 地址怎样落到阵列、介质与可计量的事务}
+\author{408 · 计算机组成原理 Topic CO-05}\date{}
+\begin{document}\maketitle
+\begin{corebox}{母问题：抽象地址怎样被有限硬件兑现？}
+主存/存储硬件把一个逻辑访问拆成可实现的选择、感测、传输和恢复过程：
+\[
+\boxed{\text{Address / Granularity}\to\text{Module / Chip Select}\to\text{Row / Column}\to\text{Sense / Program}\to\text{Transfer}\to\text{Latency / Bandwidth}}
+\]
+它解释“地址落到哪里、一次搬多少、下一次何时能来”，而不是把所有存储名词排列成速度金字塔。
+\end{corebox}
+\begin{methodbox}{本册定位与 Owner 边界}
+\begin{itemize}
+\item \kw{Owns：}编址单位、存储字/总线粒度、SRAM/DRAM/Flash/HDD 物理组织、行列译码、芯片扩展、多模块交叉、存取时序、访问成本和带宽。
+\item \kw{Uses：}CO-03 的存储接口；CO-06 的 Cache 副本协议；CO-08 的总线事务与控制器。
+\item \kw{Stops：}Cache line/tag/replacement 交给 CO-06；VA/PTE/TLB 交给 CO-07；磁盘调度、文件映射和 OS Page Cache 交给 OS。
+\end{itemize}\end{methodbox}
+\tableofcontents\newpage
+
+\section{先分四种粒度}
+编址单位决定一个地址代表多少信息；存储字是阵列一次选中的组织；总线事务决定一次传输宽度；Cache line/page 是上层批量搬运粒度。它们可能相等，也可能完全不同。
+\[
+\text{capacity}=\text{number of addressable units}\times\text{bits per unit}.
+\]
+若按字节编址，$n$ 条地址线最多定位 $2^n$ 个字节；若按 $w$ 字编址，同样容量所需地址线会变化。地址线数量不能只由“总字节数”或 CPU 字长单独推出。
+
+\section{存储单元：SRAM 与 DRAM}
+SRAM 用双稳态反馈保持位，读通常非破坏、无需刷新，但单元面积大、成本高；DRAM 用电容电荷表示位，密度高、成本低，却有泄漏、感测/恢复和周期刷新成本。二者都通常易失；static 只表示无需刷新，不表示断电保存。
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.1cm}YY Y}
+\toprule
+维度 & SRAM & DRAM & 题目调用\\
+\midrule
+保存机制 & 双稳态反馈 & 电容电荷 & 问“为什么刷新/密度”\\
+读操作 & 通常非破坏 & 感测后恢复 & 问读后是否再生\\
+阵列代价 & 单元大、快 & 单元小、需控制时序 & 问 Cache/主存取舍\\
+并行组织 & 直接地址选择 & 行激活、列选择、row buffer & 问 RAS/CAS 或行命中\\
+\bottomrule
+\end{tabularx}\end{center}
+
+\subsection{DRAM 的生命周期}
+\[
+\text{row address}\to\text{activate / sense}\to\text{column select}\to\text{data transfer}\to\text{precharge / refresh}.
+\]
+行列复用减少引脚和译码线，但增加时序控制；刷新按行复用感测放大器，消耗可用周期。集中刷新、分散刷新只是在调度“刷新占用”这一成本，不能改变电容泄漏事实。
+
+\section{芯片扩展与地址译码}
+设单片组织为 $K\times W$，目标为 $K'\times W'$：
+\[
+N=\frac{K'}K\times\frac{W'}W.
+\]
+位扩展让多片并联贡献一个字的不同数据位；字扩展让高位地址选择不同芯片组；同时扩展需先组成目标字宽，再复制组数。低位地址接片内译码，高位地址产生片选，但具体分配服从题设。
+
+全译码检查所有高位，地址唯一；部分译码忽略高位，电路少但会产生地址重影；线选可能浪费地址空间。\kw{“能访问”不等于“地址唯一”。}
+
+\begin{examplebox}{芯片题的完整动作}
+先把容量统一成“字数 × 每字位数”，分别算位扩展和字扩展；再画片内地址、片选地址、数据线分工和读写控制；最后用最小/最大地址检查是否重影。
+\end{examplebox}
+
+\section{多模块与交叉编址}
+多个独立模块能并行或流水工作时，连续请求可以分散：
+\[
+module=(block)\bmod N,\qquad local=\left\lfloor\frac{block}{N}\right\rfloor.
+\]
+低位交叉适合连续流，提高稳态 bandwidth；高位编址更像分区。交叉不保证随机单次 latency 下降，热点落在同一模块时仍会冲突。
+
+\section{介质的共同坐标}
+用“访问粒度、可否原地更新、易失性、耐久、延迟、带宽、控制复杂度”比较介质：
+\begin{itemize}
+\item Flash/SSD 常以 page 读写、block 擦除，控制器需要映射、垃圾回收和磨损均衡，写放大造成延迟波动；
+\item HDD 访问由寻道、旋转、传输和控制器开销组成：
+\[
+T_{access}=T_{seek}+T_{rotation}+T_{transfer}+T_{controller}.
+\]
+平均随机旋转等待常近似半圈：$T_{rotation}=\frac12\frac{60}{RPM}$；
+\item LBA 是主机接口的线性编号，CHS 是教学几何/兼容视图；坏块重映射、分区密度和固件缓存使连续 LBA 不推出真实物理连续。
+\end{itemize}
+磁盘调度是 OS 策略；本册只拥有介质访问成本和硬件传输约束。
+
+\section{性能坐标}
+\begin{itemize}
+\item \kw{Access time：}一次请求从地址/命令到数据有效；
+\item \kw{Cycle time：}下一次独立访问允许启动的最小间隔，可能大于 access time；
+\item \kw{Bandwidth：}单位时间有效数据量；
+\item \kw{Burst：}一次地址阶段后连续传输，摊薄控制成本；
+\item \kw{Bank conflict：}并行请求争用同一不可并行资源。
+\end{itemize}
+“宽度 × 频率”只有在每周期传输次数、编码开销、利用率和重叠条件明确时才是有效带宽。
+
+\section{五列概念边界}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{1.8cm}C{0.35cm}L{1.8cm}Y Y}\toprule
+概念 A & $\neq$ & 概念 B & 真正区别与题面信号 & 混淆后果\\\midrule
+编址单位 & $\neq$ & 存储字长 & 地址标识粒度 vs 一次组织的数据位数 & 地址线/容量计算错\\
+Access time & $\neq$ & Cycle time & 数据何时有效 vs 下一次何时可开始 & 把恢复/再生漏算\\
+SRAM & $\neq$ & DRAM & 双稳态保持 vs 电荷泄漏/刷新 & Cache/主存取舍倒置\\
+Cache line & $\neq$ & DRAM row & 上层副本搬运粒度 vs 介质阵列激活粒度 & 把命中/行命中混为一谈\\
+LBA & $\neq$ & 物理扇区位置 & 主机线性接口编号 vs 固件/介质内部布局 & 推出不存在的连续物理位置\\
+主存带宽 & $\neq$ & 单次延迟 & 稳态传输率 vs 一次请求等待 & 以带宽替代 latency\\
+\bottomrule\end{tabularx}\end{center}
+
+\section{贯穿母例：构造一个主存模块}
+给定目标容量、单片组织和 CPU 总线宽度：
+\begin{enumerate}
+\item 标明编址单位与目标“字数 × 字长”；
+\item 位扩展组成目标数据宽度，字扩展形成片选组；
+\item 划分片内地址、组选择地址和未用字段；
+\item 写读/写时序，若为 DRAM 再标行激活、列选择、恢复/刷新；
+\item 检查边界地址、地址重影、模块冲突和一次事务的有效数据量。
+\end{enumerate}
+
+\begin{warnbox}{典型错误路径}
+把 $64\text{K}\times8$ 中的 8 当成地址线数；把交叉编址的连续吞吐提升说成随机访问 latency 必然下降；把 LBA 连续说成盘面物理连续。这些都混淆了不同层级的粒度或时间。
+\end{warnbox}
+
+\section{做题控制协议}
+\begin{enumerate}
+\item 先列编址单位、总容量、单片组织、数据总线宽度；
+\item 分别计算 word-depth 与 word-width，不把两个预算合并；
+\item 画地址从 CPU 到模块、芯片、行列的路由；
+\item 对性能题分 latency、cycle time、bandwidth、并行模块和冲突；
+\item 用边界地址和连续地址序列验证映射，写清哪些结论只是题设模型。
+\end{enumerate}
+
+\begin{methodbox}{压缩成第一动作}
+看到存储器容量、芯片扩展或访问时间题，先问：\kw{一个地址代表什么，一个存储字有多少位，一次事务搬多少，下一次访问何时合法？}
+\end{methodbox}
+
+\section{全科坐标与跨册交接}
+\begin{corebox}{Map Coordinate：Data Location / Resource}
+CO-05 说明一个地址怎样落到编址单元、芯片、Bank、Row、Column 和介质，并输出容量、服务时间、并行度和有效带宽模型。CO-06 把它作为下一级存储，CO-08 把它作为共享事务的 target；Cache/Page Cache 不在此重复定义。
+\end{corebox}
+主存题必须同时列地址线、数据宽度、存储粒度、一次事务和可重叠模块；latency、cycle time、bandwidth 和容量是不同成本坐标，不能只用“位宽乘频率”替代完整模型。
+
+\section{考纲映射与接口}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{3.2cm}YY}\toprule
+传统考点 & 本册位置 & 下游接口\\\midrule
+主存结构/芯片扩展 & 编址、位/字扩展、译码与重影 & CO-03/CO-08\\
+SRAM/DRAM/刷新 & 单元、行列、感测、恢复 & CO-06\\
+存储器层次/性能 & 粒度、latency、cycle、bandwidth & CO-06/07\\
+磁盘/SSD 介质 & 访问成本、LBA/CHS、写放大 & OS-05/06 Use\\
+\bottomrule\end{tabularx}\end{center}
+
+\begin{corebox}{一句话}
+主存与存储硬件的核心不是背介质名词，而是把地址和数据粒度逐层分配到模块、芯片、阵列和事务，再用 latency、cycle time、bandwidth 与冲突解释代价。
+\end{corebox}
+
+\section{来源处理}
+本册吸收归档《主存储器》《存储器层次》《磁盘》和 Topic README 的阵列、扩展、刷新、介质与性能主干；Cache 副本协议、页表/置换、文件系统格式化和 OS 调度保留为 Use，不建立第二 Owner。
+\end{document}

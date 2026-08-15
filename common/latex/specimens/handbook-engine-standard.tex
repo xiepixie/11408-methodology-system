@@ -1,0 +1,193 @@
+% Experimental specimen: validate KOMA + CTeX ownership before extracting ipara-core.
+% This is NOT a public API example yet.
+\documentclass[
+  11pt,
+  a4paper,
+  open=any,
+  headinclude=true,
+  footinclude=false,
+  headheight=18pt,
+  footheight=18pt,
+  DIV=11
+]{scrbook}
+
+% CTeX owns Chinese infrastructure; KOMA owns heading mechanics.
+\usepackage[UTF8,fontset=none,heading=false,scheme=chinese]{ctex}
+
+\usepackage{fontspec}
+\usepackage{amsmath,mathtools}
+\usepackage[warnings-off={mathtools-overbracket,mathtools-colon}]{unicode-math}
+
+\setmainfont{texgyrepagella-regular.otf}[
+  BoldFont=texgyrepagella-bold.otf,
+  ItalicFont=texgyrepagella-italic.otf,
+  BoldItalicFont=texgyrepagella-bolditalic.otf
+]
+\setsansfont{texgyreheros-regular.otf}[
+  Scale=MatchLowercase,
+  BoldFont=texgyreheros-bold.otf,
+  ItalicFont=texgyreheros-italic.otf,
+  BoldItalicFont=texgyreheros-bolditalic.otf
+]
+\setmonofont{texgyrecursor-regular.otf}[
+  Scale=MatchLowercase,
+  BoldFont=texgyrecursor-bold.otf,
+  ItalicFont=texgyrecursor-italic.otf,
+  BoldItalicFont=texgyrecursor-bolditalic.otf
+]
+\setmathfont{texgyrepagella-math.otf}
+\setCJKmainfont{FandolSong-Regular.otf}[
+  BoldFont=FandolSong-Bold.otf,
+  ItalicFont=FandolKai-Regular.otf
+]
+\setCJKsansfont{FandolHei-Regular.otf}[
+  BoldFont=FandolHei-Bold.otf,
+  ItalicFont=FandolKai-Regular.otf
+]
+\setCJKmonofont{FandolFang-Regular.otf}
+
+\usepackage{xcolor}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage{scrlayer-scrpage}
+\usepackage{xurl}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{bookmark}
+
+\definecolor{iparaDeep}{RGB}{42,58,73}
+\definecolor{iparaSoft}{RGB}{245,247,249}
+\definecolor{iparaRule}{RGB}{145,154,163}
+
+% KOMA owns section/chapter mechanics.
+\setkomafont{chapter}{\normalfont\huge\bfseries\sffamily\color{iparaDeep}}
+\setkomafont{section}{\normalfont\Large\bfseries\sffamily\color{iparaDeep}}
+\setkomafont{subsection}{\normalfont\large\bfseries\sffamily\color{iparaDeep}}
+\RedeclareSectionCommand[beforeskip=1.15em,afterskip=0.55em]{section}
+\RedeclareSectionCommand[beforeskip=0.9em,afterskip=0.4em]{subsection}
+\renewcommand*{\chapterformat}{第\,\thechapter\,章\autodot\enskip}
+
+% KOMA page style only; no fancyhdr.
+\clearpairofpagestyles
+\ihead{\small\sffamily I.P.A.R.A · Handbook Engine Specimen}
+\ohead{\small\sffamily\headmark}
+\cfoot{\small\pagemark}
+\automark[section]{chapter}
+\pagestyle{scrheadings}
+
+\raggedbottom
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.22em plus 0.06em minus 0.03em}
+\setlength{\emergencystretch}{2em}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\renewcommand{\arraystretch}{1.22}
+
+\newtcolorbox{specimenbox}[1]{
+  enhanced,
+  breakable,
+  colback=iparaSoft,
+  colframe=iparaDeep,
+  boxrule=0.6pt,
+  arc=1.2mm,
+  title={#1},
+  fonttitle=\bfseries,
+  left=1.8mm,right=1.8mm,top=1.2mm,bottom=1.2mm
+}
+
+\hypersetup{
+  unicode=true,
+  colorlinks=true,
+  linkcolor=iparaDeep,
+  pdftitle={I.P.A.R.A KOMA + CTeX Standard Engine Specimen},
+  pdfauthor={I.P.A.R.A}
+}
+
+\begin{document}
+
+\frontmatter
+\begin{titlepage}
+  \centering
+  \vspace*{0.18\textheight}
+  {\Huge\bfseries\sffamily I.P.A.R.A Handbook Engine\par}
+  \vspace{0.7em}
+  {\Large Standard Profile · KOMA + CTeX\par}
+  \vspace{1.5em}
+  {\small Experimental regression specimen — not a public template\par}
+\end{titlepage}
+
+\tableofcontents
+
+\mainmatter
+\chapter{对象、表示与边界}
+
+\section{为什么先分对象与表示}
+
+设线性映射 $T\colon V\to W$。矩阵 $A$ 只是选定基以后 $T$ 的一种表示；换基改变的是表示，不是映射本身。这个句子同时测试中文、Latin text、数学字体和 KOMA 的 section mark。
+
+English text should remain calm inside a Chinese technical handbook. Inline code such as \texttt{profile=standard} should remain visually distinct without becoming the dominant voice.
+
+\begin{specimenbox}{Mental Model · 表示不是对象}
+真正稳定的理解不是记住某个矩阵，而是知道哪些量依赖坐标、哪些结构在合法变换下保持不变。Profile 可以改变这个盒子的 renderer，但 Canonical Source 不应该把知识语义绑定到某种颜色。
+\end{specimenbox}
+
+\subsection{公式与长表达式}
+
+短公式：
+\[
+  \det(P^{-1}AP)=\det A.
+\]
+
+较长公式用来观察正文宽度与断行，而不是靠整体缩放挽救：
+\begin{align}
+  \operatorname{Cov}(X,Y)
+  &= \mathbb E\!\left[(X-\mathbb EX)(Y-\mathbb EY)\right] \\
+  &= \mathbb E(XY)-\mathbb E(X)\mathbb E(Y).
+\end{align}
+
+\section{表格职责}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}p{0.19\linewidth}YY@{}}
+\toprule
+\textbf{层} & \textbf{拥有的东西} & \textbf{不应该拥有的东西}\\
+\midrule
+KOMA & chapter/section、页眉页脚、TOC 与双面页面 mechanics & Mental Model、Boundary 等学习语义\\
+CTeX & 中文语言、CJK 与中文命名基础设施 & Handbook margin 页面状态\\
+I.P.A.R.A & Semantic API、Profile 与领域组件 & 重写一套底层 book engine\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{TikZ 与分页}
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=12mm and 14mm,
+  box/.style={draw=iparaDeep,rounded corners=1mm,fill=iparaSoft,align=center,minimum height=8mm,inner xsep=6pt},
+  edge/.style={-{Latex[length=2mm]},draw=iparaDeep}
+]
+  \node[box] (a) {KOMA\\mechanics};
+  \node[box,right=of a] (b) {CTeX\\Chinese};
+  \node[box,below=of $(a)!0.5!(b)$] (c) {I.P.A.R.A\\semantics + profiles};
+  \draw[edge] (a) -- (c);
+  \draw[edge] (b) -- (c);
+\end{tikzpicture}
+\end{center}
+
+\chapter{Regression Boundary}
+
+这一章故意产生第二个 chapter，以检查 TOC、chapter mark、页眉更新和页码行为。后续 margin profile 必须复用同一语义内容，而不是复制一份“边栏版正文”。
+
+\section{验收问题}
+
+\begin{enumerate}
+  \item 是否出现 CTeX 的 non-standard-class heading warning？
+  \item KOMA 是否独立拥有 chapter/section visual hierarchy？
+  \item 中文目录名、书签与页眉是否正常？
+  \item 是否存在 missing font、undefined reference、unexpected overfull box？
+\end{enumerate}
+
+\end{document}

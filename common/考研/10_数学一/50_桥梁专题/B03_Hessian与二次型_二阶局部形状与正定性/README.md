@@ -1,6 +1,6 @@
 # B03｜Hessian 与二次型：二阶局部形状 × 正定性
 
-状态：目录已建立，正文未建。
+状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
 ## Position
 
@@ -42,6 +42,14 @@ B01、多元 Taylor、线代二次型与正定性。
 
 Rayleigh quotient、广义特征值与更一般约束二次型只保留必要接口。
 
-## 待重构
+## Source Diff
 
-以旧 `II-03.1` 和线代二次型 Topic 为主要 Source Pack。
+旧 `II-03.1` 和线代二次型 Topic 已完成 Owner 复核；正文只保留二阶局部模型到二次型符号结构的翻译。
+
+## Manual
+
+- Canonical Source：[Hessian与二次型_二阶局部形状与正定性.tex](Hessian与二次型_二阶局部形状与正定性.tex)
+- Published View：[Hessian与二次型_二阶局部形状与正定性.pdf](../../../90_publish/Hessian与二次型_二阶局部形状与正定性.pdf)
+
+## Review v1
+已核对 Hessian 二阶局部模型到二次型符号判定的交接；明确半正定时判别可能失效。下一轮用退化驻点、方向限制和合同变换题验证。

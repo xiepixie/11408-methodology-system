@@ -1,0 +1,685 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{145,154,163}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={联合分布、条件分布与变换}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 概率统计 Topic 04}}
+\rhead{\small\color{deep}联合分布 · 边缘分布 · 条件密度 · 变量变换 · 卷积}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\title{\vspace{-1.1cm}\textbf{联合分布、条件分布与变换}\\[0.4em]
+\large 多维概率质量怎样分布、重组与随函数变换？}
+\author{数学一 · 概率统计 Topic 04}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：多维概率质量怎样分布、重组与随函数变换？}
+当一次试验同时观察多个维度 $(X,Y)$ 时，新增的核心不是更多的字母，而是\kw{维间的关联与联合几何结构}。单看边缘分布无法恢复联合依赖；条件分布是在截面上重新归一化；变量变换则是概率质量在函数映射下的守恒搬运。
+
+主线推演逻辑：
+\[
+\boxed{
+\text{联合分布 } f(x,y) \xrightarrow{\text{沿纤维积分}} \text{边缘分布 } f_X(x) \xrightarrow{\text{截面归一化}} \text{条件分布 } f_{Y|X}(y|x) \xrightarrow{\text{原像拉回}} \text{函数变换 } Z=g(X,Y)
+}
+\]
+\end{corebox}
+
+\section{本册定位与职责划分}
+
+\begin{itemize}
+  \item \kw{本册拥有（Owns）：}二维随机变量、联合 CDF/PMF/PDF、支撑集几何、边缘分布、条件分布与条件密度、二维随机变量函数的分布（和、积、商、极值 $\max/\min$）、卷积公式。
+  \item \kw{本册使用（Uses）：}一维分布及条件概率。
+  \item \kw{本册不拥有（Does not own）：}数字特征（Topic 05 负责）、大数极限定理（Topic 06 负责）、统计量抽样分布（Topic 07 负责）。
+  \item \kw{输出目标（Output）：}二维向量 $(X,Y)$ 的完整联合模型及其函数分布计算能力。
+\end{itemize}
+
+\section{第一层：联合分布与支撑集几何}
+
+\subsection{联合分布函数与密度}
+
+二维随机变量 $(X,Y)$ 的联合 CDF 为：
+\[
+F(x,y) = P(X \le x, Y \le y).
+\]
+连续型存在非负联合密度 $f(x,y)$，满足 $P((X,Y) \in D) = \iint_D f(x,y) \, dx dy$ 且 $\int_{-\infty}^\infty \int_{-\infty}^\infty f(x,y) \, dx dy = 1$。
+
+联合 CDF 不仅要分别单调，还必须满足二维递增性。若 $x_1<x_2$、$y_1<y_2$，则
+\begin{align*}
+&P(x_1<X\le x_2,\ y_1<Y\le y_2)\\
+={}&F(x_2,y_2)-F(x_1,y_2)-F(x_2,y_1)+F(x_1,y_1)\ge0.
+\end{align*}
+离散型联合 PMF $p_{ij}=P(X=x_i,Y=y_j)$ 满足 $p_{ij}\ge0$ 与 $\sum_i\sum_jp_{ij}=1$；区域概率对合法取值对求和。连续型若混合偏导存在，则 $f_{X,Y}=\partial^2F/(\partial x\partial y)$ 几乎处处成立。
+
+\subsection{支撑集是所有计算的几何底座}
+
+联合密度 $f(x,y)$ 仅在\kw{支撑集 $D \subseteq \mathbb{R}^2$} 上非零。计算积分时，最先也是最重要的步骤是画出 $D$ 的几何区域。忽略 $D$ 的边界会导致积分限错误。
+
+\section{第二层：边缘分布、条件分布与独立性}
+
+\subsection{Marginalize：沿纤维积分加总}
+
+对联合密度沿另一个变量积分，即得边缘密度：
+\[
+f_X(x) = \int_{-\infty}^\infty f(x,y) \, dy,\qquad f_Y(y) = \int_{-\infty}^\infty f(x,y) \, dx.
+\]
+
+\subsection{Condition：在截面上重新归一化}
+
+当 $f_X(x) > 0$ 时，给定 $X=x$ 下 $Y$ 的条件密度为：
+\[
+\boxed{
+f_{Y\mid X}(y\mid x) = \frac{f(x,y)}{f_X(x)}
+}
+\]
+它是在直线 $X=x$ 这个截面上将联合密度做重新归一化，使其关于 $y$ 的积分为 1。
+
+\subsection{独立性判据}
+
+$X$ 与 $Y$ 独立 $\iff$ 联合 CDF 分解 $F(x,y) = F_X(x) F_Y(y)$ $\iff$ 联合密度分解 $f(x,y) = f_X(x) f_Y(y)$ 几乎处处成立。
+在常见正密度模型中，明显的三角形或圆形支撑可快速排除独立；但矩形支撑本身不能推出独立，严格判据始终是联合分布能否分解为边缘乘积。若独立，则任意可测函数 $g(X)$ 与 $h(Y)$ 仍独立。
+
+\begin{examplebox}{2020 真题：边缘分布相同不等于联合独立}
+设 $X_1,X_2$ 独立且均服从 $N(0,1)$，$G$ 独立于二者且 $P(G=0)=P(G=1)=1/2$，并令
+\[
+Y=GX_1+(1-G)X_2.
+\]
+先按选择层写联合 CDF：
+\[
+\begin{aligned}
+F_{X_1,Y}(x,y)
+&=\frac12P(X_1\le x,X_1\le y)
+ +\frac12P(X_1\le x,X_2\le y)\\
+&=\frac12\Phi(\min\{x,y\})+\frac12\Phi(x)\Phi(y).
+\end{aligned}
+\]
+边缘化后 $Y\sim N(0,1)$，但若 $X_1,Y$ 独立，应有 $F_{X_1,Y}=\Phi(x)\Phi(y)$，这与上式一般不等。也可用矩作快速反证：
+\[
+\operatorname{Cov}(X_1,Y)=E(X_1Y)=\tfrac12E(X_1^2)+\tfrac12E(X_1X_2)=\tfrac12\ne0.
+\]
+因此“每一层的 $Y$ 边缘相同”只足以闭合 $Y$ 的边缘目标；一旦题目问联合分布或独立性，必须保留选择层。
+\end{examplebox}
+
+\begin{methodbox}{边缘与条件公式的证据骨架}
+对任意数轴集合 $A$，先把“只关心 $X$”写成联合平面上的事件：
+\[
+P(X\in A)=P((X,Y)\in A\times\mathbb R)
+ =\int_A\!\left[\int_{\mathbb R}f_{X,Y}(x,y)\,dy\right]dx.
+\]
+因此括号内的函数就是 $f_X(x)$；离散情形把积分换成对所有相容 $y$ 的求和。固定 $x$ 后，联合密度在截面上的总质量是 $f_X(x)$，所以只能用
+\[
+f_{Y\mid X}(y\mid x)=f_{X,Y}(x,y)/f_X(x)
+\]
+重新归一化。前提是 $f_X(x)>0$，边缘化必须在真实支撑集上进行；矩形支撑或分解形式都不能由公式本身自动推出独立。
+\end{methodbox}
+
+\section{分层生成模型：边缘乘条件等于联合}
+
+多维模型常按“先生成上层变量，再按上层状态生成下层变量”构造：
+\[
+\boxed{f_{X,Y}(x,y)=f_X(x)f_{Y\mid X}(y\mid x)}.
+\]
+随后沿 $x$ 积分可得到 $Y$ 的混合边缘分布。这既是联合分布的构造法，也是 Topic 02 全概率在密度层的连续版本。
+
+\begin{examplebox}{条件均匀模型}
+若 $X\sim U(0,1)$，且 $Y\mid X=x\sim U(0,x)$，则
+\[
+f_{X,Y}(x,y)=\frac1x,\qquad0<y<x<1,
+\]
+从而
+\[
+f_Y(y)=\int_y^1\frac1x\,dx=-\ln y,\qquad0<y<1.
+\]
+三角形支撑直接说明 $X,Y$ 不独立。
+\end{examplebox}
+
+\begin{examplebox}{1999 真题：独立性补全二维离散分布表}
+题面只有两行 $x_1,x_2$ 和三列 $y_1,y_2,y_3$，且 $X,Y$ 相互独立。已知
+\[
+P(Y=y_1)=\frac16,\qquad P(x_2,y_1)=\frac18,
+\qquad P(x_1,y_2)=\frac18.
+\]
+先用一个已知联合格点除以对应边际：
+\[
+p_2=P(X=x_2)=\frac{1/8}{1/6}=\frac34,
+\qquad p_1=\frac14.
+\]
+再由 $p_1q_2=1/8$ 得 $q_2=1/2$，从而 $q_3=1-q_1-q_2=1/3$。逐格乘积回填：
+\[
+\begin{array}{c|ccc|c}
+ &y_1&y_2&y_3&P(X=x_i)\\\hline
+x_1&1/24&1/8&1/12&1/4\\
+x_2&1/8&3/8&1/4&3/4\\\hline
+P(Y=y_j)&1/6&1/2&1/3&1
+\end{array}
+\]
+每格均满足 $p_{ij}=p_iq_j$，行列总和均为 $1$。\textbf{停止条件：}题目只要求补表时，完成乘积与边际回检即可；不要继续计算无关的协方差或变换。
+\end{examplebox}
+
+\begin{examplebox}{2010 真题：二次型配方与条件正态}
+设
+\[
+f_{X,Y}(x,y)=A\exp(-2x^2+2xy-y^2),\qquad (x,y)\in\mathbb R^2.
+\]
+先配方，而不是直接套二维正态参数表：
+\[
+-2x^2+2xy-y^2=-x^2-(y-x)^2.
+\]
+因此
+\[
+1=A\int_{\mathbb R}e^{-x^2}dx\int_{\mathbb R}e^{-u^2}du=A\pi,
+\qquad A=\frac1\pi.
+\]
+沿 $y$ 积分得
+\[
+f_X(x)=\frac1{\sqrt\pi}e^{-x^2},
+\]
+再在固定 $x$ 的截面上归一化：
+\[
+f_{Y\mid X}(y\mid x)=\frac{f_{X,Y}(x,y)}{f_X(x)}
+ =\frac1{\sqrt\pi}e^{-(y-x)^2}.
+\]
+这里 $e^{-(y-x)^2}/\sqrt\pi$ 对照 $N(\mu,\sigma^2)$ 的形式
+$e^{-(y-\mu)^2/(2\sigma^2)}/\sqrt{2\pi\sigma^2}$，得到
+\[
+Y\mid X=x\sim N\!\left(x,\frac12\right).
+\]
+\textbf{关键边界：} 联合密度的 $x$ 与 $y-x$ 两个高斯因子分别负责边缘层和条件层；条件密度必须除以 $f_X(x)$，不能把联合密度直接当作条件密度，也不能把指数中的系数误读成方差本身。
+\end{examplebox}
+
+\begin{examplebox}{2014 真题：离散选择层的条件均匀混合}
+若 $P(X=1)=P(X=2)=1/2$，且 $Y\mid X=i\sim U(0,i)$，则先保留两层：
+\[
+F_{Y\mid X=1}(y)=\begin{cases}0&y\le0\\y&0<y<1\\1&y\ge1\end{cases},\quad
+F_{Y\mid X=2}(y)=\begin{cases}0&y\le0\\y/2&0<y<2\\1&y\ge2\end{cases}.
+\]
+全概率混合后
+\[
+F_Y(y)=\begin{cases}
+0,&y\le0,\\
+3y/4,&0<y<1,\\
+1/2+y/4,&1\le y<2,\\
+1,&y\ge2,
+\end{cases}
+\qquad E(Y)=\frac12\cdot\frac12+\frac12\cdot1=\frac34.
+\]
+等价地，$f_Y(y)=3/4$（$0<y<1$），$f_Y(y)=1/4$（$1<y<2$）。第一段的 $3/4$ 来自两层同时有质量，不能只保留 $X=2$ 层的 $1/2$ 权重；混合后的边缘也不能反推 $X,Y$ 独立。
+\end{examplebox}
+
+\begin{examplebox}{2024 真题：条件均匀先取条件均值，再走全协方差}
+设 $f_X(x)=2(1-x)$（$0<x<1$），且 $Y\mid X=x\sim U(x,1)$。固定 $x$ 后，条件区间长度是 $1-x$，所以
+\[
+E(Y\mid X=x)=\frac{x+1}{2}.
+\]
+对 $X$ 的边缘密度先做矩回检：
+\[
+EX=\int_0^1 2x(1-x)\,dx=\frac13,
+\qquad
+E(X^2)=\int_0^1 2x^2(1-x)\,dx=\frac16,
+\]
+从而 $D(X)=1/6-1/9=1/18$。协方差的全概率接口给出
+\[
+\operatorname{Cov}(X,Y)
+=\operatorname{Cov}\!\left(X,E(Y\mid X)\right)
+=\operatorname{Cov}\!\left(X,\frac{X+1}{2}\right)
+=\frac12D(X)=\frac1{36}.
+\]
+这里不必先求 $Y$ 的完整边缘密度，因为目标只需要条件均值；若题目改问 $D(Y)$，则必须继续使用
+\[
+D(Y)=E[D(Y\mid X)]+D(E(Y\mid X)),
+\qquad D(Y\mid X=x)=\frac{(1-x)^2}{12}.
+\]
+这体现了停止条件：协方差只交出“条件均值”接口，方差还要保留“层内噪声”接口。
+\end{examplebox}
+
+Poisson 稀疏化是离散版本：若 $N\sim\operatorname{Pois}(\lambda)$，给定 $N=n$ 后每个事件以概率 $p$ 独立保留，则
+\[
+K\mid N=n\sim\operatorname{Bin}(n,p),\qquad K\sim\operatorname{Pois}(\lambda p),
+\]
+且 $K$ 与 $N-K$ 独立。若随机率 $\Lambda$ 先取 $\lambda_i$，再令 $T\mid\Lambda=\lambda_i\sim\operatorname{Exp}(\lambda_i)$，则
+\[
+f_T(t)=\sum_ip_i\lambda_ie^{-\lambda_it};
+\]
+除退化情形外，混合指数不再无记忆。
+
+\begin{examplebox}{2011 真题：离散约束先筛相容格点，再恢复联合表}
+设
+\[
+P(X=0)=\frac13,\quad P(X=1)=\frac23,
+\qquad P(Y=-1)=P(Y=0)=P(Y=1)=\frac13,
+\]
+且 $P\{X^2=Y^2\}=1$。等式约束把联合分布限制在
+\[
+\mathcal S=\{(x,y):x^2=y^2\}\cap(\{0,1\}\times\{-1,0,1\})
+ =\{(0,0),(1,-1),(1,1)\}.
+\]
+不相容格点的概率先置为零，再由边缘守恒得到
+\[
+p_{00}=P(Y=0)=\frac13,\qquad
+p_{1,-1}=P(Y=-1)=\frac13,\qquad
+p_{11}=P(Y=1)=\frac13,
+\]
+且 $p_{10}=p_{0,-1}=p_{01}=0$。总质量回检为 $p_{00}+p_{1,-1}+p_{11}=1$。
+若 $Z=XY$，逐原子映射给出
+\[
+P(Z=-1)=P(Z=0)=P(Z=1)=\frac13.
+\]
+又 $E(X)=2/3$、$E(Y)=0$、$E(XY)=0$，故 $\operatorname{Cov}(X,Y)=0$；但
+$P(X=0,Y=1)=0\ne P(X=0)P(Y=1)=1/9$，所以不独立。
+
+\kw{做题规则：}
+\[
+\boxed{\text{取值范围}\to\text{相容原子}\to\text{零质量}\to\text{边缘守恒}\to\text{逐原子变换}\to\text{独立性回检}.}
+\]
+不要把 $X^2=Y^2$ 误读成 $X=Y$，也不要把不相关误判为独立。
+\end{examplebox}
+
+\begin{examplebox}{2025 真题：保险免赔额、Poisson 薄化与输出分流}
+损失额 $X$ 的密度为
+\[
+f_X(x)=\frac{2\cdot100^2}{(100+x)^3}I_{\{x>0\}},
+\]
+赔付额为 $Y=(X-100)I_{\{X>100\}}$。先处理连续层：
+\[
+p=P(Y>0)=P(X>100)=\int_{100}^{\infty}
+\frac{2\cdot100^2}{(100+x)^3}\,dx=\frac14,
+\]
+而赔付金额的期望必须保留幅值：
+\[
+EY=\int_{100}^{\infty}(x-100)\frac{2\cdot100^2}{(100+x)^3}\,dx=50.
+\]
+若一年损失事件数 $N\sim\operatorname{Pois}(8)$，且给定 $N=n$ 时理赔次数
+\[
+M\mid N=n\sim\operatorname{Bin}\left(n,\frac14\right),
+\]
+则按条件层混合：
+\[
+\begin{aligned}
+P(M=m)
+&=\sum_{n=m}^{\infty}e^{-8}\frac{8^n}{n!}\binom nm
+ \left(\frac14\right)^m\left(\frac34\right)^{n-m}\\
+&=e^{-2}\frac{2^m}{m!},\qquad m=0,1,2,\ldots.
+\end{aligned}
+\]
+所以 $M\sim\operatorname{Pois}(2)$。这里有两个不同的停止点：题目问理赔次数时，在薄化结果处停止；若问总赔付额 $\sum_{j=1}^{M}Y_j$，则必须继续保留正赔付额的条件分布，进入复合 Poisson/卷积，不能用 $M$ 的分布代替金额分布。
+\end{examplebox}
+
+\section{二维正态：联合结构而非两个边缘标签}
+
+非退化二维正态由均值向量与协方差矩阵
+\[
+\boldsymbol\mu=\begin{pmatrix}\mu_X\\\mu_Y\end{pmatrix},\qquad
+\Sigma=\begin{pmatrix}
+\sigma_X^2&\rho\sigma_X\sigma_Y\\
+\rho\sigma_X\sigma_Y&\sigma_Y^2
+\end{pmatrix},\qquad |\rho|<1
+\]
+确定。任意线性组合仍为正态：
+\[
+aX+bY\sim N\left(a\mu_X+b\mu_Y,
+a^2\sigma_X^2+b^2\sigma_Y^2+2ab\rho\sigma_X\sigma_Y\right).
+\]
+条件分布为
+\[
+Y\mid X=x\sim N\left(
+\mu_Y+\rho\frac{\sigma_Y}{\sigma_X}(x-\mu_X),
+\sigma_Y^2(1-\rho^2)
+\right).
+\]
+只有在联合正态结构内，$\rho=0$、不相关与独立三者等价。仅知道两个边缘都正态，不能推出联合正态，也不能保证它们的和为正态。
+
+\section{第三层：二维随机变量函数的分布}
+
+\subsection{离散、连续与混合二维计算}
+
+离散--离散联合 PMF 用求和降维：
+\[
+P(g(X,Y)\in A)=\sum_{(x,y):\,g(x,y)\in A}p_{X,Y}(x,y).
+\]
+连续--连续情形用联合密度在原像区域上积分；混合型情形必须按离散层分解，例如 $X$ 离散、$Y$ 条件连续时
+\[
+P(g(X,Y)\in A)=\sum_xP(X=x)\int_{\{y:g(x,y)\in A\}}f_{Y\mid X}(y\mid x)\,dy.
+\]
+不能把混合分布强行写成二维普通密度，也不能在离散变量上使用连续 Jacobian。先按离散层条件化，再在每个连续截面计算，是混合题的稳定表示。
+
+\begin{methodbox}{输出对象闸门：先判类型，再选算子}
+面对“求概率分布/密度”的题，先回答三个问题：
+\begin{enumerate}
+  \item 目标变量是否含离散层？若有，先按离散状态列全概率分支；
+  \item 变换 $g$ 是否一一？若否，用 CDF 原像或逐原像求和，不能只保留一个逆函数；
+  \item 目标是否含原子？检查 CDF 跳跃 $F_Z(z)-F_Z(z^-)$，再谈连续密度。
+\end{enumerate}
+因此稳定的顺序是
+\[
+\boxed{\text{类型} \longrightarrow \text{支撑/原像} \longrightarrow \text{积分或求和} \longrightarrow \text{归一化与边界检查}.}
+\]
+例如 $Z=|X|$ 的每个 $z>0$ 有两个原像 $x=\pm z$，密度必须相加；若 $X$ 先离散再令 $Y\mid X$ 连续，则 $Z$ 的密度是各条件密度按层权重的混合，而不是一个未经分层的 Jacobian。
+\end{methodbox}
+
+\begin{methodbox}{变换输出的测度账本：四种原像结构}
+每个变换题都先把原像分类，再决定输出要记哪些质量：
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{L{2.8cm}L{3.0cm}Y}
+\toprule
+原像结构 & 输出形态与首选算子 & 必做回检 \\
+\midrule
+常值纤维（整段输入映到一点） & 产生原子 $q\,\delta_a$；先算纤维概率 & CDF 在 $a$ 的跳跃为 $q$ \\
+单调非恒定纤维 & 连续密度 $f_X(x(y))|dx/dy|$ & 支撑端点、密度积分 \\
+多原像非恒定纤维 & 各原像分支的密度贡献相加 & 每个分支不重不漏，合计质量守恒 \\
+二维/高维原像 & 在原像曲线或曲面上积分，必要时用 Jacobian & 新支撑、Jacobian、总积分为 $1$ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+“输入连续”只排除了原变量的点原子，并不排除常值纤维造成的输出原子；“有多个原像”也不表示重复计数，而是把互不重叠的原像质量相加。若目标只问一个数字特征，可在账本足以表达该目标后用 LOTUS 停止；若目标问完整 CDF/PDF，必须完成原子与连续部分的共同归一化。
+\end{methodbox}
+
+\subsection{分布函数法（原像拉回法）}
+
+求 $Z = g(X,Y)$ 的分布，最通用、最安全的方法是 CDF 法：
+\[
+F_Z(z) = P(g(X,Y) \le z) = \iint_{g(x,y) \le z} f(x,y) \, dx dy.
+\]
+求出 $F_Z(z)$ 后，求导即得密度 $f_Z(z) = F_Z'(z)$。
+
+\subsection{和的分布与卷积公式}
+
+设 $Z = X + Y$。用 CDF 法推导可得：
+\[
+f_Z(z) = \int_{-\infty}^\infty f(z - y, y) \, dy = \int_{-\infty}^\infty f(x, z - x) \, dx.
+\]
+若 $X, Y$ 独立，则得到经典的\kw{卷积公式}：
+\[
+\boxed{
+f_{X+Y}(z) = \int_{-\infty}^\infty f_X(z - y) f_Y(y) \, dy = \int_{-\infty}^\infty f_X(x) f_Y(z - x) \, dx
+}
+\]
+
+“卷积需要独立”指用边缘密度乘积计算和的分布。若已知一般联合密度，则
+\[
+f_{X+Y}(z)=\int_{-\infty}^{+\infty}f_{X,Y}(x,z-x)\,dx
+\]
+本身不要求独立。
+
+\begin{methodbox}{卷积公式的计算推导}
+先从目标事件开始，而不是从公式名开始：
+\[
+F_Z(z)=P(X+Y\le z)=\iint_{x+y\le z}f_{X,Y}(x,y)\,dx\,dy.
+\]
+写成对 $y$ 的截面积分并对 $z$ 求导，边界曲线 $x=z-y$ 给出
+\[
+f_Z(z)=\int f_{X,Y}(z-y,y)\,dy.
+\]
+只有在 $X,Y$ 独立时才把联合密度替换为 $f_X(z-y)f_Y(y)$。积分范围仍须与原支撑集相交；漏掉支撑边界会比忘记“卷积”二字更早造成错误。
+\end{methodbox}
+
+\begin{examplebox}{先按几何分割分段，再做单调变换：2021 Q二十二}
+在 $(0,2)$ 上均匀取切点 $U$，令两段的较短、较长长度分别为 $X,Y$。原始映射在 $U=1$ 处换分支：
+\[
+X=\min(U,2-U)\in(0,1),\qquad Y=2-X.
+\]
+对每个 $x\in(0,1)$，原像 $U=x$ 与 $U=2-x$ 各贡献密度 $1/2$，所以 $f_X(x)=1$。随后在这一段上 $Z=Y/X=2/x-1$ 单调递减，值域为 $z>1$，反解 $x=2/(z+1)$，得
+\[
+f_Z(z)=f_X\!\left(\frac{2}{z+1}\right)\left|\frac{dx}{dz}\right|
+=\frac{2}{(z+1)^2},\qquad z>1.
+\]
+归一化检查为 $\int_1^\infty2(z+1)^{-2}dz=1$。最后若只求数字特征，可在得到 $X/Y=1/Z$ 后直接积分：
+\[
+E\left(\frac XY\right)=\int_1^\infty\frac1z\frac{2}{(z+1)^2}dz=2\ln2-1.
+\]
+该题的关键不是套一个“最小值公式”，而是先处理 $\min/\max$ 在分割点处的分支，再对已闭合的单调段做 Jacobian 变换。
+\end{examplebox}
+
+\begin{examplebox}{真题截面验收：正态+均匀、三角支撑、方形支撑}
+\textbf{1992 Q十一（正态+均匀）}：若 $X\sim N(\mu,\sigma^2)$、$Y\sim U(-\pi,\pi)$ 独立，则先写有限窗支撑 $-\pi<y<\pi$：
+\[
+f_{X+Y}(z)=\frac1{2\pi}\int_{-\pi}^{\pi}f_X(z-y)\,dy
+=\frac1{2\pi}\left[\Phi\!\left(\frac{z+\pi-\mu}{\sigma}\right)-\Phi\!\left(\frac{z-\pi-\mu}{\sigma}\right)\right].
+\]
+这里没有“正态与均匀仍属于某个常见闭包”的捷径，结果是滑动窗口的 CDF 差。
+
+\textbf{2005 Q二十二（三角支撑）}：$f_{X,Y}=1$ 在 $0<x<1,\ 0<y<2x$ 上。令 $Z=2X-Y$，固定 $z$ 后 $y=2x-z$，支撑要求 $0<z<2$ 且 $z/2<x<1$，因此
+\[
+f_Z(z)=\int_{z/2}^{1}1\,dx=1-\frac z2,\qquad0<z<2.
+\]
+边缘密度同时由真实支撑给出 $f_X(x)=2x$（$0<x<1$）、$f_Y(y)=1-y/2$（$0<y<2$）。
+
+\textbf{2007 Q二十三（方形支撑）}：$f_{X,Y}(x,y)=2-x-y$ 在 $(0,1)^2$ 上，令 $Z=X+Y$。因被积函数沿 $x+y=z$ 为常数 $2-z$，截面长度分段为 $z$ 与 $2-z$：
+\[
+f_Z(z)=\begin{cases}z(2-z),&0<z<1,\\(2-z)^2,&1<z<2,\\0,&\text{其他}.\end{cases}
+\]
+回检 $\int_0^1z(2-z)\,dz+\int_1^2(2-z)^2\,dz=1$。三题的共同第一动作都是“支撑与截面”，而非先背卷积结果。
+\end{examplebox}
+
+\begin{methodbox}{截面积分的尺度检查：参数化长度不等于几何长度}
+沿 $ax+by=z$ 积分时，若用 $x$ 作为参数，必须把 $y=(z-ax)/b$ 代回并带上
+\[
+\left|\frac{\partial(x,y)}{\partial(x,z)}\right|=\frac1{|b|}
+\quad(b\ne0).
+\]
+若直接把截面写成几何弧长参数，则弧长因子与参数化 Jacobian 的职责不同，不能重复或遗漏。2005 Q二十二中 $y=2x-z$ 的 $|b|=1$，所以因子恰为 $1$；1991 Q十一中 $y=(z-x)/2$，因子为 $1/2$。2007 Q二十三的 $x+y=z$ 也不能只写“截面长度”，必须说明所用参数是 $x$，此时 $dy=-dx$，尺度已经包含在参数化中。最后用总积分为 $1$ 检查尺度是否正确。
+\end{methodbox}
+
+\begin{examplebox}{早期真题：截面卷积的两种支撑形状}
+1987 Q十一中 $X\sim U(0,1)$、$Y\sim\operatorname{Exp}(1)$ 独立，$Z=2X+Y$。固定 $z$ 后可行截面为 $0<x<\min(1,z/2)$，因此
+\[
+f_Z(z)=\int_0^{\min(1,z/2)}e^{-(z-2x)}dx
+=\begin{cases}
+\frac12(1-e^{-z}),&0<z<2,\\
+\frac12(e^2-1)e^{-z},&z\ge2,\\
+0,&\text{其他}.
+\end{cases}
+\]
+1991 Q十一中 $f_{X,Y}=2e^{-(x+2y)}I_{\{x>0,y>0\}}$、$Z=X+2Y$；变换 $y=(z-x)/2$ 后截面 $0<x<z$，得到
+\[
+f_Z(z)=ze^{-z}I_{(0,\infty)}(z),\qquad F_Z(z)=\bigl[1-(z+1)e^{-z}\bigr]I_{(0,\infty)}(z).
+\]
+前者的截面上限随 $z=2$ 改变，后者的截面长度直接生成 Gamma 形密度；共同第一动作都是先求支撑交集。
+\end{examplebox}
+
+\subsection{联合变换与 Jacobian}
+
+构造一一变换
+\[
+Z=g_1(X,Y),\qquad U=g_2(X,Y),
+\]
+若逆变换为 $X=h_1(Z,U),Y=h_2(Z,U)$，则
+\[
+\boxed{
+f_{Z,U}(z,u)=f_{X,Y}(h_1(z,u),h_2(z,u))
+\left|\det\frac{\partial(x,y)}{\partial(z,u)}\right|}.
+\]
+再对 $u$ 积分得到 $f_Z$。变换非一一时必须对所有逆像分支求和；新的支撑集必须由原支撑集在变换下得到，不能只算行列式。
+
+\begin{methodbox}{Jacobian 公式的证据骨架}
+在可微且局部一一的区域内，小矩形经过逆变换后面积约放大
+\[
+\left|\det\frac{\partial(x,y)}{\partial(z,u)}\right|\,dz\,du.
+\]
+同一小区域的概率既可用原密度表示为 $f_{X,Y}(x,y)\,dx\,dy$，也可用新密度表示为 $f_{Z,U}(z,u)\,dz\,du$；令两者相等并代入逆变换，就得到上式。非一一时对每个可行逆像相加，行列式为零或支撑跨越分支点时必须分段处理。
+\end{methodbox}
+
+\begin{examplebox}{真题三出口：2023 Q二十二 的圆盘支撑与径向变换}
+题设联合密度为
+\[
+f_{X,Y}(x,y)=\frac2\pi(x^2+y^2)\,I_{\{x^2+y^2\le1\}}.
+\]
+同一份联合模型必须按目标选择不同出口。\textbf{(1) 协方差：}圆盘和密度关于 $x$、$y$ 轴分别对称，故 $EX=EY=0$；被积函数 $xyf_{X,Y}(x,y)$ 关于任一坐标轴为奇函数，所以 $E(XY)=0$，从而
+\[
+\operatorname{Cov}(X,Y)=0.
+\]
+\textbf{(2) 独立性：}不能由零协方差推出独立。支撑是圆盘而非边缘支撑区间的矩形；在圆盘外联合密度为零，而边缘密度在相应区间内为正，因此联合密度不能几乎处处分解成 $f_X(x)f_Y(y)$，故 $X,Y$ 不独立。
+
+\textbf{(3) 径向变换：}令 $Z=X^2+Y^2$，使用 $x=r\cos\theta,y=r\sin\theta$，其中 $0\le r\le1$、$0\le\theta<2\pi$。概率质量账本为
+\[
+f_{X,Y}(r\cos\theta,r\sin\theta)\,r\,dr\,d\theta
+ =\frac2\pi r^3\,dr\,d\theta.
+\]
+令 $z=r^2$，则 $r\,dr=dz/2$，故
+\[
+f_Z(z)=\int_0^{2\pi}\frac2\pi z\frac12\,d\theta
+ =2z,\qquad 0<z<1,
+\]
+其余处为 $0$，且 $\int_0^1 2z\,dz=1$。\kw{动作句：}先用目标决定是否可以在对称性处停止；若要求完整分布，再锁定支撑、选择坐标变换、带上 Jacobian，并回检总质量。
+\end{examplebox}
+
+常用公式（均先按支撑集解释积分）为
+\begin{align*}
+f_{X-Y}(z)&=\int f_{X,Y}(x,x-z)\,dx,\\
+f_{aX+bY}(z)&=\frac1{|b|}\int f_{X,Y}\left(x,\frac{z-ax}{b}\right)\,dx,\\
+f_{XY}(z)&=\int\frac1{|x|}f_{X,Y}\left(x,\frac zx\right)\,dx,\\
+f_{X/Y}(z)&=\int |y|f_{X,Y}(zy,y)\,dy.
+\end{align*}
+
+\section{可加性：卷积后分布族是否保持形状}
+
+若独立 $X_i$ 属于同一分布族，且其和仍在该族内，只更新参数，则称该族对卷积封闭。常见结论为
+\begin{center}
+\begin{tabularx}{\linewidth}{L{3.0cm}L{4.5cm}Y}
+\toprule 分布族 & 共同条件 & 和的参数 \\
+\midrule
+正态 & 独立 & 均值、方差分别相加 \\
+Poisson & 独立 & 率参数相加 \\
+二项 & 独立且成功概率 $p$ 相同 & 试验次数相加 \\
+Gamma & 独立且率参数 $\lambda$ 相同 & 形状参数相加 \\
+$\chi^2$ & 独立 & 自由度相加 \\
+负二项 & 独立、$p$ 相同且参数约定一致 & 成功阶段数相加 \\
+Cauchy & 独立 & 位置与尺度参数相加 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Gamma 采用形状--率参数化：
+\[
+f(x)=\frac{\lambda^\alpha}{\Gamma(\alpha)}x^{\alpha-1}e^{-\lambda x},\quad x>0.
+\]
+$\operatorname{Exp}(\lambda)=\operatorname{Gamma}(1,\lambda)$，Erlang 是整数形状 Gamma，$\chi^2(\nu)=\operatorname{Gamma}(\nu/2,1/2)$。同率指数等待时间之和为 Erlang；同时运行的指数部件串联系统寿命却是最小值 $\operatorname{Exp}(n\lambda)$，两种机制不能混淆。
+
+Poisson 计数与 Gamma 等待是同一速率过程的两个观察方向：若事件以速率 $\lambda$ 到达，则时间窗内计数可为 $\operatorname{Pois}(\lambda t)$，第 $r$ 次到达时间为 $\operatorname{Gamma}(r,\lambda)$；给定时间或给定计数后，条件分布还会改变，不能把计数模型和等待模型的参数直接互换。对重尾和的题目，亚指数边界提醒我们：大和的尾部可能由单个极端项主导，不能只凭均值或方差套用轻尾近似。
+
+证明工具按信息选择：显式 PMF/PDF 用离散或连续卷积；MGF 在 $0$ 邻域存在时用乘积；非负整数变量可用 PGF；MGF 不存在时可用总存在的特征函数。Cauchy 分布的稳定性必须通过特征函数理解，因为其期望和方差不存在。
+
+对整数值非负变量，概率生成函数 $G_X(s)=E(s^X)$ 在 $|s|\le1$ 上存在，独立和满足
+\[
+G_{X+Y}(s)=G_X(s)G_Y(s).
+\]
+对任意变量，特征函数 $\varphi_X(t)=E(e^{itX})$ 总存在，独立和满足 $\varphi_{X+Y}=\varphi_X\varphi_Y$；它因此可处理 MGF 不存在的重尾分布。Cauchy$(x_0,\gamma)$ 的特征函数为 $\exp(ix_0t-\gamma|t|)$，独立同尺度 Cauchy 的和仍为 Cauchy，位置和尺度参数相加，但均值、方差仍不存在。正态变量之比的 Cauchy 结构也说明“可加稳定性”不等于“数字特征可加”。
+
+\subsection{极值分布 $\max(X,Y)$ 与 $\min(X,Y)$}
+
+当 $X, Y$ 独立时：
+\begin{align*}
+F_{\max}(z) &= P(X \le z, Y \le z) = F_X(z) F_Y(z), \\
+F_{\min}(z) &= 1 - P(X > z, Y > z) = 1 - [1 - F_X(z)][1 - F_Y(z)].
+\end{align*}
+
+\section{统一计算工作流与边界}
+
+\begin{enumerate}
+  \item 先写联合对象和支撑集 $D$，标出目标是边缘、条件还是 $g(X,Y)$ 的分布。
+  \item 边缘化沿纤维求和/积分；条件化在截面上除以边缘质量；先检查分母正且条件密度归一化。
+  \item 函数分布优先写原像事件；和的分布再判断是否能因独立性拆成卷积，变换题再判断是否需要 Jacobian。
+  \item 检查新支撑、总质量和独立性证据；非一一变换逐分支处理，混合型变量先按离散层条件化。
+\end{enumerate}
+
+\section{贯穿母例：独立均匀变量之和}
+
+\begin{examplebox}{母例：两个独立 $U(0,1)$ 之和}
+设 $X, Y \overset{\text{i.i.d.}}{\sim} U(0,1)$，求 $Z = X + Y$ 的密度。
+支撑集为正方形 $D = [0,1] \times [0,1]$，联合密度 $f(x,y) = 1$。
+由卷积公式 $f_Z(z) = \int_0^1 f_X(z-y) dy$：
+\begin{itemize}
+  \item 当 $0 < z \le 1$ 时，$f_Z(z) = \int_0^z 1 \, dy = z$；
+  \item 当 $1 < z < 2$ 时，$f_Z(z) = \int_{z-1}^1 1 \, dy = 2 - z$。
+\end{itemize}
+得到经典的\kw{三角分布}密度！
+\end{examplebox}
+
+\section{概念边界：5 列分流判据}
+
+\small
+\begin{longtable}{L{2.8cm}L{2.8cm}L{3.4cm}L{3.2cm}L{2.8cm}}
+\toprule
+\textbf{概念 A} & \textbf{$\ne$} & \textbf{概念 B} & \textbf{真正区别与题目信号} & \textbf{混淆后果}\\
+\midrule
+边缘分布 & $\ne$ & 联合分布 & 边缘丢弃了维间关联；只有独立时才能由边缘拼出联合 & 错用 $f(x,y)=f_X(x)f_Y(y)$\\
+非矩形支撑 & $\ne$ & 独立 & 若支撑集是三角形或圆，变量间存在几何约束，必不独立 & 误判非矩形支撑变量独立\\
+条件密度 & $\ne$ & 边缘密度 & 条件密度固定了另一个变量；边缘密度积掉了另一个变量 & 把截面分布混为整体分布\\
+$X+Y$ 的分布 & $\ne$ & $f_X(x)+f_Y(y)$ & 函数分布是密度卷积/积分；不是密度的直接相加 & 算错 $X+Y$ 的密度\\
+$\max$ 分布 & $\ne$ & $\min$ 分布 & $\max$ 对应交集 $\{X \le z \cap Y \le z\}$；$\min$ 用补集推导 & 极值分布公式记混\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{一页压缩}
+
+\begin{corebox}{一句话总结}
+\[
+\boxed{\text{联合分布画支撑集，边缘积分降维度，条件截面归一化，函数变换积分限。}}
+\]
+\end{corebox}
+
+\begin{examplebox}{支撑与事件区域必须同时取交：2003 真题}
+若 $f_{X,Y}=6x$ 在 $0\le x\le y\le1$ 上，求 $P(X+Y\le1)$ 时不能把支撑当矩形。两块区域的交为
+\[
+0\le x\le\frac12,\qquad x\le y\le1-x,
+\]
+所以
+\[
+P(X+Y\le1)=\int_0^{1/2}\int_x^{1-x}6x\,dy\,dx=\frac14.
+\]
+第一步永远是画联合支撑与目标事件的交集；积分上下限由交集而不是由事件不等式单独决定。
+\end{examplebox}
+
+\begin{examplebox}{早期真题：截面卷积的分段点来自支撑（1987）}
+$X\sim U(0,1)$、$Y\sim\operatorname{Exp}(1)$ 独立，$Z=2X+Y$。固定 $z$ 后 $0<x<\min(1,z/2)$，所以
+\[
+f_Z(z)=\begin{cases}(1-e^{-z})/2,&0<z<2,\\(e^2-1)e^{-z}/2,&z\ge2,\\0,&z\le0.\end{cases}
+\]
+分界点 $z=2$ 是直线 $2x+y=z$ 穿过支撑边界的时刻；积分范围先于公式套用。
+\end{examplebox}
+
+\end{document}

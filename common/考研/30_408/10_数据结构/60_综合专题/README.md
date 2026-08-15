@@ -1,6 +1,6 @@
 # 数据结构 Integration Layer
 
-状态：框架已采用，正文未建。
+状态：框架已采用；DS-I01 已建立并发布深度正文。
 
 当前只建立一个核心 Integration：
 

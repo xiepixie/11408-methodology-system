@@ -1,0 +1,405 @@
+\documentclass[11pt,a4paper,fontset=fandol]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={多元局部模型：可微、梯度、隐函数与极值}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 高等数学 Topic 07}}
+\rhead{\small\color{deep}可微 · 梯度 · 隐函数 · 极值}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\begin{document}
+\begin{center}
+{\LARGE\textbf{多元局部模型：可微、梯度、隐函数与极值}}\\[0.4em]
+{\large 从“逐方向探测”到“统一局部映射与约束形状”}
+\end{center}
+\vspace{0.5em}
+
+\begin{quote}
+本册只追问一个根本问题：\textbf{高维函数在一点附近，怎样从多条方向上的局部信息中提取一个对所有小位移统一有效的线性模型，并在一阶信息消失后用二阶形状与约束继续决策？} 偏导只探测坐标轴，方向导数只探测一条射线，可微要求同一个线性映射统一控制全部方向；梯度、Hessian、隐函数和 Lagrange 都是这套局部模型的不同读法。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\setcounter{section}{-1}
+\section{本册定位}
+
+本册是高等数学 Subject Atlas 下的 Topic07。Topic06 提供空间对象、参数与约束表示；本册在这些对象上建立联合趋近、一阶局部线性化、二阶局部形状和约束极值机制。
+
+\subsection{Own}
+\begin{itemize}
+  \item 多元联合极限、路径法边界与极坐标统一估计；
+  \item 偏导、方向导数、全微分/Fréchet 可微的层级关系；
+  \item 梯度、Jacobian matrix、链式法则与沿参数轨迹求导；
+  \item 逆函数/隐函数的局部可解资格和导数公式；
+  \item 梯度到切平面、法线和等值面的高数几何读法；
+  \item Hessian、多元二阶 Taylor 与非退化局部极值判别；
+  \item 无约束驻点、等式约束 Lagrange 候选和闭区域全局最值的候选全集。
+\end{itemize}
+
+\subsection{Uses / Stop Boundary}
+\begin{itemize}
+  \item 可微作为“最佳局部线性映射”的跨学科解释归 B01；
+  \item Jacobian determinant 的局部体积缩放与积分换元归 B02/Topic08；
+  \item Hessian 与二次型的合同、惯性和正定性翻译归 B03；
+  \item 梯度、切/法空间与 Lagrange 的子空间几何归 B04；
+  \item II-03.1 的广义特征值/Rayleigh 商主体归 B03 与线性代数；
+  \item KKT、一般流形和一般赋范空间导数不进入数学一主干；
+  \item 题目信号、第一动作、检查点和退出条件进入《高等数学做题规则》。
+\end{itemize}
+
+\section{母模型：多方向信息怎样统一？}
+
+\[
+\boxed{\begin{gathered}
+\text{Anchor / Domain}
+\to\text{Joint Approach}
+\to\text{Directional Probes}
+\to\text{Uniform Linear Model}\\
+\text{Geometry Readout}
+\to\text{Quadratic Upgrade}
+\to\text{Constraint / Boundary Audit}
+\end{gathered}}
+\]
+
+\begin{enumerate}
+  \item \kw{Anchor / Domain}：固定基点，确认内点、边界点或约束集上的点；
+  \item \kw{Joint Approach}：所有变量联合趋近，不能偷换成有限路径或累次极限；
+  \item \kw{Directional Probes}：偏导和方向导数收集样本，但样本集合不等于统一模型；
+  \item \kw{Uniform Linear Model}：可微要求同一个线性映射控制全部小位移；
+  \item \kw{Geometry Readout}：梯度读最快增长/法向，Jacobian 读向量输出；
+  \item \kw{Quadratic Upgrade}：一阶项消失后，用 Hessian 二次型读局部形状；
+  \item \kw{Constraint / Boundary Audit}：约束减少允许方向，闭区域还须扫描全部边界层级。
+\end{enumerate}
+
+\begin{corebox}{多元微分是一份统一误差预算}
+偏导存在只说明坐标轴差商有极限；全部方向导数存在也只说明每条固定直线可被单独探测。真正的可微要求
+\[
+f(\mathbf a+\mathbf h)=f(\mathbf a)+L(\mathbf h)+o(\lVert\mathbf h\rVert)
+\]
+中的同一个线性映射 $L$ 和同一个余项估计对任意趋向零的 $\mathbf h$ 同时成立。统一性是从“许多方向数据”升级为“一个局部模型”的门槛。
+\end{corebox}
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.55cm and 0.55cm,
+  box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.05cm,minimum height=1.0cm,align=center,fill=soft,font=\small},
+  arr/.style={-{Latex[length=2mm]},thick,draw=deep}
+]
+\node[box] (a) {基点与定义域\\内点/边界/约束};
+\node[box,right=of a] (b) {联合趋近\\所有路径统一};
+\node[box,right=of b] (c) {方向探测\\偏导/方向导数};
+\node[box,below=of c] (d) {统一线性模型\\梯度/Jacobian};
+\node[box,left=of d] (e) {二阶升级\\Hessian/Taylor};
+\node[box,left=of e] (f) {约束与边界\\候选全集/验证};
+\draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d);
+\draw[arr] (d)--(e); \draw[arr] (e)--(f);
+\end{tikzpicture}
+\end{center}
+
+\section{联合极限：路径法通常用于否定}
+
+对 $f:D\subset\mathbb R^n\to\mathbb R$，只有当 $\mathbf x$ 由允许集合中的任意方向趋近 $\mathbf a$ 时都满足同一误差控制，才有联合极限。二元联合趋近没有变量先后顺序，也不限制在直线、抛物线或其他有限路径上。
+
+沿两条路径得到不同极限即可否定；沿有限条甚至所有直线得到同一值，也不能一般地肯定。两个累次极限即使存在且相等，仍不足以推出联合极限。
+
+原点附近用极坐标时，真正的证明是取得角度无关的包络：
+\[
+|f(r\cos\theta,r\sin\theta)|\le\varphi(r),
+\qquad \varphi(r)\to0.
+\]
+极坐标只是表示，统一估计才是证据。
+
+\section{偏导、方向导数与可微：三层资格}
+
+\subsection{偏导只看坐标轴}
+\[
+f_x(x_0,y_0)=\lim_{h\to0}\frac{f(x_0+h,y_0)-f(x_0,y_0)}h.
+\]
+另一个变量被固定，因此偏导只读取坐标切片，不能控制斜线和曲线路径。
+
+\begin{warnbox}{偏导存在不推出连续}
+令
+\[
+f(x,y)=
+\begin{cases}
+\dfrac{xy}{x^2+y^2},&(x,y)\ne(0,0),\\0,&(x,y)=(0,0).
+\end{cases}
+\]
+坐标轴上恒为零，所以两偏导都存在；沿 $y=x$ 却恒为 $1/2$，函数在原点不连续，更不可能可微。
+\end{warnbox}
+
+混合偏导存在也不自动相等；最常用的安全资格是 $f\in C^2$ 于邻域。
+
+\subsection{方向导数只看一条射线}
+\[
+D_{\mathbf v}f(\mathbf a)
+=\lim_{t\to0}\frac{f(\mathbf a+t\mathbf v)-f(\mathbf a)}t.
+\]
+有的教材只允许单位方向，计算前须确认约定。所有方向导数存在仍不推出可微，因为 $\mathbf v\mapsto D_{\mathbf v}f$ 可能不线性，或余项不对方向一致。只有可微时才保证
+\[
+D_{\mathbf v}f(\mathbf a)=\nabla f(\mathbf a)\cdot\mathbf v.
+\]
+
+\subsection{可微要求统一线性主部}
+\[
+\boxed{f(\mathbf a+\mathbf h)
+=f(\mathbf a)+L(\mathbf h)+o(\lVert\mathbf h\rVert)}.
+\]
+各一阶偏导在邻域存在且在基点连续，是常用充分条件。逻辑层级为
+\[
+C^1\Longrightarrow\text{可微}\Longrightarrow
+\begin{cases}
+\text{连续},\\
+\text{全部偏导存在},\\
+\text{全部方向导数由同一线性映射给出}.
+\end{cases}
+\]
+反向一般不成立；可微也不要求偏导函数在邻域连续。
+
+\section{梯度与 Jacobian：一阶模型的坐标读法}
+
+标量函数可微时，
+\[
+L(\mathbf h)={\nabla f(\mathbf a)}^{\mathsf T}\mathbf h,
+\qquad
+df=\nabla f^{\mathsf T}d\mathbf x.
+\]
+对单位方向 $\mathbf u$，方向导数最大值为 $\lVert\nabla f\rVert$，在梯度方向取得。梯度为零时所有一阶方向导数为零，但不存在唯一最快增长方向。
+
+若 $F(\mathbf x)=c$ 是正则等值面且 $\nabla F(\mathbf a)\ne\mathbf0$，沿面上曲线 $\mathbf r(t)$ 求导有
+\[
+\nabla F(\mathbf r(t))\cdot\mathbf r'(t)=0,
+\]
+故梯度为法向。梯度为零只说明正则条件失效，不能直接宣布几何尖点。
+
+对 $\mathbf F:\mathbb R^n\to\mathbb R^m$，
+\[
+D\mathbf F={\left(\frac{\partial F_i}{\partial x_j}\right)}_{m\times n},
+\qquad d\mathbf F\approx D\mathbf F\,d\mathbf x.
+\]
+只有 $m=n$ 时才有 Jacobian determinant；矩阵与行列式不得混同。
+
+\section{链式法则：局部映射按复合顺序相乘}
+
+若 $\mathbf F:\mathbb R^n\to\mathbb R^m$、$\mathbf G:\mathbb R^m\to\mathbb R^p$ 可微，则
+\[
+\boxed{D(\mathbf G\circ\mathbf F)(\mathbf a)
+=D\mathbf G(\mathbf F(\mathbf a))D\mathbf F(\mathbf a)}.
+\]
+维度为 $(p\times m)(m\times n)=(p\times n)$，乘法次序不可交换。沿参数曲线：
+\[
+\frac d{dt}f(\mathbf r(t))=\nabla f(\mathbf r(t))\cdot\mathbf r'(t).
+\]
+
+\section{隐函数：局部可解先于求导公式}
+
+若 $F(x_0,y_0)=0$，$F$ 在邻域 $C^1$，且 $F_y(x_0,y_0)\ne0$，则局部可唯一解成 $y=\varphi(x)$，并有
+\[
+\varphi'(x)=-\frac{F_x}{F_y}.
+\]
+分母非零首先保证局部可解，导数公式只是后果。若 $F_y=0$ 但 $F_x\ne0$，可能仍可把 $x$ 解成 $y$；真正的曲线奇异候选通常是 $\nabla F=\mathbf0$。
+
+对 $\mathbf F(\mathbf x,\mathbf y)=\mathbf0$，若 $D_{\mathbf y}\mathbf F$ 可逆，则局部存在 $\mathbf y=\boldsymbol\varphi(\mathbf x)$，且
+\[
+D\boldsymbol\varphi
+=-{\bigl(D_{\mathbf y}\mathbf F\bigr)}^{-1}D_{\mathbf x}\mathbf F.
+\]
+检查点是变量分块、方程数和被求解变量块的 Jacobian 可逆性。
+
+\section{切向与法向：表示决定读取方式}
+
+隐式曲面 $F(x,y,z)=0$ 在正则点 $P_0$ 的切平面为
+\[
+\nabla F(P_0)\cdot(\mathbf r-\mathbf r_0)=0.
+\]
+显式曲面 $z=f(x,y)$ 可改写为 $f(x,y)-z=0$。参数曲线 $\mathbf r(t)$ 的切向为 $\mathbf r'(t_0)$；参数曲面由 $\mathbf r_u,\mathbf r_v$ 张成切平面，正则条件是二者叉积非零。
+
+两正则曲面 $F=0,G=0$ 的交线切向可取
+\[
+\nabla F(P_0)\times\nabla G(P_0),
+\]
+前提是两个梯度不平行。第一动作始终是先验证点属于对象，再验证正则性。
+
+\section{二阶模型：Hessian 读取驻点附近形状}
+
+若 $f$ 二阶可微，Hessian 为
+\[
+H_f(\mathbf a)=\left(\frac{\partial^2f}{\partial x_i\partial x_j}(\mathbf a)\right),
+\]
+且 $f\in C^2$ 时对称。二阶方向导数为
+\[
+D_{\mathbf v}^2f=\mathbf v^{\mathsf T}H_f\mathbf v.
+\]
+二阶 Taylor 模型为
+\[
+f(\mathbf a+\mathbf h)
+=f(\mathbf a)+{\nabla f(\mathbf a)}^{\mathsf T}\mathbf h
++\frac12\mathbf h^{\mathsf T}H_f(\mathbf a)\mathbf h
++o(\lVert\mathbf h\rVert^2).
+\]
+
+在驻点，正定 Hessian 给严格极小，负定给严格极大，不定给鞍点。半正定、半负定或奇异时二阶信息不足，必须看更高阶、特殊路径或原函数结构；“判别失效”不等于“没有极值”。Hessian 与二次型的跨学科翻译由 B03 拥有。
+
+\section{无约束极值：驻点只是候选}
+
+内点可微极值的必要条件是 $\nabla f(\mathbf a)=\mathbf0$。对二元函数，设
+\[
+A=f_{xx},\quad B=f_{xy},\quad C=f_{yy},\quad \Delta=AC-B^2.
+\]
+在驻点：$\Delta>0,A>0$ 为极小；$\Delta>0,A<0$ 为极大；$\Delta<0$ 为鞍点；$\Delta=0$ 判别失效。不可导点和定义域边界也是候选来源。
+
+\section{等式约束：允许方向被约束集削减}
+
+在正则约束 $g(\mathbf x)=c$ 上，允许切向 $\mathbf v$ 满足 $\nabla g\cdot\mathbf v=0$。约束局部极值处，目标函数在所有允许方向上的一阶变化为零，因此
+\[
+\boxed{\nabla f(\mathbf a)=\lambda\nabla g(\mathbf a)}.
+\]
+这是候选方程，要求 $\nabla g\ne0$。多个独立约束时，目标梯度位于约束梯度张成的法空间。该几何接口归 B04。
+
+\begin{examplebox}{贯穿母例：球面约束下的线性函数}
+在 $x^2+y^2+z^2=1$ 上求 $f=x+2y+3z$。Lagrange 条件给
+\[
+(1,2,3)=2\lambda(x,y,z).
+\]
+归一化后候选点为 $\pm(1,2,3)/\sqrt{14}$，对应最大值 $\sqrt{14}$、最小值 $-\sqrt{14}$。代回约束与目标值完成独立验证。
+
+这题从允许集合开始：球面是紧集，故全局最值存在；约束梯度 $2(x,y,z)$ 在球面上不为零，Lagrange 资格成立；梯度平行只生成候选，最后再用 Cauchy--Schwarz 的界
+$|x+2y+3z|\le\sqrt{14}$ 独立确认全局性。若误把“无约束驻点 $\nabla f=0$”当作第一动作，将得到空候选集并漏掉全部约束极值。
+\end{examplebox}
+
+II-03.1 的二次型条件极值可进一步转化为广义特征值，但其正定资格、Rayleigh 商和线代机制归 B03/线性代数，不在本册复制。
+
+\section{闭区域全局最值：候选全集覆盖所有层级}
+
+连续函数在紧集上取得最大最小值。对平面闭区域，完整候选集合包括：
+\begin{enumerate}
+  \item 区域内部的驻点和不可导点；
+  \item 每一段光滑边界上的约束驻点；
+  \item 边界段端点、角点和分段连接点。
+\end{enumerate}
+边界可直接代入、参数化或用 Lagrange 降维。三维闭区域还需逐层检查边界面、棱和顶点。Hessian 只判局部形状，不能替代全局边界扫描。
+
+\section{专题执行协议}
+\begin{enumerate}
+  \item \kw{Domain}：确认内点、边界、约束和联合趋近的允许集合；
+  \item \kw{Goal}：问极限、可微、方向变化、几何对象、隐函数还是最值；
+  \item \kw{Probe}：按需计算偏导/方向导数，不把探测结果直接升级为可微；
+  \item \kw{Uniformity}：可微题验证线性主部和统一余项；
+  \item \kw{Geometry}：梯度读取方向/法向，Jacobian 按维度组织链式法则；
+  \item \kw{Second Order}：驻点用 Hessian/Taylor，退化则换更高阶或路径；
+  \item \kw{Constraint}：约束先过正则门，Lagrange 只生成候选；
+  \item \kw{Boundary / Verify}：闭区域逐层扫描边界，最后代回、比较和维度复核。
+\end{enumerate}
+
+\section{高频失败路径：第一次偏离发生在哪里？}
+\begin{itemize}
+  \item 用有限条路径或两个累次极限证明联合极限存在；
+  \item 偏导存在、所有方向导数存在或连续被直接升级为可微；
+  \item 只算候选梯度，未验证余项对所有方向统一为小量；
+  \item 混淆梯度、Jacobian matrix 与 determinant，矩阵乘法次序错误；
+  \item 梯度为零仍宣布等值面法向，或隐函数分母为零仍强行求导；
+  \item Hessian 半正定/奇异时直接宣布极值；
+  \item Lagrange 解未代回约束，或约束梯度为零却机械套公式；
+  \item 只找内部驻点，漏掉闭区域边界、端点、棱和角点；
+  \item 把体积 Jacobian、二次型合同、广义特征值或 KKT 复制进本册。
+\end{itemize}
+
+\section{传统章节与 Source Corpus 映射}
+\begin{longtable}{L{2.65cm}L{5.25cm}L{\dimexpr\linewidth-7.90cm\relax}}
+\toprule
+\textbf{Source / 传统内容} & \textbf{进入本册} & \textbf{分流与拒绝复制}\\
+\midrule
+II-01 联合极限/连续 & 联合趋近、路径否定、极坐标统一估计 & 一般拓扑扩展不进入主干\\
+II-01 偏导/方向导数/可微 & 资格层级、统一线性模型与反例 & 最佳线性映射解释归 B01\\
+II-01 梯度/Jacobian/链式 & 一阶模型、方向/法向、复合 & determinant 体积缩放归 B02/Topic08\\
+II-01 逆/隐函数 & 局部可解资格、变量分块与导数 & 一般流形/秩理论只保留接口\\
+II-01 Hessian/Taylor & 二阶局部模型与极值判别 & 二次型正定/合同/惯性归 B03\\
+II-02 几何应用 & 切线、切平面、法向、交线切向与正则门 & 空间表示本体调用 Topic06\\
+II-02.1 隐式曲面 & 正则边界、隐式求导与极值 & B04 接收切/法空间接口\\
+II-03 多元极值 & 内部—边界—端点候选全集和 Lagrange & KKT 只作 Extension\\
+II-03.1 二次型条件极值 & 只保留正定约束—广义特征候选接口 & Rayleigh/广义特征值归 B03/线代\\
+\bottomrule
+\end{longtable}
+
+\section{一页压缩：忘掉公式后怎样重建？}
+\begin{corebox}{一句话}
+偏导和方向导数只是逐方向探针；可微要求一个线性映射统一解释全部小位移。梯度读取一阶几何，Hessian 在一阶消失后读取二阶形状；约束减少允许方向，闭区域最值必须补齐所有边界候选。
+\end{corebox}
+
+\subsection{两个局部模型}
+\[
+f(\mathbf a+\mathbf h)=f(\mathbf a)+{\nabla f(\mathbf a)}^{\mathsf T}\mathbf h+o(\lVert\mathbf h\rVert),
+\]
+\[
+f(\mathbf a+\mathbf h)=f(\mathbf a)+{\nabla f(\mathbf a)}^{\mathsf T}\mathbf h
++\frac12\mathbf h^{\mathsf T}H_f(\mathbf a)\mathbf h+o(\lVert\mathbf h\rVert^2).
+\]
+
+\subsection{重建问题}
+\begin{enumerate}
+  \item 当前基点是内点、边界点还是正则约束点？
+  \item 需要联合控制所有路径，还是只做一个方向探测？
+  \item 已知信息只是偏导/方向导数，还是已有统一线性余项？
+  \item 梯度/Jacobian 的维度和乘法次序是否一致？
+  \item 隐函数被求解变量块的 Jacobian 是否可逆？
+  \item 一阶项是否消失，Hessian 是否非退化，退化后该换哪条路？
+  \item Lagrange 候选是否满足正则性并已代回原约束？
+  \item 闭区域的内部、每段边界、端点/角点是否全部覆盖？
+  \item 是否已经越界到 B01、B02、B03、B04 或 Topic08？
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\appendix
+\section{多元局部模型 Coverage 锚点}
+\begin{center}
+\begin{tabular}{L{2.55cm}L{5.15cm}L{\dimexpr\linewidth-7.70cm\relax}}
+\toprule
+层级/对象 & 核心资格 & 输出\\
+\midrule
+联合极限 & 所有允许路径/序列统一 & 极限与连续\\
+偏导/方向导数 & 固定坐标或固定方向差商 & 局部探测值\\
+可微 & 统一线性主部加范数小量 & 梯度/Jacobian 与全微分\\
+隐函数 & 相应 Jacobian 块可逆 & 局部可解与导数\\
+Hessian & 二阶可微/足够正则 & 二阶方向形状与局部判别\\
+约束极值 & 正则约束、候选代回、边界完整 & 局部/全局最值候选全集\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+本册覆盖多元极限、连续、偏导、方向导数、可微、梯度、Jacobian matrix、链式与隐函数、切向法向、Hessian/Taylor 和多元极值；B01\textendash{}B04 分别接收跨学科线性化、体积行列式、二次型和切/法空间接口。
+
+\end{document}

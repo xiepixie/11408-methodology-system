@@ -245,6 +245,7 @@ Compare-And-Swap & 比较当前值是否等于期望值，相等则原子更新 
 \end{itemize}
 
 \begin{center}
+
 \begingroup
 \normalsize
 \begin{tikzpicture}[>=Stealth, node distance=1.6cm and 3.0cm]
@@ -339,6 +340,7 @@ V(S):&\quad S\leftarrow S+1;\quad S\le 0\Rightarrow\text{从等待队列唤醒�
 \end{method}
 
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=1.0cm and 1.1cm]
@@ -484,6 +486,7 @@ P(empty);   // empty=0 -> Blocked
 则生产者睡眠时仍持有 mutex。消费者即使 Ready/Running，也会阻塞在 \code{P(mutex)}，无法取出产品并执行 \code{V(empty)}。形成：
 
 \begin{center}
+
 \begingroup
 \normalsize
 \begin{tikzpicture}[>=Stealth, node distance=1.8cm and 3.0cm]
@@ -819,6 +822,7 @@ A\to C,\qquad C\to E.
 \]
 
 \begin{center}
+
 \begingroup
 \normalsize
 \begin{tikzpicture}[>=Stealth, node distance=1.8cm and 2.5cm]
@@ -936,6 +940,32 @@ unlock(m);
 \item 条件变量本身不是条件；真正的条件是共享状态上的布尔谓词，所以等待者醒来后必须用 \code{while} 重检。
 \end{itemize}
 \end{warn}
+
+\subsection{条件变量 \code{signal()} 与信号量 V 不能互换}
+
+两者都可能唤醒等待者，但拥有的状态不同：信号量把“许可数量”保存在自身计数中；条件变量只保存等待关系，真正的条件由受 mutex 保护的共享状态拥有。
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X X}
+\toprule
+操作 & 修改什么 & 当前无人等待 & 被唤醒者接下来做什么 \\
+\midrule
+信号量 \code{V(S)} & 增加一份许可；若有等待者则可交付许可并唤醒一个 & 许可被计数保存，之后的 \code{P(S)} 可以消费 & 获得许可后继续，具体调度时点另论 \\
+条件变量 \code{signal(cv)} & 不替调用者修改共享谓词，只通知等待队列 & 通知通常不被保存 & 先成为可运行候选，并在 \code{wait} 返回前重新获得 mutex、重检谓词 \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\begin{method}[稳定推理顺序]
+写管程时先由调用者在锁内修改共享状态，再判断是否需要 \code{signal/broadcast}。写信号量时，许可计数本身就是同步状态的一部分。只因为两者都出现“唤醒”就互换，会同时破坏资源计数与条件谓词的 Owner。
+\end{method}
+
+\begin{eng}[Hoare 与 Mesa 语义边界]
+不同管程模型对 \code{signal} 后谁立即获得管程有不同约定。现代常见 Mesa 风格只保证等待者以后有机会运行，因此必须用 \code{while} 重检；Hoare 风格允许控制权直接交给被唤醒者。考题未声明具体语义时，保留“通知不等于条件永久成立、唤醒不等于立即运行”这条稳定结论。
+\end{eng}
 
 \subsection{管程是什么}
 
@@ -1117,6 +1147,19 @@ Unsafe State 不等于此刻系统已经陷入死锁！Unsafe 的真实含义是
 
 如果未来进程实际提出的资源请求少于其声明的最大需求 $\text{Need}$，处于 Unsafe 状态的系统完全可能安全运行完毕而不发生死锁。
 \end{corebox}
+
+\subsection{单类可重用资源的最小总量公式：先写适用条件}
+
+若题目同时满足：只有一类同质、不可剥夺、可重用资源；共有 $n$ 个进程；进程 $P_i$ 的最大需求为 $m_i\ge 1$；进程获得全部所需资源后能够完成并一次释放；题目要求的是“无论怎样逐步占有，都保证至少有一个进程可继续”，则最小资源总量为
+\[
+\boxed{R_{\min}=1+\sum_{i=1}^{n}(m_i-1)=\sum_{i=1}^{n}m_i-n+1.}
+\]
+
+最坏状态是每个进程都持有 $m_i-1$ 份并各差一份。再多一份资源，至少可使一个进程达到最大需求并完成；它释放后形成连锁推进。
+
+\begin{warn}[这个公式不是通用 Banker]
+只要出现多类资源向量、当前 Allocation/Need 矩阵、可部分释放、资源可剥夺，或题目问某个\kw{给定状态}是否安全，就必须回到安全性算法，不能套标量公式。公式的价值是压缩一个严格受限的单资源模型，不是绕过状态建模。
+\end{warn}
 
 \subsection{Avoidance 与银行家算法 (Banker's Algorithm)}
 

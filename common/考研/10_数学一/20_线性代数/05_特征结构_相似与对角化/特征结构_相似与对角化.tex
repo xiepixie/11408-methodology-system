@@ -87,7 +87,7 @@ Av=\lambda v,
 \section{本册负责什么}
 
 \begin{itemize}
-  \item \kw{Owns：}线性算子、相似、特征值/特征向量/特征子空间、特征多项式、代数/几何重数、可对角化判据、矩阵多项式与幂、实对称矩阵的正交谱结构、可交换矩阵保持特征子空间的机制。
+  \item \kw{Owns：}线性算子、相似、特征值/特征向量/特征子空间、特征多项式、代数/几何重数、可对角化判据、矩阵多项式与幂、实对称矩阵的正交谱结构、实对称半正定矩阵的谱平方根接口、可交换矩阵保持特征子空间的机制。
   \item \kw{Uses：}Topic 01 的基、坐标、正交与 Schmidt；Topic 02 的一般换基、determinant、逆矩阵；Topic 03 的 kernel、rank；Topic 04 的齐次方程求 kernel。
   \item \kw{Does not own：}一般矩阵等价、Jordan 标准形计算、二次型合同/惯性/正定。
 \end{itemize}
@@ -624,9 +624,86 @@ Q^{-1}AQ=Q^TAQ.
 但 Topic 05 研究的是\kw{同一算子换到正交特征基}；Topic 06 研究的是\kw{二次型变量代换}。公式重合不能抹掉对象边界。
 \end{warnbox}
 
-\subsection{Extension：统摄对称与正交的正规矩阵 (Normal Matrix)}
-实对称矩阵（$A^T = A$）、反对称矩阵（$A^T = -A$）以及正交矩阵（$A^T A = I$）表面看似不同，但它们都属于\kw{正规矩阵（Normal Matrix）}，即满足 $A^T A = A A^T$ 的矩阵。
-正规矩阵是所有能够“提供一组标准正交特征基（谱定理）”的矩阵的最本质集合。实对称矩阵只是在这个集合中，特征值进一步被限制在实数域上的特例而已。
+\subsection{实对称半正定矩阵的主平方根：在自然方向上逐项开方}
+
+谱定理还有一个直接的计算后果。设实对称矩阵 $S\succeq0$，写成
+\[
+S=Q\Lambda Q^T,
+\qquad
+\Lambda=\operatorname{diag}(\mu_1,\dots,\mu_n),
+\qquad \mu_i\ge0.
+\]
+我们希望构造一个仍然实对称半正定的矩阵 $C$，满足
+\[
+C^2=S.
+\]
+在标准正交特征基里，这个问题已经完全退化成标量问题：只要对每个非负特征值取非负平方根。定义
+\[
+\boxed{
+S^{1/2}
+=Q\operatorname{diag}(\sqrt{\mu_1},\dots,\sqrt{\mu_n})Q^T.
+}
+\]
+立即有
+\[
+(S^{1/2})^2
+=Q\operatorname{diag}(\mu_1,\dots,\mu_n)Q^T
+=S.
+\]
+并且 $S^{1/2}$ 仍实对称、半正定；若 $S\succ0$，则所有 $\mu_i>0$，所以
+\[
+\boxed{S^{1/2}\succ0.}
+\]
+
+\begin{corebox}{为什么这条平方根是唯一的？}
+这里的唯一性必须带条件：\kw{$S^{1/2}$ 是唯一的实对称半正定平方根}。
+
+若 $C=C^T\succeq0$ 且 $C^2=S$，则 $C$ 与 $S=C^2$ 自动可交换，所以 $C$ 保持 $S$ 的每个特征子空间 $E_\mu(S)$。把 $C$ 限制在 $E_\mu(S)$ 上，仍是实对称半正定算子，并满足
+\[
+C^2=\mu I.
+\]
+因此这个限制的每个特征值 $c$ 都满足 $c\ge0$ 且 $c^2=\mu$，只能有 $c=\sqrt\mu$。实对称算子在该子空间内可正交对角化，而全部特征值都相同，于是
+\[
+C\vert_{E_\mu(S)}=\sqrt\mu\,I.
+\]
+对所有 $\mu$ 拼回去，便得到唯一的 $S^{1/2}$；重特征值不会产生新的半正定选择。
+\end{corebox}
+
+\begin{examplebox}{母例：谱平方根不是逐元素开平方}
+仍取
+\[
+S=\begin{pmatrix}2&1\\1&2\end{pmatrix}
+=Q\begin{pmatrix}3&0\\0&1\end{pmatrix}Q^T,
+\qquad
+Q=\frac1{\sqrt2}\begin{pmatrix}1&1\\1&-1\end{pmatrix}.
+\]
+因此
+\[
+S^{1/2}
+=Q\begin{pmatrix}\sqrt3&0\\0&1\end{pmatrix}Q^T
+=\frac12
+\begin{pmatrix}
+\sqrt3+1&\sqrt3-1\\
+\sqrt3-1&\sqrt3+1
+\end{pmatrix}.
+\]
+真正被开平方的是自然坐标中的特征值，不是原矩阵的每个元素。
+\end{examplebox}
+
+\begin{warnbox}{不要把这个接口过度推广成“一般矩阵都能这样开平方”}
+本册这里只拥有\kw{实对称半正定矩阵的主平方根}。一般实矩阵未必存在实平方根；即使存在，也可能不唯一、不可对称，不能靠“把任意特征值开平方”机械处理。正定/半正定本身的判定机制仍由 Topic 06 Own。
+\end{warnbox}
+
+\subsection{Extension：正规矩阵必须区分实数域与复数域}
+实对称矩阵（$A^T=A$）、实反对称矩阵（$A^T=-A$）以及实正交矩阵都满足
+\[
+A^TA=AA^T,
+\]
+因此它们在实矩阵意义下都是\kw{正规矩阵（normal matrix）}。但这里不能把“正规”直接升级成“在实数域有标准正交特征基”。
+
+正确的谱结论是：在\kw{复数域}上，正规矩阵可以被酉矩阵对角化；而在\kw{实数域}上，实对称矩阵才保证存在实标准正交特征基。实反对称矩阵或一般实正交矩阵可能只有复特征值，例如二维非平凡旋转矩阵就没有实特征方向。
+
+因此本册主线只使用实对称谱定理；正规矩阵只作为未来复线性代数的 Extension，不反向扩大数学一当前结论。
 
 \section{可交换矩阵：先得到“保持特征子空间”，再谈同时对角化}
 

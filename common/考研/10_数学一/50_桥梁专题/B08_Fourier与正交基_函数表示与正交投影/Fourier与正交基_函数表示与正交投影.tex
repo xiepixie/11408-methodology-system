@@ -1,0 +1,85 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{xcolor,fancyhdr,hyperref,bookmark,microtype}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
+\definecolor{deep}{RGB}{42,58,73}\definecolor{soft}{RGB}{245,247,249}\definecolor{warn}{RGB}{136,68,63}\definecolor{greenish}{RGB}{57,92,76}\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,pdftitle={B08 Fourier 与正交基：函数表示与正交投影}}
+\pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{数学一 · Bridge B08}}\rhead{\small\color{deep}函数坐标 · 正交投影}\cfoot{\small\thepage}\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+\begin{document}
+\begin{center}{\LARGE\textbf{B08｜Fourier 与正交基：函数表示与正交投影}}\\[0.4em]
+{\large 为什么 Fourier 系数必然由内积积分产生？}\end{center}
+\vspace{0.4em}
+\begin{quote}本 Bridge 只解释有限维“坐标 = 投影”如何翻译为函数空间中的 Fourier 系数；收敛、延拓、跳跃点和逐项操作仍由高数 Topic11 Own。\end{quote}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\section{Position 与两侧 Owner}
+B00 Owns 内积、正交和投影的基础语言；线代 Topic01 Owns 基与坐标；高数 Topic11 Owns 幂级数/Fourier 的收敛和展开。B08 只 Own 接口翻译与使用边界。
+
+\section{Mother Interface：系数就是投影坐标}
+有限维中，若 $\{e_i\}$ 是规范正交基，
+\[
+v=\sum_i c_i e_i,\qquad c_i=\langle v,e_i\rangle.
+\]
+把向量换成函数，把有限和换成级数，把点积换成积分内积，就得到
+\[
+f\sim\sum_n c_n\phi_n,\qquad c_n=\frac{\langle f,\phi_n\rangle}{\langle\phi_n,\phi_n\rangle}.
+\]
+在 $[-L,L]$ 上取 $\phi_n=\cos(n\pi x/L)$ 或 $\sin(n\pi x/L)$，内积为
+\[
+\langle f,g\rangle=\int_{-L}^{L}f(x)g(x)\,dx,
+\]
+于是产生 Topic11 的 Fourier 系数公式。
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.55cm and 0.7cm,box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.15cm,minimum height=0.9cm,align=center,fill=soft,font=\small},arr/.style={-{Latex[length=2mm]},thick,draw=deep}]
+\node[box] (a) {对象\\向量 $v$ / 函数 $f$};
+\node[box,right=of a] (b) {正交基\\$e_i$ / $\phi_n$};
+\node[box,right=of b] (c) {内积\\点积 / 积分};
+\node[box,below=of c] (d) {投影系数\\坐标 $c_i$ / $c_n$};
+\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);
+\end{tikzpicture}
+\end{center}
+
+\section{接口推导：正交性消掉其他坐标}
+假设 $f=\sum_k c_k\phi_k$，与某个 $\phi_j$ 取内积：
+\[
+\langle f,\phi_j\rangle=\sum_k c_k\langle\phi_k,\phi_j\rangle=c_j\langle\phi_j,\phi_j\rangle,
+\]
+因为 $k\ne j$ 的交叉项为零。故
+\[
+\boxed{c_j=\frac{\langle f,\phi_j\rangle}{\langle\phi_j,\phi_j\rangle}.}
+\]
+这解释了 Fourier 系数中“对函数乘一个正弦/余弦再积分”的必然性：积分不是额外技巧，而是在做坐标投影。
+
+\begin{examplebox}{最小例子：偶延拓的余弦系数}
+在 $[0,L]$ 上给 $f$ 做偶延拓，函数与余弦基同为偶函数，正弦投影自动为零。于是
+\[
+a_n=\frac2L\int_0^L f(x)\cos\frac{n\pi x}{L}\,dx,
+\]
+这只是全区间投影公式利用对称性后的压缩写法。
+\end{examplebox}
+
+\section{调用条件与边界}
+\begin{tabularx}{\linewidth}{L{0.29\linewidth}Y}
+\toprule
+题面信号 & Bridge 输出 \\
+\midrule
+需要解释 Fourier 系数来源 & 把“系数”翻译为函数与基函数的内积投影 \\
+奇偶性使一半系数消失 & 检查完整 integrand 的对称，不只看 $f$ \\
+选择特殊点求常数级数 & 先由 Topic11 判恢复值，再做投影坐标代入 \\
+\bottomrule
+\end{tabularx}
+\begin{warnbox}{三个必须阻断的类比}
+有限维正交基与无限函数级数不自动等同；写出系数不等于证明逐点收敛；正交也不意味着概率独立。完备性、Parseval 和 Hilbert 空间只作为 Extension。
+\end{warnbox}
+
+\section{Compression 与陌生题检查}
+遇到 Fourier 展开时复原四步：\textbf{选基函数 → 写内积 → 用正交性抽取系数 → 回到 Topic11 检查收敛/跳跃点}。若系数公式与区间长度、基函数范数不匹配，优先检查内积归一化而不是重算积分。
+\end{document}

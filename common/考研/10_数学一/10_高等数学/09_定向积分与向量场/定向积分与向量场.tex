@@ -1,0 +1,387 @@
+\documentclass[11pt,a4paper,fontset=fandol]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={定向积分与向量场}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 高等数学 Topic 09}}
+\rhead{\small\color{deep}曲线 · 曲面 · 定向 · 场}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\begin{document}
+\begin{center}
+{\LARGE\textbf{定向积分与向量场}}\\[0.4em]
+{\large 从“微元分类”到“内部微分量与边界积分的转换”}
+\end{center}
+\vspace{0.5em}
+
+\begin{quote}
+本册只追问一个根本问题：\textbf{曲线或曲面上的局部贡献究竟由什么场、什么几何微元和什么方向共同决定；当边界与内部满足正则性时，怎样用 Green、Stokes、Gauss 把难算的边界积分转换成更低维或更简单的内部量？} 看见积分符号后，第一动作不是代参数，而是辨认场的类型、微元的载体和定向协议。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\setcounter{section}{-1}
+\section{本册定位}
+
+本册是高等数学 Subject Atlas 下的 Topic09。Topic06 提供空间对象与参数/约束表示，Topic08 提供无向面积体积累积；本册把曲线、曲面、方向和向量场组织成定向积分与边界转换系统。
+
+\subsection{Own}
+\begin{itemize}
+  \item 第一型曲线/曲面积分与长度/面积微元；
+  \item 第二型曲线积分的切向位移与第二型曲面积分的法向面积；
+  \item 参数化、投影、直接代入、对称性和物理量建模；
+  \item 梯度场、保守场、路径无关和穿孔区域反例；
+  \item Green、Stokes、Gauss 三大定理的对象、方向、光滑性与奇点资格；
+  \item 补线、补面、挖洞和“换面不换边界”的统一决策接口。
+\end{itemize}
+
+\subsection{Uses / Stop Boundary}
+\begin{itemize}
+  \item Topic06 提供曲线/曲面对象、参数域与法向表示；
+  \item Topic08 提供二重/三重积分、投影区域、坐标换元与无向微元；
+  \item Topic07 提供梯度、方向导数和局部可微语言；
+  \item B00 拥有内积/正交/投影的跨学科统一解释；
+  \item 一般微分形式、流形、拓扑同调和偏微分方程理论不进入数学一主干；
+  \item 题目触发信号、第一动作、检查点和退出条件进入《高等数学做题规则》。
+\end{itemize}
+
+\section{母模型：场 × 载体 × 定向}
+
+\[
+\boxed{\begin{gathered}
+\text{Field Type / Geometric Carrier}
+\to\text{Orientation / Parametrization}
+\to\text{Microelement}\\
+\to\text{Direct or Boundary Theorem}
+\to\text{Domain / Singularity Audit}
+\to\text{Invariant Check}
+\end{gathered}}
+\]
+
+\begin{enumerate}
+  \item \kw{Field Type / Carrier}：标量场配长度/面积，向量场配切向位移/法向面积；
+  \item \kw{Orientation / Parametrization}：确认曲线方向、曲面法向、边界右手关系；
+  \item \kw{Microelement}：分别写 $ds,dS,d\mathbf r,d\mathbf S$，不可混用；
+  \item \kw{Direct or Boundary Theorem}：比较参数化、投影、保守场和三大定理；
+  \item \kw{Domain / Singularity Audit}：检查闭合、单连通、光滑性和内部奇点；
+  \item \kw{Invariant Check}：反向、换面、量纲、对称和简单场值必须自洽。
+\end{enumerate}
+
+\begin{corebox}{四类积分不是四套孤立公式}
+\[
+\boxed{\begin{array}{ccc}
+\toprule
+&\text{曲线}&\text{曲面}\\ \midrule
+\text{标量场}&\displaystyle\int_L f\,ds&\displaystyle\iint_\Sigma f\,dS\\[5pt]
+\text{向量场}&\displaystyle\int_L\mathbf F\cdot d\mathbf r&\displaystyle\iint_\Sigma\mathbf F\cdot d\mathbf S\\
+\bottomrule
+\end{array}}
+\]
+第一型积分只累积无向密度；第二型积分从向量场提取切向或法向分量，因此反向会变号。
+\end{corebox}
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.58cm and 0.58cm,
+  box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.1cm,minimum height=1.0cm,align=center,fill=soft,font=\small},
+  arr/.style={-{Latex[length=2mm]},thick,draw=deep}
+]
+\node[box] (a) {场与对象\\标量/向量 · 线/面};
+\node[box,right=of a] (b) {定向与参数\\切向/法向/边界};
+\node[box,right=of b] (c) {微元\\$ds,dS,d\mathbf r,d\mathbf S$};
+\node[box,below=of c] (d) {直接计算\\代入/投影/对称};
+\node[box,left=of d] (e) {边界转换\\Green/Stokes/Gauss};
+\node[box,left=of e] (f) {资格与复核\\奇点/拓扑/符号};
+\draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d);
+\draw[arr] (d)--(e); \draw[arr] (e)--(f);
+\end{tikzpicture}
+\end{center}
+
+\section{第一型：标量密度乘无向几何微元}
+
+若曲线参数化为 $\mathbf r(t)$，则
+\[
+ds=\lVert\mathbf r'(t)\rVert\,dt,
+\qquad
+\int_L f\,ds=\int_\alpha^\beta f(\mathbf r(t))\lVert\mathbf r'(t)\rVert\,dt.
+\]
+弧长因子非负，所以反向参数化不改变第一型积分。
+
+若曲面参数化为 $\mathbf r(u,v)$，则
+\[
+dS=\lVert\mathbf r_u\times\mathbf r_v\rVert\,du\,dv,
+\qquad
+\iint_\Sigma f\,dS
+=\iint_D f(\mathbf r)\lVert\mathbf r_u\times\mathbf r_v\rVert\,du\,dv.
+\]
+显式曲面 $z=z(x,y)$ 的无向面积元为
+\[
+dS=\sqrt{1+z_x^2+z_y^2}\,dx\,dy.
+\]
+曲面方程上的恒等式可以化简 $f$，但不能把 $dS$ 改写成 $dx\,dy$ 而漏掉斜率因子。
+
+\begin{examplebox}{先代曲面方程，再决定微元}
+球面 $x^2+y^2+z^2=R^2$ 上，
+\[
+\iint_\Sigma(x^2+y^2+z^2)\,dS
+=R^2\operatorname{Area}(\Sigma)=4\pi R^4.
+\]
+同一方程若出现在第二型积分中，系数仍可代入，但有向微元不能因此变成 $dS$。
+\end{examplebox}
+
+\section{第二型曲线：向量场乘有向位移}
+
+设 $\mathbf F=(P,Q,R)$，
+\[
+\boxed{\int_L\mathbf F\cdot d\mathbf r
+=\int_L P\,dx+Q\,dy+R\,dz.}
+\]
+参数化方向必须与题设方向一致：
+\[
+\int_L\mathbf F\cdot d\mathbf r
+=\int_\alpha^\beta\mathbf F(\mathbf r(t))\cdot\mathbf r'(t)\,dt.
+\]
+反向曲线整体变号。参数化时 $x,y,z$ 与 $dx,dy,dz$ 必须同步替换；只代坐标而漏微分，是第二型曲线的首个典型错误。
+
+若 $\mathbf F=\nabla\phi$，则
+\[
+\boxed{\int_A^B\mathbf F\cdot d\mathbf r=\phi(B)-\phi(A)}
+\]
+与路径无关。判断无旋能否升级为保守，还需检查定义域是否单连通。
+
+\section{第二型曲面：向量场乘有向面积}
+
+\[
+\boxed{\iint_\Sigma\mathbf F\cdot d\mathbf S
+=\iint_\Sigma P\,dy\,dz+Q\,dz\,dx+R\,dx\,dy.}
+\]
+参数曲面定向由 $\mathbf r_u\times\mathbf r_v$ 决定：
+\[
+d\mathbf S=(\mathbf r_u\times\mathbf r_v)\,du\,dv.
+\]
+交换参数次序会反转叉积与通量符号。
+
+若 $z=z(x,y)$，上侧非单位法向量为 $(-z_x,-z_y,1)$，故
+\[
+\boxed{
+\iint_\Sigma\mathbf F\cdot d\mathbf S
+=\iint_D\bigl(-Pz_x-Qz_y+R\bigr)\,dx\,dy.}
+\]
+下侧整体反号；封闭曲面则以外法向为正，内向结果加负号。
+
+\begin{warnbox}{有向投影不是普通面积}
+$dy\,dz,dz\,dx,dx\,dy$ 是带方向的投影面积微元。一般法向量不能直接与任意坐标平面微元相乘；必须使用与投影/参数化匹配的有向面积向量。
+\end{warnbox}
+
+\section{对称性：整体微元的符号先于奇偶口诀}
+
+第一型积分只需检查区域/曲面和标量密度的对称；第二型积分还必须检查定向和微元在对称变换下的符号。最稳妥的做法是把参数化后的完整 integrand 当成一个整体变换，而不是只看 $P,Q,R$ 的表面奇偶。
+
+关于原点的封闭曲面对第二型面积分，外法向也同时反向；因此“奇倍、偶零”必须以整体变换验证，不能把平面反射的对角/非对角表格直接移植。
+
+\section{三大定理：内部微分量与边界积分}
+
+三大定理共享同一结构：
+\[
+\boxed{\text{区域内部的微分量累积}=\text{区域边界上的积分}.}
+\]
+
+\subsection{Green：平面区域与闭曲线}
+
+若 $D$ 有界、边界分片光滑且取正向（外边界逆时针、孔边界顺时针），$P,Q\in C^1$，则
+\[
+\boxed{\oint_{\partial D}P\,dx+Q\,dy
+=\iint_D(Q_x-P_y)\,dA,}
+\]
+\[
+\boxed{\oint_{\partial D}P\,dy-Q\,dx
+=\iint_D(P_x+Q_y)\,dA.}
+\]
+第一式是环流/二维旋度，第二式是平面通量/二维散度。非闭曲线可补线；有孔或奇点必须挖洞并保留内边界方向。
+
+\subsection{Stokes：定向曲面与空间边界曲线}
+
+若 $L=\partial\Sigma$，曲线方向与曲面法向满足右手定则，且场在包含曲面的邻域内 $C^1$，则
+\[
+\boxed{\oint_L\mathbf F\cdot d\mathbf r
+=\iint_\Sigma(\nabla\times\mathbf F)\cdot d\mathbf S.}
+\]
+同一边界的两张曲面在资格满足时可以互换，优先选投影简单或能补面的那一张。曲线不是完整边界、定向不协调或场穿过奇点时不能直接使用。
+
+\subsection{Gauss：体区域与封闭曲面}
+
+若 $\Sigma=\partial\Omega$ 为封闭分片光滑曲面，取外法向，$\mathbf F\in C^1$ 覆盖整个体区域，则
+\[
+\boxed{\iint_{\partial\Omega}\mathbf F\cdot d\mathbf S
+=\iiint_\Omega\nabla\cdot\mathbf F\,dV.}
+\]
+开曲面可补面；内部奇点要挖去小球并计算补偿通量。$\nabla\cdot\mathbf F=0$ 只控制无奇点区域的封闭总通量，不代表任意开曲面通量为零。
+
+\begin{methodbox}{定理选择的最短路}
+边界是平面闭曲线，先查 Green；是空间闭曲线，先查 Stokes；是封闭曲面，先查 Gauss。随后依次过“定向、光滑性、定义域奇点、边界完整性”四道资格门；任一失败就回到直接参数化/投影或补线/补面。
+\end{methodbox}
+
+\section{贯穿母例：把复杂边界换成简单对象}
+
+\begin{examplebox}{球面的外向通量}
+对半径 $R$ 球面和 $\mathbf F=(x,y,z)$，外法向满足 $\widehat{\mathbf n}=(x,y,z)/R$，所以 $\mathbf F\cdot\widehat{\mathbf n}=R$，
+\[
+\iint_\Sigma\mathbf F\cdot d\mathbf S=4\pi R^3.
+\]
+也可用 Gauss：$\nabla\cdot\mathbf F=3$，体积为 $4\pi R^3/3$。
+这里“场 $\times$ 载体 $\times$ 定向”依次固定为向量场、封闭球面和外法向；直接法与 Gauss 法给出同一结果，且量纲为长度三次。若把球面当成无向面积元，方向信息会在第一步丢失。
+\end{examplebox}
+
+\begin{examplebox}{穿孔区域阻断“无旋即保守”}
+在 $\mathbb R^2\setminus\{0\}$ 上，
+\[
+\mathbf F=\left(-\frac y{x^2+y^2},\frac x{x^2+y^2}\right)
+\]
+局部旋度为零，但单位圆逆时针环流为 $2\pi$。奇点和非单连通性共同阻断全局势函数；挖洞不是技术补丁，而是定理资格的核心。
+\end{examplebox}
+
+\section{物理量与结果检查}
+
+第一型曲线/曲面积分可建模线质量、面质量、质心与形心；第二型曲线是变力做功/环流，第二型曲面是通量。检查时至少确认：
+\begin{itemize}
+  \item 第一型结果不随反向改变，第二型结果反向变号；
+  \item 通量、做功和质量的量纲与密度/场的定义一致；
+  \item 对称对象的质心落在对称元素上；
+  \item 闭曲线/曲面换表示后的结果与直接法一致。
+\end{itemize}
+
+\section{专题执行协议}
+\begin{enumerate}
+  \item \kw{Classify}：判断标量/向量、曲线/曲面、第一型/第二型；
+  \item \kw{Orient}：标注曲线方向、曲面侧向、边界右手关系；
+  \item \kw{Measure}：写清 $ds,dS,d\mathbf r,d\mathbf S$，不可跨类型替换；
+  \item \kw{Qualify}：检查闭合、单连通、$C^1$、奇点和边界完整性；
+  \item \kw{Choose}：比较直接参数化、投影、势函数、补线/补面和三大定理；
+  \item \kw{Compute}：同步代入坐标和微元，按方向保留符号；
+  \item \kw{Verify}：反向、对称、量纲、简单场和换面不变量复核。
+\end{enumerate}
+
+\section{高频失败路径：第一次偏离发生在哪里？}
+\begin{itemize}
+  \item 把 $ds,dS$ 与 $dx,dy,dz,d\mathbf S$ 混成同一种微元；
+  \item 参数化只代坐标，不同步代换微分或起终点方向；
+  \item 图形曲面通量漏掉上/下侧或外/内侧符号；
+  \item 只看系数奇偶，不看定向和完整有向微元；
+  \item 无旋场直接宣布保守，漏查穿孔区域；
+  \item Green 公式外/内边界方向相同，或开曲线补线方向错误；
+  \item Stokes 曲线不是完整边界、右手方向不协调或换曲面穿过奇点；
+  \item Gauss 对开曲面直接使用，或忽略封闭体内奇点；
+  \item 看到复杂公式就直接参数化，漏掉势函数、投影或三大定理；
+  \item 把梯度、散度、旋度的局部解释升级为未经资格审计的全局结论。
+\end{itemize}
+
+\section{传统章节与 Source Corpus 映射}
+\begin{longtable}{L{2.75cm}L{5.15cm}L{\dimexpr\linewidth-7.90cm\relax}}
+\toprule
+\textbf{Source / 传统内容} & \textbf{进入本册} & \textbf{分流与拒绝复制}\\
+\midrule
+II-05 第一型曲线/曲面 & 标量密度、无向微元、参数化、投影、质心 & 无向面积体积接口调用 Topic08\\
+II-06 第二型曲线 & 切向位移、方向、势函数、Green/Stokes 选择 & 线代内积统一解释归 B00\\
+II-07 第二型曲面 & 法向面积、投影、外/内侧、Gauss & 一般微分形式不进入主干\\
+II-08 统一框架 & 四类积分矩阵、微元不可混换、方法决策 & 作为 Topic09 组织骨架\\
+II-08.1 梯度/散度/旋度 & 局部场读法与微分恒等式 & PDE/流形拓展不进入主干\\
+II-08.1 保守场/拓扑 & 单连通资格、穿孔反例、路径无关 & 一般同调理论只留边界说明\\
+II-08.1 Green & 环流/通量、补线、挖洞、边界方向 & 二重积分计算调用 Topic08\\
+II-08.1 Stokes & 旋度通量、换面不换边界、右手定则 & 曲面参数化机制保留接口\\
+II-08.1 Gauss & 封闭通量、补面、挖洞与源汇 & 三重积分计算调用 Topic08\\
+\bottomrule
+\end{longtable}
+
+\section{一页压缩：忘掉公式后怎样重建？}
+\begin{corebox}{一句话}
+先问“什么场乘什么微元”，再问“方向由谁规定”；能否换成边界定理，取决于闭合、正则、单连通和奇点资格。第一型看无向长度/面积，第二型看切向/法向分量，Green、Stokes、Gauss 都把内部微分量转换成边界积分。
+\end{corebox}
+
+\subsection{四个重建公式}
+\[
+\int_L f\,ds=\int f(\mathbf r(t))\lVert\mathbf r'(t)\rVert\,dt,
+\qquad
+\int_L\mathbf F\cdot d\mathbf r=\int\mathbf F(\mathbf r(t))\cdot\mathbf r'(t)\,dt,
+\]
+\[
+\iint_\Sigma f\,dS=\iint f(\mathbf r)\lVert\mathbf r_u\times\mathbf r_v\rVert\,du\,dv,
+\qquad
+\iint_\Sigma\mathbf F\cdot d\mathbf S=\iint\mathbf F(\mathbf r)\cdot(\mathbf r_u\times\mathbf r_v)\,du\,dv.
+\]
+\[
+\oint_{\partial D}\text{边界形式}=\iint_D\text{二维微分量},
+\qquad
+\oint_{\partial\Sigma}\mathbf F\cdot d\mathbf r=\iint_\Sigma(\nabla\times\mathbf F)\cdot d\mathbf S,
+\]
+\[
+\iint_{\partial\Omega}\mathbf F\cdot d\mathbf S=\iiint_\Omega\nabla\cdot\mathbf F\,dV.
+\]
+
+\subsection{重建问题}
+\begin{enumerate}
+  \item 当前是标量密度还是向量场？几何载体是线还是面？
+  \item 微元是无向长度/面积，还是有向位移/面积？
+  \item 曲线/曲面方向、边界方向和法向是否满足同一右手协议？
+  \item 能否用曲面方程直接化简系数，但仍保留正确微元？
+  \item 是平面闭曲线、空间闭曲线还是封闭曲面？
+  \item 场是否在相关区域 $C^1$，定义域是否单连通，内部是否有奇点？
+  \item Green、Stokes、Gauss 中哪个能把边界换成更简单对象？
+  \item 结果能否通过反向、对称、量纲和简单场复核？
+  \item 是否已经越界到 Topic08、Topic07 或 B00？
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\appendix
+\section{定向积分 Coverage 锚点}
+\begin{center}
+\begin{tabular}{L{2.55cm}L{5.15cm}L{\dimexpr\linewidth-7.70cm\relax}}
+\toprule
+层级/对象 & 核心资格 & 输出\\
+\midrule
+第一型曲线/曲面 & 标量场 + 无向 $ds/dS$ & 长度/面积/质量\\
+第二型曲线 & 向量场 + 有向 $d\mathbf r$ & 做功/环流\\
+第二型曲面 & 向量场 + 有向 $d\mathbf S$ & 通量\\
+保守场 & 单值势函数/单连通资格 & 端点差\\
+Green/Stokes & 闭边界、正则性、定向协调 & 二维旋度/旋度通量\\
+Gauss & 封闭边界、外向、无内部奇点 & 体内散度总量\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+本册覆盖四类曲线/曲面积分、参数化与投影、保守场、Green、Stokes、Gauss、定向、补线/补面/挖洞和结果审计；Topic08 接收二重/三重积分，Topic07 提供梯度局部模型，B00 提供内积/投影统一解释。
+
+\end{document}

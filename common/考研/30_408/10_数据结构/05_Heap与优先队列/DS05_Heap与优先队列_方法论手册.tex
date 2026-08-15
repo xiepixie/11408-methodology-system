@@ -1,0 +1,71 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\handbooksetup{DS-05 Heap 与优先队列}{408 · 数据结构 DS-05}{Partial Order · Repair · Priority}
+\begin{document}
+\handbooktitle{Heap 与优先队列}{不维护完全有序，怎样持续取得当前极值}{408 · 数据结构 Topic DS-05}
+
+\begin{corebox}{母问题：为什么只维护局部有序就够了？}
+堆的生成链是
+\[
+\text{Priority Workload}\to\text{Complete-Tree Layout}\to\text{Root Extremum}\to\text{Local Repair}\to\text{Heap Invariant}\to\text{Cost}.
+\]
+最小堆只保证每个父节点不大于孩子，因此根是全局最小值，但任意两个非祖先节点没有排序承诺。优先队列需要的正是“看极值、删极值、加入新候选”，而不是随时输出完整有序序列。
+\end{corebox}
+\begin{methodbox}{本册定位与 Owner 边界}
+\begin{itemize}
+\item \kw{Owns：}完全二叉树数组布局、父子下标、上滤、下滤、建堆、插入、删除极值与优先队列接口。
+\item \kw{Uses：}Atlas Foundation 的操作成本向量；DS04 Huffman 和 DS08 图算法只调用优先队列接口。
+\item \kw{Stops：}一般树遍历归 DS04；heap sort 的整体过程由 DS11 组织；Prim/Dijkstra 的目标不变量归 DS08。
+\end{itemize}
+\end{methodbox}
+\tableofcontents\newpage
+
+\section{表示与核心不变量}
+完全二叉树按层序放入数组。零基下标下，节点 $i$ 的父节点为 $(i-1)/2$，孩子为 $2i+1,2i+2$；越界孩子表示不存在。最小堆不变量为
+\[
+\forall i>0,\quad A[\operatorname{parent}(i)]\le A[i].
+\]
+它只承诺根极值；把堆误读成有序数组，是许多“第二小元素/任意两元素比较”错误的来源。
+\begin{examplebox}{局部有序不等于全局有序}
+数组 $[2,5,3,9,7,8]$ 是最小堆，但 $5$ 与 $3$ 的相对位置没有排序意义。取最小值只看根，删除根后把末元素搬到根并下滤，结构仍保持完全树形。
+\end{examplebox}
+
+\section{四种状态转移}
+插入先把新元素放在数组末尾，再与父节点比较并上滤；每次交换都使元素向根移动一层。删除极值先保存根，把末元素搬到根并缩短长度，再与较小孩子交换并下滤。两种修复都只沿一条根叶路径进行，路径长度为 $h=\Theta(\log n)$。
+
+建堆不应逐个调用插入来默认获得最优界。对最后一个非叶节点向前执行下滤，每个子树的高度不同，总成本为 $O(n)$；逐个插入则为 $O(n\log n)$。这两个结论的前提不同，不能只背“堆是 $\log n$”。
+
+\section{优先队列与外部目标}
+优先队列抽象为 \code{push}、\code{top}、\code{pop}、\code{empty}。Huffman 需要反复取两个最小权值，Dijkstra/Prim 需要取当前最小候选；它们不应复制下滤代码。若优先级相等，是否稳定需要额外的序号字段，堆本身不自动提供稳定性。
+
+\section{代码与测试证据}
+完整实现位于 \codepath{code/ds05_heap.hpp}，测试位于 \codepath{code/ds05_heap_test.cpp}。代码把“末尾插入—上滤”和“根替换—下滤”分成两个可检查的状态转移。
+\lstinputlisting[language=C++,firstline=14,lastline=84,firstnumber=14,numbers=left,caption={堆布局、上滤、下滤与极值接口}]{30_408/10_数据结构/05_Heap与优先队列/code/ds05_heap.hpp}
+\lstinputlisting[language=C++,firstline=12,lastline=48,firstnumber=12,numbers=left,caption={空堆、单元素与重复优先级测试}]{30_408/10_数据结构/05_Heap与优先队列/code/ds05_heap_test.cpp}
+\begin{lstlisting}[language=bash]
+clang++ -std=c++17 -Wall -Wextra -Werror -pedantic code/ds05_heap_test.cpp -o /tmp/ds05_test
+/tmp/ds05_test
+\end{lstlisting}
+
+\section{复杂度、边界与概念分离}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.6cm}C{1.8cm}C{1.8cm}YY}\toprule
+操作 & 时间 & 额外空间 & 不变量动作 & 边界\\\midrule
+\code{top} & $O(1)$ & $O(1)$ & 只读根 & 空堆不可取值\\
+\code{push/pop} & $O(\log n)$ & $O(1)$ & 上滤/下滤 & 单元素删除\\
+建堆 & $O(n)$ & $O(1)$ & 自底向上 & 空输入\\
+\bottomrule\end{tabularx}\end{center}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.3cm}C{.35cm}L{2.3cm}YY}\toprule
+概念 A&$\neq$&概念 B&判据&错因\\\midrule
+堆序&$\neq$&完全有序&只比较父子&错误推出任意排名\\
+建堆&$\neq$&逐个插入&自底向上 vs 重复上滤&误报复杂度\\
+优先队列&$\neq$&堆实现&接口 vs 具体表示&把调用方绑死\\
+\bottomrule\end{tabularx}\end{center}
+
+\section{做题控制协议}
+先问目标是否只需当前极值；若是，选择优先队列。再画完全树索引，插入看“末尾后上滤”，删除看“末尾补根后下滤”。每次交换后检查父子关系和数组边界；若题目需要稳定次序、任意第 $k$ 小或完整排序，停止把堆当万能索引，转交 DS09/DS11。
+\begin{corebox}{压缩复原}
+忘记代码时复原五问：根承诺什么？新元素从哪里进入？删除后谁补根？冲突孩子选哪一个？修复结束条件是什么？答案分别恢复根极值、数组末尾、末元素、较小孩子和父子关系成立。
+\end{corebox}
+\end{document}

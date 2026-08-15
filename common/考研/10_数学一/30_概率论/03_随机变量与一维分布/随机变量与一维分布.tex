@@ -1,0 +1,499 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor,fancyhdr,hyperref,microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={随机变量与一维分布}}
+\pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{数学一 · 概率统计 Topic 03}}
+\rhead{\small\color{deep}随机变量 · CDF · 分布表示}\cfoot{\small\thepage}\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\title{\vspace{-1.1cm}\textbf{随机变量与一维分布}\\[0.4em]\large 把随机世界映射到数轴}
+\author{数学一 · 概率统计 Topic 03}\date{}
+
+\begin{document}\maketitle
+
+\begin{corebox}{母问题：怎样选择一个数值观察，并把底层概率搬运到数轴上？}
+随机变量是在样本点上定义的观察函数：
+\[
+\boxed{X:\Omega\to\mathbb R},\qquad P_X(B)=P(X\in B)=P\bigl(X^{-1}(B)\bigr).
+\]
+随机性来自未知的 $\omega$；$X$ 决定保留什么信息；分布描述概率质量在观察值空间如何落下。
+\end{corebox}
+
+\section{本册负责什么}
+\begin{itemize}
+\item \kw{Owns：}随机变量、实现值、分布、CDF、PMF、具有密度的一维分布及常见分布的生成语义。
+\item \kw{Uses：}Topic 01 的概率空间与事件原像。
+\item \kw{Does not own：}联合依赖、条件密度、变量变换的多维 Jacobian、数字特征和抽样分布。
+\end{itemize}
+
+\section{对象与表示：$X$、$x$ 与分布不是同一层}
+随机变量把结果映射为实数。数轴上的集合必须取原像才能回到原概率空间：
+\[
+\{X\in B\}=X^{-1}(B)=\{\omega:X(\omega)\in B\}.
+\]
+一次观察后得到的 $x$ 是实现值；抽样前的 $X$ 仍是随机对象；$P_X$ 或 $F_X$ 是由 $X$ 诱导的分布规律。
+
+\begin{methodbox}{同一 Bernoulli 序列可以生成不同观察}
+对独立成功/失败序列，
+\[
+X_i=\mathbf1_{\{\text{第 }i\text{ 次成功}\}},\quad S_n=\sum_{i=1}^nX_i,
+\]
+以及“首次成功的试验次数” $T$，分别产生 Bernoulli、Binomial 与 Geometric 观察。分布标签由观察函数和生成条件共同决定。
+\end{methodbox}
+
+\section{CDF：所有实随机变量的共同表示}
+\[
+\boxed{F_X(x)=P(X\le x)}.
+\]
+分布函数必须单调不减、右连续，并满足
+\[
+F_X(-\infty)=0,\qquad F_X(+\infty)=1.
+\]
+令 $F_X(a^-)=P(X<a)$，则
+\[
+P(X=a)=F_X(a)-F_X(a^-),
+\]
+\[
+\begin{aligned}
+P(a<X\le b)&=F_X(b)-F_X(a),\\
+P(a\le X\le b)&=F_X(b)-F_X(a^-),\\
+P(a<X<b)&=F_X(b^-)-F_X(a).
+\end{aligned}
+\]
+
+\subsection{PMF 与 PDF 是分层表示}
+离散型的概率质量函数满足
+\[
+p_X(x_k)=P(X=x_k)\ge0,\qquad \sum_kp_X(x_k)=1,
+\]
+且 $F_X(x)=\sum_{x_k\le x}p_X(x_k)$。CDF 跳跃高度就是点质量。
+
+若存在密度 $f_X$，则
+\[
+F_X(x)=\int_{-\infty}^{x}f_X(t)\,dt,\quad f_X\ge0,\quad \int_{-\infty}^{\infty}f_X(t)\,dt=1,
+\]
+\[
+P(a<X\le b)=\int_a^bf_X(x)\,dx,\qquad P(X=c)=0.
+\]
+
+\begin{warnbox}{密度不是点概率}
+$f_X(x)$ 是单位长度上的概率强度，可以大于 $1$；概率是区间面积。CDF 连续只能说明没有点质量，不能单独证明存在通常意义下的密度；混合分布可同时含跳跃和连续部分。
+\end{warnbox}
+
+\begin{methodbox}{混合分布的统一拆层模板}
+若 $X$ 同时含离散原子与连续质量，统一写成
+\[
+F_X(x)=\sum_{a_k\le x}p_k+\int_{-\infty}^{x}f_c(t)\,dt,
+\qquad
+\sum_kp_k+\int_{-\infty}^{\infty}f_c(t)\,dt=1.
+\]
+实际计算按四步执行：
+\begin{enumerate}
+  \item 先列出所有生成层及其原子位置，检查 $F(a_k)-F(a_k^-)=p_k$；
+  \item 对没有原子的区间，对 $F$ 求导得到连续部分 $f_c$，不把跳跃处的导数当作密度；
+  \item 区间概率按左极限规则处理，含端点时显式判断是否包含原子；
+  \item 最后分别检查原子质量和连续质量的总和为 $1$，并检查 CDF 的单调性与右连续性。
+\end{enumerate}
+例如离散指标 $Y\in\{0,1\}$ 与连续 $X$ 独立、$P(Y=0)=P(Y=1)=1/2$，而 $Z=XY$ 时，$Y=0$ 层在 $z=0$ 产生质量 $1/2$，$Y=1$ 层贡献 $X$ 的连续分布；不能只写连续层的密度而遗漏原子。
+\end{methodbox}
+
+\begin{examplebox}{真题双闸门：先验收 CDF，再读取跳点}
+\textbf{2002 Q五：}若 $F_1,F_2$ 是任意两个分布函数，$F_1F_2$ 必为分布函数。证明不是“两个函数相乘看起来合理”，而是逐项验收：两者非负且单调不减，所以乘积单调不减；两者右连续，乘积仍右连续；两端极限分别为 $0$ 与 $1$。更有生成性解释：若 $X_1,X_2$ 独立，则
+\[
+P(\max\{X_1,X_2\}\le x)=P(X_1\le x,X_2\le x)=F_1(x)F_2(x).
+\]
+反例也要按对象验收：$F_1+F_2$ 的右端极限为 $2$，$f_1+f_2$ 的总积分为 $2$，而 $f_1f_2$ 一般没有固定的归一化常数，因此不能必然是 CDF 或 PDF。
+
+\textbf{2010 Q七：}给定
+\[
+F(x)=\begin{cases}0,&x<0,\\[1pt]1/2,&0\le x<1,\\[1pt]1-e^{-x},&x\ge1,\end{cases}
+\]
+点概率必须读取跳跃而不是读取右侧函数值：
+\[
+P(X=1)=F(1)-F(1^-)=1-e^{-1}-\frac12=\frac12-e^{-1}.
+\]
+同理 $P(X=0)=F(0)-F(0^-)=1/2$。\kw{模型句：}CDF 是总账本；先检查它是不是合法账本，再用“右值减左值”提取原子。只有确认没有跳点的区间，才可以对 CDF 求导得到连续密度。
+\end{examplebox}
+
+\begin{methodbox}{变换后的质量账本：常值纤维、连续纤维、多原像}
+对分段函数 $Y=g(X)$，先把原支撑按 $g$ 的行为分成三类：
+\begin{itemize}
+  \item $g$ 在一段上为常数：该段的全部概率压到一个点，形成原子；
+  \item $g$ 在一段上单调且非恒定：该段贡献连续质量，按原像和 Jacobian 计算；
+  \item 同一 $y$ 有多个非恒定原像：各分支密度相加，但不能把不同分支的质量重复计入。
+\end{itemize}
+因此“输入连续”不保证输出没有原子，“变换分段”也不等于每段都产生原子。最后必须分别回检原子质量、连续密度积分和总质量。
+\end{methodbox}
+
+\begin{examplebox}{2013 真题：两个原子与一段连续质量必须同时交付}
+设 $f_X(x)=x^2/9$（$0<x<3$），并令
+\[
+Y=\begin{cases}
+2,&X\le1,\\
+X,&1<X<2,\\
+1,&X\ge2.
+\end{cases}
+\]
+先按变换纤维记账：
+\[
+P(Y=1)=P(X\ge2)=\frac{19}{27},\qquad
+P(Y=2)=P(X\le1)=\frac1{27},
+\]
+中段恒等映射保留连续密度 $f_{Y,c}(y)=y^2/9$（$1<y<2$），其质量为 $7/27$。因此完整 CDF 必须写成
+\[
+F_Y(y)=\begin{cases}
+0,&y<1,\\
+\displaystyle\frac{y^3+18}{27},&1\le y<2,\\
+1,&y\ge2,
+\end{cases}
+\]
+其中 $F_Y(1)=19/27$ 已包含 $Y=1$ 的原子，而在 $y=2$ 处从 $26/27$ 跳到 $1$，跳跃高度为 $1/27$。更稳妥的写法是同时标注“原子 + 连续密度”，避免把第一段的常值误看成连续 CDF。
+
+若只求 $P(X\le Y)$，不必再构造联合分布：在 $X\le1$ 层有 $Y=2$，在 $1<X<2$ 层有 $Y=X$，而 $X\ge2$ 层有 $Y=1<X$，所以
+\[
+P(X\le Y)=P(X<2)=\int_0^2\frac{x^2}{9}\,dx=\frac8{27}.
+\]
+这道题的停止条件是：完整 CDF 问题在“两个跳跃、连续段密度、总质量为 $1$”闭合后停止；第二问只需按变换分支判断事件，不倒回重求完整联合密度。
+\end{examplebox}
+
+\begin{examplebox}{1993 真题：对称与零协方差都不能制造独立性}
+设
+\[
+f_X(x)=\frac12e^{-|x|},\qquad x\in\mathbb R,
+\]
+求 $E(X)$、$D(X)$、$\operatorname{Cov}(X,|X|)$ 并判断 $X$ 与 $|X|$ 是否独立。
+对称性给出 $E(X)=0$，而
+\[
+E(X^2)=2\int_0^\infty x^2e^{-x}\,dx=2,
+\qquad D(X)=2.
+\]
+因为 $x|x|e^{-|x|}/2$ 是奇函数，
+\[
+E[X|X|]=0,\qquad \operatorname{Cov}(X,|X|)=0.
+\]
+但 $Y=|X|$ 是 $X$ 的非恒定函数，故不能独立。取同一事件
+\[
+B=\{|X|\le1\}=\{Y\le1\},\qquad P(B)=1-e^{-1}\in(0,1),
+\]
+则 $P(B\cap B)=P(B)\ne P(B)^2$，直接否定独立。这里的得分链是：\emph{先查函数依赖，再算协方差；不相关只是二阶信息，不是联合结构。}
+\end{examplebox}
+
+\section{分布类型、端点与分位数}
+
+端点规则已经由上一节的 CDF 左极限统一处理。对 $p\in(0,1)$，分位数是 CDF 的广义逆：
+\[
+\boxed{x_p=\inf\{x:F_X(x)\ge p\}},
+\qquad F_X(x_p^-)\le p\le F_X(x_p).
+\]
+
+这一定义同时覆盖离散、连续与混合分布；离散分位数不要求 $F_X(x_p)=p$。端点有原子时，必须保留 $F_X(x_p^-)$ 与 $F_X(x_p)$ 的夹逼，不能用连续型习惯替代。
+
+\section{常见分布：按生成机制识别}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{L{3.4cm}L{3.4cm}Y}
+\toprule
+生成机制 & 分布 & 必须检查的条件 \\
+\midrule
+一次成败指标 & $\operatorname{Bern}(p)$ & 两种结果 \\
+固定 $n$ 次独立成功数 & $\operatorname{Bin}(n,p)$ & 独立、同一 $p$、次数固定 \\
+首次成功的试验序号 & $\operatorname{Geom}(p)$ & 独立重复且 $p$ 恒定 \\
+第 $r$ 次成功的试验序号 & $\operatorname{NB}(r,p)$ & 等待次数的叠加 \\
+窗口内稀疏计数 & $\operatorname{Pois}(\lambda)$ & 稳定速率计数模型 \\
+有限总体不放回计数 & $\operatorname{Hyp}(N,M,n)$ & 总体组成固定、不放回 \\
+无偏位置区间 & $U(a,b)$ & 概率按长度均匀 \\
+无记忆等待时间 & $\operatorname{Exp}(\lambda)$ & 连续无记忆性 \\
+钟形扰动 & $N(\mu,\sigma^2)$ & 正态机制或渐近近似 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+典型质量函数为
+\[
+P_{\operatorname{Bin}}(X=k)=\binom nkp^k(1-p)^{n-k},\quad
+P_{\operatorname{Pois}}(X=k)=e^{-\lambda}\frac{\lambda^k}{k!},
+\]
+\[
+P_{\operatorname{Geom}}(X=k)=(1-p)^{k-1}p,\quad k\ge1.
+\]
+\begin{methodbox}{常见 PMF 从生成机制长出来}
+二项分布中，指定的 $k$ 次成功路径质量为 $p^k(1-p)^{n-k}$，再乘成功位置的选择数 $\binom nk$。几何分布要求前 $k-1$ 次失败且第 $k$ 次成功，所以直接得到 $(1-p)^{k-1}p$。Poisson 质量函数可由稀疏二项极限复原：令 $p_n=\lambda/n$，固定 $k$，则
+\[
+\binom nk\left(\frac\lambda n\right)^k
+\left(1-\frac\lambda n\right)^{n-k}
+\longrightarrow e^{-\lambda}\frac{\lambda^k}{k!}.
+\]
+因此分布公式必须和“固定次数成功数、首次成功、稀疏计数”三种生成条件绑定；条件变化后不能只保留同一个 PMF 外形。
+\end{methodbox}
+
+\begin{methodbox}{计数机制三分流：二项、多项、超几何}
+每次试验只有“目标/非目标”两类且独立重复，得到二项分布；每次试验有 $r$ 个互斥结果且独立重复，计数向量 $(N_1,\ldots,N_r)$ 服从多项分布：
+\[
+P(N_1=n_1,\ldots,N_r=n_r)=\frac{n!}{\prod_jn_j!}\prod_{j=1}^rp_j^{n_j},\qquad \sum_jn_j=n.
+\]
+同一次试验的指标互斥，故 $\operatorname{Cov}(N_i,N_j)=-np_ip_j$（$i\ne j$）。若改成固定有限总体不放回抽取，才转为超几何；负相关此时来自资源被取走，协方差为有限总体修正后的另一表达式。第一动作永远是辨认“重复试验”还是“有限总体抽样”，而不是先看题目中出现了几个计数变量。
+\end{methodbox}
+常用数字特征接口为
+\[
+\begin{array}{c|c|c}
+\text{分布}&E(X)&\operatorname{Var}(X)\\\hline
+\operatorname{Bern}(p)&p&p(1-p)\\
+\operatorname{Bin}(n,p)&np&np(1-p)\\
+\operatorname{Pois}(\lambda)&\lambda&\lambda\\
+\operatorname{Geom}(p)&1/p&(1-p)/p^2
+\end{array}
+\]
+超几何与二项的差异来自抽样机制；固定次数但不独立不能仅凭关键词套超几何。二项在 $n$ 大、$p$ 小且 $np\approx\lambda$ 时可作 Poisson 近似。
+
+\begin{methodbox}{不放回计数：先数集合，再决定是否近似独立}
+有限总体含 $M$ 个目标、$N-M$ 个非目标，从中不放回抽取 $n$ 个，目标数 $K$ 的质量不是由独立乘积产生，而是由等可能的 $n$ 元子集计数：
+\[
+\boxed{P(K=k)=\frac{\binom{M}{k}\binom{N-M}{n-k}}{\binom{N}{n}}},
+\qquad
+\max(0,n-(N-M))\le k\le\min(n,M).
+\]
+分子先选出 $k$ 个目标和 $n-k$ 个非目标，分母数全部抽样集合；这同时说明支持边界和归一化。单次抽取的指标仍有
+\[
+E(I_j)=M/N=p,
+\]
+但两次不同位置的指标不独立：
+\[
+\operatorname{Cov}(I_i,I_j)= -\frac{p(1-p)}{N-1},\quad i\ne j.
+\]
+因此
+\[
+\operatorname{Var}(K)=np(1-p)\frac{N-n}{N-1},
+\]
+其中最后因子是有限总体修正；只有 $n/N$ 很小，才可把它近似为二项的 $np(1-p)$。看到“抽取若干次”时先问：总体是否固定、是否放回、抽样单位是否独立；若是不放回固定总体，先走超几何计数，不能先套二项再补解释。
+\end{methodbox}
+
+若采用“第 $r$ 次成功所在试验序号”的负二项约定，则
+\[
+P(X=k)=\binom{k-1}{r-1}p^r(1-p)^{k-r},\qquad k=r,r+1,\ldots.
+\]
+若采用“失败次数”约定，支持从 $0$ 开始，参数化必须在题面先固定。二项分布众数由相邻概率比决定：令 $(n+1)p$ 非整数时，众数为 $\lfloor(n+1)p\rfloor$；若 $(n+1)p$ 为整数，则有两个相邻众数 $(n+1)p-1$ 与 $(n+1)p$。不能把均值 $np$ 直接当众数。
+
+均匀、指数、正态的密度与机制分别为
+\[
+f_U(x)=\frac1{b-a}I_{(a,b)}(x),\qquad
+f_E(x)=\lambda e^{-\lambda x}I_{(0,\infty)}(x),
+\]
+\[
+f_N(x)=\frac1{\sqrt{2\pi}\sigma}\exp\left[-\frac{(x-\mu)^2}{2\sigma^2}\right].
+\]
+正态标准化 $Z=(X-\mu)/\sigma\sim N(0,1)$ 只改变位置与尺度，不由此推出原变量或其他变量正态；指数的无记忆性是生成机制，不是所有连续等待时间的默认性质。
+
+\section{最大最小：事件恒等式先于独立乘积}
+
+设 $M_n=\max_iX_i$、$N_n=\min_iX_i$。逐样本点都有
+\[
+\{M_n\le a\}=\bigcap_i\{X_i\le a\},\qquad
+\{N_n>a\}=\bigcap_i\{X_i>a\}.
+\]
+这两个恒等式不需要独立性。一般情形必须使用联合分布；只有 $X_i$ 相互独立时，才可写成
+\[
+F_{M_n}(a)=\prod_iF_{X_i}(a),\qquad
+F_{N_n}(a)=1-\prod_i[1-F_{X_i}(a)].
+\]
+若独立同分布且公共 CDF 为 $F$，则 $F_{M_n}=F^n$、$F_{N_n}=1-(1-F)^n$。因为 $N_n\le M_n$，结果必须满足 $F_{M_n}(a)\le F_{N_n}(a)$。样本顺序统计量的完整密度与联合结构移交 Topic 07。
+
+\section{MGF 与概率积分变换}
+
+若 $M_X(t)=E(e^{tX})$ 在 $0$ 的邻域存在，则
+\[
+M_X^{(n)}(0)=E(X^n),\qquad X\perp Y\Longrightarrow M_{X+Y}(t)=M_X(t)M_Y(t).
+\]
+正态、Bernoulli、二项、Poisson、指数的 MGF 分别为
+\[
+e^{\mu t+\sigma^2t^2/2},\quad 1-p+pe^t,\quad (1-p+pe^t)^n,
+\]
+\[
+\exp[\lambda(e^t-1)],\qquad \frac{\lambda}{\lambda-t}.
+\]
+MGF 可能不存在；不存在时不得强行使用其唯一性。若 $F_X$ 连续，则概率积分变换给出
+\[
+\boxed{U=F_X(X)\sim U(0,1)}.
+\]
+反向地，$F_X^{-1}(U)$ 可生成具有分布函数 $F_X$ 的随机变量；CDF 有跳跃时 $F_X(X)$ 一般不再均匀。
+
+\begin{methodbox}{MGF 与概率积分变换的证据骨架}
+MGF 在 $0$ 的邻域有限时，可以在相应条件下把求导移入期望，得到
+\[
+M_X^{(n)}(0)=E(X^n).
+\]
+若 $X,Y$ 独立，则 $e^{t(X+Y)}=e^{tX}e^{tY}$，乘积期望分解后得到 $M_{X+Y}=M_XM_Y$；没有独立性就不能分解。对连续 CDF，令广义分位数 $x_u=F^{-1}(u)$，连续性给出
+\[
+P(F(X)\le u)=P(X\le x_u)=u,\qquad0<u<1,
+\]
+所以 $F(X)$ 均匀。若 CDF 有跳跃，这一步的等号变为跨越区间，均匀结论随即失效。
+\end{methodbox}
+
+\begin{examplebox}{CDF 作为随机变量：先确认连续性，再拉回原像（2019 Q十四）}
+若 $X$ 的密度为 $f(x)=x/2$（$0<x<2$），则
+\[
+F(x)=\frac{x^2}{4}\quad(0<x<2),\qquad E(X)=\int_0^2x\frac{x}{2}\,dx=\frac43.
+\]
+题目要求
+\[
+P\{F(X)>E(X)-1\}=P\left\{\frac{X^2}{4}>\frac13\right\}.
+\]
+由于 $F$ 在支撑上连续且严格递增，原像为 $X>2/\sqrt3$，因此
+\[
+P\{F(X)>1/3\}=1-F(2/\sqrt3)=\frac23.
+\]
+这与 $F(X)\sim U(0,1)$ 的概率积分变换一致，但解题第一动作仍应是检查 CDF 类型和支撑；若 $F$ 有跳跃，$F(X)$ 一般不均匀，不能直接套同一结论。
+\end{examplebox}
+
+\section{函数变换的路由边界}
+
+若题目把观察从 $X$ 改成 $Y=g(X)$，本册只负责识别：目标对象已经从“一维分布表示”切换为“概率质量在映射下搬运”。完整的 CDF 原像法、多原像密度求和、常值纤维产生点质量以及二维 Jacobian，统一由 Topic 04《联合分布、条件分布与变换》拥有。
+
+这里保留唯一调用接口：先写 $X$ 的支撑集和 $Y$ 的值域，再把 $\{Y\le y\}$ 拉回为 $\{g(X)\le y\}$。一旦需要枚举原像、分段或求 Jacobian，就停止在本册展开并转入 Topic 04，避免形成第二套变量变换机制。
+
+\section{分层计算与密度构造边界}
+
+若 $Y$ 离散，$P(Y=y_k)=p_k$，则对任意事件 $E$，
+\[
+P(E)=\sum_kP(E\mid Y=y_k)p_k.
+\]
+若条件下 $X$ 有密度，
+\[
+P(g(X,Y)<c)=\sum_kp_k\int_{\{x:g(x,y_k)<c\}}f_{X\mid Y=y_k}(x)\,dx.
+\]
+只有 $X,Y$ 独立时才可把条件密度替换为 $f_X$。
+
+若 $f,g$ 都是 PDF，则 $af+bg$ 在 $a,b\ge0,a+b=1$ 时是标准混合密度。仿射变换必须保留归一化因子：
+\[
+Y=aX+b\Longrightarrow f_Y(y)=\frac1{|a|}f_X\left(\frac{y-b}{a}\right).
+\]
+直接写 $f(ax+b)$ 的积分为 $1/|a|$，不自动是 PDF；$f(x)g(x)$ 通常也需除以总积分后才能归一化。
+
+\begin{examplebox}{早期真题：全局单调变换的支持与 Jacobian}
+1988 Q十一中 $f_X(x)=1/[\pi(1+x^2)]$、$Y=1-\sqrt[3]{X}$。由于 $x=(1-y)^3$ 在全实轴上单调，只有一个原像，故
+\[
+f_Y(y)=\frac{3(1-y)^2}{\pi\{1+(1-y)^6\}},\qquad y\in\mathbb R.
+\]
+1995 Q十一中 $X\sim\operatorname{Exp}(1)$、$Y=e^X$，原像 $x=\ln y$ 把支持搬到 $y\ge1$，从而
+\[
+f_Y(y)=e^{-\ln y}\frac1y=\frac1{y^2}I_{[1,\infty)}(y).
+\]
+两题共同说明：先判全局单调性和新支持，再乘 $|dx/dy|$；不能把支持边界留到最后。
+\end{examplebox}
+
+\section{选择与检查协议}
+\begin{enumerate}
+\item 先写观察函数、支持集和目标表示（CDF、PMF、PDF、分位数或单个概率）。
+\item CDF 检查单调、右连续和两端极限；含原子时保留 $F(a^-)$。
+\item 分布识别依据生成机制，不依据单个关键词。
+\item 变换题先求值域和原像；非单调时枚举全部分支；常值纤维时检查点质量。
+\item 使用 MGF、最大最小乘积或正态和公式前，明确存在性与独立性。
+\item 最后检查 PMF 总和、PDF 总积分、概率范围和 $N_n\le M_n$ 导出的 CDF 顺序。
+\end{enumerate}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{L{4.0cm}Y}
+\toprule 错误信号 & 纠偏问题 \\
+\midrule
+把 CDF 当密度 & 当前对象是累计质量还是单位长度强度？ \\
+忽略 $F(a^-)$ & $X=a$ 是否可能有原子？ \\
+只取一个反函数分支 & $g(x)=y$ 在支持集内有几个原像？ \\
+连续输入必有连续输出 & 变换是否含常值区间？ \\
+最大最小公式无条件相乘 & 变量是否相互独立？ \\
+密度值当点概率 & 概率是否真正经过积分？ \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{贯穿母例：圆盘内随机点的距离}
+
+\begin{examplebox}{母例：圆盘内随机点到圆心的距离}
+在半径 $R$ 的圆盘内均匀取点，令 $X$ 为到圆心的距离。
+对 $0\le x < R$，落入半径为 $x$ 的内圆区域的概率为面积比：
+\[
+F_X(x) = P(X \le x) = \frac{\pi x^2}{\pi R^2} = \frac{x^2}{R^2}.
+\]
+因此 $X$ 的累计分布函数与概率密度函数完整表达为：
+\[
+F_X(x) = \begin{cases}
+0, & x < 0, \\
+\frac{x^2}{R^2}, & 0 \le x < R, \\
+1, & x \ge R.
+\end{cases}
+\qquad \implies \qquad
+f_X(x) = \begin{cases}
+\frac{2x}{R^2}, & 0 < x < R, \\
+0, & \text{其它}.
+\end{cases}
+\]
+进而可求其数学期望：
+\[
+E(X) = \int_0^R x \cdot \frac{2x}{R^2} \, dx = \frac{2}{R^2} \left[ \frac{x^3}{3} \right]_0^R = \frac{2}{3} R.
+\]
+该例展示了如何从二次几何测度转化为数轴上的 CDF 及其求导得到连续型密度。
+\end{examplebox}
+
+\section{概念边界：5 列分流判据}
+
+\small
+\begin{longtable}{L{2.8cm}L{2.8cm}L{3.4cm}L{3.2cm}L{2.8cm}}
+\toprule
+\textbf{概念 A} & \textbf{$\ne$} & \textbf{概念 B} & \textbf{真正区别与题目信号} & \textbf{混淆后果}\\
+\midrule
+随机变量 $X$ & $\ne$ & 实现值 $x$ & 抽样前 $X$ 是函数；观察后 $x$ 是实数 & 把统计量的随机性提前消失\\
+随机变量 & $\ne$ & 分布 & 前者是观察函数；后者是概率诱导的分布规律 & 以为同分布变量必是同一对象\\
+CDF & $\ne$ & 密度 & CDF 总存在；密度仅连续型存在 & 对离散或混合分布机械求导\\
+密度值 & $\ne$ & 点概率 & 密度是强度（可 $>1$）；概率是积分面积 & 因 $f(x)>1$ 判定非法\\
+零概率 & $\ne$ & 不可能事件 & 连续型单点概率为零，但点在支撑集中仍可发生 & 错删边界或单点情形\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{一页压缩}
+
+\begin{corebox}{一句话总结}
+\[
+\boxed{\text{随机变量选择怎样观察；分布描述概率质量在观察值空间怎样落下。}}
+\]
+\end{corebox}
+
+\begin{examplebox}{离散层平移仍可能是纯连续：2017 真题}
+若 $X$ 以 $1/2$ 概率取 $0,2$，$Y$ 的密度为 $2y$（$0<y<1$），令 $Z=X+Y$。两层分别平移连续密度，故
+\[
+f_Z(z)=zI_{(0,1)}(z)+(z-2)I_{(2,3)}(z).
+\]
+每层积分均为 $1/2$，且没有原子。判断混合输出类型时，要逐层看变换是否把连续层压成常数，不能因输入含离散变量就直接判定输出含原子。
+\end{examplebox}
+
+\begin{examplebox}{早期真题：CDF 的两侧积分与单调变换（1990/1988）}
+若 $f_X(x)=\tfrac12e^{-|x|}$，则
+\[
+F_X(x)=\begin{cases}\tfrac12e^x,&x<0,\\1-\tfrac12e^{-x},&x\ge0.\end{cases}
+\]
+负、正半轴必须分别积分。对 $Y=1-\sqrt[3]{X}$，全局单调反解 $x=(1-y)^3$，故
+\[
+f_Y(y)=\frac{3(1-y)^2}{\pi[1+(1-y)^6]},\quad y\in\mathbb R.
+\]
+\end{examplebox}
+
+\end{document}

@@ -1,0 +1,49 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage[a4paper,margin=1.75cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
+\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\begin{document}
+\section*{B00\quad 内积、正交与投影}
+\textbf{定位：}本 Bridge 将空间几何、线性代数坐标和函数投影翻译到同一内积语言，不重复各 Topic 的本体定义。
+\begin{tcolorbox}[title=母接口]
+内积 $\longrightarrow$ 长度 $\longrightarrow$ 角度 $\longrightarrow$ 正交
+$\longrightarrow$ 投影 $\longrightarrow$ 最小误差分解。
+\end{tcolorbox}
+\subsection*{1.\ 投影不是“画一条垂线”而是求最优系数}
+对非零向量 $u$，向量 $v$ 在 $\operatorname{span}\{u\}$ 上的投影为
+\[
+\operatorname{proj}_{u}v=\frac{\langle v,u\rangle}{\langle u,u\rangle}u,
+\qquad v=\operatorname{proj}_{u}v+r,\quad r\perp u.
+\]
+系数来自令误差平方 $\|v-cu\|^2$ 最小；求导得 $c=\langle v,u\rangle/\langle u,u\rangle$。因此正交分解同时承担几何高度和代数最小二乘两种意义。
+\subsection*{2.\ 多方向与正交基}
+若 $\{e_i\}$ 是正交基，则
+\[
+v=\sum_i\frac{\langle v,e_i\rangle}{\langle e_i,e_i\rangle}e_i.
+\]
+标准正交时系数简化为 $\langle v,e_i\rangle$。函数空间中把有限维求和换成积分：
+\[
+\langle f,g\rangle=\int_a^b f(x)g(x)\,dx,\qquad
+c_n=\frac{\langle f,\phi_n\rangle}{\langle\phi_n,\phi_n\rangle}.
+\]
+这解释 B08 的 Fourier 系数，但不替代其收敛定理。
+\subsection*{3.\ 资格与反桥}
+\begin{itemize}[leftmargin=2em]
+\item 几何垂直、向量正交、函数正交分别依赖不同内积或方向对象；
+\item 正交不等于概率独立，也不自动等于统计不相关；
+\item 投影公式必须先确认内积、目标子空间和分母非零。
+\end{itemize}
+\subsection*{4.\ 最小例子与调用}
+取 $v=(2,1)^T,u=(1,1)^T$，则
+\[
+\operatorname{proj}_u v=\frac{3}{2}(1,1)^T,\qquad
+r=v-\operatorname{proj}_u v=\left(\frac12,-\frac12\right)^T,quad r^Tu=0.
+\]
+题面出现“最近、最小误差、垂足、正交系数”时，先调用这条“投影 + 正交残差”分解。
+\begin{corebox}{检查句}
+当前的“垂直”是哪个对象之间的内积为零？投影留下的残差是否真的与目标子空间正交？坐标系或权函数是否已经固定？
+\end{corebox}
+\end{document}

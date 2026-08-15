@@ -1,0 +1,1638 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={函数对象、表示与结构}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 高等数学 Topic 01}}
+\rhead{\small\color{deep}函数对象 · 表示 · 结构}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+\providecommand{\tightlist}{}
+\newcounter{none}
+
+\begin{document}
+\begin{center}
+{\LARGE\textbf{函数对象、表示与结构}}\\[0.4em]
+{\large 从“看见公式”到“确认对象与输入关系”}
+\end{center}
+\vspace{0.5em}
+
+\begin{quote}
+本册先解决一个比``怎么算''更早的问题：\textbf{当前到底是哪一个函数对象？它现在用什么方式表示？题目给出的奇偶、周期、单调、可逆等条件，究竟是在约束输入之间的什么关系？}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{0. 本册定位}\label{ux672cux518cux5b9aux4f4d}
+
+本册是高等数学 Subject Atlas 下的
+Topic01，是后续极限、微分、积分与函数展开共同依赖的函数对象入口。
+
+\subsection{Own}\label{own}
+
+本册独立负责：
+
+\begin{itemize}
+\tightlist
+\item
+  函数对象的身份：定义域、对应规律、值域，以及``表达式 ≠ 函数''；
+\item
+  显式、分段、隐式、参数式、图像等表示方式及其信息边界；
+\item
+  复合函数与反函数作为函数对象之间的基本操作；
+\item
+  奇偶性、一般轴对称、一般中心对称、周期、半周期翻转；
+\item
+  单调性、有界性、单射性等基础结构的语义与边界；
+\item
+  坐标平移/伸缩以后，函数自身结构的位置怎样改变；
+\item
+  两个反射结构为什么能够生成平移与周期；
+\item
+  任意函数的奇偶分解。
+\end{itemize}
+
+\subsection{Use / Bridge}\label{use-bridge}
+
+本册\textbf{不拥有}以下传播规律：
+
+\begin{itemize}
+\tightlist
+\item
+  对称/周期结构怎样约束极限与连续；
+\item
+  求导以后奇偶、对称、周期怎样变化；
+\item
+  积分、变上限积分以后结构怎样变化；
+\item
+  Taylor / Fourier 展开怎样读取函数结构。
+\end{itemize}
+
+这些跨 Topic 的传播规律统一由
+\href{../50_桥梁专题/H-B01_函数结构在运算中的传播/README.md}{H-B01｜函数结构在运算中的传播}
+承担；极限、微分、积分、展开本身仍由对应 Topic 拥有。
+
+本册也不拥有``用导数判单调/极值/凹凸''的机制，该部分属于
+\href{../04_局部到整体_中值定理与函数形状/README.md}{Topic04｜局部到整体：中值定理与函数形状}。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{1.
+根本问题：为什么不能把函数当成一个公式？}\label{ux6839ux672cux95eeux9898ux4e3aux4ec0ux4e48ux4e0dux80fdux628aux51fdux6570ux5f53ux6210ux4e00ux4e2aux516cux5f0f}
+
+数学一里最常见的函数写法是
+
+\[
+y=f(x).
+\]
+
+这很容易形成一个危险的直觉：
+
+\begin{quote}
+``看见一个解析式，就已经知道函数是什么。''
+\end{quote}
+
+但一个函数首先是\textbf{允许哪些输入，以及每个允许输入对应哪个输出}。
+
+例如
+
+\[
+f(x)=\frac{x^2-1}{x-1},\qquad x\ne1
+\]
+
+与
+
+\[
+g(x)=x+1,\qquad x\in\mathbb R
+\]
+
+虽然在 \(x\ne1\)
+时函数值完全相同，却不是同一个函数对象，因为它们的定义域不同。
+
+如果把前式直接约成 \(x+1\) 而忘记
+\(x\ne1\)，代数式变简单了，但对象已经被偷偷改变。
+
+因此，本册的母问题不是``函数有哪些性质''，而是：
+
+\begin{quote}
+\textbf{怎样确认一个函数对象的身份；怎样在不改变对象的前提下切换表示；又怎样从输入之间的关系读出函数的稳定结构？}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{2. 母模型：对象 → 表示 → 输入关系 →
+输出关系}\label{ux6bcdux6a21ux578bux5bf9ux8c61-ux8868ux793a-ux8f93ux5165ux5173ux7cfb-ux8f93ux51faux5173ux7cfb}
+
+本册采用下面的检查链：
+
+\[
+\boxed{
+\text{确认函数对象}
+\to
+\text{选择或切换表示}
+\to
+\text{建立合法的输入关系}
+\to
+\text{比较对应输出}
+\to
+\text{读取结构}
+}
+\]
+
+这里的箭头表示\textbf{分析顺序}，不是数学对象之间的因果生成关系。
+
+它的自然语言版本是：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{对象}：哪些 \(x\) 允许进入？每个 \(x\) 对应什么值？
+\item
+  \textbf{表示}：当前写法是否最适合暴露结构？换写法会不会丢分支、增解或改变定义域？
+\item
+  \textbf{输入关系}：现在比较的是 \(x\) 与 \(-x\)、\(x\) 与
+  \(2a-x\)、\(x\) 与 \(x+T\)，还是两个满足 \(x_1<x_2\) 的输入？
+\item
+  \textbf{输出关系}：对应函数值相等、反号、和为常数、保持顺序，还是被限制在某个范围？
+\item
+  \textbf{结构}：由此再命名为轴对称、中心对称、奇偶、周期、单调、单射、有界等。
+\end{enumerate}
+
+一句话压缩：
+
+\[
+\boxed{
+\text{函数结构，就是“输入之间的稳定关系”在输出端留下的稳定约束。}
+}
+\]
+
+这比直接背``奇函数公式、偶函数公式、周期函数公式''更有生成力。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{3.
+函数对象：先确定什么不能被变形偷偷改掉}\label{ux51fdux6570ux5bf9ux8c61ux5148ux786eux5b9aux4ec0ux4e48ux4e0dux80fdux88abux53d8ux5f62ux5077ux5077ux6539ux6389}
+
+\subsection{3.1 工作对象}\label{ux5de5ux4f5cux5bf9ux8c61}
+
+在数学一的一元实函数语境中，可以把函数写成
+
+\[
+f:D\to\mathbb R,
+\]
+
+其中：
+
+\begin{itemize}
+\tightlist
+\item
+  \(D\) 是\textbf{定义域}：允许进入函数的输入集合；
+\item
+  \(f\) 给出\textbf{对应规律}：每个 \(x\in D\) 对应唯一函数值 \(f(x)\)；
+\item
+  \textbf{值域}是实际被取得的输出集合 \[
+  f(D)=\{f(x):x\in D\}.
+  \]
+\end{itemize}
+
+在本课程的工作语境中，判断两个实函数是否相同，至少必须同时检查：
+
+\[
+\boxed{\text{定义域相同}+\text{定义域内逐点函数值相同}.}
+\]
+
+只看最终解析式不够。
+
+\subsection{3.2
+对象身份的不变量}\label{ux5bf9ux8c61ux8eabux4efdux7684ux4e0dux53d8ux91cf}
+
+当我们说``只是换一种表示，没有改变函数对象''时，至少要保护：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  原来的允许输入没有被无意扩大或缩小；
+\item
+  每个保留下来的输入对应同一个输出；
+\item
+  若表示引入参数或分支，覆盖范围没有丢失；
+\item
+  若后续推理依赖方向、分支或一一对应性，这些信息没有被消掉。
+\end{enumerate}
+
+这就是 Topic01 最基础的合法性要求。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{4.
+表示不是对象：换写法之前先问``信息有没有丢''}\label{ux8868ux793aux4e0dux662fux5bf9ux8c61ux6362ux5199ux6cd5ux4e4bux524dux5148ux95eeux4fe1ux606fux6709ux6ca1ux6709ux4e22}
+
+同一个数学对象可以有不同表示；反过来，一个看起来像``方程''的东西也不一定已经定义了一个全局函数。
+
+\subsection{4.1 显式表示}\label{ux663eux5f0fux8868ux793a}
+
+\[
+y=f(x).
+\]
+
+优点是输入、输出关系直接；缺点是有些几何对象无法在整个区域内写成单值
+\(y=f(x)\)。
+
+\subsection{4.2 分段表示}\label{ux5206ux6bb5ux8868ux793a}
+
+\[
+f(x)=
+\begin{cases}
+f_1(x),&x\in D_1,\\
+f_2(x),&x\in D_2.
+\end{cases}
+\]
+
+分段函数首先是\textbf{一个函数对象}，不是几段互不相干的公式。研究连续、奇偶、单调或值域时，都必须把分界点与各段定义域一起维护。
+
+\subsection{4.3 隐式关系}\label{ux9690ux5f0fux5173ux7cfb}
+
+\[
+F(x,y)=0
+\]
+
+首先描述的是 \(x,y\) 之间的\textbf{关系}，不自动等于一个全局函数
+\(y=f(x)\)。
+
+例如
+
+\[
+x^2+y^2=1
+\]
+
+对同一个 \(x\in(-1,1)\) 通常有两个 \(y\)，所以整圆不能直接当成单值函数
+\(y=f(x)\)。只有选定上半圆或下半圆等分支以后，才得到相应函数。
+
+因此：
+
+\[
+\boxed{\text{隐式方程}\neq\text{全局单值函数}.}
+\]
+
+\subsection{4.4 参数表示}\label{ux53c2ux6570ux8868ux793a}
+
+\[
+x=x(t),\qquad y=y(t).
+\]
+
+参数式直接表示的是一条由参数生成的轨迹。使用时必须检查：
+
+\begin{itemize}
+\tightlist
+\item
+  参数区间覆盖了多少对象；
+\item
+  是否重复经过同一点；
+\item
+  是否保留了走向；
+\item
+  能否在当前区间消去参数得到单值 \(y=f(x)\)。
+\end{itemize}
+
+``能够消元''不等于``消元后没有信息损失''。
+
+\subsection{4.5
+表示变换最常见的四类失真}\label{ux8868ux793aux53d8ux6362ux6700ux5e38ux89c1ux7684ux56dbux7c7bux5931ux771f}
+
+\subsubsection{失真
+A：约分扩大定义域}\label{ux5931ux771f-aux7ea6ux5206ux6269ux5927ux5b9aux4e49ux57df}
+
+\[
+\frac{x^2-1}{x-1}=x+1
+\]
+
+只在 \(x\ne1\) 的原定义域内成立。
+
+\subsubsection{失真
+B：平方引入额外分支}\label{ux5931ux771f-bux5e73ux65b9ux5f15ux5165ux989dux5916ux5206ux652f}
+
+从
+
+\[
+\sqrt{x}=x-2
+\]
+
+两边平方得到的方程只是候选条件，必须回代原式与原定义域。
+
+\subsubsection{失真
+C：消元丢掉参数分支或方向}\label{ux5931ux771f-cux6d88ux5143ux4e22ux6389ux53c2ux6570ux5206ux652fux6216ux65b9ux5411}
+
+参数式变成笛卡尔方程后，可能只保留轨迹集合，却丢掉覆盖次数和方向信息。
+
+\subsubsection{失真
+D：把局部分支误当全局对象}\label{ux5931ux771f-dux628aux5c40ux90e8ux5206ux652fux8befux5f53ux5168ux5c40ux5bf9ux8c61}
+
+反三角函数、隐函数、反函数都常需要先限制区间，再获得单值分支。
+
+所以表示变换的固定检查句是：
+
+\begin{quote}
+\textbf{新表示覆盖的还是原来的对象吗？有没有增加、遗漏或合并本来不同的分支？}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{5.
+复合与反函数：函数不是公式拼接，而是映射之间的连接}\label{ux590dux5408ux4e0eux53cdux51fdux6570ux51fdux6570ux4e0dux662fux516cux5f0fux62fcux63a5ux800cux662fux6620ux5c04ux4e4bux95f4ux7684ux8fdeux63a5}
+
+\subsection{5.1 复合函数}\label{ux590dux5408ux51fdux6570}
+
+若
+
+\[
+x\xrightarrow{g}u\xrightarrow{f}y,
+\]
+
+则
+
+\[
+(f\circ g)(x)=f(g(x)).
+\]
+
+真正关键的是接口是否合法：\(g(x)\) 必须落进 \(f\) 的定义域。
+
+因此
+
+\[
+\boxed{
+D_{f\circ g}=\{x\in D_g:g(x)\in D_f\}.
+}
+\]
+
+这条定义域公式比``先算里面再算外面''更重要，因为它规定了两个函数什么时候真的能够连接。
+
+\subsection{5.2 反函数}\label{ux53cdux51fdux6570}
+
+反函数不是把符号 \(x,y\) 交换一下，而是要求原映射能够被唯一倒回去。
+
+若 \(f:D\to f(D)\) 在 \(D\) 上单射，则可以定义
+
+\[
+f^{-1}:f(D)\to D.
+\]
+
+满足
+
+\[
+f^{-1}(f(x))=x.
+\]
+
+所以反函数的第一问题永远是：
+
+\[
+\boxed{\text{当前定义域上是否一一对应？}}
+\]
+
+在区间上，严格单调是保证单射、从而建立反函数的常用充分条件。
+
+\subsection{5.3
+反函数的结构继承}\label{ux53cdux51fdux6570ux7684ux7ed3ux6784ux7ee7ux627f}
+
+若 \(f\) 可逆且为奇函数，则
+
+\[
+f^{-1}(-y)=-f^{-1}(y),
+\]
+
+所以奇函数的反函数仍为奇函数。
+
+更一般地，若 \(f\) 关于 \((a,b)\) 中心对称：
+
+\[
+f(2a-x)=2b-f(x),
+\]
+
+则
+
+\[
+f^{-1}(2b-y)=2a-f^{-1}(y),
+\]
+
+因此反函数关于 \((b,a)\) 中心对称。
+
+这与``反函数图像关于 \(y=x\) 对称''完全一致。
+
+\subsection{5.4
+两个重要的不可逆信号}\label{ux4e24ux4e2aux91cdux8981ux7684ux4e0dux53efux9006ux4fe1ux53f7}
+
+\begin{itemize}
+\tightlist
+\item
+  若偶函数的定义域关于原点对称并同时含有某个 \(x\ne0\) 与 \(-x\)，则
+  \(f(x)=f(-x)\)，不能单射；
+\item
+  非恒定周期函数在整个周期域上重复取值，也不能全局单射。
+\end{itemize}
+
+因此遇到偶函数、周期函数去求反函数，第一动作不是写
+\(f^{-1}\)，而是先找\textbf{限制到哪一个单调/单射分支}。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{6.
+统一结构语言：先找输入关系，再给性质命名}\label{ux7edfux4e00ux7ed3ux6784ux8bedux8a00ux5148ux627eux8f93ux5165ux5173ux7cfbux518dux7ed9ux6027ux8d28ux547dux540d}
+
+\subsection{6.1 反射}\label{ux53cdux5c04}
+
+关于 \(x=a\) 的反射记为
+
+\[
+R_a(x)=2a-x.
+\]
+
+讨论任何反射结构以前，先检查定义域是否对该反射封闭：
+
+\[
+x\in D\Longrightarrow 2a-x\in D.
+\]
+
+\subsubsection{轴对称}\label{ux8f74ux5bf9ux79f0}
+
+若
+
+\[
+\boxed{f(2a-x)=f(x)},
+\]
+
+则图像关于直线 \(x=a\) 轴对称。
+
+\subsubsection{中心对称}\label{ux4e2dux5fc3ux5bf9ux79f0}
+
+若
+
+\[
+\boxed{f(2a-x)=2b-f(x)},
+\]
+
+则图像关于点 \((a,b)\) 中心对称。
+
+把中心移到原点：
+
+\[
+g(u)=f(a+u)-b,
+\]
+
+就得到
+
+\[
+g(-u)=-g(u).
+\]
+
+因此一般中心对称不是另一套孤立公式，而是\textbf{平移后的奇结构}。
+
+\subsection{6.2
+奇偶性只是反射结构的特殊位置}\label{ux5947ux5076ux6027ux53eaux662fux53cdux5c04ux7ed3ux6784ux7684ux7279ux6b8aux4f4dux7f6e}
+
+\subsubsection{偶函数}\label{ux5076ux51fdux6570}
+
+当 \(a=0\) 时，轴对称退化为
+
+\[
+\boxed{f(-x)=f(x)}.
+\]
+
+所以偶函数就是关于 \(y\) 轴对称的函数。
+
+\subsubsection{奇函数}\label{ux5947ux51fdux6570}
+
+当 \((a,b)=(0,0)\) 时，中心对称退化为
+
+\[
+\boxed{f(-x)=-f(x)}.
+\]
+
+若 \(0\in D\)，则必有
+
+\[
+f(0)=0.
+\]
+
+\subsubsection{边界}\label{ux8fb9ux754c}
+
+\begin{itemize}
+\tightlist
+\item
+  定义域不关于原点对称时，不谈通常意义下的奇偶性；
+\item
+  零函数同时是奇函数和偶函数；
+\item
+  ``不是偶函数''不能推出``没有轴对称''，因为对称轴可能在 \(x=a\ne0\)；
+\item
+  ``不是奇函数''也不能推出``没有中心对称''，中心可能不在原点。
+\end{itemize}
+
+\subsection{6.3 平移}\label{ux5e73ux79fb}
+
+平移记为
+
+\[
+\tau_T(x)=x+T.
+\]
+
+\subsubsection{周期}\label{ux5468ux671f}
+
+若某个 \(T\ne0\) 使定义域在该平移下保持合法，并且
+
+\[
+\boxed{f(x+T)=f(x)},
+\]
+
+则 \(T\) 是 \(f\) 的一个周期。
+
+一个周期不等于最小正周期。存在周期也不保证一定存在``最小的''正周期。
+
+\subsubsection{半周期反号}\label{ux534aux5468ux671fux53cdux53f7}
+
+若
+
+\[
+\boxed{f(x+L)=-f(x)},
+\]
+
+则再平移一次得到
+
+\[
+f(x+2L)=f(x),
+\]
+
+所以 \(2L\) 一定是一个周期。
+
+反向不成立：知道 \(2L\) 是周期，不能推出平移 \(L\) 一定反号。
+
+\subsubsection{围绕基准线的半周期翻转}\label{ux56f4ux7ed5ux57faux51c6ux7ebfux7684ux534aux5468ux671fux7ffbux8f6c}
+
+更一般地，若
+
+\[
+\boxed{f(x+L)=2b-f(x)},
+\]
+
+则平移 \(L\) 后，函数值关于水平线 \(y=b\) 翻转；再平移一次恢复，因此
+\(2L\) 是周期。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{7.
+任意函数的奇偶分解：没有纯结构时，主动把结构拆出来}\label{ux4efbux610fux51fdux6570ux7684ux5947ux5076ux5206ux89e3ux6ca1ux6709ux7eafux7ed3ux6784ux65f6ux4e3bux52a8ux628aux7ed3ux6784ux62c6ux51faux6765}
+
+只要定义域关于原点对称，对任意函数 \(f\) 定义
+
+\[
+f_e(x)=\frac{f(x)+f(-x)}2,
+\]
+
+\[
+f_o(x)=\frac{f(x)-f(-x)}2.
+\]
+
+则
+
+\[
+\boxed{f(x)=f_e(x)+f_o(x)},
+\]
+
+其中 \(f_e\) 为偶函数，\(f_o\) 为奇函数。
+
+而且这个分解是唯一的。
+
+\subsection{为什么唯一？}\label{ux4e3aux4ec0ux4e48ux552fux4e00}
+
+假设还有
+
+\[
+f=e_1+o_1=e_2+o_2,
+\]
+
+其中 \(e_1,e_2\) 偶，\(o_1,o_2\) 奇，则
+
+\[
+e_1-e_2=o_2-o_1.
+\]
+
+左边是偶函数，右边是奇函数；一个函数若同时奇且偶，只能是零函数，因此
+
+\[
+e_1=e_2,\qquad o_1=o_2.
+\]
+
+这里应理解为\textbf{代数上的唯一拆分}。在当前数学一语境中，不额外引入``正交投影''之类需要函数空间和内积结构的语言。
+
+这个分解以后会通过 H-B01 与对称区间积分、Fourier
+等模块发生接口，但分解本身由 Topic01 拥有。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{8.
+坐标变换：结构没有消失，只是位置和尺度变了}\label{ux5750ux6807ux53d8ux6362ux7ed3ux6784ux6ca1ux6709ux6d88ux5931ux53eaux662fux4f4dux7f6eux548cux5c3aux5ea6ux53d8ux4e86}
+
+考虑
+
+\[
+g(x)=A f(Bx+C)+D,
+\]
+
+先讨论非退化情形 \(A\ne0,B\ne0\)。
+
+最稳的理解不是背``左加右减、上加下减''，而是拆成两层：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  内部变量 \[
+  u=Bx+C
+  \] 决定横向位置与尺度；
+\item
+  外部变换 \[
+  y\mapsto Ay+D
+  \] 决定纵向尺度、翻转与基准线。
+\end{enumerate}
+
+\subsection{8.1 定义域先变}\label{ux5b9aux4e49ux57dfux5148ux53d8}
+
+若 \(f\) 的定义域为 \(D_f\)，则
+
+\[
+\boxed{D_g=\{x:Bx+C\in D_f\}}.
+\]
+
+所有后续结构都必须在这个新定义域上讨论。
+
+\subsection{8.2 对称轴}\label{ux5bf9ux79f0ux8f74}
+
+若 \(f(u)\) 关于 \(u=a\) 轴对称，则令
+
+\[
+Bx+C=a
+\]
+
+得到 \(g\) 的对应对称轴
+
+\[
+\boxed{x=\frac{a-C}{B}}.
+\]
+
+\subsection{8.3 对称中心}\label{ux5bf9ux79f0ux4e2dux5fc3}
+
+若 \(f(u)\) 关于 \((a,b)\) 中心对称，则 \(g\) 关于
+
+\[
+\boxed{\left(\frac{a-C}{B},Ab+D\right)}
+\]
+
+中心对称。
+
+\subsection{8.4 周期}\label{ux5468ux671f-1}
+
+若 \(T\) 是 \(f\) 的一个周期，则使内部变量改变 \(T\) 即可：
+
+\[
+B\Delta x=T.
+\]
+
+因此 \(T/B\) 是一个带方向的平移量，而对应的正周期长度为
+
+\[
+\boxed{\frac{|T|}{|B|}}.
+\]
+
+若 \(T_0>0\) 是最小正周期，且 \(A\ne0\)，则 \(g\) 的最小正周期为
+
+\[
+\boxed{\frac{T_0}{|B|}}.
+\]
+
+若
+\(A=0\)，函数被压成常函数，原来的最小周期讨论随之退化，不能机械套公式。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{9.
+结构怎样在函数代数内部组合？}\label{ux7ed3ux6784ux600eux6837ux5728ux51fdux6570ux4ee3ux6570ux5185ux90e8ux7ec4ux5408}
+
+这一节仍然属于
+Topic01，因为操作两侧都是函数对象本身；一旦操作换成极限、求导、积分、展开，就切换到
+H-B01。
+
+\subsection{9.1
+奇偶性的符号代数}\label{ux5947ux5076ux6027ux7684ux7b26ux53f7ux4ee3ux6570}
+
+在定义域合法的前提下：
+
+\[
+\text{偶}\pm\text{偶}=\text{偶},\qquad
+\text{奇}\pm\text{奇}=\text{奇},
+\]
+
+\[
+\text{偶}\cdot\text{偶}=\text{偶},\qquad
+\text{奇}\cdot\text{奇}=\text{偶},\qquad
+\text{奇}\cdot\text{偶}=\text{奇}.
+\]
+
+除法在分母不为零且定义域保持对称时 obey 同样的符号逻辑。
+
+真正的生成机制只有一句：
+
+\begin{quote}
+对 \(x\mapsto -x\) 做代换，逐层追踪每个因子带来的 \(+1/-1\) 符号。
+\end{quote}
+
+所以不需要把每一条单独死记。
+
+\subsection{9.2
+主动构造奇偶结构}\label{ux4e3bux52a8ux6784ux9020ux5947ux5076ux7ed3ux6784}
+
+对任意定义域关于原点对称的 \(f\)：
+
+\[
+f(x)+f(-x)\quad\text{一定是偶函数},
+\]
+
+\[
+f(x)-f(-x)\quad\text{一定是奇函数}.
+\]
+
+另外，若复合有定义：
+
+\[
+f(|x|)
+\]
+
+一定是偶函数，因为 \(|-x|=|x|\)。
+
+\subsection{9.3
+周期函数组合先找公共周期}\label{ux5468ux671fux51fdux6570ux7ec4ux5408ux5148ux627eux516cux5171ux5468ux671f}
+
+若同一个 \(T\) 同时是 \(f,g\) 的周期，则
+
+\[
+f\pm g,\qquad fg
+\]
+
+仍以 \(T\) 为周期；商还需保证分母不为零。
+
+因此组合周期的核心不是``最小公倍数''这个词，而是：
+
+\[
+\boxed{\text{能否找到一个共同平移，使所有分量同时恢复原值？}}
+\]
+
+如果只知道两个最小正周期比值为无理数，不能对完全一般的函数机械写出``和一定非周期''；只能说不能从这两个周期直接构造公共整数倍周期。
+
+\subsection{9.4
+复合函数先看内层输入关系}\label{ux590dux5408ux51fdux6570ux5148ux770bux5185ux5c42ux8f93ux5165ux5173ux7cfb}
+
+设
+
+\[
+h(x)=f(g(x)).
+\]
+
+若内函数满足
+
+\[
+g(-x)=g(x),
+\]
+
+则只要复合有定义，就有
+
+\[
+h(-x)=f(g(-x))=f(g(x))=h(x),
+\]
+
+所以
+
+\[
+\boxed{\text{内偶}\Rightarrow\text{复合函数必偶}.}
+\]
+
+外函数不需要是偶函数。
+
+若 \(g\) 为奇函数，则继续观察外函数是否满足
+
+\[
+f(-u)=\pm f(u).
+\]
+
+于是得到
+
+\[
+\text{偶}\circ\text{奇}=\text{偶},\qquad
+\text{奇}\circ\text{奇}=\text{奇}.
+\]
+
+若内函数以 \(T\) 为周期，则
+
+\[
+g(x+T)=g(x)
+\]
+
+直接推出
+
+\[
+f(g(x+T))=f(g(x)),
+\]
+
+所以整个复合函数也以 \(T\) 为周期。
+
+这些都是\textbf{充分生成规则}，不是反向等价判据；复合函数可能因为抵消或外函数的额外结构获得更强的对称性。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{10.
+两次反射为什么会生成周期？}\label{ux4e24ux6b21ux53cdux5c04ux4e3aux4ec0ux4e48ux4f1aux751fux6210ux5468ux671f}
+
+这是 Topic01 中最值得保留的一条生成性关系。
+
+定义
+
+\[
+R_a(x)=2a-x,
+\qquad
+R_b(x)=2b-x.
+\]
+
+连续做两次反射：
+
+\[
+R_b(R_a(x))
+=2b-(2a-x)
+=x+2(b-a).
+\]
+
+所以
+
+\[
+\boxed{R_b\circ R_a=\text{平移 }2(b-a)}.
+\]
+
+也就是说：
+
+\[
+\boxed{\text{两次反射}=\text{一次平移}.}
+\]
+
+\subsection{10.1 两个对称轴}\label{ux4e24ux4e2aux5bf9ux79f0ux8f74}
+
+若 \(f\) 同时关于 \(x=a\) 与 \(x=b\)
+轴对称，\(a\ne b\)，则两次反射后函数值仍不变，因此
+
+\[
+\boxed{2|b-a|\text{ 是 }f\text{ 的一个周期}.}
+\]
+
+\subsection{10.2
+两个同高度的对称中心}\label{ux4e24ux4e2aux540cux9ad8ux5ea6ux7684ux5bf9ux79f0ux4e2dux5fc3}
+
+若 \(f\) 分别关于 \((a,c)\) 与 \((b,c)\)
+中心对称，\(a\ne b\)，两次``取关于 \(c\)
+的反值''会恢复原函数值，于是仍得到
+
+\[
+\boxed{2|b-a|\text{ 是一个周期}.}
+\]
+
+\subsection{10.3 一个轴 +
+一个中心}\label{ux4e00ux4e2aux8f74-ux4e00ux4e2aux4e2dux5fc3}
+
+若
+
+\[
+f(2a-x)=f(x),
+\]
+
+同时
+
+\[
+f(2b-x)=2c-f(x),
+\]
+
+则
+
+\[
+\boxed{f(x+2(b-a))=2c-f(x)}.
+\]
+
+也就是说，先得到一次``围绕 \(y=c\)
+的半周期翻转''；再做同样平移一次才恢复原值：
+
+\[
+\boxed{4|b-a|\text{ 是一个周期}},\qquad a\ne b.
+\]
+
+若 \(a=b\)，同一横坐标既是对称轴又是中心横坐标，则条件强迫
+
+\[
+f(x)\equiv c,
+\]
+
+此时不能把 \(0\) 当作通常意义上的正周期。
+
+\subsection{10.4 Extension：不同高度中心产生``平移 +
+漂移''}\label{extensionux4e0dux540cux9ad8ux5ea6ux4e2dux5fc3ux4ea7ux751fux5e73ux79fb-ux6f02ux79fb}
+
+若中心分别为 \((a,c_1)\) 与 \((b,c_2)\)，则
+
+\[
+\boxed{f(x+2(b-a))=f(x)+2(c_2-c_1)}.
+\]
+
+只有 \(c_1=c_2\) 时才退化为真正的周期。
+
+这条关系先作为 Topic01 的结构 Extension 保留；它以后会与 H-B01
+中``周期函数的原函数可能发生线性漂移''形成接口，但这里不展开积分机制。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{11.
+单调、有界与单射：不是所有结构都来自对称}\label{ux5355ux8c03ux6709ux754cux4e0eux5355ux5c04ux4e0dux662fux6240ux6709ux7ed3ux6784ux90fdux6765ux81eaux5bf9ux79f0}
+
+反射和平移描述的是``相关输入之间函数值怎样对应''。函数还有另外三类非常基础的结构。
+
+\subsection{11.1
+单调性：输入顺序怎样传到输出}\label{ux5355ux8c03ux6027ux8f93ux5165ux987aux5e8fux600eux6837ux4f20ux5230ux8f93ux51fa}
+
+在区间 \(I\) 上，若对任意 \(x_1<x_2\)：
+
+\begin{itemize}
+\tightlist
+\item
+  总有 \(f(x_1)\le f(x_2)\)，则 \(f\) 单调不减；
+\item
+  总有 \(f(x_1)\ge f(x_2)\)，则 \(f\) 单调不增；
+\item
+  若始终为严格不等号，则分别为严格递增、严格递减。
+\end{itemize}
+
+因此单调性的核心关系是
+
+\[
+\boxed{\text{输入的序关系}\longrightarrow\text{输出的序关系}.}
+\]
+
+本册只拥有这个结构定义及与可逆性的关系；怎样由 \(f'\)
+的符号得到单调区间，由 Topic04 拥有。
+
+\subsection{11.2
+单射性：不同输入能否被输出区分}\label{ux5355ux5c04ux6027ux4e0dux540cux8f93ux5165ux80fdux5426ux88abux8f93ux51faux533aux5206}
+
+单射要求
+
+\[
+f(x_1)=f(x_2)\Longrightarrow x_1=x_2.
+\]
+
+它回答的是：输出是否保留了``输入身份''的唯一性。
+
+严格单调函数在区间上一定单射，因此可以在值域上建立反函数。
+
+但``单射''与``单调''不是同一个定义；尤其在非区间或离散定义域上，不能把二者直接等同。
+
+\subsection{11.3
+有界性：输出能否被一个固定范围控制}\label{ux6709ux754cux6027ux8f93ux51faux80fdux5426ux88abux4e00ux4e2aux56faux5b9aux8303ux56f4ux63a7ux5236}
+
+例如在集合 \(D\) 上若存在 \(M\) 使
+
+\[
+|f(x)|\le M,\qquad \forall x\in D,
+\]
+
+则称 \(f\) 在 \(D\) 上有界。
+
+有界性描述的是\textbf{值域整体被限制在某个有限范围内}，不是局部变化快慢。
+
+连续函数为什么在闭区间有界、连续周期函数为什么全局有界等结论会跨到连续性
+Topic，本册不提前拥有其证明。
+
+\subsection{11.4 结构联用：周期 +
+全局单调}\label{ux7ed3ux6784ux8054ux7528ux5468ux671f-ux5168ux5c40ux5355ux8c03}
+
+若 \(f\) 在整个实轴上具有非零周期，同时又全局单调，则 \(f\)
+只能是常函数。
+
+原因不是微分，而是两个结构直接冲突：
+
+\begin{itemize}
+\tightlist
+\item
+  单调性要求随着输入顺序持续保持输出顺序；
+\item
+  周期性要求相隔一个周期以后输出重新回到原值。
+\end{itemize}
+
+这是一条纯粹的 Topic01 结构联用结论。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{12.
+概念边界：真正要分清的不是名词，而是判据}\label{ux6982ux5ff5ux8fb9ux754cux771fux6b63ux8981ux5206ux6e05ux7684ux4e0dux662fux540dux8bcdux800cux662fux5224ux636e}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1765}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2941}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1765}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1765}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1765}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+概念 A
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+≠
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+概念 B
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+真正区别与题目信号
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+混淆后果
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+函数表达式 & ≠ & 函数对象 &
+表达式只是表示；函数还要维护定义域与逐点对应。看到约分、开方、对数、补定义时先查定义域
+& 把不同定义域的对象当成同一个函数 \\
+隐式关系 \(F(x,y)=0\) & ≠ & 单值函数 \(y=f(x)\) & 同一个 \(x\)
+是否对应唯一 \(y\)？圆、闭曲线是典型反例 &
+对不存在的全局函数直接求反函数或套函数性质 \\
+表示变换 & ≠ & 对象等价 &
+平方、约分、消元、参数化都可能增解、丢分支或改变定义域 &
+新表达式算得对，但已经不是原问题 \\
+偶函数 & ≠ & 一般轴对称 & 偶函数只对应轴 \(x=0\)；出现 \(f(a+x)=f(a-x)\)
+应识别一般轴 \(x=a\) & 看到``非偶''就误判为``无对称'' \\
+奇函数 & ≠ & 一般中心对称 & 奇函数中心固定在 \((0,0)\)；一般形式为
+\(f(a+x)+f(a-x)=2b\) & 漏掉水平/竖直平移后的奇结构 \\
+一个周期 & ≠ & 最小正周期 & \(f(x+T)=f(x)\) 只说明 \(T\)
+是周期；题目问``最小''时还要排除更小正周期 & 把 \(2T,3T\)
+等直接当基本周期 \\
+周期 & ≠ & 半周期翻转 &
+周期是平移后不变；半周期翻转是平移后反号或关于基准线翻转 & 把 \(L\)
+误写成周期，或由周期反推反号 \\
+反函数 \(f^{-1}\) & ≠ & 倒数 \(1/f\) &
+反函数交换输入输出并要求单射；倒数只是函数值取倒数并要求 \(f\ne0\) &
+公式、定义域和值域全部错位 \\
+单射 & ≠ & 严格单调 &
+严格单调在区间上保证单射，但二者定义不同；单射问``输出能否唯一识别输入''
+& 把可逆性条件机械改写成导数/单调条件 \\
+局部结构 & ≠ & 全局结构 &
+在一个区间上单调/可逆，不代表整个定义域都成立；反三角和隐函数常依赖分支
+& 把局部分支误当全局反函数 \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{13. 与后续 Topic
+的接口}\label{ux4e0eux540eux7eed-topic-ux7684ux63a5ux53e3}
+
+Topic01
+的任务是\textbf{定义结构本身}。当题目开始问``这种结构经过某种微积分操作以后会怎样''，就应停止在本册继续堆公式，转入相应
+Owner。
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+当前信号
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+本册提供
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+后续 Owner
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+偶/奇/一般对称函数在对称点附近求极限 & 给出反射关系与合法定义域 &
+Topic02 + H-B01 \\
+对称函数求导后结构怎样变 & 给出原函数对称关系 & Topic03 + H-B01 \\
+对称/周期函数做定积分、原函数、变上限积分 & 给出原结构 & Topic05 +
+H-B01 \\
+对称条件怎样影响单调、极值、函数形状 & 给出对称/单调结构语义 &
+Topic04 \\
+奇偶性怎样筛掉 Taylor / Fourier 系数 & 给出奇偶结构 & Topic11 + H-B01 \\
+\end{longtable}
+}
+
+核心 Ownership 规则：
+
+\[
+\boxed{
+\text{Topic01 定义“结构是什么”}
+\quad;
+\quad
+\text{H-B01 定义“结构经过别的机制后怎样传播”}.
+}
+\]
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{14.
+题目调用协议：先确认对象，再判断结构}\label{ux9898ux76eeux8c03ux7528ux534fux8baeux5148ux786eux8ba4ux5bf9ux8c61ux518dux5224ux65adux7ed3ux6784}
+
+这不是一张题型表，而是 Topic01 的最小检查顺序。
+
+\subsection{Step 1：确认对象}\label{step-1ux786eux8ba4ux5bf9ux8c61}
+
+先写清：
+
+\begin{itemize}
+\tightlist
+\item
+  定义域是什么？
+\item
+  当前是函数、隐式关系、参数曲线还是分段对象？
+\item
+  目标问的是值、结构、可逆性还是后续微积分性质？
+\end{itemize}
+
+\subsection{Step 2：检查表示}\label{step-2ux68c0ux67e5ux8868ux793a}
+
+问：
+
+\begin{itemize}
+\tightlist
+\item
+  当前表示是否暴露结构？
+\item
+  是否应该令 \(u=Bx+C\)、平移对称中心、拆分段或保留参数？
+\item
+  变形会不会扩大定义域、丢分支或增解？
+\end{itemize}
+
+\subsection{Step
+3：确定输入关系}\label{step-3ux786eux5b9aux8f93ux5165ux5173ux7cfb}
+
+根据题目信号，优先测试：
+
+\[
+x\leftrightarrow -x,
+\qquad
+x\leftrightarrow 2a-x,
+\qquad
+x\leftrightarrow x+T,
+\qquad
+x_1<x_2.
+\]
+
+不要先给最终表达式贴标签。
+
+\subsection{Step 4：比较输出}\label{step-4ux6bd4ux8f83ux8f93ux51fa}
+
+直接计算或改写：
+
+\[
+f(-x),\qquad f(2a-x),\qquad f(x+T),
+\]
+
+或者比较 \(f(x_1),f(x_2)\)。
+
+先得到稳定关系，再命名结构。
+
+\subsection{Step 5：若出现函数操作，判断
+Owner}\label{step-5ux82e5ux51faux73b0ux51fdux6570ux64cdux4f5cux5224ux65ad-owner}
+
+\begin{itemize}
+\tightlist
+\item
+  四则、复合、反函数、坐标变换：继续留在 Topic01；
+\item
+  极限、求导、积分、展开：切到 H-B01 与对应 Topic。
+\end{itemize}
+
+\subsection{Step 6：独立验证}\label{step-6ux72ecux7acbux9a8cux8bc1}
+
+至少做一个不依赖原推导的检查：
+
+\begin{itemize}
+\tightlist
+\item
+  判奇函数：若 \(0\in D\)，检查 \(f(0)=0\)；
+\item
+  判周期：随便取一个允许点检查平移前后；
+\item
+  判对称：取一对镜像点比较；
+\item
+  判反函数：检查当前分支是否真的一一对应；
+\item
+  做表示变换：回到原定义域/原方程检查是否增解或漏解。
+\end{itemize}
+
+\begin{quote}
+当前``先看定义域''\,``先测试变换而不是展开长式''\,``求反函数先找单射分支''只作为本
+Topic 的调用协议保留；是否晋升为数学一 Subject
+Rules，要等待真实错题证据。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{\texorpdfstring{15.
+贯穿母例：\(g(x)=2\cos(3x-1)+4\)}{15. 贯穿母例：g(x)=2\textbackslash cos(3x-1)+4}}\label{ux8d2fux7a7fux6bcdux4f8bgx2cos3x-14}
+
+这个例子故意同时包含平移、伸缩、周期、对称、基准线和``不可全局求逆''几个结构。
+
+\subsection{15.1 先确认对象}\label{ux5148ux786eux8ba4ux5bf9ux8c61}
+
+\[
+g:\mathbb R\to\mathbb R,
+\qquad
+g(x)=2\cos(3x-1)+4.
+\]
+
+定义域为
+
+\[
+D_g=\mathbb R,
+\]
+
+值域为
+
+\[
+[2,6].
+\]
+
+\subsection{15.2
+换表示，而不是直接硬看长式}\label{ux6362ux8868ux793aux800cux4e0dux662fux76f4ux63a5ux786cux770bux957fux5f0f}
+
+令
+
+\[
+u=3x-1.
+\]
+
+于是
+
+\[
+g(x)=2\cos u+4.
+\]
+
+现在横向结构都先在 \(u\) 中读取，再通过 \(u=3x-1\) 解回
+\(x\)；纵向基准线由 \(+4\) 决定。
+
+\subsection{15.3 周期}\label{ux5468ux671f-2}
+
+\(\cos u\) 的最小正周期为 \(2\pi\)，所以
+
+\[
+3\Delta x=2\pi
+\]
+
+得到
+
+\[
+\boxed{T=\frac{2\pi}{3}}.
+\]
+
+\subsection{15.4 对称轴}\label{ux5bf9ux79f0ux8f74-1}
+
+\(\cos u\) 关于
+
+\[
+u=k\pi
+\]
+
+轴对称，因此
+
+\[
+3x-1=k\pi,
+\]
+
+即
+
+\[
+\boxed{x=\frac{1+k\pi}{3}},\qquad k\in\mathbb Z.
+\]
+
+\subsection{15.5 对称中心}\label{ux5bf9ux79f0ux4e2dux5fc3-1}
+
+\(\cos u\) 关于
+
+\[
+\left(\frac\pi2+k\pi,0\right)
+\]
+
+中心对称；外部变换把中心高度 \(0\) 送到 \(4\)，因此 \(g\) 的中心为
+
+\[
+\boxed{
+\left(
+\frac{1+\frac\pi2+k\pi}{3},
+4
+\right)
+},\qquad k\in\mathbb Z.
+\]
+
+\subsection{15.6
+半周期翻转不是``反号''}\label{ux534aux5468ux671fux7ffbux8f6cux4e0dux662fux53cdux53f7}
+
+内部平移 \(\pi\) 时
+
+\[
+\cos(u+\pi)=-\cos u.
+\]
+
+对应 \(x\) 平移 \(\pi/3\)：
+
+\[
+g\left(x+\frac\pi3\right)
+=4-2\cos(3x-1)
+=8-g(x).
+\]
+
+所以真正结构是
+
+\[
+\boxed{g\left(x+\frac\pi3\right)=8-g(x)},
+\]
+
+即函数值围绕基准线 \(y=4\) 翻转，而不是简单写成 \(g(x+\pi/3)=-g(x)\)。
+
+\subsection{15.7
+为什么没有全局反函数？}\label{ux4e3aux4ec0ux4e48ux6ca1ux6709ux5168ux5c40ux53cdux51fdux6570}
+
+因为 \(g\) 是非恒定周期函数，同一个函数值会无限重复出现，所以它在
+\(\mathbb R\) 上不是单射。
+
+若限制到
+
+\[
+3x-1\in[0,\pi],
+\]
+
+即
+
+\[
+x\in\left[\frac13,\frac{1+\pi}{3}\right],
+\]
+
+此时 \(\cos u\) 在该区间严格递减，\(g\) 也严格递减，于是这一分支可逆。
+
+由
+
+\[
+y=2\cos(3x-1)+4
+\]
+
+得到
+
+\[
+\cos(3x-1)=\frac{y-4}{2},
+\]
+
+在选定分支上
+
+\[
+3x-1=\arccos\frac{y-4}{2},
+\]
+
+所以
+
+\[
+\boxed{
+g^{-1}(y)=
+\frac{1+\arccos\left(\frac{y-4}{2}\right)}{3}
+},
+\qquad y\in[2,6].
+\]
+
+\subsubsection{母例暴露的典型错误}\label{ux6bcdux4f8bux66b4ux9732ux7684ux5178ux578bux9519ux8bef}
+
+如果一看到
+
+\[
+y=2\cos(3x-1)+4
+\]
+
+就直接``移项 + arccos''，会误以为得到整个周期函数的全局反函数。
+
+真正缺失的不是代数步骤，而是 \textbf{Object → Injectivity → Branch}
+这一层对象检查。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{16. 章节 /
+考纲映射}\label{ux7ae0ux8282-ux8003ux7eb2ux6620ux5c04}
+
+传统教材中下列内容由本册重新组织：
+
+\begin{itemize}
+\tightlist
+\item
+  函数概念、定义域、值域；
+\item
+  基本初等函数与函数表示；
+\item
+  分段函数；
+\item
+  复合函数；
+\item
+  反函数；
+\item
+  隐式与参数表示的对象边界；
+\item
+  单调、有界、奇偶、周期等基础性质；
+\item
+  一般对称与坐标变换下的结构识别。
+\end{itemize}
+
+但以下传统上也常与``函数性质''一起出现的内容，本册只提供接口，不重新拥有：
+
+\begin{itemize}
+\tightlist
+\item
+  连续性与极限；
+\item
+  导数判单调、极值、凹凸；
+\item
+  对称区间积分；
+\item
+  变上限积分；
+\item
+  Taylor / Fourier 中的奇偶筛选。
+\end{itemize}
+
+正文按认知 Owner 组织，考纲目录只用于 Coverage Check。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{17.
+高频错误应该定位到哪里？}\label{ux9ad8ux9891ux9519ux8befux5e94ux8be5ux5b9aux4f4dux5230ux54eaux91cc}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+表面错误
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+真正断点
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+应回到哪里
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+约分后忘记排除点 & 把表达式当对象，定义域丢失 & §3--4 \\
+看到 \(f(a+x)=f(a-x)\) 却说``不是偶函数'' & 只会原点奇偶，没识别一般反射
+& §6 \\
+把 \(L\) 写成周期，只因 \(f(x+L)=-f(x)\) & 周期与半周期翻转混淆 & §6.3 /
+§12 \\
+两个对称条件不会联用 & 不知道反射复合产生平移 & §10 \\
+给周期函数直接写全局反函数 & 漏掉单射/分支条件 & §5 / §15 \\
+隐式方程直接当 \(y=f(x)\) & 关系与函数对象混淆 & §4.3 \\
+参数消元后漏掉一支 & 表示变换的信息损失未检查 & §4.4--4.5 \\
+奇偶性题一上来展开长表达式 & 没先测试输入变换 & §14 \\
+求导/积分后的奇偶性继续塞进 Topic01 & Ownership 混淆 & §13 + H-B01 \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{18. 一页压缩}\label{ux4e00ux9875ux538bux7f29}
+
+\subsection{18.1 一句话}\label{ux4e00ux53e5ux8bdd}
+
+\[
+\boxed{
+\text{函数不是公式；函数结构是合法输入关系在输出端形成的稳定约束。}
+}
+\]
+
+\subsection{18.2 一张母图}\label{ux4e00ux5f20ux6bcdux56fe}
+
+\[
+\boxed{
+\text{Object}
+\to
+\text{Representation}
+\to
+\text{Legal Input Relation}
+\to
+\text{Output Relation}
+\to
+\text{Structure}
+}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Object}：定义域 + 对应规律；
+\item
+  \textbf{Representation}：显式 / 分段 / 隐式 / 参数 / 图像；
+\item
+  \textbf{Input Relation}：反射、平移、顺序、相等性；
+\item
+  \textbf{Output Relation}：相等、反号、和为常数、序关系、唯一性；
+\item
+  \textbf{Structure}：对称、奇偶、周期、单调、单射、有界。
+\end{itemize}
+
+\subsection{18.3
+四个最重要的不变量}\label{ux56dbux4e2aux6700ux91cdux8981ux7684ux4e0dux53d8ux91cf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  变形前后的合法输入不能被无意改变；
+\item
+  保留下来的输入必须对应同一个输出；
+\item
+  分支、覆盖与一一对应信息不能被偷偷丢掉；
+\item
+  结构判断必须建立在定义域对相应输入变换合法的前提上。
+\end{enumerate}
+
+\subsection{18.4
+三条生成关系}\label{ux4e09ux6761ux751fux6210ux5173ux7cfb}
+
+\[
+\boxed{\text{奇偶}=\text{原点处的反射结构}}
+\]
+
+\[
+\boxed{\text{两次反射}=\text{一次平移}}
+\]
+
+\[
+\boxed{\text{反函数存在}\Rightarrow\text{先保证输入能被输出唯一识别}}
+\]
+
+\subsection{18.5 重建问题}\label{ux91cdux5efaux95eeux9898}
+
+忘掉具体公式时，依次问：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  当前真正的函数对象是什么，定义域有没有被省略？
+\item
+  现在看到的是对象本身，还是对象的一种表示？
+\item
+  换表示以后有没有增解、漏解、丢分支或改变定义域？
+\item
+  题目正在比较哪两个输入：\(x\) 与 \(-x\)、\(2a-x\)、\(x+T\)，还是
+  \(x_1<x_2\)？
+\item
+  这两个输入对应的函数值满足什么稳定关系？
+\item
+  能否因此识别轴、中心、奇偶、周期、单调或单射？
+\item
+  如果同时给出两个反射结构，它们复合以后产生什么平移？
+\item
+  如果开始求极限、导数、积分或展开，是否应该切换到 H-B01 与对应 Topic？
+\end{enumerate}
+
+只要这八个问题还能回答，Topic01
+ 的主干就能重新生成出来，而不需要把函数性质拆成一张孤立的公式表。
+
+\end{document}

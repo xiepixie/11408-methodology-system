@@ -1,0 +1,508 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={空间对象与方向表示}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 高等数学 Topic 06}}
+\rhead{\small\color{deep}点线面 · 曲线曲面 · 方向表示}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\begin{document}
+\begin{center}
+{\LARGE\textbf{空间对象与方向表示}}\\[0.4em]
+{\large 从“点、线、面”到“曲线、曲面与多元微积分接口”}
+\end{center}
+\vspace{0.5em}
+
+\begin{quote}
+本册只追问一个根本问题：\textbf{空间中的点、方向、直线、平面、曲线和曲面，怎样转换成适合代数计算与后续微积分处理的表示？} 同一个对象可以用生成式或约束式编码；真正决定解题路径的不是公式外形，而是方向向量、法向量、位移向量和对象之间的约束关系。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\setcounter{section}{-1}
+\section{本册定位}
+
+本册是高等数学 Subject Atlas 下的 Topic06，位于一元微积分与多元微积分之间。它提供后续梯度、切平面、重积分、曲线积分和曲面积分共同使用的空间对象语言。
+
+\subsection{Own}
+
+本册独立负责：
+\begin{itemize}
+  \item 点、位移向量、单位方向与方向余弦；
+  \item 点积、叉积、混合积各自承担的几何功能；
+  \item 直线、平面的最小构造数据与参数/约束表示；
+  \item 平行、垂直、相交、包含、共面、异面等关系的代数翻译；
+  \item 两直线、两平面、线面夹角与点线面距离的生成原则；
+  \item 曲线、曲面的显式、隐式、参数表示及其选择边界；
+  \item 标准曲面的对称—截面—轴向变化重建法；
+  \item 截面、投影、旋转三种空间对象操作，以及交给后续微积分的表示接口。
+\end{itemize}
+
+\subsection{Uses / Stop Boundary}
+
+本册使用基本代数、方程组和向量运算，但不重复拥有跨学科内积理论。以下内容只保留接口：
+\begin{itemize}
+  \item 内积、正交、投影的线代统一解释交给 B00；
+  \item 一元/多元可微、梯度、隐函数与局部线性化交给 Topic07 与 B01；
+  \item 区域坐标和 Jacobian 交给 Topic08；
+  \item 曲线/曲面积分、定向与向量场交给 Topic09；
+  \item 具体题目出现什么信号、优先选择何种表示和何时停止，进入《高等数学做题规则》。
+\end{itemize}
+
+本册解释几何对象与表示之间的机制；Rules 只维护触发器、第一动作、检查点和失效分支。方程的字面形式可以改变，但对象、载体和不变量必须保持可验证。
+
+\section{母模型：从对象到可计算表示}
+
+空间解析几何不是“线、面、距离公式的清单”，而是一条把几何语言逐层压缩为代数约束的管线：
+\[
+\boxed{
+\text{Object}
+\to\text{Representation}
+\to\text{Carrier}
+\to\text{Constraint}
+\to\text{Measure / Construct}
+\to\text{Calculus Handoff}}
+\]
+
+六个词分别表示：
+\begin{enumerate}
+  \item \kw{Object}：先辨认点、直线、平面、曲线、曲面或空间区域；
+  \item \kw{Representation}：选择参数式（生成点）或隐式式（施加约束）；
+  \item \kw{Carrier}：找出真正承载几何关系的位移、方向或法向向量；
+  \item \kw{Constraint}：把平行、垂直、相交、包含和旋转不变量写成方程；
+  \item \kw{Measure / Construct}：计算角度、距离，或用最小数据构造未知对象；
+  \item \kw{Calculus Handoff}：把参数曲线、隐式曲面、投影区域交给后续微积分专题。
+\end{enumerate}
+
+\begin{corebox}{贯穿母例：球面上一点的切向方向}
+球面 $x^2+y^2+z^2=3$ 上的点 $P_0=(1,1,1)$，取方向 $\mathbf v=(1,-1,0)$。因为 $\mathbf v\cdot(1,1,1)=0$，它是半径方向的一个切向方向。于是
+\[
+L:\ \mathbf r=(1,1,1)+t(1,-1,0),
+\qquad
+\pi:\ x+y+z=3
+\]
+分别表示一条切向直线和一个切平面。后续 Topic07 会用梯度重新产生同一个法向方向。本册的对象与表示是那条接口的几何底层。
+\end{corebox}
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.55cm and 0.55cm,
+  box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.05cm,minimum height=1.0cm,align=center,fill=soft,font=\small},
+  arr/.style={-{Latex[length=2mm]},thick,draw=deep}
+]
+\node[box] (a) {空间对象\\点/线/面/曲面};
+\node[box,right=of a] (b) {表示选择\\生成或约束};
+\node[box,right=of b] (c) {几何载体\\位移/方向/法向};
+\node[box,below=of c] (d) {关系约束\\点积/叉积/联立};
+\node[box,left=of d] (e) {度量与构造\\角度/距离/方程};
+\node[box,left=of e] (f) {后续接口\\切向/梯度/积分区域};
+\draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d);
+\draw[arr] (d)--(e); \draw[arr] (e)--(f);
+\end{tikzpicture}
+\end{center}
+
+\section{空间几何的原子：点、位移与向量}
+
+空间点 $P=(x,y,z)$ 表示位置，向量 $\mathbf a=(a_1,a_2,a_3)$ 表示位移、方向或带大小的量。若 $P,Q$ 是两点，则真正进入计算的是
+\[
+\overrightarrow{PQ}=Q-P=(x_Q-x_P,y_Q-y_P,z_Q-z_P).
+\]
+出现多个点时，第一动作不是套距离公式，而是明确“从哪个点到哪个点”的位移方向。
+
+向量长度和单位化为
+\[
+\lVert\mathbf a\rVert=\sqrt{a_1^2+a_2^2+a_3^2},
+\qquad
+\widehat{\mathbf a}=\frac{\mathbf a}{\lVert\mathbf a\rVert}\quad(\mathbf a\ne\mathbf0).
+\]
+单位化只保留方向，去掉长度。非零向量与坐标正轴的夹角 $\alpha,\beta,\gamma$ 满足
+\[
+\cos\alpha=\frac{a_1}{\lVert\mathbf a\rVert},\quad
+\cos\beta=\frac{a_2}{\lVert\mathbf a\rVert},\quad
+\cos\gamma=\frac{a_3}{\lVert\mathbf a\rVert},
+\qquad
+\cos^2\alpha+\cos^2\beta+\cos^2\gamma=1.
+\]
+
+\section{三个向量运算：不同运算回答不同问题}
+
+\[
+\boxed{
+\begin{aligned}
+\text{点积}&\to\text{角度、正交、投影},\\
+\text{叉积}&\to\text{共同法向、面积、方向},\\
+\text{混合积}&\to\text{体积、共面}.
+\end{aligned}}
+\]
+
+\subsection{点积：测量方向分量}
+
+\[
+\mathbf a\cdot\mathbf b=a_1b_1+a_2b_2+a_3b_3
+=\lVert\mathbf a\rVert\lVert\mathbf b\rVert\cos\theta.
+\]
+所以 $\mathbf a\perp\mathbf b$ 当且仅当 $\mathbf a\cdot\mathbf b=0$。向量 $\mathbf a$ 在 $\mathbf b$ 方向上的投影为
+\[
+\operatorname{proj}_{\mathbf b}\mathbf a
+=\frac{\mathbf a\cdot\mathbf b}{\lVert\mathbf b\rVert^2}\mathbf b.
+\]
+夹角、正交和投影都在问同一件事：一个向量沿另一个方向到底留下多少分量。内积与投影的跨学科解释由 B00 接收，本册只使用其几何计算接口。
+
+\subsection{叉积：构造共同法向}
+
+\[
+\mathbf a\times\mathbf b
+=
+\begin{vmatrix}
+\mathbf i&\mathbf j&\mathbf k\\
+a_1&a_2&a_3\\
+b_1&b_2&b_3
+\end{vmatrix},
+\qquad
+\lVert\mathbf a\times\mathbf b\rVert
+=\lVert\mathbf a\rVert\lVert\mathbf b\rVert\sin\theta.
+\]
+它同时给出垂直于 $\mathbf a,\mathbf b$ 的方向和由两向量张成的平行四边形面积。非零向量平行当且仅当叉积为零。叉积是三维特有的工具，不应被当成任意维度的通用运算。
+
+\subsection{混合积：体积与共面}
+
+\[
+[\mathbf a,\mathbf b,\mathbf c]
+=(\mathbf a\times\mathbf b)\cdot\mathbf c,
+\qquad
+V=\left|(\mathbf a\times\mathbf b)\cdot\mathbf c\right|.
+\]
+三向量共面当且仅当混合积为零。后面两条异面直线的距离公式，本质就是“平行六面体体积除以底面积”。
+
+\section{直线：一点加一个方向}
+
+经过 $P_0$、方向为 $\mathbf v\ne\mathbf0$ 的直线由
+\[
+\boxed{\mathbf r=\mathbf r_0+t\mathbf v,\qquad t\in\mathbb R}
+\]
+生成。直线的最小数据永远是“一点 + 一个非零方向”。坐标参数式为
+\[
+\begin{cases}
+x=x_0+at,\\y=y_0+bt,\\z=z_0+ct,
+\end{cases}
+\qquad \mathbf v=(a,b,c).
+\]
+它适合生成点、求交和表示动点。若 $a,b,c$ 均非零，可压缩为
+\[
+\frac{x-x_0}{a}=\frac{y-y_0}{b}=\frac{z-z_0}{c}.
+\]
+某方向分量为零时必须保留对应坐标恒等式，不能直接相除。
+
+两不平行平面的公共点集也表示一条直线：
+\[
+\begin{cases}\Pi_1(x,y,z)=0,\\\Pi_2(x,y,z)=0.\end{cases}
+\]
+若法向为 $\mathbf n_1,\mathbf n_2$，交线方向可取 $\mathbf n_1\times\mathbf n_2$。这是约束式表示，不是直线唯一的方程形式。
+
+\section{平面：一点加一个法向}
+
+平面经过 $P_0$、法向为 $\mathbf n\ne\mathbf0$ 时，平面上任意点 $P$ 满足
+\[
+\boxed{\mathbf n\cdot(\mathbf r-\mathbf r_0)=0}.
+\]
+若 $\mathbf n=(A,B,C)$，则点法式和一般式为
+\[
+A(x-x_0)+B(y-y_0)+C(z-z_0)=0,
+\qquad Ax+By+Cz+D=0.
+\]
+一般式的系数 $(A,B,C)$ 直接给出法向。
+
+三个不共线点 $P_1,P_2,P_3$ 确定平面时，取
+\[
+\mathbf n=\overrightarrow{P_1P_2}\times\overrightarrow{P_1P_3}.
+\]
+若三点共线，叉积为零，平面不唯一。若平面经过两个相交平面的公共直线，可用平面束
+\[
+\lambda\Pi_1+\mu\Pi_2=0,\qquad(\lambda,\mu)\ne(0,0)
+\]
+把“经过该交线”的条件提前编码；写成单参数时要注意会漏掉一个极端成员。
+
+\section{对象与表示：生成式与约束式}
+
+对象是点集，方程只是编码对象的表示；同一对象通常有多种不唯一的表示。生成式告诉我们如何生成对象上的点，约束式告诉我们哪些点被允许。
+
+\begin{center}
+\begin{tabular}{L{3.0cm}L{3.1cm}L{\dimexpr\linewidth-6.1cm\relax}}
+\toprule
+目标操作 & 优先表示 & 理由\\
+\midrule
+生成对象上的点 & 参数式 & 参数直接控制位置\\
+求交点/交线 & 至少参数化一个对象 & 把联立问题降为参数求解\\
+判断点是否属于对象 & 隐式式 & 直接代入约束\\
+提取平面法向 & 一般式 & 系数直接读取法向\\
+构造未知直线/平面 & 点加方向/法向 & 使用最小数据\\
+后续曲线积分 & 参数式 & 参数微元沿对象变化\\
+后续隐式曲面微分 & 隐式式 & 梯度从约束函数产生\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+“不存在永远最好的表示，只有最适合当前动作的表示”是本册最重要的选择原则。
+
+\section{关系翻译：方向、法向与位移承担结构}
+
+设直线方向为 $\mathbf v_i$，平面法向为 $\mathbf n_i$。
+
+\begin{itemize}
+  \item 两直线平行：$\mathbf v_1\times\mathbf v_2=\mathbf0$；
+  \item 两平面平行：$\mathbf n_1\times\mathbf n_2=\mathbf0$；
+  \item 两直线方向垂直：$\mathbf v_1\cdot\mathbf v_2=0$；
+  \item 两平面垂直：$\mathbf n_1\cdot\mathbf n_2=0$；
+  \item 直线垂直平面：$\mathbf v\parallel\mathbf n$；
+  \item 直线方向平行平面：$\mathbf v\cdot\mathbf n=0$，还需代入一个点区分“平行但不包含”与“整条包含”；
+  \item 点在平面：代入一般式为零；直线包含于平面：一个点满足平面式且方向与法向正交。
+\end{itemize}
+
+\subsection{两条空间直线的三分}
+
+若
+\[
+L_i:\ \mathbf r=\mathbf r_i+t_i\mathbf v_i,
+\]
+先判断方向是否平行。若不平行，再检验共面：
+\[
+\boxed{(\mathbf r_2-\mathbf r_1)\cdot(\mathbf v_1\times\mathbf v_2)=0}.
+\]
+方向不平行且共面时相交；方向不平行且不共面时异面。方向点积为零只能说明方向夹角为直角，不能单独推出两条直线几何上相交垂直。
+
+\section{角度与距离：从载体生成公式}
+
+两直线夹角用方向向量：
+\[
+\cos\theta=\frac{|\mathbf v_1\cdot\mathbf v_2|}{\lVert\mathbf v_1\rVert\lVert\mathbf v_2\rVert}.
+\]
+两平面夹角用法向量：
+\[
+\cos\theta=\frac{|\mathbf n_1\cdot\mathbf n_2|}{\lVert\mathbf n_1\rVert\lVert\mathbf n_2\rVert}.
+\]
+直线与平面锐角 $\alpha$ 与方向—法向夹角互余：
+\[
+\sin\alpha=\frac{|\mathbf v\cdot\mathbf n|}{\lVert\mathbf v\rVert\lVert\mathbf n\rVert}.
+\]
+角度题的第一动作永远是先找“谁真正承担方向”，再使用点积。
+
+距离的共同机制是“只留下位移的垂直分量”：
+\[
+d(P,Q)=\lVert\overrightarrow{PQ}\rVert.
+\]
+点 $P_0=(x_0,y_0,z_0)$ 到平面 $Ax+By+Cz+D=0$：
+\[
+d(P_0,\pi)=\frac{|Ax_0+By_0+Cz_0+D|}{\sqrt{A^2+B^2+C^2}}.
+\]
+点 $P_0$ 到经过 $P_1$、方向 $\mathbf v$ 的直线：
+\[
+d(P_0,L)=\frac{\lVert\overrightarrow{P_1P_0}\times\mathbf v\rVert}{\lVert\mathbf v\rVert}.
+\]
+它是平行四边形面积除以底边。两异面直线的距离：
+\[
+d(L_1,L_2)=
+\frac{|(\mathbf r_2-\mathbf r_1)\cdot(\mathbf v_1\times\mathbf v_2)|}{\lVert\mathbf v_1\times\mathbf v_2\rVert}.
+\]
+它是平行六面体体积除以底面积。忘掉具体式时，回到“投影、面积除底、体积除底面积”即可重建。
+
+\section{构造题：由最小数据反推对象}
+
+构造未知直线时先写目标数据：一个点 $P_0$ 和一个方向 $\mathbf v$。方向可来自两点连线、两个方向的叉积、两个平面法向的叉积或异面线的公垂方向。
+
+构造未知平面时先写目标数据：一个点 $P_0$ 和一个法向 $\mathbf n$。法向可来自平面内两方向的叉积、直线方向与连接向量的叉积，或题目已给出的垂直方向。
+
+\begin{examplebox}{过直线与线外一点作平面}
+设 $L:\mathbf r=(1,0,0)+t(1,1,0)$，线外点 $Q=(0,0,1)$。取 $P_0=(1,0,0)$，则
+\[
+\mathbf v=(1,1,0),\qquad \mathbf w=\overrightarrow{P_0Q}=(-1,0,1),
+\qquad \mathbf n=\mathbf v\times\mathbf w=(1,-1,1).
+\]
+过 $Q$ 的平面为
+\[
+\mathbf n\cdot(x,y,z-1)=0
+\quad\Longleftrightarrow\quad
+\boxed{x-y+z-1=0}.
+\]
+把直线参数式代回得 $(1+t)-t+0-1=0$，验证整条直线均在平面内。
+\end{examplebox}
+
+\section{曲线与曲面：三种表示与后续接口}
+
+空间直线是参数曲线的最简单情形：
+\[
+\mathbf r(t)=(x(t),y(t),z(t)).
+\]
+曲线也可用平面隐式方程或两个曲面联立表示。曲面常见三种表示：
+\[
+z=f(x,y),\qquad F(x,y,z)=0,\qquad
+\mathbf r(u,v)=(x(u,v),y(u,v),z(u,v)).
+\]
+显式式直接暴露高度，隐式式保留坐标对称性和约束，参数式负责生成点并适合后续微元。不能强行在不能全局解出的曲面上使用显式表示。
+
+本册只建立表示接口：参数曲线进入 Topic07/09 后产生切向量与曲线微元；参数曲面产生 $\mathbf r_u,\mathbf r_v$；隐式曲面进入 Topic07 后由 $\nabla F$ 承担一般化法向。不要在此提前占有梯度、可微或定向积分的深层机制。
+
+\section{标准曲面：对称、截面与轴向变化}
+
+识别曲面时按“对称性 → 固定一个坐标的截面 → 截面随参数变化”重建，而不是背图鉴。
+
+\begin{itemize}
+  \item 球面 $x^2+y^2+z^2=R^2$：水平截面是半径 $\sqrt{R^2-c^2}$ 的圆；
+  \item 椭球面 $x^2/a^2+y^2/b^2+z^2/c^2=1$：球面沿三轴非等比例伸缩；
+  \item 方程缺少 $z$，如 $x^2+y^2=R^2$：二维曲线沿 $z$ 轴延伸成柱面；
+  \item 圆锥面 $x^2+y^2=z^2$：水平截面半径随 $|z|$ 线性增长；
+  \item 椭圆抛物面 $z=x^2+y^2$：水平截面是随 $z$ 增大的圆；
+  \item 双曲抛物面 $z=x^2-y^2$：两个主竖直截面开口相反，形成鞍形；
+  \item 单叶/双叶双曲面：通过水平截面是否对所有 $z$ 存在，区分连通的一片或分离的两片。
+\end{itemize}
+
+截面是给对象加约束以降维；投影是丢掉一个坐标方向的信息；旋转则保留到旋转轴的距离和轴向位置。绕 $z$ 轴旋转时，核心不变量是
+\[
+z=z_0,\qquad x^2+y^2=x_0^2+y_0^2.
+\]
+先写不变量再消元，比背旋转公式更稳。
+
+\section{专题解题协议：空间几何题怎么执行？}
+
+\[
+\boxed{\text{Object}\to\text{Goal}\to\text{Representation}\to\text{Carrier}\to\text{Constraint}\to\text{Solve}\to\text{Verify}}
+\]
+\begin{enumerate}
+  \item \kw{Object}：圈出点、线、面、曲线、曲面或区域；方程只是表示，不是对象本身；
+  \item \kw{Goal}：判断关系、求角/距、求交、构造对象，还是为积分/微分选择表示；
+  \item \kw{Representation}：生成点用参数式，判断归属用隐式式，提取法向用一般式；
+  \item \kw{Carrier}：明确方向向量、法向量、位移向量和是否需要共同法向；
+  \item \kw{Constraint}：垂直用点积、平行用共线、共同法向用叉积、共面用混合积、相交用联立；
+  \item \kw{Solve}：再做方程求解、参数消元和代数化简；
+  \item \kw{Verify}：代回对象方程，复核点积/叉积、距离非负、角度范围和截面形状。
+\end{enumerate}
+
+\section{稳定边界与高频失败路径}
+
+\begin{itemize}
+  \item 点属于平面靠代入方程，向量平行平面靠与法向点积为零；两种对象不能混用；
+  \item 方向正交不等于两直线相交；异面直线也可能方向点积为零；
+  \item 法向和方向只确定一个非零倍数类，方程乘非零常数仍是同一对象；
+  \item 曲面 $F=0$ 与区域 $F\le0$ 不同，等式是边界， 不等式才可能给出体积区域；
+  \item 坐标方向缺失常意味着柱面延伸，不是“少了一个条件所以方程不完整”；
+  \item 求距离只保留垂直分量，不能把任意两点距离误当成点到线/面的距离；
+  \item 选错表示会让代数复杂化，出现这种信号应回到 Representation 步骤换路；
+  \item 梯度、切平面、曲线积分和定向属于后续 Owner，本册只输出可接收的表示。
+\end{itemize}
+
+\section{传统章节与 Source Corpus 映射}
+
+\begin{longtable}{L{2.65cm}L{5.35cm}L{\dimexpr\linewidth-8.00cm\relax}}
+\toprule
+\textbf{Source / 传统内容} & \textbf{进入本册} & \textbf{分流与拒绝复制}\\
+\midrule
+II-00 点、位移与向量 & 点/向量边界、方向余弦与对象识别 & 内积/投影的跨学科本体归 B00\\
+II-00 点积/叉积/混合积 & 角度、正交、共同法向、面积、体积、共面机制 & 不重复 Gram\textendash{}Schmidt 或线代基理论\\
+II-00 直线与平面 & 最小数据、参数/一般/点法/平面束表示 & 后续切线/切平面归 Topic07\\
+II-00 关系/角度/距离 & 方向与法向翻译、投影/面积/体积生成公式 & 定向与向量场归 Topic09\\
+II-00 曲线/曲面表示 & 显式、隐式、参数式及表示选择表 & 曲线曲面积分微元归 Topic09\\
+II-00 标准曲面 & 对称—截面—轴向变化重建法 & 区域坐标与 Jacobian 归 Topic08\\
+II-00 截面/投影/旋转 & 三种对象操作及不变量接口 & 具体重积分建模不在本册展开\\
+II-00 母例与接口 & 球面点、切向方向、切平面到梯度的过渡 & 梯度/可微/隐函数本体归 Topic07/B01\\
+\bottomrule
+\end{longtable}
+
+\section{一页压缩：忘掉公式后怎样重建？}
+
+\begin{corebox}{一句话}
+先识别空间对象，再选择生成式或约束式表示；找出位移、方向或法向这些几何载体，把关系翻译成点积、叉积、混合积或联立约束，最后用投影/面积/体积构造度量并独立验证。
+\end{corebox}
+
+\subsection{三个向量运算}
+\[
+\boxed{
+\begin{aligned}
+\mathbf a\cdot\mathbf b&\to\text{角度、正交、投影},\\
+\mathbf a\times\mathbf b&\to\text{共同法向、面积},\\
+(\mathbf a\times\mathbf b)\cdot\mathbf c&\to\text{体积、共面}.
+\end{aligned}}
+\]
+
+\subsection{两个最小构造}
+\[
+\boxed{\text{直线}=\text{一点}+\text{方向}},
+\qquad
+\boxed{\text{平面}=\text{一点}+\text{法向}}.
+\]
+
+\subsection{两类表示与三个操作}
+\[
+\boxed{\text{参数式}=\text{生成点}},\qquad
+\boxed{\text{隐式式}=\text{施加约束}}.
+\]
+截面是加约束降维，投影是消去方向信息，旋转是利用到轴距离不变生成新对象。
+
+\subsection{重建问题}
+\begin{enumerate}
+  \item 当前对象是点、线、面、曲线、曲面还是区域？
+  \item 目标是判断关系、求角距、求交、构造还是选择微积分表示？
+  \item 参数式还是隐式式更适合当前动作？
+  \item 真正承载结构的是哪个方向向量、法向量或位移向量？
+  \item 中文条件如何翻译成点积、叉积、混合积或联立方程？
+  \item 距离能否从垂直分量、面积除底或体积除底面积重建？
+  \item 结果能否通过代入、向量关系、距离非负或截面形状独立验证？
+  \item 是否已越界到 B00、Topic07、Topic08 或 Topic09 的 Owner？
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\appendix
+\section{空间对象 Coverage 锚点}
+
+\begin{center}
+\begin{tabular}{L{2.55cm}L{5.15cm}L{\dimexpr\linewidth-7.70cm\relax}}
+\toprule
+对象/动作 & 核心表示或载体 & 输出/接口\\
+\midrule
+点与位移 & $Q-P$ & 距离、方向\\
+直线 & 一点 + 方向，$\mathbf r=\mathbf r_0+t\mathbf v$ & 生成点、求交、曲线前置\\
+平面 & 一点 + 法向，$\mathbf n\cdot(\mathbf r-\mathbf r_0)=0$ & 约束、角距、切平面前置\\
+曲线 & 显式/隐式/参数式 & 切向与曲线积分接口\\
+曲面 & 显式/隐式/参数式 & 梯度、区域与曲面积分接口\\
+关系 & 点积/叉积/混合积/联立 & 平行、垂直、共面、相交\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+本册覆盖空间对象、表示、方向载体、关系翻译、角度距离、标准曲面重建和后续接口；B00 拥有内积/正交/投影的跨学科机制，Topic07 拥有梯度/可微/隐函数，Topic08 拥有区域坐标与 Jacobian，Topic09 拥有定向积分与向量场。
+
+\end{document}

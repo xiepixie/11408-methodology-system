@@ -1,275 +1,401 @@
-# 人工智能与机器学习 Subject Atlas：从求解、学习到生成与决策
+# 人工智能与机器学习 Subject Atlas：智能体、推理、学习与决策
 
 > 类型：Atlas
-> 状态：Atlas 工作稿，待人工确认；当前目标是先铺横向主干，不提前锁定研究方向。
+> 状态：Area Boundary v1 + Leaf Boundary v1 已采用；八个 Core Area 的 Canonical Scope / Stop Boundary、Leaf Topic 归属与内部 Dependency DAG 已锁定。Bridge / Integration 深度正文仍按真实学习逐步建立。
+
+> 设计依据见：[人工智能与机器学习领域结构设计依据](00_领域结构设计依据.md)；物理层级与 Leaf Topic 规范见：[文件夹与 Handbook 架构](人工智能与机器学习：文件夹与%20Handbook%20架构.md)。本 README 是当前唯一 Canonical Subject Atlas Source；两份设计文件只记录为什么这样切、怎样维护，不拥有具体算法知识。
 
 ## 0. Mother Question
 
-人工智能的算法很多，但当前学习不按“算法名录”组织，而围绕一个更稳定的问题：
+当前不把人工智能理解成“很多模型的集合”，也不把 AI 与 Machine Learning 直接画等号。
 
-> **当一个系统需要在复杂、未知或不确定的环境中完成任务时，它怎样表示问题、寻找解、从数据或交互中获得规律，并把这些规律变成预测、生成或行动？**
+我们先用一个更外层的问题统一整个领域：
 
-这张 Atlas 先用五类责任压缩整个视野：
+> **一个系统面对复杂、未知或不确定的环境时，怎样表示它所知道的东西，推断世界状态，寻找或学习解决方案，并选择能够实现目标的输出或行动？**
 
-\[
-\boxed{
-\text{AI}
-=
-\text{Representation}
-+\text{Inference / Search}
-+\text{Learning}
-+\text{Optimization}
-+\text{Decision / Action}
-}
-\]
-
-它不是对所有 AI 子领域的最终分类，而是当前用于学习和路由的工作地图。
-
-## 1. 当前学习目标：先铺横杠，再决定竖杠
-
-第一阶段不追求在某一方向达到研究深度，而要求对下列七块都能回答四个问题：
-
-1. **Problem**：它为什么存在，解决什么母问题？
-2. **Representation**：问题被表示成什么对象？
-3. **Core Algorithms**：第一批必须认识的算法是什么？
-4. **Relationship**：它向哪些领域提供输入，又依赖哪些领域？
-
-完成横向主干后，再通过真实推导、代码、小实验和论文片段观察自己更喜欢：Optimization、Learning Theory、Generative Models、RL、Scientific ML、CV/NLP，还是其他方向。
-
-## 2. 七块横向主干
-
-| 模块 | 它真正解决的问题 | 第一批算法 / 对象 | 与其他模块的关键连接 |
-|---|---|---|---|
-| **Search** | 规则大体已知，但可能状态太多时，怎样找到解或好行动？ | BFS、DFS、Uniform Cost、A*、Minimax、α-β、CSP | 为规划、博弈、部分 RL 与推理提供“在可能性空间中选择”的母模型 |
-| **Probability** | 世界状态、数据和观测不确定时，怎样表示并更新信念？ | Random Variable、Conditional Probability、Bayes Rule、Gaussian、MLE/MAP、Monte Carlo | 为统计学习、生成模型、不确定决策提供语言 |
-| **Machine Learning** | 映射或规律无法直接手写时，怎样从数据中估计它？ | Linear/Logistic Regression、KNN、Trees、Boosting、SVM、PCA、K-means | 把 Probability、Statistics、Optimization 汇入“从经验改进模型” |
-| **Optimization** | 已经有目标函数后，怎样找到好的参数或行动？ | GD、SGD、Momentum、Adam、Newton/BFGS、KKT、Proximal Method | 是 ML/DL 训练的执行引擎，也连接控制、RL 与科学计算 |
-| **Deep Learning** | 怎样构造可学习的高表达函数处理高维、复杂结构数据？ | MLP、Backprop、CNN、RNN、ResNet、Attention、Transformer | 为视觉、语言、生成、RL 等提供可学习表示与函数逼近器 |
-| **Reinforcement Learning** | 行动会影响未来数据且奖励延迟时，怎样学习长期决策？ | MDP、Bellman Equation、DP、MC、TD、Q-learning、Policy Gradient、Actor-Critic | Probability + Sequential Decision + Optimization；深度网络产生 Deep RL |
-| **Generative AI** | 怎样学习数据分布或生成过程，并从中产生新样本？ | Autoregressive、VAE、GAN、Diffusion、Flow Matching | Probability + DL + Optimization；与语言模型、视觉生成和表示学习汇流 |
-
-## 3. 三条必须反复复原的主链
-
-### 3.1 学习链：Data → Model → Objective → Optimization → Generalization
-
-\[
-\boxed{
-\text{Data}
-\rightarrow
-\text{Model } f_\theta
-\rightarrow
-\text{Objective}
-\rightarrow
-\text{Optimization of }\theta
-\rightarrow
-\text{Generalization}
-}
-\]
-
-这是第一条学习主梁。以后遇到任何监督学习或深度学习模型，先问：
-
-- 数据和任务是什么？
-- 模型族能表示什么？
-- 目标函数为什么这样写？
-- 参数怎样被优化？
-- 为什么训练集之外还能工作？
-
-### 3.2 概率链：Unknown → Distribution → Conditioning / Inference → Decision
-
-\[
-\boxed{
-\text{Unknown}
-\rightarrow
-p(\cdot)
-\rightarrow
-\text{Condition / Infer}
-\rightarrow
-\text{Decision}
-}
-\]
-
-Probability 不是旁边的一门数学课，而是表示“不知道”的语言。后续的 likelihood、Bayesian inference、cross entropy、latent variable、generative model 都要回到这条链上。
-
-### 3.3 决策链：State → Action → Transition → Reward → Long-term Return
-
-\[
-\boxed{
-S_t\rightarrow A_t\rightarrow S_{t+1},R_t
-\rightarrow
-\text{long-term return}
-}
-\]
-
-这条链把静态预测推进到“行动改变未来”的问题，也是 Search、Dynamic Programming、Optimal Control 与 RL 汇流的位置。
-
-## 4. 模块之间不是并排关系
-
-```mermaid
-flowchart LR
-    S[Search / Planning] --> D[Decision / Action]
-    P[Probability] --> ST[Statistics / Inference]
-    ST --> ML[Machine Learning]
-    O[Optimization] --> ML
-    ML --> DL[Deep Learning]
-    O --> DL
-    P --> GM[Generative Models]
-    DL --> GM
-    O --> GM
-    P --> RL[Reinforcement Learning]
-    O --> RL
-    DL --> RL
-    S --> RL
-    DL --> CVNLP[CV / NLP / Multimodal]
-    GM --> CVNLP
-```
-
-当前把这些箭头当作**待学习中不断验证的关系**。Atlas 只拥有路由，不在这里展开每条接口的完整理论。
-
-## 5. 数学 Foundation：只在算法需要时补
-
-本分支采用：
-
-\[
-\boxed{
-\text{Problem}
-\rightarrow
-\text{Algorithm}
-\rightarrow
-\text{Math Gap}
-\rightarrow
-\text{Fill the Gap}
-\rightarrow
-\text{Return to Algorithm}
-}
-\]
-
-而不是“先学完所有数学，再开始 AI”。
-
-| 数学语言 | 在 AI 中第一次真正需要它的典型位置 | 当前路由 |
-|---|---|---|
-| 线性代数 | 线性模型、PCA、神经网络、Attention、低秩表示 | 优先 Use `../../10_数学一/20_线性代数/`；ML 特有的矩阵微积分/高维结构按需扩展 |
-| 微积分 / 多元微分 | Gradient、Backprop、Taylor、局部近似 | 优先 Use `../../10_数学一/10_高等数学/`；Jacobian/Hessian/自动微分按算法需要深化 |
-| 概率与统计 | likelihood、generalization、不确定性、latent variables | 优先 Use `../../10_数学一/30_概率论/`；Bayesian / information-theoretic 内容按需扩展 |
-| Optimization | 模型训练、约束、收敛、regularization | 本 Atlas 的横向核心之一；后续可独立成为研究方向 |
-| Information Theory | Cross Entropy、KL、Mutual Information、Language Modeling | 当前作为 Foundation Extension，等生成模型/学习理论触发 |
-| ODE / Dynamical Systems / Stochastic Process | Neural ODE、Diffusion、Optimal Control、Scientific ML | 当前作为 Extension，等对应方向触发 |
-
-### Anti-Pattern：不要把数学基础重复抄一遍
-
-复试 AI 笔记只记录**某个数学对象在算法中的新解释责任**。如果一个定义已经由数学一 Owner 完整拥有，这里只写 Use 和接口，不重新建立第二份真相。
-
-## 6. 当前 Topic / Bridge / Integration 规划
-
-这些只是**规划归属**，不等于已有成熟 Handbook。
-
-### Topics
-
-| ID | 规划 Topic | Mother Question | 当前状态 |
-|---|---|---|---|
-| AI-T01 | Search 与状态空间求解 | 当解藏在巨大可能性空间中，怎样系统寻找？ | 规划，正文未建 |
-| AI-T02 | 概率建模与统计推断 | 怎样用分布表示未知，并从数据更新它？ | 规划，正文未建 |
-| AI-T03 | Statistical Learning | 怎样从有限样本选择能泛化的模型？ | 规划，正文未建 |
-| AI-T04 | Optimization for Learning | 目标已知后，参数怎样被有效更新？ | 规划，正文未建 |
-| AI-T05 | Deep Neural Networks | 深层可学习函数为什么能表示并训练复杂映射？ | 规划，正文未建 |
-| AI-T06 | Reinforcement Learning | 怎样在交互、延迟奖励和探索中学习策略？ | 规划，正文未建 |
-| AI-T07 | Generative Models | 怎样表示并学习数据生成分布，再进行采样？ | 规划，正文未建 |
-
-### Candidate Bridges
-
-当前先记录接口，不急着独立建册：
-
-- **Probability → Loss / Estimation**：likelihood 怎样变成 loss；
-- **Differentiation → Backprop / Optimization**：局部导数怎样变成大模型参数更新；
-- **Optimization → Learning**：优化训练误差为什么不自动等于泛化；
-- **Search / Dynamic Programming → RL**：已知模型求最优决策怎样过渡到未知模型下学习；
-- **Probability → Generative Modeling**：density / likelihood / sampling 各自扮演什么角色；
-- **Continuous Dynamics → Diffusion / Flow / Control**：生成与控制何时共享 ODE/SDE 语言。
-
-只有通过 Bridge Validity 与 Standalone Promotion 两道 Gate 后，才建立独立 Bridge Handbook。
-
-### First Integration Candidate
-
-第一条实际学习路线先不从“最新 Transformer”开始，而从：
-
-> **Linear Regression → Logistic Regression → Neural Network：到底什么叫学习？**
-
-沿一个完整过程反复追踪：
-
-\[
-\text{Data}
-\to
-\text{Model}
-\to
-\text{Probability Assumption}
-\to
-\text{Loss}
-\to
-\text{Optimization}
-\to
-\text{Prediction}
-\to
-\text{Generalization}
-\]
-
-它更像一个 Integration：组合 Probability、Statistics、Optimization 与 Model Representation，而不是重新拥有这些机制。
-
-## 7. 推荐学习路由
+最外层循环采用 rational-agent / modeling 双重视角：
 
 ```text
-Round 0  读这张 Atlas，只建立问题地图
-    ↓
-Round 1  First Integration：Linear → Logistic → Neural Network
-    ↓
-Round 2  Probability / Statistics + Statistical Learning
-    ↓
-Round 3  Optimization + Deep Neural Networks
-    ↓
-Round 4  Search / Sequential Decision → RL
-    ↓
-Round 5  Generative Models
-    ↓
-Round 6  CV / NLP / Scientific ML / Learning Theory 等方向体验
-    ↓
-选择一条竖杠，开始论文级深入
+Environment / Task
+        ↓ observation / data
+Represent State / Belief / Knowledge
+        ↓
+Infer / Predict
+        ↓
+Search / Plan / Decide
+        ↓
+Output / Act
+        ↓ feedback / experience
+Learn / Update
+        ↺
 ```
 
-这不是死板先修链。学习中如果某个算法先暴露数学缺口，就局部补齐后返回主线。
+并非每个 AI 系统都会走完整闭环：一个分类器可能只做 `data → prediction`，一个搜索程序可能没有 learning，一个生成模型可能输出 sample 而不直接作用于环境。这个循环的责任只是回答：**一个算法在智能系统里到底承担哪一步。**
 
-## 8. 怎样判断未来更适合哪条竖杠
+---
 
-不按“哪个方向现在最火”决定，而观察自己在真实任务中的持续兴趣：
+## 1. Atlas Foundation：先固定共同语言
 
-| 候选方向 | 重点观察的问题偏好 |
+### 1.1 Agent / Task Language
+
+全领域反复使用：
+
+- **Environment / Task**：系统面对的外部问题；
+- **Observation / Percept / Data**：系统实际得到的信息；
+- **State / Belief / Knowledge**：内部怎样表示世界；
+- **Action / Output**：系统能产生什么结果；
+- **Performance / Utility / Loss**：怎样判断好坏；
+- **Experience / Feedback**：后续怎样获得新信息并更新。
+
+### 1.2 Modeling Language
+
+后续笔记必须稳定区分：
+
+```text
+Task ≠ Model ≠ Algorithm ≠ Objective ≠ Metric
+Representation ≠ Inference ≠ Learning
+Training ≠ Generalization
+Prediction ≠ Decision
+Search ≠ Continuous Optimization
+Model Family ≠ Learning Setting
+Application Domain ≠ Core Mechanism
+```
+
+例如：
+
+- classification 是 **Task**，不是模型；
+- neural network 是 **Model Family / Representation**，不是一种监督方式；
+- SGD 是 **Optimization Algorithm**，不是模型；
+- maximum likelihood 是 **Estimation Principle / Objective Construction**，不等于 linear regression；
+- NLP / CV 是 **Application / Direction**，会调用很多不同机制。
+
+### 1.3 Mathematical Foundation
+
+优先 Use 现有考研数学 Owner，不复制基础定义：
+
+| 数学语言 | AI 中的主要作用 | 当前路由 |
+|---|---|---|
+| Linear Algebra | representation、linear model、PCA、neural layer、attention、low-rank structure | `../../10_数学一/20_线性代数/` |
+| Calculus / Multivariate Calculus | gradient、Taylor、backprop、Jacobian/Hessian | `../../10_数学一/10_高等数学/` |
+| Probability / Statistics | uncertainty、likelihood、generalization、latent variable | `../../10_数学一/30_概率论/` |
+| Optimization | learning / control 的计算引擎 | `50_优化与学习计算` Area 深化 |
+| Information Theory | entropy、cross entropy、KL、mutual information | 按 Probability / Machine Learning / Generative Models 的真实需要补 |
+| ODE / SDE / Dynamical Systems | control、Neural ODE、diffusion、flow matching | Extension / Candidate Bridge，按需补 |
+
+### 1.4 Cross-cutting Validation
+
+所有学习型算法都必须能回答：
+
+```text
+Data quality
+Objective vs evaluation metric
+Train / validation / test
+Generalization
+Uncertainty / calibration
+Model comparison
+Interpretability
+Distribution shift / failure cases
+Computation and memory cost
+```
+
+这部分不是某个具体模型的附录，而是判断“这个算法到底有没有真正工作”的共同检查语言。
+
+---
+
+## 2. Core Area Topology：大领域先分 Area，再分 Leaf Topic
+
+这个板块不能直接用“Subject Atlas → 九本超大 Topic”。AI 的规模已经要求增加一层 **Area Atlas**：
+
+```text
+AI Subject Atlas
+→ Area Atlas
+→ Leaf Topic Handbook
+```
+
+一级 Core Area 锁定为八块：
+
+| Area | Mother Question | Canonical Area Atlas |
+|---|---|---|
+| **10 问题求解** | 规则和合法动作基本已知，但候选空间巨大时，怎样组织显式搜索找到解？ | [问题求解](10_问题求解/README.md) |
+| **20 知识表示与推理** | 怎样把事实、关系、规则和动作条件变成有语义的显式知识，并合法推出结论或计划？ | [知识表示与推理](20_知识表示与推理/README.md) |
+| **30 概率推理与不确定性** | 不知道真实状态时，怎样用分布表示 belief、吸收 evidence 并回答 query？ | [概率推理与不确定性](30_概率推理与不确定性/README.md) |
+| **40 机器学习** | 规则无法手写时，怎样从有限经验估计模型并判断它能否泛化？ | [机器学习](40_机器学习/README.md) |
+| **50 优化与学习计算** | Objective 与约束已经明确后，怎样把它们变成稳定、可分析的数值更新？ | [优化与学习计算](50_优化与学习计算/README.md) |
+| **60 深度学习** | 怎样构造高表达的神经函数与表示，并让信息和梯度穿过深层结构？ | [深度学习](60_深度学习/README.md) |
+| **70 决策、控制与强化学习** | 行动会改变未来时，怎样把 belief、dynamics、reward/utility 与 experience 变成长期 policy？ | [决策、控制与强化学习](70_决策_控制与强化学习/README.md) |
+| **80 生成模型** | 怎样学习生成规律，并明确区分分布表示、训练原则与 sampling path？ | [生成模型](80_生成模型/README.md) |
+
+**这八个 Area 是 Canonical Owner Domain，不是八种同类概念。** 每个 Area 的 `README.md` 已锁定 Owns / Uses / Stop Boundary，并进一步锁定 Leaf Topic Boundary v1 与内部 Dependency DAG；以后新增算法先在现有 Leaf / Area 中做 Owner Diff，只有确实无法被现有 Mother Question 解释时才挑战拓扑。
+
+跨 Area 接口、完整过程和纵向研究路线分别进入 [85_跨域桥梁](85_跨域桥梁/README.md)、[90_综合专题](90_综合专题/README.md)、[95_研究方向](95_研究方向/README.md)。完整物理目录、Leaf Topic 晋升规则和统一正文骨架见 [文件夹与 Handbook 架构](人工智能与机器学习：文件夹与%20Handbook%20架构.md)。
+
+---
+
+## 3. 四种 Routing Lens：遇到陌生算法时先定位，不先背名字
+
+文件树只能选一种 Ownership，但面对算法时同时看四个轴。
+
+### Lens A｜Problem / Environment
+
+先问环境是什么：
+
+```text
+known / unknown
+ deterministic / stochastic
+fully observable / partially observable
+one-shot / sequential
+single-agent / multi-agent
+static dataset / interactive experience
+```
+
+这些条件经常比算法名字更早决定应该调用哪个 Topic。
+
+### Lens B｜Representation
+
+算法把问题表示成什么：
+
+```text
+state graph
+constraints
+logic / symbols
+probability distribution / graphical model
+linear / kernel / tree function class
+neural representation
+latent variable
+value / policy / dynamical state
+```
+
+### Lens C｜Computation
+
+真正靠什么计算：
+
+```text
+search
+constraint propagation
+logical inference
+dynamic programming
+probabilistic inference
+sampling
+gradient / numerical optimization
+learning / parameter estimation
+```
+
+### Lens D｜Output Responsibility
+
+最终是要：
+
+```text
+infer / explain
+predict
+generate
+plan
+decide
+act / control
+```
+
+遇到一个新算法时，先在四个 Lens 中回答它的位置，再决定它属于哪个 Owner。
+
+---
+
+## 4. Core Bridges：真正重要的是模块之间怎样接
+
+当前只规划，不立即全部建册。
+
+### AI-B01｜Probability → Estimation / Loss
+
+```text
+probabilistic assumption
+→ likelihood / posterior
+→ MLE / MAP / cross entropy / KL
+→ learnable objective
+```
+
+回答：**概率模型为什么会变成训练损失？**
+
+### AI-B02｜Differentiation / AutoDiff → Backprop → Optimization
+
+```text
+computation graph
+→ local derivatives
+→ reverse accumulation / backprop
+→ gradient
+→ optimizer update
+```
+
+回答：**“算出梯度”和“利用梯度更新参数”为什么是两个机制？**
+
+### AI-B03｜Search / Planning → Dynamic Programming → Sequential Decision
+
+回答：路径搜索、状态价值、未来回报和策略之间如何交接。
+
+### AI-B04｜Known-model Decision → Reinforcement Learning
+
+```text
+known transition / reward
+→ solve value / policy
+──────── boundary ────────
+unknown model or value
+→ experience
+→ estimate / improve policy
+```
+
+这是“已知模型下的序贯决策 → 从经验学习策略”的核心接口。
+
+### AI-B05｜Probability → Generative Modeling
+
+回答：density、likelihood、latent variable、sampling、score、flow 各自扮演什么角色。
+
+### AI-B06｜Function Approximation → Value / Policy Approximation
+
+回答：为什么 neural network 可以进入 RL，但“Deep RL”并没有推翻 MDP / Bellman 的基本结构。
+
+### AI-B07｜Continuous Dynamics → Control / Neural ODE / Diffusion / Flow
+
+当前标为 **Candidate / Extension**。它在 Xiaojing Ye 的结构中非常重要，但是否独立建册要等我们真实学习 optimal control、Neural ODE、diffusion/flow 后再判。
+
+### AI-B08｜Symbolic Representation ↔ Probabilistic Representation
+
+当前只保留 Candidate。等概率编程、Neuro-symbolic AI 或不确定知识表示真正进入学习范围后再判断 Standalone Promotion。
+
+---
+
+## 5. Integration Layer：把多个成熟机制跑成完整过程
+
+### AI-I01｜从数据到可用预测器
+
+第一条实际学习主线：
+
+```text
+Problem
+→ Data
+→ Model / Representation
+→ Probabilistic Assumption or Objective
+→ Estimation / Optimization
+→ Validation / Generalization
+→ Prediction
+→ Decision / Communication
+```
+
+第一组 Canonical Problems：
+
+```text
+Linear Regression
+→ Logistic Regression
+→ MLP
+```
+
+这里不把三者理解成“模型升级史”，而是比较同一个 modeling pipeline 中：
+
+- output 语义怎样变；
+- model family 怎样变；
+- loss 从哪里来；
+- parameter 怎样估计；
+- gradient 怎样传播；
+- capacity 增大以后 generalization 问题怎样变化。
+
+### AI-I02｜一个理性智能体的完整闭环
+
+```text
+Observe
+→ Represent / Update Belief
+→ Infer
+→ Plan / Decide
+→ Act
+→ Receive Feedback
+→ Learn / Update
+```
+
+未来用它验收 Search、Probability、Planning、RL、Perception 是否真正接上，而不是各学各的。
+
+---
+
+## 6. Direction Layer：研究方向不与 Core Topic 混放
+
+AIMA 把 NLP、CV、Robotics 单列大章；Murphy 还覆盖 recommender、graph embedding；Xiaojing Ye 强调 control、scientific computing、generative modeling。对我们而言，这些更适合作为**方向入口**：它们会组合多个 Core Topic，而不是重新定义底层机制。
+
+当前候选：
+
+| Direction | 主要调用的 Core |
 |---|---|
-| Optimization | 是否喜欢目标函数、几何、收敛、数值算法和训练动力学？ |
-| Learning Theory | 是否喜欢“为什么能泛化”、复杂度、界、证明和统计性质？ |
-| Generative Models | 是否喜欢概率分布、latent variable、sampling、ODE/SDE 与生成机制？ |
-| Reinforcement Learning | 是否喜欢动态决策、Bellman、exploration、control 与长期信用分配？ |
-| Scientific ML | 是否喜欢 PDE/ODE、数值分析、物理约束与机器学习结合？ |
-| CV | 是否喜欢空间结构、视觉表征、检测/分割/生成等任务？ |
-| NLP / LLM | 是否喜欢序列、语言建模、Transformer、推理与 post-training？ |
+| **NLP / LLM / Agents** | Machine Learning + Optimization + Deep Learning + Generative Models；agent 系统还会调用 Search / Decision / RL |
+| **Computer Vision / Multimodal** | Machine Learning + Optimization + Deep Learning + Generative Models |
+| **Robotics / Embodied AI** | Search + Probability + Deep Learning + Decision / Control / RL |
+| **Scientific Machine Learning** | Optimization + Deep Learning + Control；进一步连接 ODE/PDE/数值分析 |
+| **Graph ML / Recommender** | Machine Learning + Deep Learning；recommender 还会进入 sequential decision |
+| **Causal ML** | Probability + Machine Learning + Decision；当前作为方向候选，不先升 Core |
+| **Learning Theory** | Machine Learning 为中心，深入 probability/statistics/optimization |
+| **AI Safety / Alignment** | decision、RL、uncertainty、human objective 与系统级行为的 Integration |
 
-真正的判据不是“看介绍时觉得酷”，而是：**当进入这个方向最麻烦的数学、实验和失败案例以后，是否仍愿意继续追。**
+### 方向选择判据
 
-## 9. External Source Routing（当前会话已有材料）
+不按“哪个现在最火”选，而看：
 
-这些书作为 Source / Reference 使用，不自动成为 Canonical Owner：
+> **当一个方向进入它最麻烦的数学、实验、失败案例与论文细节以后，我是否仍愿意继续研究？**
 
-- **Russell & Norvig, _Artificial Intelligence: A Modern Approach_**：AI 全景、Search、Planning、Probability、Learning、RL 的广域地图；
-- **Kevin P. Murphy, _Probabilistic Machine Learning: An Introduction_**：Probability → Statistics → Decision Theory → Information Theory → Linear Algebra → Optimization → ML/DL 的统一概率视角；
-- **Xiaojing Ye, _Mathematical Foundations of Deep Learning: Theory and Algorithms_**：Function Approximation、Network Training、Optimal Control、RL、Generative Models 的数学主线；
-- **Clark & Berry, _Models Demystified_**：建模、评价、估计、优化与常用 ML 模型的实践直觉。
+因此未来每个方向至少要做一次：
 
-后续真正学习某个 Topic 时，再按 Topic 做 Source Diff，不按书的目录机械抄写。
+```text
+核心论文/教材段落
++ 手推一个机制
++ 写一个最小实现
++ 看一个失败案例
++ 解释它调用了哪些 Core Topic
+```
 
-## 10. Stop Boundary
+再决定是否建立独立 Direction Atlas。
 
-这张 Atlas 不负责：
+---
 
-- 展开 Universal Approximation、Backprop、Bellman、Diffusion 等完整推导；
-- 罗列所有网络架构或“最新模型”；
-- 在尚未体验方向前替使用者选择研究方向；
-- 重写数学一已经拥有的基础定义；
-- 把 CV / NLP 当作与 Probability / Optimization 同层的基础机制强行并排。
+## 7. 当前推荐学习路由
 
-这些都应路由到后续 Topic、Bridge、Integration 或方向专题。
+```text
+Round 0  只读 Subject Atlas：建立 Agent Loop + 八个 Area 的位置感
+    ↓
+Round 1  AI-I01：Linear Regression → Logistic Regression → MLP
+    ↓
+Round 2  Probability + Machine Learning
+    ↓
+Round 3  Optimization + Deep Learning
+    ↓
+Round 4  Search + Symbolic Reasoning + Sequential Decision
+    ↓
+Round 5  Reinforcement Learning
+    ↓
+Round 6  Generative Models
+    ↓
+Round 7  NLP / CV / Robotics / Scientific ML / Learning Theory ... 方向体验
+    ↓
+选择一条纵向研究方向，再进入论文级深入
+```
+
+这个顺序服务“先泛化、后选方向”，不是唯一先修链。真实学习中一旦暴露数学或机制缺口，就局部补齐后返回主线。
+
+---
+
+## 8. 当前参考书怎样路由
+
+这些 PDF 都是 Source / Reference，不自动成为 Canonical Owner。
+
+| Source | 最适合作为哪一层参考 | 不能直接拿它做什么 |
+|---|---|---|
+| **Russell & Norvig, _Artificial Intelligence: A Modern Approach_** | 整个 AI Course Map；Agent、Search、Logic、Planning、Uncertainty、Decision、ML、NLP/CV/Robotics | 不能把 28 章机械变成我们的 28 个 Topic |
+| **Kevin P. Murphy, _Probabilistic Machine Learning: An Introduction_** | Probability / Machine Learning / Optimization / Deep Learning；Probability + Bayesian Decision Theory 视角；model families | 不能代表整个 AI，也不能把 Foundation 与模型族当同一层 |
+| **Xiaojing Ye, _Mathematical Foundations of Deep Learning: Theory and Algorithms_** | Optimization / Deep Learning / Control & RL / Generative Models；尤其 Function Approximation → Training → Control → RL → Generative | 不是 AI 全景，也不是经典 ML 算法百科 |
+| **Clark & Berry, _Models Demystified_** | AI-I01 与 Cross-cutting Validation；Task/Model/Algorithm 区分、estimation、uncertainty、model comparison | 不承担 symbolic AI、planning、概率推理等完整 AI 主干 |
+
+后续进入某个 Topic 时，再做 **Source Diff**：比较四本书对同一机制的解释责任、边界和生成链，不按任一本目录全文搬运。
+
+---
+
+## 9. Stop Boundary
+
+当前 Atlas **不负责**：
+
+- 展开 BFS、Bayes Network、SVM、Backprop、Bellman、Diffusion 等完整推导；
+- 批量建立八个 Area 下几十个空 Topic 目录或空 LaTeX；
+- 罗列所有深度学习架构；
+- 把 NLP / CV / Robotics 与 Probability / Optimization 强行作为同层基础机制；
+- 重新抄写数学一已经拥有的基础定义；
+- 在尚未真实体验方向前替使用者确定研究方向。
+
+下一次最小动作：先建设 **AI-I01《Linear Regression → Logistic Regression → MLP：到底什么叫学习？》**，用真实推导和代码第一次攻击 Probability / Machine Learning / Optimization / Deep Learning 四个 Area 的边界。

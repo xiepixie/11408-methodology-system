@@ -146,13 +146,13 @@ Handbook 状态词义统一见 [`terminology.md`](terminology.md) §10；本工�
 “导入”不自动等于“成为 Canonical”。外部讲义、旧 LaTeX 和 AI 生成稿首先都是输入材料。
 
 1. **定位**：先判断 Atlas、Topic、Bridge、Integration 还是 Rules；若只是指出真实但超纲的连接或阻断伪连接，再标记为 Extension / Anti-Bridge 关系，不新建第五、第六类 Handbook；
-2. **找 Owner**：检查学科复习总览与导航和 `ownership_matrix.md`；
+2. **找 Owner**：检查对应 Course / Subject Atlas 和 `ownership_matrix.md`；
 3. **Handbook Diff**：与当前 Owner 比较重复、新增、冲突和越界；
 4. **拆分**：Knowledge 内容进入 Handbook Owner，Control 内容进入 Rules，Evidence 留在学习证据；若 Source 自带旧 PDF/排版稿，只把它登记为发布/Source 线索，不把 Publication View 当成新的知识 Owner；
 5. **人工决定**：接受哪些模型、保留哪些候选、拒绝哪些说法；
 6. **纳管**：先看类型。Atlas 的稳定地图内容进入 Canonical README；Topic / Bridge / Integration 的深度正文进入 Canonical `.tex`，README 只建立/更新 Landing Page。旧 Markdown 先作为 Source 做 Diff，不机械搬运；
 7. **状态**：更新该资产入口顶部的状态；
-8. **依赖**：只有产品拓扑或 Owner 改变时，才更新复习总览与导航/Ownership；
+8. **依赖**：只有产品拓扑或 Owner 改变时，才更新对应 Course / Subject Atlas 与 Ownership；
 9. **发布**：旧 LaTeX/PDF 先标为 legacy；Topic / Bridge / Integration 以 `.tex` 为正文 Owner，Atlas 以 README 为地图 Owner；PDF 仅是派生阅读/视觉视图，不反向拥有知识；
 10. **检查**：运行 `progress --write` 和 `check`。
 
@@ -169,7 +169,7 @@ Handbook 状态词义统一见 [`terminology.md`](terminology.md) §10；本工�
 条件更新：
 
 - Owner 或依赖改变：`ownership_matrix.md`；
-- 专题地图改变：学科复习总览与导航；
+- 专题地图改变：对应 Course / Subject Atlas；
 - 做题动作改变：Subject Rules；
 - 发布稿因此过时：标记待同步，之后进入发布循环。
 
@@ -231,10 +231,10 @@ Atlas 如果制作视觉海报，海报必须完全派生自 Canonical README；
 | 做题/错题 | Inbox 或 No Update | Rules、Exam Control | Handbook（未经验证） |
 | 规则验证 | Subject Rules | Inbox 清理 | Topic 机制定义 |
 | 导入旧 Atlas | Canonical Atlas README | Ownership、Rules | 为同一地图再造一份 `.tex` 真相 |
-| 导入旧 Topic/Bridge/Integration | README Landing + Canonical `.tex` 工作稿 | 复习总览与导航、Ownership、Rules | 把旧 Markdown/PDF 继续当正文 Owner |
+| 导入旧 Topic/Bridge/Integration | README Landing + Canonical `.tex` 工作稿 | Course / Subject Atlas、Ownership、Rules | 把旧 Markdown/PDF 继续当正文 Owner |
 | 修改 Topic | Canonical `.tex`、README 状态/链接 | Uses/Bridge/Integration、重新编译 PDF | 把完整正文写回 README |
 | 新建 Bridge | README Landing + Bridge `.tex` | Ownership、两侧链接、Anti-Bridge 边界 | 重讲两侧 Topic |
-| 新建 Integration | README Landing + Integration `.tex` | 复习总览与导航、参与 Owner 链接 | 重新拥有局部机制 |
+| 新建 Integration | README Landing + Integration `.tex` | Course / Subject Atlas、参与 Owner 链接 | 重新拥有局部机制 |
 | 增加 Extension / Anti-Bridge | Atlas 写入 Canonical README；Topic/Bridge 写入 Canonical `.tex` | 入口导航 | 为它们新建平行 Handbook 树 |
 | 发布 | `90_publish/*.pdf`、README 发布链接、状态 | 依赖链接 | Inbox、手工编辑 PDF |
 | 周复盘 | CURRENT、Inbox/Rules 决策 | Handbook | 为了显得有进度而更新 |

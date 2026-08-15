@@ -1,0 +1,36 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage[a4paper,margin=1.75cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx}
+\usepackage[most]{tcolorbox}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
+\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\begin{document}
+\section*{B04\quad 梯度、正交与 Lagrange：约束极值与子空间几何}
+\textbf{依赖：}B00+B01。只解释可行方向、法方向和梯度平行的接口。
+\begin{tcolorbox}[title=母接口]
+约束 $g(x)=c$ 的切空间满足 $\nabla g(x)\cdot h=0$。
+若正则点上 $f$ 沿所有可行方向的一阶变化均为零，则
+\[
+\nabla f(x)=\lambda\nabla g(x).
+\]
+\end{tcolorbox}
+\subsection*{1.\ 从允许方向推出乘子}
+在正则约束 $\nabla g\ne0$ 下，法空间由 $\nabla g$ 张成。约束极值要求 $\nabla f$ 对切空间正交，故必须落入法空间。多约束时写成
+\[
+\nabla f=\lambda_1\nabla g_1+\cdots+\lambda_k\nabla g_k,
+\]
+前提是约束梯度线性独立。
+\subsection*{2.\ 算法边界}
+Lagrange 方程只生成内部正则候选；还需检查约束集合是否为空、边界/端点、奇异点和全局比较。若 $\nabla g=0$，不能机械除以梯度或直接套乘子。
+\subsection*{3.\ 连接投影与最小距离}
+点到平面的最短距离是把位移投影到法方向；约束优化则把目标梯度投影到切空间后要求其为零。二者共享正交分解，但优化目标、可行集和正则条件不同。
+\subsection*{4.\ 最小例子与调用}
+求 $x+y=1$ 上距原点最近点。令 $f=x^2+y^2,g=x+y$，则
+\[
+(2x,2y)=\lambda(1,1),\qquad x+y=1,
+\]
+得到 $x=y=1/2$。几何上这是原点到直线的法向投影。题面出现“约束下最值/最近点”时，先找可行切向与法向资格。
+\begin{corebox}{检查句}
+我找出的切向/法向对象是什么？约束梯度是否独立且非零？候选之后是否补齐边界和全局比较？
+\end{corebox}
+\end{document}

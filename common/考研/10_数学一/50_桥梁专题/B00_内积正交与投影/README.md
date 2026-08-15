@@ -1,6 +1,6 @@
 # B00｜内积、正交与投影
 
-状态：目录已建立，正文未建。
+状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
 ## Position
 
@@ -34,6 +34,14 @@ $$
 
 函数空间内积与 Hilbert space 只作为未来方向，不进入数学一主干。
 
-## 待重构
+## Source Diff
 
-用旧高数空间几何、线代正交化与 Fourier 材料完成 Source Diff 后补正文。
+旧高数空间几何、线代正交化与 Fourier 材料已完成 Owner 复核；正文只保留跨科翻译。
+
+## Manual
+
+- Canonical Source：[内积正交与投影.tex](内积正交与投影.tex)
+- Published View：[内积正交与投影.pdf](../../../90_publish/内积正交与投影.pdf)
+
+## Review v1
+已核对几何对象到内积、正交和投影系数的翻译，保留函数正交、几何垂直、概率不相关的分层。下一轮用非标准内积和最小二乘投影题验证。

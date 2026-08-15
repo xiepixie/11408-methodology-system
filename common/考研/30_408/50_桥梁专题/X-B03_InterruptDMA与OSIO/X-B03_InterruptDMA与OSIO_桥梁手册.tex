@@ -1,0 +1,26 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\usepackage{amsmath,booktabs,tabularx,hyperref}
+\handbooksetup{X-B03 Interrupt / DMA × OS I/O}{408 · Cross-Subject Bridge}{Submit · Ownership · Completion · Wake}
+\begin{document}
+\handbooktitle{Interrupt / DMA × OS I/O}{设备异步完成怎样变成内核可确认的 request completion 与任务唤醒}{408 · Cross-Subject X-B03}
+\begin{corebox}{Mother Interface}
+\[
+\boxed{\text{OS Submit}\to\text{Device/DMA Ownership}\to\text{Completion Evidence}\to\text{Interrupt/Observe}\to\text{Kernel Completion}\to\text{Wake}}
+\]
+最重要的不是“DMA 后一定中断”，而是设备何时交还 buffer/request 的所有权，以及 OS 用什么证据确认完成。
+\end{corebox}
+\begin{methodbox}{Owners 与边界}
+CO08 Owns controller、bus、DMA、interrupt delivery；OS04 Owns driver/request、buffer ownership、completion；OS-B01 Owns wait/block/wakeup。本册 Owns软硬件完成证据与所有权交接，不重新讲设备内部协议。
+\end{methodbox}
+\section{提交与完成不是同一事件}
+OS/driver 设置描述符、buffer 和控制寄存器后，设备获得 DMA 使用权。DMA 地址可能是 device bus address，不必等于 CPU virtual/physical address；Linux DMA 文档明确区分三类地址，并要求映射只在设备实际使用期间保持。完成后设备可以通过中断、轮询或队列状态报告，驱动验证状态并回收 buffer/request。
+\section{最小例子与异步分支}
+阻塞 read 提交磁盘请求后，线程进入等待；设备写入 buffer 并报告完成，内核确认 request 状态、使数据对 CPU 可见、标记完成并唤醒等待者。若采用轮询或批量队列，路径可能没有“一次 DMA 对应一次中断”，但 ownership/completion contract 仍存在。
+\begin{warnbox}{Anti-Bridge}
+DMA $\neq$ CPU copy；中断到达 $\neq$ request 已成功；completion $\neq$ 立即调度；device bus address $\neq$ CPU virtual address。缓存一致性与内存可见性必须按平台/接口说明，不能靠“中断后自然正确”推断。
+\end{warnbox}
+\begin{corebox}{Compression}
+谁持有 buffer？设备何时获得/归还 ownership？完成证据是什么？内核确认后哪一个 request 和 task 可以改变状态？
+\end{corebox}
+\end{document}

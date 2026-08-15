@@ -1,0 +1,120 @@
+\documentclass[UTF8,fontset=fandol,11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.75cm,headheight=15pt]{geometry}\usepackage{amsmath,amssymb,mathtools,booktabs,tabularx,array,enumitem}\usepackage[most]{tcolorbox}\usepackage{tikz}\usetikzlibrary{arrows.meta,positioning}\usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\definecolor{deep}{RGB}{38,58,72}\definecolor{soft}{RGB}{244,247,248}\definecolor{greenish}{RGB}{52,91,74}\definecolor{warnc}{RGB}{136,61,58}\definecolor{purple}{RGB}{84,72,112}\definecolor{rulegray}{RGB}{110,116,120}\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=purple,pdftitle={CO-07 地址翻译与虚拟存储硬件}}\pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{408 · 计算机组成原理 CO-07}}\rhead{\small\color{deep}VA · TLB · Page Walk · PA}\cfoot{\small 第 \thepage\ 页 / 共 \pageref{LastPage} 页}\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warnc,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}\newcommand{\kw}[1]{\textbf{\color{deep}#1}}\newcommand{\code}[1]{\texttt{#1}}
+\tikzset{co/.style={draw=deep,rounded corners=1.5mm,text width=2.7cm,minimum height=0.9cm,align=center,fill=soft,font=\small,inner sep=3pt},state/.style={co,double,double distance=1.2pt,fill=white},flow/.style={-{Latex[length=2mm]},thick,draw=deep},ref/.style={-{Latex[length=2mm]},dashed,draw=rulegray}}
+\title{\vspace{-1.1cm}\textbf{地址翻译与虚拟存储硬件}\\[0.4em]\large 虚拟地址怎样成为可检查、可访问的物理地址}\author{408 · 计算机组成原理 Topic CO-07}\date{}
+\begin{document}\maketitle
+\begin{corebox}{母问题：程序地址怎样经过映射与权限检查进入存储层次？}
+\[
+\boxed{\text{VA}\to\text{VPN/Offset}\to\text{TLB / Page Walk}\to\text{Permission}\to\text{PA}\to\text{Cache / Memory}}
+\]
+分页只替换页号，保留页内偏移：若 page size 为 $2^p$，offset 恒为低 $p$ 位，合法映射下 $PA=(PFN\ll p)|offset$。
+\end{corebox}
+\begin{methodbox}{本册定位与 Owner 边界}\begin{itemize}\item \kw{Owns：}VA/PA 拆分、PTE 硬件可见字段、TLB、单/多级 page walk、权限/valid 检查、翻译缓存失效、PIPT/VIPT/VIVT 接口和精确异常边界。\item \kw{Uses：}CO-05 的存储访问、CO-06 的 Cache 组织、CO-02/03 的访存语义。\item \kw{Stops：}页框分配、置换、工作集、COW、调页、阻塞和 OS handler 归 OS VM/Bridge。\end{itemize}\end{methodbox}\tableofcontents\newpage
+\section{为什么需要间接映射}
+直接让程序地址等于物理地址会暴露布局、阻碍隔离和共享。分页用固定粒度的 VPN→PFN 映射把程序视图与物理布局解耦；页内偏移不参与映射，保证页内寻址结构稳定。
+
+\section{PTE 与多级页表}
+PTE 不是单独的 PFN，通常还包含 valid/present、读写执行权限、特权级、accessed/dirty 或架构扩展位；具体字段和 A/D 位更新方式服从 ISA，不能跨架构硬套。
+
+若 VA 有 $v$ 位、页大小 $2^p$、PTE 大小 $e$，线性页表大小为
+\[
+2^{v-p}\times e.
+\]
+稀疏地址空间用多级页表只为实际使用的子树分配页。若一页容纳 $N=page\ size/PTE\ size$ 个 PTE，则每级索引容量为 $\log_2N$ 位，VPN 按层切分；顶级可能不是完整一层。
+
+\section{Page Walk 是依赖链}
+\[
+root+index_1\to PTE_1\to next\ table+index_2\to\cdots\to leaf\ PTE\to PFN.
+\]
+后一级地址依赖前一级返回内容，不能把 $L$ 级页表机械说成 $L+1$ 次主存：PTE 本身可能在 Cache，访问还受 TLB/存储层次影响。
+
+\section{分段与段页式：先按逻辑边界，再按固定页映射}
+分段把地址写成 $(segment,offset)$。段表项给出该段的 base、limit 和保护属性；硬件先检查段号存在、offset 不超过 limit 以及访问权限，再计算
+\[
+PA=base+offset.
+\]
+段的长度可以贴合代码、数据、栈等逻辑单元，便于保护与共享，但段长可变会产生外部碎片，且连续物理空间分配困难。
+
+段页式把一个逻辑地址分成 $(segment,page,offset)$：先查段表得到该段的页表基址与界限，检查 offset 所在页不超过段界限；再以 page 查页表得到 PFN，最后保留页内 offset 拼接物理地址。其顺序是
+\[
+\text{segment check}\to\text{page translation}\to\text{permission}\to\text{PA},
+\]
+不能把段号直接当 VPN，也不能在尚未完成段界限检查时先声称页表访问合法。段页式同时继承段的逻辑保护和分页的固定块分配；代价是额外的表项、检查与翻译缓存组织。
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.2cm}C{.35cm}L{2.2cm}YY}\toprule
+概念 A&$\neq$&概念 B&真正判据与题面信号&混淆后果\\\midrule
+分段&$\neq$&分页&可变逻辑段 + base/limit vs 固定页 + VPN/PFN&把界限检查和页内偏移混写\\
+段页式&$\neq$&单纯分页&先段检查再页映射，地址多一层逻辑索引&漏算段表项或错误拼接 PA\\
+段界限失败&$\neq$&页表无效&逻辑范围/权限错误 vs 页映射不存在&处理者和异常原因写错\\\bottomrule
+\end{tabularx}\end{center}
+
+\section{TLB、Fault 与 Cache Miss 三分}
+TLB 保存 VPN→PFN 与权限的翻译副本。TLB hit 直接检查权限并拼接 offset；TLB miss 进入 page walk，可能完全找到有效映射，不等于 Page Fault。PTE 无效或权限失败才产生同步异常，后续是否调页、换页或终止由 OS 决定。Cache miss 是数据副本缺失，通常不必进 OS。
+
+\begin{center}\small\begin{tabularx}{\linewidth}{L{2.1cm}YY Y}\toprule
+事件 & 缺失/错误对象 & 快路径 & 是否必进 OS\\\midrule
+TLB miss & 翻译缓存项 & page walk/refill & 不一定\\
+Page Fault & 映射无效或不在驻留集 & 异常交给 OS & 是\\
+Permission fault & 权限不允许 & 异常/终止 & 是\\
+Cache miss & 数据块副本 & 下一级取块 & 通常否\\
+\bottomrule\end{tabularx}\end{center}
+
+\section{地址空间切换与同步}
+相同 VPN 在不同进程可映射不同 PFN，TLB 只按 VPN 匹配会产生 homonym。失效、ASID/PCID 等机制区分地址空间。OS 修改 PTE 后，旧翻译副本可能仍被使用，必须按 ISA 规定执行失效和排序；写内存中的 PTE 不等于所有核心立即看到新映射。
+
+\section{TLB 与 Cache 组合}
+PIPT 是 `VA→TLB→PA→Cache`，路径直观但串行；VIPT 用 page-offset 位先索引 Cache，同时 TLB 查 VPN，再用 PA tag 比较；若索引侵入 VPN，可能产生 synonym，需额外处理。若 page offset 为 $p$、block offset 为 $b$，安全索引位至多为 $p-b$，每路容量满足
+\[
+sets\times block\ size\le page\ size.
+\]
+这个约束由页大小、块大小和相联度推出，不背固定容量上限。
+
+\section{贯穿母例：一次 Load 的三种“没找到”}
+\begin{enumerate}
+\item VPN 不在 TLB：TLB miss，开始 walk；
+\item walk 找到有效叶 PTE：refill TLB，形成 PA；
+\item PA 在 Cache 中没有 line：Cache miss，向下一级取块；
+\item walk 找到 invalid/permission fault：硬件报告异常，不能自行从磁盘调页；
+\item OS 修复映射并完成必要失效后，原指令按 ISA 规则重试；
+\item 最终 load 数据只在无异常路径提交到目标寄存器。
+\end{enumerate}
+\begin{warnbox}{反例}
+TLB miss 但 PTE 有效，不是 Page Fault；Cache hit 但权限失败，数据仍不能提交；“缺页后同一指令一定执行两次”也不是稳定模型，应追踪副作用与重试边界。
+\end{warnbox}
+
+\section{五列概念边界}
+\begin{center}\small\begin{tabularx}{\linewidth}{L{1.8cm}C{0.35cm}L{1.8cm}Y Y}\toprule
+概念 A & $\neq$ & 概念 B & 真正区别与题面信号 & 混淆后果\\\midrule
+VPN & $\neq$ & PFN & 虚拟页号 vs 物理页框号 & 错算地址拼接\\
+TLB miss & $\neq$ & Page Fault & 翻译缓存缺项 vs 映射无效/权限失败 & 错写处理者\\
+Page Fault & $\neq$ & Cache miss & 映射/驻留问题 vs 数据副本问题 & 把硬件路径写成 OS 调页\\
+PTE & $\neq$ & TLB entry & 内存中的映射结构 vs 翻译缓存副本 & 忽略失效/同步\\
+VA & $\neq$ & PA & 程序视图地址 vs 送入物理存储层次的地址 & 直接按 VA 做 Cache/内存定位\\
+页框需求 & $\neq$ & Working Set & 正确性底线 vs 动态性能目标 & 把一次缺页算成颠簸定理\\
+\bottomrule\end{tabularx}\end{center}
+
+\section{做题控制协议}
+\begin{enumerate}\item 由地址宽度和 page size 拆 VPN/offset；\item 由 PTE/page 算每级索引位；\item 画 TLB hit、TLB miss+walk、fault 三分支；\item 每级标地址来源、访问对象和权限；\item 得 PA 后再做 Cache 三分；\item 时间题声明 TLB/Cache 串并行、PTE 是否可缓存；\item 写检测者、处理者、重试点和提交点。\end{enumerate}
+\begin{methodbox}{压缩成第一动作}看到虚拟地址题，先问：\kw{现在缺的是翻译副本、映射合法性还是数据副本？offset 是否保持不变？}\end{methodbox}
+
+\section{全科坐标与跨册交接}
+\begin{corebox}{Map Coordinate：Data Location / Translation}
+CO-07 负责把程序视图中的 VA 变成带权限和属性的 PA；CO-B02 再把 Translation Result Packet 交给 CO-06 的物理身份检查。TLB miss、Page Fault 和 Cache miss 的检测者、处理者、重试点与成本必须分开。
+\end{corebox}
+地址翻译成本取决于 TLB 命中、page-walk 级数、PTE 是否可缓存、权限检查和与 Cache 的串并行关系；不能把“页表级数”机械等同于固定主存次数，也不能把一次 fault 的 OS/磁盘代价混入普通 Cache miss。
+
+\section{考纲映射与来源处理}
+\begin{center}\small\begin{tabularx}{\linewidth}{L{3.2cm}YY}\toprule
+考点 & 本册机制 & 接口\\\midrule
+分页/页表 & VPN/offset、PTE、多级 walk & OS VM\\
+TLB & 翻译副本、miss/refill/失效 & CO-B02\\
+Cache 组合 & PIPT/VIPT、页内偏移约束 & CO-06\\
+缺页/置换 & 只保留 fault 入口与重试边界 & OS-04\\
+\bottomrule\end{tabularx}\end{center}
+\begin{corebox}{一句话}翻译先证明“这个地址映射到哪里且有权限”，再把保留 offset 的 PA 交给 Cache/Memory；TLB、Page Fault 和 Cache miss 是三个不同状态机。\end{corebox}
+本册吸收《虚拟存储》《存储器层次》的硬件翻译部分；页框分配、置换、工作集、COW、颠簸和缺页修复保留给 OS Owner。
+\end{document}

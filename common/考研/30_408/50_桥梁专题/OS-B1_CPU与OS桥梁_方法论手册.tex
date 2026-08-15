@@ -134,6 +134,7 @@ Policy & 多个合法选择中\kw{应该选哪个}？ & 进程调度算法 (CFS/
 无论具体 ISA 怎样实现，一次从用户执行进入内核处理，大体都可压成：
 
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=1.4cm and 2.4cm]
@@ -351,6 +352,7 @@ MMU 不知道“这是不是 COW”“这个页该从哪个文件读取”“是
 \subsection{OS 如何保证死循环程序也必须交还控制权}
 用户程序：
 \begin{center}
+
 \begingroup
 \large\ttfamily\bfseries
 while (1) \{ \}
@@ -360,6 +362,7 @@ while (1) \{ \}
 并发程序并不会主动 syscall。真正保证 OS 最终重新获得 CPU 的关键机制是\kw{可编程定时器 + 外部中断 + 特权入口}。
 
 \begin{center}
+
 \begingroup
 \small
 \begin{tikzpicture}[>=Stealth, node distance=1.2cm and 1.5cm]

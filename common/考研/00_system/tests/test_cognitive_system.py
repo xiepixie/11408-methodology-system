@@ -118,6 +118,11 @@ class AtlasFormatTests(unittest.TestCase):
         messages = {finding.message for finding in MODULE.audit_missing_tex()}
         self.assertFalse(any(target in message for message in messages))
 
+    def test_source_only_deep_map_is_not_missing_tex_debt(self):
+        target = "30_408/10_数据结构/00_学科总图/README.md"
+        messages = {finding.message for finding in MODULE.audit_missing_tex()}
+        self.assertFalse(any(target in message for message in messages))
+
     def test_root_level_atlas_tex_is_audit_debt(self):
         messages = {finding.message for finding in MODULE.audit_atlas_duplicate_tex()}
         self.assertTrue(any("30_408/README.md" in message for message in messages))
@@ -144,13 +149,22 @@ class PublishPreflightTests(unittest.TestCase):
         )
         self.assertEqual(MODULE.publish_preflight(target), [])
 
-    def test_legacy_os_source_is_rejected_by_publish_preflight(self):
+    def test_current_os_topic_tex_passes_publish_preflight(self):
         target = (
             MODULE.PROJECT_ROOT
             / "30_408"
             / "30_操作系统"
             / "10_进程线程调度与控制权"
             / "OS-01_OS-02_进程线程调度与控制权_方法论手册.tex"
+        )
+        self.assertEqual(MODULE.publish_preflight(target), [])
+
+    def test_noncanonical_math_methodology_tex_is_rejected(self):
+        target = (
+            MODULE.PROJECT_ROOT
+            / "10_数学一"
+            / "90_学科做题规则"
+            / "研究生数学_做题与研究的方法论手册.tex"
         )
         codes = {finding.code for finding in MODULE.publish_preflight(target)}
         self.assertIn("P-NOT-CANONICAL", codes)
@@ -159,6 +173,16 @@ class PublishPreflightTests(unittest.TestCase):
         target = MODULE.PROJECT_ROOT / "00_system" / "考研考试控制_从能力到分数的方法论手册_v1.tex"
         codes = {finding.code for finding in MODULE.publish_preflight(target)}
         self.assertIn("P-NO-README", codes)
+
+    def test_publish_env_exposes_project_root_to_texinputs(self):
+        env = MODULE.project_compile_env()
+        texinputs = env.get("TEXINPUTS", "")
+        self.assertTrue(texinputs.startswith(f"{MODULE.PROJECT_ROOT}:"))
+
+    def test_system_handbook_template_is_not_a_missing_landing_page_debt(self):
+        template = MODULE.PROJECT_ROOT / "00_system" / "handbook_template.tex"
+        messages = {finding.message for finding in MODULE.audit_tex_without_readme()}
+        self.assertFalse(any(str(template.relative_to(MODULE.PROJECT_ROOT)) in message for message in messages))
 
 
 if __name__ == "__main__":

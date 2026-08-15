@@ -1,0 +1,620 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{145,154,163}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={参数估计与假设检验}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 概率统计 Topic 08}}
+\rhead{\small\color{deep}矩估计 · MLE · 估计量评价 · 区间估计 · 假设检验}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\title{\vspace{-1.1cm}\textbf{参数估计与假设检验}\\[0.4em]
+\large 用抽样分布校准逆向推断：从样本观察倒推总体参数}
+\author{数学一 · 概率统计 Topic 08}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：用抽样分布校准逆向推断：从样本观察倒推总体参数}
+概率论是已知总体推导样本性质；数理统计是已知样本倒推总体参数 $\theta$。点估计寻找最合理的数值响应，区间估计寻找高置信包络，假设检验在原假设下建立小概率拒绝界限。
+
+主线推演逻辑：
+\begin{center}
+\begin{tikzpicture}[>=Stealth]
+  \tikzset{
+    flowstage/.style={draw=deep, fill=white, rounded corners=1.5mm, minimum height=0.72cm, align=center, font=\small\sffamily\bfseries\color{deep}, line width=0.6pt, inner xsep=7pt, inner ysep=3.5pt},
+    flowarr/.style={->, >=Stealth, line width=0.75pt, draw=accent}
+  }
+  \node[flowstage] (n1) at (0,0) {1. 样本观察 $(x_1,\dots,x_n)$};
+  \node[flowstage, right=0.45cm of n1] (n2) {2. 点估计 $\hat\theta$\\[-0.1em]\scriptsize (矩匹配 / MLE)};
+  \node[flowstage, below=0.65cm of n1] (n3) {3. 区间估计 $[\hat\theta_L, \hat\theta_U]$\\[-0.1em]\scriptsize (枢轴变量反演)};
+  \node[flowstage, right=0.45cm of n3] (n4) {4. 假设检验 $H_0 \text{ vs } H_1$\\[-0.1em]\scriptsize (拒绝域校准)};
+
+  \draw[flowarr] (n1) -- (n2);
+  \draw[flowarr] (n2.south) .. controls +(0,-0.35) and +(0,0.35) .. (n3.north);
+  \draw[flowarr] (n3) -- (n4);
+\end{tikzpicture}
+\end{center}
+\end{corebox}
+
+\section{本册定位与职责划分}
+
+\begin{itemize}
+  \item \kw{本册拥有（Owns）：}矩估计法、极大似然估计法（MLE）、估计量的无偏性/有效性/一致性、置信区间（枢轴变量法）、单/双正态总体的参数区间估计、假设检验的基本思想、两类错误（第一类错误 $\alpha$ 与第二类错误 $\beta$）、单/双侧 $Z/t/\chi^2/F$ 检验。
+  \item \kw{本册使用（Uses）：}抽样分布提供的 $Z, t, \chi^2, F$ 标尺。
+  \item \kw{本册不拥有（Does not own）：}贝叶斯参数估计（非考纲主干）。
+  \item \kw{输出目标（Output）：}完整的参数逆向推断与考场统计推断题求解算子。
+\end{itemize}
+
+\section{第一层：矩估计与极大似然的结构边界}
+
+\subsection{矩估计的方程与信息损失}
+
+若 $k$ 个未知参数为 $\theta_1,\ldots,\theta_k$，取前 $k$ 个总体原点矩
+\[
+m_j(\boldsymbol\theta)=E_{\boldsymbol\theta}(X^j),\qquad j=1,\ldots,k,
+\]
+用样本矩 $A_j=n^{-1}\sum_iX_i^j$ 替代，解
+\[
+m_j(\widehat{\boldsymbol\theta})=A_j,\qquad j=1,\ldots,k.
+\]
+矩估计只使用有限个矩，计算通常简单但可能不唯一、超出参数空间或效率较低。正态模型中 $\widehat\mu=\bar X$、$\widehat{\sigma^2}=B_2$；后者是矩估计而不是无偏样本方差。
+
+\subsection{似然不是概率，支撑集先于求导}
+
+固定观测 $\boldsymbol x$ 后，似然函数是参数的函数：
+\[
+L(\theta;\boldsymbol x)=\prod_{i=1}^nf_\theta(x_i)\quad\text{或}\quad\prod_{i=1}^np_\theta(x_i).
+\]
+它不是关于 $\theta$ 的概率分布，也不需要对 $\theta$ 积分为 $1$。可用对数似然
+\[
+\ell(\theta)=\log L(\theta),
+\]
+但最大化必须在参数空间与观测可行域上完成。
+
+固定支撑且内部极值时，可解得分方程 $\ell'(\theta)=0$ 并检查二阶导数；参数相关支撑时，必须先写
+\[
+L(\theta;\boldsymbol x)=0\quad\text{当 }\boldsymbol x\notin\mathcal S_\theta,
+\]
+再检查边界。例：$U(0,\theta)$ 的似然在 $\theta\ge x_{(n)}$ 上与 $\theta^{-n}$ 成正比，故 $\widehat\theta_{MLE}=X_{(n)}$，不是由内部求导得到。
+
+MLE 的不变性：若 $\widehat\theta$ 最大化 $L(\theta)$，则一一变换 $g(\widehat\theta)$ 最大化关于 $g(\theta)$ 的似然；非一一变换也取 $g(\widehat\theta)$，但必须枚举所有原像的最大值，不能把逆函数假设为唯一。
+
+充分统计量 $T(X)$ 的因子分解准则是：联合密度可写为
+\[
+f_\theta(\boldsymbol x)=g_\theta(T(\boldsymbol x))h(\boldsymbol x).
+\]
+它说明样本关于 $\theta$ 的似然信息被 $T$ 保留；充分性与 MLE、UMVU 有接口，但不是“任何估计量都自动最优”。
+
+\subsection{三个代表性点估计模型}
+
+\begin{methodbox}{观测变换后的三步重建}
+若题目没有给出原始观测 $X_i$，而只记录 $Z_i=g(X_i)$，估计参数前必须重建 $Z$ 的观测模型：
+\begin{enumerate}
+  \item 写出 $Z$ 的支撑，并枚举 $g(x)=z$ 的全部原像；
+  \item 由 CDF 原像法或密度变换得到 $f_Z(z;\theta)$，检查其积分为 $1$；
+  \item 只对这个新密度建立矩方程或似然方程，并检查参数边界。
+\end{enumerate}
+因此原正态样本的均值、方差公式不能直接套到绝对误差 $Z_i=|X_i-\mu|$ 上；正是两条原像分支共同决定了半正态密度、矩估计和 MLE。
+\end{methodbox}
+
+\begin{methodbox}{指数率参数：矩估计与 MLE 相同}
+若 $X_i\sim\operatorname{Exp}(\lambda)$，密度为 $\lambda e^{-\lambda x}I_{x>0}$，则 $E(X)=1/\lambda$。矩方程给出 $\widehat\lambda_{MOM}=1/\bar X$；对数似然
+\[
+\ell(\lambda)=n\log\lambda-\lambda\sum_i x_i
+\]
+的内部极值也给出 $\widehat\lambda_{MLE}=n/\sum_i x_i=1/\bar X$。这里支撑与 $\lambda$ 无关，求导合法；其方差、相合性仍需另行评价。
+\end{methodbox}
+
+\begin{methodbox}{Bernoulli：似然的计数压缩}
+若 $X_i\sim\operatorname{Bern}(p)$，则 $L(p)=p^{\sum x_i}(1-p)^{n-\sum x_i}$，所以
+\[
+\widehat p_{MLE}=\bar X.
+\]
+它同时是无偏、相合估计量；$n\bar X\sim\operatorname{Bin}(n,p)$ 是此模型的充分统计量。若题面出现全为 $0$ 或全为 $1$，MLE 仍在参数空间边界 $0$ 或 $1$，不能因为得分方程没有内部解而否定它。
+\end{methodbox}
+
+\begin{methodbox}{正态总体：矩估计、MLE 与无偏修正分流}
+对 $N(\mu,\sigma^2)$，矩估计与 MLE 为
+\[
+\widehat\mu=\bar X,\qquad \widehat{\sigma^2}_{MOM}=\widehat{\sigma^2}_{MLE}=B_2.
+\]
+但无偏估计方差要使用
+\[
+S^2=\frac n{n-1}B_2.
+\]
+这三个量的公式相似、职责不同：MLE 最大化样本似然，MOM 匹配总体矩，$S^2$ 追求无偏性。
+\end{methodbox}
+
+\begin{examplebox}{2007 真题：参数进支撑时先分段求矩}
+设
+\[
+f(x;\theta)=\frac1{2\theta}I_{(0,\theta)}(x)
+ +\frac1{2(1-\theta)}I_{[\theta,1)}(x),
+\qquad 0<\theta<1.
+\]
+不能看到分段密度就直接套固定支撑公式，必须先沿支撑分段积分：
+\[
+E(X)=\frac{\theta}{4}+\frac{1+\theta}{4}=\frac{1+2\theta}{4},
+\]
+故矩估计为 $\widehat\theta_{MOM}=2\bar X-\frac12$。同时
+\[
+E(X^2)=\frac{1+\theta+2\theta^2}{6},
+\]
+所以
+\[
+E(4\bar X^2)=4\left([E(X)]^2+\frac{\operatorname{Var}(X)}n\right)
+\]
+含有样本量相关的方差项，不能恒等于 $\theta^2$；例如 $\theta=1/2$ 时它等于 $1+1/(3n)$。矩估计方程与无偏性检验必须分开。
+\end{examplebox}
+
+\begin{examplebox}{2010 真题：频数先压缩成二项指标}
+总体取值 $1,2,3$ 的概率为
+\[
+P(X=1)=1-\theta,\quad P(X=2)=\theta-\theta^2,\quad P(X=3)=\theta^2.
+\]
+若 $N_i$ 是容量为 $n$ 的样本频数，则 $N_2+N_3$ 统计“样本值是否至少为 $2$”，因而
+\[
+N_2+N_3\sim\operatorname{Bin}(n,\theta).
+\]
+目标参数的最短表示是
+\[
+T=\frac{N_2+N_3}{n},\qquad E(T)=\theta,qquad
+\operatorname{Var}(T)=\frac{\theta(1-\theta)}n.
+\]
+若从 $T=\sum a_iN_i$ 的系数方程出发，则 $a_1=0$、$a_2=a_3=1/n$。这体现了“先找与参数直接对应的事件，再把频数压缩”为二项指标；不能遗漏容量归一化。
+\end{examplebox}
+
+\subsection{参数相关支撑的边界型 MLE}
+
+对 $U(0,\theta)$，
+\[
+L(\theta)=\theta^{-n}I\{\theta\ge X_{(n)}\},\qquad \widehat\theta_{MLE}=X_{(n)}.
+\]
+对 $U(a,b)$，可行域要求 $a\le X_{(1)}$、$b\ge X_{(n)}$；似然与 $(b-a)^{-n}$ 成正比，若参数空间允许，MLE 通常在样本极值处取得：$\widehat a=X_{(1)},\widehat b=X_{(n)}$。对 $U(\theta,2\theta)$，可行域为 $X_{(n)}/2\le\theta\le X_{(1)}$，最大化 $\theta^{-n}$ 需选择可行域左端 $\widehat\theta=X_{(n)}/2$。这些例子共同说明：先求可行域，再判断边界方向。
+
+\begin{examplebox}{2015 真题：$U(\theta,1)$ 的矩估计与边界 MLE}
+若 $X_i\overset{\mathrm{i.i.d.}}\sim U(\theta,1)$，则
+\[
+E(X)=\frac{\theta+1}{2},\qquad \widehat\theta_{MOM}=2\bar X-1.
+\]
+固定观测后，参数必须满足 $\theta\le X_{(1)}$，且
+\[
+L(\theta)=\frac{1}{(1-\theta)^n}I\{\theta\le X_{(1)}\}.
+\]
+在可行域上 $L(\theta)$ 随 $\theta$ 增大而增大，所以
+\[
+\widehat\theta_{MLE}=X_{(1)}.
+\]
+矩估计是用总体均值反解，MLE 是在参数相关支撑的边界上最大化；看到均匀区间含未知端点，第一动作必须是写可行域，不能先对数似然求导。
+\end{examplebox}
+
+\begin{examplebox}{2004 真题：Pareto 型总体的 MOM 与 MLE 分流}
+设
+\[
+F(x;\beta)=\begin{cases}1-x^{-\beta},&x>1,\\0,&x\le1,\end{cases}
+\qquad \beta>1.
+\]
+先由尾积分求一阶矩：
+\[
+E(X)=\int_1^\infty x\,\beta x^{-\beta-1}\,dx
+=\frac{\beta}{\beta-1}.
+\]
+用样本均值匹配总体均值，矩估计满足
+\[
+\bar X=\frac{\widehat\beta_{MOM}}{\widehat\beta_{MOM}-1}
+\quad\Longrightarrow\quad
+\widehat\beta_{MOM}=\frac{\bar X}{\bar X-1}.
+\]
+固定观测后，密度为 $f(x;\beta)=\beta x^{-\beta-1}I_{\{x>1\}}$，支撑与 $\beta$ 无关，故
+\[
+\ell(\beta)=n\ln\beta-(\beta+1)\sum_{i=1}^n\ln x_i.
+\]
+得分方程给出
+\[
+\ell'(\beta)=\frac n\beta-\sum_i\ln x_i=0
+\quad\Longrightarrow\quad
+\widehat\beta_{MLE}=\frac n{\sum_i\ln X_i}.
+\]
+且 $\ell''(\beta)=-n/\beta^2<0$，确为全局极大值；若观测全大于 $1$，估计值自动为正。两条结果通常不同：MOM 使用 $\bar X$，MLE 使用 $\sum\ln X_i$，不能由“目标都是估计 $\beta$”互相替代。
+\end{examplebox}
+
+\begin{examplebox}{2014 真题：Rayleigh 型尺度的 MLE 与相合性}
+题面给出
+\[
+F(x;\theta)=\begin{cases}1-e^{-x^2/\theta},&x\ge0,\\0,&x<0,\end{cases}
+\qquad \theta>0.
+\]
+先对 $x$ 求导得到观测密度
+\[
+f(x;\theta)=\frac{2x}{\theta}e^{-x^2/\theta}I_{\{x\ge0\}}.
+\]
+令 $S=\sum_{i=1}^nX_i^2$，则
+\[
+\ell(\theta)=-n\ln\theta-\frac{S}{\theta}+\sum_i\ln(2X_i).
+\]
+在 $\theta>0$ 上，
+\[
+\ell'(\theta)=-\frac n\theta+\frac S{\theta^2}=0
+\quad\Longrightarrow\quad
+\widehat\theta_n=\frac Sn.
+\]
+令 $U=X^2$。由题给尾分布，$P(U\le u)=1-e^{-u/\theta}$（$u\ge0$），故
+$U\sim\operatorname{Exp}(1/\theta)$，从而
+\[
+E(X^2)=E(U)=\theta,\qquad \operatorname{Var}(X^2)=\operatorname{Var}(U)=\theta^2.
+\]
+所以
+\[
+E(\widehat\theta_n)=\theta,\qquad
+\operatorname{Var}(\widehat\theta_n)=\frac{\theta^2}{n},
+\qquad \widehat\theta_n\xrightarrow{P}\theta
+\]
+（最后一步用大数定律）。这三句分别是有限样本无偏、方差表达式和相合性，不能由“求出 MLE”自动合并推出。
+
+第三小问的原文写成“是否存在实数 $a$，使对任意 $\varepsilon>0$，
+$P\{|\widehat\theta_n|\ge\varepsilon\}\to0$”。按字面，$a$ 没有进入事件，问题实际是在问 $\widehat\theta_n\xrightarrow{P}0$ 是否成立。由于
+\[
+\widehat\theta_n=\frac1n\sum_{i=1}^nX_i^2\xrightarrow{P}\theta,
+\qquad \theta>0,
+\]
+取 $\varepsilon=\theta/2$，则 $P\{|\widehat\theta_n|\ge\varepsilon\}\to1$，所以不存在这样的 $a$。
+
+\textbf{来源边界：}若原图实际想写的是 $P\{|\widehat\theta_n-a|\ge\varepsilon\}\to0$，那是另一条命题；对固定参数值它等价于 $a=\theta$，但不能把这个可能的缺字符擅自替换进标准答案。当前正文只报告原式的字面结论，并保留 source-anomaly 标记。
+\end{examplebox}
+
+\section{第二层：估计量评价的三种尺度}
+
+对估计量 $\widehat\theta$，偏差、方差和均方误差分别为
+\[
+b(\theta)=E_\theta(\widehat\theta)-\theta,
+\qquad
+\operatorname{MSE}_\theta(\widehat\theta)=E_\theta[(\widehat\theta-\theta)^2],
+\]
+\[
+\boxed{\operatorname{MSE}(\widehat\theta)=\operatorname{Var}(\widehat\theta)+b(\theta)^2}.
+\]
+无偏是偏差为零的性质，不是所有决策下的“最好”。有偏估计量可能以显著降低方差换取更小 MSE；比较估计量时必须先说明比较域（所有估计量、无偏估计量或固定参数点）。
+
+\begin{methodbox}{MSE 分解的计算推导}
+令 $b(\theta)=E_\theta(\widehat\theta)-\theta$，把误差拆成
+\[
+\widehat\theta-\theta
+=\bigl(\widehat\theta-E_\theta\widehat\theta\bigr)+b(\theta).
+\]
+平方取期望时，第一项均值为零，交叉项消失，因而
+\[
+E_\theta[(\widehat\theta-\theta)^2]
+=\operatorname{Var}_\theta(\widehat\theta)+b(\theta)^2.
+\]
+这解释了为什么“有偏”不能单独判废估计量：必须回到题目指定的损失或比较标准。
+\end{methodbox}
+
+\begin{examplebox}{2024 真题：同一统计量的无偏目标与 MSE 目标必须分开}
+设 $X_i\overset{\mathrm{i.i.d.}}\sim U(0,\theta)$，令 $T=X_{(n)}$。顺序统计量的分布与矩由 P07 负责；这里只接收其接口
+\[
+E(T)=\frac{n}{n+1}\theta,\qquad E(T^2)=\frac{n}{n+2}\theta^2.
+\]
+若题目要求 $cT$ 无偏，目标方程是 $E(cT)=\theta$，故
+\[
+c_{\rm unb}=\frac{n+1}{n}.
+\]
+若题目改为使 $E[(cT-\theta)^2]$ 最小，则必须保留偏差项并直接最小化
+\[
+h(c)=E[(cT-\theta)^2]
+=c^2E(T^2)-2c\theta E(T)+\theta^2.
+\]
+令 $h'(c)=0$ 得
+\[
+c_{\rm MSE}=\frac{E(T)}{E(T^2)}\theta
+=\frac{n+2}{n+1},\qquad
+\min h(c)=\frac{\theta^2}{(n+1)^2}.
+\]
+因此 $c_{\rm unb}\ne c_{\rm MSE}$：前者满足约束 $b(\theta)=0$，后者优化平方损失；看到“无偏”或“最小均方误差”必须先圈出目标词，不能沿用上一小问的系数。
+\end{examplebox}
+
+若 $E_\theta(\widehat\theta)=c\theta$ 且 $c\ne0$，可用 $\widehat\theta/c$ 做线性偏差修正；但一般偏差未必是参数的常数倍，不能看到“有偏”就机械乘一个系数。渐近无偏只表示 $E_\theta(\widehat\theta_n)\to\theta$，仍不同于有限样本无偏和相合性。
+
+\begin{methodbox}{推断输出契约：不要在子问之间偷换目标}
+参数推断题先标注本小问要交付的对象：
+\[
+\boxed{\text{目标}\to\text{信息与支撑}\to\text{构造/评价/反演算子}\to\text{边界证据}\to\text{结论}}
+\]
+构造估计量时检查参数域与观测可行域；判断无偏或相合时分别取期望或极限；比较估计量时按题目指定的偏差、方差或 MSE；区间题报告覆盖率和尾部；检验题先固定 $H_0,H_1$，再区分在 $H_0$ 下校准的第一类错误与在具体备择参数下计算的第二类错误。完成一个目标后不能自行改换评价标准：无偏系数不等于最小 MSE 系数，不拒绝也不等于接受。
+\end{methodbox}
+
+若两个无偏估计量比较方差，方差较小者更有效；相对效率可写为方差比。UMVU 指在所有无偏估计量中对每个参数都具有最小方差，通常依赖充分完备统计量，而不是只看一次样本。
+
+Fisher 得分与信息为
+\[
+U(\theta)=\frac{\partial}{\partial\theta}\ell(\theta),\qquad
+I_n(\theta)=E_\theta[U(\theta)^2]
+=-E_\theta\left[\frac{\partial^2}{\partial\theta^2}\ell(\theta)\right]
+\]
+（等式需正则条件）。Cramér--Rao 下界：对无偏估计量 $\widehat\theta$，在固定支撑、可交换微分与积分等正则条件下，
+\[
+\boxed{\operatorname{Var}_\theta(\widehat\theta)\geq\frac1{I_n(\theta)}}.
+\]
+向量参数时为 $\operatorname{Cov}(\widehat{\boldsymbol\theta})\succeq I_n(\boldsymbol\theta)^{-1}$。支撑含参、边界非光滑或信息不存在时，不能机械套 Cramér--Rao。
+
+Rao--Blackwell：若 $T$ 充分，$E(\widehat\theta\mid T)$ 的 MSE 不大于 $\widehat\theta$；Lehmann--Scheffé：若 $T$ 充分完备且 $h(T)$ 无偏，则 $h(T)$ 是 UMVU。它们分别是“条件化降噪”和“充分完备唯一化”，不可与无偏性或相合性混同。
+
+\subsection{评价例：$B_2$ 与 $S^2$}
+
+在 $E(X^2)<\infty$ 时，$B_2$ 的偏差为 $-\sigma^2/n$，而 $S^2$ 无偏。若四阶中心矩存在，
+\[
+\operatorname{MSE}(B_2)=\operatorname{Var}(B_2)+\frac{\sigma^4}{n^2},
+\]
+不能只因 $B_2$ 有偏就断言它在 MSE 下更差。比较必须指定总体、样本量和损失标准；无偏性是一个约束，不是唯一目标。
+在正态总体下还可进一步写出
+\[
+\operatorname{MSE}(B_2)=\frac{2n-1}{n^2}\sigma^4,
+\qquad
+\operatorname{MSE}(S^2)=\frac{2}{n-1}\sigma^4,
+\]
+这说明“无偏”与“MSE 更小”是两个不同的评价问题。
+
+\section{第三层：相合性与渐近正态性}
+
+弱相合指 $\widehat\theta_n\xrightarrow{P}\theta$，强相合指 $\widehat\theta_n\xrightarrow{a.s.}\theta$。常用证明路线：
+\begin{enumerate}
+  \item 写成样本矩或样本均值，使用 Topic 06 的大数定律；
+  \item 用连续映射定理处理函数；
+  \item 或证明 $\operatorname{MSE}(\widehat\theta_n)\to0$，再用 Chebyshev。
+\end{enumerate}
+无偏不推出相合，有限样本有效也不推出相合；相合也不保证有限样本无偏。若
+\[
+\sqrt n(\widehat\theta_n-\theta)\xrightarrow{d}N(0,V(\theta)),
+\]
+则称渐近正态，$V(\theta)$ 是渐近方差；再比较渐近方差才谈渐近效率。MLE 在正则模型下常满足渐近正态，但参数相关支撑或边界参数可能出现非正态、非 $\sqrt n$ 速率。
+
+\section{第四层：区间估计是枢轴量的反演}
+
+置信区间是随机区间 $C(X)$，要求对固定参数满足
+\[
+P_\theta\{\theta\in C(X)\}=1-\alpha.
+\]
+频率解释是“重复抽样生成的区间有 $1-\alpha$ 的长期覆盖率”，不是“本次固定参数落在区间内的概率为 $1-\alpha$”。
+
+通用构造：找分布不含未知参数的枢轴量 $G(X;\theta)$，取
+\[
+P(a\leq G(X;\theta)\leq b)=1-\alpha,
+\]
+再对不等式反解 $\theta$。尾部如何分配会影响区间长度；对称分位点不是所有参数空间都最优。
+
+\begin{methodbox}{区间估计的证据链}
+先确认 $G(X;\theta)$ 的分布确实不含未知参数，再写出覆盖概率等式；最后只对不等式做等价反解，并记录尾部方向。这样得到的是随机区间 $C(X)$ 的重复抽样覆盖率，不是给定观测后参数的后验概率。若枢轴只是在大样本下近似无参数，区间也必须标为渐近区间。
+\end{methodbox}
+
+\subsection{单正态总体}
+
+若 $X_i\sim N(\mu,\sigma^2)$：
+\[
+\sigma\text{ 已知: }\quad
+\mu\in\left[\bar X-z_{\alpha/2}\frac\sigma{\sqrt n},\ \bar X+z_{\alpha/2}\frac\sigma{\sqrt n}\right];
+\]
+\[
+\sigma\text{ 未知: }\quad
+\mu\in\left[\bar X-t_{\alpha/2}(n-1)\frac S{\sqrt n},\ \bar X+t_{\alpha/2}(n-1)\frac S{\sqrt n}\right].
+\]
+方差区间由 $Q=(n-1)S^2/\sigma^2\sim\chi^2(n-1)$ 反解：
+\[
+\boxed{\frac{(n-1)S^2}{\chi^2_{\alpha/2}(n-1)}\leq\sigma^2\leq\frac{(n-1)S^2}{\chi^2_{1-\alpha/2}(n-1)}}.
+\]
+由于卡方分布右偏，上下分位点位置不能按正态对称习惯书写。标准差区间是对方差区间逐端取平方根。
+
+\subsection{双总体、配对与单侧界}
+
+两独立正态总体均值差在方差已知时使用 $Z$；等方差未知时使用合并方差 $t$；方差不等时用 Welch 近似；配对数据先对差值构造单样本区间。方差比使用
+\[
+\frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2}\sim F(n_1-1,n_2-1).
+\]
+单侧置信限只把全部 $\alpha$ 放在一个尾部，不能把双侧 $\alpha/2$ 直接照搬。
+
+\subsection{两总体均值差的区间}
+
+两独立正态总体均值差 $\Delta=\mu_1-\mu_2$：
+\[
+\sigma_1^2,\sigma_2^2\text{ 已知: }
+\quad
+\Delta\in\left[(\bar X-\bar Y)-z_{\alpha/2}\sqrt{\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}},
+(\bar X-\bar Y)+z_{\alpha/2}\sqrt{\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}}\right].
+\]
+等方差未知时将标准误换为 $S_p\sqrt{1/n_1+1/n_2}$，分位点换为 $t_{\alpha/2}(n_1+n_2-2)$；不等方差使用 Welch--Satterthwaite 自由度。配对区间则对 $D_i=X_i-Y_i$ 使用 $\bar D\pm tS_D/\sqrt n$。
+
+方差比 $R=\sigma_1^2/\sigma_2^2$ 的区间由
+\[
+Q=\frac{S_1^2/S_2^2}{R}\sim F(n_1-1,n_2-1)
+\]
+反解：
+\[
+\boxed{\frac{S_1^2/S_2^2}{F_{\alpha/2}(n_1-1,n_2-1)}\le R\le
+\frac{S_1^2/S_2^2}{F_{1-\alpha/2}(n_1-1,n_2-1)}}.
+\]
+分位点记号若采用下分位点约定，必须先换成统一的上尾约定，不能混用表格。
+
+\subsection{扩展与边界}
+
+Wald 区间用渐近正态替换枢轴量，比例接近边界时可能越出 $[0,1]$；Bootstrap 用重抽样近似抽样分布，需说明它是近似方法而非自动精确。区间长度随标准误、分位点和置信水平变化；样本量增大通常缩短长度，但偏差、重尾和模型误设仍会影响覆盖率。
+
+\section{第五层：假设检验的校准机制}
+
+原假设 $H_0$ 与备择 $H_1$ 划分参数空间。等号通常放在 $H_0$，因为拒绝域的概率在 $H_0$ 下校准。检验统计量 $T$ 与拒绝域 $W$ 的关系是：$T\in W$ 时拒绝 $H_0$，否则不拒绝 $H_0$。
+
+第一类错误（弃真）概率为
+\[
+\alpha(\theta)=P_\theta(T\in W),\quad \theta\in\Theta_0,
+\]
+检验尺寸是 $\sup_{\theta\in\Theta_0}\alpha(\theta)$；第二类错误为 $\beta(\theta)=P_\theta(T\notin W)$，功效函数为
+\[
+\pi(\theta)=P_\theta(T\in W)=1-\beta(\theta),\qquad \theta\in\Theta_1.
+\]
+固定样本量下，缩小 $\alpha$ 往往会降低功效；增大样本量通常可同时提高给定偏离下的功效。不得把“不拒绝 $H_0$”写成“证明 $H_0$ 正确”。
+
+\subsection{方向、分位点与 p 值}
+
+$H_1:\theta>\theta_0$ 使用右尾，$H_1:\theta<\theta_0$ 使用左尾，$H_1:\theta\ne\theta_0$ 使用双尾；方向由备择假设决定，不由样本结果倒选。$p$ 值是在 $H_0$ 下得到“不少于当前观测极端”的概率，必须在检验方向和统计量定义固定后计算；$p\leq\alpha$ 才拒绝 $H_0$。
+
+\subsection{正态总体的基本检验枢轴}
+
+单总体均值：
+\[
+Z=\frac{\bar X-\mu_0}{\sigma/\sqrt n}\sim N(0,1)\quad(\sigma\text{已知}),
+\]
+\[
+T=\frac{\bar X-\mu_0}{S/\sqrt n}\sim t(n-1)\quad(\sigma\text{未知，正态总体}).
+\]
+单总体方差：
+\[
+Q=\frac{(n-1)S^2}{\sigma_0^2}\sim\chi^2(n-1).
+\]
+两独立总体均值差按方差已知、等方差未知、不等方差三路分流；配对样本对差值作 $t$ 检验；方差比使用 $F$。任何公式都必须同步写明正态性、独立性、方差假设和自由度。
+
+\subsection{拒绝域与 $p$ 值的具体形状}
+
+对单总体均值 $H_0:\mu=\mu_0$：
+\begin{itemize}
+  \item 右侧 $H_1:\mu>\mu_0$：$Z>z_\alpha$ 或 $T>t_\alpha(n-1)$；
+  \item 左侧 $H_1:\mu<\mu_0$：$Z<-z_\alpha$ 或 $T<-t_\alpha(n-1)$；
+  \item 双侧 $H_1:\mu\ne\mu_0$：$|Z|>z_{\alpha/2}$ 或 $|T|>t_{\alpha/2}(n-1)$。
+\end{itemize}
+若 $H_0:\sigma^2=\sigma_0^2$，使用 $Q=(n-1)S^2/\sigma_0^2$；右侧拒绝 $Q>\chi^2_\alpha(n-1)$，左侧拒绝 $Q<\chi^2_{1-\alpha}(n-1)$，双侧两端分别用 $\alpha/2$。方差比检验同理使用 $F$，但分子、分母和备择方向固定后才决定尾部。
+
+对应 $p$ 值：右尾为 $P_{H_0}(T\ge t_{obs})$，左尾为 $P_{H_0}(T\le t_{obs})$，双尾对称统计量常为 $2\min\{P_{H_0}(T\ge t_{obs}),P_{H_0}(T\le t_{obs})\}$。非对称分布（如 $\chi^2,F$）不能机械乘二，应按检验的极端集合定义。
+
+\begin{examplebox}{2018 真题：显著性水平改变时先比较拒绝域}
+对双侧检验 $H_0:\mu=\mu_0$、$H_1:\mu\ne\mu_0$，令 $T$ 为已经确定方向的对称检验统计量。水平 $0.05$ 与 $0.01$ 的拒绝域分别为
+\[
+W_{.05}=\{|T|>c_{.05}\},\qquad
+W_{.01}=\{|T|>c_{.01}\},\qquad c_{.01}>c_{.05}.
+\]
+因此 $W_{.01}\subset W_{.05}$：在 $0.01$ 下拒绝必然在 $0.05$ 下拒绝，但在 $0.05$ 下拒绝不能反推出 $0.01$ 下仍拒绝；同样，$0.05$ 下不拒绝必然推出 $0.01$ 下不拒绝。判断检验命题的第一动作是比较拒绝域集合，而不是把“显著性水平更小”机械翻译成“必接受”。
+\end{examplebox}
+
+\subsection{功效、样本量与实际意义}
+
+以已知 $\sigma$ 的右侧均值检验为例，拒绝域 $\bar X>\mu_0+z_\alpha\sigma/\sqrt n$。在真实均值 $\mu_1>\mu_0$ 下，功效为
+\[
+\pi(\mu_1)=1-\Phi\left(z_\alpha-\frac{\sqrt n(\mu_1-\mu_0)}\sigma\right).
+\]
+因此样本量、效应大小和噪声共同决定功效；“显著”不等于效应具有实际重要性。近似样本量计算应先指定最小有意义差异 $\delta$、显著性水平 $\alpha$ 和目标功效 $1-\beta$，再使用正态分位点，不能只因题目给出 $n$ 大就声称功效高。
+
+\begin{examplebox}{2021 真题：给定拒绝域后反推第二类错误}
+设 $X_i\sim N(\mu,4)$，$n=16$，右侧检验的拒绝域为 $W=\{\bar X\ge 11\}$。当真实值为 $\mu=11.5$ 时，第二类错误是“未进入拒绝域”，而不是在 $H_0$ 下重新计算：
+\[
+\beta(11.5)=P_{11.5}(\bar X<11),\qquad
+\bar X\sim N\!\left(11.5,\frac4{16}\right).
+\]
+故
+\[
+\beta(11.5)=\Phi\!\left(\frac{11-11.5}{0.5}\right)=\Phi(-1)\approx0.1587.
+\]
+这道题的关键是先把错误事件取为 $W^c$，再用真实备择参数下的分布计算；第一类错误用 $H_0$ 校准，第二类错误用具体 $\theta\in\Theta_1$ 评价。
+\end{examplebox}
+
+\subsection{检验语句的证据边界}
+
+拒绝 $H_0$：数据在 $H_0$ 下足够极端，支持 $H_1$ 或说明与 $H_0$ 不相容；不能说 $H_1$ 被概率证明。
+
+不拒绝 $H_0$：证据不足以在当前 $\alpha$ 下拒绝；可能是效应确实小，也可能是样本量不足或噪声过大。只有预先设计等效检验或足够功效，才可讨论“差异小到可忽略”。
+
+\section{第六层：区间—检验对偶与最强检验}
+
+双侧 $1-\alpha$ 置信区间包含 $\theta_0$，与显著性水平 $\alpha$ 的双侧检验“不拒绝 $H_0:\theta=\theta_0$”对偶；单侧区间同样对应单侧检验。对偶关系来自同一枢轴量和同一尾部概率，不意味着任何任意区间都对应同一检验。
+
+Neyman--Pearson 引理在简单 $H_0$ 对简单 $H_1$ 下，以似然比阈值构造给定尺寸下功效最大的检验；广义似然比把复合假设分别最大化似然。它们是方法论接口，不能取代具体分布下的拒绝域校准。
+
+多重检验中逐个使用 $\alpha$ 会放大至少一次错误拒绝的概率；Bonferroni 等校正控制族错误率，但会牺牲功效。单次检验的 $p$ 值、全局显著性和实际效应大小必须分开表述。
+
+\section{第七层：统一推断工作流}
+
+\begin{enumerate}
+  \item 写清总体模型、参数空间、样本独立性和是否正态；参数相关支撑先处理可行域。
+  \item 点估计选择矩匹配或似然最大化，并检查解是否落在参数空间、是否为全局最大值。
+  \item 评价估计量时区分偏差、方差、MSE、相合性、有限/渐近效率；不要只用“无偏”一票否决。
+  \item 区间估计先找无未知参数枢轴量，再按正确尾部反解；区分精确覆盖率与渐近覆盖率。
+  \item 检验先定 $H_0/H_1$ 和方向，再定统计量、拒绝域、$\alpha$、$p$ 值和功效；不因观察结果改变备择方向。
+  \item 结论写成“拒绝/不拒绝 $H_0$”及其参数语境，不能写成证明或接受绝对真理。
+\end{enumerate}
+
+\begin{warnbox}{核心反例与边界}
+支撑含参数时 MLE 可能在边界；似然是参数函数而非参数概率；无偏不推出有效、相合或低 MSE；相合不推出无偏；$t/\chi^2/F$ 精确公式依赖正态样本；Wald/Bootstrap 是近似；不拒绝 $H_0$ 不是证明 $H_0$；多重检验不能忽略整体错误率。
+\end{warnbox}
+
+\section{贯穿母例：Bernoulli 成功率的逆向推断}
+
+\begin{examplebox}{母例：从计数到估计、区间与检验}
+设 $X_1,\ldots,X_n\overset{\mathrm{i.i.d.}}\sim\operatorname{Bern}(p)$，参数空间为 $0\le p\le1$，观测成功次数为 $K=\sum_iX_i$。矩方程和似然最大化都给出
+\[
+\widehat p=\bar X=K/n,\qquad K\sim\operatorname{Bin}(n,p),
+\]
+且 $E(\widehat p)=p$、$\operatorname{Var}(\widehat p)=p(1-p)/n$。当 $0<p<1$ 时，Topic 06 的 CLT 提供渐近标准化
+\[
+\frac{\sqrt n(\widehat p-p)}{\sqrt{p(1-p)}}\xrightarrow{d}N(0,1),
+\]
+可据此构造近似区间或检验 $H_0:p=p_0$；但 $p$ 接近 $0,1$ 或 $n$ 较小时，Wald 近似可能越界或覆盖率失真，应回到精确二项方法或更稳健的区间。检验结论只能写“拒绝/不拒绝 $H_0$”，不能写成证明参数真值。
+\end{examplebox}
+
+\section{一页压缩}
+
+\begin{corebox}{一句话总结}
+\[
+\boxed{\text{矩估计解方程，似然估计求最大，枢轴变量求包络，拒绝域控制弃真错。}}
+\]
+\end{corebox}
+
+\begin{examplebox}{绝对值观测后必须重建似然：2017 真题}
+若 $X\sim N(\mu,\sigma^2)$ 且只观察 $Z=|X-\mu|$，则 $Z$ 服从半正态分布：
+\[
+f_Z(z;\sigma)=\sqrt{\frac2\pi}\frac1\sigma e^{-z^2/(2\sigma^2)},\quad z>0.
+\]
+因此一阶矩给 $\widehat\sigma_{MOM}=\sqrt{\pi/2}\,\bar Z$，似然最大化给
+\[
+\widehat\sigma_{MLE}=\sqrt{\frac1n\sum_{i=1}^nZ_i^2}.
+\]
+不能把 $Z_i$ 继续当作正态观测，也不能沿用未知均值的正态似然。
+\end{examplebox}
+
+\end{document}

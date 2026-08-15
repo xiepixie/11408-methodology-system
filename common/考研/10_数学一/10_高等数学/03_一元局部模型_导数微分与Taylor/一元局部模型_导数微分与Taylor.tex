@@ -1,0 +1,743 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={一元局部模型：导数、微分与 Taylor}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 高等数学 Topic 03}}
+\rhead{\small\color{deep}导数 · 微分 · 有限阶 Taylor}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\begin{document}
+\begin{center}
+{\LARGE\textbf{一元局部模型：导数、微分与 Taylor}}\\[0.4em]
+{\large 从“瞬时变化率”到“按误差阶提取局部系数”}
+\end{center}
+\vspace{0.5em}
+
+\begin{quote}
+本册只追问一个根本问题：\textbf{固定一个基点以后，怎样把函数在附近的变化拆成可计算的主部与可审计的余项？} 导数提取一阶系数，微分保存线性主部，有限阶 Taylor 继续提取更高阶系数；三者不是三套孤立公式，而是同一套局部信息压缩机制的不同精度。
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+% ============================================================
+\setcounter{section}{-1}
+\section{本册定位}
+% ============================================================
+
+本册是高等数学 Subject Atlas 下的 Topic03。Topic01 确认函数对象与表示，Topic02 提供极限和小 $o$ 语言；本册在此基础上研究函数在一点附近的最佳一阶或有限阶模型。
+
+\subsection{Own}
+
+本册独立负责：
+\begin{itemize}
+  \item 点导数、左右导数、导函数、高阶导数及其逻辑边界；
+  \item 一元可微的等价局部线性模型与微分；
+  \item 和、积、商、复合、反函数、隐式关系与参数表示的局部求导机制；
+  \item 有限阶 Taylor 多项式、Peano 余项、系数唯一性与精度升级；
+  \item 高阶导数点值与通式的结构化生成方法；
+  \item 切线、法线和曲率所读取的一阶、二阶局部几何信息；
+  \item 一元局部模型的统一检查协议与独立验证方式。
+\end{itemize}
+
+\subsection{Uses / Stop Boundary}
+
+本册调用 Topic01 的定义域、复合/反函数和参数表示，调用 Topic02 的极限、连续与小 $o$ 运算。以下内容不在本册展开：
+\begin{itemize}
+  \item 用中值定理把点态导数信息推广到区间单调、极值、凹凸、零点与整体形状，归 Topic04；
+  \item Lagrange 型余项、插值余项和区间导数估计的接口，归 H-B02；
+  \item 原函数、变上限积分和 Newton\textendash{}Leibniz 的正则性接口，归 Topic05 与 H-B03；
+  \item 无限 Taylor series、收敛域和由级数恢复函数，归 Topic11 与 H-B05；
+  \item 多元可微、梯度、隐函数定理与 Hessian，归 Topic07；“最佳局部线性映射”的跨学科解释归数学一 B01。
+\end{itemize}
+
+本册解释工具为什么成立；题目出现什么信号、优先选哪条计算路径、何时换路，进入《高等数学做题规则》。旧笔记中的单调极值凹凸、变限积分和原函数表只作 Source 路由，不在这里复制。
+
+% ============================================================
+\section{根本问题：精确函数太复杂，附近究竟需要保留多少信息？}
+% ============================================================
+
+已知一个函数的完整解析式，并不意味着每个局部问题都需要完整计算。若只问 $x=a$ 附近的变化，真正相关的是：输入偏离 $a$ 一个小量 $h$ 时，输出增量
+\[
+\Delta f=f(a+h)-f(a)
+\]
+中，哪一部分与 $h$ 同阶，哪一部分更小，以及主部相消后下一层信息是什么。
+
+最朴素的办法是取两个邻近点画割线。它可以猜测斜率，却有三个缺口：
+\begin{itemize}
+  \item 不固定基点时，得到的可能只是对称平均，而不是点导数；
+  \item 不记录余项时，“近似”无法判断能否参与加减和相消；
+  \item 只保留一阶时，一旦线性主部为零，就无法区分平坦、极值、拐折或更高阶接触。
+\end{itemize}
+
+因此局部模型必须同时回答两件事：
+\[
+\boxed{\text{提取哪个尺度上的稳定系数}}
+\qquad\text{与}\qquad
+\boxed{\text{被丢掉的余项比该尺度小多少}}.
+\]
+
+\begin{corebox}{局部模型是一份带误差等级的信息压缩}
+导数不是“求导公式的结果”，而是把输出增量除以输入的一阶尺度后仍然稳定的系数。Taylor 多项式也不是把函数写长，而是在低阶信息相消时继续提取下一层稳定系数。任何局部替代都必须把余项一起带走。
+\end{corebox}
+
+% ============================================================
+\section{母模型：基点、增量、尺度、系数与余项}
+% ============================================================
+
+本册把一元局部分析压缩为六个依次发生的动作：
+\[
+\boxed{
+\text{Anchor}
+\to\text{Increment}
+\to\text{Normalize}
+\to\text{Coefficient}
+\to\text{Residual}
+\to\text{Order Upgrade}}
+\]
+
+这里的箭头表示\textbf{信息提取顺序}：
+\begin{enumerate}
+  \item \kw{Anchor}：固定基点 $a$，先确认函数在 $a$ 及其合法邻域的定义；
+  \item \kw{Increment}：令 $h=x-a$，写出 $f(a+h)-f(a)$；
+  \item \kw{Normalize}：按当前目标尺度 $h^k$ 归一化；
+  \item \kw{Coefficient}：寻找归一化后稳定下来的系数；
+  \item \kw{Residual}：把未解释部分写成 $o(h^k)$ 或明确的余项；
+  \item \kw{Order Upgrade}：若已知主部相消，再升到 $h^{k+1}$，而不是继续使用失效的一阶信息。
+\end{enumerate}
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.55cm and 0.55cm,
+  box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.25cm,minimum height=1.0cm,align=center,fill=soft,font=\small},
+  arr/.style={-{Latex[length=2mm]},thick,draw=deep}
+]
+\node[box] (a) {固定基点\\$a$ 与合法邻域};
+\node[box,right=of a] (b) {输入/输出增量\\$h,\ \Delta f$};
+\node[box,right=of b] (c) {尺度归一\\$\Delta f/h^k$};
+\node[box,below=of c] (d) {稳定系数\\$c_k$};
+\node[box,left=of d] (e) {余项审计\\$r_k=o(h^k)$};
+\node[box,left=of e] (f) {精度升级\\主部相消则升阶};
+\draw[arr] (a)--(b);
+\draw[arr] (b)--(c);
+\draw[arr] (c)--(d);
+\draw[arr] (d)--(e);
+\draw[arr] (e)--(f);
+\draw[arr,dashed,draw=warn] (f.north) -- ++(0,0.28) -| node[pos=0.24,above,font=\scriptsize]{新的目标阶数} (c.west);
+\end{tikzpicture}
+\end{center}
+
+这张图同时给出章节映射：一阶归一产生导数；把 $c_1h$ 作为线性主部就是微分；逐阶消去已提取主部产生有限 Taylor 多项式；代数求导法则说明局部模型怎样经过和、积、商与复合；切线和曲率则读取前两个局部系数的几何意义。
+
+% ============================================================
+\section{一阶模型：导数就是固定基点后的稳定线性系数}
+% ============================================================
+
+\subsection{固定基点，才能谈点导数}
+
+函数在 $a$ 处可导，是指有限极限
+\[
+f'(a)=\lim_{h\to0}\frac{f(a+h)-f(a)}{h}
+\]
+存在。等价地，
+\[
+f'(a)=\lim_{x\to a}\frac{f(x)-f(a)}{x-a}.
+\]
+
+分子比较的是一个移动点与\textbf{固定基点}的函数值，分母也比较同一对输入。若两个端点同时移动，得到的是另一种平均斜率，不能仅凭外形相似就认作导数。
+
+左右导数分别限制 $h\to0^-$ 与 $h\to0^+$。双侧可导当且仅当左右导数都存在、有限且相等。定义域端点只讨论合法一侧；这与 Topic02 的 Allowed Set 原则完全一致。
+
+\begin{warnbox}{对称差商存在，不推出可导}
+对 $f(x)=|x|$，
+\[
+\frac{f(h)-f(-h)}{2h}=0,
+\]
+所以对称导数存在；但右导数为 $1$、左导数为 $-1$。两个取样点同时移动，恰好把尖点两侧的冲突平均掉了。
+\end{warnbox}
+
+\subsection{导数存在等价于一阶余项更小}
+
+若 $f'(a)=A$，则
+\[
+\frac{f(a+h)-f(a)}{h}=A+\varepsilon(h),
+\qquad \varepsilon(h)\to0.
+\]
+乘回 $h$ 得
+\[
+\boxed{f(a+h)=f(a)+Ah+o(h)}.
+\]
+
+反过来，只要存在常数 $A$ 使上式成立，除以 $h$ 便得到导数 $f'(a)=A$。因此在一元情形：
+\[
+\boxed{\text{可导}\iff\text{存在唯一的一阶局部线性主部}}.
+\]
+
+微分
+\[
+dy=f'(a)\,dx
+\]
+就是这个线性主部；真实增量满足
+\[
+\Delta y=dy+o(dx).
+\]
+“$\Delta y\approx dy$”只有连同余项阶数才是可运算的陈述。
+
+\subsection{为什么可导必连续？}
+
+由一阶模型直接得到
+\[
+f(a+h)-f(a)=f'(a)h+o(h)\to0.
+\]
+所以可导必连续。连续只要求增量趋于 $0$；可导还要求它能被同一个线性系数解释。反向不成立，$|x|$ 就是最小反例。
+
+\subsection{点导数与导函数极限是两层信息}
+
+$f'(a)$ 只研究基点 $a$ 的差商；
+\[
+\lim_{x\to a}f'(x)
+\]
+研究邻近各点的导数是否稳定。前者存在不推出后者存在。
+
+令
+\[
+G_p(x)=
+\begin{cases}
+|x|^p\sin\dfrac1x,&x\ne0,\\
+0,&x=0.
+\end{cases}
+\]
+则振幅压制给出：$p>0$ 时连续，$p>1$ 时在 $0$ 处可导且 $G_p'(0)=0$，$p>2$ 时导函数还在 $0$ 处连续。每多要求一层局部正则性，就要支付更高一阶的振幅衰减。
+
+特别地，$G_2$ 在 $0$ 处可导，但对 $x\ne0$，
+\[
+G_2'(x)=2|x|\operatorname{sgn}(x)\sin\frac1x-\cos\frac1x,
+\]
+其邻域导数仍振荡。它阻断了“点上可导 $\Rightarrow$ 导函数连续”的伪桥。
+
+若已知 $f$ 在 $a$ 连续、去心邻域可导且 $f'(x)\to A$，则可借中值定理推出 $f'(a)=A$。这条从邻域导数回到点导数的桥调用 Topic04/H-B02；连续性是不可删除的资格条件。
+
+% ============================================================
+\section{局部模型的代数：求导法则为什么自然出现？}
+% ============================================================
+
+设在同一基点 $a$，
+\[
+f(a+h)=f(a)+Ah+o(h),
+\qquad
+g(a+h)=g(a)+Bh+o(h).
+\]
+求导法则本质上是对这两份一阶模型做合法代数，并重新收集 $h$ 的系数。
+
+\subsection{和、积与商}
+
+相加立即得到
+\[
+(f+g)(a+h)=(f+g)(a)+(A+B)h+o(h),
+\]
+故 $(f+g)'(a)=A+B$。
+
+相乘时
+\[
+\begin{aligned}
+f(a+h)g(a+h)
+&=f(a)g(a)\\
+&\quad+\bigl(A g(a)+f(a)B\bigr)h+o(h),
+\end{aligned}
+\]
+所以
+\[
+(fg)'(a)=f'(a)g(a)+f(a)g'(a).
+\]
+二者的一阶变化都必须保留；两项同时变化的乘积是 $O(h^2)$，进入余项。
+
+商法则是在 $g(a)\ne0$ 的资格下对倒数局部模型求积。分母非零不是格式注记，而是局部可逆性的合法性门。
+
+\begin{methodbox}{乘积在求导点含零因子时先看零点阶数}
+若 $f=uv$ 且 $u(a)=0$，则
+\[
+f'(a)=u'(a)v(a),
+\]
+因为另一项 $u(a)v'(a)$ 自动消失。若多个因子同时为零，不应展开全部乘积；先累计最低零点阶数，判断一阶系数是否已经被全部压掉。
+\end{methodbox}
+
+\subsection{复合：余项必须能穿过内层尺度}
+
+若
+\[
+g(a+h)=g(a)+Bh+o(h)
+\]
+且 $f$ 在 $g(a)$ 可导，则令 $k=g(a+h)-g(a)=Bh+o(h)=O(h)$，有
+\[
+f(g(a)+k)=f(g(a))+f'(g(a))k+o(k).
+\]
+由于 $k=O(h)$，最终得到
+\[
+(f\circ g)'(a)=f'(g(a))g'(a).
+\]
+
+链式法则不是“外导乘内导”的记忆口令，而是\textbf{内层局部增量成为外层模型的输入}。若内层输出没有落入外层的合法邻域，或外层在目标点不可导，这条接口就不能调用。
+
+\subsection{反函数、隐式关系与参数表示的资格门}
+
+若 $y=f(x)$ 在 $a$ 附近确实可逆，$b=f(a)$ 且 $f'(a)\ne0$，由
+\[
+dy=f'(a)\,dx+o(dx)
+\]
+可反解一阶主部：
+\[
+(f^{-1})'(b)=\frac1{f'(a)}.
+\]
+$f'(a)=0$ 时，不能把倒数写成“无穷大导数”继续代数运算；此时可能出现垂直切线，也可能局部逆根本不存在，须回到 Topic01 的单射/分支条件。
+
+若方程 $F(x,y)=0$ 已知在目标点附近确实定义出可微函数 $y=y(x)$，对关系求导得
+\[
+F_x+F_y y'=0,
+\qquad
+y'=-\frac{F_x}{F_y}\quad(F_y\ne0).
+\]
+这个公式只计算已存在局部分支的斜率；它本身不证明分支存在。$F_x=F_y=0$ 是奇异警报，必须停止机械相除。
+
+参数曲线 $x=x(t),y=y(t)$ 在 $x'(t_0)\ne0$ 时满足
+\[
+\frac{dy}{dx}=\frac{y'(t)}{x'(t)},
+\qquad
+\frac{d^2y}{dx^2}
+=\frac{\dfrac{d}{dt}\left(\dfrac{dy}{dx}\right)}{x'(t)}.
+\]
+每求一次对 $x$ 的导数，都要执行算子 $d/dx=(1/x'(t))d/dt$；不能只对分子再求一次 $t$ 导数。
+
+% ============================================================
+\section{有限阶 Taylor：主部相消以后怎样继续提取信息？}
+% ============================================================
+
+\subsection{从一阶模型递归到有限高阶模型}
+
+若函数在 $a$ 处具有足够阶导数，则它的 $n$ 阶 Taylor 多项式为
+\[
+T_n(a+h)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}h^k.
+\]
+Peano 形式写成
+\[
+\boxed{f(a+h)=T_n(a+h)+o(h^n)}.
+\]
+
+这不是无限展开。它只声称：在当前固定阶数 $n$ 上，剩余误差相对 $h^n$ 可以忽略。若题目只需最低非零项，就在第一次得到非零稳定系数时停止；若相消继续发生，再提高一阶。
+
+\subsection{系数为什么只能是导数除以阶乘？}
+
+假设存在多项式
+\[
+P_n(h)=c_0+c_1h+\cdots+c_n h^n
+\]
+使
+\[
+f(a+h)-P_n(h)=o(h^n).
+\]
+先令 $h\to0$ 得 $c_0=f(a)$；减去常数项再除以 $h$，得到 $c_1=f'(a)$。继续减去已确认的低阶项并按下一阶归一，依次得到
+\[
+c_k=\frac{f^{(k)}(a)}{k!}.
+\]
+因此 Taylor 系数不是约定出来的表格，而是逐阶归一后唯一能稳定剩余误差的系数。
+
+\subsection{贯穿母例：不用背表重建平方根局部模型}
+
+在 $h=0$ 附近，先由有理化得到
+\[
+\frac{\sqrt{1+h}-1}{h}
+=\frac1{\sqrt{1+h}+1}\to\frac12,
+\]
+所以一阶模型为
+\[
+\sqrt{1+h}=1+\frac12h+o(h).
+\]
+
+若需要更高精度，设
+\[
+P_3(h)=1+ah+bh^2+ch^3.
+\]
+利用对象满足的关系 ${f(h)}^2=1+h$，比较
+\[
+{P_3(h)}^2
+=1+2ah+(a^2+2b)h^2+(2c+2ab)h^3+O(h^4)
+\]
+与 $1+h$ 的系数，得到
+\[
+a=\frac12,
+\qquad b=-\frac18,
+\qquad c=\frac1{16}.
+\]
+而且
+\[
+(\sqrt{1+h}-P_3(h))(\sqrt{1+h}+P_3(h))=O(h^4),
+\]
+第二因子趋于 $2$，故
+\[
+\boxed{\sqrt{1+h}=1+\frac12h-\frac18h^2+\frac1{16}h^3+O(h^4)}.
+\]
+
+这个例子完整运行母模型：基点是 $0$，增量是 $h$，一阶差商提取 $1/2$；当一阶不够时，利用函数关系逐阶匹配系数；最后通过平方关系独立验证余项阶数。
+
+\subsection{精度由第一个未被抵消的阶数决定}
+
+例如
+\[
+\sin h=h-\frac{h^3}{6}+o(h^3)
+\]
+给出
+\[
+h-\sin h=\frac{h^3}{6}+o(h^3).
+\]
+若只使用 $\sin h\sim h$，相减后得到的“$0$”正是被丢弃信息的总和。正确动作不是继续套用一阶等价，而是把展开提高到能出现第一个非零项的阶数。
+
+\begin{corebox}{Taylor 的停止条件}
+先根据目标式估计分母阶数和可能的低阶相消。展开到结果中第一次出现确定的非零主部，并且余项严格高于目标阶数时停止。多展开不会增加正确性，只增加算错和维护成本。
+\end{corebox}
+
+\subsection{Peano 余项、区间余项与无限级数必须分开}
+
+Peano 余项 $o(h^n)$ 回答的是基点附近的阶数比较。Lagrange/Cauchy 余项借助区间上的中值点给出可估计的误差，完整机制归 H-B02。Taylor series 则问 $n\to\infty$ 时多项式序列是否在某个集合上恢复函数，完整机制归 Topic11/H-B05。
+
+一个函数即使各阶导数都存在，也不自动等于其 Taylor series；有限阶局部模型成立，也不自动给出无限表示。最小反例是
+\[
+f(x)=
+\begin{cases}
+e^{-1/x^2},&x\ne0,\\
+0,&x=0,
+\end{cases}
+\]
+它在 $0$ 的所有阶导数均为 $0$，所以 Taylor series 恒为 $0$，但函数在任意去心邻域并不恒为 $0$。
+
+% ============================================================
+\section{高阶导数：先问目标是点值还是函数表达式}
+% ============================================================
+
+\subsection{点值问题是局部系数读取}
+
+若只求 $f^{(n)}(a)$，先求整个 $f^{(n)}(x)$ 往往制造无关信息。局部展开
+\[
+f(a+h)=\sum_{k=0}^{n}c_k h^k+o(h^n)
+\]
+直接给出
+\[
+f^{(n)}(a)=n!c_n.
+\]
+
+在 $a=0$ 时，奇偶结构还能先删除一半候选系数：足够光滑的偶函数奇阶导数为 $0$，奇函数偶阶导数为 $0$。这条传播机制完整归 H-B01；本册只使用它降低局部系数计算量。
+
+若已知
+\[
+f(a)=f'(a)=\cdots=f^{(n-1)}(a)=0,
+\]
+则 Peano 模型立即给出
+\[
+f^{(n)}(a)=n!\lim_{x\to a}\frac{f(x)}{{(x-a)}^n},
+\]
+前提是所需导数确实存在。极限只负责读取系数，不能反过来凭一个偶然存在的比值极限制造高阶可导性。
+
+\subsection{表达式问题才需要通式结构}
+
+若目标是 $f^{(n)}(x)$，常见生成机制为：
+\begin{itemize}
+  \item 对简单规律先计算低阶，再用归纳法证明通式；
+  \item 对乘积使用 Leibniz 公式
+  \[
+  {(uv)}^{(n)}=\sum_{k=0}^{n}\binom{n}{k}u^{(k)}v^{(n-k)};
+  \]
+  \item 对有理函数先做部分分式，使每一项的高阶导数闭合；
+  \item 若函数满足一个低复杂度微分恒等式，对恒等式反复求导并在基点读取递推。
+\end{itemize}
+
+例如令
+\[
+f(x)=\frac{\arcsin x}{\sqrt{1-x^2}},
+\]
+直接计算可得
+\[
+(1-x^2)f'(x)-xf(x)=1.
+\]
+对恒等式求导并令 $x=0$，得到
+\[
+f^{(n)}(0)={(n-1)}^2f^{(n-2)}(0),
+\qquad n\ge2.
+\]
+配合 $f(0)=0,f'(0)=1$，偶阶点值为 $0$，奇阶点值按递推生成。这里使用的是局部系数递推；微分方程整体解族仍归 Topic12。
+
+\subsection{高阶可导性有逐层边界}
+
+典型模型
+\[
+q_k(x)={(x-a)}^k|x-a|,
+\qquad k=0,1,2,\ldots
+\]
+在 $a$ 处具有连续到第 $k$ 阶的导数，但第 $k+1$ 阶导数不存在。每乘一个 $(x-a)$，尖点被多压制一阶，却不会凭空变得无限光滑。
+
+因此应使用层级记号
+\[
+C^{n+1}\Longrightarrow C^n\Longrightarrow\cdots\Longrightarrow C^1
+\Longrightarrow\text{可导}\Longrightarrow\text{连续},
+\]
+并用反例逐层阻断逆推。局部模型的“阶数”是一项真实资格，不是可以省略的修饰词。
+
+% ============================================================
+\section{局部几何：一阶给方向，二阶给弯曲速度}
+% ============================================================
+
+\subsection{切线与法线}
+
+对曲线 $y=f(x)$，若 $f'(a)$ 有限，则切线为
+\[
+y-f(a)=f'(a)(x-a).
+\]
+它就是一阶 Taylor 模型的图像。若 $f'(a)\ne0$，法线斜率为 $-1/f'(a)$；若 $f'(a)=0$，法线为竖直线 $x=a$。
+
+导数不存在不等于“什么切线都没有”：可能是尖点、角点、垂直切线或振荡失控。需要查看差商的单侧/无穷行为，不能把所有不可导点压成一种图形。
+
+\subsection{曲率读取单位弧长上的方向变化}
+
+若曲线足够光滑且正则，曲率定义为
+\[
+\kappa=\left|\frac{d\phi}{ds}\right|,
+\]
+其中 $\phi$ 是切线方向角，$s$ 是弧长。对 $y=f(x)$，
+\[
+\boxed{\kappa=\frac{|f''(x)|}{{\bigl(1+{f'(x)}^2\bigr)}^{3/2}}}.
+\]
+分子记录斜率变化，分母把“每单位 $x$ 的变化”换成“每单位弧长的变化”。曲率半径为 $\rho=1/\kappa$；$\kappa=0$ 时没有有限曲率圆。
+
+对参数曲线 $\bm r(t)=(x(t),y(t))$，在 $(x',y')\ne(0,0)$ 时，
+\[
+\kappa=
+\frac{|x'y''-x''y'|}{{\bigl({x'}^2+{y'}^2\bigr)}^{3/2}}.
+\]
+正则性条件保证参数确实提供了局部运动方向；若速度向量为零，公式分母失效，必须重新参数化或单独分析。
+
+\subsection{点的局部几何与区间形状不是同一 Owner}
+
+$f'(a)$、$f''(a)$ 给出点附近的局部系数；“整个区间递增”“这里是极值”“凹凸性在此改变”还需要邻域或区间上的符号信息。驻点只是候选点，$f''(a)=0$ 也只是拐点候选。完整判定由 Topic04 通过中值定理和符号变化组织。
+
+% ============================================================
+\section{概念边界：真正判据、题目信号与错误后果}
+% ============================================================
+
+\begin{longtable}{L{1.95cm}@{}>{\centering\arraybackslash}p{0.35cm}@{}L{1.95cm}L{5.55cm}L{\dimexpr\linewidth-10.15cm\relax}}
+\toprule
+\textbf{概念 A} & & \textbf{概念 B} & \textbf{为什么容易混 / 真正判据与题目信号} & \textbf{混淆后果}\\
+\midrule
+连续 & $\neq$ & 可导 & 连续只要求 $\Delta f\to0$；可导要求 $\Delta f=Ah+o(h)$。尖点、振荡差商是信号。 & 看到连续便直接套求导法则\\
+点导数 & $\neq$ & 导函数极限 & $f'(a)$ 固定基点取差商；$\lim_{x\to a}f'(x)$ 研究邻域斜率。$G_2$ 阻断逆推。 & 由点上可导推出 $f'$ 连续\\
+导数 & $\neq$ & 对称导数 & 导数的一端固定在 $a$；对称差商两端同时移动，可能消去左右冲突。 & 把 $|x|$ 在 $0$ 误判为可导\\
+真实增量 & $\neq$ & 微分 & $\Delta y=f(a+h)-f(a)$；$dy=f'(a)h$ 是线性主部，二者相差 $o(h)$。 & 把近似当恒等式参与高阶相消\\
+有限 Taylor & $\neq$ & Taylor series & 前者固定阶数并审计局部余项；后者令阶数趋于无穷并问是否恢复函数。 & 由任意阶可导直接宣布等于级数\\
+Peano 余项 & $\neq$ & Lagrange 余项 & 前者给基点渐近阶；后者依赖区间中值点与额外正则性，归 H-B02。 & 用 $o(h^n)$ 无条件给全区间数值上界\\
+局部逆斜率 & $\neq$ & 反函数存在 & $1/f'(a)$ 只在已有合法局部分支且 $f'(a)\ne0$ 时计算斜率；单射性先由 Topic01 核对。 & 分母为零仍机械取倒数\\
+驻点/二阶零点 & $\neq$ & 极值/拐点 & 前者只是局部候选；后者需要邻域符号改变，完整机制归 Topic04。 & 由 $f'=0$ 判极值、由 $f''=0$ 判拐点\\
+点值高阶导数 & $\neq$ & 高阶导函数 & $f^{(n)}(a)$ 只需局部系数；$f^{(n)}(x)$ 才需要通式。 & 为一个点制造整段复杂表达式\\
+不可导 & $\neq$ & 没有切线 & 不可导可能对应角点、尖点、垂直切线或振荡；需检查差商的单侧行为。 & 把不同几何失效混成同一类型\\
+\bottomrule
+\end{longtable}
+
+% ============================================================
+\section{Topic03 的问题求解协议}
+% ============================================================
+
+面对导数、微分、局部展开或高阶导数问题，按下列顺序维护信息：
+\[
+\boxed{
+\begin{gathered}
+\text{固定基点}\to\text{合法性门}\to\text{目标阶数}\to\text{表示选择}\\
+\to\text{系数提取}\to\text{余项审计}\to\text{独立验证}
+\end{gathered}}
+\]
+
+\subsection{Step 1：Anchor}
+
+固定基点 $a$，统一令 $h=x-a$。若差商中没有一个固定端点，先判断它是否真的等价于导数定义。
+
+\subsection{Step 2：Domain Gate}
+
+检查点值、左右定义域、复合接口、分母非零、反函数分支、隐式分支和参数正则性。分段点先过连续性门，再谈可导。
+
+\subsection{Step 3：Target Order}
+
+题目只要一阶斜率、最低非零主部、$n$ 阶点值，还是整个 $f^{(n)}(x)$？先定信息精度，避免把局部点值问题扩成通式计算。
+
+\subsection{Step 4：Representation}
+
+在差商、局部多项式、隐式关系、参数式、乘积结构或微分恒等式中选择最能暴露目标系数的表示。换表示时保留定义域和分支条件。
+
+\subsection{Step 5：Coefficient Extraction}
+
+按目标尺度归一，读取稳定系数；若低阶系数已知相消，逐阶减去并升阶。高阶点值优先用系数、奇偶、Leibniz 或递推，而不是默认反复求导。
+
+\subsection{Step 6：Residual Audit}
+
+明确剩余是 $o(h^k)$、$O(h^{k+1})$ 还是一个带中值点的余项。只有余项严格小于当前主部时，替代才保留目标信息。
+
+\subsection{Step 7：Verify}
+
+至少做一项独立检查：
+\begin{itemize}
+  \item 左右差商是否一致，且结果是否为有限值；
+  \item 导数公式的定义域、量纲、奇偶或符号是否合理；
+  \item 把局部多项式代回原代数/微分关系，低阶系数是否逐项匹配；
+  \item 余项阶数是否严格高于最终保留阶；
+  \item 几何斜率、参数方向或曲率是否与图形局部趋势相容。
+\end{itemize}
+
+% ============================================================
+\section{高频失败路径：第一次偏离发生在哪里？}
+% ============================================================
+
+\begin{enumerate}
+  \item \kw{Anchor 失败}：看到两个点都移动的差商就套导数定义，没有固定基点。
+  \item \kw{Domain Gate 失败}：分段点跳过连续性；反函数、隐函数或参数式跳过分母与分支资格。
+  \item \kw{层级失败}：把 $f'(a)$ 与 $\lim_{x\to a}f'(x)$ 合并，把可导升级成 $C^1$。
+  \item \kw{Order 失败}：等价主部在加减中相消后仍停留在一阶精度。
+  \item \kw{Residual 失败}：只写多项式不写余项，或把 $o(h^n)$ 当作全区间误差上界。
+  \item \kw{Owner 失败}：把有限 Taylor 当无限级数，把驻点候选直接当区间极值，把变限积分公式塞进求导本体。
+  \item \kw{Cost 失败}：只求 $f^{(n)}(a)$ 却先构造完整 $f^{(n)}(x)$，计算量远超所需信息。
+  \item \kw{Verification 失败}：公式求完后不再检查定义域、左右性、奇偶、系数匹配或余项阶数。
+\end{enumerate}
+
+这些错误不能统一写成“计算失误”。应定位最早丢失的是基点、合法性、信息层级、目标阶数、余项，还是 Owner 边界。
+
+% ============================================================
+\section{传统章节与 Source Corpus 映射}
+% ============================================================
+
+\begin{longtable}{L{2.25cm}L{5.45cm}L{\dimexpr\linewidth-7.70cm\relax}}
+\toprule
+\textbf{Source / 传统内容} & \textbf{进入本册} & \textbf{分流与拒绝复制}\\
+\midrule
+I-02 函数极限 & 导数定义型极限、Taylor 暴露最低非零项、$G_p$ 正则性阶梯 & 极限存在性与尺度归 Topic02；L'Hospital 归 Topic04 接口；工具选择归 Rules\\
+I-06 定义与判定 & 点导数、左右导数、微分、可导层级、绝对值/振荡反例 & 导函数极限回点定理的中值机制只 Use Topic04/H-B02\\
+I-06 求导工具 & 和积商链、反函数、隐式与参数表示的局部机制 & 变限积分求导归 Topic05/H-B03；题型优先级归 Rules\\
+I-06 高阶导数 & 点值/通式分流、Leibniz、局部系数与恒等式递推 & 无限幂级数逐项操作归 Topic11/H-B05；ODE 解族归 Topic12\\
+I-06 函数形状 & 只保留“点导数/二阶导数给候选”的边界 & 单调、极值、凹凸、拐点、Rolle 数轴机制全部归 Topic04\\
+I-06 曲率 & 一阶方向、二阶弯曲、正则参数公式 & 多元曲面局部几何归 Topic07；空间对象表示归 Topic06\\
+I-06 公式附录 & 常用导数与有限局部展开的 Coverage 锚点 & 原函数反查表归 Topic05，不在本册复制\\
+\bottomrule
+\end{longtable}
+
+% ============================================================
+\section{一页压缩：忘掉公式后怎样重建？}
+% ============================================================
+
+\begin{corebox}{一句话}
+固定基点，把输出增量按目标尺度归一；稳定下来的系数构成局部多项式，被丢掉的部分必须有更高阶余项保证；主部相消时只做精度升级，不换成无依据的技巧。
+\end{corebox}
+
+\subsection{母图}
+\[
+\boxed{
+a
+\to h=x-a
+\to \frac{\Delta f-\text{已知低阶主部}}{h^k}
+\to c_k
+\to r_k=o(h^k)
+\to \text{必要时升阶}}
+\]
+
+\subsection{三个生成原则}
+\begin{enumerate}
+  \item \kw{固定原则}：点导数必须有固定基点；左右、对称和导函数极限是不同对象。
+  \item \kw{系数原则}：导数和 Taylor 系数都是按尺度归一后唯一稳定下来的局部系数。
+  \item \kw{余项原则}：局部替代的可信度由余项决定；相消暴露的是被丢掉的信息，必须升阶。
+\end{enumerate}
+
+\subsection{重建问题}
+\begin{enumerate}
+  \item 基点是否固定？当前定义域允许从哪一侧接近？
+  \item 目标只需一阶、最低非零阶、某个点值，还是整个高阶导函数？
+  \item 当前表示能否直接暴露目标系数？换表示丢了什么资格？
+  \item 我保留到哪一阶？余项是否严格更小？
+  \item 主部是否在加减中相消，需要提高精度？
+  \item 这是有限局部模型，还是已经越界到区间定理、无限级数或积分接口？
+  \item 能否用左右性、奇偶、原关系回代或几何趋势独立检查？
+\end{enumerate}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\appendix
+\section{局部展开与求导 Coverage 锚点}
+
+本附录只保存可由母模型调用的常用锚点，不替代定义域、目标阶数和余项检查。以下有限展开均指 $h\to0$。
+
+\subsection{常用有限局部模型}
+
+\[
+\begin{aligned}
+e^h&=1+h+\frac{h^2}{2}+\frac{h^3}{6}+o(h^3),\\
+\sin h&=h-\frac{h^3}{6}+\frac{h^5}{120}+o(h^5),\\
+\cos h&=1-\frac{h^2}{2}+\frac{h^4}{24}+o(h^4),\\
+\ln(1+h)&=h-\frac{h^2}{2}+\frac{h^3}{3}+o(h^3),\\
+{(1+h)}^\alpha&=1+\alpha h+\frac{\alpha(\alpha-1)}{2}h^2+o(h^2),\\
+\tan h&=h+\frac{h^3}{3}+\frac{2h^5}{15}+o(h^5),\\
+\arcsin h&=h+\frac{h^3}{6}+o(h^3),\\
+\arctan h&=h-\frac{h^3}{3}+o(h^3).
+\end{aligned}
+\]
+
+这些式子都是指定阶数的局部模型。只有 Topic11/H-B05 证明了相应无限过程和恢复条件后，才能把它们升级为 Taylor series 陈述。
+
+\subsection{基本导数与结构法则}
+
+\[
+\begin{gathered}
+(x^\alpha)'=\alpha x^{\alpha-1},\qquad
+(e^x)'=e^x,\qquad
+(\ln x)'=\frac1x,\\
+(\sin x)'=\cos x,\qquad
+(\cos x)'=-\sin x,\qquad
+(\tan x)'=\sec^2x,\\
+(u\pm v)'=u'\pm v',\qquad
+(uv)'=u'v+uv',\\
+\left(\frac uv\right)'=\frac{u'v-uv'}{v^2}\ (v\ne0),\qquad
+(f\circ g)'=(f'\circ g)g'.
+\end{gathered}
+\]
+
+幂函数和对数函数必须保留各自实定义域；反三角、双曲函数等完整公式表可由这些局部机制和标准定义按需补齐，不把手册退化成公式字典。
+
+\subsection{考纲查漏}
+
+按考纲查漏，本册覆盖：导数与微分概念、几何意义、连续与可导关系、基本求导法则、复合/隐式/参数/反函数求导、高阶导数、有限 Taylor 公式及 Peano 余项、切线/法线与曲率。单调极值凹凸和 L'Hospital 在 Topic04；变限积分求导在 Topic05/H-B03；Taylor series 在 Topic11/H-B05。
+
+\noindent\textbf{Source note.} 本册由归档笔记 I-06《一元微分：定义、计算、判定与几何应用》与 I-02 中已分流的导数/Taylor 片段做 Source Diff / Owner Diff 后重组。静态旧稿提供候选模型、公式和反例；正文状态仍待使用者审阅，做题动作仍待陌生题验证。
+
+\end{document}

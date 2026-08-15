@@ -1,0 +1,78 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,booktabs,tabularx,array}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{xcolor,fancyhdr,hyperref,bookmark,microtype}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
+\definecolor{deep}{RGB}{42,58,73}\definecolor{soft}{RGB}{245,247,249}
+\definecolor{warn}{RGB}{136,68,63}
+\hypersetup{colorlinks=true,linkcolor=deep,pdftitle={H-B01 函数结构在运算中的传播}}
+\pagestyle{fancy}\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · H-B01}}
+\rhead{\small\color{deep}结构传播}\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\begin{document}
+\begin{center}
+{\LARGE\textbf{H-B01｜函数结构在运算中的传播}}\\[0.4em]
+{\large 奇偶、周期、对称怎样穿过极限、微分、积分与展开}
+\end{center}
+\begin{quote}
+Topic01 Owns 函数结构，Topic02/03/05/11 Owns 各自运算。本 Bridge 只回答：结构经过一次运算后，哪些保持、哪些翻转、哪些因常数、中心或定义域而失效？
+\end{quote}
+\section{母接口：结构 + 运算 + 资格}
+\[
+\boxed{\text{原结构}\to\text{运算作用}\to\text{中心/定义域/正则性审计}\to\text{新结构}}
+\]
+\begin{center}
+\begin{tikzpicture}[node distance=.55cm and .55cm,
+box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.1cm,minimum height=.9cm,align=center,fill=soft,font=\small},
+arr/.style={-{Latex[length=2mm]},thick,draw=deep}]
+\node[box](a){函数对象\\奇偶/周期/对称};
+\node[box,right=of a](b){运算\\极限/导数/积分/展开};
+\node[box,right=of b](c){资格\\定义域/中心/常数};
+\node[box,below=of c](d){结果结构\\保持/翻转/迁移};
+\draw[arr](a)--(b);\draw[arr](b)--(c);\draw[arr](c)--(d);
+\end{tikzpicture}
+\end{center}
+\section{四条稳定传播}
+\begin{tabularx}{\linewidth}{L{0.25\linewidth}L{0.31\linewidth}X}
+\toprule
+运算 & 稳定结论 & 必查边界\\
+\midrule
+极限 & 对称定义域上，偶/奇结构可传给存在的极限 & 极限点、左右路径、定义域是否对称\\
+求导 & 偶函数导数为奇，奇函数导数为偶；周期性保持 & 可导区间、周期端点、点值接缝\\
+积分 & 奇函数对称区间积分为零；偶函数可折半 & 积分中心、原函数常数、区间是否对称\\
+Taylor/Fourier & 展开中心决定对称基；奇偶性消掉一半系数 & 中心迁移、收敛域、端点/跳跃恢复\\
+\bottomrule
+\end{tabularx}
+\begin{corebox}{为什么积分常数会破坏原函数奇偶}
+若 $f$ 为奇函数，任一原函数 $F$ 可取为偶函数，但 $F+C$ 的奇偶性随 $C$ 改变。故“导数有结构”不能无条件反推“原函数有同一结构”，必须用基点归一化，例如 $F(0)=0$。
+\end{corebox}
+\section{周期与对称中心迁移}
+若 $f$ 以 $T$ 为周期，则 $f'$（存在时）与周期相关；但变上限积分通常不是周期函数，而满足
+\[
+F(x+T)-F(x)=\int_x^{x+T}f(t)\,dt.
+\]
+只有周期平均值为零时，才可能得到周期的原函数。平移或反射后的函数应先变换中心，再谈奇偶和周期，不能把关于原点的口诀直接搬到新中心。
+\section{最小例子：周期能否传给原函数}
+$f(x)=\sin x$ 的周期为 $2\pi$，且一周期积分为零，原函数 $F(x)=-\cos x$ 仍可取为周期函数。反之 $f(x)=1$ 也具有任意正周期，但
+\[
+F(x+T)-F(x)=\int_x^{x+T}1\,dt=T\ne0,
+\]
+所以任何原函数都不周期。题面把奇偶/周期带入积分、求导或展开时，先调用“结构 + 运算 + 资格”接口。
+
+\section{Anti-Bridge 与调用检查}
+\begin{itemize}
+\item 形式表达式对称不等于定义域对称；
+\item 导数结构不等于原函数结构；
+\item Taylor 的奇偶项消失不等于 Fourier 在每点恢复；
+\item 周期函数的原函数不必周期。
+\end{itemize}
+遇到结构传播题，按“对象身份—运算—资格—不变量”复核，并在一个中心点或一个周期上做简单值检查。
+\end{document}

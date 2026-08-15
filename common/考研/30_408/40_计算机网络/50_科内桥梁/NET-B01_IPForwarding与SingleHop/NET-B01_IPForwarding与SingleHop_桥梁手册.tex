@@ -1,0 +1,73 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\handbooksetup{NET-B01 IP Forwarding × Single-Hop}{408 · Network Internal Bridge}{Destination · Next Hop · Link Adapter · Frame}
+\begin{document}
+\handbooktitle{IP Forwarding × Single-Hop Delivery}{网络层动作怎样适配不同链路}{408 · NET-B01}
+
+\begin{corebox}{Mother Interface}
+\[
+\boxed{(packet,egress,next\ hop)\xrightarrow{LinkAdapter(egress)}link\ unit\to one\ hop}
+\]
+Bridge 的稳定接口不是固定的 \code{NextHopIP -> MAC}，而是 NET04 输出转发动作，NET02 按输出接口的链路类型生成本跳可交付对象。
+\end{corebox}
+
+\begin{methodbox}{Owners 与停止边界}
+NET04 Owns destination、LPM、egress 与 next-hop decision；NET02 Owns framing、链路身份与本地交付。本册只 Owns 两者间的适配合同：输入是什么、按链路类型怎样分叉、哪些状态逐跳重建。ARP/ND、PPP、switch 的内部流程回到各 Topic。
+\end{methodbox}
+
+\section{为什么不能把桥写死成 MAC}
+
+Ethernet/WLAN 需要把 next-hop network identity 解析为当前链路接收者身份；PPP 点到点链路只有已知 peer，不需要 Ethernet 式 MAC 发现；隧道还会先增加外层网络封装。因而统一过程是：
+\[
+\text{FIB action}\to
+\begin{cases}
+\text{multi-access link: resolve neighbor identity},\\
+\text{point-to-point link: select configured peer},\\
+\text{tunnel: construct outer packet toward tunnel endpoint}
+\end{cases}
+\to\text{frame/link unit}.
+\]
+
+“下一跳”本身也有两种合法输出：路由表可给 next-hop IP，也可给 direct/on-link egress。后者仍需为最终 destination 解析链路身份；前者解析的是 next-hop router，不能无条件解析最终远端主机。
+
+\section{逐跳生命周期与不变量}
+
+路由器收到链路单元后先完成当前链路校验并去封装；检查 packet 的 Hop Limit/TTL，按 destination 做 LPM，得到 egress/next hop；随后调用输出接口的 link adapter，必要时查询或建立 neighbor cache，最后产生新链路单元。
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.5cm}Y Y}
+\toprule
+对象 & 通常跨路由器保持 & 每跳可能改变\\
+\midrule
+IP packet & source/destination 端点语义、上层 payload & TTL/Hop Limit、IPv4 checksum、分片/NAT/隧道相关字段\\
+Link unit & 无端到端保持承诺 & link header/trailer、发送/接收链路身份、FCS\\
+Soft state & destination 不要求逐跳缓存 & neighbor cache、queue、link association\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{贯穿例：三种 egress}
+
+主机 A 向异网段 D 发送时，same-subnet 判断输出默认网关 R1，Ethernet adapter 解析 $IP_{R1}\to MAC_{R1}$。R1 若经 PPP 串行链路直连 R2，FIB 输出该接口后可直接封装 PPP frame，不应虚构 $MAC_{R2}$。R2 的下一段若又是 Ethernet，则重新解析目标 D 或下一路由器的 MAC。IP 目标可以相同，链路适配动作却随 egress 改变。
+
+若 neighbor resolution 暂未完成，packet 可能排队等待、触发解析或在失败后丢弃；FIB 命中不等于链路交付已成功。反之，拥有某 MAC 表项也不能替代 IP 层 next-hop decision。
+
+\section{调用协议与 Anti-Bridge}
+
+\begin{enumerate}
+\item 写当前节点与 destination IP；
+\item 用 same-subnet/LPM 得到 $(egress,next\ hop)$，不提前写 MAC；
+\item 识别 egress 是 multi-access、point-to-point 还是 tunnel；
+\item 调用相应 link adapter，写解析/peer/外层封装状态；
+\item 构造本跳单元，推进一次交付后删除该封装；
+\item 检查 packet 不变量与逐跳变化字段。
+\end{enumerate}
+
+\begin{warnbox}{高频 First Divergence}
+跨网段 ARP 最终目的主机，是漏了 next-hop 决策；PPP 链路仍强制写目的 MAC，是把 Ethernet 具体实现冒充 Bridge 接口；交换机查表替代 router LPM，是混淆 local delivery 与 internetwork forwarding；FIB 命中就宣称到达，是漏了 neighbor/link failure 分支。
+\end{warnbox}
+
+\begin{corebox}{Compression}
+谁选 egress/next hop？该 egress 需要哪种链路对象？解析状态是否就绪？哪些字段跨跳保持，哪些封装必须重建？回答完即停止，不进入 Topic 内协议细节。
+\end{corebox}
+\end{document}

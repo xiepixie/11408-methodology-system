@@ -1,0 +1,26 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\usepackage{amsmath,booktabs,tabularx,hyperref}
+\handbooksetup{X-B01 Privilege / Exception / System Call}{408 · Cross-Subject Bridge}{Trap · Saved State · Kernel Control · Return}
+\begin{document}
+\handbooktitle{Privilege / Exception / System Call × OS Control}{用户执行怎样安全跨越特权边界，并在处理后恢复或终止}{408 · Cross-Subject X-B01}
+\begin{corebox}{Mother Interface}
+\[
+\boxed{\text{User Execution}\to\text{Trap/Exception/System Call}\to\text{Save State}\to\text{Privileged Entry}\to\text{Kernel Decision}\to\text{Return/Terminate}}
+\]
+共同接口是控制权与体系结构状态交接；syscall、exception、interrupt 的触发语义仍需区分。
+\end{corebox}
+\begin{methodbox}{Owners 与边界}
+CO02/CO03 Owns ISA exception semantics、privilege state、entry/return state；OS01 Owns cause interpretation、task/system state and policy。本册不重新讲调度、同步、VM repair 或设备完成。
+\end{methodbox}
+\section{三种入口先分类}
+系统调用是用户主动请求的同步入口；异常是当前指令或状态导致的同步事件；外部中断与当前指令异步。硬件提供可信入口、最低限度现场与权限切换，OS 读取原因并选择服务、修复、信号、终止或调度。
+\section{最小例子与恢复条件}
+用户执行系统调用指令，硬件保存可恢复的 PC/权限信息并进入内核入口；内核校验调用号和参数，写入返回值，恢复用户可见状态后返回。缺页等可修复异常可能重试原指令，非法访问则不能伪造成功返回。进入内核态本身不等于 context switch。
+\begin{warnbox}{Anti-Bridge}
+特权切换 $\neq$ 进程切换；exception $\neq$ interrupt；“返回用户态”不等于“恢复原指令”，还要看是否修改了保存的 PC、地址空间或 task state。
+\end{warnbox}
+\begin{corebox}{Compression}
+谁触发入口？硬件保存了哪些架构状态？OS 根据什么原因分流？返回时恢复、重试、阻塞还是终止哪一种？
+\end{corebox}
+\end{document}

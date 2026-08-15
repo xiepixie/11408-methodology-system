@@ -29,6 +29,8 @@ Stable Handbook types remain `Atlas / Topic / Bridge / Integration`. Foundation 
 | stable write/import/topology/status | `00_system/collaboration_workflow.md` |
 | create/restructure Handbook or Rules | `00_system/handbook_contract.md` |
 | large Handbook body rewrite | `00_system/handbook_writing_spec.md` |
+| LaTeX Family/Profile/dependency/Semantic API | `../latex/README.md`（全局 Owner；本仓库路由见 `00_system/latex_design_system.md`） |
+| LaTeX font/table/diagram/layout | `00_system/latex_layout_spec.md` |
 | Owner/duplication/dependency | `00_system/ownership_matrix.md` |
 | evidence/Rule promotion | `00_system/evidence_promotion.md` |
 | architecture change | `00_system/architecture.md` |
@@ -60,7 +62,7 @@ For Topic / Bridge / Integration deep bodies:
 ```bash
 python3 00_system/cognitive_system.py publish "<target.tex>"
 ```
-This is the only recommended deep-Handbook publish entry. Atlas does not require publication to be complete; optional Atlas posters are derived visuals under `assets/` and use `python3 00_system/cognitive_system.py publish-view "<Atlas>/assets/<Atlas>_Poster.tex"`. Never edit PDF by hand.
+This is the only recommended deep-Handbook publish entry. During the current transition, new Canonical `.tex` may use the Prototype `ipara-handbook.sty`; the long-term KOMA/CTeX + Core/Class architecture and migration gates are owned by `../latex/README.md`, while this repository's concrete visual rules are owned by `00_system/latex_layout_spec.md`. Existing Canonical documents migrate only when already being substantially revised or when a real layout/portability defect exists. Atlas does not require publication to be complete; optional Atlas posters are derived visuals under `assets/` and use `python3 00_system/cognitive_system.py publish-view "<Atlas>/assets/<Atlas>_Poster.tex"`. Never edit PDF by hand.
 
 ## Validation
 After stable changes:

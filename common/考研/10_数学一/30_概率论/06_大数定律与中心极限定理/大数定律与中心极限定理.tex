@@ -1,0 +1,337 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{line}{RGB}{145,154,163}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+
+\hypersetup{
+  colorlinks=true,
+ linkcolor=deep,
+  urlcolor=accent,
+  pdftitle={大数定律与中心极限定理}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 概率统计 Topic 06}}
+\rhead{\small\color{deep}依概率收敛 · 大数定律 · 中心极限定理 · 渐近分布}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\title{\vspace{-1.1cm}\textbf{大数定律与中心极限定理}\\[0.4em]
+\large 随机性为什么能在大量重复中呈现确定性规律与正态渐近？}
+\author{数学一 · 概率统计 Topic 06}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{母问题：随机性为什么能在大量重复中呈现确定性规律与正态渐近？}
+当独立随机变量数量 $n \to \infty$ 时，随机算术平均 $\bar X_n$ 表现出两种根本现象：
+1. \kw{稳定位置：} 随机波动被均化，样本均值依概率收敛到确定常数 $\mu$（大数定律）；
+2. \kw{剩余波动：} 放大 $\sqrt{n}$ 倍后的剩余波动趋近于标准正态分布（中心极限定理）。
+
+主线推演逻辑：
+\[
+\boxed{
+\text{独立样本 } X_1,\dots,X_n \xrightarrow{\text{切比雪夫不等式}} \bar X_n \xrightarrow{P} \mu \quad (\text{LLN}) \xrightarrow{\text{放大剩余波动 } \frac{\sqrt{n}(\bar X_n - \mu)}{\sigma}} N(0,1) \quad (\text{CLT})
+}
+\]
+\end{corebox}
+
+\section{本册定位与职责划分}
+
+\begin{itemize}
+  \item \kw{本册拥有（Owns）：}随机变量序列的收敛语言、Borel--Cantelli 路径接口、大数定律、中心极限定理、Slutsky/Delta 渐近变换与精确--渐近边界。
+  \item \kw{本册使用（Uses）：}Topic 05 的期望、方差与 Chebyshev 不等式；Topic 07 的样本统计量对象。
+  \item \kw{本册不拥有（Does not own）：}小样本下精确抽样分布（Topic 07 负责）、统计量渐近估计性质（Topic 08 负责）。
+  \item \kw{输出目标（Output）：}大样本下的概率近似计算与极限定理判断框架。
+\end{itemize}
+
+\section{第一层：收敛语言与强度边界}
+
+设 $X_n,X$ 定义在同一概率空间上。四种常用收敛回答的问题不同：
+\begin{itemize}
+  \item 几乎必然收敛：$P(\{\omega:X_n(\omega)\to X(\omega)\})=1$，是样本路径层面的结论；
+  \item 依概率收敛：对所有 $\varepsilon>0$，$P(|X_n-X|>\varepsilon)\to0$，是偏离概率层面的结论；
+  \item $L^p$ 收敛：$E|X_n-X|^p\to0$，其中 $p=2$ 是均方收敛；
+  \item 依分布收敛：分布函数在极限分布的连续点收敛，不要求定义在同一概率空间。
+\end{itemize}
+基本蕴含链为
+\[
+X_n\xrightarrow{a.s.}X\Longrightarrow X_n\xrightarrow{P}X\Longrightarrow X_n\xrightarrow{d}X,
+\qquad X_n\xrightarrow{L^p}X\Longrightarrow X_n\xrightarrow{P}X.
+\]
+若 $q>p>0$，$L^q$ 收敛推出 $L^p$ 收敛；若极限为常数 $c$，则 $X_n\xrightarrow{d}c$ 与 $X_n\xrightarrow{P}c$ 等价。反向一般不成立，不能把“分布越来越像”写成“同一条样本路径越来越近”。
+
+若 $g$ 在 $X$ 的实际取值处几乎处处连续，连续映射定理给出
+\[
+X_n\xrightarrow{P}X\Rightarrow g(X_n)\xrightarrow{P}g(X),\qquad
+X_n\xrightarrow{d}X\Rightarrow g(X_n)\xrightarrow{d}g(X).
+\]
+不连续函数必须另行检查极限落在不连续点的概率。
+
+\section{第二层：Borel--Cantelli 与路径事件}
+
+事件“无穷多次发生”记为
+\[
+\{A_n\ \mathrm{i.o.}\}=\limsup A_n=\bigcap_{m\geq1}\bigcup_{n\geq m}A_n.
+\]
+第一 Borel--Cantelli 引理：若 $\sum_nP(A_n)<\infty$，则 $P(A_n\ \mathrm{i.o.})=0$，不要求独立。第二引理：若 $A_n$ 相互独立且 $\sum_nP(A_n)=\infty$，则 $P(A_n\ \mathrm{i.o.})=1$。它们把概率和转成路径层面的“只发生有限次/发生无穷次”，也是强收敛证明的重要工具。
+
+\section{第三层：大数定律的完整分层}
+
+\subsection{从方差衰减到弱大数律}
+
+若 $X_i$ 两两独立、$\operatorname{Var}(X_i)\leq C$，则
+\[
+\operatorname{Var}\left(\frac1n\sum_{i=1}^nX_i\right)
+=\frac1{n^2}\sum_{i=1}^n\operatorname{Var}(X_i)\leq\frac Cn.
+\]
+Chebyshev 立刻给出
+\[
+\frac1n\sum_{i=1}^n(X_i-EX_i)\xrightarrow{P}0.
+\]
+\begin{methodbox}{弱大数律的证明骨架}
+这里的关键不是“样本量大”，而是方差按 $1/n$ 衰减：先由独立性消掉和式中的协方差项，再用 Chebyshev 把方差上界转换成偏离概率上界。若只知道 $E|X_1|<\infty$ 而没有有限方差，则不能沿这条 Chebyshev 路径，而要调用 Khinchin 弱大数律，并明确它的前提更换了。
+\end{methodbox}
+
+\begin{examplebox}{真题对象映射：2022 Q九 的样本二阶矩}
+若 $X_1,\ldots,X_n$ 独立同分布，$E(X_1^k)=\mu_k$（$k=1,2,3,4$），题目考察
+\[
+T_n=\frac1n\sum_{i=1}^nX_i^2
+\quad\text{偏离}\quad \mu_2.
+\]
+先把 $W_i=X_i^2$ 看成新的 i.i.d. 变量，则 $E(W_i)=\mu_2$、$\operatorname{Var}(W_i)=\mu_4-\mu_2^2$。于是
+\[
+\operatorname{Var}(T_n)=\frac{\mu_4-\mu_2^2}{n},
+\qquad
+P(|T_n-\mu_2|\ge\varepsilon)\le
+\frac{\mu_4-\mu_2^2}{n\varepsilon^2}.
+\]
+不能看到“样本均值”就把中心写成 $\mu_1$，也不能把该上界当成精确概率；核心动作是先识别极限对象是 $X^2$ 的总体均值。
+\end{examplebox}
+若 $X_i$ 独立同分布且 $E|X_1|<\infty$，Khinchin 弱大数律给出
+\[
+\bar X_n\xrightarrow{P}E(X_1).
+\]
+它只需要一阶绝对矩，不需要有限方差。若再有 i.i.d. 与有限一阶绝对矩，Kolmogorov 强大数律给出
+\[
+\boxed{\bar X_n\xrightarrow{a.s.}E(X_1)}.
+\]
+Bernoulli 频率定律只是强大数律的示性变量特例：独立重复事件的频率几乎必然趋于其概率。
+
+\subsection{大数律的统计推论}
+
+若 $E|X|^k<\infty$，则样本 $k$ 阶原点矩
+\[
+A_{k,n}=\frac1n\sum_{i=1}^nX_i^k\xrightarrow{a.s.}E(X^k).
+\]
+若 $E(X^2)<\infty$，则
+\[
+\frac1n\sum X_i^2\xrightarrow{a.s.}E(X^2),\qquad \bar X_n^2\xrightarrow{a.s.}[E(X)]^2,
+\]
+所以 $B_{2,n}=n^{-1}\sum(X_i-\bar X_n)^2\xrightarrow{a.s.}\sigma^2$，且 $S_n^2=nB_{2,n}/(n-1)$ 也相合。对固定 $x$，经验分布函数
+\[
+F_n(x)=\frac1n\sum_{i=1}^nI_{\{X_i\le x\}}
+\]
+几乎必然趋于 $F(x)$；更强的 Glivenko--Cantelli 结论为 $\sup_x|F_n(x)-F(x)|\xrightarrow{a.s.}0$。样本对象的 Owner 见 Topic 07，本册只提供极限机制。
+
+\section{第四层：中心极限定理的机制与扩展}
+
+\subsection{经典 i.i.d. CLT}
+
+若 $X_i$ i.i.d.、$E(X_i)=\mu$、$0<\sigma^2<\infty$，则
+\[
+\boxed{\frac{S_n-n\mu}{\sigma\sqrt n}=\frac{\sqrt n(\bar X_n-\mu)}\sigma\xrightarrow{d}N(0,1)}.
+\]
+因此 $\bar X_n$ 的误差尺度是 $n^{-1/2}$；这是“平方根规律”的来源。LLN 研究 $\bar X_n$ 是否靠近 $\mu$，CLT 研究把剩余误差放大 $\sqrt n$ 后呈现何种非退化形状。
+
+\begin{methodbox}{CLT 的前提映射}
+题目中的样本均值必须先映射为 $S_n-n\mu$：中心化去掉确定位置，独立同分布与 $0<\sigma^2<\infty$ 提供经典 CLT 的适用条件，除以真实尺度 $\sigma\sqrt n$ 才得到标准正态极限。若方差未知，先由 Topic 05/06 证明 $S_n\xrightarrow{P}\sigma$，再用 Slutsky；这只产生渐近结论，不能把一般总体的 Student 化统计量改写成有限样本 $t$ 分布。
+\end{methodbox}
+
+\subsection{二项近似与连续性修正}
+
+若 $S_n\sim\operatorname{Bin}(n,p)$，则
+\[
+\frac{S_n-np}{\sqrt{np(1-p)}}\xrightarrow{d}N(0,1).
+\]
+若用连续正态分布近似离散二项概率，连续性修正通常把整数边界移动 $0.5$，以减少离散—连续边界误差；例如
+\[
+P(S_n\le k)\approx
+\Phi\!\left(\frac{k+0.5-np}{\sqrt{np(1-p)}}\right).
+\]
+这是近似路径的精度增强，不是 CLT 本身的额外定理条件。若题目明确要求“利用正态近似”或需要数值精度，应优先修正；若只考标准化结构、选项本身不区分 $0.5$ 修正，必须说明采用的考试约定。$np$ 与 $n(1-p)$ 不能过小；规则阈值只是经验提示，不是定理条件，偏斜时应报告近似风险。
+
+\begin{examplebox}{精确正态抽样与 CLT 近似不是同一条路}
+1998 Q十四 的总体本身为 $N(3.4,6^2)$，因此无论 $n$ 多大都有有限样本精确结论
+\[
+\bar X_n\sim N\left(3.4,\frac{36}{n}\right),
+\qquad
+P(1.4<\bar X_n<5.4)=2\Phi\left(\frac{\sqrt n}{3}\right)-1.
+\]
+要求概率至少 $0.95$，用 $\Phi^{-1}(0.975)=1.96$ 得 $\sqrt n/3\ge1.96$，故 $n\ge35$。
+
+2020 Q八 则是 $S\sim\operatorname{Bin}(100,1/2)$ 的离散计数，题目明确要求 CLT 近似：未经修正的结构标准化为 $(55-50)/5=1$；若追求离散到连续的数值精度，再把边界改为 $55.5$ 得 $1.1$。前者是精确正态总体的有限样本分布，后者是一般离散计数的渐近近似，触发条件不能互换。
+\end{examplebox}
+
+\begin{examplebox}{真题精度回检：2020 Q八 的三种输出不能混写}
+令 $S\sim\operatorname{Bin}(100,1/2)$，题目目标为 $P(S\le55)$。精确二项模型直接给
+\[
+P(S\le55)=\sum_{k=0}^{55}\binom{100}{k}2^{-100}\approx0.8643735.
+\]
+若按题目要求使用 CLT，$ES=50$、$\operatorname{SD}(S)=5$，不作连续性修正时
+\[
+P(S\le55)\approx\Phi\left(\frac{55-50}{5}\right)=\Phi(1)\approx0.8413447.
+\]
+把离散事件 $S\le55$ 的格点边界移到连续区间端点 $55.5$，得到连续性修正
+\[
+P(S\le55)\approx\Phi\left(\frac{55.5-50}{5}\right)=\Phi(1.1)\approx0.8643339.
+\]
+三者分别是\kw{精确值、渐近结构值、精度增强的渐近值}；不能把其中任一个写成另外两个的等号。实际答题先服从题目指定的输出层，再用数值回检判断近似方向和精度。
+\end{examplebox}
+
+\begin{methodbox}{Poisson 近似：稀疏计数的另一条路径}
+若 $S_n\sim\operatorname{Bin}(n,p_n)$，$p_n\to0$ 且 $np_n\to\lambda$，固定 $k$ 时
+\[
+P(S_n=k)=\binom nkp_n^k(1-p_n)^{n-k}
+\longrightarrow e^{-\lambda}\frac{\lambda^k}{k!}.
+\]
+所以当题目给出“大次数、单次概率小、$np$ 适中”并明确要求 Poisson 近似时，先取 $\lambda=np$，再在 Poisson 模型中求和；例如 2025 Q九中 $n=20,p=0.1$，$\lambda=2$，故
+\[
+P(S_n\le1)\approx e^{-2}\left(1+2\right)=3e^{-2}.
+\]
+这与 CLT 正态近似的识别对象不同：Poisson 路径保留稀疏计数的离散结构，正态路径则中心化并按 $\sqrt{np(1-p)}$ 放大。不能仅因样本量大就在二者之间任意替换；先读题目指定的近似机制，再做参数和尾事件回检。
+\end{methodbox}
+
+\subsection{非同分布与误差界}
+
+对独立非同分布变量，令 $s_n^2=\sum_i\operatorname{Var}(X_i)$。Lyapunov 条件
+\[
+\frac1{s_n^{2+\delta}}\sum_iE|X_i-EX_i|^{2+\delta}\to0
+\]
+推出标准化和依分布收敛到 $N(0,1)$；Lindeberg 条件则直接排除少数极端项主导总方差。i.i.d. 且三阶绝对中心矩有限时，Berry--Esseen 给出
+\[
+\sup_x|P((S_n-n\mu)/(\sigma\sqrt n)\le x)-\Phi(x)|=O(n^{-1/2}).
+\]
+这些是机制与误差边界，不应伪装成所有题目的必需假设。
+
+\section{第五层：Slutsky、Delta 与渐近阶}
+
+若 $X_n\xrightarrow{d}X$、$Y_n\xrightarrow{P}c$（常数），则
+\[
+X_n+Y_n\xrightarrow{d}X+c,\qquad X_nY_n\xrightarrow{d}cX,
+\qquad X_n/Y_n\xrightarrow{d}X/c\ (c\ne0).
+\]
+由大数律 $S_n\xrightarrow{P}\sigma$，经典 CLT 与 Slutsky 联立得到一般总体的 Student 化渐近结论：
+\[
+\frac{\sqrt n(\bar X_n-\mu)}{S_n}\xrightarrow{d}N(0,1).
+\]
+这不是一般总体的有限样本 $t$ 分布；精确 $t$ 归 Topic 07。
+
+若 $\sqrt n(T_n-\theta)\xrightarrow{d}N(0,\tau^2)$，且 $g$ 在 $\theta$ 处可微，则一阶 Delta 方法为
+\[
+\boxed{\sqrt n[g(T_n)-g(\theta)]\xrightarrow{d}N(0,[g'(\theta)]^2\tau^2)}.
+\]
+它来自 $g(T_n)=g(\theta)+g'(\theta)(T_n-\theta)+o_P(n^{-1/2})$；若 $g'(\theta)=0$，必须改用二阶展开。
+
+渐近记号
+\[
+X_n=o_P(a_n)\iff X_n/a_n\xrightarrow{P}0,
+\]
+而 $X_n=O_P(a_n)$ 表示 $X_n/a_n$ 在概率意义下有界。它们用来判断 Taylor 余项能否忽略，不能替代具体的收敛方式。
+
+\section{第六层：精确、渐近与失效边界}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{L{4.2cm}Y}
+\toprule
+场景 & 结论\\
+\midrule
+正态总体、$\sigma$ 已知 & $\sqrt n(\bar X-\mu)/\sigma$ 对任意 $n$ 精确为 $N(0,1)$\\
+正态总体、$\sigma$ 未知 & $\sqrt n(\bar X-\mu)/S$ 对任意 $n$ 精确为 $t(n-1)$，由 Topic 07 负责抽样分布\\
+一般总体、有限方差 & 标准化均值渐近为 $N(0,1)$，替换 $S$ 后仍需说明是渐近\\
+重尾或无限方差 & 经典 CLT 可能失效，稳定分布或其他尺度可能出现\\
+有依赖样本 & 需额外的遍历、混合、鞅或稳健条件，不能直接套 i.i.d. 定理\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+典型边界是 Cauchy 样本：均值不存在，样本均值对每个 $n$ 仍为 Cauchy，不会因样本量增大而稳定到有限常数。即使 $X_n\xrightarrow{d}X$，也不能自动推出 $E(X_n)\to E(X)$，还需要一致可积性或支配条件。
+
+\section{第七层：统一选择流程}
+
+\begin{enumerate}
+  \item 先辨认目标：趋于常数是 LLN/相合性，标准化误差分布是 CLT，函数变换是连续映射或 Delta。
+  \item 核对结构：独立、同分布、矩存在、方差是否正、样本是否有依赖。
+  \item 写出中心化量和真实尺度：$S_n-n\mu$、$\sqrt n(\bar X_n-\mu)$ 或 $s_n^{-1}\sum(X_i-EX_i)$。
+  \item 区分精确分布与渐近分布；“样本量大”只说明可能近似，不自动制造正态性。
+  \item 最后校验收敛类型、极限对象和近似误差，明确哪些结论交给 Topic 07/08。
+\end{enumerate}
+
+\begin{warnbox}{高频边界}
+依概率收敛一般不能推出几乎必然收敛；依分布收敛到非退化变量一般不能推出依概率收敛；有限均值不能保证经典 CLT；用 $S$ 替换 $\sigma$ 后只有正态总体才有有限样本精确 $t$；Delta 方法的一阶导数为零时必须换尺度。
+\end{warnbox}
+
+\section{贯穿母例：Bernoulli 频率的稳定与剩余波动}
+
+\begin{examplebox}{母例：成功率的两种尺度}
+设 $X_i\overset{\mathrm{i.i.d.}}\sim\operatorname{Bern}(p)$，$0<p<1$，令 $\bar X_n=n^{-1}\sum_iX_i$。
+由 $E(X_i)=p$、$\operatorname{Var}(X_i)=p(1-p)$，
+\[
+\operatorname{Var}(\bar X_n)=\frac{p(1-p)}n,
+\qquad \bar X_n\xrightarrow{P}p.
+\]
+这回答 LLN 的问题：频率最终稳定到 $p$。若把剩余误差放大，
+\[
+\frac{\sqrt n(\bar X_n-p)}{\sqrt{p(1-p)}}\xrightarrow{d}N(0,1),
+\]
+这回答 CLT 的问题：稳定位置附近的波动如何分布。取 $g(x)=x(1-x)$，当 $p\in(0,1)$ 时 Delta 方法还给出
+\[
+\sqrt n\{g(\bar X_n)-g(p)\}\xrightarrow{d}
+N\!\left(0,(1-2p)^2p(1-p)\right).
+\]
+若 $p=0$ 或 $1$，方差退化，不能直接套用这条标准化公式；若 $p=1/2$，则 $g'(p)=0$，一阶 Delta 只给退化极限，若要观察非退化波动必须改用二阶展开。这就是先检查参数边界和导数阶数的必要性。
+\end{examplebox}
+
+\section{一页压缩}
+
+\begin{corebox}{一句话总结}
+\[
+\boxed{\text{大数定律保证样本均值稳定收敛到期望，中心极限定理保证标准化放大后的剩余波动服从正态。}}
+\]
+\end{corebox}
+
+\end{document}

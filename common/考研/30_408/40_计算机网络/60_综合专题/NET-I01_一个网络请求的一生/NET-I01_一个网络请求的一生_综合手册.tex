@@ -1,0 +1,127 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\handbooksetup{NET-I01 一个网络请求的一生}{408 · 计算机网络 Integration}{Name · Scope · Encapsulation · State}
+\begin{document}
+\handbooktitle{一个网络请求的一生}{从 URL 到第一份 HTTP representation 返回}{408 · NET-I01}
+
+\begin{corebox}{Canonical Problem}
+浏览器拥有一个 URL，但本地可能没有 IP 配置、DNS 缓存、邻居缓存或 TCP connection。系统怎样识别并组合八个 Topic，把应用名字逐步变成可执行的一跳动作，再把返回 bytes 解释成 HTTP response？
+\[
+\boxed{\text{URL}\to\text{Configuration}\to\text{DNS}\to\text{Forwarding/Frame}
+\to\text{Transport State}\to\text{HTTP Semantics}}
+\]
+箭头表示依赖和执行顺序；命中 cache、已有配置或已有连接时可以跳过对应创建动作，但不能跳过其前置条件。
+\end{corebox}
+
+\begin{methodbox}{Integration Ownership}
+本册 Owns 模块识别、组合次序、跨模块状态轨迹、失败分支和独立验证。NET01--NET08 Own局部机制；NET-B01--B06 Own接口。本册不重新定义 DHCP、DNS、ARP、LPM、TCP、拥塞或 HTTP。
+\end{methodbox}
+
+\section{初始状态与成功条件}
+
+输入为 `(URL, local host state, network state)`。成功条件不是“发出一个 packet”，而是应用收到一个可解释的 HTTP status/fields/representation，或得到可归属到某阶段的明确失败。
+
+先盘点可复用状态：
+\begin{itemize}
+  \item 主机是否已有有效 IP/prefix/default gateway/DNS 配置；
+  \item DNS cache 是否有未过期记录；
+  \item route/FIB 与 ARP/ND cache 是否可用；
+  \item 是否已有可复用 transport/security context；
+  \item HTTP cache 是否能直接满足当前 request semantics。
+\end{itemize}
+
+\section{阶段一：取得进入 IP 世界的配置}
+
+若本地主机尚无有效配置，调用 NET04 的 DHCP 生命周期，输出 `(host IP, prefix, default gateway, DNS resolver, lease)`。若已有有效 lease，本阶段为 state reuse，不重跑 DORA。失败时仍停留在“无法形成合法 source identity / next-hop policy”，不能跳到 DNS 或 TCP。
+
+\section{阶段二：从 authority 名字得到 destination IP}
+
+从 URL 提取 scheme、authority/host、可选 port 与 target。若 host 是 domain name，调用 NET08 DNS：cache 命中直接得到 record；未命中由 recursive resolver 沿 delegation/referral 取得 authoritative answer。输出是 destination IP 候选及 TTL，不是 next-hop MAC，也不保证服务器可达。
+
+\begin{warnbox}{Name Track 的停止边界}
+URL/domain、destination IP、next-hop IP、MAC、port 分属不同作用域。DNS 只完成 domain $\to$ destination IP；后面的 forwarding、ARP 和 demultiplex 不能被压成“DNS 找到服务器”。
+\end{warnbox}
+
+\section{阶段三：把 destination 压缩成当前一跳动作}
+
+主机调用 NET04 判断 same subnet，并消费本地 installed FIB：
+\[
+destination\ IP\xrightarrow{\mathrm{LPM}}(next\ hop,interface,action).
+\]
+直连目标的 next-hop IP 是 destination IP；异网段目标通常是 gateway。若邻居 cache 未命中，调用 ARP/ND 获得当前链路 identity；再经 NET-B01 把 `(packet,next-hop identity)` 交给 NET02 形成 frame。
+
+交换机按 source learning / destination action 推进当前广播域。路由器收到 frame 后删除链路封装，递减 TTL/Hop Limit，重新 LPM，并为下一跳建立新 frame。无 NAT/隧道等改写时，destination IP 保持端到端语义；MAC 每跳变化。
+
+\section{阶段四：同步 transport endpoint 状态}
+
+目的 host 收到 packet 后，NET06 用 protocol 与 endpoint tuple demultiplex。对经典 HTTP-over-TCP 路径，client 与 server 完成 sequence-space synchronization 后进入 ESTABLISHED；随后可靠 byte transfer 调用 NET03，发送能力同时受 NET06 `rwnd` 与 NET07 `cwnd` 约束，并通过 NET-B03/NET-B04 交接。
+
+该阶段的输出是可供应用读写的 ordered byte stream state，不是 HTTP resource。若题设使用已有 persistent connection，则跳过建连但必须复用正确 endpoint/connection 状态；若使用其他 HTTP transport mapping，按题设替换本阶段，不改变 NET08 的资源语义。
+
+\section{阶段五：请求资源并解释响应}
+
+NET08 把 URL target、method、fields 和可选 content 编成 request。server 返回 status、fields 与可选 representation。应用只在收到足够且合法的 message representation 后完成本次语义目标；HTML 解析产生的新 subresource 会启动新的依赖分支，可能复用 DNS、connection 与 cache 状态。
+
+\section{四条并行轨迹}
+
+\begin{handbooklongtable}{L{2.5cm} Y Y Y}
+\toprule
+阶段 & Name / Address & Encapsulation & State Owner\\
+\midrule
+URL & domain + target + optional port & 无 & application\\
+DNS & domain $\to$ destination IP & query/response over transport & resolver/cache/authority\\
+Local forwarding & destination IP $\to$ next-hop IP & application bytes $\subset$ segment $\subset$ packet & host FIB / route state\\
+Single hop & next-hop IP $\to$ MAC & packet $\subset$ frame $\subset$ signal & ARP/ND cache + switch table\\
+Router & destination IP unchanged in base case & strip old frame; build new frame & FIB + neighbor state\\
+Transport & endpoint tuple / port & bytes $\subset$ segment & endpoint connection/rwnd/cwnd\\
+HTTP & URI/resource/representation & message bytes over transport & application/server/cache\\
+\bottomrule
+\end{handbooklongtable}
+
+\section{失败分支：先找第一个不能满足的前置条件}
+
+\begin{handbooktable}{L{3.0cm} Y Y}
+\toprule
+可观察现象 & 首个候选 Owner & 验证动作\\
+\midrule
+没有本地配置 & NET04 DHCP & lease、source IP、prefix、gateway、resolver\\
+域名无结果/旧结果 & NET08 DNS & cache TTL、referral、authoritative answer\\
+同网段判断错误 & NET04 & prefix AND 与 next-hop IP\\
+下一跳 MAC 未知 & NET04/NET-B01 & ARP/ND cache 与当前广播域\\
+frame 未交付 & NET02 & VLAN、switch table、CRC/MAC event\\
+路由变化后仍走旧路 & NET-B02 & selected route、FIB install version、LPM\\
+连接未建立/被复位 & NET06 & endpoint tuple、SEQ/ACK/state/RST\\
+传输停顿 & NET03/06/07 & ACK/timer、rwnd、cwnd、in-flight\\
+收到 bytes 但语义失败 & NET08 & status、fields、message framing/representation\\
+\bottomrule
+\end{handbooktable}
+
+\section{贯穿母例：第一次访问与第二次访问}
+
+第一次访问 `http://www.example.test/index.html` 时，假设本机无 lease、DNS/ARP cache 和 TCP state：所有五个阶段都必须创建状态。第二次立即访问同一 origin 时，lease、DNS、ARP、switch learning 与 persistent connection 可能仍有效，因此多个阶段表现为 state reuse；但每个 cache/connection 都有自己的 scope、key 与 lifetime，不能用“访问过一次”推导所有状态必然命中。
+
+这个对比生成一条通用判断：
+\[
+\boxed{\text{Same logical request}\not\Rightarrow\text{same event trace};\quad
+\text{trace depends on reusable local/distributed state}.}
+\]
+
+\section{独立验证与停止条件}
+
+完成推演后用四类独立信息复核：
+\begin{enumerate}
+  \item Name chain 是否保持 `domain -> destination IP -> next-hop IP -> MAC -> port` 类型正确；
+  \item 每过 router 是否只替换 frame，且 packet 生命周期字段按协议变化；
+  \item switch、router、endpoint、resolver 分别只更新自己拥有的状态；
+  \item 总时延是否只累加真实串行依赖，cache/复用/流水部分是否避免重复计数。
+\end{enumerate}
+
+\begin{boundarybox}{Stop Boundary}
+本册到 HTTP response 被应用解释为止。完整 NIC/driver/kernel stack、TLS/QUIC 内部、CDN 调度和浏览器渲染属于 Extension；`NIC -> socket -> blocked process wakeup` 不因本册建立而自动成为新的 Core Integration，其优先级仍由 X-B04 的 Promotion Gate 决定。
+\end{boundarybox}
+
+\begin{corebox}{Compression}
+先问当前缺哪一类可执行状态，再调用唯一 Owner：配置、名字、route/FIB、邻居/frame、transport、应用语义。沿 Name、Encapsulation、Owner State、Cost 四条轨迹推进；遇到失败时回到第一个未满足的前置条件。
+\end{corebox}
+
+\end{document}

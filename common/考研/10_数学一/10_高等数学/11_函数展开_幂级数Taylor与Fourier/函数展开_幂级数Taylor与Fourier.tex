@@ -1,0 +1,237 @@
+\documentclass[11pt,a4paper,fontset=fandol]{ctexart}
+\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.34em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+\definecolor{deep}{RGB}{42,58,73}
+\definecolor{soft}{RGB}{245,247,249}
+\definecolor{accent}{RGB}{104,76,55}
+\definecolor{greenish}{RGB}{57,92,76}
+\definecolor{warn}{RGB}{136,68,63}
+\definecolor{purple}{RGB}{87,72,116}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={函数展开：幂级数、Taylor 与 Fourier}}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{deep}\textbf{数学一 · 高等数学 Topic 11}}
+\rhead{\small\color{deep}半径 · 端点 · 延拓}
+\cfoot{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+
+\begin{document}
+\begin{center}
+{\LARGE\textbf{函数展开：幂级数、Taylor 与 Fourier}}\\[0.4em]
+{\large 从“收敛域”到“基函数坐标与跳跃点恢复”}
+\end{center}
+\vspace{0.4em}
+\begin{quote}
+函数展开不是把公式写长，而是先确定表示的战场：幂级数在什么距离内可靠，逐项运算何时合法；Fourier 延拓后，级数在连续点和跳跃点分别恢复什么值。
+\end{quote}
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\setcounter{section}{-1}
+\section{本册定位}
+本册承接 Topic10 的数项级数判别，研究“每一项含有自变量”后的函数项表示。幂级数主线是半径与端点，Taylor 主线是局部系数与收敛资格，Fourier 主线是周期延拓、正交系数和函数恢复。
+
+\subsection{Own}
+\begin{itemize}
+  \item 幂级数的收敛半径、收敛区间与端点分流；
+  \item 基本展开式、代数变形、逐项积分/微分与和函数；
+  \item Taylor/Maclaurin 系数、余项资格与“有限局部模型”到“无限表示”的边界；
+  \item Fourier 正交系数、奇偶延拓、正弦/余弦级数与 Dirichlet 和函数；
+  \item 跳跃点取左右极限平均、周期端点和特殊点代入求常数级数。
+\end{itemize}
+
+\subsection{Uses / Stop Boundary}
+\begin{itemize}
+  \item Topic10 提供数项级数收敛、尾项和绝对/条件收敛；
+  \item Topic03 Own 有限阶 Taylor 多项式、局部误差和高阶相消；
+  \item B08 Own 正交投影、内积空间和系数的线代解释；
+  \item Topic12 Own 用幂级数/递推构造常微分方程解；
+  \item 复分析、Hilbert 空间完备性和 PDE 谱理论不进入数学一主干。
+\end{itemize}
+
+\section{母模型：系数、半径与恢复}
+\[
+\boxed{\begin{gathered}
+\text{Basis / Coefficients}\to\text{Radius or Domain}\to\text{Endpoint / Jump Audit}\\
+\to\text{Termwise Operation}\to\text{Reconstruction}\to\text{Invariant Check}
+\end{gathered}}
+\]
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.52cm and 0.5cm,
+  box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.0cm,minimum height=0.92cm,align=center,fill=soft,font=\small},
+  arr/.style={-{Latex[length=2mm]},thick,draw=deep}
+]
+\node[box] (a) {基函数\\系数 $a_n$};
+\node[box,right=of a] (b) {收敛半径\\$R$};
+\node[box,right=of b] (c) {端点/跳跃\\单独检查};
+\node[box,below=of c] (d) {逐项微积分\\资格};
+\node[box,left=of d] (e) {恢复对象\\$f$ 或 $S$};
+\draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d); \draw[arr] (d)--(e);
+\end{tikzpicture}
+\end{center}
+
+\section{幂级数：先定半径，再查端点}
+幂级数写成
+\[
+\sum_{n=0}^{\infty}a_n(x-x_0)^n.
+\]
+存在 $R\in[0,+\infty]$，使 $|x-x_0|<R$ 时绝对收敛，$|x-x_0|>R$ 时发散；端点 $|x-x_0|=R$ 不由半径定理自动决定。
+
+\begin{methodbox}{半径的两种主算法}
+对标准型 $\sum a_n(x-x_0)^n$，若系数比值极限存在，
+\[
+R=\lim_{n\to\infty}\left|\frac{a_n}{a_{n+1}}\right|.
+\]
+更一般地，
+\[
+\frac1R=\limsup_{n\to\infty}\sqrt[n]{|a_n|}.
+\]
+缺项或复合型应对完整通项 $U_n(x)$ 使用比值/根值，再反解 $|x-x_0|$；不要只对系数做比值而漏掉 $x^{kn}$。
+\end{methodbox}
+
+\subsection{端点审计}
+求出 $R$ 后必须将 $x=x_0-R$ 与 $x=x_0+R$ 分别代回原级数，转化为 Topic10 的数项级数。端点可能一端收敛、一端发散；逐项积分/微分保持 $R$，但端点性质可能改变。
+
+\begin{examplebox}{贯穿母例：系数、半径、端点与恢复}
+对 $\sum_{n\ge1}(-1)^{n-1}x^n/n$，系数来自 $\ln(1+x)$ 的 Taylor 模型，比值给 $R=1$；$x=1$ 为交错调和级数收敛，$x=-1$ 变为 $-\sum1/n$ 发散，故收敛域为 $(-1,1]$。在 $|x|<1$ 内逐项求导得到几何级数
+\[
+\sum_{n\ge1}(-1)^{n-1}x^{n-1}=\frac1{1+x},
+\]
+再用 $x=0$ 时级数和为零恢复 $\ln(1+x)$。这完整经过“系数 $\to$ 半径 $\to$ 端点 $\to$ 逐项运算 $\to$ 恢复”；若只写 $R=1$ 就把两个端点当成同一结论，恢复对象的定义域也会被误报。
+\end{examplebox}
+
+\section{从母函数到和函数}
+基本母函数包括
+\[
+\frac1{1-x}=\sum_{n=0}^{\infty}x^n,\quad
+-\ln(1-x)=\sum_{n=1}^{\infty}\frac{x^n}{n},\quad
+e^x=\sum_{n=0}^{\infty}\frac{x^n}{n!},
+\]
+\[
+\sin x=\sum_{n=0}^{\infty}\frac{(-1)^nx^{2n+1}}{(2n+1)!},\qquad
+\cos x=\sum_{n=0}^{\infty}\frac{(-1)^nx^{2n}}{(2n)!}.
+\]
+使用代数变形时先把函数凑成母函数，再记录代换条件；使用逐项微分/积分时先在 $|x-x_0|<R$ 内操作，再另查端点。
+
+\begin{methodbox}{逐项运算与下标}
+若 $F(x)=\sum_{n=0}^{\infty}a_n(x-x_0)^n$，则在开区间内
+\[
+F'(x)=\sum_{n=1}^{\infty}na_n(x-x_0)^{n-1},\qquad
+\int F(x)\,dx=C+\sum_{n=0}^{\infty}\frac{a_n}{n+1}(x-x_0)^{n+1}.
+\]
+微分时从 $n=1$ 起并令 $k=n-1$ 对齐幂次；积分保留 $n=0$ 项。下标错一位会改变初值和常数项。
+\end{methodbox}
+
+\subsection{系数递推与和函数}
+若 $a_n$ 满足线性递推，可设 $F(x)=\sum a_nx^n$，通过 $F',F''$ 和 $xF'$ 调整下标，建立常微分方程，再用 $F(0),F'(0),\ldots$ 确定常数。此处只保留方法接口，具体 ODE 归 Topic12。
+
+\section{Taylor：局部系数何时成为无限表示}
+在 $x_0$ 附近，Taylor 系数是
+\[
+a_n=\frac{f^{(n)}(x_0)}{n!},\qquad
+T_N(x)=\sum_{n=0}^{N}a_n(x-x_0)^n.
+\]
+有限 $T_N$ 是 Topic03 的局部误差模型；只有当余项 $R_N(x)\to0$ 且存在共同邻域时，才可晋升为 Taylor 级数 $f(x)=\sum_{n=0}^{\infty}a_n(x-x_0)^n$。光有各阶导数存在不自动保证等式。
+
+\begin{warnbox}{展开、收敛与定义域不是同一件事}
+母级数的收敛域决定展开式的有效区间，而不是原函数的最大定义域。逐项运算可能保留半径却改变端点；代换 $t=g(x)$ 时要解完整条件 $|g(x)|<R_t$，并检查回代分支。
+\end{warnbox}
+
+\section{Fourier：延拓、正交与跳跃点恢复}
+在 $[-L,L]$ 上的 Fourier 级数写作
+\[
+f(x)\sim \frac{a_0}{2}+\sum_{n=1}^{\infty}\left(a_n\cos\frac{n\pi x}{L}+b_n\sin\frac{n\pi x}{L}\right),
+\]
+其中
+\[
+a_n=\frac1L\int_{-L}^{L}f(x)\cos\frac{n\pi x}{L}\,dx,\qquad
+b_n=\frac1L\int_{-L}^{L}f(x)\sin\frac{n\pi x}{L}\,dx.
+\]
+正交性把系数提取成投影；偶延拓只留下余弦项，奇延拓只留下正弦项。
+
+\subsection{恢复规则}
+对分段光滑的周期函数，连续点收敛到 $f(x)$，跳跃点收敛到
+\[
+S(x)=\frac{f(x^-)+f(x^+)}2.
+\]
+周期端点要比较左右极限，而不是直接使用区间端点的单侧函数值。求常数项级数时，选择使正弦/余弦取 $0,\pm1$ 的特殊点，再把恢复值代入。
+
+\begin{methodbox}{正弦/余弦半区间展开}
+给定 $f$ 在 $[0,L]$ 上：
+\begin{itemize}
+  \item 正弦级数 = 奇延拓，$b_n=\frac2L\int_0^L f(x)\sin(n\pi x/L)\,dx$；
+  \item 余弦级数 = 偶延拓，$a_0=\frac2L\int_0^L f(x)\,dx$，$a_n=\frac2L\int_0^L f(x)\cos(n\pi x/L)\,dx$。
+\end{itemize}
+延拓是模型选择，不是装饰步骤；先确定对称性，再算系数。
+\end{methodbox}
+
+\section{诊断流程与证据回链}
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.42cm and 0.55cm,
+  box/.style={draw=deep,rounded corners=1mm,minimum width=3.3cm,minimum height=0.8cm,align=center,fill=soft,font=\small},
+  arr/.style={-{Latex[length=1.8mm]},thick,draw=deep}
+]
+\node[box] (a) {幂级数?\\先求 $R$};
+\node[box,below=of a] (b) {开区间绝对收敛};
+\node[box,below=of b] (c) {左右端点分别判};
+\node[box,right=of c] (d) {逐项运算?\\查开区间资格};
+\node[box,right=of d] (e) {Fourier?\\先延拓/定向};
+\node[box,above=of e] (f) {连续值或左右平均};
+\draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d); \draw[arr] (d)--(e); \draw[arr] (e)--(f);
+\end{tikzpicture}
+\end{center}
+
+\begin{tabularx}{\linewidth}{L{0.28\linewidth}Y}
+\toprule
+来源 & 本册保留与迁移 \\
+\midrule
+II-09 §6、附录 C & 幂级数定义、Abel 半径、端点、母函数、逐项微积分、和函数 \\
+II-11 §1 & Fourier 和函数、连续/跳跃点恢复与周期端点 \\
+II-11 §2 & 奇偶延拓、正弦/余弦半区间系数 \\
+II-11 §3、§5--§6 & 特殊点求和、正交性与三角积分策略 \\
+Topic03 / B08 / Topic12 & 有限 Taylor 误差、正交投影、级数型 ODE 分别由对应 Owner 维护 \\
+\bottomrule
+\end{tabularx}
+
+\begin{corebox}{一句话压缩}
+\textbf{幂级数先定半径再查端点，Taylor 先证余项再谈无限表示；Fourier 先做延拓与正交投影，恢复值由连续性或左右平均决定。}
+\end{corebox}
+
+\section{陌生题验证协议}
+\begin{enumerate}
+  \item 幂级数写完整通项，先求 $R$，再把两端点分别交给 Topic10；
+  \item 代换、求导、积分后同步检查求和下标、初值和端点变化；
+  \item Taylor 题区分有限多项式与无限等式，余项未归零不晋升；
+  \item Fourier 题先定周期/区间与延拓，再利用奇偶性、正交性求系数；
+  \item 求和函数值时先判连续/跳跃/周期端点，再选择特殊点代入；
+  \item 最后做半径、对称性、端点和简单值的闭环复核。
+\end{enumerate}
+
+\end{document}
