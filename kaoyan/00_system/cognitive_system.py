@@ -100,6 +100,25 @@ EXAM_SOLUTION_FRONTMATTER_FIELDS = (
     "legacy_reference",
 )
 EXAM_SOLUTION_OBJECTIVE_HEADINGS = (
+    "模型锚点",
+    "解题链",
+    "选项判断",
+    "校验",
+    "压缩",
+    "易错边界",
+)
+EXAM_SOLUTION_COMPREHENSIVE_HEADINGS = (
+    "模型锚点",
+    "问题表征",
+    "关键决策",
+    "求解链",
+    "校验",
+    "压缩",
+    "易错边界",
+)
+# 旧题解批量迁移期间的兼容结构。新写题解不得再使用这些英文栏目名；
+# 待 2015～2026 全量迁移完成后删除这一兼容层。
+EXAM_SOLUTION_LEGACY_OBJECTIVE_HEADINGS = (
     "Model Anchor",
     "解题链",
     "选项判断",
@@ -107,7 +126,7 @@ EXAM_SOLUTION_OBJECTIVE_HEADINGS = (
     "Compression",
     "易错边界",
 )
-EXAM_SOLUTION_COMPREHENSIVE_HEADINGS = (
+EXAM_SOLUTION_LEGACY_COMPREHENSIVE_HEADINGS = (
     "Model Anchor",
     "Problem Representation",
     "Decision Points",
@@ -1313,14 +1332,24 @@ def exam_solution_findings() -> list[Finding]:
                 if question <= 40
                 else EXAM_SOLUTION_COMPREHENSIVE_HEADINGS
             )
+            legacy_headings = (
+                EXAM_SOLUTION_LEGACY_OBJECTIVE_HEADINGS
+                if question <= 40
+                else EXAM_SOLUTION_LEGACY_COMPREHENSIVE_HEADINGS
+            )
             actual_headings = tuple(EXAM_SOLUTION_H2_RE.findall(text))
-            if actual_headings != expected_headings:
+            # 2015～2026 是中文栏目合同建立前已完成的历史批次，迁移期间仅兼容其旧英文栏目；
+            # 2014 及之后新处理的更早年份必须直接使用中文栏目。
+            allowed_headings = {expected_headings}
+            if 2015 <= year <= 2026:
+                allowed_headings.add(legacy_headings)
+            if actual_headings not in allowed_headings:
                 findings.append(
                     Finding(
                         "ERROR",
                         "E-EXAM-SOLUTION-FORMAT",
-                        f"{rel_path} 的 H2 结构为 {actual_headings}，期望 {expected_headings}。",
-                        "同类信息固定在同一 H2；额外细分使用 H3，审计说明移入 solution_review.md。",
+                        f"{rel_path} 的 H2 结构为 {actual_headings}，中文规范期望 {expected_headings}。",
+                        "题解栏目统一使用中文；额外细分使用 H3，审计说明移入 solution_review.md。",
                     )
                 )
             else:
@@ -1352,8 +1381,9 @@ def exam_solution_findings() -> list[Finding]:
                     )
                 )
 
-            anchor_start = text.find("## Model Anchor")
-            anchor_end = text.find("\n## ", anchor_start + len("## Model Anchor"))
+            anchor_heading = "## 模型锚点" if "## 模型锚点" in text else "## Model Anchor"
+            anchor_start = text.find(anchor_heading)
+            anchor_end = text.find("\n## ", anchor_start + len(anchor_heading))
             anchor_text = text[anchor_start : anchor_end if anchor_end >= 0 else len(text)]
             missing_anchor = [
                 label for label in ("题目信号", "第一动作") if label not in anchor_text

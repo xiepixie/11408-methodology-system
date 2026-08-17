@@ -12,7 +12,7 @@
 4. 把旧 `qNN_*.md` 当作 legacy derived reference，只用来比较答案与发现遗漏；
 5. 独立求解；
 6. 生成 `solutions/qNN.md`；
-7. 做 Source / Model / Verification / Compression Gate；
+7. 做源题 / 模型 / 校验 / 压缩质量门；
 8. 若暴露**疑似**模型缺口，先登记 Challenge；若已独立确认 Canonical Handbook 存在事实、机制或适用边界硬错误，则立即走 Stable Write 更新唯一 Owner，并重新验证受影响题解。无论哪种情况，都不得在题解正文里悄悄重定义 Handbook 机制。
 
 正式合同：[`exam_solution_authoring_spec.md`](exam_solution_authoring_spec.md)。学生学习责任、跨年度风格一致性、质量 Gate 与模型反馈闭环：[`exam_solution_quality_assurance.md`](exam_solution_quality_assurance.md)。
@@ -37,7 +37,7 @@ AGENTS.md
 
 ## 解题时必须做的事
 
-### 1. Model Anchor
+### 1. 模型锚点
 
 写出：
 
@@ -45,7 +45,7 @@ AGENTS.md
 - 题面哪个信号触发它；
 - 第一动作是什么。
 
-### 2. Problem Representation
+### 2. 问题表征
 
 把题面翻译为该学科的对象：
 
@@ -54,24 +54,24 @@ AGENTS.md
 - OS：objects / relations / queues / event / mechanism / policy；
 - NET：scope / name / state owner / event / transition / feedback / cost。
 
-### 3. Decision Point
+### 3. 关键决策
 
 说明为什么走当前路径，尤其要排除最容易混淆的竞争路径。
 
-### 4. Solution Chain
+### 4. 求解链
 
 逐步推导。公式必须从对象、约束或不变量长出来，不用“记公式”代替机制。
 
-### 5. Verification
+### 5. 校验
 
 给出尽量独立的检查：范围、数量级、结构不变量、守恒、单位、边界、反算等。
 
-### 6. Compression
+### 6. 压缩
 
 压成：
 
 ```text
-Signal -> First Action -> Key Invariant/Equation -> Stop/Check
+题目信号 -> 第一动作 -> 关键不变量 / 方程 -> 停止条件 / 检查
 ```
 
 这条压缩必须带适用前提。
@@ -79,16 +79,16 @@ Signal -> First Action -> Key Invariant/Equation -> Stop/Check
 ## 选择题写作要求
 
 - 给最终答案；
-- **固定保留** `Model Anchor / 解题链 / 选项判断 / Verification / Compression / 易错边界` 六个一级结构，不因题目简单而合并标题；
-- `Model Anchor` 固定写清 `Topic / 题目信号 / 第一动作`；
+- **固定保留** `模型锚点 / 解题链 / 选项判断 / 校验 / 压缩 / 易错边界` 六个一级结构，不因题目简单而合并标题；
+- `模型锚点` 固定写清 `Topic / 题目信号 / 第一动作`；
 - 主推理尽量控制在能复原机制的最短长度；
 - 高混淆题解释错误选项偷换了什么；
 - 不把四个选项都写成重复教材段落。
 
 ## 综合题写作要求
 
-- **固定保留** `Model Anchor / Problem Representation / Decision Points / Solution Chain / Verification / Compression / 易错边界` 七个一级结构；
-- `Model Anchor` 固定写清 `Topic / 题目信号 / 第一动作`；
+- **固定保留** `模型锚点 / 问题表征 / 关键决策 / 求解链 / 校验 / 压缩 / 易错边界` 七个一级结构；
+- `模型锚点` 固定写清 `Topic / 题目信号 / 第一动作`；
 - 按小问组织；
 - 每一问明确输入状态与输出要求；
 - 数值题写单位；
@@ -104,22 +104,22 @@ Signal -> First Action -> Key Invariant/Equation -> Stop/Check
 - 正式版与 legacy 解析冲突时，先独立求解，再判断 legacy 是否错误；
 - 不因旧答案存在就假定它正确。
 
-## 批量格式 Gate
+## 批量格式质量门
 
 批量生成时，**结构一致性与答案正确性同级**。写完一个 Subject 或一整年后，必须从目录视角再验一次，而不是只逐题自检：
 
 ```text
-Coverage
--> Frontmatter
--> Required Headings
--> Heading Order
--> Model Anchor 三要素
--> Answer / Index Consistency
--> Link Integrity
--> Duplicate Owner
+覆盖率
+-> 头部元数据
+-> 必需标题
+-> 标题顺序
+-> 模型锚点三要素
+-> 答案 / 索引一致性
+-> 链接完整性
+-> 重复 Owner 检查
 ```
 
-出现“某些题只有答案 + 解析”“某些题没有选项判断”“综合题少 Decision Points”等情况时，视为**未完成**，必须先统一结构再交付。
+出现“某些题只有答案 + 解析”“某些题没有选项判断”“综合题缺少关键决策”等情况时，视为**未完成**，必须先统一结构再交付。
 
 可读性优先采用：短段落、状态表、对齐公式、事件时间线；禁止用长段落把对象、机制、计算和校验揉成一块。
 

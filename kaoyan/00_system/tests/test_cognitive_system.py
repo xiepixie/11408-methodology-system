@@ -149,6 +149,20 @@ class ExamSolutionIntegrityTests(unittest.TestCase):
         self.assertIsNotNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- Rules：先定 Scope\n"))
         self.assertIsNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- 题目信号：出现 Cache\n"))
 
+    def test_exam_solution_preferred_headings_are_chinese(self):
+        self.assertEqual(MODULE.EXAM_SOLUTION_OBJECTIVE_HEADINGS[0], "模型锚点")
+        self.assertEqual(MODULE.EXAM_SOLUTION_OBJECTIVE_HEADINGS[3], "校验")
+        self.assertEqual(MODULE.EXAM_SOLUTION_COMPREHENSIVE_HEADINGS[1], "问题表征")
+        self.assertEqual(MODULE.EXAM_SOLUTION_COMPREHENSIVE_HEADINGS[2], "关键决策")
+        self.assertEqual(MODULE.EXAM_SOLUTION_COMPREHENSIVE_HEADINGS[3], "求解链")
+
+    def test_2014_partial_solutions_use_chinese_headings(self):
+        solutions_dir = MODULE.EXAM_SOLUTION_ROOT / "2014年真题" / "solutions"
+        for path in sorted(solutions_dir.glob("q[0-9][0-9].md")):
+            text = path.read_text(encoding="utf-8")
+            headings = tuple(MODULE.EXAM_SOLUTION_H2_RE.findall(text))
+            self.assertEqual(headings, MODULE.EXAM_SOLUTION_OBJECTIVE_HEADINGS)
+
 
 class AtlasFormatTests(unittest.TestCase):
     def test_course_atlas_is_declared_markdown_canonical(self):

@@ -35,24 +35,24 @@ Exam Solution = Derived：把某一道题沿上述模型完整跑一遍
 所有题解都以通用解题内核为底座：
 
 ```text
-Target
--> Objects
--> Constraints
--> Structure
--> Output Shape
--> Candidate Paths
--> Risk Point
--> Verification
--> Expression
+目标
+-> 对象
+-> 约束
+-> 结构
+-> 输出形态
+-> 候选路径
+-> 风险点
+-> 校验
+-> 表达
 ```
 
 408 再切换为对应 Subject Adapter：
 
 ```text
-数据结构：Relation -> Workload -> Representation -> Invariant -> Operation -> Cost
-计组：State -> Location -> Path -> Resource -> Timing -> Commit -> Cost
-OS：Objects / Relations / Queues -> Event -> Mechanism -> Policy -> New State -> Safety/Liveness/Cost
-网络：Scope -> Name/Object -> State Owner -> Event -> Transition -> Feedback -> Cost
+数据结构：关系 -> 任务负载 -> 表示 -> 不变量 -> 操作 -> 代价
+计组：状态 -> 位置 -> 路径 -> 资源 -> 时序 -> 提交 -> 代价
+操作系统：对象 / 关系 / 队列 -> 事件 -> 机制 -> 策略 -> 新状态 -> 安全性 / 活性 / 代价
+计算机网络：作用域 -> 名称 / 对象 -> 状态拥有者 -> 事件 -> 转移 -> 反馈 -> 代价
 ```
 
 不要求把这些词机械写成九个小标题；题解必须让读者看得出这些决策实际发生了。
@@ -68,7 +68,7 @@ OS：Objects / Relations / Queues -> Event -> Mechanism -> Policy -> New State -
 
 > 原题：[[YYYY_408真题_正式版#N]]
 
-## Model Anchor
+## 模型锚点
 - Topic / Bridge：...
 - 题目信号：...
 - 第一动作：...
@@ -81,17 +81,17 @@ A. ...
 B. ...
 ...
 
-## Verification
+## 校验
 ...
 
-## Compression
+## 压缩
 看到“...” -> 先“...” -> 再“...”
 
 ## 易错边界
 ...
 ```
 
-**批量归档题解禁止省略或合并这些一级结构。** 即使题目很简单，也必须保留 `选项判断`、`Verification`、`Compression`、`易错边界` 四个标题；内容可以短，但结构不能漂移。这样年度批量阅读时，读者能够在固定位置找到同一种信息。
+**批量归档题解禁止省略或合并这些一级结构。** 即使题目很简单，也必须保留 `选项判断`、`校验`、`压缩`、`易错边界` 四个标题；内容可以短，但结构不能漂移。这样年度批量阅读时，读者能够在固定位置找到同一种信息。
 
 ### 4.2 综合应用题 / 算法题
 
@@ -102,24 +102,24 @@ B. ...
 
 > 原题：[[YYYY_408真题_正式版#NN（本题 X 分）]]
 
-## Model Anchor
+## 模型锚点
 ...
 
-## Problem Representation
-把题面对象、状态、约束和输出重新表示成当前 Subject 的语言。
+## 问题表征
+把题面对象、状态、约束和输出重新表示成当前学科的语言。
 
-## Decision Points
+## 关键决策
 说明为什么走这条路径，而不是竞争路径。
 
-## Solution Chain
+## 求解链
 ### (1) ...
 ### (2) ...
 ...
 
-## Verification
+## 校验
 至少给一个尽量独立于原计算路线的检查。
 
-## Compression
+## 压缩
 题目信号 -> 第一动作 -> 关键转折 -> 停止条件。
 
 ## 易错边界
@@ -129,17 +129,17 @@ B. ...
 算法设计题额外必须包含：
 
 ```text
-Operation Contract
--> State / Invariant
--> Algorithm
--> Why Correct
--> Boundary
--> Complexity
+操作契约
+-> 状态 / 不变量
+-> 算法
+-> 正确性说明
+-> 适用边界
+-> 复杂度
 ```
 
 不能只有代码。
 
-## 5. Model Anchor 必须具体
+## 5. 模型锚点必须具体
 
 禁止写：
 
@@ -194,7 +194,7 @@ Problem
 
 不要把最终公式作为起点。可以压缩推导，但至少保留“为什么这个式子出现”。
 
-## 8. Verification 不是重算一遍
+## 8. 校验不是重算一遍
 
 优先独立检查：
 
@@ -205,15 +205,15 @@ Problem
 
 选择题也应给出一个快速 sanity check；综合题至少一个小问应有独立校验。
 
-## 9. Compression 必须能用于下一题
+## 9. 压缩必须能用于下一题
 
 每道题最后压成一条可复原路径：
 
 ```text
-Signal -> First Action -> Key Invariant/Equation -> Stop/Check
+题目信号 -> 第一动作 -> 关键不变量 / 方程 -> 停止条件 / 检查
 ```
 
-Compression 不能变成无条件口诀。必须保留适用前提，例如：
+压缩不能变成无条件口诀。必须保留适用前提，例如：
 
 ```text
 固定分配 + 局部置换 + 页面序列
@@ -266,42 +266,42 @@ model_anchors:
 
 `answer`、难度、Topic、错题状态属于 Derived 层，可以存在于题解，但不能写回 Canonical Exam Source。
 
-`model_anchors` 是可选的索引优化字段，不作为完成 Gate；正文 `Model Anchor` 才是学生与 Agent 的可读锚点。正文顶部 `> 原题：...` 也是推荐导航而非硬 Gate，Canonical 来源关系由必填 `source_exam` 保证。这样避免迁移年份之间因冗余元数据产生无意义格式分叉。
+`model_anchors` 是可选的索引优化字段，不作为完成质量门；正文 `模型锚点` 才是学生与 Agent 的可读锚点。正文顶部 `> 原题：...` 也是推荐导航而非硬门槛，Canonical 来源关系由必填 `source_exam` 保证。这样避免迁移年份之间因冗余元数据产生无意义格式分叉。
 
-## 13. 题解质量 Gate
+## 13. 题解质量门
 
-### 13.1 内容 Gate
+### 13.1 内容质量门
 
-一题只有同时通过以下 Gate 才算完成：
+一题只有同时通过以下质量门才算完成：
 
-1. **Source**：题面事实只来自 Canonical Exam Source；
-2. **Model**：明确读取对应 Atlas / Topic / Rules；
-3. **Generation**：核心结论不是无解释口诀；
-4. **Boundary**：至少处理本题真正存在的高风险混淆；
-5. **Verification**：有可执行检查；
-6. **Compression**：下一题可以从信号复原路径；
-7. **Answer**：最终答案/数值/代码正确且表达满足题目要求；
-8. **No Ownership Leak**：题解没有悄悄成为新的机制定义 Owner。
+1. **源题正确**：题面事实只来自 Canonical Exam Source；
+2. **模型定位**：明确读取对应 Atlas / Topic / Rules；
+3. **机制生成**：核心结论不是无解释口诀；
+4. **边界处理**：至少处理本题真正存在的高风险混淆；
+5. **校验**：有可执行检查；
+6. **压缩**：下一题可以从信号复原路径；
+7. **答案正确**：最终答案 / 数值 / 代码正确且表达满足题目要求；
+8. **所有权不泄漏**：题解没有悄悄成为新的机制定义 Owner。
 
-### 13.2 Format / Readability Gate（批量任务硬门槛）
+### 13.2 格式 / 可读性质量门（批量任务硬门槛）
 
 批量题解除了“算对”，还必须保证**同类信息永远出现在同一位置**。不得因为题目简单、赶进度或由不同批次生成而自由发挥标题结构。
 
 #### Q1～Q40 单项选择题固定顺序
 
 ```text
-Frontmatter
+头部元数据
 # QID
 > 原题链接
-Model Anchor
+模型锚点
 解题链
 选项判断
-Verification
-Compression
+校验
+压缩
 易错边界
 ```
 
-其中 `Model Anchor` 固定至少出现：
+其中 `模型锚点` 固定至少出现：
 
 ```text
 Topic / Bridge
@@ -312,36 +312,36 @@ Topic / Bridge
 #### Q41～Q47 综合题固定顺序
 
 ```text
-Frontmatter
+头部元数据
 # QID
 > 原题链接
-Model Anchor
-Problem Representation
-Decision Points
-Solution Chain
-Verification
-Compression
+模型锚点
+问题表征
+关键决策
+求解链
+校验
+压缩
 易错边界
 ```
 
 算法题在上述骨架内额外显式出现：
 
 ```text
-Operation Contract
-State / Invariant
-Algorithm
-Why Correct
-Complexity
+操作契约
+状态 / 不变量
+算法
+正确性说明
+复杂度
 ```
 
-这些内容必须放在 `Solution Chain` 内部，用 H3 或更低层级组织；不得为了算法题新增平行 H2，从而破坏整卷扫描结构。
+这些内容必须放在 `求解链` 内部，用 H3 或更低层级组织；不得为了算法题新增平行 H2，从而破坏整卷扫描结构。
 
 #### 可读性约束
 
 - 一段只承担一个推理动作；连续 4～6 行仍未换段时，优先检查是否混入第二个逻辑层次；
 - 数值/状态题优先使用小表格、状态链或对齐公式，不把 6～10 个中间量塞进一段话；
-- `Verification` 必须独立成段，不得藏在 `解题链` 末句；
-- `Compression` 必须是一条可扫描的路径，优先使用 `Signal -> First Action -> Invariant -> Check`；
+- `校验` 必须独立成段，不得藏在 `解题链` 末句；
+- `压缩` 必须是一条可扫描的路径，优先使用 `题目信号 -> 第一动作 -> 不变量 -> 检查`；
 - `易错边界` 控制在真正影响本题判断的 1～3 个边界，不堆百科知识；
 - 不使用 Emoji 作为稳定层级标记；结构依靠 Markdown 标题，而不是视觉装饰；
 - 同一年度不得同时维护 `qNN.md`、`408-YYYY-QNN.md` 等两份正文 Owner；旧别名只能是 redirect。
@@ -353,7 +353,7 @@ Complexity
 1. `solutions/qNN.md` 覆盖目标题号，无漏题、无重复正文；
 2. Frontmatter 必填字段完整，Q1～Q40 有 `answer`；
 3. 同题型必需标题全部存在且顺序一致；
-4. 每题 `Model Anchor` 都有“题目信号 / 第一动作”；
+4. 每题 `模型锚点` 都有“题目信号 / 第一动作”；
 5. 原题链接、`source_exam`、`legacy_reference` 不断链；
 6. 年度答案索引与 `solutions/qNN.md` 不分叉；
 7. `solution_review.md` 承接 Source Gap / Legacy Difference，不把审计日志塞进每道题正文。
@@ -370,9 +370,9 @@ Complexity
 -> 读取 legacy answer 作为参考
 -> 独立求解
 -> 对比旧答案
--> 生成 model-grounded solution
--> 单题 Verification
--> 年度答案一致性 / 链接 / Frontmatter Validation
+-> 生成心智模型驱动题解
+-> 单题校验
+-> 年度答案一致性 / 链接 / 头部元数据验证
 -> 记录 Handbook Challenge / Rule Evidence
 ```
 

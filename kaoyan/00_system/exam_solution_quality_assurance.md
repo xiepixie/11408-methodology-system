@@ -37,16 +37,16 @@
 
 ```text
 第 1 遍：闭卷独立作答
-第 2 遍：只看 Model Anchor / Problem Representation，再重新尝试
-第 3 遍：查看 Decision / Solution Chain，对照自己的第一次分叉
-第 4 遍：遮住正文，只凭 Compression + Verification 复原
+第 2 遍：只看模型锚点 / 问题表征，再重新尝试
+第 3 遍：查看关键决策 / 求解链，对照自己的第一次分叉
+第 4 遍：遮住正文，只凭压缩 + 校验复原
 ```
 
 对于已经做错的题，再追加一问：
 
-> 我的 First Divergence 是模型不存在、信号没触发、路径选错、状态更新错、检查缺失，还是表达没有形成得分链？
+> 我的首次分叉点是模型不存在、信号没触发、路径选错、状态更新错、检查缺失，还是表达没有形成得分链？
 
-因此题解正文不承担个人错因诊断，但必须提供足够清楚的模型节点，使错题系统能定位 First Divergence。
+因此题解正文不承担个人错因诊断，但必须提供足够清楚的模型节点，使错题系统能定位首次分叉点。
 
 ## 3. 固定结构：同类信息永远出现在同一位置
 
@@ -55,11 +55,11 @@
 一级标题固定且顺序固定：
 
 ```text
-Model Anchor
+模型锚点
 -> 解题链
 -> 选项判断
--> Verification
--> Compression
+-> 校验
+-> 压缩
 -> 易错边界
 ```
 
@@ -70,16 +70,16 @@ Model Anchor
 一级标题固定且顺序固定：
 
 ```text
-Model Anchor
--> Problem Representation
--> Decision Points
--> Solution Chain
--> Verification
--> Compression
+模型锚点
+-> 问题表征
+-> 关键决策
+-> 求解链
+-> 校验
+-> 压缩
 -> 易错边界
 ```
 
-算法题的 `Operation Contract / State-Invariant / Algorithm / Why Correct / Complexity` 使用三级标题或 `Solution Chain` 内部小节表达，**不再增加平行 H2**。
+算法题的 `操作契约 / 状态与不变量 / 算法 / 正确性说明 / 复杂度` 使用三级标题或 `求解链` 内部小节表达，**不再增加平行 H2**。
 
 ### 3.3 Frontmatter
 
@@ -99,13 +99,13 @@ answer: A   # 仅 Q1~Q40
 ---
 ```
 
-`model_anchors` 可作为索引优化字段存在，但不是唯一真相，也不是完成 Gate；**正文 `Model Anchor` 才是学生与 Agent 可读的模型锚点**。这样避免 Frontmatter 与正文长期漂移。
+`model_anchors` 可作为索引优化字段存在，但不是唯一真相，也不是完成质量门；**正文 `模型锚点` 才是学生与 Agent 可读的模型锚点**。这样避免 Frontmatter 与正文长期漂移。
 
-正文顶部的 `> 原题：...` 是推荐导航，不作为硬 Gate；Canonical 来源关系由 `source_exam` 保证。若写该链接，必须指向正式卷而不是 legacy q 文件。
+正文顶部的 `> 原题：...` 是推荐导航，不作为硬质量门；Canonical 来源关系由 `source_exam` 保证。若写该链接，必须指向正式卷而不是 legacy q 文件。
 
 ## 4. 每个部分究竟应该告诉学生什么
 
-### 4.1 Model Anchor：回答“为什么想到它”
+### 4.1 模型锚点：回答“为什么想到它”
 
 至少显式包含：
 
@@ -130,7 +130,7 @@ Cache + 页大小
 
 如果一道题跨多个 Owner，只列真正参与推理的 2～4 个，不列百科目录。
 
-### 4.2 解题链 / Solution Chain：回答“模型怎样跑起来”
+### 4.2 解题链 / 求解链：回答“模型怎样跑起来”
 
 必须从对象、约束、状态或不变量开始，让公式和结论自然长出来。
 
@@ -165,7 +165,7 @@ Object / Scope / State / Timing / Owner / Boundary / Unit
 
 不要求为了格式机械写四段百科解释。目标是让学生识别**最危险的错误路径**。
 
-### 4.4 Problem Representation：回答“题面现在变成了什么对象”
+### 4.4 问题表征：回答“题面现在变成了什么对象”
 
 综合题在计算前必须把题面重新表达为当前学科语言：
 
@@ -176,7 +176,7 @@ Object / Scope / State / Timing / Owner / Boundary / Unit
 
 这一节不是复述题面。它只保留会改变推理的状态和约束。
 
-### 4.5 Decision Points：回答“为什么选这条路”
+### 4.5 关键决策：回答“为什么选这条路”
 
 至少写出一个真正影响解法的决策，例如：
 
@@ -189,9 +189,9 @@ Object / Scope / State / Timing / Owner / Boundary / Unit
 
 如果存在一个极易混淆的竞争路径，必须明确排除。
 
-### 4.6 Verification：回答“怎样尽早发现错了”
+### 4.6 校验：回答“怎样尽早发现错了”
 
-Verification 必须尽量独立于主推导，不是把原式再算一遍。
+校验必须尽量独立于主推导，不是把原式再算一遍。
 
 推荐：
 
@@ -202,7 +202,7 @@ Verification 必须尽量独立于主推导，不是把原式再算一遍。
 
 一条很短但有区分力的检查，比一段重复推导更好。
 
-### 4.7 Compression：回答“下次如何重新调用”
+### 4.7 压缩：回答“下次如何重新调用”
 
 固定压缩为：
 
@@ -252,13 +252,13 @@ min(rwnd,cwnd) 是在途上限，不是新增可发送量
 必须达到：
 
 ```text
-Operation Contract
--> State / Invariant
--> Candidate / Decision
--> Algorithm / State Evolution
--> Why Correct
--> Complexity / Cost
--> Independent Verification
+操作契约
+-> 状态 / 不变量
+-> 候选 / 决策
+-> 算法 / 状态演化
+-> 正确性说明
+-> 复杂度 / 代价
+-> 独立校验
 ```
 
 如果学生看完仍不知道“为什么这个算法不会漏情况”，则题解不合格。
@@ -326,23 +326,23 @@ Canonical Source fidelity
 
 不能为了让旧答案成立而修改模型，也不能为了维护模型而偷偷改题面。
 
-## 7. 六道质量 Gate
+## 7. 六道质量门
 
-### Gate A｜Source & Answer Correctness
+### 质量门 A｜源题与答案正确性
 
 - 题面事实只来自 Canonical Exam Source；
 - Q1～Q40 `answer` 与年度索引一致；
 - 综合题小问、单位、代码合同完整；
 - Legacy 只用于交叉检查。
 
-### Gate B｜Model Grounding
+### 质量门 B｜模型落地
 
-- Model Anchor 可定位；
+- 模型锚点可定位；
 - 题目信号具体；
 - 第一动作可执行；
 - 公式/操作来自机制，而非记忆答案。
 
-### Gate C｜Pedagogical Reconstruction
+### 质量门 C｜教学可复原性
 
 学生遮住答案后，能否回答：
 
@@ -351,23 +351,23 @@ Canonical Source fidelity
 3. 哪一步最容易错？
 4. 怎样知道答案大概率对？
 
-若不能，题解应补 Representation / Decision / Verification，而不是单纯加字数。
+若不能，题解应补问题表征 / 关键决策 / 校验，而不是单纯加字数。
 
-### Gate D｜Transfer & Retrieval
+### 质量门 D｜迁移与提取
 
-- Compression 能迁移到表面不同的新题；
+- 压缩能迁移到表面不同的新题；
 - 易错边界不是本题专属废话；
 - 必要时有一个复原问题。
 
-### Gate E｜Format Consistency
+### 质量门 E｜格式一致性
 
 - 固定 H2 完整且顺序一致；
 - 不出现自由发挥的平行 H2；
 - Frontmatter、答案、链接不断裂；
 - **整年完成态**必须存在年度 README 与 `solution_review.md`；partial 阶段不提前创建完成标记；
-- **格式迁移也必须做语义回归**：新增/移动标题时，摘要必须从当前 `解题链 / Solution Chain` 重新提炼，不能按题号、知识点名或记忆生成占位文字；格式修完后再核一次答案与正文机制是否一致。
+- **格式迁移也必须做语义回归**：新增 / 移动标题时，摘要必须从当前 `解题链 / 求解链` 重新提炼，不能按题号、知识点名或记忆生成占位文字；格式修完后再核一次答案与正文机制是否一致。
 
-### Gate F｜Model Feedback Closure
+### 质量门 F｜模型反馈闭环
 
 - Source/Legacy 差异有去向；
 - 规则证据不越权晋升；
@@ -390,8 +390,8 @@ Canonical Source fidelity
 机器**不能**可靠判断：
 
 - 推理是否真的正确；
-- Model Anchor 是否选对 Owner；
-- Verification 是否独立；
+- 模型锚点是否选对 Owner；
+- 校验是否独立；
 - 一条 Rule 是否已经有足够证据；
 - Handbook 是否需要改。
 
@@ -424,6 +424,28 @@ Candidate Rule 是否已经跨年重复到值得 Promotion Review？
 + Model Feedback Closed
 ```
 
-其中前三项可机器 Gate；后四项必须有人/Agent 阅读。
+其中前三项可机器质量门；后四项必须有人 / Agent 阅读。
+
+### 11. 栏目语言合同
+
+题解的**格式栏目统一使用中文**。不得再出现一半中文、一半英文的 H2/H3 标题。
+
+固定映射为：
+
+```text
+模型锚点
+问题表征
+关键决策
+解题链 / 求解链
+校验
+压缩
+易错边界
+操作契约
+状态与不变量
+正确性说明
+复杂度
+```
+
+英文只保留在以下场景：协议/标准名（如 TCP、OSPF、IEEE 754）、代码标识符、模型编号（如 CO-03）、原题术语或确实没有自然中文替代的技术名。**不得再把英文用作题解栏目标题或流程标签。**
 
 **最终目标不是让题解越来越长，而是让学生越来越少依赖题解。**
