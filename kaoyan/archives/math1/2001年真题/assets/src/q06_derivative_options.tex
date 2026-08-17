@@ -1,0 +1,41 @@
+% 2001 数学一 Q06 导函数四选项重绘
+% D 与输入图严格匹配：f'(x)=1/2*(x-1)*(x-3).
+
+% 通用小坐标系范围 x∈[-1.2,4.4]
+\begin{scope}[shift={(0,3.8)}]
+  \node[above left] at (-1.3,1.7) {\textbf{(A)}};
+  \draw[->,line width=0.7pt] (-1.3,0)--(4.5,0) node[below] {$x$};
+  \draw[->,line width=0.7pt] (0,-1.8)--(0,1.8);
+  % A: -1/2(x-1)(x-3), 左侧为负
+  \draw[line width=1.0pt,domain=-1.0:4.2,samples=60,smooth]
+    plot (\x,{-0.5*(\x-1)*(\x-3)});
+\end{scope}
+
+\begin{scope}[shift={(6.2,3.8)}]
+  \node[above left] at (-1.3,1.7) {\textbf{(B)}};
+  \draw[->,line width=0.7pt] (-1.3,0)--(4.5,0) node[below] {$x$};
+  \draw[->,line width=0.7pt] (0,-1.8)--(0,1.8);
+  % B: x<0 为正，但 x=0 右侧立即为负
+  \draw[line width=1.0pt,domain=-1.0:3.0,samples=60,smooth]
+    plot (\x,{0.45*\x*(\x-2)});
+\end{scope}
+
+\begin{scope}[shift={(0,-0.5)}]
+  \node[above left] at (-1.3,1.7) {\textbf{(C)}};
+  \draw[->,line width=0.7pt] (-1.3,0)--(4.5,0) node[below] {$x$};
+  \draw[->,line width=0.7pt] (0,-1.8)--(0,1.8);
+  % C: 始终为负
+  \draw[line width=1.0pt,domain=-1.0:4.0,samples=60,smooth]
+    plot (\x,{-0.08*\x*\x-0.55});
+\end{scope}
+
+\begin{scope}[shift={(6.2,-0.5)}]
+  \node[above left] at (-1.3,1.7) {\textbf{(D)}};
+  \draw[->,line width=0.7pt] (-1.3,0)--(4.5,0) node[below] {$x$};
+  \draw[->,line width=0.7pt] (0,-1.8)--(0,1.8);
+  \node[below] at (1,0) {$1$};
+  \node[below] at (3,0) {$3$};
+  % 正确：输入函数的真实导函数
+  \draw[line width=1.1pt,domain=-1.0:4.2,samples=60,smooth]
+    plot (\x,{0.5*(\x-1)*(\x-3)});
+\end{scope}

@@ -1,0 +1,45 @@
+% =========================================================================
+% 2008年数学（一）第6题 二次型空间几何图形（双叶双曲面）精确解析几何代码
+% 编译管线: python3 infra/scripts/compile_tikz_to_svg.py
+% =========================================================================
+
+% 1. 坐标轴 (斜二测画法: x 轴水平向右, z 轴铅直向上, y 轴斜 45 度投影)
+\draw[->, line width=0.9pt] (-3.8, 0) -- (4.0, 0) node[below=1pt] {$x$};
+\draw[->, line width=0.9pt] (0, -2.0) -- (0, 2.5) node[right=1pt] {$z$};
+\draw[->, line width=0.9pt] (-1.8, -1.27) -- (2.3, 1.62) node[above right=1pt] {$y$};
+
+% 原点标号
+\node at (0.22, -0.22) {$0$};
+
+% =========================================================================
+% 2. 右叶双曲面 (x > 0 区域: 顶点 x=1.3, 截面截于 x=2.8)
+% 母线解析方程: z = \pm 0.6 * \sqrt{(x/1.3)^2 - 1}
+% =========================================================================
+% 上下外轮廓双曲线母线 (解析曲线)
+\draw[line width=0.9pt, domain=1.3:2.8, samples=60] plot (\x, {0.6*sqrt((\x/1.3)*(\x/1.3) - 1)});
+\draw[line width=0.9pt, domain=1.3:2.8, samples=60] plot (\x, {-0.6*sqrt((\x/1.3)*(\x/1.3) - 1)});
+
+% 截面主椭圆 (x=2.8 处)
+\draw[line width=0.9pt] (2.8, 0) ellipse [x radius=0.32, y radius=1.14];
+% 截面内部对称轴 (十字线)
+\draw[line width=0.5pt] (2.8, -1.14) -- (2.8, 1.14);
+\draw[line width=0.5pt] (2.48, 0) -- (3.12, 0);
+
+% 空间立体感辅助纬线 (中间截面 x=2.0)
+% 背后被曲面遮挡部分 (虚线)
+\draw[line width=0.7pt, dashed] (2.0, 0.70) arc[start angle=90, end angle=270, x radius=0.20, y radius=0.70];
+% 前方可见部分 (实线)
+\draw[line width=0.7pt] (2.0, -0.70) arc[start angle=-90, end angle=90, x radius=0.20, y radius=0.70];
+
+% =========================================================================
+% 3. 左叶双曲面 (x < 0 区域: 顶点 x=-1.3, 截面截于 x=-2.8)
+% =========================================================================
+\draw[line width=0.9pt, domain=-2.8:-1.3, samples=60] plot (\x, {0.6*sqrt((\x/1.3)*(\x/1.3) - 1)});
+\draw[line width=0.9pt, domain=-2.8:-1.3, samples=60] plot (\x, {-0.6*sqrt((\x/1.3)*(\x/1.3) - 1)});
+
+\draw[line width=0.9pt] (-2.8, 0) ellipse [x radius=0.32, y radius=1.14];
+\draw[line width=0.5pt] (-2.8, -1.14) -- (-2.8, 1.14);
+\draw[line width=0.5pt] (-3.12, 0) -- (-2.48, 0);
+
+\draw[line width=0.7pt, dashed] (-2.0, 0.70) arc[start angle=90, end angle=270, x radius=0.20, y radius=0.70];
+\draw[line width=0.7pt] (-2.0, -0.70) arc[start angle=-90, end angle=90, x radius=0.20, y radius=0.70];

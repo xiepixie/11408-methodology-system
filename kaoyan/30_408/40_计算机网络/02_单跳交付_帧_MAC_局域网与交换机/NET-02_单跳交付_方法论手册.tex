@@ -1,0 +1,642 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\handbooksetup{NET-02 单跳交付}{408 · 计算机网络 NET-02}{Frame · MAC · Switch · VLAN}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\passthrough}[1]{#1}
+\begin{document}
+\handbooktitle{单跳交付}{帧、介质访问与局域网转发}{408 · NET-02}
+\section{本册定位}\label{0-ux672cux518cux5b9aux4f4d}
+
+本 Topic
+回答：当若干节点共享一个本地交付环境时，怎样识别一帧、发现传输错误、决定谁能发送，并把
+frame 交给正确的下一跳接口？
+
+本册拥有 framing、透明传输、检错/纠错、介质访问控制、Ethernet、WLAN、VLAN、PPP、switch table、collision/broadcast domain。
+
+本册只接收 NET04/NET-B01 已确定的 egress/next-hop action，再按 Ethernet/WLAN、PPP 等链路类型构造本跳交付对象。IP 如何决定 next hop、ARP/ND 如何取得邻居身份由\href{../04_IP地址_子网与分组转发/README.md}{IP 分组转发}拥有；信号怎样传播由\href{../01_通信基础与网络性能/README.md}{通信基础}拥有。
+
+\section{独立阅读词典：本跳到底交付什么}
+
+\begin{handbooktable}{L{2.5cm} L{4.1cm} Y}
+\toprule
+术语 & 本册中的可操作定义 & 不要混成什么 \\
+\midrule
+frame（帧） & 链路层一次交付的有限 bit 块，含定界、地址、载荷和检错字段 & 不是跨路由器保持不变的 packet \\
+MAC address & 当前链路接口使用的本地链路标识；只负责这一跳 & 不是端到端 IP 身份 \\
+MAC & 介质访问控制：决定共享介质上谁何时能发 & 不是 MAC address 这个地址值 \\
+FCS/CRC & FCS 是帧尾检错结果；CRC 是生成该结果的模 2 多项式算法 & 不是自动重传机制 \\
+MTU & 当前链路一次允许承载的最大 IP payload 尺寸；题设要先说明口径 & 不一定等于完整 frame 长度 \\
+collision domain & 同时发送可能互相破坏的范围 & 不等于所有能收到广播的范围 \\
+broadcast domain & 一次二层广播能到达的范围，通常由路由器边界切开 & 不等于 collision domain \\
+switch & 按目的 MAC 和学习表把帧送到特定端口的设备 & 不是 hub 的简单同义词 \\
+VLAN & 在同一物理交换网络中划出的逻辑二层广播域；标签携带 VLAN ID & 不是一个新的 IP 子网算法 \\
+\bottomrule
+\end{handbooktable}
+
+本册的“本地”始终指一条链路或一个二层广播域。路由器收到 packet 后会丢掉入站
+frame，再为下一跳生成新 frame；因此 MAC 地址会逐跳改变，而 packet 的目的 IP
+通常保持不变。
+
+\section{根本问题：一根线不自带``帧''和``轮到谁''}\label{1-ux6839ux672cux95eeux9898ux4e00ux6839ux7ebfux4e0dux81eaux5e26ux5e27ux548cux8f6eux5230ux8c01}
+
+物理层只提供连续的信号或 bit
+流。若多个节点直接使用它，会立即出现四个缺口：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  接收方不知道一帧从哪里开始、到哪里结束；
+\item
+  数据可能恰好长得像边界标记；
+\item
+  传播中的 bit 可能被破坏；
+\item
+  共享介质上的多个发送者可能同时发送。
+\end{enumerate}
+
+于是单跳交付机制按以下链条生成：
+
+\[
+\boxed{
+\text{Raw channel}
+\to \text{Frame boundary}
+\to \text{Error detection}
+\to \text{Access right}
+\to \text{Local forwarding}
+}
+\]
+
+Frame 解决``这段 bit 属于同一个链路层单元''；MAC
+解决``谁能在何时使用共享介质''；switching 解决``已收到的 frame
+应去哪个本地端口''。
+
+\subsection{链路层功能与 LLC/MAC 分工}
+
+链路层向网络层提供相邻节点之间的逻辑链路服务，典型功能可按处理顺序复原：成帧与透明传输、链路寻址、差错控制、流量/可靠控制（若具体协议提供）、介质访问控制，以及把载荷交给正确的上层协议。并非每种链路都实现全部功能，例如 Ethernet FCS 检错后通常丢弃坏帧，可靠恢复可留给更高层。
+
+IEEE 802 教材模型把数据链路层逻辑分成 LLC 与 MAC 子层：LLC 面向上层提供较统一的链路服务/协议复用接口；MAC 处理具体 LAN 的帧格式、MAC addressing 与介质访问。现代协议实现未必在报文中显式呈现独立 LLC header，但 408 分层题仍应保留“上层服务抽象”与“介质相关访问/帧”的责任分工。
+
+拓扑描述物理/逻辑连接形状，不能直接决定访问协议；总线常与共享竞争相关，星形也可能以 hub 形成一个共享冲突域，或以 switch 形成每端口独立链路。LAN/WAN、topology、MAC method 和 link protocol 是不同分类轴。
+
+\section{单跳模型}\label{2-ux5355ux8df3ux6a21ux578b}
+
+一跳交付的标准表示是：
+
+\begin{lstlisting}
+上层给出 packet + egress/next-hop action
+-> link adapter 得到 MAC / configured peer / tunnel endpoint
+-> 链路层封装 frame or link unit
+-> 介质访问协议取得发送机会
+-> 物理层发送 signal
+-> 接收端定界并检错
+-> switch/host 按目的 MAC 处理
+\end{lstlisting}
+
+这一过程的核心不变量是：frame 的 MAC 地址只对当前链路有效。路由器转发
+packet 时会删除入站 frame，再为下一条链路创建新的 frame。
+
+\section{Framing：边界必须无歧义}\label{3-framingux8fb9ux754cux5fc5ux987bux65e0ux6b67ux4e49}
+
+\subsection{为什么需要透明传输}\label{31-ux4e3aux4ec0ux4e48ux9700ux8981ux900fux660eux4f20ux8f93}
+
+若用特殊序列标记 frame 边界，而 payload
+中允许出现相同序列，接收方就无法区分``数据''与``控制标记''。透明传输的目标是：任意上层
+bit 模式都能被无歧义地承载。
+
+\begin{itemize}
+\tightlist
+\item
+  面向字节的协议可用 byte stuffing：数据中的 flag/escape 先转义；
+\item
+  面向 bit 的协议可用 bit stuffing：发送端在特定连续 bit 后插入
+  bit，接收端再删除；
+\item
+  固定或长度字段方案依赖长度值和同步状态正确。
+\end{itemize}
+
+填充改变的是表示，不改变 payload 语义。接收方必须可逆地还原。
+
+\subsection{四种组帧方法：边界损坏后能否重新同步}
+
+\begin{handbooktable}{L{2.2cm} L{2.5cm} Y Y}
+\toprule
+方法 & 定界依据 & 透明性怎样取得 & 首要边界\\
+\midrule
+字符计数 & 首部长度字段 & 数据不与长度字段撞车 & 长度位损坏会使后续帧边界连续失步，单独使用时重同步能力弱\\
+字符填充 & SOH/EOT 等控制字节 & payload 中的标志和 ESC 都用 ESC 转义 & 必须连 ESC 自身也转义，否则编码不可逆\\
+零比特填充 & \code{01111110} Flag & 数据中每遇连续 5 个 1 就插 0，接收端对称删除 & 必须在第 6 个 1 出现前插入；支持任意 bit 串\\
+违规编码 & 物理编码的非法信号状态 & 合法数据不可能产生该状态 & 与具体物理编码绑定，不能脱离介质假设\\
+\bottomrule
+\end{handbooktable}
+
+帧定界符还提供错误后的重同步锚点：发送中断留下的半截帧可在下一个合法边界到达时被识别并丢弃。MTU 限制的是 frame 的 payload 上限，不是完整 frame 长度；Ethernet 的 1500 B MTU 与 1518 B 经典最大 MAC 帧不能混用。
+
+\subsection{码距：检错与纠错的统一尺度}
+
+把所有合法码字看成二进制空间中的点。任意两个合法码字不同位数的最小值称为最小海明距离 $d_{\min}$。接收串若落在合法点附近，接收方能否判断或修复，取决于合法点的“判决球”是否重叠：
+\[
+\boxed{\text{最多检 }s\text{ 位错}:d_{\min}\ge s+1}
+\qquad
+\boxed{\text{最多纠 }t\text{ 位错}:d_{\min}\ge 2t+1}.
+\]
+检错只需确认“已离开合法集合”；纠错还要唯一判断“离哪个合法码字最近”，所以纠 $t$ 位错需要给每个合法码字留出半径 $t$ 的互不重叠邻域。
+
+海明码把校验位放在位置 $1,2,4,8,\ldots$，让每个数据位的位置编号对应一组二进制校验关系。若有 $m$ 个数据位、$r$ 个校验位，单错纠正要求综合结果能表示“无错”以及 $m+r$ 个可能出错位置：
+\[
+2^r\ge m+r+1.
+\]
+接收端重新计算各校验组，按固定次序拼成 syndrome。syndrome 为 $0$ 表示未检测到单比特错误；非零值在经典海明码的单错假设下正好给出错误位置，翻转该位即可。这里的关键不是背布局，而是理解：\textbf{校验矩阵的每一列必须是互不相同的非零编号，综合才具有唯一定位能力}。
+
+普通海明码的 $d_{\min}=3$，可纠正一位错，但不能可靠区分“一位错”和某些“两位错”。增加一个覆盖全部位的总奇偶校验位可形成常见的 SEC--DED 扩展：单错纠正、双错检测；题目未说明扩展位时，不得默认具有双错检测能力。
+
+\subsection{CRC：检测，不是修复}\label{32-crcux68c0ux6d4bux4e0dux662fux4feeux590d}
+
+发送端把 bit 串视为 \(GF(2)\) 上的多项式，用生成多项式 \(G(x)\) 做模 2
+除法，将余数附在 frame 后；接收端用同一 \(G(x)\) 检查余数。
+
+CRC 提供高强度错误检测，但它不说明错误 frame 应如何恢复。Ethernet
+通常丢弃坏帧；是否重传由具体链路协议或更高层可靠传输机制决定。
+
+\section{MAC：共享资源的三种基本治理方式}\label{4-macux5171ux4eabux8d44ux6e90ux7684ux4e09ux79cdux57faux672cux6cbbux7406ux65b9ux5f0f}
+
+\subsection{预先切分}\label{41-ux9884ux5148ux5207ux5206}
+
+FDM/TDM/CDM
+把频率、时间或码空间预先分配给使用者。优点是无冲突、行为可预测；代价是空闲份额可能浪费，并需要同步或码设计。
+
+\subsection{随机接入}\label{42-ux968fux673aux63a5ux5165}
+
+随机接入允许节点有数据就尝试发送，冲突后再恢复，适合突发业务。
+
+\begin{lstlisting}
+ALOHA：直接发，冲突后随机重试
+-> CSMA：先侦听再发
+-> CSMA/CD：有线共享介质中边发边检测
+-> CSMA/CA：无线中通过等待、ACK、可选 RTS/CTS 尽量避免冲突
+\end{lstlisting}
+
+CSMA
+仍会冲突，因为侦听结果只反映``过去到达本节点的信号''，无法消除传播时延造成的状态差异。
+
+\subsection{受控接入}\label{43-ux53d7ux63a7ux63a5ux5165}
+
+随机接入把冲突当作可恢复事件；受控接入则把“发送权”建模为任一时刻至多存在一份的 capability：
+\[
+\boxed{\text{May transmit}(i)\iff \text{PermissionOwner}=i}.
+\]
+
+轮询采用集中式所有权。主站依次发送 poll，只有被点名且有数据的从站发送，随后发送权回到主站：
+\[
+\text{Controller polls }i\to
+\begin{cases}
+i\text{ sends bounded data}\to\text{return},&\text{nonempty},\\
+\text{skip }i,&\text{empty}.
+\end{cases}
+\]
+其等待上界较清楚，但每轮都有查询与响应开销，且主站是关键故障点。
+
+令牌传递采用分布式所有权。一个特殊 token 沿逻辑环移动；站点只有持有 token 才能发送，并必须在规定时间或帧数后释放：
+\[
+\text{Token at }i\to\text{optional transmit}\to\text{release}\to\text{Token at next}(i).
+\]
+它避免集中轮询点，却要处理 token 丢失、重复和持有者故障。二者共同代价是：即使无人竞争，permission 也要经历控制交接；共同收益是重载时不靠反复碰撞决定顺序。
+
+“轮询无冲突”不等于“无等待”，“令牌环”描述的是发送权的逻辑环，不要求物理布线只能是环形。
+
+\section{CSMA/CD
+为什么导出最小帧长}\label{5-csmacd-ux4e3aux4ec0ux4e48ux5bfcux51faux6700ux5c0fux5e27ux957f}
+
+发送端只有在仍在发送时，才能检测从最远端返回的冲突。设冲突域最大单向传播时延为
+\(\tau\)，则 frame 的发送时间必须覆盖最坏往返传播时间：
+
+\[
+\frac{L_{min}}{R}\ge 2\tau
+\qquad\Longrightarrow\qquad
+L_{min}\ge 2\tau R.
+\]
+
+这不是孤立公式，而是一个可观测性约束：发送者必须保持``仍在现场''，直到最远冲突有机会返回。
+
+二进制指数退避则解决冲突后的再次同步冲突：冲突越多，随机等待范围越大。它降低再次碰撞概率，但增加不确定等待。
+
+现代交换式全双工 Ethernet 的点到点链路没有共享介质冲突，通常不运行
+CSMA/CD；考试中的最小帧长模型针对经典共享/半双工 Ethernet。
+
+\section{无线为什么不能简单复制碰撞检测}\label{6-ux65e0ux7ebfux4e3aux4ec0ux4e48ux4e0dux80fdux7b80ux5355ux590dux5236ux78b0ux649eux68c0ux6d4b}
+
+无线发送端自身信号远强于远端信号，且存在隐藏站、暴露站和覆盖范围不对称，因此可靠地``边发边听冲突''困难。802.11
+的基本思想是 CA：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  物理/虚拟载波侦听；
+\item
+  信道空闲一段时间后随机退避；
+\item
+  接收方用 ACK 显式证明成功；
+\item
+  可选 RTS/CTS 预约信道并让邻居设置 NAV。
+\end{enumerate}
+
+RTS/CTS
+不是每帧必用，也不能消除所有碰撞；它用控制开销降低长数据帧冲突的代价。
+
+\section{LAN/WAN：范围分类不决定帧格式}
+
+LAN 与 WAN 首先是覆盖范围、管理方式和接入技术的分类，不是两个固定协议栈。Ethernet 和 IEEE 802.11 是典型 LAN 技术；PPP 是典型点到点链路封装，可用于广域链路。不能由“WAN”直接推出“必用 PPP”，也不能由“LAN”推出“一定共享介质”。
+
+\subsection{Ethernet 帧：地址、类型、载荷与检错}
+
+经典 Ethernet MAC 帧按发送顺序可压缩为：
+\[
+\boxed{\text{Preamble/SFD}\mid\text{Dst MAC}\mid\text{Src MAC}\mid
+\text{Type/Length}\mid\text{Data+Pad}\mid\text{FCS}}.
+\]
+Preamble 与 SFD 服务物理同步和帧起点；目的/源 MAC 各 6 字节；Type 指明上层协议（IEEE 802.3 的相应字段也可解释为长度）；Data 不足时用 Pad 满足最小帧要求；FCS 对帧主体检错。考试计算“64--1518 B”经典帧长时，通常从目的 MAC 算到 FCS，不含 preamble/SFD；若有 802.1Q tag、不同标准或题设口径，必须以题目为准。
+
+MAC 地址第一个字节中的 I/G 位区分 individual 与 group，广播地址是全 1。交换机的“未知单播泛洪”是转发动作，不会把该帧的目的地址改成广播地址。
+
+\subsection{IEEE 802.11：BSS/ESS 与四地址问题}
+
+最小无线管理单元是 BSS。基础设施模式下，station（STA）通过 access point（AP）接入 distribution system；多个经分布系统互联的 BSS 可形成 ESS。AP 既参与无线介质访问，也完成无线侧与分布系统侧的交接，不应仅把它画成“无线 hub”。
+
+802.11 帧的地址语义取决于 To DS/From DS 方向位：除了无线发送者与接收者，还可能同时需要原始 source、最终 destination 与 BSSID，因此数据帧可出现最多四个地址字段。408 解题的稳健方法不是死背 Address 1--4，而是先写四种角色：
+\[
+\boxed{\text{RA},\ \text{TA},\ \text{SA},\ \text{DA}}
+\]
+再依据是否进入/离开 distribution system 映射到字段。无线逐帧 ACK 确认的是当前无线单跳接收，不证明端到端应用交付。
+
+\section{Ethernet
+switch：状态从源地址学习，动作由目的地址决定}\label{7-ethernet-switchux72b6ux6001ux4eceux6e90ux5730ux5740ux5b66ux4e60ux52a8ux4f5cux7531ux76eeux7684ux5730ux5740ux51b3ux5b9a}
+
+交换机维护近似如下的软状态：
+
+\[
+(MAC,\ ingress\ port,\ age).
+\]
+
+每收到一帧，执行两阶段逻辑：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Learn from source}：记录源 MAC 从哪个端口到达；
+\item
+  \textbf{Act on destination}：查询目的 MAC。
+\end{enumerate}
+
+目的地址查表后的分支：
+
+\begin{itemize}
+\tightlist
+\item
+  命中其他端口：定向转发；
+\item
+  命中入端口：过滤；
+\item
+  未知单播：向除入端口外的相关端口泛洪；
+\item
+  广播：在当前广播域/VLAN 内泛洪。
+\end{itemize}
+
+表项会老化，因为主机可能移动、拓扑可能变化。MAC table
+是从流量观察得到的局部软状态，不是路由协议生成的全网路径。
+
+\section{环路、STP 与 VLAN}\label{8-ux73afux8defstp-ux4e0e-vlan}
+
+\subsection{为什么二层环路危险}\label{81-ux4e3aux4ec0ux4e48ux4e8cux5c42ux73afux8defux5371ux9669}
+
+Ethernet frame 没有像 IP TTL
+那样的逐跳寿命字段。冗余链路形成环路后，广播和未知单播可能被无限复制，源地址还会从不同端口反复出现，造成
+broadcast storm 和 MAC table instability。
+
+STP
+的核心不是``删除物理冗余''，而是从有环物理图中选择一棵无环的逻辑转发拓扑；故障时再重新计算。它用部分链路闲置和收敛时间换取无环不变量。
+
+\subsection{VLAN
+改变广播作用域}\label{82-vlan-ux6539ux53d8ux5e7fux64adux4f5cux7528ux57df}
+
+VLAN 把一个物理交换网络切成多个逻辑二层广播域。Access link
+把端口归入一个 VLAN；Trunk link 用 802.1Q tag 在交换机之间携带 VLAN
+身份。
+
+802.1Q 在 Ethernet 的 Source MAC 与原 Type/Length 之间插入 4 B tag：2 B TPID 标明 tagged frame，2 B TCI 携带 priority、DEI 与 12-bit VLAN ID；原 Type/Length 随后保留。因而 tagged frame 比相同 payload 的 untagged frame 多 4 B，帧长计算与设备是否识别 tag 必须按题设口径处理。Access 端口面向终端时通常收发 untagged frame 并由端口配置归属 VLAN；trunk 在链路上携带多个 VLAN 身份，但 native/untagged 等具体行为服从题设。
+
+不同 VLAN 之间不能只靠二层交换互通，需要三层转发。VLAN
+隔离的是逻辑广播域，不等于完整的安全策略。
+
+\section{PPP：点到点封装与配置状态机}
+
+PPP 面对的不是“谁抢介质”，而是“两个已知 peer 怎样在一条点到点链路上协商可用封装，并复用多个网络层协议”。因此它没有 Ethernet 式目的/源 MAC 学习，也不需要 CSMA。
+
+\subsection{帧字段与透明传输}
+
+经典 HDLC-like PPP 帧为：
+\[
+\boxed{\text{Flag}\mid\text{Address}\mid\text{Control}\mid\text{Protocol}
+\mid\text{Information}\mid\text{FCS}\mid\text{Flag}}.
+\]
+Flag 为 \code{0x7E}；Address 通常固定为 \code{0xFF}，Control 通常固定为 \code{0x03}，它们不是逐帧目的/源身份；Protocol 区分承载的网络层、NCP 或 LCP；Information 默认 MRU 为 1500 B，可协商；FCS 默认 16 bit，也可协商 32 bit。FCS 覆盖 Address 到 Information/Padding，不覆盖 Flag，也不覆盖为透明传输插入的位或字节。
+
+异步链路对 Flag、Escape 及协商控制字符做字节转义；比特同步链路使用零比特填充。接收端先恢复透明表示，再按规定范围验 FCS。PPP 提供检错并丢弃坏帧，但经典 PPP 本身不提供序号、确认、流量控制或可靠重传。
+
+\subsection{LCP 与 NCP：先建立链路，再开放网络层}
+
+PPP 的状态不是一条无条件直线，而是带失败出口的分层协商：
+\[
+\text{Dead}\xrightarrow{\text{physical Up}}
+\text{Establish(LCP)}\to
+\text{Authenticate?}\to
+\text{Network(NCP)}\to
+\text{Open}\to\text{Terminate}\to\text{Dead}.
+\]
+LCP 只协商与具体网络层协议无关的链路选项，例如 MRU、认证协议、魔数及字段压缩；双方各自发送 Configure-Request，并在收到可接受配置时回应 Configure-Ack，拒绝或建议修改时进入 Nak/Reject 后重试。认证默认不是必经阶段，只有 LCP 已协商认证协议时才进入。NCP 再分别配置要承载的网络层协议；一个 NCP 打开后，对应协议的数据报才可交换。
+
+所以 \code{Protocol} 字段回答“这一帧属于哪个上层或控制协议”，LCP/NCP 状态回答“该协议此刻是否获准通过”。物理载波存在不等于 PPP 已 Open，LCP Open 也不等于每个网络层协议都已配置完成。
+
+\section{408 协议流程：逐事件维护链路状态}
+
+\subsection{Framing 与 CRC}
+
+发送方先确定 payload，对协议规定的原始帧体计算并附加 FCS，再对需要透明承载的帧体执行 stuffing；接收方先 destuff 恢复原始帧体，再检查 FCS：
+\[
+\boxed{\text{Payload}\to\text{Append FCS}\to\text{Stuff}\to\text{Transmit}
+\to\text{Destuff}\to\text{Check FCS}\to\text{Deliver/Discard}}.
+\]
+CRC 题必须记录生成多项式次数、补零位数、模 2 除法余数和接收端检验结果。余数为零只说明没有检测到错误，不证明物理传输绝对正确。若题设另行规定 FCS 覆盖范围或处理顺序，以该协议定义为准。
+
+\subsection{ALOHA 与 CSMA/CD}
+
+纯 ALOHA 发送后等待成功反馈或超时，失败后随机退避；时隙 ALOHA 还必须等到时隙边界。经典 CSMA/CD 的状态链为：
+\[
+\text{Sense}\to
+\begin{cases}
+\text{busy: defer},\\
+\text{idle: transmit and keep listening}
+\end{cases}
+\to
+\begin{cases}
+\text{no collision: success},\\
+\text{collision: jam}\to\text{binary backoff}\to\text{retry}.
+\end{cases}
+\]
+尝试次数改变退避窗口，但最大重试次数和具体常数服从题设；全双工交换式 Ethernet 不进入该流程。
+
+\subsection{CSMA/CA 与 WLAN ACK}
+
+经典 802.11 教材流程为：信道空闲 DIFS 后进入随机 backoff；计数器只在空闲时递减，忙时冻结；归零后发送 DATA；接收方等待 SIFS 后回 ACK。未收到 ACK 时发送方按冲突/丢失处理并扩大退避窗口。启用 RTS/CTS 时，在 DATA 前增加 `RTS -> SIFS -> CTS`，其他站据 Duration 设置 NAV；RTS/CTS 是可选分支，不是每帧固定步骤。
+
+\subsection{交换机、VLAN 与 PPP}
+
+交换机每收到 frame 都先用 source MAC 更新 `(MAC, port, age)`，再以 destination MAC 执行过滤、定向转发或泛洪。VLAN 题还要把 ingress VLAN、access/trunk 与 tag 状态加入表项，禁止跨 VLAN 直接二层转发。
+
+PPP 只在点到点链路上建立 framing/封装接口，不承担共享介质竞争。帧题按 \code{Flag--A--C--Protocol--Information--FCS--Flag} 解析；状态题先检查 physical Up，再逐层检查 LCP、可选 authentication 与对应 NCP。题设未说明认证时不得把 PAP/CHAP 写成固定必经步骤；题设只问经典能力边界时，应明确“可检错，不负责可靠重传”。
+
+\section{计算与状态核验：把“介质访问”变成可验算的事件账本}
+
+\subsection{ALOHA：负载、易受攻击时间与反向验算}
+
+设固定帧传输时间为 $T_0$，$G$ 表示每个 $T_0$ 内的平均尝试次数（包含重传），$S$ 表示每个 $T_0$ 内的平均成功帧数。泊松试探假设下：
+\[
+\begin{aligned}
+\text{Pure ALOHA:}\quad &T_v=2T_0, & S&=G e^{-2G}, & S_{\max}&=\frac1{2e}\quad(G=\tfrac12);\\
+\text{Slotted ALOHA:}\quad &T_v=T_0, & S&=G e^{-G}, & S_{\max}&=\frac1e\quad(G=1).
+\end{aligned}
+\]
+若题目给的是每秒尝试率 $\lambda$，先换成 $G=\lambda T_0$；若要恢复每秒成功帧数，再用 $S/T_0$ 还原量纲。单次尝试成功概率为 $p=e^{-G}$（时隙）或 $p=e^{-2G}$（纯 ALOHA），首发成功的平均总发送次数是 $E[N]=1/p$；重传次数则为 $1/p-1$。“最优吞吐翻倍”只比较两者各自最优负载，同一 $G$ 下不一定是 2 倍。
+
+\subsection{CSMA/CD：争用期、JAM 与截断退避}
+
+最大单向传播时延为 $\tau$，则最坏碰撞返回需要 $2\tau$。发送站必须在这段时间内仍然处于发送态：
+\[
+T_f=\frac{L}{R}\ge 2\tau,\qquad L_{\min}=2\tau R.
+\]
+碰撞后不是立刻静默，而是发送 JAM 强化信号使远端也能判定异常，以后再按时隙 $2\tau$ 执行截断二进制指数退避：
+\[
+k=\min(\text{collision count},10),\quad r\in\{0,\ldots,2^k-1\},\quad T_{backoff}=r(2\tau).
+\]
+连续 16 次失败后丢弃帧并向上报错；新帧重新计数，协议不保证老帧一定比新帧先发。设 $a=\tau/T_0$，$a$ 越大则碰撞浪费在一次发送中占比越高；常用近似判断是 $\eta\approx1/(1+5a)$，但题目给出的具体模型优先于记忆公式。
+
+\subsection{CSMA/CA：从 DIFS 到 ACK 的时间账}
+
+基本 DCF 流程为“传输结束后等 DIFS $\to$ 退避计数只在空闲时减少 $\to$ DATA $\to$ 接收方等 SIFS $\to$ ACK”。以下事件可用于逐段计时：
+\[
+T_{basic}=DIFS+T_{backoff}+T_{DATA}+SIFS+T_{ACK}.
+\]
+忙时冻结 backoff counter，不是重新清零；成功后按新帧重新选择。启用 RTS/CTS 时：
+\[
+T_{RTS/CTS}=DIFS+T_{backoff}+T_{RTS}+SIFS+T_{CTS}+SIFS+T_{DATA}+SIFS+T_{ACK}.
+\]
+从 RTS 结束后算起的 NAV 为 $SIFS+T_{CTS}+SIFS+T_{DATA}+SIFS+T_{ACK}$；从 CTS 结束后算起的 NAV 为 $SIFS+T_{DATA}+SIFS+T_{ACK}$。RTS/CTS 用短控制帧承受碰撞风险，以免长 DATA 帧碰撞；小帧场景可能不值得支付这个控制开销。
+
+\subsection{Ethernet 帧、交换容量与 VLAN 标签}
+
+经典 Ethernet 帧长通常按 Destination(6)+Source(6)+Type/Length(2)+Data/Pad(46--1500)+FCS(4) 计算：
+\[
+L_{frame}\in[64,1518]\,\mathrm{B},\qquad L_{tagged}=L_{frame}+4\,\mathrm{B}\in[68,1522]\,\mathrm{B}.
+\]
+题目若把 Preamble/SFD 也计入线上占用，再另加 8 B；不能把不同口径混成一个“固定帧长”。交换机转发容量要看端口是否并行、是否缓存、出入速率是否匹配：$N$ 个独立 $R$ 端口可形成约 $NR$ 的总交换能力，但一个出口仍只能按自身速率串行，出口竞争需由缓存承受。直通交换可在读到目的 MAC 后开始转发，但不能在需要速率匹配、协议转换或必须检 FCS 时取代存储转发。
+
+802.1Q 的 TPID=\code{0x8100}，TCI 中 VID 占 12 bit；常用可用 VID 为 1--4094，0 与 4095 保留。标签插入后 FCS 必须重算；Access 端口通常对终端无标签，Trunk 携带多 VLAN 标识，跨 VLAN 通信必须转入三层。
+
+\subsection{HDLC 与 PPP：同样透明，不同可靠性责任}
+
+HDLC 已不在 2026 计算机网络大纲列出的广域网核心项中；本节点作为 PPP 的对照 Extension 保留，用于解释“相似帧骨架为何承担不同责任”，不把控制字段位级编码列为当前背诵要求。
+
+HDLC 帧可按 Flag--Address--Control--Information--FCS--Flag 记忆。Control 中的 I 帧承载数据并携带序号/ACK 状态，S 帧承担监督与流量/错误控制，U 帧承担链路管理。其透明传输用零比特填充：标志序列中的连续 5 个 1 后插入 0，接收端还原时删除。
+
+PPP 复用类似的 Flag/FCS 框架但用 Protocol 字段和 LCP/NCP 协商来开放上层，经典 PPP 本身不提供 I 帧式序号、ACK 和链路重传。因此“两者都能检错”不等于“两者都提供可靠传输”。
+
+\section{来源覆盖附录：NET-02 逐 Source 核销}
+
+\begingroup\small
+\begin{handbooktable}{L{4.0cm} L{3.0cm} Y}
+\toprule
+Source & 本册承接节点 & 核销结论\\
+\midrule
+\texttt{datalink/framing} & 成帧/透明传输 & 四种组帧、MTU、stuffing 与可逆还原已展开\\
+\texttt{datalink/error-detection} & CRC/检错 & 模 2 运算、FCS 边界与检错非恢复已展开\\
+\texttt{datalink/hamming-code} & 码距/海明码 & $d_{min}$、$2^r\ge m+r+1$、syndrome 与 SEC--DED 已展开\\
+\texttt{datalink/aloha} & ALOHA 吞吐 & $T_v$、$S=Ge^{-2G}/Ge^{-G}$、最优负载与量纲还原已展开\\
+\texttt{datalink/csma-cd} & 碰撞与退避 & $2\tau$、最小帧、JAM、截断二进制退避与 $a$ 已展开\\
+\texttt{datalink/csma-ca} & 无线争用 & DIFS/SIFS、退避冻结、ACK、RTS/CTS 与 NAV 账已展开\\
+\texttt{datalink/token-passing} & 受控接入 & 轮询/令牌权限、环时延、最坏等待与维护代价已展开\\
+\texttt{datalink/ethernet} & Ethernet/MAC & 帧字段、MAC 作用域、冲突/广播域与适配器边界已展开\\
+\texttt{datalink/switch-learning} & 交换机 & CAM/老化、先学源后查目的、三种动作、STP 与 cut-through 已展开\\
+\texttt{datalink/vlan} & 802.1Q/VLAN & VID、TPID/TCI、FCS/帧长、Access/Trunk 与跨 VLAN 路由已展开\\
+\texttt{datalink/wireless-lan} & 802.11 WLAN & BSS/ESS、AP、四地址、NAV、隐藏/暴露站已展开\\
+\texttt{datalink/ppp} & PPP & 帧字段、字节/比特填充、LCP/NCP、MRU/FCS 与能力边界已展开\\
+\texttt{datalink/hdlc} & HDLC & I/S/U 帧、零比特填充、序号/监督与 PPP 差异已展开\\
+\bottomrule
+\end{handbooktable}
+\endgroup
+
+\section{概念边界}\label{9-ux6982ux5ff5ux8fb9ux754c}
+
+\begin{longtable}[]{@{}lclll@{}}
+\toprule\noalign{}
+概念 A & ≠ & 概念 B & 真正区别与题目信号 & 混淆后果 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Hub & ≠ & Switch & Hub 复制 signal；switch 解析 frame 并学习 MAC &
+冲突域和带宽计算错误 \\
+Collision domain & ≠ & Broadcast domain &
+前者是可能碰撞的共享发送范围；后者是二层广播可达范围 & 误判
+switch、VLAN、router 的隔离能力 \\
+Source learning & ≠ & Destination forwarding &
+源地址更新表；目的地址决定动作 & 把学习方向写反 \\
+Error detection & ≠ & Reliable delivery & CRC 发现异常；ACK/Timer/Seq
+才构成恢复闭环 & 认为有 CRC 就保证到达 \\
+CSMA/CD & ≠ & CSMA/CA & 有线检测冲突；无线主要避免并用 ACK 判断结果 &
+把最小帧长或 RTS/CTS 套错环境 \\
+MAC address & ≠ & IP address & MAC 服务当前链路；IP 服务跨网络转发 &
+认为目的 MAC 端到端不变 \\
+Physical topology & ≠ & Logical forwarding topology &
+物理可有冗余环；STP 选择无环活动路径 & 无法解释``链路存在但阻塞'' \\
+PPP Address & ≠ & Ethernet MAC & PPP 的 Address 通常是固定全站地址；Ethernet MAC 标识当前链路接口/组 & 在点到点链路上虚构 MAC 学习 \\
+Error correction & ≠ & Retransmission & 前者由冗余码从收到的码字定位恢复；后者靠 ACK/Timer 再发 & 看到海明码或 CRC 就默认存在 ARQ \\
+\end{longtable}
+
+\section{代价与权衡}\label{10-ux4ee3ux4ef7ux4e0eux6743ux8861}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+设计 & 能力 & 代价 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Shared Ethernet & 低成本共享介质 & 冲突、半双工、规模受 \(2\tau\)
+约束 \\
+Switched Ethernet & 每端口独立转发、可全双工 &
+交换状态、缓冲与环路控制 \\
+VLAN & 逻辑广播域隔离 & 标签、配置与跨 VLAN 路由 \\
+STP & 冗余物理拓扑下保持二层无环 & 部分路径闲置与收敛时间 \\
+RTS/CTS & 缓解隐藏站和长帧碰撞成本 & 额外握手，不适合所有小帧 \\
+Polling/Token & 重载下无碰撞且可控制公平性 & 权限传递、等待与控制故障恢复 \\
+PPP & 点到点多协议封装与协商 & 不提供 MAC 多点寻址和可靠重传 \\
+\end{longtable}
+
+\section{做题调用协议}\label{11-ux505aux9898ux8c03ux7528ux534fux8bae}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  先定场景：共享/交换、半双工/全双工、有线/无线；
+\item
+  标出当前作用域：冲突域、广播域还是 VLAN；
+\item
+  区分输入对象是 signal、frame、packet 还是 table entry；
+\item
+  交换机题固定写``源学习、目的决策''；
+\item
+  CSMA/CD 题先画最远冲突往返时间线，再写 \(L/R\ge2\tau\)；
+\item
+  无线题问清物理侦听、NAV、退避、ACK、RTS/CTS 各自解决什么；
+\item
+  跨路由器时停止沿用当前 MAC，转入 IP next-hop 模型。
+\item
+  编码题先由 $d_{\min}$ 判能力，再由 $2^r\ge m+r+1$ 判海明校验位数，最后算 syndrome；
+\item
+  PPP 题分开记录帧字段、LCP 链路状态与各 NCP 状态，不能用“物理已连接”替代“协议已 Open”。
+\end{enumerate}
+
+\section{贯穿母例：同一 packet
+经过交换机和路由器}\label{12-ux8d2fux7a7fux6bcdux4f8bux540cux4e00-packet-ux7ecfux8fc7ux4ea4ux6362ux673aux548cux8defux7531ux5668}
+
+主机 A 发送给异网段主机 B：
+
+\begin{lstlisting}
+A 查路由：目的不在本地 subnet
+-> ARP 默认网关，得到 R1 入接口 MAC
+-> frame(MAC_A -> MAC_R1) 承载 packet(IP_A -> IP_B)
+-> switch 从源 MAC_A 学习端口，按 MAC_R1 转发
+-> R1 删除旧 frame，查 IP 转发表
+-> R1 对下一跳重新解析/使用 MAC
+-> 新 frame(MAC_R1_out -> MAC_next) 继续承载该 packet
+\end{lstlisting}
+
+在无 NAT 等中间改写时，packet 的端点 IP 语义贯穿路径；frame 的 MAC
+只跨一跳。这个母例是\href{../60_综合专题/README.md}{一个网络请求的一生}的局部片段。
+
+\section{高频 First
+Divergence}\label{13-ux9ad8ux9891-first-divergence}
+
+\begin{itemize}
+\tightlist
+\item
+  交换机收到帧后先看目的 MAC 学习：把状态来源写反；
+\item
+  未知单播说成``广播帧''：混淆 frame 类型与交换动作；
+\item
+  认为 switch 隔离广播域：没有区分端口微分段与 VLAN；
+\item
+  在全双工交换 Ethernet 中继续计算 collision：没有检查介质共享前提；
+\item
+  ARP 目的 IP 直接写远端主机：没有先判断 same subnet；
+\item
+  把 CRC 说成纠错或可靠送达：没有建立检测与恢复的责任边界。
+\item
+  由 PPP 的 Address 字段推出 MAC 寻址：没有识别点到点链路的固定字段语义；
+\item
+  把 LCP 完成当成 IP 已可用：没有继续检查认证分支与对应 NCP；
+\item
+  海明码 syndrome 非零就无条件翻转：没有先检查题设的错误上限与是否有总奇偶校验位。
+\end{itemize}
+
+\section{一页压缩与复原问题}\label{14-ux4e00ux9875ux538bux7f29ux4e0eux590dux539fux95eeux9898}
+
+\[
+\boxed{
+\text{Frame the bits}
+\to \text{Detect corruption}
+\to \text{Acquire medium}
+\to \text{Learn source}
+\to \text{Forward by destination}
+}
+\]
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  为什么传播时延会让``先听后发''仍然冲突？
+\item
+  最小帧长为什么本质上是可观测性条件？
+\item
+  交换机为什么从 source 学、却按 destination 转？
+\item
+  为什么二层环路比普通重复转发更危险？
+\item
+  VLAN、交换机端口和路由器分别改变哪个作用域？
+\item
+  为什么 $d_{\min}=3$ 足以纠一位错，却不足以可靠识别所有双错？
+\item
+  轮询与令牌分别把发送权存在哪里，哪个故障会破坏“唯一权限”不变量？
+\item
+  PPP 为什么既有 Address 字段又不需要 Ethernet 式 MAC 寻址？
+\end{enumerate}
+
+\section{来源与校正说明}\label{15-ux6765ux6e90ux4e0eux6821ux6b63ux8bf4ux660e}
+
+\begin{itemize}
+\tightlist
+\item
+  归档笔记《链路层-介质访问控制》《链路层-局域网与广域网》《物理层-传输媒体与设备》提供旧考点覆盖；
+\item
+  原笔记中的设备、PPP、NAT、路由内容已按 Owner
+  拆分，未因旧文件名继续混放；
+\item
+  本册保留 408 的经典共享 Ethernet 与 WLAN
+  模型，并显式区分现代交换式全双工场景。
+\item
+  PPP 帧与阶段边界依据 RFC 1661、RFC 1662 校正；Ethernet/WLAN 只保留 408 可调用的体系结构与字段语义，不展开标准实现扩展。
+\end{itemize}
+\end{document}

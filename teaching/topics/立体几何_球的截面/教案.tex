@@ -1,0 +1,140 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 公共专题教案：立体几何：球的截面}
+\rhead{\small 教师版}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 立体几何：球的截面专题教案}\\[0.3em]
+  {\large 公共专题课：截面是圆，半径靠距离，直径给直角}\\[0.3em]
+  {\small 课时：120 分钟}
+\end{center}
+
+\section{章节定位与节奏}
+
+\begin{teachbox}{本章不做基础题}
+本章从中档模型题起步，目标不是让学生机械记忆球截面公式，而是让学生形成稳定的三步反应：
+\[
+  \boxed{
+    \text{识别截面圆}
+    \rightarrow
+    \text{找球心到截面平面的距离}
+    \rightarrow
+    \text{用直角三角形收束}
+  }
+\]
+第三题再引入“球的直径给直角”，把球面性质与三棱锥体积结合。
+\end{teachbox}
+
+\begin{teachbox}{120 分钟安排}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{p{3.2cm}p{2.2cm}X}
+\toprule
+环节 & 时间 & 教学目的 \\
+\midrule
+模型导入 & 15 分钟 & 画出球心、截面圆心、截面圆上一点，说明 $R^2=r^2+d^2$ 的来源。 \\
+第 1 题 & 18 分钟 & 从面积比翻译到半径比，固定公式入口。 \\
+第 2 题 & 32 分钟 & 训练“球心到侧面距离”降维到底面内点到线距离。 \\
+第 3 题 & 38 分钟 & 用直径性质读出直角，再用坐标稳求棱锥高。 \\
+复盘与改数 & 15 分钟 & 三句话回收：截面是圆；半径靠距离；直径给直角。 \\
+\bottomrule
+\end{tabularx}
+\end{teachbox}
+
+\section{模型讲解}
+
+\begin{teachbox}{球的截面}
+用平面截球，所得截面是圆。若截面过球心，截面圆叫大圆；否则叫小圆。
+
+连接球心 $O$ 与截面圆圆心 $O_1$，则 $OO_1$ 垂直于截面平面。
+
+任取截面圆上一点 $P$，在直角三角形 $OO_1P$ 中，
+\[
+  OP^2=OO_1^2+O_1P^2.
+\]
+也就是
+\[
+  R^2=d^2+r^2.
+\]
+\begin{center}
+  \qSolidSphereSectionRatioFigure[1.1]
+\end{center}
+\end{teachbox}
+
+\newpage
+\section{核心题组}
+
+\teachquestionheader{球截面面积比}
+{\small \qSolidSphereSectionRatioStem}
+\begin{center}
+  \qSolidSphereSectionRatioFigure
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qSolidSphereSectionRatioAnswer}
+\teachblock{标准解答}{\qSolidSphereSectionRatioSolution}
+\switchcolumn
+\teachblock{学生问题}{\qSolidSphereSectionRatioDiagnosis}
+\teachblock{课堂处理 / 追问 / 落实建议}{\begin{itemize}[leftmargin=1.5em] \qSolidSphereSectionRatioTeachingNotes \end{itemize}}
+\end{paracol}
+
+\par\vspace{1.0em}\noindent{\color{rulecolor}\hrule height 0.4pt}\par\vspace{1.0em}
+
+\teachquestionheader{直四棱柱侧面截球}
+{\small \qSolidPrismSphereSectionStem}
+\begin{center}
+  \qSolidPrismSphereSectionFigure[1.1]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qSolidPrismSphereSectionAnswer}
+\teachblock{标准解答}{\qSolidPrismSphereSectionSolution}
+\switchcolumn
+\teachblock{学生问题}{\qSolidPrismSphereSectionDiagnosis}
+\teachblock{课堂处理 / 追问 / 落实建议}{\begin{itemize}[leftmargin=1.5em] \qSolidPrismSphereSectionTeachingNotes \end{itemize}}
+\end{paracol}
+
+\newpage
+
+\teachquestionheader{球直径约束下的三棱锥体积}
+{\small \qSolidPyramidDiameterVolumeStem}
+\qSolidPyramidDiameterVolumeOptions
+\begin{center}
+  \qSolidPyramidDiameterVolumeFigure[1.1]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{\qSolidPyramidDiameterVolumeAnswer}
+\teachblock{标准解答 / 多解法}{\qSolidPyramidDiameterVolumeSolution}
+\switchcolumn
+\teachblock{学生问题}{\qSolidPyramidDiameterVolumeDiagnosis}
+\teachblock{课堂处理 / 追问 / 落实建议}{\begin{itemize}[leftmargin=1.5em] \qSolidPyramidDiameterVolumeTeachingNotes \end{itemize}}
+\end{paracol}
+
+\section{课堂总结}
+
+\begin{teachbox}{本讲收束}
+本章三题的顺序不能打乱。
+
+第一题负责把公式讲清楚；第二题负责把截面公式放进棱柱侧面中，训练距离降维；第三题负责把球面直径性质和棱锥体积结合起来。
+
+学生最后必须能说出三句话：
+\[
+  \boxed{
+    \text{截面是圆}
+    \quad
+    \text{半径靠距离}
+    \quad
+    \text{直径给直角}
+  }
+\]
+\end{teachbox}
+
+\end{document}

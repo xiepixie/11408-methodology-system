@@ -1,0 +1,49 @@
+% =====================================================
+% 题型：三角恒等式证明与余弦和最值解答题 (q_triangle_trig_proof_max.tex)
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qTriangleTrigProofMaxStem}{在 \(\triangle ABC\) 中，求证：\(\cos A+\cos B=2\cos\dfrac{A+B}{2}\cos\dfrac{A-B}{2}\)，并在给定内角和约束下讨论 \(\cos A+\cos B\) 的最大值及等号成立条件。}
+
+\newcommand{\qTriangleTrigProofMaxAnswer}{证明见解析；最大值问题需结合题面完整约束确定。}
+
+\newcommand{\qTriangleTrigProofMaxSolution}{%
+  【恒等式证明】\\
+  由和差角公式：
+  \[
+    \cos A=\cos\left(\frac{A+B}{2}+\frac{A-B}{2}\right),
+  \]
+  \[
+    \cos B=\cos\left(\frac{A+B}{2}-\frac{A-B}{2}\right).
+  \]
+  分别展开并相加：
+  \[
+    \cos A+\cos B
+    =2\cos\frac{A+B}{2}\cos\frac{A-B}{2}.
+  \]
+
+  在三角形中 \(A+B=\pi-C\)，因此还可写成
+  \[
+    \cos A+\cos B
+    =2\sin\frac C2\cos\frac{A-B}{2}.
+  \]
+  因为
+  \[
+    \left|\cos\frac{A-B}{2}\right|\le1,
+  \]
+  所以在 \(C\) 固定时，
+  \[
+    \cos A+\cos B\le2\sin\frac C2,
+  \]
+  且当且仅当 \(A=B\) 时取等号。
+
+  若题目还要求在 \(C\) 也可变化时求全局最大值，则必须结合完整题面中的角范围、边长或其他约束继续优化，不能只凭“等边三角形”直接下结论。%
+}
+
+\newcommand{\qTriangleTrigProofMaxDiagnosis}{%
+  高频错误是把待证的和差化积公式当作已知结论直接反向使用，形成证明循环；另一个问题是求最值时只写“等边时最大”，却不给出不等式链与等号条件。%
+}
+
+\newcommand{\qTriangleTrigProofMaxTeachingNotes}{%
+  讲评时应把“证明恒等式”和“使用恒等式求最值”严格分开。证明阶段只允许从和差角公式出发；最值阶段再用 \(|\cos x|\le1\) 并明确等号成立条件。%
+}

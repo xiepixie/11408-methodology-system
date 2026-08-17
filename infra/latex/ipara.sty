@@ -1,0 +1,14 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ipara}[2026/08/16 Thin compatibility shim for the Lesson legacy implementation]
+
+% Stable compatibility surface only. The historical Lesson implementation is
+% quarantined under legacy/ while ipara-lesson.cls is evolved through real
+% Lesson regression gates. New cross-family primitives belong in ipara-core.sty,
+% not in this shim or the legacy implementation.
+\InputIfFileExists{infra/latex/legacy/ipara-legacy.sty}{}{%
+  \InputIfFileExists{legacy/ipara-legacy.sty}{}{%
+    \PackageError{ipara}{Missing infra/latex/legacy/ipara-legacy.sty}{Restore the legacy Lesson implementation before compiling historical Lesson sources.}%
+  }%
+}
+
+\endinput

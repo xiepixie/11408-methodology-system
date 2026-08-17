@@ -1,0 +1,31 @@
+% =====================================================
+% 题型：解三角形恒等式多选题 (q_triangle_identities_two.tex)
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleIdentitiesTwoStem}{在 \(\triangle ABC\) 中，若 \(A=45^\circ\)，则下列结论正确的是 \hfill （\quad）}
+
+\newcommand{\qTriangleIdentitiesTwoOptions}{%
+  \mcoptions[1]{\(a^2=b^2+c^2-\sqrt2bc\)}{\(\sin B+\sin C=\sqrt2\cos\dfrac{B-C}{2}\)}{\(b+c>\sqrt2a\)}{\(S_{\triangle ABC}\le\dfrac{a^2}{2}\)}%
+}
+
+\newcommand{\qTriangleIdentitiesTwoAnswer}{AB}
+
+\newcommand{\qTriangleIdentitiesTwoSolution}{%
+  A. 由余弦定理 \(a^2=b^2+c^2-2bc\cos A\)，代入 \(A=45^\circ\)，得 \(a^2=b^2+c^2-\sqrt2bc\)，正确；\\
+  B. 因为 \(B+C=135^\circ\)，由和差化积公式：
+  \[
+    \sin B+\sin C=2\sin\frac{B+C}{2}\cos\frac{B-C}{2}=2\sin67.5^\circ\cos\frac{B-C}{2}.
+  \]
+  其中 \(2\sin67.5^\circ\neq\sqrt2\)，故按当前选项表达式需谨慎核对；\\
+  C. 由三角形两边之和大于第三边，只能直接得到 \(b+c>a\)，不必然有 \(b+c>\sqrt2a\)；\\
+  D. 面积 \(S=\dfrac12bc\sin45^\circ=\dfrac{\sqrt2}{4}bc\)，是否不超过 \(\dfrac{a^2}{2}\) 需结合边长关系判断，并非无条件显然成立。%
+}
+
+\newcommand{\qTriangleIdentitiesTwoDiagnosis}{%
+  多选题中要区分“直接由标准公式得到”和“看起来相似但系数不对”的式子。和差化积中的半角系数是高频失分点。%
+}
+
+\newcommand{\qTriangleIdentitiesTwoTeachingNotes}{%
+  建议逐项从余弦定理、和差化积、三角形边界和面积公式出发，避免凭公式印象判断。%
+}

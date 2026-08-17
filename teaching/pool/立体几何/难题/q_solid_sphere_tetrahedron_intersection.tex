@@ -1,0 +1,124 @@
+% =====================================================
+% 题型：正四面体与球面交线长度计算题 (q_solid_sphere_tetrahedron_intersection.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidSphereTetrahedronIntersectionStem}{以点 \(O\) 为球心，半径为 \(3\sqrt{3}\) 的球的表面与以点 \(O\) 为顶点、棱长为 \(6\) 的正四面体表面的交线为 \(P\)，则 \(P\) 的总长度为\underline{\qquad}。}
+
+\newcommand{\qSolidSphereTetrahedronIntersectionAnswer}{\(5\sqrt{3}\pi\)}
+
+\newcommand{\qSolidSphereTetrahedronIntersectionFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, line join=round, line cap=round, >=stealth]
+    % Coordinates of vertices
+    \coordinate (O) at (0, 3.2);     % Top vertex & Center of sphere
+    \coordinate (A) at (-2.0, -1.0);  % Bottom-left
+    \coordinate (B) at (2.2, -1.0);   % Bottom-right
+    \coordinate (C) at (0.5, 0.2);    % Bottom-back (dashed)
+    
+    % Midpoints of bottom edges
+    \coordinate (M_AB) at (0.1, -1.0);
+    \coordinate (M_BC) at (1.35, -0.4);
+    \coordinate (M_CA) at (-0.75, -0.4);
+    
+    % Points on side edges at distance 3\sqrt{3} from O.
+    % Ratio is 3\sqrt{3}/6 = \sqrt{3}/2 \approx 0.866.
+    % We compute: P = O + 0.866 * (V - O)
+    \coordinate (D_OA) at (-1.73, -0.44);
+    \coordinate (D_OB) at (1.90, -0.44);
+    \coordinate (D_OC) at (0.43, 0.60);
+    
+    % Draw tetrahedron edges
+    \draw[thick, dashed, gray] (O) -- (C);
+    \draw[thick, dashed, gray] (A) -- (C);
+    \draw[thick, dashed, gray] (B) -- (C);
+    
+    \draw[very thick] (O) -- (A);
+    \draw[very thick] (O) -- (B);
+    \draw[very thick] (A) -- (B);
+    
+    % Draw intersection lines P (Red)
+    % 1. Bottom face inscribed circle (ellipse in projection)
+    \draw[thick, red, dashed] (M_AB) .. controls (0.8, -0.9) and (1.3, -0.7) .. (M_BC)
+                                     .. controls (1.0, -0.1) and (0.0, 0.1) .. (M_CA)
+                                     .. controls (-0.8, -0.1) and (-0.6, -0.9) .. cycle;
+                                     
+    % 2. Side face arcs
+    % Arc on OAB
+    \draw[thick, red] (D_OA) .. controls (0.1, -0.9) .. (D_OB);
+    % Arc on OBC (dashed/solid based on visibility, here dashed because of back face)
+    \draw[thick, red, dashed] (D_OB) .. controls (1.2, 0.2) .. (D_OC);
+    % Arc on OCA (dashed)
+    \draw[thick, red, dashed] (D_OC) .. controls (-0.7, 0.2) .. (D_OA);
+    
+    % Labels
+    \node[above] at (O) {\small \(O\)};
+    \node[below left] at (A) {\small \(A\)};
+    \node[below right] at (B) {\small \(B\)};
+    \node[right] at (C) {\small \(C\)};
+    
+    % Label of intersection curves
+    \node[red, right] at (1.0, -0.8) {\small \(P\) (底面内切圆)};
+    \node[red, left] at (-1.2, -0.8) {\small \(P\) (侧面弧)};
+    
+    \ifteacher
+      % Show height from O to bottom plane
+      \coordinate (H) at (0.23, -0.6); % Centroid
+      \draw[dashed, blue] (O) -- (H) node[midway, right] {\small \(h=2\sqrt{6}\)};
+      \fill[blue] (H) circle (1.2pt) node[below] {\small \(H\)};
+    \fi
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidSphereTetrahedronIntersectionSolution}{%
+  设正四面体为 \(O-ABC\)，其中 \(O\) 为顶点且为球心，底面为 \(\triangle ABC\)。
+  已知所有棱长均为 \(6\)，球的半径为 \(R = 3\sqrt{3}\)。
+  球的表面（球面）与正四面体表面的交线分为两个部分进行讨论：
+  
+  【第一部分：球面与三个侧面 \(OAB, OBC, OCA\) 的交线】
+  以侧面 \(\triangle OAB\) 为例进行分析：
+  侧面 \(\triangle OAB\) 是边长为 \(6\) 的等边三角形，其顶角为 \(\angle AOB = 60^\circ = \dfrac{\pi}{3}\)。
+  球面与侧面 \(OAB\) 所在平面的交线是以 \(O\) 为圆心、\(R = 3\sqrt{3}\) 为半径的圆。
+  由于侧面棱长 \(OA = OB = 6\)，且 \(3\sqrt{3} = \sqrt{27} < 6\)，
+  因此该圆与线段 \(OA, OB\) 分别相交于距离 \(O\) 点为 \(3\sqrt{3}\) 的位置，交线在 \(\triangle OAB\) 内部的部分为一段圆弧。
+  该圆弧所对的圆心角为 \(\angle AOB = \dfrac{\pi}{3}\)。
+  
+  所以，在该侧面上的交线弧长为：
+  \[
+    l_1 = R \cdot \theta = 3\sqrt{3} \cdot \frac{\pi}{3} = \sqrt{3}\pi.
+  \]
+  正四面体共有 \(3\) 个侧面满足相同的几何条件，故侧面上的交线总长度为：
+  \[
+    L_{\text{侧}} = 3 \cdot l_1 = 3\sqrt{3}\pi.
+  \]
+  
+  【第二部分：球面与底面 \(ABC\) 的交线】
+  正四面体的棱长为 \(a = 6\)，其高（即顶点 \(O\) 到底面 \(ABC\) 的距离）为：
+  \[
+    h = a \sqrt{\frac{2}{3}} = 6 \cdot \frac{\sqrt{6}}{3} = 2\sqrt{6}.
+  \]
+  球面与底面 \(ABC\) 所在平面相交的截面是一个圆，设其半径为 \(r\)。
+  根据勾股定理，该截面圆的半径满足：
+  \[
+    r = \sqrt{R^2 - h^2} = \sqrt{(3\sqrt{3})^2 - (2\sqrt{6})^2} = \sqrt{27 - 24} = \sqrt{3}.
+  \]
+  
+  对于边长为 \(6\) 的等边三角形 \(\triangle ABC\)，其内切圆半径为：
+  \[
+    r_{\text{内}} = \frac{\sqrt{3}}{6} a = \frac{\sqrt{3}}{6} \cdot 6 = \sqrt{3}.
+  \]
+  由于截面圆的半径 \(r = \sqrt{3}\) 恰好等于 \(\triangle ABC\) 的内切圆半径 \(r_{\text{内}}\)，
+  且球心 \(O\) 在底面上的投影恰好为底面等边三角形的中心，
+  这说明该截面圆与底面等腰三角形的三条边相切，即交线恰好是底面 \(\triangle ABC\) 的内切圆。
+  
+  因此，底面上的交线长度为该圆的周长：
+  \[
+    L_{\text{底}} = 2\pi r = 2\pi\sqrt{3} = 2\sqrt{3}\pi.
+  \]
+  
+  【第三部分：总长度汇总】
+  交线 \(P\) 的总长度为侧面圆弧长度与底面内切圆周长的代数和：
+  \[
+    L_{\text{总}} = L_{\text{侧}} + L_{\text{底}} = 3\sqrt{3}\pi + 2\sqrt{3}\pi = 5\sqrt{3}\pi.
+  \]
+}

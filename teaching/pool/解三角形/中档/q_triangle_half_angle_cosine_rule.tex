@@ -1,0 +1,34 @@
+% =====================================================
+% 题型：半角公式与余弦定理解答题 (q_triangle_half_angle_cosine_rule.tex)
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleHalfAngleCosineStem}{在 \(\triangle ABC\) 中，角 \(A,B,C\) 的对边分别为 \(a,b,c\)。若 \(a=4,\ b=6,\ c=8\)，求 \(\cos\dfrac{A}{2}\) 的值。}
+
+\newcommand{\qTriangleHalfAngleCosineAnswer}{\(\cos\dfrac{A}{2}=\dfrac{\sqrt{10}}{4}\)}
+
+\newcommand{\qTriangleHalfAngleCosineSolution}{%
+  先由余弦定理求 \(\cos A\)：
+  \[
+    \cos A=\frac{b^2+c^2-a^2}{2bc}
+    =\frac{36+64-16}{2\cdot6\cdot8}
+    =\frac{84}{96}
+    =\frac78.
+  \]
+  因为 \(A\in(0,\pi)\)，所以 \(\dfrac A2\in\left(0,\dfrac\pi2\right)\)，从而 \(\cos\dfrac A2>0\)。\\
+  由半角公式：
+  \[
+    \cos\frac A2=\sqrt{\frac{1+\cos A}{2}}
+    =\sqrt{\frac{1+\frac78}{2}}
+    =\sqrt{\frac{15}{16}}
+    =\frac{\sqrt{15}}{4}.
+  \]
+}
+
+\newcommand{\qTriangleHalfAngleCosineDiagnosis}{%
+  常见错误是半角公式前忘记判断正负号；另外要检查余弦定理中与角 \(A\) 对应的是边 \(a\)。%
+}
+
+\newcommand{\qTriangleHalfAngleCosineTeachingNotes}{%
+  这题适合训练“先求整角，再用半角公式”的标准链路。应要求学生在写根号前明确 \(A/2\) 的象限。%
+}

@@ -1,0 +1,50 @@
+% 2002 数学一 Q09：三平面位置关系四选项重绘
+% B 为满足 r(A)=r(Abar)=2 的情形：三个不同平面共有一条直线。
+
+% ---------- A：三个互相平行的不同平面 ----------
+\begin{scope}[shift={(0,4.2)}]
+  \node[above left] at (-2.0,1.5) {\textbf{(A)}};
+  \foreach \dy in {-0.8,0,0.8} {
+    \draw[line width=0.9pt]
+      (-1.7,-0.45+\dy) -- (0.9,-0.45+\dy) -- (1.7,0.35+\dy) -- (-0.9,0.35+\dy) -- cycle;
+  }
+\end{scope}
+
+% ---------- B：三个不同平面共有同一条直线（正确） ----------
+\begin{scope}[shift={(5.2,4.2)}]
+  \node[above left] at (-2.0,1.5) {\textbf{(B)}};
+  % 三个平面都包含公共线段 L
+  \draw[line width=0.8pt] (-1.8,-0.9) -- (1.8,0.9) -- (1.35,1.45) -- (-1.35,-1.45) -- cycle;
+  \draw[line width=0.8pt] (-1.8,0.9) -- (1.8,-0.9) -- (1.35,-1.45) -- (-1.35,1.45) -- cycle;
+  \draw[line width=0.8pt] (-1.7,-0.55) -- (1.7,-0.55) -- (1.7,0.55) -- (-1.7,0.55) -- cycle;
+  \draw[line width=1.2pt] (0,-1.25) -- (0,1.25);
+  \node[right=2pt] at (0,1.05) {$L$};
+\end{scope}
+
+% ---------- C：两个平行面，被第三平面分别截成两条线 ----------
+\begin{scope}[shift={(0,0)}]
+  \node[above left] at (-2.0,1.6) {\textbf{(C)}};
+  \draw[line width=0.9pt] (-1.8,0.35) -- (0.8,0.35) -- (1.6,1.05) -- (-1.0,1.05) -- cycle;
+  \draw[line width=0.9pt] (-1.8,-1.05) -- (0.8,-1.05) -- (1.6,-0.35) -- (-1.0,-0.35) -- cycle;
+  \draw[line width=0.9pt] (-0.45,-1.5) -- (0.15,-1.5) -- (0.75,1.5) -- (0.15,1.5) -- cycle;
+  \draw[line width=0.7pt] (-0.05,0.52) -- (0.52,0.92);
+  \draw[line width=0.7pt] (-0.33,-0.88) -- (0.24,-0.48);
+\end{scope}
+
+% ---------- D：三平面两两相交，但无公共点；三条交线互相平行 ----------
+\begin{scope}[shift={(5.2,0)}]
+  \node[above left] at (-2.0,1.6) {\textbf{(D)}};
+  % 取三棱柱的三个侧面，三条竖棱即为两两交线
+  \coordinate (A) at (-1.2,-0.9);
+  \coordinate (B) at (1.2,-0.9);
+  \coordinate (C) at (0.15,0.55);
+  \coordinate (A2) at (-1.2,1.1);
+  \coordinate (B2) at (1.2,1.1);
+  \coordinate (C2) at (0.15,2.55);
+  \draw[line width=0.8pt] (A)--(B)--(B2)--(A2)--cycle;
+  \draw[line width=0.8pt] (A)--(C)--(C2)--(A2)--cycle;
+  \draw[line width=0.8pt] (B)--(C)--(C2)--(B2)--cycle;
+  \draw[line width=1.1pt] (A)--(A2);
+  \draw[line width=1.1pt] (B)--(B2);
+  \draw[line width=1.1pt] (C)--(C2);
+\end{scope}

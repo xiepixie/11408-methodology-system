@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650" role="img" aria-labelledby="title desc">
+<title id="title">题38 TCP 数据发送与确认过程</title>
+<desc id="desc">甲向乙依次发送 seq=2001 和 seq=3001 的两个 1000B 数据段，乙返回 seq=4001、ack_seq=3001、rcvwnd=4000B 的确认段。</desc>
+<defs>
+<style>.t{font-family:Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#edf4e8}.small{font-size:18px}.mid{font-size:22px}.big{font-size:28px;font-weight:600}.line{stroke:#edf4e8;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}.device{fill:#394136;stroke:#edf4e8;stroke-width:2.2}</style>
+<marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,8 L11,4 z" fill="#edf4e8"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#30362d" rx="14" ry="14"/>
+<g id="host-a"><text x="210" y="45" class="t big" text-anchor="middle">甲</text><rect x="170" y="65" width="80" height="55" rx="4" class="device"/><line x1="210" y1="120" x2="210" y2="590" class="line" marker-end="url(#arrow)"/></g>
+<g id="host-b"><text x="700" y="45" class="t big" text-anchor="middle">乙</text><rect x="665" y="65" width="70" height="70" rx="5" class="device"/><line x1="700" y1="135" x2="700" y2="590" class="line" marker-end="url(#arrow)"/></g>
+<circle cx="210" cy="175" r="6" fill="#edf4e8"/><text x="172" y="185" class="t mid" text-anchor="end">t₀</text>
+<circle cx="210" cy="505" r="6" fill="#edf4e8"/><text x="172" y="515" class="t mid" text-anchor="end">t₁</text>
+<text x="150" y="570" class="t mid">时间</text>
+<g id="seg-2001"><line x1="210" y1="175" x2="700" y2="300" class="line" marker-end="url(#arrow)"/><text x="450" y="210" class="t mid" text-anchor="middle" transform="rotate(14 450 210)">seq = 2001，1000 B数据</text></g>
+<g id="seg-3001"><line x1="210" y1="225" x2="700" y2="350" class="line" marker-end="url(#arrow)"/><text x="450" y="260" class="t mid" text-anchor="middle" transform="rotate(14 450 260)">seq = 3001，1000 B数据</text></g>
+<g id="ack-3001"><line x1="700" y1="365" x2="210" y2="505" class="line" marker-end="url(#arrow)"/><text x="452" y="405" class="t mid" text-anchor="middle" transform="rotate(-16 452 405)">seq = 4001，ack_seq = 3001，rcvwnd = 4000 B</text></g>
+</svg>

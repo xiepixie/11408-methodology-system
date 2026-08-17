@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "profile_id": "408",
+  "name": "计算机学科专业基础综合",
+  "total_score": 150,
+  "duration_minutes": 180,
+  "question_count": 47,
+  "sections": [
+    {
+      "id": "single_choice",
+      "name": "单项选择题",
+      "questions": {"from": 1, "to": 40},
+      "score_per_question": 2,
+      "total_score": 80
+    },
+    {
+      "id": "comprehensive",
+      "name": "综合应用题",
+      "questions": {"from": 41, "to": 47},
+      "total_score": 70,
+      "score_per_question": "year_specific"
+    }
+  ],
+  "subject_totals": {
+    "数据结构": 45,
+    "计算机组成原理": 45,
+    "操作系统": 35,
+    "计算机网络": 25
+  },
+  "objective_routing": [
+    {"subject": "数据结构", "questions": {"from": 1, "to": 11}},
+    {"subject": "计算机组成原理", "questions": {"from": 12, "to": 22}},
+    {"subject": "操作系统", "questions": {"from": 23, "to": 32}},
+    {"subject": "计算机网络", "questions": {"from": 33, "to": 40}}
+  ],
+  "comprehensive_routing_default": [
+    {"subject": "数据结构", "questions": [41, 42]},
+    {"subject": "计算机组成原理", "questions": [43, 44]},
+    {"subject": "操作系统", "questions": [45, 46]},
+    {"subject": "计算机网络", "questions": [47]}
+  ],
+  "routing_overrides": {
+    "2019": [
+      {"subject": "操作系统", "questions": [43, 44]},
+      {"subject": "计算机组成原理", "questions": [45, 46]}
+    ],
+    "2016": [
+      {"subject": "计算机网络", "questions": [41]},
+      {"subject": "数据结构", "questions": [42, 43]},
+      {"subject": "计算机组成原理", "questions": [44, 45]},
+      {"subject": "操作系统", "questions": [46, 47]}
+    ]
+  },
+  "question_id_format": "408-<year>-Q<2-digit-question>",
+  "notes": [
+    "客观题四科题号区间长期稳定。",
+    "综合应用题通常采用 default 路由，但历史上存在年度变体；导入时必须先应用 routing_overrides，再由题号推断学科。",
+    "综合题单题分值属于年度试卷事实，写入各年度 exam.json，不硬编码在本 Profile。"
+  ]
+}

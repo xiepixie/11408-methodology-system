@@ -1,0 +1,33 @@
+% =====================================================
+% 题型：钝角三角形面积选择题 (q_triangle_obtuse_area_choice.tex)
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleObtuseAreaChoiceStem}{在 \(\triangle ABC\) 中，角 \(A,B,C\) 的对边分别为 \(a,b,c\)。若 \(a=3,\ b=4\)，且 \(C\) 为钝角，则 \(\triangle ABC\) 的面积可能为 \hfill （\quad）}
+
+\newcommand{\qTriangleObtuseAreaChoiceOptions}{%
+  \mcoptions[4]{\(6\)}{\(3\sqrt3\)}{\(4\sqrt2\)}{\(2\sqrt5\)}%
+}
+
+\newcommand{\qTriangleObtuseAreaChoiceAnswer}{B}
+
+\newcommand{\qTriangleObtuseAreaChoiceSolution}{%
+  由面积公式：
+  \[
+    S=\frac12ab\sin C=6\sin C.
+  \]
+  因为 \(C\) 为钝角，所以 \(C\in\left(\frac\pi2,\pi\right)\)，但仅凭“钝角”并不能确定 \(\sin C\) 小于 \(\frac12\) 或大于 \(\frac12\)，因此应逐项验证能否对应某个钝角。\\
+  A. \(S=6\Rightarrow \sin C=1\Rightarrow C=\frac\pi2\)，不是钝角，排除；\\
+  B. \(S=3\sqrt3\Rightarrow \sin C=\frac{\sqrt3}{2}\)，对应钝角 \(C=\frac{2\pi}{3}\)，可行；\\
+  C. \(S=4\sqrt2\Rightarrow \sin C=\frac{2\sqrt2}{3}>1\)，不可能；\\
+  D. \(S=2\sqrt5\Rightarrow \sin C=\frac{\sqrt5}{3}<1\)，存在对应钝角，理论上也可行。\\
+  因此若按单选题设置，本题选项需进一步约束；当前题面应优先核对 D 项设计。%
+}
+
+\newcommand{\qTriangleObtuseAreaChoiceDiagnosis}{%
+  这类题不能把“钝角”机械等价为“正弦值小于某个固定数”。应先由面积反求 \(\sin C\)，再检查是否存在满足该正弦值的钝角。%
+}
+
+\newcommand{\qTriangleObtuseAreaChoiceTeachingNotes}{%
+  适合作为“范围条件不是数值条件”的辨析题。正式用于学生卷前，应先复核选项是否保证唯一答案。%
+}

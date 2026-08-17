@@ -1,0 +1,32 @@
+% =====================================================
+% 题型：向量圆轨迹模长最值多选题 (q_vector_range.tex)
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qVectorRangeStem}{已知单位向量 \(\vec{a}, \vec{b}\) 满足 \(|2\vec{a} - \vec{b}| = 2\)，若向量 \(\vec{c}\) 满足 \((\vec{c} - 2\vec{a}) \cdot (\vec{c} - \vec{b}) = 0\)，则 \(|\vec{c}|\) 的取值可以是 \hfill （\quad）}
+
+\newcommand{\qVectorRangeOptions}{%
+  \mcoptions[4]{\(\dfrac{1}{5}\)}{\(\sqrt{3}\)}{\(2\)}{\(\sqrt{5}\)}%
+}
+
+\newcommand{\qVectorRangeAnswer}{B, C}
+
+\newcommand{\qVectorRangeSolution}{%
+  由单位向量 \(\vec{a}, \vec{b}\) 满足 \(|2\vec{a} - \vec{b}| = 2\)，平方展开得：
+  \(4|\vec{a}|^2 - 4\vec{a} \cdot \vec{b} + |\vec{b}|^2 = 4\)。
+  将 \(|\vec{a}| = |\vec{b}| = 1\) 代入，得 \(4 - 4\vec{a} \cdot \vec{b} + 1 = 4 \implies \vec{a} \cdot \vec{b} = \dfrac{1}{4}\)。\\
+  对于等式 \((\vec{c} - 2\vec{a}) \cdot (\vec{c} - \vec{b}) = 0\)，根据向量数量积的几何意义，它表示以向量 \(2\vec{a}\) 与 \(\vec{b}\) 对应的终点为直径端点的圆。
+  该圆的圆心对应的向量为 \(\vec{c}_0 = \dfrac{2\vec{a} + \vec{b}}{2} = \vec{a} + \dfrac{1}{2}\vec{b}\)，半径为 \(R = \dfrac{|2\vec{a} - \vec{b}|}{2} = 1\)。\\
+  计算圆心到原点的距离平方：
+  \(|\vec{c}_0|^2 = \left|\vec{a} + \dfrac{1}{2}\vec{b}\right|^2 = |\vec{a}|^2 + \vec{a} \cdot \vec{b} + \dfrac{1}{4}|\vec{b}|^2 = 1 + \dfrac{1}{4} + \dfrac{1}{4} = \dfrac{3}{2}\)。
+  所以圆心到原点的距离为 \(d = \sqrt{\dfrac{3}{2}} = \dfrac{\sqrt{6}}{2}\)。\\
+  向量 \(\vec{c}\) 的模长 \(|\vec{c}|\) 的取值范围为 \([d - R, d + R]\)，即 \(\left[\dfrac{\sqrt{6}}{2} - 1, \dfrac{\sqrt{6}}{2} + 1\right]\)。
+  由于 \(\sqrt{6} \approx 2.45\)，故 \(\dfrac{\sqrt{6}}{2} \approx 1.225\)，取值范围约为 \([0.225, 2.225]\)。\\
+  分析各选项：
+  A. \(\dfrac{1}{5} = 0.2 < 0.225\)，不在范围内；
+  B. \(\sqrt{3} \approx 1.732 \in [0.225, 2.225]\)，符合题意；
+  C. \(2 \in [0.225, 2.225]\)，符合题意；
+  D. \(\sqrt{5} \approx 2.236 > 2.225\)，不在范围内。
+  综上，\(|\vec{c}|\) 的取值可以是 BC。
+  故选 BC。%
+}

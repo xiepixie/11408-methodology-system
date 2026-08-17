@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>04 · Page Table：地址空间是怎样被制造出来的</title>
+  <style>
+    :root{--bg:#0a1020;--panel:#111a2e;--panel2:#0d1627;--line:#263552;--text:#edf3ff;--muted:#a7b6d2;--blue:#80baff;--green:#8ce8c7;--orange:#ffd084;--red:#ff9ca3;--purple:#c5a7ff}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#080f1d,#0a1020);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+    a{color:var(--blue)}code{font-family:"SFMono-Regular",Consolas,monospace;background:#091223;border:1px solid #243757;border-radius:6px;padding:1px 5px}.wrap{max-width:1160px;margin:auto;padding:26px 22px 90px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}.back{text-decoration:none;color:var(--muted)}.badge{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--green)}
+    header{padding:36px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(128,186,255,.13),rgba(140,232,199,.06));border-radius:22px}h1{font-size:clamp(34px,6vw,60px);line-height:1.08;margin:8px 0 16px}.kicker{color:var(--green);font-size:13px;letter-spacing:.12em;text-transform:uppercase}.lead{font-size:18px;color:var(--muted);max-width:900px}.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.meta span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 9px;background:rgba(255,255,255,.025)}
+    section{margin-top:34px}.section-title{font-size:27px;margin:0 0 14px}.panel{border:1px solid var(--line);border-radius:18px;background:rgba(17,26,46,.82);padding:20px}.question{font-size:22px;font-weight:700}.subtle{color:var(--muted)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mini{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px}.mini h3{margin:0 0 6px;font-size:17px}.mini p{margin:0;color:var(--muted);font-size:14px}
+    .flow{display:flex;align-items:stretch;gap:8px;overflow:auto;padding:6px 0}.node{min-width:145px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#0d1729}.node b{display:block}.node small{color:var(--muted)}.arrow{align-self:center;color:#6f86ad;font-size:22px}.callout{border-left:3px solid var(--blue);padding:13px 16px;background:rgba(128,186,255,.06);color:#cbd8ee;border-radius:0 12px 12px 0}.warn{border-left-color:var(--orange);background:rgba(255,208,132,.06)}.danger{border-left-color:var(--red);background:rgba(255,156,163,.055)}
+    table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:#dce7fa}.codebox{font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;background:#07101e;border:1px solid var(--line);border-radius:14px;padding:16px;color:#d9e6ff;overflow:auto}.bits{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:14px 0}.bit{border:1px solid var(--line);border-radius:12px;background:#0b1527;padding:13px;text-align:center}.bit b{display:block;font-size:18px}.bit small{color:var(--muted)}
+    .calc{display:grid;grid-template-columns:280px 1fr;gap:14px}.form label{display:block;color:var(--muted);font-size:13px;margin-top:8px}.form input{width:100%;margin-top:4px;padding:10px;border:1px solid var(--line);border-radius:9px;background:#091323;color:var(--text);font-family:monospace}.form button,.controls button,.quiz button{border:1px solid var(--line);background:#13203a;color:var(--text);padding:9px 13px;border-radius:10px;cursor:pointer;margin-top:10px}.result{border:1px solid var(--line);background:#0b1527;border-radius:14px;padding:16px}.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.result-grid div{border:1px solid #2a3a57;border-radius:10px;padding:10px}.result-grid b{display:block;color:var(--green)}.tree{display:grid;gap:8px}.tree-row{display:grid;grid-template-columns:150px 1fr 1fr;gap:8px}.tree-row>div{border:1px solid var(--line);border-radius:10px;padding:10px;background:#0b1527}.leaf{border-color:#356a5d!important}.nonleaf{border-color:#57548a!important}
+    .quiz{display:grid;gap:10px}.quiz-row{border:1px solid var(--line);background:#0d1627;border-radius:13px;padding:14px}.quiz-row b{display:block;margin-bottom:8px}.answer{display:none;color:var(--muted);margin-top:10px;border-top:1px dashed var(--line);padding-top:9px}.answer.show{display:block}.footer-nav{display:flex;justify-content:space-between;margin-top:45px;padding-top:20px;border-top:1px solid var(--line)}.check li{margin:8px 0}.exam{border:1px solid #5d5032;background:rgba(255,208,132,.05);border-radius:15px;padding:16px}
+    @media(max-width:850px){.grid2,.grid3,.calc{grid-template-columns:1fr}.bits,.result-grid{grid-template-columns:1fr 1fr}.tree-row{grid-template-columns:1fr}.top{align-items:flex-start}header{padding:25px}}@media(max-width:520px){.bits,.result-grid{grid-template-columns:1fr}}
+  </style>
+  <link rel="stylesheet" href="course.css">
+  <script src="course-ui.js" defer></script>
+</head>
+<body><main class="wrap">
+  <div class="top"><a class="back" href="index.html">← 返回课程地图</a><span class="badge">Lesson 04 · P0</span></div>
+  <header>
+    <div class="kicker">MIT 6.1810 × xv6-riscv × 408</div>
+    <h1>Page Table：<br>地址空间是怎样被“制造”出来的？</h1>
+    <p class="lead">页表不是“把虚拟地址换算成物理地址的一张表”这么简单。它是 OS 写给 MMU 的<b>可执行映射契约</b>：这个虚拟页指向哪里、允许 R/W/X 哪一种访问、当前映射是否有效。硬件在每次访存时消费这份契约；只有契约不足以完成访问时，fault 才把控制权交回 OS。</p>
+    <div class="meta"><span>Source: xv6 Book Ch.3</span><span>MIT 2026 Lab pgtbl</span><span>Current vm.c / riscv.h</span><span>408 Anchor: OS-04 · X-B02 · CO-07</span><span>预计 120 min</span></div>
+  </header>
+
+  <section><h2 class="section-title">1 · Mother Question</h2><div class="panel">
+    <div class="question">两个进程都可以访问虚拟地址 <code>0x4000</code>，为什么它们看到的却可以是不同数据，而且谁都不能越权访问任意物理内存？</div>
+    <div class="flow"><div class="node"><b>VA</b><small>程序给出的名字</small></div><div class="arrow">→</div><div class="node"><b>Page Table</b><small>OS 建的映射状态</small></div><div class="arrow">→</div><div class="node"><b>MMU / TLB</b><small>硬件消费</small></div><div class="arrow">→</div><div class="node"><b>PA + Permission</b><small>实际物理身份</small></div><div class="arrow">↘</div><div class="node"><b>Fault</b><small>映射/权限失败</small></div></div>
+    <p class="callout"><b>责任链：</b><code>OS Mapping Decision → PTE State → MMU/TLB Consumption → PA or Fault</code>。OS 不参与每一次正常地址翻译；它预先把策略编码成页表，让硬件快速执行。</p>
+  </div></section>
+
+  <section><h2 class="section-title">2 · 先分三层：Address Space ≠ Mapping ≠ Physical Page</h2><div class="grid3">
+    <div class="mini"><h3>Virtual Region</h3><p>回答“哪些 VA 在逻辑上属于进程、用途/权限是什么”。现代系统常用 VMA 等高层结构描述；xv6 更简化。</p></div>
+    <div class="mini"><h3>Page-table Mapping</h3><p>回答“某个 VPN 当前怎样翻译、权限如何”。这是硬件可消费的页级状态。</p></div>
+    <div class="mini"><h3>Physical Frame</h3><p>真正的 RAM 页面。多个 VA 可以映射同一 frame；一个合法 VA 也可能暂时还没有 frame。</p></div>
+  </div><p class="callout warn"><b>以后处理 COW / mmap / demand paging 都靠这个区分：</b>“这个地址属于进程”不等于“已经有物理页”，而“两个进程有不同页表”也不等于“所有物理页都不共享”。</p></section>
+
+  <section><h2 class="section-title">3 · Paging Math：为什么地址一定要拆 VPN | Offset？</h2><div class="panel">
+    <p>页面内部的字节相对位置不会因为映射改变，所以页表只需要翻译页号：</p>
+    <div class="flow"><div class="node"><b>VA</b><small>VPN | Offset</small></div><div class="arrow">→</div><div class="node"><b>Page Table</b><small>VPN → PPN</small></div><div class="arrow">→</div><div class="node"><b>PA</b><small>PPN | same Offset</small></div></div>
+    <p>若页面大小为 <code>2^p</code> bytes，则 offset 固定占 <code>p</code> 位。剩余高位才是 VPN。408 所有地址位数题，第一动作都应该是：<b>先从 page size 定 offset</b>。</p>
+  </div></section>
+
+  <section><h2 class="section-title">4 · Interactive Sv39 Address Split</h2><div class="calc">
+    <div class="panel form"><label>输入 xv6 当前允许的用户虚拟地址（hex）</label><input id="vaInput" value="0x123456789" /><button id="splitBtn">拆地址</button><p class="subtle">RISC-V Sv39 的架构地址是 39-bit canonical VA（高位按 bit 38 符号扩展）；xv6 为了简化地址判断，只使用低半区并定义 <code>MAXVA = 1&lt;&lt;38</code>。这里按 xv6 的实际范围校验。</p></div>
+    <div class="result" id="splitResult"></div>
+  </div>
+  <div class="bits"><div class="bit"><b>VPN[2]</b><small>9 bits · Level 2 index</small></div><div class="bit"><b>VPN[1]</b><small>9 bits · Level 1 index</small></div><div class="bit"><b>VPN[0]</b><small>9 bits · Level 0 index</small></div><div class="bit"><b>Offset</b><small>12 bits · 4 KiB page</small></div></div>
+  <p class="callout"><b>为什么恰好 9 bits/level？</b>一个页表页大小 4096 B，每个 PTE 8 B，因此一页容纳 <code>4096/8=512=2^9</code> 个 PTE。不是“39 位平均除三份”，而是由<b>页表页容量</b>反推每级索引位数。</p></section>
+
+  <section><h2 class="section-title">5 · 多级页表不是为了“翻译更复杂”，而是为了稀疏</h2><div class="panel">
+    <p>单级页表需要为整个 VPN 空间准备表项，即使进程只用了很少地址。多级页表把页表本身变成一棵按需展开的树：只有某段 VA 真被使用，才分配它沿途需要的低层 page-table pages。</p>
+    <div class="tree">
+      <div class="tree-row"><div><b>Root / L2</b></div><div class="nonleaf">普通 xv6 路径：V=1, R/W/X=0 → 下一层；Sv39 架构也允许这里直接成为 1 GiB leaf</div><div>PX(2, VA)</div></div>
+      <div class="tree-row"><div><b>Level 1</b></div><div class="nonleaf">普通 xv6 路径：V=1, R/W/X=0 → 下一层；2026 superpage lab 要你支持这里成为 2 MiB leaf</div><div>PX(1, VA)</div></div>
+      <div class="tree-row"><div><b>Level 0</b></div><div class="leaf">4 KiB Leaf PTE: PPN + R/W/X/U + V</div><div>PX(0, VA)</div></div>
+      <div class="tree-row"><div><b>Physical Page</b></div><div class="leaf">PPN | Offset</div><div>最终 byte</div></div>
+    </div>
+    <p class="subtle">当前 xv6 main 的 <code>walk()</code> 从 level 2 往 level 0 走，并把 L2/L1 当作普通非叶路径；若中间 PTE 不存在且 <code>alloc!=0</code>，就分配新的 page-table page。注意：这是 base xv6 的实现范围，不是 Sv39 的架构上限；2026 superpage lab 正是在扩展这个边界。</p>
+  </div></section>
+
+  <section><h2 class="section-title">6 · PTE = Mapping + Permission + State</h2><div class="panel">
+    <table><thead><tr><th>字段/概念</th><th>回答的问题</th><th>xv6/RISC-V 例子</th></tr></thead><tbody>
+      <tr><td>PPN / child-table PA</td><td>这项指向物理数据页，还是下一层页表？</td><td><code>PTE2PA()</code> / <code>PA2PTE()</code></td></tr>
+      <tr><td><code>V</code></td><td>这项是否有效？</td><td><code>PTE_V</code></td></tr>
+      <tr><td><code>R/W/X</code></td><td>本次读取、写入、取指合法吗？</td><td><code>PTE_R/PTE_W/PTE_X</code></td></tr>
+      <tr><td><code>U</code></td><td>user mode 能否访问？</td><td><code>PTE_U</code></td></tr>
+      <tr><td>其他架构状态</td><td>访问/脏状态、全局属性、大页等</td><td>具体位按 ISA/lab branch 判断，不把所有平台字段写成 xv6 main 的固定宏</td></tr>
+    </tbody></table>
+    <p class="callout"><b>叶子与非叶子的生成判据：</b>在 xv6 的 Sv39 walk 里，中间层有效 PTE 指向下一层页表；最终 leaf 才带能够完成内存访问的映射与权限。看到 PTE 时不要只问“PFN 是多少”，还要问<b>这项的角色是什么</b>。</p>
+  </div></section>
+
+  <section><h2 class="section-title">7 · TLB：缓存的是“翻译”，不是数据</h2><div class="panel">
+    <div class="flow"><div class="node"><b>VA / VPN</b><small>CPU load/store</small></div><div class="arrow">→</div><div class="node"><b>TLB Lookup</b><small>translation cache</small></div><div class="arrow">→</div><div class="node"><b>Page Walk</b><small>on TLB miss</small></div><div class="arrow">→</div><div class="node"><b>PA</b><small>then access Cache/RAM</small></div></div>
+    <table><thead><tr><th>Miss / Fault</th><th>缺的是什么</th><th>一定进入 OS？</th></tr></thead><tbody>
+      <tr><td>TLB miss</td><td>近期翻译缓存副本</td><td>不一定；硬件 page walk 可以找到合法 PTE 并 refill</td></tr>
+      <tr><td>Page / permission fault</td><td>当前映射、驻留或访问权限不足以完成操作</td><td>需要 trap 到 OS 决定 repair / reject</td></tr>
+      <tr><td>Cache miss</td><td>目标物理数据块不在硬件 Cache</td><td>通常不进入 OS；由存储层次继续取数据</td></tr>
+    </tbody></table>
+    <p class="callout danger"><b>三者绝不能互推：</b><code>TLB miss ≠ Page Fault ≠ Cache miss</code>。同一次 load 甚至可能 TLB miss → page walk success → Cache miss → memory hit，而 OS 全程不知道。</p>
+  </div></section>
+
+  <section><h2 class="section-title">8 · <code>satp</code>：页表根不是“进程地址空间本身”</h2><div class="panel">
+    <p>RISC-V 的 <code>satp</code> 给硬件当前地址翻译上下文的根信息；xv6 在 user/kernel trap 交接时会切换它。Lesson 02 已经看到：<b>同一个进程进入内核时，可以临时切到 kernel page table，但这不等于进程换了地址空间 owner，更不等于 context switch。</b></p>
+    <div class="grid2"><div class="exam"><b>Logical ownership</b><p>进程仍拥有自己的 user address space 与 <code>p->pagetable</code>。这是 OS 对该进程的资源关系。</p></div><div class="exam"><b>Active translation root</b><p>CPU 此刻由哪个 page-table root 驱动地址翻译，是执行环境状态。xv6 trap path 会在 user/kernel 两套 page table 间切换。</p></div></div>
+  </div></section>
+
+  <section><h2 class="section-title">9 · 为什么 trampoline 能跨页表切换？</h2><div class="panel">
+    <p>当前 xv6 kernel page table 把 trampoline 映射到最高虚拟地址；每个 user page table 也把同一 trampoline 物理页映射到相同虚拟地址。于是：</p>
+    <div class="flow"><div class="node"><b>User PT</b><small>VA T → trampoline PA</small></div><div class="arrow">→</div><div class="node"><b>execute T</b><small>uservec/userret</small></div><div class="arrow">→</div><div class="node"><b>switch satp</b><small>translation context changes</small></div><div class="arrow">→</div><div class="node"><b>Kernel PT</b><small>same VA T → same PA</small></div></div>
+    <p class="callout"><b>不变量：</b>执行 <code>satp</code> 切换前后，下一条仍要执行的 trampoline 指令必须在两套映射下具有连续、合法的身份。这个例子比“页表就是地址转换”更深地展示了 mapping 也是<b>控制流可达性</b>的一部分。</p>
+  </div></section>
+
+  <section><h2 class="section-title">10 · MIT 2026 Page Table Lab：四部分怎么选</h2><div class="panel">
+    <table><thead><tr><th>官方部分</th><th>训练内容</th><th>408 轨道建议</th></tr></thead><tbody>
+      <tr><td>Inspect user page table</td><td>读 VA/PTE/PA/permission，认识不同虚拟页并不物理连续</td><td><b>必做</b>；最直接建立 PTE 的“映射 + 权限”直觉</td></tr>
+      <tr><td>Speed up <code>getpid()</code></td><td>把 kernel-owned PID 通过 read-only shared user mapping 暴露，避免一次 kernel crossing</td><td><b>核心推荐</b>；把 page permission、共享映射与 system call 成本连接起来</td></tr>
+      <tr><td><code>vmprint()</code></td><td>递归打印多级页表树，区分中间 PTE 与 leaf mapping</td><td><b>必做</b>；对 408 多级页表题帮助最大</td></tr>
+      <tr><td>2 MiB superpages</td><td>让 Sv39 的 L1 PTE 直接成为 leaf；处理 2 MiB 对齐、分配、fork/free 与 partial demotion，减少 page-table/TLB 压力</td><td><b>扩展</b>；这是 2026 lab branch 的新增实现任务，当前 xv6 main 的普通 <code>walk()</code> 尚不是完整 superpage 实现。408 主线先掌握架构语义与 trade-off</td></tr>
+    </tbody></table>
+    <p class="callout warn"><b>2026 版本值得注意：</b>当前 lab 已明确加入 superpages；这部分实现量明显大于前两项。我们的目标不是“全绿才算学会”，而是先得到能反哺 408 的可运行模型。</p>
+  </div></section>
+
+  <section><h2 class="section-title">11 · USYSCALL：一页只读映射为什么能省掉一次系统调用？</h2><div class="panel">
+    <div class="question">如果 <code>getpid()</code> 只是读取一个内核已经知道、用户可以知道的值，为什么每次都必须 <code>ecall</code>？</div>
+    <div class="flow"><div class="node"><b>Kernel owns PID</b><small>authoritative state</small></div><div class="arrow">→</div><div class="node"><b>read-only shared page</b><small>mapped into process</small></div><div class="arrow">→</div><div class="node"><b>ugetpid()</b><small>ordinary user load</small></div></div>
+    <p>2026 lab 让每个进程在一个固定 user VA 映射只读页面，并把 PID 放进去。用户直接读取，不需要每次跨 privilege boundary。</p>
+    <p class="callout"><b>真正的不变量：</b>用户可以<b>读</b> kernel 选择公开的数据，但不能借这张映射<b>写</b> authoritative kernel state。于是 permission 位直接实现了 API contract。</p>
+  </div></section>
+
+  <section><h2 class="section-title">12 · 408 地址题：从路径推，不从公式背</h2><div class="panel">
+    <table><thead><tr><th>题目给什么</th><th>第一动作</th><th>后续</th></tr></thead><tbody>
+      <tr><td>页大小 + VA 位数</td><td><code>offset bits = log2(page size)</code></td><td>剩余位数才是 VPN；多级继续按每级表项数拆</td></tr>
+      <tr><td>PTE 大小 + 页表页大小</td><td>算每页能装多少 PTE</td><td><code>entries = page_bytes / PTE_bytes</code> → index bits</td></tr>
+      <tr><td>TLB hit rate / memory latency</td><td>先画 hit/miss 两条真实路径</td><td>分别数 TLB、page-table memory、最终 data memory 次数，再加权</td></tr>
+      <tr><td>某 PTE 权限</td><td>先判断本次 access type：R/W/X</td><td>映射存在仍可能 permission fault</td></tr>
+      <tr><td>地址空间切换</td><td>先问旧 TLB 翻译是否仍可能被错误复用</td><td>按题设考虑 flush 或 ASID/PCID 等隔离机制</td></tr>
+    </tbody></table>
+  </div></section>
+
+  <section><h2 class="section-title">13 · Quick Attack</h2><div class="quiz">
+    <div class="quiz-row"><b>Q1 · TLB miss 后，CPU 一定触发 page fault 吗？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不一定。TLB 只是翻译缓存。若 page table 中存在合法 PTE，硬件 page walk 可以成功并 refill TLB，完全不需要 OS 介入。</div></div>
+    <div class="quiz-row"><b>Q2 · 一个 VA 已经属于进程，是不是一定已经分配物理 frame？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不是。合法虚拟区域可以采用 lazy allocation / demand paging；真正首次访问时才通过 page fault 分配或装入物理页。</div></div>
+    <div class="quiz-row"><b>Q3 · 两个进程能不能把不同 VA 映射到同一个 physical frame？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">可以。共享库、共享内存、COW 等都会使用这种关系。页表隔离的是“每个地址空间如何解释 VA”，不是禁止共享物理页。</div></div>
+    <div class="quiz-row"><b>Q4 · 多级页表为什么省空间？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">因为它只为实际使用的虚拟地址子树分配低级页表页；大块未使用 VA 区域可以在高层以 invalid entry 直接停止，不需要为每个 VPN 预留 leaf PTE。</div></div>
+  </div></section>
+
+  <section><h2 class="section-title">14 · xv6 Code Path：只读这几个点</h2><div class="panel"><div class="codebox">kernel/riscv.h
+  PGSIZE / PX(level,va) / PTE flags / satp
+
+kernel/vm.c
+  walk()       // 3-level page-table traversal
+  mappages()   // create leaf mappings
+  walkaddr()   // user VA → PA lookup for kernel helpers
+  uvmalloc()   // allocate frame + map
+  uvmunmap()   // remove mapping, optionally free frame
+
+kernel/proc.c
+  process page-table lifecycle
+
+kernel/memlayout.h
+  special virtual addresses / memory map
+
+kernel/trampoline.S
+  one real consumer of the “same VA in two page tables” invariant</div></div></section>
+
+  <section><h2 class="section-title">15 · Retrieval Check</h2><div class="panel"><ol class="check">
+    <li>解释为什么 page table 是“OS 写、MMU 读”的接口，而不是 OS 每次帮 CPU 翻译。</li>
+    <li>从 4KiB page + 8B PTE 推出 Sv39 每级 9-bit index，不看答案。</li>
+    <li>给一个 PTE，先判断它是 non-leaf 还是 leaf，再判断 V/R/W/X/U；不要只提取 PPN。</li>
+    <li>完整区分 TLB miss、page fault、Cache miss 的缺失对象与处理者。</li>
+    <li>解释同一个进程为什么进入 xv6 kernel 时可以切 <code>satp</code>，却仍不是 context switch。</li>
+    <li>解释 USYSCALL 为什么必须 read-only，以及它为何能省一次 system call。</li>
+  </ol><p class="callout"><b>通过标准：</b>看到任何地址翻译题，你能先画 <code>VA → TLB/page walk → PTE permission → PA or fault</code>，再计算，而不是先找一个 EAT 公式硬套。</p></div></section>
+
+  <section><h2 class="section-title">Sources / Version Boundary</h2><div class="panel"><ul>
+    <li>MIT 6.1810 Fall 2026 Page Tables Lab：当前包括 inspect PTE、read-only USYSCALL、<code>vmprint()</code> 与 superpages。</li>
+    <li>当前 xv6-RISC-V <code>kernel/vm.c</code>：Sv39 三层 <code>walk()</code>、<code>mappages()</code>、user VM lifecycle。</li>
+    <li>当前 xv6 <code>kernel/riscv.h</code>：page size、PTE flags、<code>satp</code> 与 index macros。</li>
+    <li>稳定解释来源：xv6 RISC-V Book Chapter 3；408 Canonical Owner：OS-04 与 X-B02。</li>
+  </ul></div></section>
+
+  <div class="footer-nav"><a href="03-trap.html">← Lesson 03 · Trap</a><a href="05-page-fault-cow.html">Lesson 05 · Page Fault → COW →</a></div>
+</main>
+<script>
+function splitSv39(){
+ const raw=document.getElementById('vaInput').value.trim(); let v;
+ try{v=BigInt(raw);}catch(e){document.getElementById('splitResult').innerHTML='<b>地址格式错误</b>';return;}
+ const max=1n<<38n;if(v<0||v>=max){document.getElementById('splitResult').innerHTML='<b>当前 xv6 只使用 Sv39 低半区：请输入 0 ≤ VA &lt; MAXVA = 2^38。</b>';return;}
+ const off=Number(v&0xfffn),i0=Number((v>>12n)&0x1ffn),i1=Number((v>>21n)&0x1ffn),i2=Number((v>>30n)&0x1ffn),vpn=v>>12n;
+ document.getElementById('splitResult').innerHTML=`<h3>Sv39 拆分结果</h3><div class="result-grid"><div><b>VPN[2] = ${i2}</b><small>bits 38..30</small></div><div><b>VPN[1] = ${i1}</b><small>bits 29..21</small></div><div><b>VPN[0] = ${i0}</b><small>bits 20..12</small></div><div><b>Offset = ${off}</b><small>bits 11..0</small></div></div><p class="subtle">VA = ${'0x'+v.toString(16)} · VPN = ${'0x'+vpn.toString(16)} · page base = ${'0x'+(v&~0xfffn).toString(16)}</p>`;
+}
+document.getElementById('splitBtn').onclick=splitSv39;splitSv39();
+function toggleAnswer(btn){btn.nextElementSibling.classList.toggle('show');btn.textContent=btn.nextElementSibling.classList.contains('show')?'隐藏答案':'显示答案';}
+</script>
+</body></html>

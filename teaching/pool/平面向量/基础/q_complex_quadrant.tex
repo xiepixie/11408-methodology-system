@@ -1,0 +1,20 @@
+% =====================================================
+% 题型：复数象限选择题 (q_complex_quadrant.tex)
+% =====================================================
+% 难度：★ (基础)
+% =====================================================
+\newcommand{\qComplexQuadrantStem}{复数 \(\sin\dfrac{11\pi}{6} + i\cos\dfrac{11\pi}{6}\) 在复平面上对应的点在第 \hfill （\quad） 象限}
+
+\newcommand{\qComplexQuadrantOptions}{%
+  \mcoptions[4]{一}{二}{三}{四}%
+}
+
+\newcommand{\qComplexQuadrantAnswer}{B}
+
+\newcommand{\qComplexQuadrantSolution}{%
+  因为 \(\sin\dfrac{11\pi}{6} = \sin\left(2\pi - \dfrac{\pi}{6}\right) = -\sin\dfrac{\pi}{6} = -\dfrac{1}{2} < 0\)，
+  \(\cos\dfrac{11\pi}{6} = \cos\left(2\pi - \dfrac{\pi}{6}\right) = \cos\dfrac{\pi}{6} = \dfrac{\sqrt{3}}{2} > 0\)，
+  所以复数在复平面上对应的坐标为 \(\left(-\dfrac{1}{2}, \dfrac{\sqrt{3}}{2}\right)\)，实部为负，虚部为正，
+  故对应点在第二象限。
+  故选 B。%
+}

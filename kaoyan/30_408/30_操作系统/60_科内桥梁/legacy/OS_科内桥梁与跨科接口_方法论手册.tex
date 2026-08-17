@@ -1,0 +1,180 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.8cm,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array,multirow}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.35em}
+\setlist[itemize]{itemsep=0.2em,topsep=0.3em}
+\setlist[enumerate]{itemsep=0.2em,topsep=0.3em}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!50!black}
+
+\definecolor{mainblue}{RGB}{45,86,140}
+\definecolor{deepblue}{RGB}{30,62,102}
+\definecolor{softblue}{RGB}{238,245,252}
+\definecolor{softgreen}{RGB}{238,249,243}
+\definecolor{softorange}{RGB}{253,246,233}
+\definecolor{softred}{RGB}{253,239,239}
+\definecolor{softgray}{RGB}{246,247,249}
+\definecolor{deepgreen}{RGB}{35,105,75}
+\definecolor{deeporange}{RGB}{165,98,22}
+\definecolor{deepred}{RGB}{150,55,55}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{408 操作系统方法论}
+\rhead{OS 科内桥梁与跨科接口手册}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newtcolorbox{corebox}[1][]{colback=softblue,colframe=mainblue,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{exam}[1][]{colback=softorange,colframe=deeporange,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warn}[1][]{colback=softred,colframe=deepred,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{eng}[1][]{colback=softgreen,colframe=deepgreen,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{method}[1][]{colback=softgray,colframe=black!45,title=#1,fonttitle=\bfseries,boxrule=0.6pt,arc=2mm}
+
+\newcommand{\kw}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+\title{\vspace{-1.2cm}\textbf{操作系统科内桥梁与跨科接口}\\[0.4em]
+\large 破除模块孤岛：跨 Topic 机制冲突、控制权交接与跨科连接}
+\author{408 操作系统专题手册 OS-Bridge}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{warn}[Legacy Source｜禁止作为当前 Owner]
+本文件是旧版聚合 Source，不再拥有任何稳定定义。当前唯一 Owner：Priority Inversion / inheritance / ceiling → OS-03；MMIO / Port I/O → CO-08 与 X-B01/X-B03（OS-05 仅 Use 接口）；Process × File → OS-B03；VM × File/Page Cache → OS-B04。若本文件与当前 Topic / Bridge 冲突，以当前 Canonical Owner 为准。
+\end{warn}
+
+\begin{corebox}[母问题：为什么单独掌握每个 Topic 依然做不对综合大题？]
+在真实的操作系统和 408 综合大题中，机制绝不是独立运行的。当调度遇上并发锁、当 CPU 试图访问 I/O 设备、当进程复制遇到文件描述符，不同子系统之间的\kw{规则冲突与控制权交接}便构成了系统设计的核心挑战。
+
+本手册专为连接各个模块而建立：
+\[
+\boxed{
+\text{Process / Scheduling}
+\xleftrightarrow{\quad\text{Bridges}\quad}
+\text{Concurrency / VM / I/O / File System / CPU Hardware}
+}
+\]
+\end{corebox}
+
+\tableofcontents
+\newpage
+
+\section{Bridge 1：Priority Inversion（优先级倒置）——调度与并发锁的冲突}
+
+\subsection{冲突的产生：当 Scheduling 遇上 Mutual Exclusion}
+
+操作系统有两个基本机制：
+\begin{itemize}
+  \item \kw{进程调度器 (Scheduling)} 规定：优先级高的任务应优先获得 CPU（$P_{High} > P_{Med} > P_{Low}$）；
+  \item \kw{并发互斥锁 (Lock / Mutex)} 规定：若锁已被持用，等待该锁的任何任务必须阻塞，直到锁被释放。
+\end{itemize}
+
+当高优先级任务 $P_{High}$ 试图获取被低优先级任务 $P_{Low}$ 持有的锁时，$P_{High}$ 被迫进入阻塞等待（符合互斥逻辑）。
+
+但在此时，若中优先级任务 $P_{Med}$（不需要该锁）变为可运行状态，调度器会选择抢占 $P_{Low}$ 的 CPU！
+
+这引发了极其严重的系统逆转：
+\[
+\boxed{
+P_{High} \quad\text{间接等待}\quad P_{Med}
+}
+\]
+由于 $P_{Low}$ 无法获得 CPU 运行，它无法释放锁，导致最高优先级的 $P_{High}$ 无法运行！这就是\kw{优先级倒置 (Priority Inversion)}。
+
+\subsection{优先级继承 (Priority Inheritance) 解决方案}
+
+为了打破这一僵局，系统引入\kw{优先级继承}协议：
+\[
+\boxed{
+\text{当 } P_{High} \text{ 阻塞等待 } P_{Low} \text{ 持有的锁时，} P_{Low} \text{ 临时继承 } P_{High} \text{ 的高优先级}
+}
+\]
+
+\begin{center}
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} X X}
+\toprule
+解决机制 & 核心工作原理 & 评价与工程代价\\
+\midrule
+Priority Inheritance (优先级继承) & 锁持有人 $P_{Low}$ 临时升至等待者最高优先级 $P_{High}$，防止中优先级 $P_{Med}$ 抢占；释放锁后恢复原优先级 & 动态修改任务优先级，开销较低；但不能完全消除死锁风险\\
+Priority Ceiling (优先级天花板) & 给锁设定最高可能访问者的优先级，一旦获取锁即提升至天花板优先级 & 进一步预防死锁与多次阻塞，适用于硬实时系统\\
+\bottomrule
+\end{tabularx}
+\endgroup
+\end{center}
+
+\section{Bridge 2：MMIO vs Port I/O——CPU $\times$ OS $\times$ I/O 的跨科连接}
+
+\subsection{CPU 怎样看到外部设备控制器}
+
+在 408 计算机组成原理与操作系统交汇处，核心问题是：\kw{CPU 指令如何对设备控制器中的控制/状态/数据寄存器进行读写？}
+
+存在两种主要的编址方式：
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.25\linewidth} X X}
+\toprule
+编址方式 & 核心实现原理 & 优缺点与指令差异\\
+\midrule
+Memory-Mapped I/O (MMIO 内存映射 I/O) & 将设备寄存器映射到常规物理内存地址空间；CPU 使用统一的 \code{load/store} 访存指令访问设备 & 统一指令集，可利用 MMU 页表进行权限保护；但占用物理地址空间，需防止 CPU/Cache 乱序优化（需设为 Non-cacheable）\\
+Isolated / Port-Mapped I/O (独立/端口 I/O) & 设备使用独立的 64KB I/O 端口地址空间；CPU 使用专门的 I/O 指令（如 x86 \code{in/out}） & 内存与 I/O 隔离；但依赖专有指令，无法直接享用 MMU 高级保护与灵活寻址\\
+\bottomrule
+\end{tabularx}
+\endgroup
+
+\section{Bridge 3：Process $\times$ File——引用交接与分层模型}
+
+当进程执行 \code{fork()}、\code{dup()} 或 \code{close()} 时，文件控制权在三级结构间交接：
+
+\[
+\boxed{
+\begin{aligned}
+\text{Task / PCB (Process-private Table)}
+&\xrightarrow{\text{File Descriptor } fd} \text{Open File Description (OFD / System-wide Table)} \\
+&\xrightarrow{\text{Inode Index}} \text{Inode Object (FileSystem)}
+\end{aligned}
+}
+\]
+
+\begin{itemize}
+  \item \kw{fork()}：子进程复制父进程的 \code{fd table}，使得父子进程的相同 $fd$ 指向同一个 \code{OFD}（共享文件偏移量 \code{offset}）；
+  \item \kw{dup()}：在同一进程内创建新 $fd$，指向相同的 \code{OFD}（共享 \code{offset}）；
+  \item \kw{open()} 同一文件两次：创建两个独立 \code{OFD}（拥有各自独立的 \code{offset}），但底层指向同一个 \code{inode}。
+\end{itemize}
+
+\section{Bridge 4：VM $\times$ File——mmap 与 Page Cache 的结合}
+
+\code{mmap()} 建立了虚拟内存与文件系统的直接接口：
+
+\[
+\boxed{
+\begin{aligned}
+\text{VMA (Virtual Memory Area)}
+&\xrightarrow{\text{Page Fault}} \text{Page Cache (RAM Physical Frame)} \\
+&\xrightarrow{\text{Dirty Writeback}} \text{Inode Block Mapping (Disk)}
+\end{aligned}
+}
+\]
+
+通过把文件的 \code{Page Cache} 物理页直接映射到进程的虚拟页表中，避免了传统 \code{read()} / \code{write()} 在内核缓冲区与用户缓冲区之间的显式数据复制！
+
+\end{document}

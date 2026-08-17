@@ -1,0 +1,35 @@
+% 2005 Q17：满足题设微分几何条件的精确示意图
+% 取一个具体四次多项式
+%   f(x)=4/27 x^4-28/27 x^3+4/3 x^2+2x,
+% 则 f(0)=0, f'(0)=2, f(3)=2, f'(3)=-2, f''(3)=0。
+% 因而两条切线分别为 l1:y=2x 与 l2:y=-2x+8，交于 (2,4)。
+
+% 网格与坐标轴
+\draw[line width=1.0pt] (0,0) rectangle (4.5,4.5);
+\foreach \x in {1,2,3,4} {
+  \draw[dashed,line width=0.6pt] (\x,0) -- (\x,4.5);
+  \node[below=2pt] at (\x,0) {$\x$};
+}
+\foreach \y in {1,2,3,4} {
+  \draw[dashed,line width=0.6pt] (0,\y) -- (4.5,\y);
+  \node[left=2pt] at (0,\y) {$\y$};
+}
+\draw[->,line width=0.9pt] (-0.3,0) -- (5.0,0) node[below=1pt] {$x$};
+\draw[->,line width=0.9pt] (0,-0.3) -- (0,5.0) node[left=1pt] {$y$};
+\node[below left=1pt] at (0,0) {$O$};
+
+% 题设两条切线：严格通过各自切点，并交于 (2,4)
+\draw[line width=1.0pt,domain=0:2.3,samples=2]
+  plot (\x,{2*\x}) node[above] {$l_1$};
+\draw[line width=1.0pt,domain=1.7:4.0,samples=2]
+  plot (\x,{-2*\x+8}) node[below right] {$l_2$};
+
+% 精确函数曲线；在 (0,0)、(3,2) 的切线斜率分别为 2、-2，且 f''(3)=0
+\draw[line width=1.3pt,domain=0:4.3,samples=100,smooth]
+  plot (\x,{(4/27)*\x^4-(28/27)*\x^3+(4/3)*\x^2+2*\x});
+
+% 关键点
+\fill (3,2) circle (1.5pt);
+\node[below left=2pt] at (3,2) {$(3,2)$};
+\fill (2,4) circle (1.5pt);
+\node[above right=2pt] at (2,4) {$(2,4)$};

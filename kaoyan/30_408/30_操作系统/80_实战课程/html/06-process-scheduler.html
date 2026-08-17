@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>06 · Process / Scheduler：谁真正拿到 CPU？</title>
+  <style>
+    :root{--bg:#0a1020;--panel:#111a2e;--panel2:#0d1627;--line:#263552;--text:#edf3ff;--muted:#a7b6d2;--blue:#80baff;--green:#8ce8c7;--orange:#ffd084;--red:#ff9ca3;--purple:#c5a7ff}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#080f1d,#0a1020);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+    a{color:var(--blue)}code{font-family:"SFMono-Regular",Consolas,monospace;background:#091223;border:1px solid #243757;border-radius:6px;padding:1px 5px}.wrap{max-width:1180px;margin:auto;padding:26px 22px 90px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}.back{text-decoration:none;color:var(--muted)}.badge{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--green)}
+    header{padding:36px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(128,186,255,.12),rgba(255,208,132,.05));border-radius:22px}h1{font-size:clamp(34px,6vw,60px);line-height:1.08;margin:8px 0 16px}.kicker{color:var(--green);font-size:13px;letter-spacing:.12em;text-transform:uppercase}.lead{font-size:18px;color:var(--muted);max-width:920px}.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.meta span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 9px;background:rgba(255,255,255,.025)}
+    section{margin-top:34px}.section-title{font-size:27px;margin:0 0 14px}.panel{border:1px solid var(--line);border-radius:18px;background:rgba(17,26,46,.82);padding:20px}.question{font-size:22px;font-weight:700}.subtle{color:var(--muted)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mini{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px}.mini h3{margin:0 0 6px;font-size:17px}.mini p{margin:0;color:var(--muted);font-size:14px}.flow{display:flex;align-items:stretch;gap:8px;overflow:auto;padding:6px 0}.node{min-width:145px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#0d1729}.node b{display:block}.node small{color:var(--muted)}.arrow{align-self:center;color:#6f86ad;font-size:22px}.callout{border-left:3px solid var(--blue);padding:13px 16px;background:rgba(128,186,255,.06);color:#cbd8ee;border-radius:0 12px 12px 0}.warn{border-left-color:var(--orange);background:rgba(255,208,132,.06)}.danger{border-left-color:var(--red);background:rgba(255,156,163,.055)}
+    table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:#dce7fa}.codebox{font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;background:#07101e;border:1px solid var(--line);border-radius:14px;padding:16px;color:#d9e6ff;overflow:auto}.exam{border:1px solid #5d5032;background:rgba(255,208,132,.05);border-radius:15px;padding:16px}.check li{margin:8px 0}
+    .sim{display:grid;grid-template-columns:330px 1fr;gap:14px}.form label{display:block;color:var(--muted);font-size:13px;margin-top:8px}.form textarea,.form select,.form input{width:100%;margin-top:4px;padding:10px;border:1px solid var(--line);border-radius:9px;background:#091323;color:var(--text);font-family:monospace}.form textarea{min-height:145px;resize:vertical}.form button,.quiz button{border:1px solid var(--line);background:#13203a;color:var(--text);padding:9px 13px;border-radius:10px;cursor:pointer;margin-top:10px}.gantt{display:flex;align-items:stretch;overflow:auto;border:1px solid var(--line);border-radius:12px;background:#091323;min-height:70px}.slot{min-width:56px;border-right:1px solid #263552;padding:10px 7px;text-align:center}.slot b{display:block}.slot small{color:var(--muted)}.idle{opacity:.55}.metrics{margin-top:14px}.error{color:var(--red)}
+    .quiz{display:grid;gap:10px}.quiz-row{border:1px solid var(--line);background:#0d1627;border-radius:13px;padding:14px}.quiz-row b{display:block;margin-bottom:8px}.answer{display:none;color:var(--muted);margin-top:10px;border-top:1px dashed var(--line);padding-top:9px}.answer.show{display:block}.footer-nav{display:flex;justify-content:space-between;margin-top:45px;padding-top:20px;border-top:1px solid var(--line)}
+    @media(max-width:850px){.grid2,.grid3,.sim{grid-template-columns:1fr}.top{align-items:flex-start}header{padding:25px}}
+  </style>
+  <link rel="stylesheet" href="course.css">
+  <script src="course-ui.js" defer></script>
+</head>
+<body><main class="wrap">
+  <div class="top"><a class="back" href="index.html">← 返回课程地图</a><span class="badge">Lesson 06 · P0</span></div>
+  <header>
+    <div class="kicker">MIT 6.1810 × xv6-riscv × 408 Custom Lab</div>
+    <h1>Process / Scheduler：<br>“能运行”为什么不等于“正在运行”？</h1>
+    <p class="lead">这一页把两件经常混在一起的事拆开：<b>Mechanism</b> 负责保存/恢复执行现场，使 CPU 可以换执行流；<b>Policy</b> 负责在合法候选者中决定下一个是谁。xv6 给我们真实的 context-switch mechanism，408 的 FCFS/SJF/SRTF/RR/Priority 则用来训练 policy 与时间轴。</p>
+    <div class="meta"><span>2026 schedule → inherited 2025 Lecture 13</span><span>Current xv6: proc.c / proc.h / swtch.S</span><span>408 Custom Lab: Scheduler Simulator</span><span>408 Anchor: OS-01/02</span><span>核心 150–210 min · 定量扩展 40–70 min</span></div>
+  </header>
+
+  <section><h2 class="section-title">1 · Mother Question</h2><div class="panel">
+    <div class="question">一个进程已经 Ready / RUNNABLE，为什么它仍然可能很久都没有执行一条用户指令？</div>
+    <div class="flow"><div class="node"><b>Runnable Set</b><small>有资格竞争</small></div><div class="arrow">→</div><div class="node"><b>Scheduler Policy</b><small>选谁</small></div><div class="arrow">→</div><div class="node"><b>Dispatcher / Switch</b><small>让选择生效</small></div><div class="arrow">→</div><div class="node"><b>Running</b><small>真正占有 CPU</small></div></div>
+    <p class="callout"><b>压缩：</b><code>RUNNABLE = eligibility</code>，<code>RUNNING = ownership of a CPU now</code>。wakeup 只让任务重新有资格竞争；获得 CPU 还需要一次调度选择与必要的现场切换。</p>
+  </div></section>
+
+  <section><h2 class="section-title">2 · Process state 是 scheduler 的输入，不是装饰标签</h2><div class="panel">
+    <table><thead><tr><th>xv6 state</th><th>核心含义</th><th>可否被 scheduler 直接选中？</th></tr></thead><tbody>
+      <tr><td><code>RUNNING</code></td><td>此刻已经在某个 CPU 上执行（用户态或内核态都可能）</td><td>已经拥有 CPU</td></tr>
+      <tr><td><code>RUNNABLE</code></td><td>没有等待外部条件，希望运行，但当前没占 CPU</td><td><b>可以</b></td></tr>
+      <tr><td><code>SLEEPING</code></td><td>等待某个 channel/event；即使给 CPU 也不能按当前逻辑继续</td><td>不可以，先 wakeup</td></tr>
+      <tr><td><code>ZOMBIE</code></td><td>执行已结束，保留退出状态等待 parent 回收</td><td>不可以</td></tr>
+    </tbody></table>
+    <p class="callout warn"><b>不要把 OS 状态轴和 CPU mode 轴混在一起：</b>同一个 RUNNING process 可以先在 user mode 执行，trap 后继续以同一 process 身份在 kernel mode 执行。</p>
+  </div></section>
+
+  <section><h2 class="section-title">3 · Thread 到底是什么？从“暂停后怎样恢复”反推</h2><div class="panel">
+    <p>MIT 当前 schedule 的 Thread Switching notes 用了一个很生成性的定义：如果一条串行执行路径现在暂停，过一会还要从原处继续，那么系统至少必须保存足以恢复它的状态。</p>
+    <div class="grid3"><div class="mini"><h3>User saved state</h3><p>用户寄存器保存在 trapframe，支撑 kernel → user 的恢复。</p></div><div class="mini"><h3>Kernel saved context</h3><p>kernel thread 在 <code>swtch()</code> 处暂停时，需要独立 context + kernel stack。</p></div><div class="mini"><h3>Scheduling state</h3><p><code>p->state</code>、等待原因、锁等决定它是否有资格被恢复。</p></div></div>
+    <p class="callout"><b>最深的共同点：</b>执行流的身份不是“CPU 里那套寄存器”。CPU 寄存器只是它当前运行时的临时载体；暂停后，身份由一份<b>可定位、可恢复的保存状态</b>继续存在。</p>
+  </div></section>
+
+  <section><h2 class="section-title">4 · xv6 一次真正的 switch 为什么不是 P1 → P2 直接跳？</h2><div class="panel">
+    <div class="flow"><div class="node"><b>P1 kernel thread</b><small>p1 context + kstack</small></div><div class="arrow">→</div><div class="node"><b>swtch</b><small>save p1 context</small></div><div class="arrow">→</div><div class="node"><b>CPU scheduler thread</b><small>per-CPU context/stack</small></div><div class="arrow">→</div><div class="node"><b>scheduler()</b><small>find RUNNABLE</small></div><div class="arrow">→</div><div class="node"><b>swtch</b><small>restore p2 context</small></div><div class="arrow">→</div><div class="node"><b>P2 kernel thread</b><small>resume saved point</small></div></div>
+    <p>当前 xv6 每个 CPU 有自己的 scheduler context。一个进程进入 <code>sched()</code> 后先切回该 CPU 的 scheduler thread；scheduler 之后才选择一个 RUNNABLE process，再切入它的 kernel context。</p>
+    <p class="callout"><b>为什么需要 scheduler 自己的 stack/context？</b>如果 P1 正在退出或睡眠，就不能继续依赖“马上不该运行的 P1 栈”去完成长期调度循环。Scheduler 需要一个独立、安全的执行落脚点。</p>
+  </div></section>
+
+  <section><h2 class="section-title">5 · <code>swtch.S</code> 没有保存“所有寄存器”，为什么仍然正确？</h2><div class="panel">
+    <p>当前 RISC-V xv6 的 <code>swtch(old,new)</code> 保存 <code>ra</code>、<code>sp</code> 与 <code>s0..s11</code>，然后加载另一份 context 并 <code>ret</code>。它不是 user trap 的完整寄存器快照。</p>
+    <div class="grid2"><div class="exam"><b>Trapframe</b><p>解决 user ↔ kernel 边界：用户寄存器必须足以恢复完整用户执行现场。</p></div><div class="exam"><b>Context</b><p>解决 kernel thread 在规范函数调用点的暂停/恢复：利用 RISC-V calling convention，只需保存跨调用必须保留的 callee-saved 状态、SP 和返回路径。</p></div></div>
+    <p class="callout danger"><b>所以：</b><code>trapframe ≠ context ≠ PCB 的全部字段</code>。它们分别服务不同恢复边界。</p>
+  </div></section>
+
+  <section><h2 class="section-title">6 · 跨进程切换不等于 <code>swtch()</code> 那一刻就切 user page table</h2><div class="panel">
+    <p>xv6 是一个特别好的反例：从 P1 用户态进入内核时，trampoline 已经先把 active translation root 切到共同的 kernel page table；随后 P1 kernel thread 才通过 <code>swtch()</code> 去 scheduler，再进入 P2 kernel thread。直到 P2 准备返回用户态，trampoline 才切到 P2 的 user page table。</p>
+    <div class="flow"><div class="node"><b>P1 user</b><small>P1 user PT</small></div><div class="arrow">→</div><div class="node"><b>P1 kernel</b><small>kernel PT</small></div><div class="arrow">→</div><div class="node"><b>swtch → scheduler</b><small>kernel PT</small></div><div class="arrow">→</div><div class="node"><b>P2 kernel</b><small>kernel PT</small></div><div class="arrow">→</div><div class="node"><b>P2 user</b><small>P2 user PT</small></div></div>
+    <p class="callout"><b>所以要继续坚持四维切换模型：</b>execution-context switch 与 memory-context switch 是两个维度，可能发生在同一宏观“换进程”过程的不同位置。不要把“<code>swtch()</code> = 改页表寄存器”写成定义。</p>
+  </div></section>
+
+  <section><h2 class="section-title">7 · Timer interrupt → yield：这是“获得一次重新选择机会”，不是宇宙定律</h2><div class="panel">
+    <div class="flow"><div class="node"><b>User P1</b><small>CPU-bound</small></div><div class="arrow">→</div><div class="node"><b>Timer IRQ</b><small>forced kernel entry</small></div><div class="arrow">→</div><div class="node"><b>usertrap()</b><small>xv6 identifies timer</small></div><div class="arrow">→</div><div class="node"><b>yield()</b><small>RUNNING → RUNNABLE</small></div><div class="arrow">→</div><div class="node"><b>scheduler()</b><small>choose again</small></div></div>
+    <p>当前 xv6 的 timer path 会调用 <code>yield()</code>；<code>yield()</code> 把当前 process 改回 RUNNABLE 后进入 <code>sched()</code>。但“每次时钟中断都必须换成另一个进程”不是 OS 通用定义。xv6 的实现只是一个具体 policy。</p>
+    <table><thead><tr><th>408 里的“抢占原因”</th><th>真实控制流里最早在哪里被看见？</th><th>Current xv6 的边界</th></tr></thead><tbody>
+      <tr><td>RR 时间片到</td><td><code>timer interrupt → trap.c → timer event → yield()</code>；这里获得强制进入内核并重新选择 CPU owner 的机会</td><td>xv6 直接 yield，是简单教学 policy；408 RR 还要求显式 quantum 记账与 FIFO ready queue</td></tr>
+      <tr><td>更高优先级任务因 I/O 完成而 Ready</td><td><code>device interrupt → driver completion → wakeup()</code> 先制造新的 RUNNABLE candidate；之后抢占式 policy 才比较优先级</td><td>current xv6 没有 408 priority scheduler，不能声称 wakeup 后会按“更高优先级”立即抢占</td></tr>
+      <tr><td>更高优先级任务新到达</td><td>创建/唤醒路径把它加入 runnable set；真正 switch 必须发生在内核允许调度的安全点</td><td>“priority arrival”是 policy 条件，不是某条 RISC-V trap 的硬件定义</td></tr>
+    </tbody></table>
+    <p class="callout warn"><b>把“抢占点”理解成两件事：</b>事件先让系统知道“候选集/预算变了”，policy 再决定是否需要换人；只有决定换人后才进入 context-switch mechanism。时钟中断只是最经典的强制 decision opportunity。</p>
+  </div></section>
+
+  <section><h2 class="section-title">8 · Mechanism vs Policy：为什么 xv6 不能替你学完 408 调度算法？</h2><div class="panel">
+    <table><thead><tr><th>层</th><th>问题</th><th>这一页的来源</th></tr></thead><tbody>
+      <tr><td>Mechanism</td><td>怎样保存现场、把 CPU 交出去、以后从原处恢复？</td><td>xv6 <code>swtch / sched / scheduler</code></td></tr>
+      <tr><td>Eligibility</td><td>谁此刻合法进入候选集？</td><td>RUNNABLE state / ready queue abstraction</td></tr>
+      <tr><td>Policy</td><td>候选集里选谁？什么时候重新选择？</td><td>408 FCFS / SJF / SRTF / Priority / RR</td></tr>
+      <tr><td>Metric</td><td>用什么评价？周转、等待、响应、公平、切换成本？</td><td>408 题目目标</td></tr>
+    </tbody></table>
+    <p class="callout"><b>不要给 xv6 强行贴“标准 RR”标签：</b>current xv6 scheduler 是 per-CPU 扫描 process table 的简单教学实现，并配合 timer yield。408 的 RR 则有明确 ready-queue order 与 quantum 模型。我们用 xv6 学 mechanism，用自建 simulator 学 policy。</p>
+  </div></section>
+
+  <section><h2 class="section-title">9 · Interactive 408 Scheduler Simulator</h2><div class="sim">
+    <div class="panel form">
+      <label>进程表：每行 <code>ID arrival burst priority</code></label>
+      <textarea id="jobs">P1 0 7 2
+P2 2 4 1
+P3 4 1 3
+P4 5 4 2</textarea>
+      <label>算法</label><select id="algo"><option value="fcfs">FCFS · 非抢占</option><option value="sjf">SJF · 非抢占</option><option value="srtf">SRTF · 抢占</option><option value="hrrn">HRRN · 高响应比优先 / 非抢占</option><option value="priority">Priority · 非抢占（数值小优先）</option><option value="ppriority">Priority · 抢占（数值小优先）</option><option value="rr">RR · 时间片轮转</option></select>
+      <label>RR 时间片 q</label><input id="quantum" type="number" min="1" value="2" />
+      <button id="runSim">运行模拟</button>
+      <p class="subtle">统一 tie-break：先 arrival，再输入顺序。RR 在“新任务到达”和“旧任务时间片恰好结束”同一个 tick 时，模拟器约定<b>先把新到达者入队，再把时间片用尽者放回队尾</b>。时间取整数 tick，切换成本暂按 0。真实考题若另有约定，以题设为准。</p>
+    </div><div class="panel"><div id="simOut"></div></div>
+  </div></section>
+
+  <section><h2 class="section-title">10 · 四个时间指标必须从生命周期定义推出来</h2><div class="panel">
+    <table><thead><tr><th>指标</th><th>定义</th><th>不要混成</th></tr></thead><tbody>
+      <tr><td>Turnaround</td><td><code>completion - arrival</code></td><td>不是“CPU 真正执行了多久”</td></tr>
+      <tr><td>Waiting</td><td><code>turnaround - CPU service</code>（本页单 CPU-burst 模型）</td><td>不是所有现实 I/O 生命周期的万能公式</td></tr>
+      <tr><td>Response</td><td><code>first_run - arrival</code></td><td>不是 completion；交互系统尤其关注第一次响应</td></tr>
+      <tr><td>Weighted turnaround</td><td><code>turnaround / service</code></td><td>是任务完成后的评价指标；不是 HRRN 在选择时刻计算的 key</td></tr>
+      <tr><td>HRRN response ratio</td><td><code>R=(waiting+service)/service=1+waiting/service</code></td><td>只在 CPU 需要重新选择的决策点，对已到达候选者重算；选中后非抢占运行</td></tr>
+    </tbody></table>
+  </div></section>
+
+  <section><h2 class="section-title">11 · 不要分别背算法：统一成 Candidate → Key → Decision Point</h2><div class="panel">
+    <table><thead><tr><th>算法</th><th>候选集</th><th>Ordering Key / Decision</th></tr></thead><tbody>
+      <tr><td>FCFS</td><td>已到达、未完成</td><td>arrival 最早；非抢占，只在 CPU 空闲时选</td></tr>
+      <tr><td>SJF</td><td>已到达、未完成</td><td>burst 最短；非抢占</td></tr>
+      <tr><td>SRTF</td><td>已到达、未完成</td><td>remaining 最短；新任务到达等决策点可抢占</td></tr>
+      <tr><td>HRRN</td><td>已到达、未完成</td><td><code>R=1+W/S</code> 最大；非抢占，只在 CPU 空闲时重算</td></tr>
+      <tr><td>Priority</td><td>已到达、未完成</td><td>priority；必须先看题设“数值大/小谁更高”及是否抢占</td></tr>
+      <tr><td>RR</td><td>ready queue</td><td>队头；运行最多 q，再把未完成者按题设入队规则放回队尾</td></tr>
+    </tbody></table>
+    <p class="callout"><b>做题起手：</b>先写 <code>Candidate Set → Key → Decision Point → Tie Rule → Preemption?</code>，再画 Gantt。绝大多数调度计算错误，其实是在某个决策点把“不该进入候选集的人”或错误 tie-rule 偷进来了。</p>
+  </div></section>
+
+  <section><h2 class="section-title">12 · HRRN：为什么“响应比”不是完成后的带权周转时间</h2><div class="panel">
+    <p>HRRN 在某个调度决策时刻 <code>t</code> 对每个已经到达、尚未完成的候选任务计算：</p>
+    <div class="codebox">waiting W = t - arrival
+service S = burst
+R = (W + S) / S = 1 + W / S
+choose max R</div>
+    <p>它和“带权周转时间 <code>T/S</code>”长得很像，是因为如果这个候选<b>现在立刻被选中且无额外等待</b>，它完成时的带权周转恰好就是当前响应比；但一个是<b>调度时的动态 key</b>，一个是<b>完成后的结果指标</b>，不能把所有任务最终的 weighted turnaround 拿回来当 HRRN 的历史选择依据。</p>
+    <p class="callout"><b>手算动作：</b>HRRN 不需要每个 tick 都重算。只在 CPU 真正空闲、需要选下一个任务时，对当时的 Candidate Set 计算 R；选中后由于非抢占，运行到本次服务结束。</p>
+  </div></section>
+
+  <section><h2 class="section-title">13 · MLFQ / MFQ：它不是一条固定公式，而是一组“反馈规则参数”</h2><div class="panel">
+    <div class="grid3"><div class="mini"><h3>Classification</h3><p>新任务通常从高层进入；队列 membership 可以根据历史 CPU 使用变化，这正是“反馈”。</p></div><div class="mini"><h3>Inter-queue</h3><p>高层是否绝对优先？低层运行时高层到达是否抢占？这些必须读题设。</p></div><div class="mini"><h3>Intra-queue</h3><p>每层可用 RR/FCFS，不同层 quantum 常逐级变大。</p></div></div>
+    <table><thead><tr><th>一套常见教学规则</th><th>状态变化</th><th>考试不能偷省的参数</th></tr></thead><tbody>
+      <tr><td>新任务进入最高层 Q0</td><td>先给短/交互任务快速响应机会</td><td>初始层级</td></tr>
+      <tr><td>用满本层时间预算仍未完成</td><td>Q0 → Q1 → Q2… 降级</td><td>每层 quantum / allotment</td></tr>
+      <tr><td>高层出现 runnable task</td><td>可抢占正在运行的低层任务</td><td>被抢占任务剩余时间片是否保留</td></tr>
+      <tr><td>周期性 boost / aging</td><td>低层任务重新上移</td><td>boost 周期与提升范围</td></tr>
+    </tbody></table>
+    <p class="callout danger"><b>MLQ ≠ MLFQ：</b>多级队列只说明“有多条队列”；MLFQ 的关键是 <b>queue membership 会因执行反馈而变化</b>。因此没有题设给 queue rule，就不存在唯一的 MLFQ 甘特图。</p>
+  </div></section>
+
+  <section><h2 class="section-title">14 · 408 算法定量对比：先看目标，再看代价</h2><div class="panel"><table><thead><tr><th>算法</th><th>抢占</th><th>常见定量关注</th><th>主要风险/代价</th></tr></thead><tbody>
+    <tr><td>FCFS</td><td>否</td><td>arrival 顺序；周转/等待</td><td>Convoy effect</td></tr>
+    <tr><td>SJF</td><td>否</td><td>已知 burst 下平均等待/周转通常优秀</td><td>未来 burst 难准确知道；长任务饥饿</td></tr>
+    <tr><td>SRTF</td><td>是</td><td>每个 arrival 决策点比较 remaining；响应通常更快</td><td>抢占/切换更多；长任务可被持续推迟</td></tr>
+    <tr><td>HRRN</td><td>否</td><td>决策点计算 <code>1+W/S</code>；兼顾等待与短任务偏好</td><td>需估计 service；只在选择点重算</td></tr>
+    <tr><td>RR</td><td>是</td><td>q、response、context-switch tax</td><td>q 太小开销高；太大趋近 FCFS</td></tr>
+    <tr><td>MLFQ</td><td>通常支持</td><td>queue level、quantum、降级/boost 轨迹</td><td>规则参数多；饥饿与 gaming</td></tr>
+  </tbody></table><p class="callout"><b>Simulator 输出现在同时给 Turnaround / Waiting / Response / Weighted Turnaround。</b>同一 workload 切换算法后，不要只找“谁最小”，还要解释这个指标对应的系统目标是什么。</p></div></section>
+
+  <section><h2 class="section-title">15 · RR 的 q 是权衡旋钮，不是越小越好</h2><div class="grid2"><div class="exam"><b>q ↓</b><p>通常首次响应更快、轮转更细，但 context-switch / scheduler 的固定成本占比升高。</p></div><div class="exam"><b>q ↑</b><p>切换税降低，但交互响应可能变差；若 q 大到不再触发时间片抢占，固定 workload 下会趋向 FCFS 顺序。</p></div></div>
+    <p class="callout warn"><b>Simulator 默认没有切换成本。</b>如果题目给 context-switch cost <code>δ</code>，Gantt 必须显式插入成本区间，并重新计算 arrival 在切换期间发生时的候选状态；不要只在最后总时间加一个常数。</p>
+  </section>
+
+  <section><h2 class="section-title">16 · Scheduling ≠ Context Switch</h2><div class="panel">
+    <div class="grid3"><div class="mini"><h3>Event</h3><p>时间片到、block、exit、wake higher-priority task……让系统获得/需要重新考虑 CPU ownership。</p></div><div class="mini"><h3>Schedule</h3><p>Policy 对候选集做选择。这个动作可能仍然选中当前实体。</p></div><div class="mini"><h3>Context Switch</h3><p>只有最终要把 CPU 的 execution context 换给不同执行流时，才需要真正 save/restore。</p></div></div>
+    <p class="callout danger"><b>三连不等于：</b><code>interrupt ≠ schedule ≠ switch-to-another-process</code>。这条边界是 408 高频选择题的稳定检查器。</p>
+  </div></section>
+
+  <section><h2 class="section-title">17 · MIT Thread Switching：怎么学最值？</h2><div class="panel">
+    <table><thead><tr><th>内容</th><th>价值</th><th>408 轨道</th></tr></thead><tbody>
+      <tr><td>trapframe / context / kernel stack 对照</td><td>知道不同恢复边界需要不同保存状态</td><td><b>必看</b></td></tr>
+      <tr><td>GDB 单步 timer → yield → sched → swtch</td><td>把“上下文切换”变成真实控制流</td><td><b>强烈推荐</b></td></tr>
+      <tr><td>per-CPU scheduler thread</td><td>理解为何 switch 有安全落脚栈</td><td><b>推荐</b></td></tr>
+      <tr><td>深入 xv6 的特定扫描策略</td><td>实现级细节</td><td>读懂即可，不把它当 408 调度 policy 模板</td></tr>
+      <tr><td>408 Scheduler Simulator</td><td>训练 FCFS/SJF/SRTF/HRRN/RR/Priority 时间轴与周转/响应/带权指标</td><td><b>必做</b>，这是我们补的桥接实验</td></tr>
+    </tbody></table>
+  </div></section>
+
+  <section><h2 class="section-title">18 · xv6 Code Path：只读 5 个位置</h2><div class="panel"><div class="codebox">kernel/proc.h
+  struct context        // saved kernel context
+  struct cpu            // per-CPU scheduler context
+  enum procstate        // eligibility/state
+  struct proc           // process-owned state
+
+kernel/proc.c
+  scheduler()           // choose RUNNABLE and swtch
+  sched()               // process → scheduler handoff
+  yield()               // RUNNING → RUNNABLE
+  sleep()/wakeup()      // Lesson 08 will own coordination detail
+
+kernel/swtch.S
+  save old ra/sp/s0..s11
+  load new ra/sp/s0..s11
+  ret
+
+kernel/trap.c
+  timer event → xv6 yield policy
+
+kernel/trampoline.S
+  user trapframe path; compare with kernel context switch</div></div></section>
+
+  <section><h2 class="section-title">19 · Quick Attack</h2><div class="quiz">
+    <div class="quiz-row"><b>Q1 · 一个进程从 SLEEPING 被 wakeup 后，是否立刻变 RUNNING？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不是。xv6 wakeup 把匹配进程改成 RUNNABLE；它重新拥有“可被选择”的资格。何时真正 RUNNING 仍由 scheduler 与 CPU availability 决定。</div></div>
+    <div class="quiz-row"><b>Q2 · 系统调用进入 kernel mode 是不是已经发生 context switch？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不是。它可以仍然是同一进程/执行流，只是 privilege/environment 改变。只有保存当前执行流现场并恢复另一执行流时才是 execution context switch。</div></div>
+    <div class="quiz-row"><b>Q3 · xv6 的 <code>swtch()</code> 为什么只保存一部分寄存器？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">它发生在 kernel 的正常调用约定边界，使用 struct context 保存跨调用必须保留的 callee-saved 寄存器、SP 和 RA。完整 user register state 属于 trapframe 的责任。</div></div>
+    <div class="quiz-row"><b>Q4 · RR 时间片变小，平均周转时间一定变好吗？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不一定。q 小主要改善轮转粒度/响应，但会增加切换开销；平均周转还取决于 workload。不能把“响应更快”偷换成“所有指标都更好”。</div></div>
+    <div class="quiz-row"><b>Q5 · HRRN 的响应比是否就是这个进程最终的带权周转时间？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不是同一概念。HRRN 的 R 是某个调度决策点的动态排序 key；最终带权周转是完成后 T/S 的评价指标。只有在“此刻立刻选中并无额外等待”的假设下，两者在这个候选的假想完成结果上数值对应。</div></div>
+    <div class="quiz-row"><b>Q6 · 高优先级任务被 I/O 中断 wakeup，是否说明 CPU 已经在 ISR 里完成了进程切换？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不说明。ISR/wakeup 先改变 candidate eligibility；抢占式 priority policy 再决定是否需要 reschedule，真正 context switch 发生在合法调度点。current xv6 本身也没有 408 那套 priority scheduler。</div></div>
+  </div></section>
+
+  <section><h2 class="section-title">20 · Retrieval Check</h2><div class="panel"><ol class="check">
+    <li>不用图解释 <code>RUNNABLE</code> 与 <code>RUNNING</code> 的资格/占有区别。</li>
+    <li>复原 xv6 的 <code>P1 kernel → scheduler context → P2 kernel</code> switch 主链，并解释为什么需要 scheduler 独立 context。</li>
+    <li>解释 trapframe 与 <code>struct context</code> 分别在什么边界恢复谁。</li>
+    <li>看到一道调度题，先写 Candidate / Key / Decision Point / Tie / Preemption，而不是立刻画甘特图。</li>
+    <li>解释“发生时钟中断”为什么不逻辑推出“换成另一个进程”。</li>
+    <li>用 simulator 自己制造一个例子，让 SJF 与 FCFS 顺序不同，再解释差异来自哪个 ordering key。</li>
+    <li>手算一个 HRRN 决策点的 <code>W/S/R</code>，并区分 response ratio 与最终 weighted turnaround。</li>
+    <li>给一套明确 MLFQ queue/quantum/boost 规则，逐事件追踪 membership；若题设没给规则，拒绝凭“多级反馈”四个字猜甘特图。</li>
+    <li>指出时间片到在 xv6 的 <code>timer trap → yield</code> 路径上哪里产生调度机会，并解释高优先级 wakeup 为什么是另一类事件来源。</li>
+  </ol><p class="callout"><b>通过标准：</b>你能把“谁有资格运行、policy 选谁、mechanism 怎样换过去、metrics 怎样评价”四层分开，并能在 408 时间轴与 xv6 真实 switch 之间来回翻译。</p></div></section>
+
+  <section><h2 class="section-title">Sources / Version Boundary</h2><div class="panel"><ul>
+    <li>MIT 6.1810 Fall 2026 schedule 的 Thread Switching 页面当前落地文件标题仍标为 <b>2025 Lecture 13</b>，因此按 inherited material 使用。</li>
+    <li>当前 xv6 main <code>kernel/proc.c</code>：per-CPU scheduler、<code>sched()</code>、<code>yield()</code>、process state transition。</li>
+    <li>当前 <code>kernel/proc.h</code>：trapframe、kernel context、CPU context 与 process state 的数据 Owner。</li>
+    <li>当前 <code>kernel/swtch.S</code>：真实 kernel context save/restore。</li>
+    <li>408 Canonical Owner：OS-01/02；FCFS/SJF/SRTF/Priority/RR 计算由现有 Handbook + 本页自建 simulator 承接，不把 xv6 的简化 scheduler 伪装成考试算法定义。</li>
+  </ul></div></section>
+
+  <div class="footer-nav"><a href="05-page-fault-cow.html">← Lesson 05 · Page Fault → COW</a><a href="07-locking.html">Lesson 07 · Locking →</a></div>
+</main>
+<script>
+function parseJobs(){const lines=document.getElementById('jobs').value.trim().split(/\n+/).filter(Boolean);return lines.map((line,idx)=>{const p=line.trim().split(/\s+/);if(p.length<3)throw new Error(`第 ${idx+1} 行至少需要 ID arrival burst`);const arrival=Number(p[1]),burst=Number(p[2]),priority=p[3]===undefined?0:Number(p[3]);if(!Number.isInteger(arrival)||arrival<0||!Number.isInteger(burst)||burst<=0||!Number.isFinite(priority))throw new Error(`第 ${idx+1} 行参数非法`);return{id:p[0],arrival,burst,priority,order:idx,remaining:burst,first:null,finish:null};});}
+function chooseReady(jobs,t,mode,current){const ready=jobs.filter(j=>j.arrival<=t&&j.remaining>0);if(!ready.length)return null;const stable=(a,b)=>a.arrival-b.arrival||a.order-b.order;if(mode==='fcfs')return current&&current.remaining>0?current:ready.sort(stable)[0];if(mode==='sjf')return current&&current.remaining>0?current:ready.sort((a,b)=>a.burst-b.burst||stable(a,b))[0];if(mode==='hrrn'){if(current&&current.remaining>0)return current;return ready.sort((a,b)=>{const ra=1+(t-a.arrival)/a.burst,rb=1+(t-b.arrival)/b.burst;return rb-ra||stable(a,b);})[0];}if(mode==='priority')return current&&current.remaining>0?current:ready.sort((a,b)=>a.priority-b.priority||stable(a,b))[0];if(mode==='srtf')return ready.sort((a,b)=>a.remaining-b.remaining||stable(a,b))[0];if(mode==='ppriority')return ready.sort((a,b)=>a.priority-b.priority||stable(a,b))[0];return null;}
+function compact(ticks){const seg=[];for(const x of ticks){const last=seg[seg.length-1];if(last&&last.id===x)last.end++;else seg.push({id:x,start:seg.length?seg[seg.length-1].end:0,end:(seg.length?seg[seg.length-1].end:0)+1});}return seg;}
+function simulate(){let jobs;const out=document.getElementById('simOut');try{jobs=parseJobs();}catch(e){out.innerHTML=`<p class="error">${e.message}</p>`;return;}const algo=document.getElementById('algo').value,q=Math.max(1,Number(document.getElementById('quantum').value)||1);if(!jobs.length){out.innerHTML='<p class="error">没有进程。</p>';return;}let t=0,done=0,current=null,rrq=[],qleft=q,ticks=[],guard=0;const arrived=new Set();while(done<jobs.length&&guard++<10000){for(const j of jobs){if(j.arrival===t&&!arrived.has(j.order)){arrived.add(j.order);if(algo==='rr')rrq.push(j);}}if(algo==='rr'){if(!current||current.remaining<=0||qleft<=0){if(current&&current.remaining>0&&qleft<=0)rrq.push(current);current=rrq.shift()||null;qleft=q;} }else current=chooseReady(jobs,t,algo,current);if(!current){ticks.push('IDLE');t++;continue;}if(current.first===null)current.first=t;ticks.push(current.id);current.remaining--;if(algo==='rr')qleft--;t++;if(current.remaining===0){current.finish=t;done++;current=null;qleft=q;}if(algo!=='rr'&&(algo==='srtf'||algo==='ppriority'))current=null;}if(guard>=10000){out.innerHTML='<p class="error">模拟超过上限，请检查输入。</p>';return;}const seg=compact(ticks);const metrics=jobs.map(j=>({id:j.id,arrival:j.arrival,burst:j.burst,finish:j.finish,turn:j.finish-j.arrival,wait:j.finish-j.arrival-j.burst,response:j.first-j.arrival,weighted:(j.finish-j.arrival)/j.burst}));const avg=k=>(metrics.reduce((s,m)=>s+m[k],0)/metrics.length).toFixed(2);out.innerHTML=`<h3>Gantt Trace</h3><div class="gantt">${seg.map(s=>`<div class="slot ${s.id==='IDLE'?'idle':''}"><b>${s.id}</b><small>${s.start}→${s.end}</small></div>`).join('')}</div><div class="metrics"><table><thead><tr><th>ID</th><th>Finish</th><th>Turnaround</th><th>Weighted T</th><th>Waiting</th><th>Response</th></tr></thead><tbody>${metrics.map(m=>`<tr><td>${m.id}</td><td>${m.finish}</td><td>${m.turn}</td><td>${m.weighted.toFixed(2)}</td><td>${m.wait}</td><td>${m.response}</td></tr>`).join('')}</tbody></table><p class="subtle">Avg turnaround = <b>${avg('turn')}</b> · Avg weighted = <b>${avg('weighted')}</b> · Avg waiting = <b>${avg('wait')}</b> · Avg response = <b>${avg('response')}</b></p></div><p class="callout">别只看数字：逐个 segment 问“这个时刻有哪些候选者？为什么 key 选中了它？这个算法此刻允许抢占吗？” HRRN 尤其只在真正的选择点重算 R。</p>`;}
+document.getElementById('runSim').onclick=simulate;simulate();
+function toggleAnswer(btn){btn.nextElementSibling.classList.toggle('show');btn.textContent=btn.nextElementSibling.classList.contains('show')?'隐藏答案':'显示答案';}
+</script>
+</body></html>

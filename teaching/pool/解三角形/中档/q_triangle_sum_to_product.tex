@@ -1,0 +1,63 @@
+% =====================================================
+% 题型：解三角形和差化积选择题 (q_triangle_sum_to_product.tex)
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleSumToProductStem}{在 \(\triangle ABC\) 中，\(a,b,c\) 分别为内角 \(A,B,C\) 所对的边，若 \(a+b=2c\cos\dfrac{A-B}{2}\)，则 \(C=\hfill（\quad）\)}
+
+\newcommand{\qTriangleSumToProductOptions}{%
+  \mcoptions[4]{\(\dfrac\pi6\)}{\(\dfrac\pi4\)}{\(\dfrac\pi3\)}{\(\dfrac\pi2\)}%
+}
+
+\newcommand{\qTriangleSumToProductAnswer}{C}
+
+\newcommand{\qTriangleSumToProductSolution}{%
+  由正弦定理，\(a:b:c=\sin A:\sin B:\sin C\)，因此原式可化为
+  \[
+    \sin A+\sin B
+    =2\sin C\cos\frac{A-B}{2}.
+  \]
+  由和差化积公式：
+  \[
+    \sin A+\sin B
+    =2\sin\frac{A+B}{2}\cos\frac{A-B}{2}.
+  \]
+  因为 \(A+B=\pi-C\)，所以
+  \[
+    \sin\frac{A+B}{2}
+    =\sin\frac{\pi-C}{2}
+    =\cos\frac C2.
+  \]
+  于是
+  \[
+    2\cos\frac C2\cos\frac{A-B}{2}
+    =2\sin C\cos\frac{A-B}{2}.
+  \]
+  在非退化三角形中，\(\left|\frac{A-B}{2}\right|<\frac\pi2\)，故 \(\cos\frac{A-B}{2}>0\)，可约去，得
+  \[
+    \cos\frac C2=\sin C=2\sin\frac C2\cos\frac C2.
+  \]
+  又 \(C\in(0,\pi)\)，故 \(\cos\frac C2>0\)，继续约去，得
+  \[
+    1=2\sin\frac C2.
+  \]
+  因此
+  \[
+    \sin\frac C2=\frac12.
+  \]
+  因为 \(\frac C2\in\left(0,\frac\pi2\right)\)，所以
+  \[
+    \frac C2=\frac\pi6,
+    \qquad
+    C=\frac\pi3.
+  \]
+  故选 C。%
+}
+
+\newcommand{\qTriangleSumToProductDiagnosis}{%
+  这题的断点通常不在正弦定理，而在和差化积后不会把 \(A+B\) 改写为 \(\pi-C\)。另外，约去 \(\cos\frac{A-B}{2}\) 前要知道它在三角形内恒正。%
+}
+
+\newcommand{\qTriangleSumToProductTeachingNotes}{%
+  标准链条是“边 → 正弦 → 和差化积 → 内角和 → 半角”。应训练学生看到 \(a+b\) 与 \(\cos\frac{A-B}{2}\) 时主动联想到 \(\sin A+\sin B\) 的和差化积。%
+}

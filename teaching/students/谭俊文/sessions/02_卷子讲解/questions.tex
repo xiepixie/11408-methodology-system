@@ -1,0 +1,228 @@
+% =====================================================
+% 谭俊文第二课次（卷子讲解）题目数据定义 (questions.tex)
+% =====================================================
+
+% =====================================================
+% 第 1 题：正切定义域（常规，硬编码）
+% =====================================================
+\newcommand{\qTanDomainStem}{函数 \(f(x)=\tan x\) 的定义域为 \hfill （\quad）}
+\newcommand{\qTanDomainOptions}{%
+  \mcoptions[1]{\(\{x\mid x\ne \dfrac{\pi}{2}+k\pi,\ k\in \mathbb Z\}\)}%
+               {\(\{x\mid x\ne \dfrac{\pi}{2}+2k\pi,\ k\in \mathbb Z\}\)}%
+               {\(\{x\mid x\ne \pi+k\pi,\ k\in \mathbb Z\}\)}%
+               {\(\{x\mid x\ne \pi+2k\pi,\ k\in \mathbb Z\}\)}%
+}
+\newcommand{\qTanDomainAnswer}{A}
+\newcommand{\qTanDomainSolution}{%
+  因为 \(\tan x = \dfrac{\sin x}{\cos x}\)，所以分母不能为 \(0\)，即 \(\cos x \ne 0\)。
+  由 \(\cos x = 0 \iff x = \dfrac{\pi}{2}+k\pi,\ k\in \mathbb Z\)，
+  得定义域为 \(\left\{x \;\middle|\; x\ne \dfrac{\pi}{2}+k\pi,\ k\in \mathbb Z\right\}\)。
+  故选 A。%
+}
+
+% =====================================================
+% 第 2 题：正方体外接球（基础常规模型，硬编码）
+% =====================================================
+\newcommand{\qCubeInscribedSphereStem}{棱长为 \(2\) 的正方体的 \(8\) 个顶点都在球 \(O\) 的表面上，则球 \(O\) 的半径为 \hfill （\quad）}
+\newcommand{\qCubeInscribedSphereOptions}{%
+  \mcoptions[4]{\(1\)}{\(\sqrt 2\)}{\(\sqrt 3\)}{\(2\)}%
+}
+\newcommand{\qCubeInscribedSphereAnswer}{C}
+\newcommand{\qCubeInscribedSphereSolution}{%
+  正方体的外接球球心在正方体的中心，其外接球的直径等于正方体的体对角线。
+  
+  因为正方体棱长为 \(2\)，则体对角线长为：
+  \[
+    d = \sqrt{2^2+2^2+2^2} = \sqrt{12} = 2\sqrt{3}.
+  \]
+  所以球的半径为：
+  \[
+    R = \frac{d}{2} = \frac{2\sqrt{3}}{2} = \sqrt{3}.
+  \]
+  
+  【多视角几何解析】
+  可建立以中心为原点，各坐标轴平行于正方体棱的空间直角坐标系。
+  
+  此时正方体各顶点坐标为 \((\pm 1, \pm 1, \pm 1)\)。
+  中心到顶点的距离即为外接球半径：
+  \[
+    R = \sqrt{1^2+1^2+1^2} = \sqrt{3}.
+  \]
+  
+  故选 C。%
+}
+
+% =====================================================
+% 第 3 题：三角形面积（基础常规公式，硬编码）
+% =====================================================
+\newcommand{\qTriangleAreaSimpleStem}{在 \(\triangle ABC\) 中，\(AB=4\)，\(AC=3\)，\(\angle BAC=\dfrac{\pi}{6}\)，则 \(\triangle ABC\) 的面积为 \hfill （\quad）}
+\newcommand{\qTriangleAreaSimpleOptions}{%
+  \mcoptions[4]{\(2\)}{\(3\)}{\(4\)}{\(6\)}%
+}
+\newcommand{\qTriangleAreaSimpleAnswer}{B}
+\newcommand{\qTriangleAreaSimpleSolution}{%
+  利用已知两边及其夹角的三角形面积公式：
+  \[
+    S = \frac{1}{2} bc \sin A = \frac{1}{2} \cdot AB \cdot AC \cdot \sin\angle BAC.
+  \]
+  代入已知数据：
+  \[
+    S = \frac{1}{2} \cdot 4 \cdot 3 \cdot \sin\frac{\pi}{6} = 6 \cdot \frac{1}{2} = 3.
+  \]
+  故选 B。%
+}
+
+% =====================================================
+% 第 9 题：三角函数性质多选题（常规，硬编码）
+% =====================================================
+\newcommand{\qTrigPropertiesStem}{已知函数 \(f(x)=\cos\left(2x+\dfrac{\pi}{4}\right)+1\)，则下列结论正确的是 \hfill （\quad）}
+\newcommand{\qTrigPropertiesOptions}{%
+  \mcoptions[1]{\(f(x)\) 的最小正周期为 \(\pi\)}%
+               {\(f(x)\) 的对称中心为 \(\left(\dfrac{\pi}{8}+\dfrac{k\pi}{2},1\right),\ k\in\mathbb Z\)}%
+               {\(f(x)\) 的对称轴为 \(x=\dfrac{5\pi}{8}+\dfrac{k\pi}{2},\ k\in\mathbb Z\)}%
+               {方程 \(f(x)=1\) 在区间 \([0,\pi]\) 上恰有两根}%
+}
+\newcommand{\qTrigPropertiesAnswer}{ABD}
+\newcommand{\qTrigPropertiesSolution}{%
+  对于 A：由 \(f(x)=\cos\left(2x+\dfrac{\pi}{4}\right)+1\) 可得最小正周期 \(T = \dfrac{2\pi}{2} = \pi\)，故 A 正确。
+  
+  对于 B：令 \(2x+\dfrac{\pi}{4} = \dfrac{\pi}{2}+k\pi \quad (k\in\mathbb{Z})\)，
+  解得 \(x = \dfrac{\pi}{8} + \dfrac{k\pi}{2}\)。
+  
+  此时 \(\cos\left(2x+\dfrac{\pi}{4}\right) = 0\)，即 \(f(x) = 1\)。
+  所以对称中心为 \(\left(\dfrac{\pi}{8}+\dfrac{k\pi}{2}, 1\right)\)，故 B 正确。
+  
+  对于 C：令 \(2x+\dfrac{\pi}{4} = k\pi \quad (k\in\mathbb{Z})\)，
+  解得 \(x = -\dfrac{\pi}{8} + \dfrac{k\pi}{2}\)。
+  
+  当 \(k=1\) 时，对称轴为 \(x = \dfrac{3\pi}{8}\)，而不是 \(x = \dfrac{5\pi}{8}\)，故 C 错误。
+  
+  对于 D：方程 \(f(x) = 1 \implies \cos\left(2x+\dfrac{\pi}{4}\right) = 0\)，
+  即 \(2x+\dfrac{\pi}{4} = \dfrac{\pi}{2}+k\pi \quad (k\in\mathbb{Z})\)，
+  解得 \(x = \dfrac{\pi}{8} + \dfrac{k\pi}{2}\)。
+  
+  在区间 \([0, \pi]\) 内：
+  当 \(k=0\) 时，\(x=\dfrac{\pi}{8}\)；
+  当 \(k=1\) 时，\(x=\dfrac{5\pi}{8}\)。
+  
+  因此方程在 \([0, \pi]\) 上恰有两根，故 D 正确。
+  
+  综上，正确结论为 A, B, D。
+  故选 ABD。%
+}
+
+% =====================================================
+% 第 10 题：线面平行与垂直判定多选题（常规，硬编码）
+% =====================================================
+\newcommand{\qSolidLinePlaneStem}{设 \(\alpha, \beta\) 是两个不同的平面，\(a, b\) 是两条不同的直线，则下列命题正确的是 \hfill （\quad）}
+\newcommand{\qSolidLinePlaneOptions}{%
+  \mcoptions[1]{若 \(a \parallel \beta, \alpha \parallel \beta\)，则 \(a \parallel \alpha\)}%
+               {若 \(a \parallel \alpha, a \subset \beta, \alpha \cap \beta = b\)，则 \(a \parallel b\)}%
+               {若 \(a \perp \alpha, b \perp \beta\)，且 \(a \perp b\)，则 \(\alpha \perp \beta\)}%
+               {若 \(\alpha \perp \beta, a \subset \alpha, b \subset \beta\)，则 \(a \perp b\)}%
+}
+\newcommand{\qSolidLinePlaneAnswer}{BC}
+\newcommand{\qSolidLinePlaneSolution}{%
+  对于 A：若 \(a \parallel \beta, \alpha \parallel \beta\)，则直线 \(a\) 与平面 \(\alpha\) 平行或直线 \(a\) 在平面 \(\alpha\) 内，
+  即 \(a \parallel \alpha\) 或 \(a \subset \alpha\)，故 A 错误。
+  
+  对于 B：由线面平行的性质定理可知，若一条直线与一个平面平行，经过该直线的另一个平面与已知平面相交，则该直线平行于交线。
+  因为 \(a \parallel \alpha\), \(a \subset \beta\), \(\alpha \cap \beta = b\)，所以 \(a \parallel b\)，故 B 正确。
+  
+  对于 C：若 \(a \perp \alpha, b \perp \beta\)，则直线 \(a\) 的方向向量是 \(\alpha\) 的法向量，\(b\) 的方向向量是 \(\beta\) 的法向量。
+  因为 \(a \perp b\)，即两法向量垂直，所以 \(\alpha \perp \beta\)，故 C 正确。
+  
+  对于 D：若两平面垂直，则在一个平面内垂直于交线的直线才垂直于另一个平面。
+  平面内的任意直线不一定垂直。例如，在两垂直平面内，可分别取平行于交线的两条异面直线，它们并不垂直。故 D 错误。
+  
+  综上，正确命题为 B, C。
+  故选 BC。%
+}
+
+% =====================================================
+% 第 12 题：平面向量求起点坐标填空题（常规，硬编码）
+% =====================================================
+\newcommand{\qVectorPointCoordStem}{在平面直角坐标系中，已知点 \(B\) 的坐标为 \((4, -3)\)，若向量 \(\overrightarrow{AB} = (2, 3)\)，则点 \(A\) 的坐标为\underline{\qquad}。}
+\newcommand{\qVectorPointCoordAnswer}{\((2, -6)\)}
+\newcommand{\qVectorPointCoordSolution}{%
+  设点 \(A\) 的坐标为 \((x, y)\)。
+  根据平面向量的坐标表示，向量 \(\overrightarrow{AB}\) 的坐标为终点 \(B\) 的坐标减去起点 \(A\) 的坐标：
+  \[
+    \overrightarrow{AB} = (x_B - x_A, y_B - y_A) = (4 - x, -3 - y).
+  \]
+  因为 \(\overrightarrow{AB} = (2, 3)\)，所以：
+  \[
+    \begin{cases}
+      4 - x = 2 \\
+      -3 - y = 3
+    \end{cases}
+    \implies
+    \begin{cases}
+      x = 2 \\
+      y = -6
+    \end{cases}
+  \]
+  所以点 \(A\) 的坐标为 \((2, -6)\)。%
+}
+
+% =====================================================
+% 引入公共题库题目 (Q4, Q5, Q6, Q7, Q8, Q11, Q13, Q14, Q15, Q16)
+% =====================================================
+\input{teaching/pool/立体几何/中档/q_solid_cone_sphere_ratio.tex}     % Q04
+\input{teaching/pool/平面向量/基础/q_vector_unit_angle.tex}         % Q05
+\input{teaching/pool/立体几何/中档/q_solid_frustum_volume.tex}       % Q06
+\input{teaching/pool/立体几何/中档/q_solid_cube_plane_intersection_angle.tex} % Q07
+\input{teaching/pool/解三角形/中档/q_triangle_sum_to_product.tex}   % Q08
+\input{teaching/pool/平面向量/中档/q_vector_triangle_intersection.tex}   % Q11
+\input{teaching/pool/解三角形/中档/q_triangle_lake_measurement.tex}   % Q13
+\input{teaching/pool/立体几何/难题/q_solid_sphere_tetrahedron_intersection.tex} % Q14
+\input{teaching/pool/平面向量/中档/q_vector_parallel_perpendicular_norm.tex} % Q15
+\input{teaching/pool/解三角形/中档/q_trig_graph_properties.tex}      % Q16
+\input{teaching/pool/立体几何/难题/q_solid_prism_parallel_perpendicular.tex} % Q17
+\input{teaching/pool/解三角形/难题/q_triangle_sine_area_median.tex} % Q18
+\input{teaching/pool/立体几何/难题/q_solid_circle_dihedral_volume_min.tex} % Q19
+
+% Transitional student-session API bridge; public implementations remain in teaching/pool.
+\input{teaching/compat/legacy_pool_aliases.tex}
+
+% =====================================================
+% 兼容命名：谭俊文课次宏命名别名
+% =====================================================
+\newcommand{\qTJWTanDomainStem}{\qTanDomainStem}
+\newcommand{\qTJWTanDomainOptions}{\qTanDomainOptions}
+\newcommand{\qTJWTanDomainAnswer}{\qTanDomainAnswer}
+\newcommand{\qTJWTanDomainSolution}{\qTanDomainSolution}
+
+\newcommand{\qTJWCubeInscribedSphereStem}{\qCubeInscribedSphereStem}
+\newcommand{\qTJWCubeInscribedSphereOptions}{\qCubeInscribedSphereOptions}
+\newcommand{\qTJWCubeInscribedSphereAnswer}{\qCubeInscribedSphereAnswer}
+\newcommand{\qTJWCubeInscribedSphereSolution}{\qCubeInscribedSphereSolution}
+
+\newcommand{\qTJWTriangleAreaSimpleStem}{\qTriangleAreaSimpleStem}
+\newcommand{\qTJWTriangleAreaSimpleOptions}{\qTriangleAreaSimpleOptions}
+\newcommand{\qTJWTriangleAreaSimpleAnswer}{\qTriangleAreaSimpleAnswer}
+\newcommand{\qTJWTriangleAreaSimpleSolution}{\qTriangleAreaSimpleSolution}
+
+\newcommand{\qTJWTrigPropertiesStem}{\qTrigPropertiesStem}
+\newcommand{\qTJWTrigPropertiesOptions}{\qTrigPropertiesOptions}
+\newcommand{\qTJWTrigPropertiesAnswer}{\qTrigPropertiesAnswer}
+\newcommand{\qTJWTrigPropertiesSolution}{\qTrigPropertiesSolution}
+
+\newcommand{\qTJWSolidPrismParallelPerpendicularStem}{\qSolidPrismParallelPerpendicularStem}
+\newcommand{\qTJWSolidPrismParallelPerpendicularFigure}{\qSolidPrismParallelPerpendicularFigure}
+\newcommand{\qTJWSolidPrismParallelPerpendicularSolution}{\qSolidPrismParallelPerpendicularSolution}
+
+\newcommand{\qTJWTriangleSineAreaMedianStem}{\qTriangleSineAreaMedianStem}
+\newcommand{\qTJWTriangleSineAreaMedianSolution}{\qTriangleSineAreaMedianSolution}
+
+\newcommand{\qTJWSolidCircleDihedralVolumeMinStem}{\qSolidCircleDihedralVolumeMinStem}
+\newcommand{\qTJWSolidCircleDihedralVolumeMinFigure}{\qSolidCircleDihedralVolumeMinFigure}
+\newcommand{\qTJWSolidCircleDihedralVolumeMinSolution}{\qSolidCircleDihedralVolumeMinSolution}
+\newcommand{\qTJWSolidLinePlaneStem}{\qSolidLinePlaneStem}
+\newcommand{\qTJWSolidLinePlaneOptions}{\qSolidLinePlaneOptions}
+\newcommand{\qTJWSolidLinePlaneAnswer}{\qSolidLinePlaneAnswer}
+\newcommand{\qTJWSolidLinePlaneSolution}{\qSolidLinePlaneSolution}
+
+\newcommand{\qTJWVectorPointCoordStem}{\qVectorPointCoordStem}
+\newcommand{\qTJWVectorPointCoordAnswer}{\qVectorPointCoordAnswer}
+\newcommand{\qTJWVectorPointCoordSolution}{\qVectorPointCoordSolution}

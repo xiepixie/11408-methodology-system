@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "exam_id": "408-2016",
+  "profile_id": "408",
+  "year": 2016,
+  "language": "zh-CN",
+  "title": "2016 年全国硕士研究生招生考试 计算机学科专业基础试题",
+  "main_file": "2016 年全国硕士研究生招生考试.md",
+  "status": "ready",
+  "question_count": 47,
+  "total_score": 150,
+  "question_scores": {
+    "41": 9,
+    "42": 15,
+    "43": 10,
+    "44": 13,
+    "45": 8,
+    "46": 8,
+    "47": 7
+  },
+  "content_features": {
+    "figures": [
+      1,
+      3,
+      4,
+      6,
+      8,
+      17,
+      19,
+      24,
+      28,
+      29,
+      32,
+      41,
+      44,
+      45,
+      47
+    ],
+    "code": [
+      9,
+      13,
+      15,
+      19,
+      27,
+      30,
+      43
+    ],
+    "tables": [
+      8,
+      14
+    ]
+  },
+  "figure_assets": {
+    "1": "assets/q01_fig1.svg",
+    "3": "assets/q03_fig1.svg",
+    "4": "assets/q04_fig1.svg",
+    "6": "assets/q06_fig1.svg",
+    "8": "assets/q08_fig1.svg",
+    "17": "assets/q17_fig1.svg",
+    "19": "assets/q19_fig1.svg",
+    "24": "assets/q24_fig1.svg",
+    "28": "assets/q28_fig1.svg",
+    "29": "assets/q29_fig1.svg",
+    "32": "assets/q32_fig1.svg",
+    "41": "assets/q41_fig1.svg",
+    "44": "assets/q44_fig1.svg",
+    "45": "assets/q45_fig1.svg",
+    "47": "assets/q47_fig1.svg"
+  },
+  "routing": "routing_overrides",
+  "open_items": []
+}

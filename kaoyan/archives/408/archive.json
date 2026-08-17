@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "archive_id": "408-exam-archive",
+  "exam_profile": "../../00_system/exam_profiles/408.json",
+  "conversion_spec": "../../00_system/exam_source_conversion_spec.md",
+  "years": [
+    {
+      "year": 2009,
+      "status": "reviewed",
+      "path": "2009年真题/2009 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2010,
+      "status": "reviewed",
+      "path": "2010年真题/2010 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2011,
+      "status": "reviewed",
+      "path": "2011年真题/2011 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2012,
+      "status": "reviewed",
+      "path": "2012年真题/2012 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2013,
+      "status": "reviewed",
+      "path": "2013年真题/2013 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2014,
+      "status": "reviewed",
+      "path": "2014年真题/2014 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2015,
+      "status": "reviewed",
+      "path": "2015年真题/2015 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2016,
+      "status": "reviewed",
+      "path": "2016年真题/2016 年全国硕士研究生招生考试.md",
+      "routing_override": "2016"
+    },
+    {
+      "year": 2017,
+      "status": "ready",
+      "path": "2017年真题/2017 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2018,
+      "status": "ready",
+      "path": "2018年真题/2018 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2019,
+      "status": "ready",
+      "path": "2019年真题/2019 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2020,
+      "status": "ready",
+      "path": "2020年真题/2020 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2021,
+      "status": "ready",
+      "path": "2021年真题/2021 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2022,
+      "status": "ready",
+      "path": "2022年真题/2022 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2023,
+      "status": "ready",
+      "path": "2023年真题/2023 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2024,
+      "status": "ready",
+      "path": "2024年真题/2024 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2025,
+      "status": "ready",
+      "path": "2025年真题/2025 年全国硕士研究生招生考试.md"
+    },
+    {
+      "year": 2026,
+      "status": "ready",
+      "path": "2026年真题/2026 年全国硕士研究生招生考试.md"
+    }
+  ],
+  "review_queue": "00_408真题可疑点与复核清单.md",
+  "svg_audit": "00_SVG资产审阅.md"
+}

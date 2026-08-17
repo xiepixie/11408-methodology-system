@@ -1,0 +1,50 @@
+% 坐标轴
+\draw[->, line width=0.9pt] (0, 0) -- (5.8, 0) node[below=1pt] {$t$};
+\draw[->, line width=0.9pt] (0, 0) -- (0, 3.2) node[left=1pt] {$v$};
+\node[below left=1pt] at (0,0) {$O$};
+
+% 区域阴影 (使用垂直填充线)
+% 区域 1: [0, 1.8], 面积 10
+\fill[pattern=vertical lines, pattern color=themegray] 
+  (0, 0.8) plot[domain=0:1.8, samples=30] (\x, {0.8 + 1.2*sin(\x/1.8*180)}) 
+  -- plot[domain=1.8:0, samples=30] (\x, {0.8 + 0.3*sin(\x/1.8*180)}) -- cycle;
+  
+% 区域 2: [1.8, 4.2], 面积 20
+\fill[pattern=vertical lines, pattern color=themegray] 
+  (1.8, 1.1) plot[domain=1.8:4.2, samples=30] (\x, {1.1 + 0.3*(\x-1.8) + 1.1*sin((\x-1.8)/2.4*180)}) 
+  -- plot[domain=4.2:1.8, samples=30] (\x, {1.1 + 0.3*(\x-1.8) - 0.4*sin((\x-1.8)/2.4*180)}) -- cycle;
+
+% 区域 3: [4.2, 5.2], 面积 3
+\fill[pattern=vertical lines, pattern color=themegray] 
+  (4.2, 1.82) plot[domain=4.2:5.2, samples=30] (\x, {1.82 + 0.8*(\x-4.2) + 0.6*sin((\x-4.2)/1.0*180)}) 
+  -- plot[domain=5.2:4.2, samples=30] (\x, {1.82 + 0.8*(\x-4.2)}) -- cycle;
+
+% 曲线 v1(t) (甲: 实线)
+\draw[line width=1.1pt, domain=0:5.2, samples=60] plot (\x, {
+  \x < 1.8 ? 0.8 + 1.2*sin(\x/1.8*180) : (
+  \x < 4.2 ? 1.1 + 0.3*(\x-1.8) - 0.4*sin((\x-1.8)/2.4*180) :
+  1.82 + 0.8*(\x-4.2) + 0.6*sin((\x-4.2)/1.0*180)
+  )
+});
+
+% 曲线 v2(t) (乙: 虚线)
+\draw[line width=1.0pt, dashed, domain=0:5.2, samples=60] plot (\x, {
+  \x < 1.8 ? 0.8 + 0.3*sin(\x/1.8*180) : (
+  \x < 4.2 ? 1.1 + 0.3*(\x-1.8) + 1.1*sin((\x-1.8)/2.4*180) :
+  1.82 + 0.8*(\x-4.2)
+  )
+});
+
+% 垂直分界虚线
+\draw[dashed, line width=0.6pt] (1.8, 0) -- (1.8, 1.1);
+\draw[dashed, line width=0.6pt] (4.2, 0) -- (4.2, 1.82);
+\draw[dashed, line width=0.6pt] (5.2, 0) -- (5.2, 2.9);
+
+% 标号
+\node[below] at (1.8, 0) {$10$};
+\node[below] at (4.2, 0) {$25$};
+\node[below] at (5.2, 0) {$30$};
+
+\node[fill=themebg, inner sep=1pt] at (0.8, 1.2) {$10$};
+\node[fill=themebg, inner sep=1pt] at (3.0, 1.8) {$20$};
+\node[fill=themebg, inner sep=1pt] at (4.7, 2.4) {$3$};

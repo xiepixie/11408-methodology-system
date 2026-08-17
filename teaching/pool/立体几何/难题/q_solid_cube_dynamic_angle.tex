@@ -1,0 +1,132 @@
+% =====================================================
+% 题型：立体几何多选题 (q_solid_cube_dynamic_angle.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidCubeDynamicAngleStem}{%
+  如图，正方体 $ABCD - A_1B_1C_1D_1$ 的棱长为 $2$，$E, F$ 分别是 $AD, DD_1$ 的中点，点 $P$ 是底面 $ABCD$ 内一动点，则下列结论正确的是%
+}
+
+\newcommand{\qSolidCubeDynamicAngleOptions}{%
+  \mcoptions[1]{
+    过 $B, E, F$ 三点的平面截正方体所得截面图形是梯形
+  }{
+    三棱锥 $C_1 - A_1B_1P$ 的体积为 $4$
+  }{
+    若 $P$ 在线段 $BD$ 上，则 $C_1P$ 与平面 $ABCD$ 所成角的正弦值最大为 $\dfrac{\sqrt{6}}{3}$
+  }{
+    一质点从 $A$ 点出发沿正方体表面绕行到 $CC_1$ 的中点的最短距离为 $\sqrt{13}$
+  }%
+}
+
+\newcommand{\qSolidCubeDynamicAngleFigure}[1][1.2]{%
+  \begin{tikzpicture}[scale=#1, >=stealth]
+    % Coordinates
+    \coordinate (A) at (0, 0);
+    \coordinate (B) at (2.0, 0);
+    \coordinate (C) at (2.7, 0.7);
+    \coordinate (D) at (0.7, 0.7);
+    
+    \coordinate (A1) at (0, 2.0);
+    \coordinate (B1) at (2.0, 2.0);
+    \coordinate (C1) at (2.7, 2.7);
+    \coordinate (D1) at (0.7, 2.7);
+    
+    \coordinate (E) at ($(A)!0.5!(D)$);
+    \coordinate (F) at ($(D)!0.5!(D1)$);
+    
+    % Draw helper dashed lines for E, F, P
+    \draw[thick] (A) -- (B) -- (C);
+    \draw[thick, dashed] (C) -- (D);
+    \draw[thick, dashed] (D) -- (A);
+    \draw[thick] (A1) -- (B1) -- (C1) -- (D1) -- cycle;
+    \draw[thick] (A) -- (A1);
+    \draw[thick] (B) -- (B1);
+    \draw[thick] (C) -- (C1);
+    \draw[thick, dashed] (D) -- (D1);
+    
+    % Draw segment BD for option C
+    \draw[thick, dashed, red] (B) -- (D);
+    
+    \fill (E) circle (1.2pt);
+    \fill (F) circle (1.2pt);
+    
+    \node[below left] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[right] at (C) {\small $C$};
+    \node[left] at (D) {\small $D$};
+    \node[left] at (A1) {\small $A_1$};
+    \node[right] at (B1) {\small $B_1$};
+    \node[above right] at (C1) {\small $C_1$};
+    \node[above left] at (D1) {\small $D_1$};
+    \node[below left] at (E) {\small $E$};
+    \node[left] at (F) {\small $F$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidCubeDynamicAngleAnswer}{A, C, D}
+
+\newcommand{\qSolidCubeDynamicAngleSolution}{%
+  【解题思路】\\
+  本题为正方体综合多选题。A选项通过建立直角坐标系求出平面方程，求得与棱的交点坐标以确定截面形状；B选项利用棱锥体积公式直接计算；C选项利用线面角定义将正弦最大值转化为投影线段的最短距离问题；D选项利用正方体表面展开求两点间最短距离。\\
+  【解析计算】\\
+  对各选项进行判定：\\
+  对于 \textbf{A} 选项：\\
+  以 \(D\) 为原点，建立空间直角坐标系。\\
+  因为 \(B(2,2,0)\)，\(E(1,0,0)\)，\(F(0,0,1)\)。\\
+  设平面 \(BEF\) 的方程为 \(ax + by + cz + d = 0\)。\\
+  代入三点坐标：\\
+  \(F(0,0,1) \implies c + d = 0 \implies c = -d\)；\\
+  \(E(1,0,0) \implies a + d = 0 \implies a = -d\)；\\
+  \(B(2,2,0) \implies 2a + 2b + d = 0 \implies -2d + 2b + d = 0 \implies b = \dfrac{1}{2}d\)。\\
+  令 \(d = -2\)，则有 \(a = 2\)，\(b = -1\)，\(c = 2\)。\\
+  平面 \(BEF\) 的方程为：\(2x - y + 2z - 2 = 0\)。\\
+  分析此平面与正方体棱的交点：\\
+  与棱 \(CC_1\)（其参数方程为 \(x=0, y=2, z \in [0,2]\)）相交于点：\\
+  \(2(0) - 2 + 2z - 2 = 0 \implies z = 2 \implies C_1(0,2,2)\)。\\
+  所以，截面的四个顶点分别为 \(B(2,2,0)\)，\(E(1,0,0)\)，\(F(0,0,1)\)，\(C_1(0,2,2)\)。\\
+  计算两边向量：\\
+  \(\overrightarrow{EF} = (0-1, 0-0, 1-0) = (-1, 0, 1)\)；\\
+  \(\overrightarrow{BC_1} = (0-2, 2-2, 2-0) = (-2, 0, 2)\)。\\
+  由于 \(\overrightarrow{BC_1} = 2\overrightarrow{EF}\)，因此 \(BC_1 \parallel EF\)。\\
+  又因为 \(|\overrightarrow{BC_1}| = \sqrt{(-2)^2+2^2} = 2\sqrt{2}\)，而 \(|\overrightarrow{EF}| = \sqrt{(-1)^2+1^2} = \sqrt{2}\)，两平行线段长度不等。\\
+  所以该四边形 \(EFC_1B\) 是一个梯形，故 \textbf{A} 正确；\\
+  对于 \textbf{B} 选项：\\
+  三棱锥 \(C_1 - A_1B_1P\) 的体积为：\\
+  \(V_{C_1-A_1B_1P} = \dfrac{1}{3} S_{\triangle A_1B_1C_1} \times h = \dfrac{1}{3} \times 2 \times 2 = \dfrac{4}{3}\)。\\
+  不为 4，故 \textbf{B} 错误；\\
+  对于 \textbf{C} 选项：\\
+  \(C_1(0,2,2)\) 在底面 \(ABCD\) 上的射影为 \(C(0,2,0)\)。\\
+  所以斜线 \(C_1P\) 与平面 \(ABCD\) 所成的角为 \(\angle C_1PC\)（在直角三角形 \(\triangle C_1CP\) 中）。\\
+  设此角为 \(\theta\)，则有：\\
+  \(\sin\theta = \dfrac{CC_1}{C_1P} = \dfrac{2}{\sqrt{2^2 + CP^2}} = \dfrac{2}{\sqrt{4 + CP^2}}\)。\\
+  要使 \(\sin\theta\) 最大，需使 \(CP\) 最小。\\
+  点 \(P\) 在底面的线段 \(BD\) 上滑动。在底面 \(ABCD\) 内，求 \(C(0,2)\) 到线段 \(BD\) 的距离。\\
+  线段 \(BD\) 的两端点为 \(B(2,2)\)，\(D(0,0)\)，其直线方程为 \(y = x\)，即 \(x - y = 0\)。\\
+  由点到直线的距离公式，点 \(C(0,2)\) 到线段 \(BD\) 的距离（最小值）为：\\
+  \(CP_{\min} = \dfrac{|0 - 2|}{\sqrt{1^2 + (-1)^2}} = \sqrt{2}\)。\\
+  （此时点 \(P\) 落在 \(BD\) 的中点 \((1,1,0)\) 处）。\\
+  所以 \(CP^2\) 的最小值为 2。\\
+  此时 \(\sin\theta\) 的最大值为：\\
+  \(\sin\theta_{\max} = \dfrac{2}{\sqrt{4 + 2}} = \dfrac{2}{\sqrt{6}} = \dfrac{\sqrt{6}}{3}\)。\\
+  故 \textbf{C} 正确；\\
+  对于 \textbf{D} 选项：\\
+  一质点从 \(A(2,0,0)\) 到 \(CC_1\) 的中点 \(G(0,2,1)\)。\\
+  展开相邻面 \(ABCD\) 与面 \(BCC_1B_1\)，在展开平面上：\\
+  \(A\) 的坐标可看作 \((2,0)\)，\(G\) 的坐标为 \((0, 2+1) = (0,3)\)。\\
+  最短距离为 \(\sqrt{2^2 + 3^2} = \sqrt{13}\)，故 \textbf{D} 正确。\\
+  综上所述，正确选项为 \textbf{A, C, D}。%
+}
+
+\newcommand{\qSolidCubeDynamicAngleDiagnosis}{%
+  用于课堂精准变式训练。考查正方体截面多边形判定、线面角正弦最大值的动态几何转化（利用投影把角转化为直角三角形内边比）、以及表面爬行最短距离计算。
+}
+
+\newcommand{\qSolidCubeDynamicAngleTeachingNotes}{%
+  \item \textbf{重难点提示}：
+    \begin{itemize}
+      \item C 选项：强调“角最大 $\iff$ 斜边最小 $\iff$ 投影 $CP$ 最小”。引导学生把空间几何的最值问题，降维转化为平面几何点到线段的距离。
+      \item A 选项：截面梯形判定中，用空间向量平行性来证明，能让学生明确知道哪两边平行。
+    \end{itemize}
+}

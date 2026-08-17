@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "exam_id": "408-2014",
+  "profile_id": "408",
+  "year": 2014,
+  "language": "zh-CN",
+  "title": "2014 年全国硕士研究生招生考试 计算机学科专业基础试题",
+  "main_file": "2014 年全国硕士研究生招生考试.md",
+  "status": "ready",
+  "question_count": 47,
+  "total_score": 150,
+  "question_scores": {
+    "41": 10,
+    "42": 15,
+    "43": 8,
+    "44": 13,
+    "45": 7,
+    "46": 8,
+    "47": 9
+  },
+  "content_features": {
+    "figures": [
+      4,
+      7,
+      34,
+      42,
+      43,
+      44
+    ],
+    "code": [
+      1,
+      41,
+      42,
+      47
+    ],
+    "tables": [
+      43,
+      44
+    ]
+  },
+  "figure_assets": {
+    "4": "assets/q04_fig1.svg",
+    "7": "assets/q07_fig1.svg",
+    "34": "assets/q34_fig1.svg",
+    "42": "assets/q42_fig1.svg",
+    "43": "assets/q43_fig1.svg",
+    "44": "assets/q44_fig1.svg"
+  },
+  "routing": "profile-default",
+  "open_items": []
+}

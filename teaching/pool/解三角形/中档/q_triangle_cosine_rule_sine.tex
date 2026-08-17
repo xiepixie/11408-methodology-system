@@ -1,0 +1,42 @@
+% =====================================================
+% 题型：余弦定理与正弦值选择题 (q_triangle_cosine_rule_sine.tex)
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleCosineRuleSineStem}{在 \(\triangle ABC\) 中，角 \(A,B,C\) 的对边分别为 \(a,b,c\)。若 \(a=3,\ b=5\)，且 \(\cos C=\dfrac35\)，则 \(\sin A=\hfill（\quad）\)}
+
+\newcommand{\qTriangleCosineRuleSineOptions}{%
+  \mcoptions[4]{\(\dfrac35\)}{\(\dfrac45\)}{\(\dfrac{12}{25}\)}{\(\dfrac{24}{25}\)}%
+}
+
+\newcommand{\qTriangleCosineRuleSineAnswer}{C}
+
+\newcommand{\qTriangleCosineRuleSineSolution}{%
+  由 \(\cos C=\dfrac35\)，且 \(C\in(0,\pi)\)，得 \(\sin C=\dfrac45\)。\\
+  根据余弦定理：
+  \[
+    c^2=a^2+b^2-2ab\cos C
+    =9+25-2\cdot3\cdot5\cdot\frac35
+    =16,
+  \]
+  所以 \(c=4\)。\\
+  由正弦定理：
+  \[
+    \frac{a}{\sin A}=\frac{c}{\sin C},
+  \]
+  因而
+  \[
+    \sin A=\frac{a\sin C}{c}
+    =\frac{3\cdot\frac45}{4}
+    =\frac35.
+  \]
+  故选 A。%
+}
+
+\newcommand{\qTriangleCosineRuleSineDiagnosis}{%
+  若已知余弦值后直接把 \(\sin C\) 写成 \(1-\cos C\)，说明基本恒等式混淆；另一高频断点是余弦定理求出 \(c^2\) 后忘记取正根。%
+}
+
+\newcommand{\qTriangleCosineRuleSineTeachingNotes}{%
+  题目链条是“余弦值 → 正弦值 → 第三边 → 正弦定理转角”。适合作为正余弦定理联用的短链训练。%
+}

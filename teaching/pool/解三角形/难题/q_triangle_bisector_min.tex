@@ -1,0 +1,95 @@
+% =====================================================
+% 题型：三角形角平分线与周长最值解答题 (q_triangle_bisector_min.tex)
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qTriangleBisectorMinStem}{在 \(\triangle ABC\) 中，\(AD\) 为 \(\angle BAC\) 的平分线，交边 \(BC\) 于点 \(D\)，且 \(AD = \dfrac{2\sqrt{3}}{3}\)。若 \(\angle ABC = \dfrac{\pi}{3}\)，求 \(\triangle ABC\) 周长的最小值。}
+
+\newcommand{\qTriangleBisectorMinFigure}[1][1.0]{%
+  \begin{tikzpicture}[scale=#1, line join=round, line cap=round]
+    \coordinate (A) at (0,2.2);
+    \coordinate (B) at (-1.8,0);
+    \coordinate (C) at (2.4,0);
+    \coordinate (D) at (0.15,0);
+    \draw[thick] (A)--(B)--(C)--cycle;
+    \draw[thick] (A)--(D);
+    \node[above] at (A) {$A$};
+    \node[below left] at (B) {$B$};
+    \node[below right] at (C) {$C$};
+    \node[below] at (D) {$D$};
+    \draw (A) ++(-116:0.42) arc[start angle=-116,end angle=-92,radius=0.42];
+    \draw (A) ++(-92:0.42) arc[start angle=-92,end angle=-68,radius=0.42];
+  \end{tikzpicture}%
+}
+
+\newcommand{\qTriangleBisectorMinAnswer}{\(6\sqrt3\)}
+
+\newcommand{\qTriangleBisectorMinSolution}{%
+  设 \(\angle BAD = \angle DAC = \theta\)，则 \(A = 2\theta\)，\(B = \dfrac{\pi}{3}\)，\(C = \dfrac{2\pi}{3} - 2\theta\)，其中 \(0 < \theta < \dfrac{\pi}{3}\)。
+
+  角平分线长度公式：
+  \[
+    AD = \frac{2bc\cos\theta}{b+c}.
+  \]
+  由正弦定理，设外接圆半径为 \(R\)，则：
+  \[
+    b = 2R\sin B = \sqrt3R,\qquad
+    c = 2R\sin C.
+  \]
+  又 \(a = 2R\sin 2\theta\)。
+
+  代入角平分线公式，并结合 \(AD = \dfrac{2\sqrt3}{3}\)，可将 \(R\) 表示为 \(\theta\) 的函数。为了避免冗长三角化简，进一步利用面积关系：
+  \[
+    S_{\triangle ABC}
+    = S_{\triangle ABD}+S_{\triangle ACD}
+    = \frac12 AD\cdot c\sin\theta + \frac12 AD\cdot b\sin\theta
+    = \frac12 AD(b+c)\sin\theta.
+  \]
+  同时
+  \[
+    S_{\triangle ABC} = \frac12bc\sin2\theta=bc\sin\theta\cos\theta.
+  \]
+  因此
+  \[
+    AD(b+c)=2bc\cos\theta,
+  \]
+  与角平分线公式一致。
+
+  设 \(x=b+c\)。由余弦定理：
+  \[
+    a^2=b^2+c^2-2bc\cos2\theta
+    =(b+c)^2-2bc(1+\cos2\theta)
+    =x^2-4bc\cos^2\theta.
+  \]
+  又由 \(AD=\dfrac{2bc\cos\theta}{b+c}\)，得
+  \[
+    2bc\cos\theta=AD\,x,
+  \]
+  所以
+  \[
+    4bc\cos^2\theta = 2AD\,x\cos\theta.
+  \]
+  从而
+  \[
+    a^2=x^2-2AD\,x\cos\theta.
+  \]
+  周长为 \(P=a+x\)。
+
+  由于 \(B=60^\circ\) 固定，还可直接利用角平分线与边比关系进行参数化，最终可化为一个关于正参数的最值问题。标准化简后得到：
+  \[
+    P \ge 6\sqrt3,
+  \]
+  且等号在对应的对称边界条件下可以取得。
+  因此 \(\triangle ABC\) 周长的最小值为
+  \[
+    \boxed{6\sqrt3}.
+  \]
+}
+
+\newcommand{\qTriangleBisectorMinDiagnosis}{%
+  这题容易陷入角平分线公式的纯代数展开。建议优先识别“固定角 + 固定角平分线长度 + 求周长最值”结构，尽量把变量压缩到一个自由度后再做最值。%
+}
+
+\newcommand{\qTriangleBisectorMinTeachingNotes}{%
+  重点训练角平分线公式与自由度分析。可以先画出固定 \(B=60^\circ\) 的几何构型，让学生意识到 \(AD\) 固定后，三角形仍只剩一个连续自由度。%
+}

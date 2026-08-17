@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "exam_id": "408-2026",
+  "profile_id": "408",
+  "year": 2026,
+  "language": "zh-CN",
+  "title": "2026 年全国硕士研究生招生考试 计算机学科专业基础试题",
+  "main_file": "2026 年全国硕士研究生招生考试.md",
+  "status": "ready",
+  "question_count": 47,
+  "total_score": 150,
+  "question_scores": {
+    "41": 13,
+    "42": 10,
+    "43": 10,
+    "44": 13,
+    "45": 7,
+    "46": 8,
+    "47": 9
+  },
+  "content_features": {
+    "figures": [
+      26,
+      36,
+      37,
+      43,
+      44,
+      46,
+      47
+    ],
+    "code": [
+      2,
+      28,
+      39,
+      41
+    ],
+    "tables": [
+      37,
+      43,
+      44,
+      45
+    ]
+  },
+  "figure_assets": {
+    "26": "assets/q26_fig1.svg",
+    "36": "assets/q36_fig1.svg",
+    "37": "assets/q37_fig1.svg",
+    "43": "assets/q43_fig1.svg",
+    "44": "assets/q44_fig1.svg",
+    "46": "assets/q46_fig1.svg",
+    "47": "assets/q47_fig1.svg"
+  },
+  "routing": "profile-default",
+  "open_items": []
+}

@@ -1,0 +1,105 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[student]{ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 排列组合与概率七题特训}
+\rhead{\small 姓名：\blank{2.5cm}}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\lessoninfo}[4]{%
+  \begin{center}
+    {\LARGE\bfseries #1}\par
+    \vspace{0.8em}
+    {\small 姓名：#2 \quad 日期：#3 \quad 讲次：#4}
+  \end{center}
+  \vspace{0.6em}
+}
+
+\begin{document}
+
+\lessoninfo{排列组合进阶（捆绑、插空与容斥综合）}{\blank{2.6cm}}{\blank{2.6cm}}{第 X 讲}
+
+\section{核心引子与诊断}
+
+\begin{itemize}[itemsep=0.3em]
+  \item \textbf{学完本讲后，你应该能够：}
+  \item 熟练运用捆绑法处理“必须相邻”，并区分“恰好相邻”的二次处理；
+  \item 掌握插空法，理解在圆排列中插空时如何固定空隙位置；
+  \item 熟练使用容斥原理处理多重特殊位置禁忌；
+  \item 在复杂模型（如连续命中段、方格行走）中找到“自动确定”的极简参数。
+\end{itemize}
+
+\mindsetcard{动作流分解}{先写操作流程，再写算式}{做排列组合题，写出乘积前，先用汉字写下“我要干嘛”。比如“捆绑甲乙$\to$排列三组男生$\to$在女生中找双人组$\to$把女生插入男生空隙”，这样每个阶乘和组合数都有明确对应，绝不会多数或漏数。}
+
+\vspace{1em}
+\noindent\textbf{核心公式挑战区：}
+\begin{enumerate}[itemsep=0.8em]
+    \item $n$ 个互不相同对象围成一圈，圆排列数为 \blank{3cm}，产生的空隙数为 \blank{2cm}。
+    \item 三个禁忌事件的容斥公式：$\lvert E_1\cup E_2\cup E_3\rvert = \sum |E_i| - \sum |E_i \cap E_j| $ \blank{3cm}。
+    \item 从点 $(0,0)$ 沿方格边走到点 $(m,n)$，最短路径数等于 \blank{3cm}。
+\end{enumerate}
+
+\newpage
+
+\section{核心题型演练}
+
+\prehint{
+  做题第一步：先问自己，谁要捆绑？谁用来隔开别人？有没有哪一步是被迫自动选的？
+}
+
+\studentproblem{题型一：捆绑与插空结合——恰好相邻}
+{\small \qProbPermExactAdjStem}
+\answerblank[6.5cm]{解：}
+
+\studentproblem{题型二：多个禁位条件——容斥原理}
+{\small \qProbPermMultiForbidStem}
+\answerblank[6.5cm]{解：}
+
+\studentproblem{题型三：不在首位且两个对象不相邻}
+{\small \qProbPermNotFirstNotAdjStem}
+\answerblank[6.5cm]{解：}
+
+\newpage
+
+\studentproblem{题型四：交替排列及条件概率}
+{\small \qProbPermAltParityAdjProbStem}
+\answerblank[8cm]{解：}
+
+\studentproblem{题型五：连续命中、命中段与概率}
+{\small \qProbPermConsecutiveHitProbStem}
+\answerblank[8cm]{解：}
+
+\newpage
+
+\studentproblem{题型六：圆排列中的插空}
+{\small \qProbPermCircleInsertStem}
+\answerblank[8cm]{解：}
+
+\studentproblem{题型七：方格最短路径与定点相遇}
+{\small \qProbPermGridPathMeetStem}
+\answerblank[8cm]{解：}
+
+\newpage
+
+\section{自查与复盘}
+
+\vspace{0.5em}
+\noindent\textbf{本讲我主要犯过的错（请打勾）：}
+\begin{itemize}[itemsep=0.4em]
+  \item \checkbox 恰好相邻题只捆了两个，忘了第三个可能挨上来。
+  \item \checkbox 禁忌位置交叉了，但我直接相乘，没用容斥原理。
+  \item \checkbox 条件概率的分母算成了所有可能，没局限在已知条件里。
+  \item \checkbox 某个动作本来是“自动确定”的（只剩一条路），我却多乘了一个数。
+\end{itemize}
+
+\vspace{1em}
+\noindent\textbf{这七道题里，我觉得最精妙、值得背下来的一题是：}
+\vspace{0.5em}
+
+\blank{14cm}
+
+\end{document}

@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>08 · Sleep / Wakeup：怎样等待而不丢事件？</title>
+  <style>
+    :root{--bg:#0a1020;--panel:#111a2e;--panel2:#0d1627;--line:#263552;--text:#edf3ff;--muted:#a7b6d2;--blue:#80baff;--green:#8ce8c7;--orange:#ffd084;--red:#ff9ca3;--purple:#c5a7ff}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#080f1d,#0a1020);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+    a{color:var(--blue)}code{font-family:"SFMono-Regular",Consolas,monospace;background:#091223;border:1px solid #243757;border-radius:6px;padding:1px 5px}.wrap{max-width:1180px;margin:auto;padding:26px 22px 90px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}.back{text-decoration:none;color:var(--muted)}.badge{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--green)}
+    header{padding:36px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(140,232,199,.11),rgba(128,186,255,.06));border-radius:22px}h1{font-size:clamp(34px,6vw,60px);line-height:1.08;margin:8px 0 16px}.kicker{color:var(--green);font-size:13px;letter-spacing:.12em;text-transform:uppercase}.lead{font-size:18px;color:var(--muted);max-width:930px}.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.meta span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 9px;background:rgba(255,255,255,.025)}
+    section{margin-top:34px}.section-title{font-size:27px;margin:0 0 14px}.panel{border:1px solid var(--line);border-radius:18px;background:rgba(17,26,46,.82);padding:20px}.question{font-size:22px;font-weight:700}.subtle{color:var(--muted)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mini{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px}.mini h3{margin:0 0 6px;font-size:17px}.mini p{margin:0;color:var(--muted);font-size:14px}.flow{display:flex;align-items:stretch;gap:8px;overflow:auto;padding:6px 0}.node{min-width:145px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#0d1729}.node b{display:block}.node small{color:var(--muted)}.arrow{align-self:center;color:#6f86ad;font-size:22px}.callout{border-left:3px solid var(--blue);padding:13px 16px;background:rgba(128,186,255,.06);color:#cbd8ee;border-radius:0 12px 12px 0}.warn{border-left-color:var(--orange);background:rgba(255,208,132,.06)}.danger{border-left-color:var(--red);background:rgba(255,156,163,.055)}.good{border-left-color:var(--green);background:rgba(140,232,199,.055)}
+    table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:#dce7fa}.codebox{font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;background:#07101e;border:1px solid var(--line);border-radius:14px;padding:16px;color:#d9e6ff;overflow:auto}.exam{border:1px solid #5d5032;background:rgba(255,208,132,.05);border-radius:15px;padding:16px}.check li{margin:8px 0}
+    .trace{display:grid;grid-template-columns:310px 1fr;gap:14px}.events{list-style:none;padding:0;margin:0}.events li{padding:9px 10px;border:1px solid transparent;border-radius:9px;color:#7f91ae;cursor:pointer}.events li.active{border-color:#3b7566;background:#10251f;color:#fff}.state{min-height:340px}.state h3{margin-top:0}.kv{display:grid;grid-template-columns:155px 1fr;gap:7px 12px;font-size:14px}.kv b{color:var(--green)}.controls{display:flex;gap:8px;margin-top:14px}.controls button,.quiz button,.switcher button{border:1px solid var(--line);background:#13203a;color:var(--text);padding:9px 13px;border-radius:10px;cursor:pointer}.switcher{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.switcher button.active{border-color:#4e8676;background:#14342c}.quiz{display:grid;gap:10px}.quiz-row{border:1px solid var(--line);background:#0d1627;border-radius:13px;padding:14px}.quiz-row b{display:block;margin-bottom:8px}.answer{display:none;color:var(--muted);margin-top:10px;border-top:1px dashed var(--line);padding-top:9px}.answer.show{display:block}.footer-nav{display:flex;justify-content:space-between;margin-top:45px;padding-top:20px;border-top:1px solid var(--line)}
+    @media(max-width:850px){.grid2,.grid3,.trace{grid-template-columns:1fr}.top{align-items:flex-start}header{padding:25px}}
+  </style>
+  <link rel="stylesheet" href="course.css">
+  <script src="course-ui.js" defer></script>
+</head>
+<body><main class="wrap">
+  <div class="top"><a class="back" href="index.html">← 返回课程地图</a><span class="badge">Lesson 08 · P0</span></div>
+  <header>
+    <div class="kicker">MIT 6.1810 × xv6-riscv × 408</div>
+    <h1>Sleep / Wakeup：<br>怎样等待而不烧 CPU，也不把事件弄丢？</h1>
+    <p class="lead">“条件不满足就睡眠，条件满足就唤醒”听起来很简单，真正难的是那一瞬间：<b>线程已经判断条件为假，但还没来得及让自己变成可被唤醒的等待者。</b>如果事件恰好在这个窗口发生，就可能产生 Lost Wakeup。xv6 的 <code>sleep(chan, lock)</code> 本质上是在实现一个原子交接契约：从“我确认条件仍为假”安全过渡到“未来的 waker 一定能找到我”。</p>
+    <div class="meta"><span>2026 schedule → inherited 2025 Lecture 14</span><span>Current xv6: proc.c / pipe.c / console.c</span><span>Book Ch.9</span><span>408 Anchor: OS-B01 · OS-03 · OS-01/02</span><span>核心 150–210 min · PV经典题桥接 70–110 min</span></div>
+  </header>
+
+  <section><h2 class="section-title">1 · Mother Question</h2><div class="panel">
+    <div class="question">如果我在“检查条件”和“真正睡着”之间放开锁，怎样保证改变条件的那个事件不会刚好从缝里溜过去？</div>
+    <div class="flow"><div class="node"><b>Check predicate</b><small>condition false</small></div><div class="arrow">→</div><div class="node"><b>Register wait</b><small>future wake can find me</small></div><div class="arrow">→</div><div class="node"><b>Block</b><small>give up CPU</small></div><div class="arrow">→</div><div class="node"><b>State/Event change</b><small>producer / IRQ / child exit</small></div><div class="arrow">→</div><div class="node"><b>Wake</b><small>RUNNABLE</small></div><div class="arrow">→</div><div class="node"><b>Recheck</b><small>after reacquiring protection</small></div></div>
+    <p class="callout"><b>OS-B01 的稳定接口：</b><code>Condition false → safe wait registration + block → event → wake eligibility → scheduler → reacquire + recheck</code>。</p>
+  </div></section>
+
+  <section><h2 class="section-title">2 · 先分三个对象：Predicate ≠ Wait Channel ≠ Process State</h2><div class="grid3">
+    <div class="mini"><h3>Condition Predicate</h3><p>真正决定“能不能继续”的共享事实，例如 pipe 的 <code>nread != nwrite</code>、UART 的发送槽空闲、某 child 变 ZOMBIE。</p></div>
+    <div class="mini"><h3>Wait Channel</h3><p>xv6 用一个方便双方约定的地址/标识把 sleeper 与 waker 对上。它只是 rendezvous key，不知道“为什么等待”。</p></div>
+    <div class="mini"><h3>Task State</h3><p><code>SLEEPING</code> 表示暂时没有 CPU 调度资格；<code>RUNNABLE</code> 只是恢复资格，不等于立即运行。</p></div>
+  </div><p class="callout danger"><b>最常见误读：</b><code>wakeup(chan)</code> 不是“把 condition 设置成 true”。改变 predicate 的动作由真正拥有共享状态的代码完成；wakeup 只是通知一批可能值得重新检查的 waiter。</p></section>
+
+  <section><h2 class="section-title">3 · 为什么 Busy Wait 不够？</h2><div class="grid2">
+    <div class="exam"><b>Busy wait</b><div class="codebox">while (!condition) {
+  // repeatedly poll
+}</div><p>执行流仍是 runnable/running，持续消耗 CPU。若 condition 只能由另一个执行流或慢设备推进，它甚至可能妨碍真正的进度。</p></div>
+    <div class="exam"><b>Blocking wait</b><div class="codebox">while (!condition)
+  sleep(chan, &condition_lock);</div><p>登记等待关系并放弃 CPU，让能制造条件的执行流继续工作；代价是 sleep/wakeup/schedule/resume 的固定开销。</p></div>
+  </div><p class="callout warn"><b>所以 spin vs sleep 还是成本问题：</b>极短、可预期的等待可能适合自旋；外设、pipe、child exit 等事件等待通常更适合 block。</p></section>
+
+  <section><h2 class="section-title">4 · Interactive Lost Wakeup：事件是怎样“丢”的？</h2><div class="trace">
+    <div class="panel"><ol class="events" id="badEvents"></ol><div class="controls"><button id="badPrev">← 上一步</button><button id="badNext">下一步 →</button></div></div>
+    <div class="panel state" id="badState"></div>
+  </div></section>
+
+  <section><h2 class="section-title">5 · 修复核心不是“先 sleep 再 unlock”，而是连续持有一把能挡住 waker 的锁</h2><div class="panel">
+    <p>xv6 的 <code>sleep(chan, lk)</code> 要求 caller 已持有保护 predicate 的 condition lock。内部顺序是：</p>
+    <div class="codebox">acquire(&p->lock);   // 先取得“我的睡眠状态”保护
+release(lk);          // 现在才允许别人改 condition
+p->chan = chan;
+p->state = SLEEPING;
+sched();              // 持 p->lock 交给 scheduler
+...
+release(&p->lock);
+acquire(lk);          // sleep 返回前重新拿回 condition lock</div>
+    <p>关键不是死背 6 行，而是下面这个覆盖不变量：</p>
+    <p class="callout good"><b>从“我在 condition lock 下看到条件为假”直到“我已经是可被 wakeup 发现的 SLEEPING waiter”，整个交接窗口里 sleeper 始终持有 <code>condition lock</code>、<code>p->lock</code> 或两者之一。</b>而 waker 要先持 condition lock，再在扫描时取得目标 <code>p->lock</code>。因此它无法刚好穿过那个窗口。</p>
+  </div></section>
+
+  <section><h2 class="section-title">6 · Interactive Correct Handoff：两把锁怎样把窗口缝起来？</h2><div class="trace">
+    <div class="panel"><ol class="events" id="goodEvents"></ol><div class="controls"><button id="goodPrev">← 上一步</button><button id="goodNext">下一步 →</button></div></div>
+    <div class="panel state" id="goodState"></div>
+  </div></section>
+
+  <section><h2 class="section-title">7 · 为什么一定写 <code>while</code>，而不是 <code>if</code>？</h2><div class="panel">
+    <div class="grid2"><div class="exam"><b>原因 1 · 多等待者竞争</b><p>一次 wakeup 可以让多个 waiter 变 RUNNABLE。最先真正得到 CPU + lock 的线程可能先把资源消费掉，后来的线程不能凭“我被叫醒过”继续。</p></div><div class="exam"><b>原因 2 · 其他唤醒原因</b><p>xv6 的 <code>kill()</code> 会把 SLEEPING process 改成 RUNNABLE，即使它原来等待的 predicate 根本没成立。</p></div></div>
+    <div class="codebox">acquire(&lock);
+while (!predicate) {
+  sleep(chan, &lock);   // return with lock re-acquired
+}
+// only now consume/update protected state</div>
+    <p class="callout"><b>Wakeup 的语义应压缩成：</b>“现在值得你重新竞争 CPU/锁并检查一次”，而不是“资源已经永久归你”。</p>
+  </div></section>
+
+  <section><h2 class="section-title">8 · Pipe：一个最标准的双条件生产者-消费者</h2><div class="panel">
+    <table><thead><tr><th>角色</th><th>Predicate</th><th>等待 channel</th><th>谁改变条件并 wake？</th></tr></thead><tbody>
+      <tr><td>Reader</td><td><code>nread != nwrite</code>，或者 writer 已关闭</td><td><code>&nread</code></td><td>writer 写入后 <code>wakeup(&nread)</code></td></tr>
+      <tr><td>Writer</td><td><code>nwrite != nread + PIPESIZE</code>，或者 reader 已关闭</td><td><code>&nwrite</code></td><td>reader 消费后 <code>wakeup(&nwrite)</code></td></tr>
+    </tbody></table>
+    <p>当前 xv6 <code>piperead()</code> 真的写成 <code>while (empty && writeopen) sleep(&nread,&pi->lock)</code>；<code>pipewrite()</code> 在 full 时睡在 <code>&nwrite</code>，reader 消费后叫醒 writer。</p>
+    <p class="callout"><b>这页不要把 channel 名字背成语义：</b><code>&nread</code> 只是“读者等数据”这类 sleeper 的 rendezvous key。真正决定是否有数据的 predicate 仍是计数关系。</p>
+  </div></section>
+
+  <section><h2 class="section-title">9 · Console：硬件中断怎样完成一次 wait → wake 交接？</h2><div class="panel">
+    <div class="flow"><div class="node"><b>read()</b><small>console buffer empty</small></div><div class="arrow">→</div><div class="node"><b>sleep</b><small>reader gives up CPU</small></div><div class="arrow">→</div><div class="node"><b>UART interrupt</b><small>new input char</small></div><div class="arrow">→</div><div class="node"><b>consoleintr()</b><small>update buffer under lock</small></div><div class="arrow">→</div><div class="node"><b>wakeup</b><small>reader RUNNABLE</small></div></div>
+    <p>这正是 OS-B01 与 I/O 的桥：设备完成事件可以改变 predicate 并恢复任务调度资格，但 interrupt handler 不需要、也通常不会“直接把 CPU 交给那个进程”。</p>
+    <p class="callout danger"><b>再次阻断：</b><code>Device Interrupt ≠ process instantly running</code>。ISR 使等待条件成立、执行 wakeup；真正何时 Running 仍由 scheduler 决定。</p>
+  </div></section>
+
+  <section><h2 class="section-title">10 · wait/exit：Lost Wakeup 不只发生在设备和 pipe</h2><div class="panel">
+    <p>parent 的 <code>wait()</code> 本质上在等 predicate：</p>
+    <div class="codebox">exists child with state == ZOMBIE</div>
+    <p>但 parent 事先不知道“到底哪个 child 会先退出”，所以不能拿某一个 child 的 <code>p->lock</code> 当 condition lock。xv6 使用全局 <code>wait_lock</code>：</p>
+    <div class="grid2"><div class="exam"><b>Parent wait()</b><p>持 <code>wait_lock</code> 扫描 children；若没有 ZOMBIE，则 <code>sleep(parent,&wait_lock)</code>。</p></div><div class="exam"><b>Child exit()</b><p>持 <code>wait_lock</code> 完成 parent/child 关系与 ZOMBIE/wakeup 交接，避免 parent 在“扫描完”和“睡下去”之间错过 child exit。</p></div></div>
+    <p class="callout"><b>生成性理解：</b>condition lock 应保护“决定我是否应该睡”的那份 predicate。锁不是按函数名选，也不是一定等于目标对象自己的锁。</p>
+  </div></section>
+
+  <section><h2 class="section-title">11 · 为什么退出要经过 ZOMBIE，而不能自己把自己完全 free 掉？</h2><div class="panel">
+    <div class="flow"><div class="node"><b>Child running</b><small>still using kstack/proc</small></div><div class="arrow">→</div><div class="node"><b>kexit()</b><small>partial cleanup</small></div><div class="arrow">→</div><div class="node"><b>ZOMBIE</b><small>not runnable, still reclaimable</small></div><div class="arrow">→</div><div class="node"><b>parent wait()</b><small>freeproc()</small></div><div class="arrow">→</div><div class="node"><b>UNUSED</b><small>slot reusable</small></div></div>
+    <p>正在执行的线程不能把当前正在使用的 kernel stack 和自身 <code>struct proc</code> 直接从脚下抽掉。于是“逻辑退出”和“最终物理回收”被拆成两个 owner/time point。</p>
+    <p class="callout"><b>这和 COW refcount 是同一类生命周期思维：</b>资源能否 free，取决于是否仍有活跃执行/引用关系需要它，而不是“逻辑上已经不想要了”。</p>
+  </div></section>
+
+  <section><h2 class="section-title">12 · kill：为什么“终止另一个进程”也只能先请求，不能立刻摧毁？</h2><div class="panel">
+    <p>目标进程可能：</p><ul class="check"><li>正运行在另一个 CPU；</li><li>正持有锁；</li><li>正处在文件系统/内核数据结构更新中；</li><li>正睡眠等待某个必须完成的 I/O。</li></ul>
+    <p>所以当前 xv6 的 <code>kkill()</code> 设置 <code>killed</code>；如果目标是 SLEEPING，则把它改成 RUNNABLE。目标之后在安全边界检查 killed 并自行退出。</p>
+    <p class="callout warn"><b>这正是“wakeup ≠ predicate true”的第二证据：</b>被 kill 叫醒的 pipe reader，数据可能仍为空；因此 wait loop 必须重检 condition 和 competing exit condition。</p>
+  </div></section>
+
+  <section><h2 class="section-title">13 · Sleep Lock：Spinlock 上面还能继续构造“让权等待”的锁</h2><div class="panel">
+    <p>当前 xv6 <code>sleeplock.c</code> 的结构很干净：</p><div class="codebox">acquire(internal_spinlock);
+while (locked)
+  sleep(lock_object, &internal_spinlock);
+locked = 1;
+release(internal_spinlock);
+...
+release:
+  acquire(internal_spinlock);
+  locked = 0;
+  wakeup(lock_object);
+  release(internal_spinlock);</div>
+    <p>内部 spinlock 保护 sleeping-lock 自己的 predicate；真正等待锁的线程则通过 sleep 放弃 CPU。</p>
+    <p class="callout"><b>层级很重要：</b>硬件原子 → spinlock → sleep/wakeup coordination → sleeping lock / condition-style primitives。高级同步原语最终仍需要更低层原子性来保证 wait registration 不丢失。</p>
+  </div></section>
+
+  <section><h2 class="section-title">14 · Condition Variable / Sleep-Wakeup 与 Semaphore 不能只因为“都会唤醒”就互换</h2><div class="panel">
+    <table><thead><tr><th>问题</th><th>Predicate-style wait / CV / xv6 sleep-wakeup</th><th>Counting Semaphore</th></tr></thead><tbody>
+      <tr><td>同步事实由谁拥有？</td><td>共享变量/对象拥有 predicate；wait channel/condition variable 只是等待与通知机制</td><td>semaphore 自己的计数就是可消费 permit 状态</td></tr>
+      <tr><td>没有 waiter 时通知会怎样？</td><td>普通 notify/signal 通常不“储存一次未来通知”；真正状态变化仍留在 predicate</td><td><code>V(S)</code> 可以增加 permit，未来 <code>P(S)</code> 可消费</td></tr>
+      <tr><td>醒来后</td><td>通常重新拿锁并重检 predicate</td><td>成功 P 后按该 semaphore contract 已经消费一份 permit</td></tr>
+    </tbody></table>
+    <p class="callout danger"><b>408 高频 Anti-Bridge：</b><code>signal(cv) ≠ V(S)</code>。二者“都可能叫醒人”只是表面相似，状态 Owner 完全不同。</p>
+  </div></section>
+
+  <section><h2 class="section-title">15 · 从 xv6 底层原语封装 408 Counting Semaphore：P/V 到底落在哪里？</h2><div class="panel">
+    <p>408 的 P/V 不要求某个内核必须真的提供一个叫 <code>P()</code> 的函数。它要求的是一个更稳定的契约：<b>P 原子地消费 permit，没 permit 就进入可被未来 V 找到的等待关系；V 原子地产生 permit，并让等待者重新有机会消费。</b></p>
+    <div class="codebox">struct semaphore {
+  struct spinlock lock;   // 保护 permit count + wait protocol
+  int value;              // 非负：当前可立即消费的 permits
+};
+
+sem_wait(S):
+  acquire(&S.lock)
+  while (S.value == 0)
+    sleep(&S, &S.lock)    // 原子释放 S.lock + block；返回前重新拿锁
+  S.value--               // 真正消费一份 permit
+  release(&S.lock)
+
+sem_post(S):
+  acquire(&S.lock)
+  S.value++               // 先改变同步事实
+  wakeup(&S)              // 再通知可能能消费的人
+  release(&S.lock)</div>
+    <p class="callout"><b>这就是 07 + 08 如何生成高层原语：</b><code>atomic RMW / spinlock</code> 保证 semaphore 自身状态不被并发破坏；<code>sleep/wakeup</code> 把“permit=0 时等待”从 busy-wait 变成 blocking wait。</p>
+    <p class="callout warn"><b>表示法边界：</b>有些 408 教材把 semaphore value 允许记成负数，并用绝对值表达等待者数量；上面的真实实现选择“value 永不为负 + waiters 另存在进程等待关系”。编码可以不同，语义必须相同。xv6 <code>wakeup</code> 还可能唤醒多个 waiter，因此必须用 <code>while</code> 重新竞争 permit；它不天然提供 FIFO 公平。</p>
+  </div></section>
+
+  <section><h2 class="section-title">16 · 生产者—消费者：先从两个不变量推导 empty/full/mutex</h2><div class="panel">
+    <div class="grid3"><div class="mini"><h3>容量不变量</h3><p><code>0 ≤ count ≤ N</code>；不能从空缓冲取，也不能向满缓冲塞。</p></div><div class="mini"><h3>许可守恒</h3><p><code>empty + full = N</code>（经典模型）。生产一次把一个 empty 转成 full；消费反过来。</p></div><div class="mini"><h3>结构互斥</h3><p>真正修改 buffer / in / out / count 的多步事务不能被另一个执行流交错破坏。</p></div></div>
+    <div class="grid2" style="margin-top:14px"><div class="exam"><b>Producer</b><div class="codebox">produce_item()          // 私有工作，别占 mutex
+P(empty)                // 先确认有空位
+P(mutex)
+  buffer[in] = item
+  in = (in + 1) % N
+V(mutex)
+V(full)                 // 发布“多了一件可消费对象”</div></div><div class="exam"><b>Consumer</b><div class="codebox">P(full)                 // 先确认有产品
+P(mutex)
+  item = buffer[out]
+  out = (out + 1) % N
+V(mutex)
+V(empty)                // 发布“多了一个空位”
+consume_item()          // 私有工作</div></div></div>
+    <p class="callout danger"><b>为什么通常先 P(empty/full)，再 P(mutex)？</b>如果 producer 先拿 mutex 再因 <code>empty=0</code> 睡眠，consumer 想制造 empty 又必须拿同一个 mutex，就可能形成“持锁等待只能由竞争者制造的条件”。把资源条件等待放在进入共享结构临界区之前，正是在破坏这条依赖。</p>
+    <p class="callout"><b>落到 xv6：</b><code>empty/full</code> 是两个 counting semaphore；<code>mutex</code> 可以是 binary semaphore / sleeping mutex；它们最终都可由“低层原子保护 + wait relation + wake”实现。于是 PV 题不再是神秘符号排列，而是对 predicate、permit 和临界区的组合。</p>
+  </div></section>
+
+  <section><h2 class="section-title">17 · 读者—写者：同一个共享对象，差别只是“准入谓词”怎么定义</h2><div class="panel">
+    <h3>读者优先：第一位 reader 锁住资源，最后一位 reader 释放</h3>
+    <div class="codebox">semaphore rw = 1;       // writer 与 reader-group 互斥
+semaphore rmutex = 1;   // 只保护 readcount
+int readcount = 0;
+
+reader:
+  P(rmutex)
+  readcount++
+  if (readcount == 1) P(rw)   // first reader closes writer gate
+  V(rmutex)
+  read()
+  P(rmutex)
+  readcount--
+  if (readcount == 0) V(rw)   // last reader opens writer gate
+  V(rmutex)
+
+writer:
+  P(rw)
+  write()
+  V(rw)</div>
+    <p>Safety 很清楚：多个 reader 可并发；writer 与 reader-group 互斥；writer 之间也互斥。但持续新 reader 可能让 <code>readcount</code> 长期不归零，于是 writer starvation。</p>
+    <h3>写者优先：一旦有 writer 等待，就先关闭“新 reader 入口”</h3>
+    <div class="codebox">semaphore resource = 1;  // 真正保护共享数据
+semaphore readTry = 1;   // writer 用它关闭新 reader 入口
+semaphore rmutex = 1, wmutex = 1;
+int readcount = 0, writecount = 0;
+
+reader:
+  P(readTry)
+  P(rmutex); readcount++;
+  if (readcount == 1) P(resource)
+  V(rmutex)
+  V(readTry)
+  read()
+  P(rmutex); readcount--;
+  if (readcount == 0) V(resource)
+  V(rmutex)
+
+writer:
+  P(wmutex); writecount++;
+  if (writecount == 1) P(readTry)   // first waiting writer closes reader gate
+  V(wmutex)
+  P(resource); write(); V(resource)
+  P(wmutex); writecount--;
+  if (writecount == 0) V(readTry)
+  V(wmutex)</div>
+    <p class="callout"><b>生成性理解：</b>读优先和写优先不是两份无关模板。真正变化的是 admission policy：读优先只维护“当前 reader-group 是否存在”；写优先再增加 <code>writecount/readTry</code>，把“已有 writer 等待”也纳入新 reader 的准入谓词。</p>
+    <p class="callout warn"><b>公平性边界：</b>“写优先”避免 writer 被源源不断的新 reader 插队，但也可能让 reader 等得很久。若题目要求严格无饥饿，还需要公平 service queue/turnstile 等更强协议，不能从这段伪代码无条件推出。</p>
+  </div></section>
+
+  <section><h2 class="section-title">18 · MIT Coordination：这一课最值得真正动手的是什么？</h2><div class="panel">
+    <table><thead><tr><th>动作</th><th>学习收益</th><th>408 轨道</th></tr></thead><tbody>
+      <tr><td>GDB 单步 <code>sleep()</code> → <code>sched()</code> → scheduler</td><td>把 Blocked 从状态名变成真实控制权交接</td><td><b>强烈推荐</b></td></tr>
+      <tr><td>人为构造“release condition lock → sleep”窗口</td><td>亲眼看到 lost wakeup 为什么不是理论洁癖</td><td><b>必做思想实验</b></td></tr>
+      <tr><td>读 <code>pipe.c</code></td><td>predicate/channel/condition lock/while-loop 全部落地</td><td><b>必读</b></td></tr>
+      <tr><td>读 console/UART interrupt wait</td><td>连接 I/O completion → wakeup → RUNNABLE</td><td><b>推荐</b></td></tr>
+      <tr><td>读 wait/exit/kill</td><td>理解 termination 也是 coordination/lifecycle 问题</td><td><b>推荐</b></td></tr>
+    </tbody></table>
+    <p class="subtle">2026 schedule 当前 Coordination notes 实际标题仍是 2025 Lecture 14。本页按 current main 源码校验实现事实，不把旧讲义函数细节直接当“2026 新实现”。</p>
+  </div></section>
+
+  <section><h2 class="section-title">19 · xv6 Code Path：只读 5 个位置</h2><div class="panel"><div class="codebox">kernel/proc.c
+  sleep()       // condition lock → p->lock handoff
+  wakeup()      // SLEEPING + chan → RUNNABLE
+  kwait/kexit   // wait_lock + ZOMBIE lifecycle
+  kkill()       // competing wake reason
+
+kernel/pipe.c
+  piperead() / pipewrite()
+  // two predicates, two channels, while loops
+
+kernel/console.c / uart.c
+  process wait ↔ interrupt-driven condition change
+
+kernel/sleeplock.c
+  spinlock-protected predicate + sleep/wakeup
+
+408 Bridge Exercise
+  spinlock + sleep/wakeup → counting semaphore
+  semaphore permits → producer/consumer + readers/writers
+
+OS-B01 Canonical Bridge
+  condition → wait relation → Blocked → event → Ready → recheck</div></div></section>
+
+  <section><h2 class="section-title">20 · Quick Attack</h2><div class="quiz">
+    <div class="quiz-row"><b>Q1 · <code>wakeup(chan)</code> 后，等待者是不是已经获得它等待的资源？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不是。wakeup 只恢复调度资格；真正运行时还要重新获取保护并检查 predicate。资源可能已被另一个 waiter 消费，也可能这次 wake 来自 kill 等其他原因。</div></div>
+    <div class="quiz-row"><b>Q2 · 为什么不能先 release(condition_lock)，再调用普通 <code>sleep(chan)</code>？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">这会打开 lost-wakeup window：waker 可以在 waiter 尚未登记为 SLEEPING 时改变 predicate 并调用 wakeup；之后 waiter 再睡下，可能永远等不到下一次事件。</div></div>
+    <div class="quiz-row"><b>Q3 · wait channel 为什么不等于 condition？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">channel 只是让 wakeup 找到一组 sleeper 的 rendezvous key。真正“能否继续”的事实存放在受 condition lock 保护的共享状态里。</div></div>
+    <div class="quiz-row"><b>Q4 · child exit 后把 parent 叫醒，parent 为什么还要重新扫描 ZOMBIE child？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">wakeup 只表示“某个相关状态可能变化”。parent 等的是“存在一个自己的 ZOMBIE child”这个 predicate；真正运行后仍要在 wait_lock 保护下重新确认并选择可回收对象。</div></div>
+    <div class="quiz-row"><b>Q5 · <code>signal(cv)</code> 和 <code>V(S)</code> 都能唤醒等待者，它们是否等价？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不等价。condition variable 的通知不拥有 predicate/permit；共享变量才是条件事实。信号量 V 会改变 semaphore 自身的许可计数，并可为未来 P 保存许可。</div></div>
+    <div class="quiz-row"><b>Q6 · 用 xv6 sleep/wakeup 封装 semaphore 时，为什么 <code>sem_wait</code> 仍要写 while(value==0)？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">因为 xv6 wakeup 可能把多个 waiter 都变 RUNNABLE，而真正 permit 可能只有一个；第一个重新拿锁者消费后，其余线程必须再次检查并继续睡。Wakeup 不是 permit ownership。</div></div>
+    <div class="quiz-row"><b>Q7 · 生产者若先 P(mutex) 再 P(empty)，为什么危险？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">缓冲区满时 producer 会持 mutex 等 empty；但 consumer 要拿同一 mutex 才能消费并 V(empty)，于是制造条件的人被锁在门外，形成 hold-and-wait 依赖。</div></div>
+    <div class="quiz-row"><b>Q8 · 读者优先为何可能饿死 writer？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">只要新 reader 能在最后一个旧 reader 离开前不断加入，readcount 就可能长期不降到 0，writer 持续等不到 rw/resource。系统整体仍推进，所以这是 starvation，不是 deadlock。</div></div>
+  </div></section>
+
+  <section><h2 class="section-title">21 · Retrieval Check</h2><div class="panel"><ol class="check">
+    <li>不用函数名讲清 Lost Wakeup 的最小 5 步反例。</li>
+    <li>解释安全 sleep 为什么要求从 condition lock 到 process/wait-state lock 的原子交接。</li>
+    <li>用 pipe 说清 predicate、condition lock、wait channel、sleeping process 四者分别是什么。</li>
+    <li>解释 wakeup 为什么只得到 RUNNABLE，不能直接推出 RUNNING。</li>
+    <li>用 kill 反例解释为什么 condition wait 必须 while 重检。</li>
+    <li>解释 wait/exit 的 <code>wait_lock</code> 为什么保护的是“是否存在 ZOMBIE child”的检查-睡眠窗口。</li>
+    <li>不用背模板，从“permit count + atomic wait registration”重新推导一个 counting semaphore 的 <code>wait/post</code>。</li>
+    <li>从 <code>0≤count≤N</code> 与 <code>empty+full=N</code> 推导生产者—消费者的 empty/full/mutex，并解释 P 的先后顺序。</li>
+    <li>解释读优先为何只需 reader-group gate，而写优先为何必须再增加“waiting writer closes reader gate”的状态。</li>
+  </ol><p class="callout"><b>通过标准：</b>看到任何“等待某事件”的题，你先问“predicate 由谁拥有？什么锁保护它？如何原子注册等待？谁改变 predicate？wake 后为什么还要重检？”而不是只背 Blocked→Ready 箭头。</p></div></section>
+
+  <section><h2 class="section-title">Sources / Version Boundary</h2><div class="panel"><ul>
+    <li>MIT 6.1810 Fall 2026 schedule 当前 Coordination 链接落地为 <b>2025 Lecture 14: Coordination (sleep&wakeup)</b>，按 inherited lecture material 使用。</li>
+    <li>当前 xv6 main <code>proc.c</code>：<code>sleep()</code> 先取得 <code>p->lock</code> 再释放 condition lock；<code>wakeup()</code> 把匹配 sleeper 改为 RUNNABLE；<code>kkill()</code> 可因另一原因叫醒 sleeper。</li>
+    <li>当前 <code>pipe.c</code>：empty/full predicates、<code>&nread / &nwrite</code> channels、condition lock 与 while-loop 的完整例子。</li>
+    <li>当前 console/UART 路径：interrupt handler 改变输入/发送状态并 wake 等待进程。</li>
+    <li>当前 <code>sleeplock.c</code>：在 spinlock 保护的 predicate 上继续构造让权等待锁。</li>
+    <li>408 Canonical Owner：OS-B01 Wait/Block/Wakeup；同步原语语义仍由 OS-03，调度资格仍由 OS-01/02，I/O 完成事件仍由 OS-05 拥有。</li>
+  </ul></div></section>
+
+  <div class="footer-nav"><a href="07-locking.html">← Lesson 07 · Locking</a><a href="09-deadlock-banker.html">Lesson 09 · Deadlock / Banker →</a></div>
+</main>
+<script>
+const bad=[
+ {n:'0. 条件为假',t:'状态 0 · Reader 发现 pipe empty',d:'Reader 持 condition lock 检查 predicate：nread == nwrite。它决定必须等待。',kv:{Predicate:'false · no data',Reader:'RUNNING',ConditionLock:'Reader holds',Waker:'writer/interrupt not running yet'}},
+ {n:'1. 先放锁',t:'状态 1 · Broken protocol 打开危险窗口',d:'Reader 先 release condition lock，但尚未把自己设为 SLEEPING、也尚未登记 channel。',kv:{Predicate:'still false',Reader:'RUNNING · not registered',ConditionLock:'free',Danger:'waker can now run, but wakeup cannot find reader'}},
+ {n:'2. 事件发生',t:'状态 2 · Waker 把条件变成真',d:'Writer/interrupt 获得 condition lock，加入数据或完成事件。',kv:{Predicate:'TRUE now',Reader:'still not sleeping',Waker:'owns condition lock',StateChange:'the event already happened'}},
+ {n:'3. wakeup',t:'状态 3 · wakeup 没找到任何 sleeper',d:'Waker 调用 wakeup(chan)，但 Reader 还没设置 SLEEPING+chan，所以什么也没发生。这个通知不会被“存起来”。',kv:{Predicate:'true',Wakeup:'returns with no matching sleeper',Reader:'still between check and sleep',LostEvent:'YES'}},
+ {n:'4. Reader 睡下',t:'状态 4 · 永久错过',d:'Reader 恢复后继续执行 sleep，把自己变成 SLEEPING。可 predicate 已经是 true，而那次 wakeup 也已经过去。',kv:{Predicate:'true',Reader:'SLEEPING',FutureWake:'may never happen',Bug:'lost wakeup / possible indefinite sleep'}}
+];
+const good=[
+ {n:'0. check',t:'状态 0 · 在 condition lock 下检查',d:'Waiter 持 condition lock，看到 predicate false。Waker 若要改变 predicate，也必须先取得同一把 condition lock。',kv:{Predicate:'false',WaiterHolds:'condition lock',pLock:'free',Waker:'blocked on condition lock'}},
+ {n:'1. acquire p->lock',t:'状态 1 · 先拿自己的 wait-state lock',d:'sleep() 先 acquire p->lock。此刻 waiter 同时持 condition lock + p->lock。',kv:{WaiterHolds:'condition lock + p->lock',Predicate:'still protected',Waker:'cannot pass condition lock',Coverage:'handoff window fully covered'}},
+ {n:'2. release condition lock',t:'状态 2 · 允许 waker 改 predicate，但仍挡住其 wake scan',d:'Waiter 释放 condition lock。Waker 可以取得它并改变 predicate，但 wakeup 扫到这个 waiter 时还必须取得 p->lock，所以仍不能越过。',kv:{WaiterHolds:'p->lock',WakerMayHold:'condition lock',WakeScan:'blocked on p->lock',Gap:'none'}},
+ {n:'3. register sleep',t:'状态 3 · 建立 chan + SLEEPING',d:'Waiter 在 p->lock 保护下写入 wait channel 并把 state 设为 SLEEPING，然后 sched()。',kv:{Waiter:'SLEEPING',Channel:'registered',pLock:'still transferred across swtch',Waker:'will eventually observe matching sleeper'}},
+ {n:'4. wake',t:'状态 4 · Waker 终于能完成 wakeup',d:'scheduler 一侧释放 p->lock 后，waker 取得它；如果 state+chan 匹配，就改成 RUNNABLE。',kv:{Predicate:'changed by waker',Waiter:'RUNNABLE',Meaning:'eligible, not yet running',LostWakeup:'prevented'}},
+ {n:'5. resume + recheck',t:'状态 5 · 真正恢复后重新拿 condition lock',d:'Waiter 未来被 scheduler 选中，从 sleep 返回前重新 acquire 原 condition lock，再重新检查 predicate。',kv:{Waiter:'RUNNING eventually',ConditionLock:'reacquired',Action:'recheck predicate in while loop',Safety:'notification is not trusted as ownership'}}
+];
+function makeTrace(data,evId,stateId,prevId,nextId){let i=0,ev=document.getElementById(evId),st=document.getElementById(stateId);function r(){ev.innerHTML=data.map((s,x)=>`<li class="${x===i?'active':''}">${s.n}</li>`).join('');let s=data[i];st.innerHTML=`<h3>${s.t}</h3><p class="subtle">${s.d}</p><div class="kv">${Object.entries(s.kv).map(([k,v])=>`<b>${k}</b><span>${v}</span>`).join('')}</div>`;[...ev.children].forEach((e,x)=>e.onclick=()=>{i=x;r()});}document.getElementById(prevId).onclick=()=>{i=Math.max(0,i-1);r()};document.getElementById(nextId).onclick=()=>{i=Math.min(data.length-1,i+1);r()};r();}
+makeTrace(bad,'badEvents','badState','badPrev','badNext');makeTrace(good,'goodEvents','goodState','goodPrev','goodNext');
+function toggleAnswer(btn){btn.nextElementSibling.classList.toggle('show');btn.textContent=btn.nextElementSibling.classList.contains('show')?'隐藏答案':'显示答案';}
+</script>
+</body></html>

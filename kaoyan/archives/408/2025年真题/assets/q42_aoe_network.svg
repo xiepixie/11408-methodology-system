@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500" viewBox="0 0 1000 500">
+<defs><style>.t{font-family:Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#edf4e8}.mid{font-size:20px}.big{font-size:24px}.thin{stroke:#edf4e8;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}.node{fill:#3b4337;stroke:#edf4e8;stroke-width:2.4}</style><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#edf4e8"/></marker></defs>
+<rect width="100%" height="100%" fill="#30362d" rx="12" ry="12"/>
+<g id="activity-a"><line x1="250" y1="85" x2="90" y2="240" class="thin" marker-end="url(#arrow)"/><text x="130" y="135" class="t mid">a = 2</text></g>
+<g id="activity-b"><line x1="290" y1="75" x2="700" y2="75" class="thin" marker-end="url(#arrow)"/><text x="500" y="50" class="t mid">b = 5</text></g>
+<g id="activity-c"><line x1="90" y1="280" x2="250" y2="405" class="thin" marker-end="url(#arrow)"/><text x="130" y="365" class="t mid">c = 1</text></g>
+<g id="activity-d"><line x1="290" y1="90" x2="485" y2="240" class="thin" marker-end="url(#arrow)"/><text x="385" y="145" class="t mid">d = 3</text></g>
+<g id="activity-e"><line x1="110" y1="260" x2="470" y2="260" class="thin" marker-end="url(#arrow)"/><text x="280" y="235" class="t mid">e = 3</text></g>
+<g id="activity-f"><line x1="520" y1="235" x2="700" y2="95" class="thin" marker-end="url(#arrow)"/><text x="590" y="145" class="t mid">f = 4</text></g>
+<g id="activity-g"><line x1="485" y1="280" x2="290" y2="410" class="thin" marker-end="url(#arrow)"/><text x="390" y="340" class="t mid">g = 1</text></g>
+<g id="activity-h"><line x1="290" y1="425" x2="700" y2="425" class="thin" marker-end="url(#arrow)"/><text x="495" y="460" class="t mid">h = 1</text></g>
+<g id="activity-j"><line x1="530" y1="260" x2="900" y2="260" class="thin" marker-end="url(#arrow)"/><text x="710" y="235" class="t mid">j = 1</text></g>
+<g id="activity-k"><line x1="740" y1="95" x2="900" y2="240" class="thin" marker-end="url(#arrow)"/><text x="825" y="140" class="t mid">k = 2</text></g>
+<g id="activity-m"><line x1="520" y1="285" x2="700" y2="405" class="thin" marker-end="url(#arrow)"/><text x="610" y="350" class="t mid">m = 4</text></g>
+<g id="activity-n"><line x1="740" y1="405" x2="900" y2="280" class="thin" marker-end="url(#arrow)"/><text x="825" y="365" class="t mid">n = 3</text></g>
+<g id="event-1"><circle cx="270" cy="75" r="28" class="node"/><text x="270" y="82" class="t big" text-anchor="middle">1</text></g><g id="event-2"><circle cx="720" cy="75" r="28" class="node"/><text x="720" y="82" class="t big" text-anchor="middle">2</text></g><g id="event-3"><circle cx="80" cy="260" r="28" class="node"/><text x="80" y="267" class="t big" text-anchor="middle">3</text></g><g id="event-4"><circle cx="500" cy="260" r="28" class="node"/><text x="500" y="267" class="t big" text-anchor="middle">4</text></g><g id="event-5"><circle cx="920" cy="260" r="28" class="node"/><text x="920" y="267" class="t big" text-anchor="middle">5</text></g><g id="event-6"><circle cx="270" cy="425" r="28" class="node"/><text x="270" y="432" class="t big" text-anchor="middle">6</text></g><g id="event-7"><circle cx="720" cy="425" r="28" class="node"/><text x="720" y="432" class="t big" text-anchor="middle">7</text></g>
+</svg>

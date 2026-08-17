@@ -1,0 +1,35 @@
+% =====================================================
+% 题型：解三角形面积与边长解答题
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleAreaThreeStem}{%
+  在 \(\triangle ABC\) 中，角 \(A, B, C\) 所对的边分别为 \(a, b, c\)，已知 \(a \cos B + \sqrt{3} b \sin A = c\)，且 [缺失条件，待补充]。\\
+  (1) 求角 \(A\) 的大小；\\
+  (2) 若 \(c = \sqrt{15} + \sqrt{3}\)，求 \(\triangle ABC\) 的面积。%
+}
+
+\newcommand{\qTriangleAreaThreeAnswer}{%
+  (1) \(A = \dfrac{\pi}{6}\)；(2) 待补充条件后求解。%
+}
+
+\newcommand{\qTriangleAreaThreeSolution}{%
+  (1) 解：由正弦定理将 \(a \cos B + \sqrt{3} b \sin A = c\) 化为：\\
+  \(\sin A \cos B + \sqrt{3} \sin B \sin A = \sin C\)。\\
+  因为 \(\sin C = \sin(A+B) = \sin A \cos B + \cos A \sin B\)，\\
+  代入上式得 \(\sin A \cos B + \sqrt{3} \sin B \sin A = \sin A \cos B + \cos A \sin B\)，\\
+  化简得 \(\sqrt{3} \sin A \sin B = \cos A \sin B\)。\\
+  因为 \(B \in (0, \pi)\)，所以 \(\sin B > 0\)，\\
+  从而 \(\sqrt{3} \sin A = \cos A\)，即 \(\tan A = \dfrac{\sqrt{3}}{3}\)。\\
+  又 \(A \in (0, \pi)\)，所以 \(A = \dfrac{\pi}{6}\)。\\
+  
+  (2) 说明：由于题干未给出完整条件，仅有 $c = \sqrt{15} + \sqrt{3}$ 及 $A = \dfrac{\pi}{6}$。根据正弦定理，当角 $B$ 发生变化时，角 $C = 150^{\circ} - B$，边 $b = \dfrac{c\sin B}{\sin C}$。三角形面积为 $S = \dfrac{1}{2}bc\sin A = \dfrac{c^2\sin B}{4\sin(150^{\circ}-B)}$，此面积随着 $B$ 的变化而变化，因此无法唯一确定面积。待补充条件后可求解。%
+}
+
+\newcommand{\qTriangleAreaThreeDiagnosis}{%
+  （留白待收集学生作答后补充）%
+}
+
+\newcommand{\qTriangleAreaThreeTeachingNotes}{%
+  待补充条件。已在解析中给出面积不唯一的严格数学证明（当角 $B$ 变化时，三角形面积随之改变，无法由当前条件唯一确定），可作为备课和启发学生思考的素材。%
+}

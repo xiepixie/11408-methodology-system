@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260">
+<defs>
+<style>
+  .t{font-family:Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#edf4e8}
+  .small{font-size:16px}.mid{font-size:20px}.big{font-size:24px}
+  .line{stroke:#edf4e8;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}.thin{stroke:#edf4e8;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .node{fill:#3b4337;stroke:#edf4e8;stroke-width:2.4}
+</style>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#edf4e8"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#30362d" rx="12" ry="12"/>
+<g id="host-H1"><rect x="70" y="115" width="90" height="50" class="node"/><line x1="80" y1="175" x2="150" y2="175" class="line"/><text x="115" y="205" text-anchor="middle" class="t mid">H1</text></g>
+<g id="router-R1"><circle cx="320" cy="140" r="42" class="node"/><path d="M300 125 L340 155 M340 125 L300 155" class="line"/><text x="320" y="205" text-anchor="middle" class="t mid">R1</text></g>
+<g id="router-R2"><circle cx="585" cy="140" r="42" class="node"/><path d="M565 125 L605 155 M605 125 L565 155" class="line"/><text x="585" y="205" text-anchor="middle" class="t mid">R2</text></g>
+<g id="host-H2"><rect x="745" y="115" width="90" height="50" class="node"/><line x1="755" y1="175" x2="825" y2="175" class="line"/><text x="790" y="205" text-anchor="middle" class="t mid">H2</text></g>
+<g id="link-H1-R1"><line x1="160" y1="140" x2="278" y2="140" class="line"/><text x="220" y="125" text-anchor="middle" class="t small">10 Mb/s</text></g>
+<g id="link-R1-R2"><line x1="362" y1="140" x2="543" y2="140" class="line"/><text x="452" y="125" text-anchor="middle" class="t small">100 Mb/s</text></g>
+<g id="link-R2-H2"><line x1="627" y1="140" x2="745" y2="140" class="line"/><text x="685" y="125" text-anchor="middle" class="t small">1000 Mb/s</text></g>
+</svg>

@@ -1,0 +1,267 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[student]{ipara}
+\input{questions.tex}
+
+% =====================================================
+% 核心公式三线表定义
+% =====================================================
+\newcommand{\formulatable}{%
+  \arrayrulecolor{rulecolor}%
+  \begin{tabularx}{\textwidth}{p{3.8cm}X}
+  \toprule[1.2pt]
+  正切函数定义域 & 函数 \(f(x)=\tan x\) 要求分母不为 \(0\)，定义域为 \(\left\{x \;\middle|\; x \ne \fblank[2.8cm]{\dfrac{\pi}{2}+k\pi}, k\in\mathbb{Z}\right\}\)。\\ \hline
+  正方体外接球模型 & 棱长为 \(a\) 的正方体外接球的中心在正方体中心，其体对角线长等于球的 \fblank[1.8cm]{直径}；即 \(2R = \fblank[2.2cm]{\sqrt{3}a}\)。\\ \hline
+  三角形面积公式 & 已知两边 \(b, c\) 及其夹角 \(A\)，面积公式为 \(S_{\triangle ABC} = \fblank[3.4cm]{\dfrac{1}{2}bc\sin A}\)。\\ \hline
+  圆锥与球表面积 & 圆锥表面积 \(S_{\text{锥}} = \fblank[3cm]{\pi r^2 + \pi rl}\)；球的表面积 \(S_{\text{球}} = \fblank[2.4cm]{4\pi R^2}\)。\\ \hline
+  向量夹角公式 & 两个向量 \(\vec{a}, \vec{b}\) 的夹角满足 \(\cos\theta = \fblank[3.4cm]{\dfrac{\vec{a}\cdot\vec{b}}{|\vec{a}||\vec{b}|}}\)，其中 \(\theta \in \fblank[1.8cm]{[0, \pi]}\)。\\ \hline
+  圆台体积公式 & 已知上下底半径为 \(r, R\)，高为 \(h\)，圆台体积 \(V = \fblank[4.2cm]{\dfrac{1}{3}\pi h (R^2 + Rr + r^2)}\)。\\ \hline
+  和差化积公式 & 正弦和差化积为：\(\sin A + \sin B = \fblank[4.8cm]{2\sin\dfrac{A+B}{2}\cos\dfrac{A-B}{2}}\)。\\ \hline
+  投影向量公式 & 向量 \(\vec{a}\) 在 \(\vec{b}\) 上的投影向量为：\(\operatorname{proj}_{\vec{b}}\vec{a} = \fblank[4.2cm]{\dfrac{\vec{a}\cdot\vec{b}}{|\vec{b}|^2}\vec{b}}\)。\\ \hline
+  三点共线定理 & 若 \(E, B, D\) 三点共线，且 \(\overrightarrow{AE} = x\overrightarrow{AB} + y\overrightarrow{AD}\)，则系数满足 \(x+y = \fblank[1.2cm]{1}\)。\\ \hline
+  向量坐标公式 & 已知点 \(A(x_1, y_1), B(x_2, y_2)\)，则向量 \(\overrightarrow{AB} = \fblank[4.0cm]{(x_2 - x_1, y_2 - y_1)}\)。\\ \hline
+  等边三角形度量 & 边长为 \(a\) 的等边三角形的内切圆半径 \(r_{\text{内}} = \fblank[2.5cm]{\dfrac{\sqrt{3}}{6}a}\)。\\ \hline
+  正四面体几何量 & 棱长为 \(a\) 的正四面体的高线 \(h = \fblank[3.0cm]{\dfrac{\sqrt{6}}{3}a}\)。\\
+  \bottomrule[1.2pt]
+  \end{tabularx}%
+}
+
+% =====================================================
+% 页眉页脚设置（学案端）
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 谭俊文 02\_卷子讲解（第 1—11 题）学案}
+\rhead{\small 数学一对一}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\begin{document}
+
+% =====================================================
+% 第一页：课前公式复习
+% =====================================================
+\begin{center}
+  {\Large\bfseries 一对一卷子讲解学案（第 1—11 题）}\\
+  \vspace{0.6em}
+  学生：\blank{3cm} \quad 课次：\blank{2cm} \quad 日期：\blank{3cm}
+\end{center}
+
+\section{课前公式准备}
+\begingroup
+\large
+\renewcommand{\arraystretch}{1.65}
+\linespread{1.45}\selectfont
+\showprompttrue 
+\formulatable
+\endgroup
+
+\newpage
+
+% =====================================================
+% 第二页：课堂题目演练 (Q1, Q2, Q3)
+% =====================================================
+\section{课堂题目演练}
+
+\begin{choiceblock}
+  % Q01 (原卷 1)
+  \autoquestion{\qTJWTanDomainStem}
+  \qTJWTanDomainOptions
+  \choiceworkarea[4.0cm]
+  
+  \vspace{0.5em}
+  
+  % Q02 (原卷 2)
+  \autoquestion{\qTJWCubeInscribedSphereStem}
+  \qTJWCubeInscribedSphereOptions
+  \choiceworkarea[4.5cm]
+  
+  \vspace{0.5em}
+  
+  % Q03 (原卷 3)
+  \autoquestion{\qTJWTriangleAreaSimpleStem}
+  \qTJWTriangleAreaSimpleOptions
+  \choiceworkarea[4.0cm]
+\end{choiceblock}
+
+\newpage
+
+% =====================================================
+% 第三页：课堂题目演练 (Q4, Q5, Q6)
+% =====================================================
+\begin{choiceblock}
+  % Q04 (原卷 4)
+  \autoquestion{\qTJWConeSphereRatioStem}
+  \qTJWConeSphereRatioOptions
+  \choiceworkarea[4.5cm]
+  
+  \vspace{0.5em}
+  
+  % Q05 (原卷 5)
+  \autoquestion{\qTJWVectorUnitAngleStem}
+  \qTJWVectorUnitAngleOptions
+  \choiceworkarea[4.5cm]
+  
+  \vspace{0.5em}
+  
+  % Q06 (原卷 6)
+  \automcfigurequestion{\qTJWFrustumVolumeStem}{\qTJWFrustumVolumeOptions}{\qTJWFrustumVolumeFigure[0.9]}
+  \choiceworkarea[4.5cm]
+\end{choiceblock}
+
+\newpage
+
+% =====================================================
+% 第四页：课堂题目演练 (Q7, Q8, Q9)
+% =====================================================
+\begin{choiceblock}
+  % Q07 (原卷 7)
+  \automcfigurequestion{\qTJWCubePlaneIntersectionAngleStem}{\qTJWCubePlaneIntersectionAngleOptions}{\qTJWCubePlaneIntersectionAngleFigure[0.85]}
+  \choiceworkarea[4.5cm]
+  
+  \vspace{0.5em}
+  
+  % Q08 (原卷 8)
+  \autoquestion{\qTJWTriangleSumToProductStem}
+  \qTJWTriangleSumToProductOptions
+  \choiceworkarea[4.5cm]
+  
+  \vspace{0.5em}
+  
+  % Q09 (原卷 9)
+  \autoquestion{\qTJWTrigPropertiesStem}
+  \qTJWTrigPropertiesOptions
+  \choiceworkarea[4.5cm]
+\end{choiceblock}
+
+\newpage
+
+% =====================================================
+% 第五页：课堂题目演练 (Q10, Q11)
+% =====================================================
+\begin{choiceblock}
+  % Q10 (原卷 10)
+  \autoquestion{\qTJWSolidLinePlaneStem}
+  \qTJWSolidLinePlaneOptions
+  \choiceworkarea[5.2cm]
+  
+  \vspace{1.0em}
+  
+  % Q11 (原卷 11)
+  \automcfigurequestion{\qTJWVectorTriangleIntersectionStem}{\qTJWVectorTriangleIntersectionOptions}{\qTJWVectorTriangleIntersectionFigure[0.9]}
+  \choiceworkarea[6.0cm]
+\end{choiceblock}
+
+\newpage
+
+% =====================================================
+% 第六页：课堂题目演练 (填空题：Q12, Q13, Q14)
+% =====================================================
+\begin{choiceblock}
+  % Q12 (原卷 12)
+  \autoquestion{\qTJWVectorPointCoordStem}
+  \choiceworkarea[4.0cm]
+  
+  \vspace{0.5em}
+  
+  % Q13 (原卷 13)
+  \automcfigurequestion{\qTJWTriangleLakeMeasurementStem}{}{\qTJWTriangleLakeMeasurementFigure[0.95]}
+  \choiceworkarea[5.0cm]
+  
+  \vspace{0.5em}
+  
+  % Q14 (原卷 14)
+  \automcfigurequestion{\qTJWSolidSphereTetrahedronIntersectionStem}{}{\qTJWSolidSphereTetrahedronIntersectionFigure[0.85]}
+  \choiceworkarea[6.0cm]
+\end{choiceblock}
+
+\newpage
+
+% =====================================================
+% 第七页：课堂题目演练 (解答题：Q15)
+% =====================================================
+\section{解答题演练}
+
+\autoquestion{\qTJWVectorParallelPerpendicularNormStem}
+\choiceworkarea[16.0cm]
+
+\newpage
+
+% =====================================================
+% 第八页：课堂题目演练 (解答题：Q16)
+% =====================================================
+\automcfigurequestion{\qTJWTrigGraphPropertiesStem}{}{\qTJWTrigGraphPropertiesFigure[1.05]}
+\choiceworkarea[16.0cm]
+
+\newpage
+
+% =====================================================
+% 第九页：课堂题目演练 (解答题：Q17)
+% =====================================================
+\automcfigurequestion{\qTJWSolidPrismParallelPerpendicularStem}{}{\qTJWSolidPrismParallelPerpendicularFigure[1.0]}
+\choiceworkarea[14.0cm]
+
+\newpage
+
+% =====================================================
+% 第十页：课堂题目演练 (解答题：Q18)
+% =====================================================
+\autoquestion{\qTJWTriangleSineAreaMedianStem}
+\choiceworkarea[16.0cm]
+
+\newpage
+
+% =====================================================
+% 第十一页：课堂题目演练 (解答题：Q19)
+% =====================================================
+\automcfigurequestion{\qTJWSolidCircleDihedralVolumeMinStem}{}{\qTJWSolidCircleDihedralVolumeMinFigure[1.0]}
+\choiceworkarea[14.0cm]
+
+\newpage
+
+% =====================================================
+% 第十二页：总结与二次默写
+% =====================================================
+\begin{center}
+  {\Large\bfseries 学习总结与自查}
+\end{center}
+
+\setcounter{section}{0} % 重置第一级标题编号，重新从“一”开始
+
+\section{公式二次默写}
+\begingroup
+\large
+\renewcommand{\arraystretch}{1.65}
+\linespread{1.45}\selectfont
+\showpromptfalse 
+\formulatable
+\endgroup
+
+\section{核心易错复盘}
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=1.5em]
+  \item 正方体中求两条空间直线的夹角，在无法直观平移作图的情况下，如何利用空间坐标系进行求解？请写出求解的核心步骤。
+  
+  \vspace{0.8cm}
+  
+  \item 三角形中已知 \(\sin A+\sin B = 1\) 且给出差值时，我是否能条件反射想到“和差化积”？它与二倍角公式是如何结合从而计算出 \(\cos C\) 的？
+  
+  \vspace{0.8cm}
+  
+  \item 在平面向量综合题中，如果点 \(E\) 是直线 \(AP\) 与 \(BD\) 的交点（其中 \(D\) 是 \(AC\) 中点，\(P\) 在 \(BC\) 上），如何用“共线向量系数和为 1”或“基底分解系数比较”来快速求得 \(\overrightarrow{AE}\) 与 \(\overrightarrow{AP}\) 的比例？
+  
+  \vspace{0.8cm}
+  
+  \item 在向量运算中，如果两个向量平行或垂直，它们对应的代数坐标公式分别是什么？如何通过计算两向量的数量积来快速判断它们始终垂直？
+  
+  \vspace{0.8cm}
+  
+  \item 球面与正四面体表面的交线可以分为哪两类？底面上的截圆半径是如何通过底面等边三角形的高线和内切圆半径推导出来的？
+  
+  \vspace{0.8cm}
+  
+  \item 在求正弦型函数 \(f(x) = A\sin(\omega x+\varphi)\) 的单调区间与闭区间最值时，通常应当遵循怎样的解题步骤？如何利用换元法处理 \(2x - \dfrac{\pi}{3}\) 的区间端点？
+  
+  \vspace{0.8cm}
+\end{enumerate}
+
+\end{document}

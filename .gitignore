@@ -12,9 +12,21 @@
 *.vrb
 *.bbl
 *.blg
+*.xdv
+*.synctex(busy)
+
+# Python / local runtime state
+.venv/
+__pycache__/
+*.py[cod]
+
+# Generated transient directories
+tmp/
+tmp_*/
+
+# Local regression renderings; sources under infra/latex/specimens/ are canonical.
+infra/latex/specimens/*.pdf
 
 # macOS / OS files
 .DS_Store
 Thumbs.db
-# 408 CodeBrick Notes (uncommitted raw notes)
-408_CodeBrick_Notes/

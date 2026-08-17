@@ -1,0 +1,142 @@
+\documentclass[UTF8,fontset=fandol,11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.75cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}
+\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\definecolor{deep}{RGB}{38,58,72}\definecolor{soft}{RGB}{244,247,248}\definecolor{greenish}{RGB}{52,91,74}\definecolor{warnc}{RGB}{136,61,58}\definecolor{purple}{RGB}{84,72,112}
+\hypersetup{colorlinks=true,linkcolor=deep,urlcolor=purple,pdftitle={CO-B02 地址翻译与 Cache 访问}}
+\pagestyle{fancy}\fancyhf{}
+\lhead{\small\color{deep}\textbf{408 · CO-B02}}
+\rhead{\small\color{deep}Translation Result → Cache Access}
+\cfoot{\small 第 \thepage\ 页 / 共 \pageref{LastPage} 页}\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warnc,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+\title{\vspace{-1.1cm}\textbf{CO-B02｜地址翻译与 Cache 访问}\\[0.4em]\large VA/PA、权限与 Cache 地址字段怎样完成可验证交接}
+\author{408 · 计算机组成原理 Internal Bridge}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}{Bridge Mother Interface}
+\[
+\boxed{\text{VA Access Request}\to\text{Translation Result Packet}\to\text{Cache Address / Attribute Packet}\to\text{Hit/Miss Path}}
+\]
+翻译先证明“映射到哪里且允许怎样访问”，Cache 再证明“所需物理块副本是否在此”。两者都使用地址位，但缺失对象、处理者和重试点不同。
+\end{corebox}
+
+\begin{methodbox}{本手册的范围}
+\begin{itemize}
+\item 地址翻译一侧产生 VPN/offset、TLB、PTE、page walk、权限结果和 PA；
+\item Cache 一侧负责 block、set、tag、valid/dirty、hit/miss、替换和写策略；
+\item 本手册只说明两侧字段怎样交接、哪些地址位可以并行使用、何时发生别名风险以及慢路径怎样返回。
+\end{itemize}
+\end{methodbox}
+
+\section{术语先行：一次访问要携带哪些信息}
+\begin{methodbox}{四个接口词}
+\begin{itemize}
+\item \kw{访问请求：}至少包含虚拟地址、读/写/取指类型、特权级和访问字节数。
+\item \kw{翻译结果：}包含物理地址、权限、页属性以及成功、TLB miss 或 fault 状态。
+\item \kw{地址字段：}物理地址再拆成块内偏移、组索引和标签，用来定位 Cache 副本。
+\item \kw{别名：}两个不同的虚拟地址指向同一物理数据；synonym 指同一数据出现多个 Cache 副本，homonym 指相同虚拟地址在不同地址空间映射不同物理页。
+\end{itemize}
+\end{methodbox}
+
+\tableofcontents
+\newpage
+
+\section{接口对象：一次访问不是单独一个地址}
+左侧输入至少是 $(VA,access\ type,privilege,size)$。翻译成功时输出
+\[
+TR=\{PA,permission,page\ attributes,translation\ status\};
+\]
+Cache 侧消费
+\[
+CA=\{physical\ identity,index/tag/offset,cacheability,access\ type,size\}.
+\]
+若翻译失败，接口输出 fault/permission 状态而不是合法 PA，Cache 命中也不能授权架构提交。
+
+页内 offset 在合法分页映射中保持不变，因此 block offset 可提前从 VA 低位取得；更高位能否提前用作 set index，取决于这些位是否仍完全落在 page offset 内。
+
+\section{三类“没找到”必须保持分离}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.2cm}YYY}\toprule
+事件 & 缺失对象 & 处理路径 & 重试点\\\midrule
+TLB miss & 翻译缓存副本 & hardware/software walk 与 refill & 重新形成 PA\\
+Page/permission fault & 有效映射、驻留或权限 & 精确异常交给 OS & 修复后重启指令或终止\\
+Cache miss & 数据块副本 & victim/writeback/fill & 重新执行 Cache access\\
+\bottomrule
+\end{tabularx}
+\end{center}
+这三个状态机可以先后发生：TLB miss 后 walk 成功，再 Cache miss；也可能翻译权限失败，此时不得因虚拟索引碰巧命中就返回数据。
+
+\section{PIPT：身份最直接，路径通常串行}
+Physically Indexed, Physically Tagged 的基本顺序是
+\[
+VA\to TLB/page\ walk\to PA\to \{tag,index,offset\}\to Cache.
+\]
+候选组和 tag 都由 PA 决定，物理身份清晰，synonym 问题自然收敛；代价是 Cache 索引通常等待翻译。TLB hit latency 与 Cache hit latency 是否能部分重叠，必须由具体端点和题设给出。
+
+\section{VIPT：用不变低位换并行}
+Virtually Indexed, Physically Tagged 可以让 VA 的 page-offset 位先选择 set，同时 TLB 查 VPN；翻译返回 PFN 后，用 PA tag 比较候选行。设页大小 $P=2^p$、块大小 $B=2^b$、组数 $S=2^s$，无额外 synonym 机制时要求
+\[
+b+s\le p
+\quad\Longleftrightarrow\quad
+S\times B\le P.
+\]
+由于每路容量是 $S\times B$，等价为
+\[
+\frac{Cache\ data\ capacity}{associativity}\le page\ size.
+\]
+这是由 page offset、block offset 与 set index 的位预算推出，不是某个固定容量口诀。
+
+\begin{warnbox}{Synonym 与 Homonym}
+Synonym 是不同 VA 映射同一 PA，若它们可索引到不同位置就可能出现重复物理副本；homonym 是相同 VA 在不同地址空间映射不同 PA，需 ASID/失效等区分。两者都不是普通 Cache conflict miss。
+\end{warnbox}
+
+\section{VIVT 与属性交接}
+Virtually Indexed, Virtually Tagged 可以避开翻译命中路径，却需处理地址空间 homonym、共享页 synonym、上下文切换失效和权限先后关系。408 题若只给名称，不应自行假设具体一致性方案。
+
+PTE/平台还可能给出 cacheable、device、write policy 或 shareability 属性。CO-B02 只传递这些访问属性；Cache/互连如何实现由相应 Topic/平台拥有。MMIO 若规定不可缓存，就不能套普通数据 Cache hit/miss 路径。
+
+\section{贯穿母例：VIPT Load}
+\begin{enumerate}
+\item 将 VA 拆为 VPN 与 page offset，并由 access type/privilege 形成翻译请求；
+\item 用 page-offset 内的 block offset 与 set index 读取候选组，同时查 TLB；
+\item TLB hit 后检查权限，拼接 PFN 与 offset 形成 PA；
+\item 用 PA tag 与候选行 valid/tag 比较；权限成功且 tag hit 才能返回数据；
+\item TLB miss 则暂停身份确认并走 page walk；fault 则转精确异常，不进入普通 Cache commit；
+\item Cache miss 则按 CO-06 的 victim/fill/retry 状态机处理；
+\item 数据返回后，是否可 forwarding、何时 commit 由 CO-04/CO-I01 接管。
+\end{enumerate}
+
+\section{接口不变量与调用协议}
+\begin{enumerate}
+\item 先写 VA 宽度、page size、Cache block、set 和 associativity；
+\item 标 page offset、block offset、set index、tag 的位来源；
+\item 写翻译结果包：PA、permission、attributes、status；
+\item 判断 PIPT/VIPT/VIVT，以及 TLB/Cache 可否并行；
+\item 分别画 TLB miss、fault、Cache miss 的处理者与重试点；
+\item 只有翻译合法且物理身份命中，才允许把数据交给流水线；
+\item 若进入 OS 映射修复，停止本 Bridge，转 X-B02。
+\end{enumerate}
+
+\begin{methodbox}{压缩成第一动作}
+看到 TLB+Cache 综合题，先问：\kw{每一位来自 VA 还是 PA？它属于不变 offset 还是待翻译页号？缺失的是翻译、权限还是数据副本？}
+\end{methodbox}
+
+\begin{corebox}{一句话}
+CO-B02 不把 TLB 与 Cache 合成一个缓存，而是规定翻译的 PA/权限/属性怎样安全地成为 Cache 身份检查输入，并用页内偏移位预算证明哪些工作可以并行。
+\end{corebox}
+
+\end{document}

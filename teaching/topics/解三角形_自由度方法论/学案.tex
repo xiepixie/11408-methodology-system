@@ -1,0 +1,237 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[student]{ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 解三角形\_自由度方法论 学案}
+\rhead{\small 高一/高二同步或一轮复习}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\sessionformulas}{%
+  \arrayrulecolor{rulecolor}
+  \begin{tabularx}{\textwidth}{p{4.2cm}X}
+  \toprule[1.2pt]
+  狭义 vs 广义 & 狭义求唯一边角；广义求存在性、解个数、恒等证明与范围最值\\ \midrule
+  自由度参数化 & \(C = \pi-A-B\)，\(a=2R\sin A, b=2R\sin B, c=2R\sin C\)\\ \midrule
+  正弦定理 (比例翻译) & \(a/\sin A = b/\sin B = c/\sin C = 2R\)\\ \midrule
+  余弦定理 (二次翻译) & \(c^2 = a^2 + b^2 - 2ab\cos C\)\\ \midrule
+  面积公式 (形状-大小) & \(S = \frac{1}{2}ab\sin C = \frac{abc}{4R} = rp\)\\ \midrule
+  \(r\) 与 \(R\) 转换式 & \(r = 4R\sin\frac{A}{2}\sin\frac{B}{2}\sin\frac{C}{2}\)\\ \bottomrule[1.2pt]
+  \end{tabularx}
+}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 解三角形：双分类体系与结构化解题 学案}\\
+  \vspace{0.5em}
+  姓名：\blank{2.6cm}
+  \quad
+  日期：\blank{2.6cm}
+  \quad
+  时长：120 分钟
+\end{center}
+
+\section{本讲目标与符号说明}
+
+\begin{tcolorbox}[colback=white,colframe=gray!80,arc=2mm,title=extbf{符号说明与几何含义规范}]
+\begin{itemize}[itemsep=0.2em]
+  \item \(A, B, C\)：三角形的三个内角（满足 \(A+B+C = \pi\)）；
+  \item \(a, b, c\)：内角 \(A, B, C\) 所对的三条对边长；
+  \item \(R\)：外接圆半径（尺度自由度）；\quad \(r\)：内切圆半径（尺度自由度）；
+  \item \(p = \frac{a+b+c}{2}\)：半周长；\quad \(2p = a+b+c\)：周长；\quad \(m_a\)：边 \(a\) 上的中线长；
+  \item \(\text{DOF}\)：自由度（Degree of Freedom，决定几何状态所需独立变量数）。
+\end{itemize}
+\end{tcolorbox}
+
+\vspace{0.5em}
+
+\begin{itemize}[itemsep=0.3em]
+  \item extbf{第一套分类（操作层）}：看清已知量（SSS, SAS, ASA/AAS, SSA）与求解目标，迅速选对起手工具。
+  \item extbf{第二套分类（结构层）}：理解 \((A,B,R)\) 与 \((A,B,r)\) 两套自然坐标（已知角与半径求边）。
+  \item extbf{动态几何架构}：掌握“一条总主线 + 六种母轨迹 + 三个综合应用”，秒杀最值与解数问题。
+\end{itemize}
+
+\section{核心公式与方法备忘}
+
+\begingroup
+\large
+\renewcommand{\arraystretch}{1.55}
+\linespread{1.35}\selectfont
+\showprompttrue
+\sessionformulas
+\endgroup
+
+\newpage
+
+\section{双分类体系对比与决策 SOP}
+
+\begin{tcolorbox}[colback=white,colframe=gray!80,arc=2mm,title=extbf{第一套分类：已知量组合与起手工具 (操作层)}]
+\begin{itemize}[itemsep=0.4em]
+  \item extbf{SSS（已知三边 \(a,b,c\)）} \(\longrightarrow\) 求解内角或面积，用 \blank{4cm} 定理；
+  \item extbf{SAS（已知两边 \(b,c\) 及其夹角 \(A\)）} \(\longrightarrow\) 求解第三边 \(a\)，用 \blank{4cm} 定理；
+  \item extbf{ASA / AAS（已知两角 \(A,B\) 及一边 \(a\)）} \(\longrightarrow\) 求解第三角 \(C=\pi-A-B\) 及剩余边，用 \blank{3cm} 定理；
+  \item extbf{SSA（已知两边 \(a,b\) 及对角 \(A\)）} \(\longrightarrow\) 求解角 \(B\)，用正弦定理求 \(\sin B = \frac{b\sin A}{a}\) 并做 \blank{3cm} 讨论。
+\end{itemize}
+\end{tcolorbox}
+
+\vspace{1.0em}
+
+\begin{tcolorbox}[colback=white,colframe=gray!80,arc=2mm,title=extbf{第二套分类：自然坐标系 (结构层)}]
+\begin{itemize}[itemsep=0.4em]
+  \item extbf{\((A,B,R)\) 坐标系}：已知量为两角 \(A,B\) 与外接圆半径 \(R\)，求解目标为三边，求法：
+    \[
+    a = \blank{2.5cm},\qquad b = \blank{2.5cm},\qquad c = \blank{2.5cm}
+    \]
+  \item extbf{\((A,B,r)\) 坐标系}：已知量为两角 \(A,B\) 与内切圆半径 \(r\)，求解目标为三边，由切线段公式：
+    \[
+    a = r\left(\cot\frac{B}{2} + \cot\frac{C}{2}\right)
+    \]
+\end{itemize}
+\end{tcolorbox}
+
+\newpage
+
+\section{动态几何全景：六大母轨迹与综合应用}
+
+\begin{tcolorbox}[colback=white,colframe=gray!80,arc=2mm,title=extbf{动点约束总主线}]
+固定底边 \(AB\)，动点 \(C\) 初始具有 2 个自由度，法则：
+\[
+\boxed{\text{2 个自由度} - 1 \text{ 个条件} = \text{\blank{3cm}轨迹}}
+\]
+\end{tcolorbox}
+
+\vspace{0.5em}
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{lXl}
+\toprule
+extbf{动点条件 (几何约束)} & extbf{标准母轨迹} & extbf{关键最值位置} \\
+\midrule
+\(CA = r\) (定距离) & \blank{3cm} & 圆周分布 \\
+\(\angle ACB = \theta\) (定角) & \blank{3cm} & 圆弧中点 (\(CA=CB\)) \\
+\(S_{\triangle ABC} = S_0\) (定面积) & \blank{3cm} (定高 \(h=\frac{2S_0}{c}\)) & 平行线任意点 \\
+\(\frac{CA}{CB} = k \neq 1\) (定距离比) & \blank{3cm} & 阿氏圆最高点与直径端点 \\
+\(CA+CB = L\) (定距离和 / 定周长) & \blank{3cm} & 椭圆短轴端点 (\(CA=CB\)) \\
+\(|CA-CB| = L\) (定距离差) & \blank{3cm} & 双曲线分支 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{1.0em}
+
+\begin{tcolorbox}[colback=white,colframe=gray!80,arc=2mm,title=\textbf{三大综合应用法则}]
+\begin{enumerate}[label=\arabic*., itemsep=0.3em]
+  \item \textbf{SSA 解的个数}：解的个数 \(=\) \blank{5cm} 的合法交点个数；
+  \item \textbf{外接圆体系}：定弦定角锁定外接圆半径 \(R = \frac{c}{2\sin C}\)；
+  \item \textbf{内切圆体系}：固定底边 \(AB\) 与内切圆半径 \(r\) 时，内心 \(I\) 的轨迹为 \blank{4cm}。
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{center}
+\qTriangleDofSsaBranchFigure[0.85]
+\end{center}
+
+\begin{center}
+\qTriangleDofOutcircleFigure[0.85]
+\end{center}
+
+\begin{center}
+\qTriangleDofIncircleFigure[0.85]
+\end{center}
+
+\newpage
+
+\section{课堂核心母题}
+
+\subsection{例题 1（齐次型：$\text{DOF}=2$ 锁定形状，第 25 题变式）}
+\qTriangleDofHomogeneousStem
+
+\begin{center}
+\qTriangleDofHomogeneousFigure[0.95]
+\end{center}
+
+\answerblank[7.5cm]{解：}
+
+\studentthink{
+  \item 本题已知量是齐次条件还是非齐次条件？
+  \item 求解目标是具体长度还是边长比/三角函数值？
+}
+
+
+\newpage
+
+\subsection{例题 2（范围最值型：$\text{DOF}=1$ 圆弧滑动，第 27 题变式）}
+\qTriangleDofRangeStem
+
+\begin{center}
+\qTriangleDofRangeFigure[1.0]
+\end{center}
+
+\answerblank[7.5cm]{解：}
+
+\studentthink{
+  \item 已知量顶角 \(C\) 和定弦 \(c\) 锁定外接圆半径 \(R\) 为多少？
+  \item 目标周长 \(L(A)\) 关于参数 \(A\) 的表达式是什么？自变量区间如何裁切？
+}
+
+
+\newpage
+
+\subsection{例题 3（SSA 离散分支与解的个数）}
+\qTriangleDofSsaBranchStem
+
+\begin{center}
+\qTriangleDofSsaBranchFigure[1.0]
+\end{center}
+
+\answerblank[7.5cm]{解：}
+
+\studentthink{
+  \item 已知量 \(a, b, A\) 中，几何高 \(h = b\sin A\) 是多少？
+  \item 目标求解角 \(B\) 时，为什么 \(\sin B = k\) 会产生锐角和钝角两解？
+}
+
+
+\newpage
+
+\subsection{例题 4（几何结构与自由度传递：中线与向量）}
+\qTriangleDofVectorMedianStem
+
+\begin{center}
+\qTriangleDofVectorMedianFigure[1.0]
+\end{center}
+
+\answerblank[8.0cm]{解：}
+
+\studentthink{
+  \item 已知量包含 \(b, c\) 和中线 \(m_a\)，如何利用平行四边形恒等式求解第三边 \(a\)？
+  \item 目标向量点积 \(\vec{GA} \cdot \vec{GB}\) 的起手分解步骤是什么？
+}
+
+
+\newpage
+
+\section{易错总结与终极反思}
+
+\begin{tcolorbox}[colback=white,colframe=gray!80,arc=2mm,title=extbf{反思与落实}]
+\begin{itemize}[itemsep=0.5em]
+  \item[$\square$] 看到 SSS 或 SAS 条件，我的第一反应是使用\blank{3cm}定理。
+  \item[$\square$] 看到 ASA 或 AAS 条件，我的第一反应是使用\blank{3cm}定理。
+  \item[$\square$] 我理解了在 \((A,B,R)\) 坐标系中，\(R\) 是连接角度形状与边长尺度的\blank{3cm}。
+  \item[$\square$] 我掌握了动态几何“一条总主线 \(\to\) 六种母轨迹 \(\to\) 三大综合应用”的解题框架。
+\end{itemize}
+\end{tcolorbox}
+
+\vspace{1.5em}
+\noindent\textbf{解三角形双分类终极统一口诀：}
+\vspace{0.8em}
+
+\blank{14cm}
+
+\end{document}

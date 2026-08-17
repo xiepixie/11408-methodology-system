@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "exam_id": "408-2025",
+  "profile_id": "408",
+  "year": 2025,
+  "language": "zh-CN",
+  "title": "2025 年全国硕士研究生招生考试 计算机学科专业基础试题",
+  "main_file": "2025 年全国硕士研究生招生考试.md",
+  "status": "ready",
+  "question_count": 47,
+  "total_score": 150,
+  "question_scores": {
+    "41": 13,
+    "42": 10,
+    "43": 12,
+    "44": 11,
+    "45": 7,
+    "46": 8,
+    "47": 9
+  },
+  "content_features": {
+    "figures": [
+      33,
+      36,
+      38,
+      42,
+      44,
+      46,
+      47
+    ],
+    "code": [
+      1,
+      5,
+      12,
+      15,
+      41,
+      43,
+      44,
+      45,
+      46
+    ],
+    "tables": [
+      11,
+      26,
+      34,
+      42
+    ]
+  },
+  "figure_assets": {
+    "33": "assets/q33_h1_r1_r2_h2.svg",
+    "36": "assets/q36_dhcp_exchange.svg",
+    "38": "assets/q38_tcp_sequence.svg",
+    "42": "assets/q42_aoe_network.svg",
+    "44": "assets/q44_divider_datapath.svg",
+    "46": "assets/q46_virtual_address_space.svg",
+    "47": "assets/q47_engineering_network.svg"
+  },
+  "routing": "profile-default",
+  "open_items": []
+}

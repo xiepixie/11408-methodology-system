@@ -1,0 +1,35 @@
+# ISA 与机器级程序：软件意图怎样成为可执行契约
+
+状态：LaTeX 工作稿待人工确认；Canonical 深度正文已建立并发布。
+
+## Hook
+
+同一段 C 代码可以被不同微架构执行，但软件必须观察到一致的架构语义。本册追踪“程序意图 → 架构状态 → 编码/地址语义 → 下一架构状态”，把指令格式、寻址、机器级程序和 ABI 放回同一条生成链。
+
+## Scope / Stop Boundary
+
+本册 Owns ISA contract、架构状态、指令格式与编码预算、有效地址、访存宽度、字节序/对齐、C 到机器级语义和 ABI 调用边界。
+
+不展开 CO-03 的数据通路与控制、CO-04 的流水线重叠、CO-06/07 的 Cache/TLB 实现，也不拥有 OS 的 fault、调度和上下文软件动作。
+
+## Owns / Uses
+
+- Uses CO-01 的位串解释与有限宽度运算；
+- Outputs Read Set、Derived Values、Write Set、Next PC 和 EA 给 CO-03；
+- 通过 CO-B01 与数据通路交接；
+- ISA/特权与 OS 的接口上移到跨科 Bridge，ABI 不等于 ISA 自动行为。
+
+## Read Next
+
+- [CO-03 CPU 数据通路与控制](../30_CPU数据通路与控制/README.md)
+- [CO-B01 ISA Semantic × Datapath](../85_科内桥梁/CO-B01_ISA语义与数据通路/README.md)
+- [计组做题规则](../90_做题规则/README.md)
+
+## Canonical Manual
+
+- [Canonical LaTeX 正文](CO-02_ISA与机器级程序_方法论手册.tex)
+- [Published PDF](../../../90_publish/408/CO-02_ISA与机器级程序_方法论手册.pdf)
+
+## 当前状态
+
+本册已完成 CO-程序机器级表示与指令系统设计、CO-函数调用栈帧、CO-寄存器按可访问性分类及相关归档 Source 的第一轮 Owner Diff。正文仍是待人工确认候选；扩展操作码、EA、字节序/对齐、C/ABI 边界和 `x=a[i]+1` 母例已进入 Canonical，固定 MIPS/ABI/节拍被限制为例子或边界。Published PDF 为 9 页。

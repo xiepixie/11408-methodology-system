@@ -1,0 +1,28 @@
+% =====================================================
+% 题型：解三角形三角恒等与余弦定理填空题 (q_triangle_condition.tex)
+% =====================================================
+% 难度：★ (基础)
+% =====================================================
+\newcommand{\qTriangleConditionStem}{%
+  \textbf{题目：}在 \(\triangle ABC\) 中，\(A,B,C\) 的对边分别为 \(a,b,c\)。若 \(\tan A = \dfrac{5}{4}\)，且 \(\cos A = \dfrac{b^2 + c^2 - a^2}{2bc}\)，已知 \(b = 4\)，\(c = 5\)，求边 \(a\) 的值。
+}
+
+\newcommand{\qTriangleConditionAnswer}{\(a=5\)}
+
+\newcommand{\qTriangleConditionSolution}{%
+  【标准解答】
+
+  由 \(\tan A = \dfrac{5}{4}\)，并结合 \(A \in (0, \pi)\)，可取 \(\sin A = \dfrac{5}{\sqrt{41}}\)，\(\cos A = \dfrac{4}{\sqrt{41}}\)（此时 \(A\) 为锐角）。
+
+  另一方面，由余弦定理：
+  \[
+    \cos A = \frac{b^2 + c^2 - a^2}{2bc}
+    = \frac{4^2 + 5^2 - a^2}{2\cdot 4 \cdot 5}
+    = \frac{41 - a^2}{40}.
+  \]
+  联立得：
+  \[
+    \frac{41 - a^2}{40} = \frac{4}{\sqrt{41}}.
+  \]
+  由此可解出 \(a\) 的值。若题面要求整数/简单根式，可进一步核对已知数据。
+}

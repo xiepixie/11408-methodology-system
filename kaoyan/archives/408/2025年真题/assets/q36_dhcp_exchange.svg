@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650" role="img" aria-labelledby="title desc">
+<title id="title">题36 DHCP 报文交换过程</title>
+<desc id="desc">主机 H 与地址为 192.168.5.1 的 DHCP 服务器之间依次交换 DHCPOFFER 和 DHCPREQUEST，两报文均标注 yiaddr 为 192.168.5.9。</desc>
+<defs>
+<style>
+.t{font-family:Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#edf4e8}.small{font-size:18px}.mid{font-size:24px}.big{font-size:28px;font-weight:600}.line{stroke:#edf4e8;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}.box{fill:#3b4337;stroke:#edf4e8;stroke-width:2.2}.device{fill:#394136;stroke:#edf4e8;stroke-width:2.2}
+</style>
+<marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,8 L11,4 z" fill="#edf4e8"/></marker>
+</defs>
+<rect width="100%" height="100%" rx="14" ry="14" fill="#30362d"/>
+<g id="host-h">
+  <text x="170" y="55" class="t big" text-anchor="middle">H</text>
+  <rect x="125" y="82" width="90" height="58" rx="4" class="device"/>
+  <rect x="143" y="96" width="54" height="30" rx="2" fill="#30362d" stroke="#edf4e8" stroke-width="1.8"/>
+  <line x1="170" y1="140" x2="170" y2="580" class="line" marker-end="url(#arrow)"/>
+  <text x="112" y="570" class="t small">时间</text>
+</g>
+<g id="dhcp-server">
+  <text x="730" y="48" class="t big" text-anchor="middle">DHCP服务器</text>
+  <text x="730" y="78" class="t mid" text-anchor="middle">192.168.5.1</text>
+  <rect x="695" y="94" width="70" height="72" rx="5" class="device"/>
+  <line x1="708" y1="112" x2="752" y2="112" class="line"/><line x1="708" y1="126" x2="752" y2="126" class="line"/><line x1="708" y1="140" x2="752" y2="140" class="line"/>
+  <line x1="730" y1="166" x2="730" y2="580" class="line" marker-end="url(#arrow)"/>
+</g>
+<g id="dhcpoffer">
+  <text x="455" y="205" class="t mid" text-anchor="middle">DHCPOFFER</text>
+  <line x1="730" y1="236" x2="170" y2="330" class="line" marker-end="url(#arrow)"/>
+  <rect x="345" y="222" width="250" height="115" class="box"/>
+  <text x="470" y="258" class="t mid" text-anchor="middle">…</text>
+  <text x="470" y="296" class="t mid" text-anchor="middle">yiaddr: 192.168.5.9</text>
+  <text x="470" y="325" class="t mid" text-anchor="middle">…</text>
+</g>
+<g id="dhcprequest">
+  <text x="455" y="392" class="t mid" text-anchor="middle">DHCPREQUEST</text>
+  <line x1="170" y1="420" x2="730" y2="515" class="line" marker-end="url(#arrow)"/>
+  <rect x="345" y="404" width="250" height="115" class="box"/>
+  <text x="470" y="440" class="t mid" text-anchor="middle">…</text>
+  <text x="470" y="478" class="t mid" text-anchor="middle">yiaddr: 192.168.5.9</text>
+  <text x="470" y="507" class="t mid" text-anchor="middle">…</text>
+</g>
+</svg>

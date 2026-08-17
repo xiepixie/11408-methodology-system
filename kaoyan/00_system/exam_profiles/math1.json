@@ -1,0 +1,91 @@
+{
+  "schema_version": 2,
+  "profile_id": "math1",
+  "name": "全国硕士研究生招生考试 数学（一）",
+  "subject_code": "301",
+  "total_score_current": 150,
+  "duration_minutes": 180,
+  "eras": [
+    {
+      "era_id": "era_1987_1996",
+      "years": {"from": 1987, "to": 1996},
+      "total_score": 100,
+      "description": "早期 100 分制：填空题 5 题 (15分) + 选择题与大题"
+    },
+    {
+      "era_id": "era_1997_2002",
+      "years": {"from": 1997, "to": 2002},
+      "total_score": 100,
+      "description": "100 分制：前 5 题填空共 15 分，6～10 题选择共 15 分；解答题共 70 分。年度总题数与解答题逐题分值并不固定，由各年 exam.json 持有。",
+      "sections": [
+        {"id": "fill_in", "name": "填空题", "questions": {"from": 1, "to": 5}, "score_per_question": 3, "total_score": 15},
+        {"id": "single_choice", "name": "选择题", "questions": {"from": 6, "to": 10}, "score_per_question": 3, "total_score": 15},
+        {"id": "calculation_proof", "name": "解答题", "questions": {"from": 11}, "total_score": 70, "score_distribution": "year-specific; see annual exam.json"}
+      ]
+    },
+    {
+      "era_id": "era_2003",
+      "years": {"from": 2003, "to": 2003},
+      "total_score": 150,
+      "question_count": 22,
+      "sections": [
+        {"id": "fill_in", "name": "填空题", "questions": {"from": 1, "to": 6}, "score_per_question": 4, "total_score": 24},
+        {"id": "single_choice", "name": "选择题", "questions": {"from": 7, "to": 12}, "score_per_question": 4, "total_score": 24},
+        {"id": "calculation_proof", "name": "解答题", "questions": {"from": 13, "to": 22}, "total_score": 102, "score_distribution": "year-specific; see annual exam.json"}
+      ]
+    },
+    {
+      "era_id": "era_2004_2006",
+      "years": {"from": 2004, "to": 2006},
+      "total_score": 150,
+      "question_count": 23,
+      "sections": [
+        {"id": "fill_in", "name": "填空题", "questions": {"from": 1, "to": 6}, "score_per_question": 4, "total_score": 24},
+        {"id": "single_choice", "name": "选择题", "questions": {"from": 7, "to": 14}, "score_per_question": 4, "total_score": 32},
+        {"id": "calculation_proof", "name": "解答题", "questions": {"from": 15, "to": 23}, "total_score": 94, "score_distribution": "year-specific; see annual exam.json"}
+      ]
+    },
+    {
+      "era_id": "era_2007_2020",
+      "years": {"from": 2007, "to": 2020},
+      "total_score": 150,
+      "question_count": 23,
+      "sections": [
+        {"id": "single_choice", "name": "选择题", "questions": {"from": 1, "to": 8}, "score_per_question": 4, "total_score": 32},
+        {"id": "fill_in", "name": "填空题", "questions": {"from": 9, "to": 14}, "score_per_question": 4, "total_score": 24},
+        {"id": "calculation_proof", "name": "解答题", "questions": {"from": 15, "to": 23}, "total_score": 94}
+      ],
+      "subject_routing": [
+        {"subject": "高等数学", "questions": [1, 2, 3, 4, 9, 10, 11, 12, 15, 16, 17, 18, 19]},
+        {"subject": "线性代数", "questions": [5, 6, 13, 20, 21]},
+        {"subject": "概率论与数理统计", "questions": [7, 8, 14, 22, 23]}
+      ]
+    },
+    {
+      "era_id": "era_2021_present",
+      "years": {"from": 2021, "to": 2026},
+      "total_score": 150,
+      "question_count": 22,
+      "sections": [
+        {"id": "single_choice", "name": "选择题", "questions": {"from": 1, "to": 10}, "score_per_question": 5, "total_score": 50},
+        {"id": "fill_in", "name": "填空题", "questions": {"from": 11, "to": 16}, "score_per_question": 5, "total_score": 30},
+        {"id": "calculation_proof", "name": "解答题", "questions": {"from": 17, "to": 22}, "total_score": 70}
+      ],
+      "subject_routing": [
+        {"subject": "高等数学", "questions": [1, 2, 3, 4, 11, 12, 13, 14, 17, 18, 19, 20]},
+        {"subject": "线性代数", "questions": [5, 6, 15, 21]},
+        {"subject": "概率论与数理统计", "questions": [7, 8, 9, 10, 16, 22]}
+      ]
+    }
+  ],
+  "question_id_format": "math1-<year>-Q<2-digit-question>",
+  "notes": [
+    "考研数学一自 1987 年设立，历经多次题型结构调整。",
+    "2021 年起采用新大纲结构：10 道选择题 (50分) + 6 道填空题 (30分) + 6 道解答题 (70分)，满分 150 分。",
+    "2007-2020 年采用 8 选择 (32分) + 6 填空 (24分) + 9 解答 (94分)，满分 150 分。",
+    "1997-2002 年采用 5 填空 (15分) + 5 选择 (15分) + 解答题 (70分)，满分 100 分；年度总题数与解答题逐题分值由各年 exam.json 记录。",
+    "2003 年为 150 分制过渡结构：6 填空 (24分) + 6 选择 (24分) + 10 解答 (102分)，共 22 题。",
+    "2004-2006 年采用 6 填空 (24分) + 8 选择 (32分) + 9 解答 (94分)，共 23 题。",
+    "1987-1996 年采用早期 100 分制结构。"
+  ]
+}

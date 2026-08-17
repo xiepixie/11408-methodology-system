@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "exam_id": "math1-2002",
+  "profile_id": "math1",
+  "year": 2002,
+  "language": "zh-CN",
+  "title": "2002 年全国硕士研究生招生考试 数学（一）真题",
+  "main_file": "2002 年全国硕士研究生招生考试 数学（一）真题.md",
+  "status": "ready",
+  "question_count": 20,
+  "total_score": 100,
+  "question_scores": {
+    "1": 3,
+    "2": 3,
+    "3": 3,
+    "4": 3,
+    "5": 3,
+    "6": 3,
+    "7": 3,
+    "8": 3,
+    "9": 3,
+    "10": 3,
+    "11": 6,
+    "12": 7,
+    "13": 7,
+    "14": 8,
+    "15": 7,
+    "16": 7,
+    "17": 6,
+    "18": 8,
+    "19": 7,
+    "20": 7
+  },
+  "content_features": {
+    "figures": [
+      9
+    ],
+    "code": [],
+    "tables": []
+  },
+  "figure_assets": {
+    "9": "assets/q09_plane_positions.svg"
+  },
+  "routing": "profile-default",
+  "open_items": []
+}

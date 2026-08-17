@@ -1,0 +1,39 @@
+% =====================================================
+% 题型：解三角形面积与边长解答题
+% =====================================================
+% 难度：★ (基础)
+% =====================================================
+\newcommand{\qTriangleAreaTwoStem}{%
+  已知 \(a, b, c\) 分别为 \(\triangle ABC\) 的三个内角 \(A, B, C\) 的对边，若 \(a \cos C + (c + 2b) \cos A = 0\)。\\
+  (1) 求 \(A\)；\\
+  (2) 若 \(a = \sqrt{7}\)，\(c = 1\)，求 \(\triangle ABC\) 的面积。%
+}
+
+\newcommand{\qTriangleAreaTwoAnswer}{%
+  (1) \(A = \dfrac{2\pi}{3}\)；(2) \(\dfrac{\sqrt{3}}{2}\)。%
+}
+
+\newcommand{\qTriangleAreaTwoSolution}{%
+  (1) 解：由题意 \(a \cos C + c \cos A + 2b \cos A = 0\)，\\
+  由正弦定理得：\(\sin A \cos C + \sin C \cos A + 2\sin B \cos A = 0\)，\\
+  即 \(\sin(A+C) + 2\sin B \cos A = 0\)。\\
+  在 \(\triangle ABC\) 中，\(\sin(A+C) = \sin B\)，\\
+  所以 \(\sin B + 2\sin B \cos A = 0\)，即 \(\sin B (1 + 2\cos A) = 0\)。\\
+  因为 \(B \in (0, \pi)\)，所以 \(\sin B > 0\)，\\
+  从而 \(1 + 2\cos A = 0\)，解得 \(\cos A = -\dfrac{1}{2}\)。\\
+  又因为 \(A \in (0, \pi)\)，所以 \(A = \dfrac{2\pi}{3}\)。\\
+  
+  (2) 解：在 \(\triangle ABC\) 中，由余弦定理 \(a^2 = b^2 + c^2 - 2bc\cos A\) 得，\\
+  \((\sqrt{7})^2 = b^2 + 1^2 - 2 \times b \times 1 \times \left(-\dfrac{1}{2}\right)\)，\\
+  化简得 \(b^2 + b - 6 = 0\)，\\
+  解得 \(b = 2\) 或 \(b = -3\)（舍去）。\\
+  所以 \(\triangle ABC\) 的面积 \(S = \dfrac{1}{2}bc\sin A = \dfrac{1}{2} \times 2 \times 1 \times \sin\dfrac{2\pi}{3} = \dfrac{\sqrt{3}}{2}\)。%
+}
+
+\newcommand{\qTriangleAreaTwoDiagnosis}{%
+  （留白待收集学生作答后补充）%
+}
+
+\newcommand{\qTriangleAreaTwoTeachingNotes}{%
+  快讲/自练。考察基础的正弦定理边角互化、诱导公式以及余弦定理求边长。提示学生遇到 \(a\cos C + c\cos A\) 结构直接联想化简为 \(b\)（投影定理）。%
+}

@@ -1,0 +1,508 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 公共专题教案：立体几何总复习}
+\rhead{\small 教师版}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\topicteacherproblem}[2]{%
+  \teachquestionheader{#1\quad #2}
+}
+
+\newcommand{\reviewMapFigure}{%
+  \begin{center}
+    \begin{tikzpicture}[>=stealth, line join=round, line cap=round]
+      \node[draw, rounded corners=1mm, minimum width=2.7cm, minimum height=0.8cm] (A) at (0,0) {\small 识别图形};
+      \node[draw, rounded corners=1mm, minimum width=2.7cm, minimum height=0.8cm] (B) at (3.4,0) {\small 确定点线面};
+      \node[draw, rounded corners=1mm, minimum width=2.7cm, minimum height=0.8cm] (C) at (6.8,0) {\small 找平行垂直};
+      \node[draw, rounded corners=1mm, minimum width=2.7cm, minimum height=0.8cm] (D) at (1.7,-1.35) {\small 转化到平面};
+      \node[draw, rounded corners=1mm, minimum width=2.7cm, minimum height=0.8cm] (E) at (5.1,-1.35) {\small 建系计算};
+      \draw[->, thick] (A) -- (B);
+      \draw[->, thick] (B) -- (C);
+      \draw[->, thick] (B) -- (D);
+      \draw[->, thick] (C) -- (E);
+      \draw[->, thick] (D) -- (E);
+    \end{tikzpicture}
+  \end{center}
+}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 立体几何总复习教案}\\[0.35em]
+  {\large 公共专题课：先看清图形关系，再选择计算方法}\\[0.35em]
+  课时：120 分钟
+\end{center}
+
+\section{课程定位与节奏}
+
+\begin{teachbox}{本节课的定位}
+本节课用于帮助学生整理立体几何的主要结论和常用方法。
+
+授课时应引导学生先看清图形中的点、线、面关系，再选择合适的证明或计算方法：
+\[
+  \boxed{
+  \text{识别图形}
+  \rightarrow
+  \text{确定点线面}
+  \rightarrow
+  \text{找平行垂直}
+  \rightarrow
+  \text{转化到平面}
+  \rightarrow
+  \text{建系计算}}
+\]
+
+课堂上不宜只追求题量。每讲一道题，都要让学生明确：这道题使用了哪一个结论，为什么可以这样转化。
+\end{teachbox}
+
+\reviewMapFigure
+
+\begin{teachbox}{120 分钟安排}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{p{2.6cm}p{3.2cm}X}
+\toprule
+时间 & 环节 & 教学内容 \\
+\midrule
+0--25 分钟 & 结论梳理 & 梳理体积、截面、平行垂直、空间角、建系、球模型的核心结论。\\ \hline
+25--35 分钟 & 体积比例 & 用平行截面题快速固定长度、面积、体积三次方关系。\\ \hline
+35--55 分钟 & 平行距离建系 & 讲直三棱柱，训练线面平行证明前提和线面角向量公式。\\ \hline
+55--72 分钟 & 平面化计算 & 讲线面角投影和等体积法求点面距离。\\ \hline
+72--88 分钟 & 截面识别 & 只做一件事：先定点 \(P\)，再定真实截面。\\ \hline
+88--110 分钟 & 空间角综合 & 统一线面角、二面角、法向量与得分句。\\ \hline
+110--120 分钟 & 球模型收束 & 讲补形和 \(R^2=r^2+d^2\)，布置复练。\\
+\bottomrule
+\end{tabularx}
+\end{teachbox}
+
+\section{模型总览}
+
+\begin{teachbox}{板书提纲}
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.35em]
+  \item 体积题：先判断几何体是否标准，再考虑相似比、换顶点或平行转化。
+  \item 证明题：证明平行通常先找线线平行；证明垂直通常先建立线面垂直。
+  \item 空间角：线面角要找投影，二面角要先找两个平面的交线。
+  \item 截面题：截面边必须是平面与几何体表面的交线。
+  \item 球题：外接球看顶点到球心距离相等，内切球看球心到各面距离相等。
+\end{enumerate}
+\end{teachbox}
+
+\section{总复习结论讲法}
+
+\begin{teachbox}{一、几何体名称与公式}
+“正棱锥”的正，不只是底面正多边形，还要求顶点投影落在底面中心。
+
+正四面体是更强的正三棱锥，六条棱都相等，四个面都是等边三角形。
+
+基础公式要让学生会写，也要会判断何时使用：
+\[
+  V_{\text{柱}}=Sh,
+  \qquad
+  V_{\text{锥}}=\frac13Sh,
+  \qquad
+  V_{\text{台}}=\frac13(S_1+S_2+\sqrt{S_1S_2})h.
+\]
+
+台体可以看成大锥截去小锥，因此既可以直接用台体公式，也可以用割补法计算。
+
+如果上下底边长比是 \(m:n\)，面积比是 \(m^2:n^2\)，体积比是 \(m^3:n^3\)。
+\end{teachbox}
+
+\begin{teachbox}{二、体积题的六种常用方法}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{p{2.7cm}X}
+\toprule
+方法 & 教学说明 \\
+\midrule
+公式法 & 几何体结构标准，底面积和高都容易确定时，直接使用体积公式。\\ \hline
+割补法 & 几何体不规则时，可以切成几个简单几何体，或补成规则柱体、长方体、对称结构。\\ \hline
+转换顶点 & 三棱锥四个顶点地位相同。若原来的高不好求，可以换一个顶点来计算体积。\\ \hline
+比例放缩 & 从同一顶点出发的三条棱同时按比例取点时，小三棱锥体积等于原体积乘三个比例。\\ \hline
+平行转化 & 顶点沿平行于底面的直线移动时，到底面的距离不变，因此体积不变。\\ \hline
+延长转化 & 中点、三等分点等条件可用来比较高的比例，再转化为体积比例。\\
+\bottomrule
+\end{tabularx}
+
+讲体积题时，可以让学生先回答三个问题：底面是否容易确定，高是否容易确定，是否可以换一个顶点计算。
+\end{teachbox}
+
+\begin{teachbox}{三、截面题的基本判断}
+截面题最容易出现的错误，是把题目给出的几个点直接相连，并误认为这就是完整截面。
+
+真正的截面是平面与几何体表面的交线围成的多边形。
+
+因此，画截面前应先完成三步判断：
+\[
+  \boxed{\text{确定点的位置}}
+  \quad
+  \boxed{\text{面经过哪些边或面}}
+  \quad
+  \boxed{\text{截面边都在表面上}}.
+\]
+
+如果某条线段穿过几何体内部，而不是落在某个表面上，那么它通常不是截面边。此时需要延长已有截线，或过截面上的点作平行线，把截面扩展到几何体表面。
+
+本专题中的长方体截面题，关键就在于先证明 \(P\in D_1B_1\)，从而把平面 \(CD_1P\) 改写为平面 \(CD_1B_1\)，再确定截面是 \(\triangle CB_1D_1\)。
+\end{teachbox}
+
+\begin{teachbox}{四、平行与垂直的证明方法}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{p{3.0cm}X}
+\toprule
+证明目标 & 常用证明方法 \\
+\midrule
+线面平行 & 在目标平面内找到一条与已知直线平行的直线；或构造一个与目标平面平行的新平面。最后要说明已知直线不在目标平面内。\\ \hline
+面面平行 & 证明一个平面内两条相交直线分别平行于另一个平面。\\ \hline
+线面垂直 & 证明目标直线垂直于平面内两条相交直线。\\ \hline
+面面垂直 & 证明一个平面内含有另一个平面的一条垂线。\\
+\bottomrule
+\end{tabularx}
+
+隐藏的垂直关系通常来自以下结构：
+等腰三角形三线合一，菱形对角线垂直，面面垂直作交线垂线，复杂底面单独抽出来画。
+
+若题目中出现 \(PA=PB\)，\(CA=CB\) 这样的两组对应边相等，可以取 \(AB\) 中点，考虑经过该中点的对称面。这类结构常用于证明垂直、定位球心或处理二面角。
+\end{teachbox}
+
+\begin{teachbox}{五、空间角的求法}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{p{2.8cm}X}
+\toprule
+角的类型 & 具体方法 \\
+\midrule
+线线角 & 异面直线没有公共点，通常先把其中一条平移到与另一条相交，再在同一个三角形中计算角度。用向量法时，直线夹角取锐角或直角，因此数量积公式要加绝对值。\\ \hline
+线面角 & 直线与平面所成角，是直线与其在平面内投影所成的角。在直角三角形中，点到平面的距离与斜线长之比是正弦，投影长与斜线长之比是余弦。\\ \hline
+二面角 & 先找两个平面的交线，再在两个面内分别作交线的垂线。这两条垂线所成的角，才是二面角的平面角。\\
+\bottomrule
+\end{tabularx}
+
+当二面角的两条垂线不容易直接作出时，可以考虑三垂线法或投影面积法。投影面积法的基本关系是：
+\[
+  S_{\text{投影}}=S\cos\theta.
+\]
+
+空间角最值题中，常见的候选位置包括对称位置、端点、中点以及离对称面最远的位置。
+
+如果一条动线始终在某个固定平面内转动，那么它与另一个平面的夹角最值，常可以转化为两个固定平面之间的二面角。
+\end{teachbox}
+
+\begin{teachbox}{六、建系法：公式要和几何含义绑在一起}
+建系法不是逃避空间想象，而是把已经看清的结构坐标化。
+
+三个公式要配三句话：
+\[
+  \cos\theta_{\text{线线角}}
+  =
+  \frac{|\vec a\cdot\vec b|}{|\vec a||\vec b|}
+  \quad
+  \text{线线角取锐角，所以加绝对值。}
+\]
+\[
+  \sin\theta_{\text{线面角}}
+  =
+  \frac{|\vec v\cdot\vec n|}{|\vec v||\vec n|}
+  \quad
+  \text{方向向量与法向量夹角和线面角互余。}
+\]
+\[
+  d_{\text{点到面}}
+  =
+  \frac{|\overrightarrow{AP}\cdot\vec n|}{|\vec n|}
+  \quad
+  \text{点到面距离是沿法向量方向的投影。}
+\]
+
+二面角用两个法向量时，必须判断法向量夹角和题目所求二面角是相等还是互补。
+\end{teachbox}
+
+\begin{teachbox}{七、外接球与内切球的常见模型}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{p{3.2cm}X}
+\toprule
+题目结构 & 处理方法 \\
+\midrule
+侧棱垂直底面 & 底面三角形有外接圆，沿垂直方向平移可以形成圆柱模型。设底面外接圆半径为 \(r\)，棱柱高为 \(h\)，则外接球满足 \(R^2=r^2+\left(\frac h2\right)^2\)。\\ \hline
+正棱锥 & 顶点投影在底面中心，底面顶点共圆。取经过顶点和底面中心的轴截面，可在直角三角形中求外接球半径。\\ \hline
+三条棱两两垂直 & 可把三棱锥补成长方体的一个角。此时外接球直径等于长方体的体对角线。\\ \hline
+三组对棱相等 & 可补成长方体，四面体的六条棱对应长方体六个面的面对角线。\\ \hline
+三棱锥内切球半径 & 连接球心与各个面，把三棱锥分割成几个高都为 \(r\) 的小棱锥，由 \(V=\frac13S_{\text{表}}r\) 得 \(r=\dfrac{3V}{S_{\text{表}}}\)。\\ \hline
+球心位置或球心连线 & 若图形有对称性，球心通常在对称面内。先找对称截面，再在截面中定位球心。\\
+\bottomrule
+\end{tabularx}
+
+较难的球题通常不宜一开始就列大量方程。较稳妥的顺序是：先判断图形是否对称，再找球心所在截面，最后把角度或距离问题转化到这个截面中处理。
+\end{teachbox}
+
+\newpage
+\section{课堂题目与讲解}
+
+\topicteacherproblem{检测 1}{平行截面与体积比}
+{\small \qSolidTetrahedronVolStem}
+\qSolidTetrahedronVolOptions
+\begin{center}
+  \qSolidTetrahedronVolFigure[1.2]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{处理方式与标准结论}{
+  \textbf{处理方式：快讲，10 分钟。}
+
+  标准答案：\qSolidTetrahedronVolAnswer。
+
+  这题只服务一个目标：把向量关系翻译成长度比，再立刻升级为体积比。
+}
+
+\teachblock{标准解答}{
+  \qSolidTetrahedronVolSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  学生常把 \(\frac12\vec{BC}=\vec{AF}-\vec{AE}\) 看成杂乱向量式。
+
+  真正要翻译的是：
+  \[
+    \vec{AF}-\vec{AE}=\vec{EF}.
+  \]
+  所以 \(EF=\frac12BC\)，小三棱锥与大三棱锥长度比为 \(\frac12\)。
+}
+
+\teachblock{课堂处理 / 追问}{
+  追问一：面积比是多少？
+
+  追问二：体积比是多少？
+
+  追问三：题目问的是大比小，还是小比大？
+
+  若学生答错，通常不是不会公式，而是最后比值方向看反。
+}
+\end{paracol}
+
+\par\vspace{1.0em}\noindent{\color{rulecolor}\hrule height 0.4pt}\par\vspace{1.0em}
+
+\topicteacherproblem{例题 1}{直三棱柱平行证明与距离}
+{\small \qSolidPrismDistanceStem}
+\begin{center}
+  \qSolidPrismDistanceFigure[1.05]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{处理方式与标准结论}{
+  \textbf{处理方式：精讲，22 分钟。}
+
+  标准结论：\qSolidPrismDistanceAnswer。
+}
+
+\teachblock{标准解答}{
+  \qSolidPrismDistanceSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \qSolidPrismDistanceDiagnosis
+
+  额外提醒：向量证明 \(DE\parallel\) 平面时，只写方向向量与法向量垂直还不够。
+
+  卷面上必须补一句：点 \(D\) 不在平面 \(BCC_1B_1\) 内，所以直线 \(DE\) 不在该平面内。
+}
+
+\teachblock{课堂处理 / 追问 / 落实建议}{
+  \qSolidPrismDistanceTeachingNotes
+
+  追问：平面 \(BCC_1B_1\) 为什么可以直接看成 \(yz\) 平面？
+
+  追问：线面角公式为什么是 \(\sin\theta\)，不是 \(\cos\theta\)？
+
+  落实：让学生独立写出“线面平行距离等于线上任一点到平面的距离”。
+}
+\end{paracol}
+
+\newpage
+
+\topicteacherproblem{例题 2}{直三棱柱线面角与点面距离}
+{\small \qSolidPracticePrismAngleStem}
+\begin{center}
+  \qSolidPracticePrismAngleFigure[1.1]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{处理方式与标准结论}{
+  \textbf{处理方式：精讲，22 分钟。}
+
+  标准结论：\qSolidPracticePrismAngleAnswer。
+}
+
+\teachblock{标准解答 / 多解法}{
+  \qSolidPracticePrismAngleSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \qSolidPracticePrismAngleDiagnosis
+
+  这题适合纠正“看到距离就建系”的单一路径。
+
+  第 (2) 问用等体积法求距离，能让学生意识到点到面距离不一定非要硬作垂线。
+}
+
+\teachblock{课堂处理 / 追问 / 落实建议}{
+  \begin{itemize}[leftmargin=1.5em]
+    \qSolidPracticePrismAngleTeachingNotes
+  \end{itemize}
+
+  追问：为什么 \(A_1C\) 的投影是 \(CC_1\)，而不是 \(BC\) 或其他线段？
+
+  追问：\(V_{A-A_1BC}=V_{A_1-ABC}\) 为什么成立？
+
+  落实：要求学生写出“同一个三棱锥，换顶点、换底面，体积不变”。
+}
+\end{paracol}
+
+\par\vspace{1.0em}\noindent{\color{rulecolor}\hrule height 0.4pt}\par\vspace{1.0em}
+
+\topicteacherproblem{例题 3}{长方体截面周长}
+{\small \qSolidCuboidSectionStem}
+\begin{center}
+  \qSolidCuboidSectionFigure[1.15]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{处理方式与标准结论}{
+  \textbf{处理方式：必讲，18 分钟。}
+
+  标准结论：\qSolidCuboidSectionAnswer。
+}
+
+\teachblock{标准解答}{
+  \qSolidCuboidSectionSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \qSolidCuboidSectionDiagnosis
+
+  截面题的错误通常不是算错根号，而是从第一步就没有确认平面。
+}
+
+\teachblock{课堂处理 / 追问 / 落实建议}{
+  \qSolidCuboidSectionTeachingNotes
+
+  追问：为什么 \(P\in D_1B_1\)？
+
+  追问：既然平面过 \(C,D_1,P\)，为什么可以改说它过 \(C,D_1,B_1\)？
+
+  落实：让学生不算边长，只先画出截面并说出三条截面边。
+}
+\end{paracol}
+
+\newpage
+
+\topicteacherproblem{例题 4}{正方体垂直证明与二面角}
+{\small \qSolidCubePerpendicularStem}
+\begin{center}
+  \qSolidCubePerpendicularFigure[1.15]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{处理方式与标准结论}{
+  \textbf{处理方式：精讲，28 分钟。}
+
+  标准结论：\qSolidCubePerpendicularAnswer。
+}
+
+\teachblock{标准解答}{
+  \qSolidCubePerpendicularSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \qSolidCubePerpendicularDiagnosis
+
+  这题的核心不是正方体坐标，而是空间角语言。
+
+  第 (2) 问：直线方向向量与平面法向量给出的是线面角的正弦。
+
+  第 (3) 问：二面角必须说明两个面、交线以及垂线或法向量关系。
+}
+
+\teachblock{课堂处理 / 追问 / 落实建议}{
+  \qSolidCubePerpendicularTeachingNotes
+
+  追问：线面角的正弦为什么是“离开平面的高度比”？
+
+  追问：两个法向量夹角是否一定等于题目要的二面角？
+
+  得分句：两条射线分别在两个半平面内，且都垂直于交线，所以它们的夹角就是二面角。
+}
+\end{paracol}
+
+\newpage
+
+\topicteacherproblem{提升}{对棱相等三棱锥与外接球}
+{\small \qSolidIsoscelesTetrahedronStem}
+\begin{center}
+  \qSolidIsoscelesTetrahedronFigure[1.1]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{处理方式与标准结论}{
+  \textbf{处理方式：快讲或提升，15 分钟。}
+
+  标准结论：\qSolidIsoscelesTetrahedronAnswer。
+}
+
+\teachblock{标准解答 / 模型来源}{
+  \qSolidIsoscelesTetrahedronSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \qSolidIsoscelesTetrahedronDiagnosis
+
+  学生常见问题是硬找四面体球心。
+
+  本题应当先识别“对棱相等”，再补成长方体，最后用长方体体对角线求球半径。
+}
+
+\teachblock{课堂处理 / 追问 / 落实建议}{
+  \begin{itemize}[leftmargin=1.5em]
+    \qSolidIsoscelesTetrahedronTeachingNotes
+  \end{itemize}
+
+  追问：三组对棱分别对应长方体的哪三组面对角线？
+
+  追问：为什么三棱锥外接球就是长方体外接球？
+
+  落实：学生必须画出辅助长方体，否则这个模型没有真正建立。
+}
+\end{paracol}
+
+\section{课堂总结}
+
+\begin{teachbox}{本讲收束}
+本节课最后不要再追加新题。
+
+让学生口述五句话：
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.25em]
+  \item 体积比看相似比三次方，或换顶点、换底面。
+  \item 平行垂直证明先落到线线关系和两条相交线。
+  \item 线面角看投影，向量法给正弦。
+  \item 截面题先定真实截面，再算边长。
+  \item 球题先找球心、截面、补形，不盲目猜半径。
+\end{enumerate}
+\end{teachbox}
+
+\begin{teachbox}{课后复练安排}
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.25em]
+  \item 重做长方体截面题，只写截面识别过程。
+  \item 重做正方体空间角题第 (2)(3) 问，分别写线面角和二面角定义口径。
+  \item 选做对棱相等三棱锥题，画出辅助长方体并标出体对角线。
+\end{enumerate}
+\end{teachbox}
+
+\end{document}

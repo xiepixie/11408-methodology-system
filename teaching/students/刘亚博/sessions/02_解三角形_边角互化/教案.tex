@@ -1,0 +1,532 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{ipara}
+\input{questions.tex}
+
+% =====================================================
+% 页眉页脚设置（师生共用端）
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 刘亚博 第二次课：解三角形边角互化与最值专题讲义}
+\rhead{\small 师生共用版（120分钟）}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% =====================================================
+% 自定义颜色定义（黑白复印安全高对比度配色）
+% =====================================================
+\definecolor{DeepBlue}{RGB}{32,80,145}
+\definecolor{DeepGreen}{RGB}{25,125,90}
+\definecolor{DeepOrange}{RGB}{218,116,20}
+\definecolor{DeepRed}{RGB}{190,50,55}
+
+% =====================================================
+% 局部命令定义
+% =====================================================
+% teachbox / teachblock / teacherproblem 由 infra/latex/ipara 统一拥有；
+% 本课次只保留真正的局部几何辅助宏。
+
+\newcommand{\triangleLawModel}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=0.9, line join=round, line cap=round]
+      \coordinate (A) at (0,0);
+      \coordinate (B) at (3.2,0);
+      \coordinate (C) at (1.0,1.75);
+      \draw[very thick] (A) -- (B) -- (C) -- cycle;
+      \node[below] at (A) {\small \(A\)};
+      \node[below] at (B) {\small \(B\)};
+      \node[above] at (C) {\small \(C\)};
+      \node[below] at ($(A)!0.5!(B)$) {\small \(c\)};
+      \node[right] at ($(B)!0.5!(C)$) {\small \(a\)};
+      \node[left] at ($(C)!0.5!(A)$) {\small \(b\)};
+      \draw[->] (C) +(0,-0.55) arc[start angle=-90,end angle=-54,radius=0.55];
+      \node at (1.17,1.23) {\small \(C\)};
+    \end{tikzpicture}
+  \end{center}
+}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 一对一师生共用专题讲义}\\
+  \vspace{0.4em}
+  {\large 专题：解三角形从自由度到建模（边角互化与最值）}\\
+  \vspace{0.3em}
+  {\small 学生：刘亚博 \quad 课次：第 2 次课 \quad 时长：120 分钟}
+\end{center}
+
+\section{学情分析与教学策略 (刘亚博)}
+
+\begin{teachbox}{学生特点与教学重点}
+  \begin{itemize}
+    \item \textbf{学生优势（细节与计算）}：刘亚博同学态度极其老实认真，细节落实到位。在进行代数计算时沉稳、踏实，基础计算功底好，过程书写完整，极少出现因粗心导致的低级失误。
+    \item \textbf{薄弱环节（建模与条件理解）}：在面对较为综合的解答题时，对“题目已知条件”和“几何题意”的深层理解不够深刻，缺乏主动建立数学模型（几何或代数消元模型）的意识，容易陷入死套公式的思维局限。
+    \item \textbf{本课教学突破策略}：
+      \begin{enumerate}
+        \item \textbf{突出数学思想方法}：以“自由度分析”为抓手，引导他分析题目独立条件的个数，深刻体会消元化简的本质，避免机械堆砌公式。
+        \item \textbf{强化数形结合的几何建模}：在代数推导之外，配合直角坐标系动点轨迹分析，利用“圆边界”与“直线边界”卡死活动范围，建立几何直观。
+        \item \textbf{深挖隐性限制（三重枷锁）}：引导他习惯性去寻找三角形中的限制性条件（如“锐角三角形”对未提及角的界限），使条件理解更有深度。
+      \end{enumerate}
+  \end{itemize}
+\end{teachbox}
+
+\section{本课目标与题目取舍}
+
+\begin{teachbox}{本次课教学目标}
+  \begin{enumerate}
+    \item \textbf{齐次化消元}：理解边长比值问题的尺度不变性，掌握设 $c=AB=1$ 的齐次化操作。
+    \item \textbf{全角化与全边化}：掌握将多个变量消元至单一角（利用三角函数）或单一边（利用不等式）的代数求解。
+    \item \textbf{三重枷锁分析}：掌握如何将 $\angle B < 90^\circ$ 和 $\angle C < 90^\circ$ 等锐角隐性条件转化为自由变量的范围。
+    \item \textbf{几何动点直觉}：能建系将最值问题降维为射线动点及圆/直线边界几何求解，培养空间几何直观。
+  \end{enumerate}
+\end{teachbox}
+
+\begin{tabularx}{\textwidth}{p{2.6cm}p{3.2cm}X}
+\toprule
+时间 & 环节 & 教师动作与教学重点 \\
+\midrule
+0--15 分钟 & 开场检测 & 给出 3 道检测题。重点观察学生是否形成了“边角混合先翻译”和“结构合并”的直觉。 \\ \hline
+15--25 分钟 & 自由度与齐次化 & 讲解解三角形“用条件减少自由度”的本质，引出比值问题的“齐次化”消元。 \\ \hline
+25--60 分钟 & 核心母题精讲 & 以 $b/(2c)$ 为例，进行几何直观建系法与代数全角化标准法的双轨精讲，写清得分句。 \\ \hline
+60--85 分钟 & 月考 Q16 重做 & 解决角平分线面积割补问题，规范倒数约束下使用基本不等式求最小值的步骤。 \\ \hline
+85--110 分钟 & 月考 Q18 重做 & 规范坐标向量法差角公式证明；推导三个角余弦和配方二次函数求最大值的步骤。 \\ \hline
+110--120 分钟 & 课后总结与反思 & 复盘“隐性范围”、“面积割补”与“向量差角”的得分关键，布置针对性重做作业。 \\
+\bottomrule
+\end{tabularx}
+
+\section{教学核心理念与主线}
+
+对于高一学生，解三角形的难点不在于背诵正弦定理和余弦定理，而在于\textbf{“读懂条件、选准工具、防范陷阱、写清步骤”}。
+
+本节课的主线为：
+\[
+  \boxed{
+  \text{读题（找触发词）}
+  \Rightarrow
+  \text{判断自由变量}
+  \Rightarrow
+  \text{齐次化/建方程}
+  \Rightarrow
+  \text{全角化（三角函数）/ 全边化（基本不等式）}
+  \Rightarrow
+  \text{规范作答}
+  }
+\]
+
+\subsection{防坑指南：锐角三角形的三重枷锁}
+当题目出现“锐角三角形”时，切记提醒学生：
+\begin{enumerate}
+  \item $B < 90^\circ \implies \theta < 90^\circ$（若将 $B$ 设为 $\theta$）。
+  \item $C < 90^\circ \implies 180^\circ - A - \theta < 90^\circ \implies \theta > 90^\circ - A$。
+  \item 故自由变量的定义域范围为：$\boxed{90^\circ - A < \theta < 90^\circ}$。
+\end{enumerate}
+这个不等式范围是解答题中能否拿到满分的关键得分点。
+
+\section{备课补充：公式来源与几何直觉}
+
+\teachblock{解三角形：边角互化}{
+  正弦定理和余弦定理是方程生成器。遇到边角混合条件，优先翻译：
+  \[
+    c^2=a^2+b^2-2ab\cos C,
+    \qquad
+    S=\frac12ab\sin C.
+  \]
+  \triangleLawModel
+}
+
+\teachblock{核心母题的几何直觉（建系降维）}{
+  在锐角三角形 $ABC$ 中，已知 $\sin A = \frac{4}{5}$，求 $\frac{b}{2c}$ 的取值范围。\par
+  因为所求为比值，具有尺度不变性，故齐次化设 $c=AB=1$。
+  建立直角坐标系 $A(0,0)$，由于 $A$ 为锐角，得 $\cos A=\frac35, \tan A=\frac43$。
+  点 $B(1,0)$，点 $C$ 在射线 $y=\frac{4}{3}x\ (x>0)$ 上运动。\par
+  为了保证三角形为锐角三角形，必须满足以下两个边界：
+  \begin{enumerate}
+    \item \textbf{右边界}：$\angle B = 90^\circ \implies C_2(1, \frac{4}{3}) \implies AC_2 = \frac{5}{3}$。
+    \item \textbf{左边界}：$\angle C = 90^\circ \implies$ 以 $AB$ 为直径的圆与射线的交点 $C_1 \implies AC_1 = AB\cos A = \frac{3}{5}$。
+  \end{enumerate}
+  故 $AC \in (\frac{3}{5}, \frac{5}{3})$。因为 $b=AC, c=1$，所以 $\frac{b}{2c} = \frac{AC}{2} \in (\frac{3}{10}, \frac{5}{6})$。
+  
+  \begin{center}
+    \begin{tikzpicture}[scale=3.8, >=stealth, line width=0.8pt]
+        \draw[->, gray!80] (-0.2, 0) -- (1.35, 0) node[right, text=black] {$x$};
+        \draw[->, gray!80] (0, -0.15) -- (0, 1.5) node[above, text=black] {$y$};
+        \coordinate (A) at (0,0);
+        \coordinate (B) at (1,0);
+        \coordinate (C1) at (0.36,0.48);
+        \coordinate (C2) at (1,1.3333);
+        \coordinate (C) at (0.68,0.9066);
+        \coordinate (RayEnd) at (1.1,1.4666);
+        \draw[thick, DeepBlue] (A) -- (B) node[midway, below] {$AB=c=1$};
+        \draw[dashed, thick, black!65] (A) -- (RayEnd) node[above right] {$C$ 轨道: $y=\frac43x$};
+        \draw[DeepRed, dashed, thick] (1,0) arc (0:180:0.5);
+        \node[DeepRed] at (0.50,0.56) {\small 边界 $\angle C=90^\circ$};
+        \draw[DeepOrange, dashed, thick] (1,-0.05) -- (1,1.4);
+        \node[DeepOrange, right] at (1,1.1) {\small 边界 $\angle B=90^\circ$};
+        \draw[DeepGreen, line width=3.0pt, line cap=round] (C1) -- (C2);
+        \node[DeepGreen!70!black, rotate=53] at (0.64,0.85) {\small 合动范围};
+        \draw[thick, DeepBlue] (A) -- (C) -- (B);
+        \fill[DeepBlue] (C) circle (0.5pt) node[above left] {$C$};
+        \fill (A) circle (0.5pt) node[below left] {$A(0,0)$};
+        \fill (B) circle (0.5pt) node[below right] {$B(1,0)$};
+        \fill[DeepRed] (C1) circle (0.6pt) node[below right] {\small $C_1(\frac35)$};
+        \fill[DeepOrange] (C2) circle (0.6pt) node[right] {\small $C_2(\frac{5}{3})$};
+        \draw (0.15,0) arc (0:53.13:0.15);
+        \node at (0.2,0.08) {\small $A$};
+    \end{tikzpicture}
+    \par\medskip
+    \textit{\small 示意图 3.1：母题的几何边界（圆边界与直线边界卡死动点 $C$ 活动区间）}
+  \end{center}
+}
+
+\newpage
+
+\section{课堂题目与教学分析}
+
+\subsection{1. 开场检测讲法}
+
+\teacherproblem{检测 1}{边角混合先翻译}
+
+在 \(\triangle ABC\) 中，若
+\[
+  b\sin A+a\cos B=0,
+\]
+求 \(B\)。
+
+\answerblank[3.5cm]{学生演算与思考区}
+
+\begin{paracol}{2}
+\teachblock{标准解答}{
+  由正弦定理边化角，得：
+  \[
+    \sin B \sin A + \sin A \cos B = 0
+  \]
+  因为 $A \in (0, \pi) \implies \sin A > 0$，所以：
+  \[
+    \sin B + \cos B = 0 \implies \tan B = -1
+  \]
+  又因 $B \in (0, \pi)$，故 $B = \frac{3\pi}{4}$。
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \begin{itemize}
+    \item 容易漏掉 $\sin A > 0$ 的除法说明。
+    \item 三角方程求解时，算出 $\tan B = -1$ 误写成 $B = -\frac{\pi}{4}$，暴露出角范围意识弱。
+  \end{itemize}
+}
+
+\teachblock{课堂处理与追问}{
+  追问学生：为什么你可以两边同除以 $\sin A$？三角形的内角正弦值可能为 0 吗？
+}
+\end{paracol}
+
+\teacherproblem{检测 2}{锐角条件筛分支}
+
+在锐角 \(\triangle ABC\) 中，若
+\[
+  2a\sin B=\sqrt3 b,
+\]
+求 \(A\)。
+
+\answerblank[3.5cm]{学生演算与思考区}
+
+\begin{paracol}{2}
+\teachblock{标准解答}{
+  由正弦定理，原式化为：
+  \[
+    2\sin A \sin B = \sqrt{3}\sin B
+  \]
+  因为 $B \in (0, \pi) \implies \sin B > 0$，同除以 $\sin B$ 得：
+  \[
+    \sin A = \frac{\sqrt{3}}{2}
+  \]
+  又因三角形为**锐角三角形**，所以 $A = \frac{\pi}{3}$（排除 $\frac{2\pi}{3}$）。
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \begin{itemize}
+    \item 容易遗漏“锐角”条件，直接写出两个答案。
+    \item 对于特殊三角函数值对应的双解缺乏本能的警惕性。
+  \end{itemize}
+}
+
+\teachblock{课堂处理与追问}{
+  追问：如果题目没说“锐角三角形”，这道题的答案是什么？引导学生建立双解检查机制。
+}
+\end{paracol}
+
+\newpage
+
+\teacherproblem{检测 3}{看见结构合并}
+
+在 \(\triangle ABC\) 中，若
+\[
+  a\sin A\sin B+b\cos^2 A=\sqrt2 a,
+\]
+求 \(\dfrac ba\)。
+
+\answerblank[3.5cm]{学生演算与思考区}
+
+\begin{paracol}{2}
+\teachblock{标准解答}{
+  等式两边同除以 $a$，得：
+  \[
+    \sin A \sin B + \frac{b}{a}\cos^2 A = \sqrt{2}
+  \]
+  由正弦定理 $\frac{b}{a} = \frac{\sin B}{\sin A}$，代入得：
+  \[
+    \sin A \sin B + \frac{\sin B}{\sin A}\cos^2 A = \sqrt{2} \implies \frac{\sin B}{\sin A}(\sin^2 A + \cos^2 A) = \sqrt{2}
+  \]
+  因为 $\sin^2 A + \cos^2 A = 1$，所以：
+  \[
+    \frac{\sin B}{\sin A} = \sqrt{2} \implies \frac{b}{a} = \sqrt{2}.
+  \]
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \begin{itemize}
+    \item 不懂得两边除以 $a$ 进行比例化简。
+    \item 展开计算极其繁琐，没有发现 \(\sin^2 A + \cos^2 A = 1\) 的合并结构。
+  \end{itemize}
+}
+
+\teachblock{课堂处理与追问}{
+  引导：圈出 \(\sin A\sin B\) 与 \(\frac{b}{a}\cos^2 A\)。如何利用正弦定理让它们系数一致？
+}
+\end{paracol}
+
+\newpage
+
+\subsection{2. 核心母题讲法}
+
+\teacherproblem{母题}{锐角三角形中的隐性边界}
+
+在锐角 \(\triangle ABC\) 中，已知
+\[
+  \sin A=\frac45,
+\]
+求 \(\dfrac{b}{2c}\) 的取值范围。
+
+\answerblank[10cm]{学生演算与思考区}
+
+\newpage
+
+\begin{paracol}{2}
+\teachblock{标准解答（全角化代数法）}{
+  由正弦定理，有：
+  \[
+    \frac{b}{2c} = \frac{\sin B}{2\sin C}
+  \]
+  因为 $A + B + C = \pi$，且 $\sin A = \frac{4}{5}, \cos A = \frac{3}{5}$，
+  \[
+    \sin B = \sin(A+C) = \sin A\cos C + \cos A\sin C = \frac{4}{5}\cos C + \frac{3}{5}\sin C
+  \]
+  代入目标式：
+  \[
+    \frac{b}{2c} = \frac{\frac{4}{5}\cos C + \frac{3}{5}\sin C}{2\sin C} = \frac{2}{5\tan C} + \frac{3}{10}
+  \]
+  由于三角形为锐角三角形，必须满足：
+  \[
+    \begin{cases}
+      C < 90^\circ \\
+      B = 180^\circ - A - C < 90^\circ \implies C > 90^\circ - A
+    \end{cases}
+  \]
+  所以 $90^\circ - A < C < 90^\circ$。
+  因为 $\tan(90^\circ - A) = \frac{1}{\tan A} = \frac{3}{4}$，
+  故 $\tan C \in (\frac{3}{4}, +\infty)$。\par
+  令 $t = \tan C$，函数 $f(t) = \frac{2}{5t} + \frac{3}{10}$ 在 $t \in (\frac{3}{4}, +\infty)$ 上单调递减。
+  \[
+    f(t) \in \left(\frac{3}{10}, \frac{2}{5 \cdot \frac{3}{4}} + \frac{3}{10}\right) \implies \frac{b}{2c} \in \left(\frac{3}{10}, \frac{5}{6}\right).
+  \]
+}
+
+\switchcolumn
+\teachblock{学生问题与诊断}{
+  \begin{itemize}
+    \item \textbf{建模意识不深（漏掉隐性约束）}：刘亚博同学计算细节扎实沉稳，但容易漏掉图形隐含的“角范围”约束。做题时喜欢见招拆招地堆砌代数步骤，而对“锐角三角形”这一已知条件对自由变量的制约深度建模不足（极易忽略 $B < 90^\circ$ 传递给 $C$ 的下界约束，导致范围上限算错）。
+    \item \textbf{代数变形卡顿}：在化简 \(\frac{\sin B}{2\sin C}\) 时，对于展开并两边同除以 \(\sin C\) 构造 \(\tan C\) 这一消元建模手段敏感度不够。
+  \end{itemize}
+}
+
+\teachblock{课堂处理与落实建议}{
+  1. \textbf{数形结合直观突破}：带他亲手建系画出直角坐标系中的几何动点图（见讲义第三部分），直观看到 $C$ 只能在线段 $C_1C_2$ 上滑动。用几何的“轨道与边界”帮他打破公式套用局限，理解已知条件的深刻含义。
+  2. \textbf{“三重枷锁”规范化}：强迫刘亚博每次看到“锐角三角形”时，第一步先在草稿纸上写出三个角小于 $90^\circ$ 的不等式组，将其作为建模的“必填项”，强化数学思想的严密性。
+}
+\end{paracol}
+
+\newpage
+
+\subsection{3. 题目补充与月考重做讲法}
+
+\teacherproblem{月考 Q16}{角平分线与倒数最值}
+
+{\small \qTriangleBisectorMinStem}
+\begin{center}
+  \qTriangleBisectorMinFigure[1.2]
+\end{center}
+
+\answerblank[11.5cm]{学生演算与思考区}
+
+\newpage
+
+\begin{paracol}{2}
+\teachblock{标准解答}{
+  (1) 由 \(\vec{AD} = \dfrac{1}{5}\vec{AC}\) 知 \(AD : DC = 1 : 4\)。
+  因为 \(BD\) 是平分线，由角平分线定理：
+  \[
+    \frac{c}{a} = \frac{AB}{BC} = \frac{AD}{DC} = \frac{1}{4} \implies a = 4c
+  \]
+  由正弦定理得 \(\sin A : \sin C = a : c = 4 : 1\)。\par
+  (2) 由 $b\cos C + \sqrt{3}b\sin C = a + c$ 边化角，化简得：
+  \[
+    \sin B \cos C + \sqrt{3}\sin B \sin C = \sin(B+C) + \sin C
+  \]
+  展开后同除以 $\sin C$（$\sin C > 0$），解得：
+  \[
+    2\sin(B - \frac{\pi}{6}) = 1 \implies B = \frac{\pi}{3}
+  \]
+  由面积割补关系 \(S_{\triangle ABC} = S_{\triangle ABD} + S_{\triangle CBD}\)：
+  \[
+    \frac{1}{2}ac\sin B = \frac{1}{2}c \cdot BD \sin\frac{B}{2} + \frac{1}{2}a \cdot BD \sin\frac{B}{2}
+  \]
+  代入 $B = \frac{\pi}{3}, BD = 2$ 整理得：
+  \[
+    \frac{1}{a} + \frac{1}{c} = \frac{\sqrt{3}}{2}
+  \]
+  利用常数代换求 \(c+9a\) 最小值：
+  \[
+    c + 9a = (c + 9a)\frac{2}{\sqrt{3}}\left(\frac{1}{a} + \frac{1}{c}\right) = \frac{2}{\sqrt{3}}\left(10 + \frac{c}{a} + \frac{9a}{c}\right)
+  \]
+  因为 \(\frac{c}{a} + \frac{9a}{c} \ge 6\)，所以最小值为 \(\frac{32\sqrt{3}}{3}\)（当且仅当 $c = 3a$ 时等号成立）。
+}
+
+\switchcolumn
+\teachblock{学生问题与诊断}{
+  \begin{itemize}
+    \item \textbf{模型转化能力薄弱}：第一问能通过向量比例关系，结合认真踏实的习惯，顺利联想到角平分线定理得出 $a=4c$；但第 (2) 问中，完全没有想到利用“面积分割法”（即 $S_{\triangle ABC} = S_{\triangle ABD} + S_{\triangle CBD}$）去建立 $a,c$ 的倒数模型。这反映出对图形整体结构（角平分线分割三角形）与代数目标之间的建模转化不够深刻。
+    \item \textbf{最值路线中断}：即使求出 $B = \frac{\pi}{3}$，由于没有面积法建立的 \(\frac{1}{a} + \frac{1}{c} = \text{常数}\) 不等式约束，最值求解卡壳，缺乏对不等式应用“前置条件”的结构理解。
+  \end{itemize}
+}
+
+\teachblock{课堂处理与落实建议}{
+  1. \textbf{模型方法总结}：引导他将“角平分线长度”与“面积割补关系”在脑海里强绑定，提炼出通用的“倒数模型构造”模板：
+  \[
+    \frac{1}{a} + \frac{1}{c}
+    =
+    \frac{\sin B}{BD\sin\frac{B}{2}}
+    =
+    \frac{2\cos\frac{B}{2}}{BD}
+  \]
+  帮他理清最值转化的链条，增强条件理解的深刻度。
+  2. \textbf{等号条件与几何自洽性验证}：追问他均值不等式等号成立条件为 $c=3a$。既然 $c=3a$ 且 $B=\frac{\pi}{3}$，能否算出此时各边的长是多少？这三条边能构成三角形吗？通过这一验证过程，引导他进行深入的数学思想反思，而不只停留在代数算完的层面。
+}
+\end{paracol}
+
+\newpage
+
+\teacherproblem{月考 Q18}{公式证明与二次函数配方}
+
+{\small \qTriangleTrigProofMaxStem}
+
+\answerblank[11.5cm]{学生演算与思考区}
+
+\newpage
+
+\begin{paracol}{2}
+\teachblock{标准解答}{
+  (1) 证明：建直角坐标系，在单位圆上设角 $\alpha, \beta$ 终边交点为 $A(\cos\alpha,\sin\alpha)$，$B(\cos\beta,\sin\beta)$。
+  则 \(\vec{OA} = (\cos\alpha, \sin\alpha)\)，\(\vec{OB} = (\cos\beta, \sin\beta)\)。
+  数量积坐标表示为：
+  \[
+    \vec{OA}\cdot\vec{OB} = \cos\alpha\cos\beta + \sin\alpha\sin\beta
+  \]
+  根据数量积几何定义，由于圆半径为 1，且夹角为 $|\alpha-\beta|$：
+  \[
+    \vec{OA}\cdot\vec{OB} = |\vec{OA}||\vec{OB}|\cos(\alpha-\beta) = \cos(\alpha-\beta)
+  \]
+  由此得：\(\cos(\alpha-\beta) = \cos\alpha\cos\beta + \sin\alpha\sin\beta\)。\par
+  (2) 由第 (1) 问公式及和角余弦公式：
+  \[
+    \cos(\alpha-\beta)
+    =
+    \cos\alpha\cos\beta+\sin\alpha\sin\beta
+    =
+    \frac35,
+  \]
+  \[
+    \cos(\alpha+\beta)
+    =
+    \cos\alpha\cos\beta-\sin\alpha\sin\beta
+    =
+    \frac15.
+  \]
+  两式相加，得：
+  \[
+    2\cos\alpha\cos\beta=\frac45
+    \implies
+    \cos\alpha\cos\beta=\frac25.
+  \]
+  两式相减，得：
+  \[
+    2\sin\alpha\sin\beta=\frac25
+    \implies
+    \sin\alpha\sin\beta=\frac15.
+  \]
+  所以：
+  \[
+    \tan\alpha\tan\beta
+    =
+    \frac{\sin\alpha\sin\beta}{\cos\alpha\cos\beta}
+    =
+    \frac{\frac15}{\frac25}
+    =
+    \frac12.
+  \]\par
+  (3) 在三角形中，将 $C = \pi - (A+B)$ 代入：
+  \[
+    \cos A + \cos B + \cos C = 2\cos\frac{A+B}{2}\cos\frac{A-B}{2} - \cos(A+B)
+  \]
+  设 $x = \sin\frac{C}{2} = \cos\frac{A+B}{2}$，$\cos C = 1 - 2\sin^2\frac{C}{2} = 1 - 2x^2$。
+  \[
+    \cos A + \cos B + \cos C = -2x^2 + 2x\cos\frac{A-B}{2} + 1
+  \]
+  因为 $\cos\frac{A-B}{2} \le 1$ 且 $x > 0$，所以：
+  \[
+    \cos A + \cos B + \cos C \le -2x^2 + 2x + 1 = -2\left(x - \frac{1}{2}\right)^2 + \frac{3}{2}
+  \]
+  当且仅当 $x = \frac{1}{2} \implies C = \frac{\pi}{3}$ 且 $A=B=\frac{\pi}{3}$ 时等号成立。
+  最大值为 \(\frac{3}{2}\)。
+}
+
+\switchcolumn
+\teachblock{学生问题与诊断}{
+  \begin{itemize}
+    \item \textbf{证明逻辑不够深刻（偏口头化）}：第 (1) 问证明两角差余弦公式时，存在用和差角公式反推的逻辑循环。刘亚博习惯把公式看作“既定事实”而忽略其公理化的构建过程；第 (3) 问求余弦和最值时，直接口头默写“等边三角形时取最大值”，这虽然是正确的结论，但他无法自主用“二次函数配方与不等式放缩”将其证明出来，暴露出他“用结论代替证明”的思维惯性，需要强化严密建模的数学思想。
+  \end{itemize}
+}
+
+\teachblock{课堂处理与落实建议}{
+  1. \textbf{逻辑链条梳理}：在黑板上以单位圆与向量数量积为起点，带他严格写一遍两角差余弦的几何+坐标证明。强调公理化证明是从“已知真理”推出“未知真理”，必须严禁循环论证。
+  2. \textbf{配方手算与放缩建模}：带他手算 $f(x) = -2x^2 + 2x\cos\frac{A-B}{2} + 1$ 的配方过程，重点指出 $\cos\frac{A-B}{2} \le 1$ 这一步不等式放缩的作用。通过这一具体步骤，提升他对不等式建模和边界判断的深刻理解。
+}
+\end{paracol}
+
+\section{课后反馈与重做安排}
+
+\teachblock{反馈总结}{
+  本节专题课帮助学生重新理顺了“解三角形”的逻辑骨架。通过母题的几何与代数双解，学生认识到了锐角三角形中隐性约束的重要得分点；通过月考 Q16 和 Q18 的针对性重做，学生打通了“角平分线面积割补模型”和“二次函数配方证明”两个逻辑痛点。
+}
+
+\teachblock{课后针对性重做清单}{
+  \begin{enumerate}
+    \item \textbf{核心母题}：手写几何建系图，写出 $\angle B, \angle C < 90^\circ$ 对应的圆与直线边界；手写代数全角化，求出 $\tan C$ 的精确区间。
+    \item \textbf{月考第 16 题}：规范默写 \(S_{\triangle ABC} = S_{\triangle ABD} + S_{\triangle CBD}\) 得到倒数关系 \(\frac{1}{a} + \frac{1}{c} = \frac{\sqrt{3}}{2}\) 的推导过程，并完成均值不等式最值计算。
+    \item \textbf{月考第 18 题}：规范默写单位圆向量法证明公式；使用二次函数配方证明 \(\cos A + \cos B + \cos C \le \frac{3}{2}\)。
+  \end{enumerate}
+}
+
+\end{document}

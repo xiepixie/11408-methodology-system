@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>03 · Trap：系统调用、异常与中断的共同骨架</title>
+  <style>
+    :root{--bg:#0a1020;--panel:#111a2e;--panel2:#0d1627;--line:#263552;--text:#edf3ff;--muted:#a7b6d2;--blue:#80baff;--green:#8ce8c7;--orange:#ffd084;--red:#ff9ca3;--purple:#c5a7ff}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#080f1d,#0a1020);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+    a{color:var(--blue)}code{font-family:"SFMono-Regular",Consolas,monospace;background:#091223;border:1px solid #243757;border-radius:6px;padding:1px 5px}.wrap{max-width:1160px;margin:auto;padding:26px 22px 90px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}.back{text-decoration:none;color:var(--muted)}.badge{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--green)}
+    header{padding:36px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(197,167,255,.12),rgba(128,186,255,.07));border-radius:22px}h1{font-size:clamp(34px,6vw,60px);line-height:1.08;margin:8px 0 16px}.kicker{color:var(--green);font-size:13px;letter-spacing:.12em;text-transform:uppercase}.lead{font-size:18px;color:var(--muted);max-width:900px}.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.meta span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 9px;background:rgba(255,255,255,.025)}
+    section{margin-top:34px}.section-title{font-size:27px;margin:0 0 14px}.panel{border:1px solid var(--line);border-radius:18px;background:rgba(17,26,46,.82);padding:20px}.question{font-size:22px;font-weight:700}.subtle{color:var(--muted)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mini{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px}.mini h3{margin:0 0 6px;font-size:17px}.mini p{margin:0;color:var(--muted);font-size:14px}
+    .flow{display:flex;align-items:stretch;gap:8px;overflow:auto;padding:6px 0}.node{min-width:145px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#0d1729}.node b{display:block}.node small{color:var(--muted)}.arrow{align-self:center;color:#6f86ad;font-size:22px}.callout{border-left:3px solid var(--blue);padding:13px 16px;background:rgba(128,186,255,.06);color:#cbd8ee;border-radius:0 12px 12px 0}.warn{border-left-color:var(--orange);background:rgba(255,208,132,.06)}.danger{border-left-color:var(--red);background:rgba(255,156,163,.055)}
+    table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:#dce7fa}.codebox{font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;background:#07101e;border:1px solid var(--line);border-radius:14px;padding:16px;color:#d9e6ff;overflow:auto}
+    .selector{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}.selector button,.controls button,.quiz button{border:1px solid var(--line);background:#13203a;color:var(--text);padding:9px 13px;border-radius:10px;cursor:pointer}.selector button.active,.selector button:hover,.controls button:hover,.quiz button:hover{border-color:#6689c0;background:#172947}.scenario{min-height:250px}.kv{display:grid;grid-template-columns:150px 1fr;gap:7px 12px;font-size:14px}.kv b{color:#bcd1ef}.chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 8px;font-size:11px;margin-right:5px}.sync{color:var(--orange)}.async{color:var(--green)}
+    .timeline{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.tick{border:1px solid var(--line);border-radius:12px;background:#0c1628;padding:11px;min-height:92px}.tick.active{border-color:#5e83ba;background:#11233d}.tick b{font-size:13px}.tick small{display:block;color:var(--muted);margin-top:5px}.alarm-controls{display:flex;gap:8px;margin-top:13px}.alarm-controls button{border:1px solid var(--line);background:#13203a;color:var(--text);padding:8px 12px;border-radius:9px;cursor:pointer}.alarm-state{margin-top:14px;border:1px solid var(--line);border-radius:13px;background:#0b1527;padding:14px}.exam{border:1px solid #5d5032;background:rgba(255,208,132,.05);border-radius:15px;padding:16px}.check li{margin:8px 0}.quiz{display:grid;gap:10px}.quiz-row{border:1px solid var(--line);background:#0d1627;border-radius:13px;padding:14px}.quiz-row b{display:block;margin-bottom:8px}.answer{display:none;color:var(--muted);margin-top:10px;border-top:1px dashed var(--line);padding-top:9px}.answer.show{display:block}.footer-nav{display:flex;justify-content:space-between;margin-top:45px;padding-top:20px;border-top:1px solid var(--line)}
+    @media(max-width:850px){.grid2,.grid3{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}.top{align-items:flex-start}header{padding:25px}}@media(max-width:520px){.timeline{grid-template-columns:1fr}}
+  </style>
+  <link rel="stylesheet" href="course.css">
+  <script src="course-ui.js" defer></script>
+</head>
+<body><main class="wrap">
+  <div class="top"><a class="back" href="index.html">← 返回课程地图</a><span class="badge">Lesson 03 · P0</span></div>
+  <header>
+    <div class="kicker">MIT 6.1810 × xv6-riscv × 408</div>
+    <h1>Trap：<br>系统调用、异常与中断的共同骨架</h1>
+    <p class="lead">Lesson 02 已经追过 system call。这一页不再重复 <code>ecall</code> 路径，而是建立更上位的事件模型：为什么 system call、page fault、timer/device interrupt 都能把控制交给内核，却不能按同一套“返回 PC / 是否重试 / 是否调度”规则处理。最后用 MIT 2026 的 <code>sigalarm</code> 实验，把“保存现场 → 暂时改写用户控制流 → 恢复现场”真正跑一遍。</p>
+    <div class="meta"><span>Source: xv6 Book Ch.4</span><span>MIT 2026 Lab traps</span><span>Current trap.c / kernelvec.S</span><span>408 Anchor: OS-01/02 · X-B01 · X-B03</span><span>预计 90–120 min</span></div>
+  </header>
+
+  <section><h2 class="section-title">1 · Mother Question</h2><div class="panel">
+    <div class="question">CPU 正在顺序执行程序时，什么事件有资格“打断正常控制流”，内核又怎样知道处理完以后该继续、重试、终止，还是调度别人？</div>
+    <div class="flow"><div class="node"><b>Normal Execution</b><small>当前 PC / state</small></div><div class="arrow">→</div><div class="node"><b>Event</b><small>syscall / fault / IRQ</small></div><div class="arrow">→</div><div class="node"><b>Trap Entry</b><small>可信内核入口</small></div><div class="arrow">→</div><div class="node"><b>Cause Routing</b><small>scause / source</small></div><div class="arrow">→</div><div class="node"><b>Outcome</b><small>continue / retry / kill / schedule</small></div></div>
+    <p class="callout"><b>统一骨架：</b>三者共享的是“保存足够恢复状态 → 进入可信 handler → 识别原因 → 处理 → 决定出口”。它们<b>不共享同一个触发源，也不共享同一个恢复语义</b>。</p>
+  </div></section>
+
+  <section><h2 class="section-title">2 · 先把术语钉住：Trap 是机制伞，不是第四种事件</h2><div class="grid3">
+    <div class="mini"><h3>System Call</h3><p><span class="chip sync">同步</span>当前程序主动执行 <code>ecall</code>，请求内核服务。对 xv6 来说，它以一个特定的 synchronous trap cause 进入。</p></div>
+    <div class="mini"><h3>Exception / Fault</h3><p><span class="chip sync">同步</span>当前指令执行遇到特殊条件，例如 page fault、illegal instruction。能否修复决定是 retry 还是 terminate。</p></div>
+    <div class="mini"><h3>Interrupt</h3><p><span class="chip async">异步</span>外部设备或 timer 相对当前指令流独立到来。它首先代表“外部状态改变了”。</p></div>
+  </div>
+  <p class="callout warn"><b>术语边界：</b>不同教材会把 “trap/exception/interrupt” 分组得略有不同。这里采用 xv6/RISC-V 的实用视角：<b>trap 是进入特权处理程序的共同控制转移机制</b>；再用 event source 区分 syscall、同步 exception/fault 与异步 interrupt。做 408 时若题目明确采用自己的“内中断/外中断/异常”术语，以题设分类为准，但推演骨架不变。</p></section>
+
+  <section><h2 class="section-title">3 · Interactive Classifier：先问“谁触发”，再问“怎么回”</h2><div class="panel">
+    <div class="selector"><button data-s="sys" class="active">System Call</button><button data-s="fault">Page Fault</button><button data-s="timer">Timer Interrupt</button><button data-s="dev">Device Interrupt</button></div>
+    <div class="scenario" id="scenario"></div>
+  </div></section>
+
+  <section><h2 class="section-title">4 · xv6 的一个入口，实际上有两条低级路径</h2><div class="grid2">
+    <div class="panel"><h3>User → Kernel</h3><div class="codebox">stvec → TRAMPOLINE:uservec
+  save user registers → trapframe
+  establish kernel stack / page table
+  → usertrap()</div><p class="subtle">来自 U-mode，需要先完成地址空间/栈环境交接。<code>usertrap()</code> 随即把 <code>stvec</code> 改为 <code>kernelvec</code>，避免已经在 kernel 中时又走 user trampoline。</p></div>
+    <div class="panel"><h3>Kernel → Kernel</h3><div class="codebox">stvec → kernelvec
+  current stack already kernel stack
+  push caller-saved registers
+  → kerneltrap()
+  restore registers
+  → sret</div><p class="subtle">来自 S-mode 时已经在 kernel stack / kernel environment，低级入口职责不同。当前 <code>kernelvec.S</code> 就直接在当前 kernel stack 保存寄存器。</p></div>
+  </div>
+  <p class="callout"><b>为什么 <code>stvec</code> 会动态改？</b>同一个 CPU 在“准备返回 user”时把下一次 trap destination 指向 <code>uservec</code>；进入 <code>usertrap()</code> 后又把它切回 <code>kernelvec</code>。入口本身就是状态，必须与当前运行环境匹配。</p></section>
+
+  <section><h2 class="section-title">5 · 三个关键 CSR：不是背寄存器，而是回答三个问题</h2><div class="panel">
+    <table><thead><tr><th>CSR</th><th>它回答的问题</th><th>xv6 怎么用</th></tr></thead><tbody>
+      <tr><td><code>scause</code></td><td><b>为什么进来了？</b></td><td><code>usertrap()</code> 用它区分 U-mode ecall、page fault，<code>devintr()</code> 用 interrupt cause 识别 timer / external device。</td></tr>
+      <tr><td><code>sepc</code></td><td><b>处理完从哪里继续？</b></td><td>系统调用主动推进到下一条；page fault 修复时保留 faulting continuation；kernel trap 还要防止 <code>yield()</code> 等过程破坏它。</td></tr>
+      <tr><td><code>stval</code></td><td><b>事件还携带什么上下文？</b></td><td>page fault 时可给出故障虚拟地址；unexpected trap 的诊断也会打印它。</td></tr>
+    </tbody></table>
+    <p class="callout"><b>压缩成三问：</b><code>Cause? → Resume Where? → Extra Value?</code>。这比背 CSR 编号更能迁移到 x86 的 vector/error code/CR2 等其他体系结构。</p>
+  </div></section>
+
+  <section><h2 class="section-title">6 · Page Fault：为什么“失败”可以成为正常机制？</h2><div class="panel">
+    <p>当前 xv6 <code>usertrap()</code> 会把 load/store page fault 交给 <code>vmfault()</code> 尝试处理 lazy allocation。若修复成功，就不是“程序一定出错”，而是一次慢路径。</p>
+    <div class="flow"><div class="node"><b>load/store</b><small>translation cannot proceed</small></div><div class="arrow">→</div><div class="node"><b>page fault</b><small>scause + stval</small></div><div class="arrow">→</div><div class="node"><b>vmfault()</b><small>repair mapping?</small></div><div class="arrow">→</div><div class="node"><b>return</b><small>retry / kill</small></div></div>
+    <div class="grid2" style="margin-top:12px"><div class="exam"><b>可修复</b><p>例如 lazy allocation、后面的 COW。内核补足映射后，用户执行应获得重新完成那次内存访问的机会。</p></div><div class="exam"><b>不可修复</b><p>例如非法地址且没有合法 VMA/策略支撑。内核记录错误并终止进程，而不是“随便跳过出错指令”。</p></div></div>
+    <p class="callout warn"><b>Lesson 05 会继续：</b>这里只建立 fault 的控制权语义，不展开 PTE、frame、COW copy、reference count。</p>
+  </div></section>
+
+  <section><h2 class="section-title">7 · Timer Interrupt：获得控制权 ≠ 一定换进程</h2><div class="panel">
+    <p>当前 xv6 的 <code>devintr()</code> 把 supervisor timer interrupt 识别为 timer event，<code>clockintr()</code> 更新 ticks 并安排下一次 timer；回到 <code>usertrap()</code>/<code>kerneltrap()</code> 后，xv6 对 timer 调用 <code>yield()</code>。</p>
+    <div class="flow"><div class="node"><b>Timer fires</b><small>asynchronous</small></div><div class="arrow">→</div><div class="node"><b>Trap</b><small>kernel gets control</small></div><div class="arrow">→</div><div class="node"><b>clockintr()</b><small>account / rearm</small></div><div class="arrow">→</div><div class="node"><b>yield()</b><small>scheduler opportunity</small></div><div class="arrow">→</div><div class="node"><b>pick</b><small>same / another task</small></div></div>
+    <p class="callout danger"><b>408 三道闸门：</b><code>Interrupt happens → kernel gets control → scheduler may run → scheduler may choose another task</code>。每个箭头都有条件，不能把“时钟中断”直接画等号成“进程切换”。xv6 的具体策略是 timer 后主动 <code>yield()</code>，但这属于 OS policy/implementation，不是所有 OS 每次 timer interrupt 的跨系统定律。</p>
+  </div></section>
+
+  <section><h2 class="section-title">8 · Device Interrupt：完成事件通常只改变“可运行资格”</h2><div class="panel">
+    <p>当前 xv6 external interrupt 通过 PLIC 取得 IRQ，分给 UART 或 virtio disk handler，最后 complete IRQ。设备 handler 可能使某个等待条件成立并触发 wakeup。</p>
+    <div class="flow"><div class="node"><b>Device</b><small>I/O complete / data ready</small></div><div class="arrow">→</div><div class="node"><b>PLIC / IRQ</b><small>identify source</small></div><div class="arrow">→</div><div class="node"><b>driver ISR</b><small>update device/kernel state</small></div><div class="arrow">→</div><div class="node"><b>wakeup</b><small>Blocked → Runnable</small></div><div class="arrow">→</div><div class="node"><b>scheduler</b><small>later decides Running</small></div></div>
+    <p class="callout"><b>Completion ≠ Running：</b>设备完成的核心含义是“等待条件可能已经满足”。被唤醒任务通常只是获得进入 ready/runnable 集合的资格，何时真正占 CPU 是另一层调度决策。</p>
+  </div></section>
+
+  <section><h2 class="section-title">9 · 一个很深的实现细节：为什么 <code>kerneltrap()</code> 要先备份 <code>sepc/sstatus</code>？</h2><div class="panel">
+    <p>当前 xv6 <code>kerneltrap()</code> 入口先把 <code>sepc</code>、<code>sstatus</code>、<code>scause</code> 读到局部变量。若这是 timer interrupt，后面可能调用 <code>yield()</code>；切换出去再切回来期间，别的 trap 可能已经使用过这些 per-hart CSR。因此返回前 xv6 再写回原来的 <code>sepc/sstatus</code>。</p>
+    <div class="codebox">kernel trap A
+  save sepc / sstatus locally
+  → timer
+  → yield()
+      → other execution / other traps may occur
+  ← eventually resume A kernel path
+  restore A's sepc / sstatus
+  → kernelvec.S → sret</div>
+    <p class="callout"><b>心智模型：</b>“现场”不只是寄存器集合，而是<b>谁拥有哪一份可恢复状态</b>。只要控制流可能离开当前处理路径，那些稍后仍要使用、但中途可能被覆盖的状态就必须获得独立 owner。</p>
+  </div></section>
+
+  <section><h2 class="section-title">10 · MIT 2026 Trap Lab：不要全按作业顺序刷</h2><div class="panel">
+    <table><thead><tr><th>官方部分</th><th>训练对象</th><th>408 轨道建议</th></tr></thead><tbody>
+      <tr><td>RISC-V assembly questions</td><td>calling convention、<code>ra</code>、endianness、变参调用</td><td><b>快速做</b>；和计组 ISA 有桥接价值，但不让它占据 OS 主时间</td></tr>
+      <tr><td><code>backtrace()</code></td><td>stack frame、frame pointer、return address、kernel debugging</td><td><b>推荐</b>；特别适合把“执行现场/调用链”变成实际内存结构</td></tr>
+      <tr><td><code>sigalarm</code> / <code>sigreturn</code></td><td>timer trap、改写 user EPC、保存/恢复完整用户状态、禁止 handler 重入</td><td><b>核心必做</b>；这是本页最有价值的实验</td></tr>
+    </tbody></table>
+    <p class="subtle">2026 官方 traps lab 当前明确要求阅读 Book Ch.4、<code>kernel/trampoline.S</code>、<code>kernel/trap.c</code>；alarm 要求用户 handler 最终通过 <code>sigreturn</code> 恢复原执行。</p>
+  </div></section>
+
+  <section><h2 class="section-title">11 · Interactive Alarm：内核怎样“插入”一次用户函数又不破坏原程序？</h2><div class="panel">
+    <div class="timeline" id="alarmTimeline"></div>
+    <div class="alarm-controls"><button id="alarmPrev">← 上一步</button><button id="alarmNext">下一步 →</button><button id="alarmReset">重置</button></div>
+    <div class="alarm-state" id="alarmState"></div>
+  </div></section>
+
+  <section><h2 class="section-title">12 · Alarm 真正保护的不变量</h2><div class="grid3">
+    <div class="mini"><h3>Transparent Resume</h3><p>handler 结束后，原程序的 PC 与寄存器必须像“这次插入没有破坏它”一样继续。</p></div>
+    <div class="mini"><h3>No Re-entrancy</h3><p>handler 尚未 <code>sigreturn</code> 时，下一次 timer 不能再次把同一 handler 套进去，除非系统显式设计支持嵌套。</p></div>
+    <div class="mini"><h3>a0 Is State Too</h3><p><code>sigreturn</code> 自身也是 syscall，会涉及 a0；恢复时不能漏掉原来用户 a0，否则“返回值寄存器”会悄悄破坏原执行。</p></div>
+  </div>
+  <p class="callout"><b>这就是 trapframe 的生成性定义：</b>为了让未来某一时刻能够恢复“同一个逻辑执行”，必须保存所有会影响后续可观察行为、且中途可能被覆盖的状态。</p></section>
+
+  <section><h2 class="section-title">13 · 408 Bridge：四种题先问哪一件事？</h2><div class="panel">
+    <table><thead><tr><th>题面信号</th><th>第一动作</th><th>不要直接推出</th></tr></thead><tbody>
+      <tr><td>系统调用 / trap instruction</td><td>当前程序主动请求？先画 trusted entry → service → return</td><td>“一定进程切换”</td></tr>
+      <tr><td>缺页 / fault / illegal instruction</td><td>先问异常能否修复；若能，恢复语义是 retry 还是 skip/continue？</td><td>“一异常就终止”或“统一 PC+4”</td></tr>
+      <tr><td>时钟中断</td><td>先分 hardware event → accounting/handler → scheduling decision</td><td>“中断一次就换一次进程”</td></tr>
+      <tr><td>I/O 完成中断</td><td>画 data/control/task 三条线；task 常先 Blocked→Ready</td><td>“被唤醒就立刻 Running”</td></tr>
+      <tr><td>保存现场 / 恢复现场</td><td>问未来恢复需要哪些状态、谁持有、何时可能被覆盖</td><td>“Trap Frame 必定在某固定物理位置”</td></tr>
+    </tbody></table>
+  </div></section>
+
+  <section><h2 class="section-title">14 · Quick Attack</h2><div class="quiz">
+    <div class="quiz-row"><b>Q1 · system call、page fault、timer interrupt 都进入 <code>usertrap()</code>，所以它们返回 PC 的处理可以一样吗？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不可以。共同入口只表示共享 trap 骨架。system call 需要继续到调用后的指令；可修复 page fault 要让故障访问重新获得执行机会；interrupt 则恢复被异步打断的 continuation。具体 saved PC 语义还要尊重 ISA。</div></div>
+    <div class="quiz-row"><b>Q2 · timer interrupt 发生，能不能立刻写“Running A → Running B”？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不能。至少还要经过进入 kernel、handler/记账、是否产生调度机会、scheduler 选择结果。xv6 timer 后会 yield，但其他 OS 策略并不要求每个 timer tick 都换人。</div></div>
+    <div class="quiz-row"><b>Q3 · I/O interrupt 唤醒进程 A，A 的状态一定立刻变成 Running 吗？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">通常不是。完成事件让等待条件成立，A 从 Blocked/Sleeping 变为 Ready/Runnable；是否马上获得 CPU 取决于 scheduler 和抢占策略。</div></div>
+    <div class="quiz-row"><b>Q4 · alarm handler 为什么不能只保存 PC，不保存寄存器？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">handler 自己会使用并覆盖通用寄存器。若不恢复原值，虽然能跳回原 PC，原程序的数据状态已经被污染，不能称为透明恢复。</div></div>
+  </div></section>
+
+  <section><h2 class="section-title">15 · Retrieval Check</h2><div class="panel"><ol class="check">
+    <li>不用背术语表，用“事件来源 + 同步性 + 恢复语义”区分 syscall、page fault、timer interrupt。</li>
+    <li>为什么 xv6 要有 <code>uservec/usertrap</code> 与 <code>kernelvec/kerneltrap</code> 两条低级入口？</li>
+    <li>说出 <code>scause/sepc/stval</code> 各自回答的一个问题。</li>
+    <li>为什么可修复 page fault 与 system call 不能都简单地“返回下一条指令”？</li>
+    <li>为什么 <code>kerneltrap()</code> 在可能 <code>yield()</code> 前要保护自己的 trap CSR 状态？</li>
+    <li>完整解释一次 <code>sigalarm → handler → sigreturn</code> 如何保持透明恢复不变量。</li>
+  </ol><p class="callout"><b>通过标准：</b>给你一个陌生 trap 事件，你能先确定 source / cause / saved state / handler / resume semantics，再讨论是否 schedule，而不是看到“中断/异常”就直接背固定流程。</p></div></section>
+
+  <section><h2 class="section-title">Sources / Version Boundary</h2><div class="panel"><ul>
+    <li>MIT 6.1810 Fall 2026 schedule：当前把 traps lab 安排在 System Call Entry/Exit 之后、Page Faults 之前；未来课程 notes 仍可能更新。</li>
+    <li>MIT 6.1810 Fall 2026 Traps Lab：当前内容包括 RISC-V assembly、backtrace、alarm/sigreturn。</li>
+    <li>当前 xv6 source：<code>kernel/trap.c</code>、<code>kernel/trampoline.S</code>、<code>kernel/kernelvec.S</code>、<code>kernel/riscv.h</code>。</li>
+    <li>稳定解释来源：xv6 RISC-V Book Chapter 4。</li>
+  </ul></div></section>
+
+  <div class="footer-nav"><a href="02-system-call.html">← Lesson 02 · System Call</a><a href="04-page-table.html">Lesson 04 · Page Table →</a></div>
+</main>
+<script>
+const scenarios={
+ sys:{title:'System Call · 主动、同步',tags:['当前程序主动','同步','service request'],desc:'用户执行 ecall，请求内核服务。当前 xv6 把 U-mode ecall 识别为 scause==8，并把保存的用户 EPC 前移 4。',kv:{Trigger:'当前指令主动请求',Cause:'U-mode environment call',PrimaryQuestion:'请求哪个 kernel service？',Resume:'服务完成后继续 syscall 后续用户指令',Schedule:'只有服务阻塞/抢占等额外条件才需要换实体'}},
+ fault:{title:'Page Fault · 被当前内存访问同步触发',tags:['当前指令','同步','repair or kill'],desc:'load/store 的翻译或权限条件不能按 fast path 完成。内核先尝试修复；成功时，恢复语义必须让那次访问有机会重新完成。',kv:{Trigger:'当前 load/store',Cause:'translation/protection fault',PrimaryQuestion:'这个 fault 是否合法且可修复？',Resume:'可修复 → retry faulting operation；不可修复 → terminate/signal-like handling',Schedule:'若修复需要 I/O/等待，才可能 block + schedule'}},
+ timer:{title:'Timer Interrupt · 异步控制权机会',tags:['外部时间事件','异步','preemption opportunity'],desc:'timer 与当前用户指令意图无关。xv6 记账/rearm 后会 yield，给 scheduler 一个重新选择机会。',kv:{Trigger:'timer reaches compare/deadline',Cause:'supervisor timer interrupt',PrimaryQuestion:'OS 现在要不要抢占/重新调度？',Resume:'若仍运行同一实体，则恢复被打断 continuation',Schedule:'xv6 timer path yield；但“timer=必换进程”不是跨系统定律'}},
+ dev:{title:'Device Interrupt · 异步完成/到达事件',tags:['设备','异步','completion'],desc:'UART/磁盘等设备通过 external interrupt 告诉内核状态改变。handler 确认来源、处理/ack，并可能让等待任务 runnable。',kv:{Trigger:'device state change / completion',Cause:'external interrupt + IRQ source',PrimaryQuestion:'哪个 device/request 完成？谁的等待条件因此成立？',Resume:'当前执行流可继续，或按调度策略产生抢占',Schedule:'wakeup 只给 runnable 资格；Running 仍由 scheduler 决定'}}
+};
+const scenario=document.getElementById('scenario');
+function renderScenario(key){document.querySelectorAll('.selector button').forEach(b=>b.classList.toggle('active',b.dataset.s===key));const s=scenarios[key];scenario.innerHTML=`<h3>${s.title}</h3><div>${s.tags.map(t=>`<span class="chip">${t}</span>`).join('')}</div><p class="subtle">${s.desc}</p><div class="kv">${Object.entries(s.kv).map(([k,v])=>`<b>${k}</b><span>${v}</span>`).join('')}</div>`;}
+document.querySelectorAll('.selector button').forEach(b=>b.onclick=()=>renderScenario(b.dataset.s));renderScenario('sys');
+const alarmSteps=[
+ {n:'0',title:'Normal user code',small:'PC = X；原寄存器状态 R 正常推进',detail:'进程正在用户态执行，尚未进入 handler。内核必须把“X + R”视为未来需要恢复的逻辑执行状态。'},
+ {n:'1',title:'Timer trap',small:'timer interrupt → usertrap()',detail:'timer 异步到来。入口先按 trap 协议保存用户现场；alarm 逻辑只应在确认这是 timer event 后更新计数。'},
+ {n:'2',title:'Alarm fires',small:'counter reaches interval',detail:'若 interval 到期且 handler 未在运行，内核必须额外保存一份“被 alarm 打断前”的完整用户状态，不能只记 PC。'},
+ {n:'3',title:'Rewrite EPC',small:'trapframe->epc = handler',detail:'内核没有在 kernel 中“调用”用户函数，而是改写下一次返回 user 时的 PC，让 sret 最终进入 handler。'},
+ {n:'4',title:'Handler runs',small:'user mode executes periodic()',detail:'handler 是普通用户代码，会使用寄存器，所以原现场必须仍安全保存；同时要防止下一次 timer 再次重入同一 handler。'},
+ {n:'5',title:'sigreturn()',small:'handler 主动请求恢复',detail:'sigreturn 再次进入 kernel，内核把 alarm 前保存的 trapframe/寄存器状态完整恢复，包括 a0。'},
+ {n:'6',title:'Resume X',small:'sret → original execution',detail:'用户代码回到被打断的 continuation，寄存器与 PC 恢复，alarm 重新 arm。对原程序而言，周期 handler 像被透明插入。'}
+];
+let ai=0;const tl=document.getElementById('alarmTimeline'),as=document.getElementById('alarmState');
+function renderAlarm(){tl.innerHTML=alarmSteps.map((s,n)=>`<div class="tick ${n===ai?'active':''}" data-i="${n}"><b>${s.n} · ${s.title}</b><small>${s.small}</small></div>`).join('');as.innerHTML=`<b>${alarmSteps[ai].title}</b><p class="subtle">${alarmSteps[ai].detail}</p>`;tl.querySelectorAll('.tick').forEach(x=>x.onclick=()=>{ai=Number(x.dataset.i);renderAlarm()});}
+document.getElementById('alarmPrev').onclick=()=>{ai=Math.max(0,ai-1);renderAlarm()};document.getElementById('alarmNext').onclick=()=>{ai=Math.min(alarmSteps.length-1,ai+1);renderAlarm()};document.getElementById('alarmReset').onclick=()=>{ai=0;renderAlarm()};renderAlarm();
+function toggleAnswer(btn){btn.nextElementSibling.classList.toggle('show');btn.textContent=btn.nextElementSibling.classList.contains('show')?'隐藏答案':'显示答案';}
+</script>
+</body></html>

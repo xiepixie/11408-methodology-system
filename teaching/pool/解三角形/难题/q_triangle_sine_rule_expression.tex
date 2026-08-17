@@ -1,0 +1,44 @@
+% =====================================================
+% 题型：解三角形正弦定理表达式选择题 (q_triangle_sine_rule_expression.tex)
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qTriangleSineRuleExpressionStem}{在 \(\triangle ABC\) 中，角 \(A, B, C\) 的对边分别为 \(a, b, c\)。若 \(a \cos B + b \cos A = c\)，则 \(\cos C =\) \hfill （\quad）}
+
+\newcommand{\qTriangleSineRuleExpressionOptions}{%
+  \mcoptions[4]{\(\dfrac{1}{2}\)}{\(\dfrac{\sqrt{2}}{2}\)}{\(\dfrac{\sqrt{3}}{2}\)}{\(1\)}%
+}
+
+\newcommand{\qTriangleSineRuleExpressionAnswer}{A}
+
+\newcommand{\qTriangleSineRuleExpressionSolution}{%
+  由正弦定理 \(\dfrac{a}{\sin A} = \dfrac{b}{\sin B} = \dfrac{c}{\sin C} = 2R\)，可得 \(a = 2R\sin A\)，\(b = 2R\sin B\)，\(c = 2R\sin C\)。
+
+  代入原等式：
+  \[
+    2R\sin A\cos B + 2R\sin B\cos A = 2R\sin C.
+  \]
+  两边同除以 \(2R\)，得：
+  \[
+    \sin A\cos B + \sin B\cos A = \sin C.
+  \]
+  根据和角公式，左边恰好为 \(\sin(A+B)\)，所以：
+  \[
+    \sin(A+B) = \sin C.
+  \]
+  又因为在三角形中 \(A+B = \pi-C\)，所以：
+  \[
+    \sin(\pi-C) = \sin C,
+  \]
+  该等式恒成立。
+
+  因此当前题面条件本身不足以唯一确定 \(\cos C\)，题目需要进一步补充条件或核对原始题面。%
+}
+
+\newcommand{\qTriangleSineRuleExpressionDiagnosis}{%
+  这道题若按现有题面处理，代入正弦定理后会化为恒等式，无法唯一锁定 \(C\)。如果直接从选项中猜 \(\cos C\)，说明没有做条件充分性检查。%
+}
+
+\newcommand{\qTriangleSineRuleExpressionTeachingNotes}{%
+  正式用于课堂前，应先核对原始题面。当前版本更适合作为“条件是否足以确定未知量”的边界检查题。%
+}

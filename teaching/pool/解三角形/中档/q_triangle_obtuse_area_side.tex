@@ -1,0 +1,46 @@
+% =====================================================
+% 题型：钝角三角形面积与边长选择题 (q_triangle_obtuse_area_side.tex)
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleObtuseAreaSideStem}{在 \(\triangle ABC\) 中，角 \(A,B,C\) 的对边分别为 \(a,b,c\)。若 \(a=3,\ b=5\)，\(C\) 为钝角，且 \(\triangle ABC\) 的面积为 \(\dfrac{15\sqrt3}{4}\)，则 \(c=\hfill（\quad）\)}
+
+\newcommand{\qTriangleObtuseAreaSideOptions}{%
+  \mcoptions[4]{\(4\)}{\(\sqrt{19}\)}{\(7\)}{\(\sqrt{61}\)}%
+}
+
+\newcommand{\qTriangleObtuseAreaSideAnswer}{D}
+
+\newcommand{\qTriangleObtuseAreaSideSolution}{%
+  由面积公式：
+  \[
+    \frac12ab\sin C=\frac{15\sqrt3}{4}.
+  \]
+  代入 \(a=3,\ b=5\)，得
+  \[
+    \frac{15}{2}\sin C=\frac{15\sqrt3}{4}
+    \implies \sin C=\frac{\sqrt3}{2}.
+  \]
+  因为 \(C\) 为钝角，所以
+  \[
+    C=\frac{2\pi}{3},
+    \qquad
+    \cos C=-\frac12.
+  \]
+  由余弦定理：
+  \[
+    c^2=a^2+b^2-2ab\cos C
+    =9+25-30\left(-\frac12\right)
+    =49.
+  \]
+  因此 \(c=7\)。\\
+  故选 C。%
+}
+
+\newcommand{\qTriangleObtuseAreaSideDiagnosis}{%
+  高频错误是由 \(\sin C=\frac{\sqrt3}{2}\) 直接写成 \(C=\frac\pi3\)，忽略题目已明确 \(C\) 为钝角。%
+}
+
+\newcommand{\qTriangleObtuseAreaSideTeachingNotes}{%
+  题目链条非常标准：面积公式求 \(\sin C\) → 结合钝角条件确定角 → 余弦定理求边。重点训练“一个正弦值对应两个互补角”的分支意识。%
+}

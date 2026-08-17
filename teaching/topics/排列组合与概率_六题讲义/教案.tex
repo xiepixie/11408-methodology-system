@@ -1,0 +1,142 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 教师教案：排列组合与概率（六题进阶特训）}
+\rhead{\small 教师版}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries 教师教案：排列组合与概率（六题进阶特训）}
+\end{center}
+\vspace{1em}
+
+\section*{本讲教学目标与思路}
+
+这六道题覆盖了排列组合中最常见的失分点：计数对象不清、组是否有标号判断错误、分类不完整、重复乘排列数、忽略样本空间统一以及把“自动确定”误当成新的选择。
+其训练重点不是记忆公式，而是把题目准确翻译成计数模型。
+
+\subsection*{一、核心引子与题感诊断}
+
+\textbf{1. 看到这些条件，应立刻想到什么}
+\begin{itemize}[itemsep=0.3em]
+    \item \textbf{看到“完全相同的球”}：一种放法只由各盒中的数量决定，不需要选择具体是哪几个球。若盒子有编号，则数量向量有顺序。
+    \item \textbf{看到“数量均不同”}：普通隔板法只处理正整数或非负整数条件，不能自动保证变量互不相同。优先把数量从小到大排列，枚举无序数量类型，再分配给有标号盒子。
+    \item \textbf{看到“平均分配到甲、乙、丙”}：甲、乙、丙有标号。总分配数可写成 $\binom93\binom63$，不需要再除以 $3!$。
+    \item \textbf{看到“每组至少一人、至多两人”}：先由总人数确定容量类型。例如五人分到三个单位，容量只能是 $(2,2,1)$。
+    \item \textbf{看到“对应位置高于”}：优先考虑每一列内部交换。如果每列中的两棵树已经确定，则一前一后的两种放法中，恰有一种满足后高前低。
+    \item \textbf{看到“某两人同行、某两人不同组”}：先安排这些特殊对象，形成一个“基础占位结构”，再把普通对象补入各单位。
+\end{itemize}
+
+\textbf{2. 本类题的常见切入点}
+\begin{itemize}[itemsep=0.3em]
+    \item \textbf{先明确计数对象}：对象是否互不相同；单位是否有标号；交换两组后是否得到新方案；每组内部是否区分顺序。
+    \item \textbf{先确定容量结构}：若人数上下限较严格，应先解方程并结合上下界列出所有可能容量。
+    \item \textbf{先安排限制最强的对象}：限制越强的对象越应优先安排。
+    \item \textbf{寻找自动确定的步骤}：若某一步在此前选择完成后只有一种合法结果，就不能额外乘计数因子。
+\end{itemize}
+
+\subsection*{二、应试方法联系与深度思考}
+
+\textbf{1. 方法的横向联系}
+\begin{itemize}[itemsep=0.3em]
+    \item \textbf{数量拆分与隔板法}：普通隔板法解决基础条件，附加的互异、奇偶、上下界条件需要另行处理。
+    \item \textbf{容量类型与分组问题}：先确定 $(2,2,1)$ 等容量结构，是分配题的常见入口。
+    \item \textbf{补集与容斥}：当条件中出现“每个”“至少”“都不缺少”时，应主动检查补集是否更简洁。
+    \item \textbf{局部交换对称}：利用局部或列内部独立交换，避免对复杂排列情况进行繁琐的分类。
+    \item \textbf{固定高频对象与交集分类}：先固定结构最强、出现次数最多的对象，再按交集大小分类。
+    \item \textbf{特殊对象锚定}：先安排同行和不同组的特殊对象，再补入普通对象。
+\end{itemize}
+
+\textbf{2. 实战做题启发}
+\begin{itemize}[itemsep=0.3em]
+    \item \textbf{先写“容量”，再写组合数}：遇到分配题，先写每个单位可能有多少人。后续分类就会非常明确。
+    \item \textbf{每乘一个因子，都要说明它对应哪次选择}：无法说明具体选择含义的乘数，往往会造成重复计数。
+    \item \textbf{先处理限制最强的对象}：优先处理必须同行、必须分开、不能出现、出现次数最多、可选位置最少的对象。
+\end{itemize}
+
+\vspace{1em}
+\hrule
+\vspace{1.5em}
+
+\teacherproblem{题型一}{相同球放入有标号盒}
+{\small \qProbPermDiffBoxesStem}
+\vspace{0.5em}
+\begin{paracol}{2}
+\teachblock{标准答案}{\qProbPermDiffBoxesAnswer}
+\teachblock{标准解答}{\qProbPermDiffBoxesSolution}
+\switchcolumn
+\teachblock{课堂处理与避坑指南}{\qProbPermDiffBoxesTeachingNotes}
+\end{paracol}
+
+\vspace{1.5em}
+\hrule
+\vspace{1.5em}
+
+\teacherproblem{题型二}{平均分配中的概率计算}
+{\small \qProbPermAvgAllocStem}
+\vspace{0.5em}
+\begin{paracol}{2}
+\teachblock{标准答案}{\qProbPermAvgAllocAnswer}
+\teachblock{标准解答}{\qProbPermAvgAllocSolution}
+\switchcolumn
+\teachblock{课堂处理与避坑指南}{\qProbPermAvgAllocTeachingNotes}
+\end{paracol}
+
+\newpage
+
+\teacherproblem{题型三}{人数有上下限的分配}
+{\small \qProbPermMinMaxCapStem}
+\vspace{0.5em}
+\begin{paracol}{2}
+\teachblock{标准答案}{\qProbPermMinMaxCapAnswer}
+\teachblock{标准解答}{\qProbPermMinMaxCapSolution}
+\switchcolumn
+\teachblock{课堂处理与避坑指南}{\qProbPermMinMaxCapTeachingNotes}
+\end{paracol}
+
+\vspace{1.5em}
+\hrule
+\vspace{1.5em}
+
+\teacherproblem{题型四}{利用对称性快速求概率}
+{\small \qProbPermSymmPosStem}
+\vspace{0.5em}
+\begin{paracol}{2}
+\teachblock{标准答案}{\qProbPermSymmPosAnswer}
+\teachblock{标准解答}{\qProbPermSymmPosSolution}
+\switchcolumn
+\teachblock{课堂处理与避坑指南}{\qProbPermSymmPosTeachingNotes}
+\end{paracol}
+
+\newpage
+
+\teacherproblem{题型五}{多日多课时排课}
+{\small \qProbPermMultiDayStem}
+\vspace{0.5em}
+\begin{paracol}{2}
+\teachblock{标准答案}{\qProbPermMultiDayAnswer}
+\teachblock{标准解答}{\qProbPermMultiDaySolution}
+\switchcolumn
+\teachblock{课堂处理与避坑指南}{\qProbPermMultiDayTeachingNotes}
+\end{paracol}
+
+\newpage
+
+\teacherproblem{题型六}{带有同行与不同组的人员分配}
+{\small \qProbPermSpecGroupStem}
+\vspace{0.5em}
+\begin{paracol}{2}
+\teachblock{标准答案}{\qProbPermSpecGroupAnswer}
+\teachblock{标准解答}{\qProbPermSpecGroupSolution}
+\switchcolumn
+\teachblock{课堂处理与避坑指南}{\qProbPermSpecGroupTeachingNotes}
+\end{paracol}
+
+\end{document}

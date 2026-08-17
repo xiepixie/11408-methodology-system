@@ -1,0 +1,213 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[student]{ipara}
+\raggedbottom
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 学案：空间线段与几何极值的结构化思维}
+\rhead{\small 学生版}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% 引用难题池
+\input{teaching/pool/立体几何/中档/q_solid_cylinder_sphere_volume.tex}
+\input{teaching/pool/立体几何/难题/q_solid_sphere_tetrahedron_intersection.tex}
+\input{teaching/pool/立体几何/难题/q_solid_skew_lines_midpoint_area.tex}
+
+
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 专题学案：空间线段与几何极值的结构化思维}\\[0.4em]
+  {\small 姓名：\blank{2.5cm} \quad 日期：\blank{2.5cm} \quad 课次：空间线段与几何极值}
+\end{center}
+\vspace{0.5em}
+
+\section{本讲目标}
+
+\begin{itemize}[itemsep=0.35em]
+  \item 能用\textbf{点积、叉积、混合积}统一表达长度、面积和体积。
+  \item 能用\textbf{投影与垂距}理解两空间直线最短距离公式。
+  \item 能识别“到两条射线距离和/差”的\textbf{分区线性结构}，把最值问题降到角点与边界。
+  \item 能把球、柱、三棱锥交线问题翻译为“一个点到一个平面的距离 + 截面圆”。
+  \item 能区分“特殊对称模型的快速公式”与“一般情形必须先找公垂线/投影”的边界。
+\end{itemize}
+
+\section{公式与结构速查}
+
+\begin{tcolorbox}[enhanced,colback=gray!5,colframe=black!60,boxrule=0.7pt,arc=1mm,title=\bfseries 1. 向量几何的三层结构]
+\[
+\boxed{\text{长度}}
+\quad
+\boxed{\text{面积}}
+\quad
+\boxed{\text{体积}}
+\]
+\[
+|\vec a|,
+\qquad
+|\vec a\times\vec b|,
+\qquad
+|\vec a\cdot(\vec b\times\vec c)|.
+\]
+
+其中：
+\[
+\vec a\cdot\vec b=|\vec a||\vec b|\cos\theta,
+\]
+\[
+|\vec a\times\vec b|=|\vec a||\vec b|\sin\theta.
+\]
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=gray!5,colframe=black!60,boxrule=0.7pt,arc=1mm,title=\bfseries 2. 点到直线、点到平面、两异面直线]
+点 \(P\) 到直线 \(AB\)：
+\[
+d(P,AB)
+=
+\frac{|\overrightarrow{AP}\times\overrightarrow{AB}|}{|\overrightarrow{AB}|}.
+\]
+
+点 \(P\) 到平面 \(\alpha\)（法向量 \(\vec n\)，平面上一点 \(A\)）：
+\[
+d(P,\alpha)
+=
+\frac{|\overrightarrow{AP}\cdot\vec n|}{|\vec n|}.
+\]
+
+两异面直线 \(l_1,l_2\)，方向向量分别为 \(\vec u,\vec v\)，连接两直线上一点的向量为 \(\vec w\)：
+\[
+d(l_1,l_2)
+=
+\frac{|\vec w\cdot(\vec u\times\vec v)|}{|\vec u\times\vec v|}.
+\]
+\end{tcolorbox}
+
+\begin{tcolorbox}[enhanced,colback=gray!5,colframe=black!60,boxrule=0.7pt,arc=1mm,title=\bfseries 3. 球截面与圆截面]
+若球半径为 \(R\)，球心到截面平面的距离为 \(d\)，截面圆半径为 \(r\)，则
+\[
+\boxed{R^2=r^2+d^2}.
+\]
+
+因此只要能求出球心到截面平面的距离，就能把空间球问题压缩成平面圆问题。
+\end{tcolorbox}
+
+\section{模型一：柱体与球的体积关系}
+
+\studentproblem{1}
+\qSolidCylinderSphereVolumeStem
+\begin{center}
+  \qSolidCylinderSphereVolumeFigure[1.0]
+\end{center}
+\answergrid[10.5cm]{解：}
+
+\studentthink{
+  \item 我是否先判断了球心在哪里？
+  \item 我是否把球半径写成“柱高的一半”和“底面半径”的勾股关系？
+  \item 我是否先用条件消元，再比较体积，而不是一开始就把公式全部代进去？
+}
+
+\newpage
+
+\section{模型二：三棱锥与球的截面}
+
+\studentproblem{2}
+\qSolidSphereTetrahedronIntersectionStem
+\begin{center}
+  \qSolidSphereTetrahedronIntersectionFigure[1.0]
+\end{center}
+\answergrid[11.5cm]{解：}
+
+\studentthink{
+  \item 截面圆半径的关键，是先求球心到截面平面的距离。
+  \item 如果截面平面是三棱锥某个面，我能否用坐标或法向量求球心到面的距离？
+  \item 最后是否回到 \(R^2=r^2+d^2\)？
+}
+
+\section{模型三：两条射线的距离和/差极值}
+
+\studentproblem{3}
+\qSolidSkewLinesMidpointAreaStem
+\begin{center}
+  \qSolidSkewLinesMidpointAreaFigure[1.0]
+\end{center}
+\answergrid[12.5cm]{解：}
+
+\studentthink{
+  \item “点到射线距离”和“点到直线距离”不完全相同，什么时候垂足落在射线外？
+  \item 距离函数为什么会分区？每个区域内为什么通常是线性的？
+  \item 线性函数在多边形区域内取最值时，为什么只需检查边界和顶点？
+}
+
+\newpage
+
+\section{模型四：两异面直线最短距离}
+
+\begin{tcolorbox}[enhanced,colback=gray!5,colframe=black!60,boxrule=0.7pt,arc=1mm,title=\bfseries 统一公式]
+设两直线：
+\[
+l_1: \vec r=\vec a+s\vec u,
+\qquad
+l_2: \vec r=\vec b+t\vec v.
+\]
+若 \(\vec u\times\vec v\neq\vec0\)，则
+\[
+\boxed{
+ d(l_1,l_2)
+ =
+ \frac{|(\vec b-\vec a)\cdot(\vec u\times\vec v)|}{|\vec u\times\vec v|}
+ }.
+\]
+
+请在下面写出一句几何解释：
+
+\vspace{1.4cm}
+\end{tcolorbox}
+
+\begin{exbox}{练习}
+直线 \(l_1\) 过点 \(A(1,0,0)\)，方向向量 \(\vec u=(1,1,0)\)；直线 \(l_2\) 过点 \(B(0,1,1)\)，方向向量 \(\vec v=(1,0,1)\)。求两异面直线 \(l_1,l_2\) 的最短距离。
+\end{exbox}
+
+\answergrid[9.5cm]{解：}
+
+\newpage
+
+\section{模型五：对称题的快速距离公式（有边界）}
+
+\begin{tcolorbox}[enhanced,colback=gray!5,colframe=black!60,boxrule=0.7pt,arc=1mm,title=\bfseries 快速公式不是万能公式]
+某些高对称几何体中，两条异面直线长度相等，连接端点的对称线段与两直线构成特殊正交结构，此时常能化出类似
+\[
+d=\frac{ab\sin\theta}{\sqrt{a^2+b^2-2ab\cos\theta}}
+\]
+的形式。
+
+但这类公式必须满足非常具体的对称/端点结构，\textbf{不能把它当成一般两异面直线距离公式}。
+\end{tcolorbox}
+
+\begin{exbox}{练习}
+在正方体 \(ABCD-A_1B_1C_1D_1\) 中，棱长为 \(a\)。求异面直线 \(AC\) 与 \(B_1D_1\) 的距离。
+\end{exbox}
+
+\answergrid[8.5cm]{解：}
+
+\studentthink{
+  \item 这题能否直接看出两直线分别位于两个平行平面内？
+  \item 我是否可以把问题转化为两个平行平面的距离？
+  \item 如果我上来套一般异面直线公式，是否比几何法更繁琐？
+}
+
+\section{课堂总结：五句话}
+
+请把下列五句话补完整：
+
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=1.2em]
+  \item 长度看 \blank{3cm}，面积看 \blank{3cm}，体积看 \blank{3cm}。
+  \item 两异面直线距离的本质，是连接向量在 \blank{4cm} 方向上的投影。
+  \item 球截面问题先求 \blank{4cm}，再用 \(R^2=r^2+d^2\)。
+  \item 点到射线距离问题要检查 \blank{5cm}，因此常出现分段。
+  \item 特殊对称题可以快算，但一般公式一定要从 \blank{5cm} 出发。
+\end{enumerate}
+
+\end{document}

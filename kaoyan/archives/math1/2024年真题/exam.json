@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "exam_id": "math1-2024",
+  "profile_id": "math1",
+  "year": 2024,
+  "language": "zh-CN",
+  "title": "2024 年全国硕士研究生招生考试 数学（一）真题",
+  "main_file": "2024 年全国硕士研究生招生考试 数学（一）真题.md",
+  "status": "ready",
+  "question_count": 22,
+  "total_score": 150,
+  "question_scores": {
+    "1": 5,
+    "2": 5,
+    "3": 5,
+    "4": 5,
+    "5": 5,
+    "6": 5,
+    "7": 5,
+    "8": 5,
+    "9": 5,
+    "10": 5,
+    "11": 5,
+    "12": 5,
+    "13": 5,
+    "14": 5,
+    "15": 5,
+    "16": 5,
+    "17": 10,
+    "18": 12,
+    "19": 12,
+    "20": 12,
+    "21": 12,
+    "22": 12
+  },
+  "content_features": {
+    "figures": [
+      5
+    ],
+    "code": [],
+    "tables": []
+  },
+  "figure_assets": {
+    "5": "assets/q05_three_planes_pencil.svg"
+  },
+  "routing": "profile-default",
+  "open_items": []
+}

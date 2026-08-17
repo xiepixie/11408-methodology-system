@@ -1,0 +1,136 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[student]{ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 立体几何专题学案}
+\rhead{\small 外接球与内切球模型}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\topicformula}[1]{%
+  \begin{center}
+    \fbox{\parbox{0.91\textwidth}{#1}}
+  \end{center}%
+}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 立体几何专题：外接球与内切球模型}\\[0.4em]
+  姓名：\blank{2.5cm}
+  \quad
+  日期：\blank{2.5cm}
+\end{center}
+
+\section{本讲目标}
+
+完成本讲后，你应当能够：
+\begin{itemize}
+  \item 识别球的截面直角三角形模型；
+  \item 区分正方体、长方体、直棱柱、圆柱与正四面体的外接球半径公式；
+  \item 判断何时用补形法，何时直接找截面圆心；
+  \item 在球与多面体综合题中，把空间半径关系转化为平面勾股关系。
+\end{itemize}
+
+\topicformula{
+\textbf{统一母模型：}
+若球心为 $O$，截面圆圆心为 $O_1$，球半径为 $R$，截面圆半径为 $r$，球心到截面距离为 $d$，则
+\[
+  R^2=r^2+d^2.
+\]
+球相关公式尽量统一回到这个直角三角形，而不是孤立背结论。
+}
+
+\section{模型一：公式总览}
+
+{\small \qSolidSphereModelsSummaryStem}
+
+\vspace{0.7em}
+\noindent\textbf{我需要特别记住的两种通法：}
+\begin{enumerate}
+  \item \blank{13cm}
+  \item \blank{13cm}
+\end{enumerate}
+
+\section{模型二：圆柱外接球}
+
+{\small \qSolidCylinderSphereVolumeStem}
+\qSolidCylinderSphereVolumeOptions
+
+\begin{center}
+  \qSolidCylinderSphereVolumeFigure[0.95]
+\end{center}
+
+\answerblank[4.3cm]{解：}
+
+\studentthink{
+  \item 圆柱轴截面中，球半径 $R$、底面半径 $r$、半高 $\dfrac h2$ 构成什么三角形？
+  \item 为什么这里必须是“半高”，不是整个高？
+}
+
+\section{模型三：直棱柱外接球}
+
+{\small \qSolidRightTriangularPrismSphereAreaStem}
+\qSolidRightTriangularPrismSphereAreaOptions
+
+\begin{center}
+  \qSolidRightTriangularPrismSphereAreaFigure[0.95]
+\end{center}
+
+\answerblank[4.5cm]{解：}
+
+\studentthink{
+  \item 底面正三角形的外接圆半径是多少？
+  \item 直棱柱外接球球心在什么位置？
+}
+
+\newpage
+
+\section{模型四：球内接圆柱最值}
+
+{\small \qSolidSphereInscribedCylinderMaxAreaStem}
+
+\begin{center}
+  \qSolidSphereInscribedCylinderMaxAreaFigure[0.95]
+\end{center}
+
+\answerblank[6cm]{解：}
+
+\studentthink{
+  \item $r$ 和 $h$ 能不能同时增大？它们受到什么约束？
+  \item 当侧面积取得最大值时，轴截面的直角三角形有什么特殊关系？
+}
+
+\section{模型五：球的直径性质与三棱锥体积}
+
+{\small \qSolidPyramidDiameterVolumeStem}
+\qSolidPyramidDiameterVolumeOptions
+
+\begin{center}
+  \qSolidPyramidDiameterVolumeFigure[0.95]
+\end{center}
+
+\answerblank[7cm]{解：}
+
+\studentthink{
+  \item 若 $SC$ 是球的直径，点 $A,B$ 也在球面上，可立即得到哪些直角？
+  \item 这道题中坐标法真正负责求的核心量是什么？
+}
+
+\section{本讲复盘}
+
+\noindent\textbf{1. 球的截面统一公式：}
+\blank{13cm}
+
+\vspace{0.8em}
+\noindent\textbf{2. 直棱柱外接球统一公式：}
+\blank{13cm}
+
+\vspace{0.8em}
+\noindent\textbf{3. 我最容易混淆的模型是：}
+\blank{13cm}
+
+\end{document}

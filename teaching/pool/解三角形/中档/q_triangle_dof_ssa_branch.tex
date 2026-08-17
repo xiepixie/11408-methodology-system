@@ -1,0 +1,28 @@
+% ==============================================================================
+% 公共题库: teaching/pool/解三角形/中档/q_triangle_dof_ssa_branch.tex
+% 难度: ★★ 中档
+% 知识点: SSA多解分支、圆弧交点模型、正弦定理与余弦定理解的个数
+% ==============================================================================
+
+\newcommand{\qTriangleDofSsaBranchStem}{%
+在 \(\triangle ABC\) 中，已知 \(a = \sqrt{3}\)，\(b = 2\)，\(A = 45^\circ\)。
+\begin{enumerate}[(1)]
+  \item 求 \(\sin B\) 的值；
+  \item 判断 \(\triangle ABC\) 解的个数，并根据几何交点圆弧图给出解释；
+  \item 求 \(c\) 的可能值。
+\end{enumerate}%
+}
+
+\newcommand{\qTriangleDofSsaBranchAnswer}{%
+(1) \(\sin B = \frac{\sqrt{6}}{3}\)；\qquad (2) 2 个解；\qquad (3) \(c = \sqrt{2} \pm 1\)。
+}
+
+\newcommand{\qTriangleDofSsaBranchSolution}{%
+(1) 正弦定理 \(\sin B = \frac{b\sin A}{a} = \frac{\sqrt{6}}{3}\)。
+(2) 高 \(h = b\sin A = \sqrt{2}\)，由于 \(h < a < b\)，圆弧与射线交于两点，故有 2 解。
+(3) 余弦定理 \(3 = 4+c^2 - 2\sqrt{2}c \implies c^2 - 2\sqrt{2}c + 1 = 0 \implies c = \sqrt{2} \pm 1\)。
+}
+
+\newcommand{\qTriangleDofSsaBranchDiagnosis}{%
+【错因】容易遗漏钝角解分支，或不会画几何图分析 $0/1/2$ 解的边界。
+}

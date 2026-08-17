@@ -1,0 +1,89 @@
+\documentclass[profile=standard,twoside=false]{ipara-handbook}
+
+% 新建 Topic / Bridge / Integration 时复制本文件。
+% 这里只演示公共视觉组件；认知结构仍执行 handbook_writing_spec.md。
+\handbooksetup
+  {示例 Handbook：对象、机制与边界}
+  {数学一 · 示例 Topic XX}
+  {对象 · 机制 · 边界}
+
+\begin{document}
+
+\handbooktitle
+  {示例 Handbook：对象、机制与边界}
+  {公共样式的最小可编译骨架}
+  {Topic XX · LaTeX Template}
+
+\begin{mentalmodel}{母问题}
+一个对象为什么需要当前机制？机制改变什么状态，又必须保持什么不变量？
+\end{mentalmodel}
+
+\begin{mechanism}{本册定位与 Owner 边界}
+正文只定义本册 Own 的机制；相邻机制通过 Use / Bridge / Integration 链接，不为了排版完整而复制第二份定义。
+\end{mechanism}
+
+\section{最小生成链}
+
+\[
+\boxed{
+\text{Problem}
+\to \text{Naive Solution}
+\to \text{Failure}
+\to \text{Mechanism}
+\to \text{Invariant}
+}
+\]
+
+\begin{boundary}{概念边界}
+\begin{boundarytable}
+\boundarytablehead
+对象 & ≠ & 表示
+  & 对象是被研究的实体；表示是为了计算或推理选择的编码。题目更换坐标而实体不变时，应先追踪不变量
+  & 会把表示变化误判成对象变化 \\
+\bottomrule
+\end{boundarytable}
+\end{boundary}
+
+\section{流程图}
+
+\begin{handbookdiagram}
+\begin{tikzpicture}[node distance=16mm and 20mm]
+  \node[ipara node] (input) {输入对象};
+  \node[ipara process,right=of input] (mechanism) {机制};
+  \node[ipara state,right=of mechanism] (state) {稳定状态};
+
+  \draw[ipara edge] (input) -- node[ipara label,above]{处理} (mechanism);
+  \draw[ipara edge] (mechanism) -- node[ipara label,above]{提交} (state);
+\end{tikzpicture}
+\diagramcaption{箭头标签只承担短事件或动作；原因解释留在正文。}
+\end{handbookdiagram}
+
+\section{普通表格}
+
+\begin{handbooktable}{L{2.7cm}YY}
+\toprule
+\textbf{对象} & \textbf{要问的问题} & \textbf{检查} \\
+\midrule
+状态 & 当前有哪些合法取值？ & 是否遗漏非法/终止状态？ \\
+事件 & 什么触发状态变化？ & 事件方向与箭头语义是否一致？ \\
+边界 & 哪些条件不满足时必须停？ & 是否已经交给正确 Owner？ \\
+\bottomrule
+\end{handbooktable}
+
+\section{代码与标识符}
+
+行内标识符使用 \code{TLB miss}、\code{fork()}；较长路径使用 \codepath{/proc/<pid>/maps}。
+
+\begin{lstlisting}[language=C]
+if (condition) {
+    update_state();
+} else {
+    keep_invariant();
+}
+\end{lstlisting}
+
+\begin{warning}{不要用缩小字号掩盖结构问题}
+图或表越界时，先缩短标签、调整列职责、重做路由或拆图；整体缩放只是最后手段。
+\end{warning}
+
+\end{document}

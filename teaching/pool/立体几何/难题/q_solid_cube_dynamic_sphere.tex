@@ -1,0 +1,147 @@
+% =====================================================
+% 题型：立体几何多选题 (q_solid_cube_dynamic_sphere.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidCubeDynamicSphereStem}{%
+  如图，正方体 $ABCD - A_1B_1C_1D_1$ 的棱长为 $2$，$E, F$ 分别是 $AD, DD_1$ 的中点，点 $P$ 是底面 $ABCD$ 内一动点，则下列结论正确的是%
+}
+
+\newcommand{\qSolidCubeDynamicSphereOptions}{%
+  \mcoptions[1]{
+    不存在点 $P$，使得 $FP \parallel$ 平面 $ABC_1D_1$
+  }{
+    一只蚂蚁从点 $A$ 出发，沿正方体的表面爬行，到达点 $C_1$ 的最短距离为 $2\sqrt{5}$
+  }{
+    三棱锥 $C_1 - A_1B_1P$ 的体积为 $\dfrac{4}{3}$
+  }{
+    三棱锥 $F - ACD$ 的外接球表面积为 $9\pi$
+  }%
+}
+
+\newcommand{\qSolidCubeDynamicSphereFigure}[1][1.2]{%
+  \begin{tikzpicture}[scale=#1, >=stealth]
+    % Coordinates of vertices of the cube
+    \coordinate (A) at (0, 0);
+    \coordinate (B) at (2.0, 0);
+    \coordinate (C) at (2.7, 0.7);
+    \coordinate (D) at (0.7, 0.7);
+    
+    \coordinate (A1) at (0, 2.0);
+    \coordinate (B1) at (2.0, 2.0);
+    \coordinate (C1) at (2.7, 2.7);
+    \coordinate (D1) at (0.7, 2.7);
+    
+    % Midpoints
+    \coordinate (E) at ($(A)!0.5!(D)$);
+    \coordinate (F) at ($(D)!0.5!(D1)$);
+    
+    % Dynamic point P
+    \coordinate (P) at (1.1, 0.35);
+    
+    % Drawing edges
+    \draw[thick] (A) -- (B) -- (C);
+    \draw[thick, dashed] (C) -- (D);
+    \draw[thick, dashed] (D) -- (A);
+    
+    \draw[thick] (A1) -- (B1) -- (C1) -- (D1) -- cycle;
+    
+    \draw[thick] (A) -- (A1);
+    \draw[thick] (B) -- (B1);
+    \draw[thick] (C) -- (C1);
+    \draw[thick, dashed] (D) -- (D1);
+    
+    % Draw helper dashed lines for E, F, P
+    \draw[thick, dashed, blue] (F) -- (P);
+    
+    % Markers
+    \fill (E) circle (1.2pt);
+    \fill (F) circle (1.2pt);
+    \fill (P) circle (1.2pt);
+    
+    \node[below left] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[right] at (C) {\small $C$};
+    \node[left] at (D) {\small $D$};
+    
+    \node[left] at (A1) {\small $A_1$};
+    \node[right] at (B1) {\small $B_1$};
+    \node[above right] at (C1) {\small $C_1$};
+    \node[above left] at (D1) {\small $D_1$};
+    
+    \node[below left] at (E) {\small $E$};
+    \node[left] at (F) {\small $F$};
+    \node[below right] at (P) {\small $P$};
+    
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidCubeDynamicSphereAnswer}{B, C, D}
+
+\newcommand{\qSolidCubeDynamicSphereSolution}{%
+  对各选项逐一进行分析与判断：
+  
+  对于 \textbf{A} 选项：
+  以 $D$ 为原点，$\overrightarrow{DA}$ 为 $x$ 轴，$\overrightarrow{DC}$ 为 $y$ 轴，$\overrightarrow{DD_1}$ 为 $z$ 轴，建立空间直角坐标系。
+  根据正方体边长为 $2$，可得各点坐标：
+  \[ D(0,0,0),\quad A(2,0,0),\quad B(2,2,0),\quad C(0,2,0),\quad D_1(0,0,2),\quad C_1(0,2,2). \]
+  其中 $E$ 是 $AD$ 中点 $\implies E(1,0,0)$， $F$ 是 $DD_1$ 中点 $\implies F(0,0,1)$。
+  设 $P$ 是底面 $ABCD$ 内一动点，故 $P$ 的坐标可设为 $(x, y, 0)$，其中 $x \in [0,2]$，$y \in [0,2]$。
+  则 $\overrightarrow{FP} = (x, y, -1)$。
+  
+  平面 $ABC_1D_1$ 经过 $A(2,0,0)$，$B(2,2,0)$，$D_1(0,0,2)$，其法向量 $\vec{n} = (n_x, n_y, n_z)$。
+  由 $\vec{n} \cdot \overrightarrow{AB} = 0 \implies \vec{n} \cdot (0, 2, 0) = 0 \implies n_y = 0$。
+  由 $\vec{n} \cdot \overrightarrow{AD_1} = 0 \implies \vec{n} \cdot (-2, 0, 2) = 0 \implies n_x = n_z$。
+  取 $\vec{n} = (1, 0, 1)$。
+  若 $FP \parallel$ 平面 $ABC_1D_1$，则 $\overrightarrow{FP} \cdot \vec{n} = 0$，即：
+  \[ (x, y, -1) \cdot (1, 0, 1) = 0 \implies x - 1 = 0 \implies x = 1. \]
+  在底面内只要点 $P$ 满足横坐标 $x = 1$，即点 $P$ 落在底面中线 $E$ 开始平行于 $CD$ 的线段上，均满足 $FP \parallel$ 平面 $ABC_1D_1$。
+  由于这样的点 $P$ 存在（例如 $P(1,1,0)$），故 \textbf{A} 错误；
+  
+  对于 \textbf{B} 选项：
+  将正方体的表面展开，从 $A$ 爬行到 $C_1$ 可以展开相邻两个面。
+  当展开底面 $ABCD$ 与侧面 $BCC_1B_1$ 时，展开后 $A, C_1$ 的水平距离为 $AB + BC = 4$，竖直距离为 $CC_1 = 2$。
+  最短路径长为 $\sqrt{4^2 + 2^2} = \sqrt{20} = 2\sqrt{5}$。
+  由于该展开路径与其它方向展开路径的计算结果等价，因此最短距离确实为 $2\sqrt{5}$，故 \textbf{B} 正确；
+  
+  对于 \textbf{C} 选项：
+  三棱锥 $C_1 - A_1B_1P$ 的体积可转换为以 $\triangle A_1B_1C_1$ 为底面，点 $P$ 到该顶平面的距离为高的三棱锥 $P - A_1B_1C_1$。
+  底面 $\triangle A_1B_1C_1$ 是直角三角形，其面积：
+  \[ S_{\triangle A_1B_1C_1} = \frac{1}{2} A_1B_1 \times B_1C_1 = \frac{1}{2} \times 2 \times 2 = 2. \]
+  因为 $P$ 在底面 $ABCD$ 上，而顶平面 $A_1B_1C_1D_1$ 与底面平行且距离为 $2$，所以点 $P$ 到顶平面的距离（高）恒为 $h = 2$。
+  因此其体积：
+  \[ V_{C_1-A_1B_1P} = \frac{1}{3} S_{\triangle A_1B_1C_1} \times h = \frac{1}{3} \times 2 \times 2 = \frac{4}{3}. \]
+  该体积为定值，与动点 $P$ 的位置无关，故 \textbf{C} 正确；
+  
+  对于 \textbf{D} 选项：
+  三棱锥 $F - ACD$ 的四个顶点为 $A(2,0,0)$，$C(0,2,0)$，$D(0,0,0)$，$F(0,0,1)$。
+  设其外接球的球心为 $O_0(x_0, y_0, z_0)$，半径为 $R$。
+  由于球心到各顶点距离相等且 $D(0,0,0)$ 为原点，有：
+  \[ x_0^2 + y_0^2 + z_0^2 = R^2. \]
+  由 $OA^2 = R^2 \implies (x_0 - 2)^2 + y_0^2 + z_0^2 = R^2 \implies 4 - 4x_0 = 0 \implies x_0 = 1$。
+  由 $OC^2 = R^2 \implies x_0^2 + (y_0 - 2)^2 + z_0^2 = R^2 \implies 4 - 4y_0 = 0 \implies y_0 = 1$。
+  由 $OF^2 = R^2 \implies x_0^2 + y_0^2 + (z_0 - 1)^2 = R^2 \implies 1 - 2z_0 = 0 \implies z_0 = \frac{1}{2}$。
+  所以球心坐标为 $\left(1, 1, \dfrac{1}{2}\right)$。
+  其半径平方：
+  \[ R^2 = 1^2 + 1^2 + \left(\frac{1}{2}\right)^2 = \frac{9}{4}. \]
+  外接球表面积：
+  \[ S = 4\pi R^2 = 4\pi \times \frac{9}{4} = 9\pi. \]
+  故 \textbf{D} 正确。
+  
+  综上所述，正确选项为 \textbf{B, C, D}。
+}
+
+\newcommand{\qSolidCubeDynamicSphereDiagnosis}{%
+  本题综合考查立体几何的动态面判定、表面爬行展开最值、等体积转换以及外接球求法。常见问题是判断链条不完整，或相关公式与模型之间的对应关系不够扎实。
+}
+
+\newcommand{\qSolidCubeDynamicSphereTeachingNotes}{%
+  \item \textbf{难点剖析}：
+    \begin{itemize}
+      \item A 选项：演示如何通过空间向量法（求平面法向量）把线面平行转化为向量垂直方程，算出 $x=1$ 的物理含义；
+      \item B 选项：讲解蚂蚁爬行表面展开的“剪开”原理，画出平面展开直角三角形；
+      \item C 选项：强调等体积转换法把动点 $P$ 所在底面移到高，简化体积计算；
+      \item D 选项：通过空间直角坐标系建立关于球心坐标的方程组，是求不规则四面体外接球最稳定、最通用的方法。
+    \end{itemize}
+}

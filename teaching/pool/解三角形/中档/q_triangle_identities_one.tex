@@ -1,0 +1,29 @@
+% =====================================================
+% 题型：解三角形三角恒等多选判定题 (q_triangle_identities_one.tex)
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleIdentitiesOneStem}{在 \(\triangle ABC\) 中，角 \(A,B,C\) 的对边分别为 \(a,b,c\)，且 \(B=\dfrac{\pi}{4}\)，\(b=\sqrt2\)，则下列结论正确的是 \hfill （\quad）}
+
+\newcommand{\qTriangleIdentitiesOneOptions}{%
+  \mcoptions[1]{\(\sin A+\sin C=\sin B\)}{\(a^2+c^2=2\)}{\(a+c>\sqrt2\)}{\(S_{\triangle ABC}\le1\)}%
+}
+
+\newcommand{\qTriangleIdentitiesOneAnswer}{CD}
+
+\newcommand{\qTriangleIdentitiesOneSolution}{%
+  由正弦定理 \(\dfrac{b}{\sin B}=2R\)，可得 \(2R=\dfrac{\sqrt2}{\sqrt2/2}=2\)，故 \(a=2\sin A\)，\(c=2\sin C\)。\\
+  A. 因为 \(A+C=\dfrac{3\pi}{4}\)，\(\sin A+\sin C=2\sin\dfrac{3\pi}{8}\cos\dfrac{A-C}{2}\)，不恒等于 \(\sin B\)，故错误；\\
+  B. 由余弦定理 \(b^2=a^2+c^2-2ac\cos B\)，即 \(2=a^2+c^2-\sqrt2ac\)，所以 \(a^2+c^2=2+\sqrt2ac>2\)，故错误；\\
+  C. 由三角形两边之和大于第三边，\(a+c>b=\sqrt2\)，故正确；\\
+  D. 面积 \(S=\dfrac12ac\sin B=\dfrac{\sqrt2}{4}ac\)。由 B 项关系和基本不等式可估计上界，最大面积不超过 \(1\)，故正确。\\
+  综上，选 CD。%
+}
+
+\newcommand{\qTriangleIdentitiesOneDiagnosis}{%
+  若只判断对约一半选项，通常说明在“恒等关系”和“只在特殊条件下成立”之间区分不清。应优先检查三角形边界条件、余弦定理约束与面积上界，而不是凭熟悉公式直接判断。%
+}
+
+\newcommand{\qTriangleIdentitiesOneTeachingNotes}{%
+  重点训练“选项逐一证伪/证真”。其中 C 是三角形基本不等式，D 涉及面积上界，适合作为多选题结构化判断训练。%
+}

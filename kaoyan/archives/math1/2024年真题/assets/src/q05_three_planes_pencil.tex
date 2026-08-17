@@ -1,0 +1,21 @@
+% 三张相交平面的位置关系 (过同一直线或两两相交)
+  \coordinate (O) at (0, 0);
+  \coordinate (P) at (2.2, 1.8);
+  
+  % 共交线 OP
+  \draw[line width=1.2pt] (O) -- (P);
+  
+  % 平面 pi_1 (向右平展)
+  \draw[line width=0.9pt] (O) -- (2.8, -0.4) -- (4.8, 1.4) -- (P);
+  \node at (3.5, 0.4) {$\pi_1$};
+  
+  % 平面 pi_2 (向右上仰角)
+  \draw[line width=0.9pt] (O) -- (1.2, 1.4) -- (3.2, 3.2) -- (P);
+  \node at (2.0, 2.4) {$\pi_2$};
+  
+  % 平面 pi_3 (向左上仰角)
+  \draw[line width=0.9pt] (O) -- (-1.2, 0.8) -- (0.8, 2.6) -- (P);
+  \node at (-0.4, 1.8) {$\pi_3$};
+  
+  % 遮挡虚线
+  \draw[dashed, line width=0.7pt] (O) -- (0.8, 1.2) -- (P);

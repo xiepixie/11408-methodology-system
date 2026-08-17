@@ -1,0 +1,325 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[student]{ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 公共专题学案：立体几何总复习}
+\rhead{\small 学生版}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newtcolorbox{modelbox}[1]{
+  enhanced,
+  colback=gray!5,colframe=black!55,
+  boxrule=0.6pt,arc=1mm,
+  left=0.8em,right=0.8em,top=0.6em,bottom=0.6em,
+  fonttitle=\bfseries,title={#1}
+}
+
+\newcommand{\topicproblem}[2]{%
+  \problemheader{#1\quad #2}
+}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 立体几何总复习学案}\\[0.35em]
+  {\large 先看清图形关系，再选择计算方法}\\[0.45em]
+  姓名：\blank{2.8cm}\quad 日期：\blank{2.8cm}
+\end{center}
+
+\section{课前方法清单}
+
+\begin{modelbox}{遇到不同题目时先想什么}
+\renewcommand{\arraystretch}{1.45}
+\begin{tabularx}{\textwidth}{p{3.8cm}X}
+\toprule
+题目条件 & 应先考虑的方向 \\
+\midrule
+出现体积比或平行截面 & 先确定对应线段的长度比，再把它转化为面积比或体积比。\\ \hline
+要求证明平行或垂直 & 先找两条直线之间的关系；证明线面垂直时，要在平面内找到两条相交直线。\\ \hline
+要求线面角或二面角 & 线面角先找投影；二面角先找交线，再找垂直于交线的两条线。\\ \hline
+题目涉及截面 & 先判断给出的点在什么位置，再确定平面与几何体表面的交线。\\ \hline
+题目涉及外接球或内切球 & 外接球先找球心所在位置和合适截面；内切球半径常用体积分割法。\\
+\bottomrule
+\end{tabularx}
+\end{modelbox}
+
+\begin{modelbox}{必须会写的公式}
+\[
+  \frac{V_{\text{小锥}}}{V_{\text{大锥}}}
+  =
+  \left(\frac{\text{对应长度}}{\text{对应长度}}\right)^3
+\]
+\[
+  \sin\theta_{\text{线面角}}
+  =
+  \frac{|\vec v\cdot \vec n|}{|\vec v||\vec n|},
+  \qquad
+  d_{\text{点到面}}
+  =
+  \frac{|\overrightarrow{AP}\cdot \vec n|}{|\vec n|}
+\]
+\[
+  R^2=r^2+d^2,
+  \qquad
+  R_{\text{长方体外接球}}
+  =
+  \frac{\sqrt{a^2+b^2+c^2}}{2}.
+\]
+\end{modelbox}
+
+\section{总复习结论速查}
+
+\begin{modelbox}{一、几何体名称与基础公式}
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.25em]
+  \item 正棱锥的“正”有两层含义：底面是正多边形，顶点投影落在底面中心。
+  \item 正四面体是特殊的正三棱锥，四个面都是等边三角形，六条棱全相等。
+  \item 柱体体积 \(V=Sh\)，锥体体积 \(V=\dfrac13Sh\)。
+  \item 台体体积：
+  \[
+    V=\frac13\left(S_1+S_2+\sqrt{S_1S_2}\right)h.
+  \]
+  \item 球的表面积 \(S=4\pi R^2\)，球的体积 \(V=\dfrac43\pi R^3\)。
+\end{enumerate}
+\end{modelbox}
+
+\begin{modelbox}{二、体积题的六种常用方法}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{p{3.0cm}X}
+\toprule
+方法 & 适用情况 \\
+\midrule
+公式法 & 柱、锥、台结构标准，底面积和高容易求。\\ \hline
+割补法 & 不规则体、折叠体、可补成棱柱或长方体的结构。\\ \hline
+转换顶点 & 三棱锥原来的高不好求，换一个顶点作顶点后，高或底面积更容易求。\\ \hline
+比例放缩 & 同一顶点出发的三条棱上取点，体积按三条比例相乘。\\ \hline
+平行转化 & 顶点所在直线平行于底面，沿平行线移动顶点，体积不变。\\ \hline
+延长转化 & 点是中点、三等分点等，可沿直线延长，用高的比例求体积。\\
+\bottomrule
+\end{tabularx}
+\end{modelbox}
+
+\begin{modelbox}{三、截面题的检查标准}
+截面不能只把题目给出的几个点随便连起来。
+
+真正的截面，是一个平面与几何体各个表面的交线围成的多边形。
+
+做题时按三步：
+\[
+  \boxed{\text{确定点的位置}}
+  \rightarrow
+  \boxed{\text{确定截面经过哪些棱或面}}
+  \rightarrow
+  \boxed{\text{只计算截面边长}}.
+\]
+
+如果某条“截面边”穿过几何体内部，而不是落在某个表面上，说明截面还没有画完整，需要延长或作平行线。
+\end{modelbox}
+
+\begin{modelbox}{四、平行与垂直证明套路}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{p{3.2cm}X}
+\toprule
+目标 & 主要套路 \\
+\midrule
+线线平行 & 平行四边形、中位线、相似三角形、平行传递。\\ \hline
+线面平行 & 在目标面内找一条平行线；或过原直线构造一个与目标面平行的新面。\\ \hline
+面面平行 & 一个平面内两条相交直线分别平行于另一个平面。\\ \hline
+线线垂直 & 常由线面垂直推出：\(l\perp\alpha,m\subset\alpha\Rightarrow l\perp m\)。\\ \hline
+线面垂直 & 证明直线垂直于平面内两条相交直线。\\ \hline
+面面垂直 & 证明一个平面经过另一个平面的一条垂线。\\
+\bottomrule
+\end{tabularx}
+
+隐藏垂直常来自：等腰三角形三线合一、菱形对角线垂直、面面垂直作交线垂线、复杂底面单独画底面、对称面模型。
+\end{modelbox}
+
+\newpage
+
+\begin{modelbox}{五、求空间角的一般顺序}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{p{3.0cm}X}
+\toprule
+角 & 一般做法 \\
+\midrule
+线线角 & 异面直线先平移成相交直线，再放到一个三角形中计算。\\ \hline
+线面角 & 找斜线在平面内的投影，所求角就是斜线与投影线的夹角。\\ \hline
+二面角 & 先找两个平面的交线，再在两个面内分别作交线的垂线。\\
+\bottomrule
+\end{tabularx}
+
+空间角最值题通常先检查对称位置、端点、中点以及离对称面最远的位置。
+
+若动线在一个固定面内转动，线面角最值常可转化成固定面之间的二面角。
+\end{modelbox}
+
+\begin{modelbox}{六、建系与向量法}
+建系法的核心是三件事：
+\[
+  \text{直线用方向向量表示，平面用法向量表示，角和距离用数量积计算。}
+\]
+
+\[
+  \cos\theta_{\text{线线角}}
+  =
+  \frac{|\vec a\cdot\vec b|}{|\vec a||\vec b|}
+\]
+\[
+  \sin\theta_{\text{线面角}}
+  =
+  \frac{|\vec v\cdot\vec n|}{|\vec v||\vec n|}
+\]
+\[
+  \cos\phi_{\text{法向量夹角}}
+  =
+  \frac{\vec n_1\cdot\vec n_2}{|\vec n_1||\vec n_2|}.
+\]
+
+注意：线线角、线面角取锐角；二面角可能是锐角也可能是钝角，要结合题意判断法向量夹角是否需要取补角。
+\end{modelbox}
+
+\begin{modelbox}{七、外接球与内切球常见模型}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\textwidth}{p{3.4cm}X}
+\toprule
+题目结构 & 常用方法 \\
+\midrule
+侧棱垂直底面 & 把底面外接圆沿高的方向平移成圆柱，利用 \(R^2=r^2+\left(\frac h2\right)^2\)。\\ \hline
+正棱锥 & 取经过顶点和底面中心的轴截面，在直角三角形中求半径。\\ \hline
+三条棱两两垂直 & 补成长方体的一个角，外接球直径就是长方体体对角线。\\ \hline
+三组对棱相等 & 补成长方体，四面体的六条棱对应长方体六个面的面对角线。\\ \hline
+三棱锥内切球 & 把球心连接到各个面，分成几个同高为 \(r\) 的小棱锥，使用 \(r=\dfrac{3V}{S_{\text{表}}}\)。\\ \hline
+需要确定球心位置 & 先找对称面，把空间中的球心问题转化为一个截面内的问题。\\
+\bottomrule
+\end{tabularx}
+\end{modelbox}
+
+\newpage
+
+\section{一、体积比例热身}
+
+\topicproblem{检测 1}{平行截面与体积比}
+\qSolidTetrahedronVolStem
+\qSolidTetrahedronVolOptions
+\begin{center}
+  \qSolidTetrahedronVolFigure[1.15]
+\end{center}
+\answerblank[5.0cm]{解：}
+\studentthink{
+  \item 题目给的是向量关系，能不能先翻译成哪两条线段的长度比？
+  \item 长度比、面积比、体积比是否被我混用了？
+}
+
+\section{二、平行、距离与建系}
+
+\topicproblem{例题 1}{直三棱柱平行证明与距离}
+\qSolidPrismDistanceStem
+\begin{center}
+  \qSolidPrismDistanceFigure[1.0]
+\end{center}
+\answergrid[12.0cm]{解：}
+\studentthink{
+  \item 证明线面平行时，我有没有说明直线不在平面内？
+  \item 线面角的向量公式为什么用正弦？
+  \item 直线到平面的距离能不能转化为线上一点到平面的距离？
+}
+
+\newpage
+
+\section{三、空间角与等体积法}
+
+\topicproblem{例题 2}{直三棱柱线面角与点面距离}
+\qSolidPracticePrismAngleStem
+\begin{center}
+  \qSolidPracticePrismAngleFigure[1.05]
+\end{center}
+\answergrid[13.0cm]{解：}
+\studentthink{
+  \item 我能不能说清楚斜线在平面内的投影是哪一条？
+  \item 求点到面距离时，是否可以换顶点、换底面，用体积相等解决？
+}
+
+\newpage
+
+\section{四、截面识别}
+
+\topicproblem{例题 3}{长方体截面周长}
+\qSolidCuboidSectionStem
+\begin{center}
+  \qSolidCuboidSectionFigure[1.1]
+\end{center}
+\answergrid[10.5cm]{解：}
+\studentthink{
+  \item 点 \(P\) 到底位于哪条线段上？
+  \item 截面图形的每一条边是否都落在长方体表面上？
+  \item 我最后算的是截面边长，还是空间里随意连接的折线？
+}
+
+\newpage
+
+\section{五、空间角综合}
+
+\topicproblem{例题 4}{正方体垂直证明与二面角}
+\qSolidCubePerpendicularStem
+\begin{center}
+  \qSolidCubePerpendicularFigure[1.05]
+\end{center}
+\answergrid[15.5cm]{解：}
+\studentthink{
+  \item 线面角中，高比斜线对应正弦还是余弦？
+  \item 二面角必须先找哪条交线？
+  \item 若用法向量，所得角和题目二面角是否可能互补？
+}
+
+\newpage
+
+\section{六、球模型与补形}
+
+\begin{modelbox}{球模型复习}
+\qSolidSphereModelsSummaryStem
+\end{modelbox}
+
+\topicproblem{提升}{对棱相等三棱锥与外接球}
+\qSolidIsoscelesTetrahedronStem
+\begin{center}
+  \qSolidIsoscelesTetrahedronFigure[1.0]
+\end{center}
+\answergrid[11.0cm]{解：}
+\studentthink{
+  \item 三组对棱分别相等时，我能不能想到长方体补形？
+  \item 三棱锥外接球和哪个长方体的外接球相同？
+  \item 体积能否用大长方体减去四个角上的小三棱锥？
+}
+
+\newpage
+
+\section{课后复盘}
+
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=1.25em]
+  \item 今天我遇到立体几何题时，最应该先问自己的三个问题是：
+
+  \vspace{1.2cm}
+
+  \item 线面角和二面角最容易混淆的是：
+
+  \vspace{1.2cm}
+
+  \item 截面题动笔计算前，我必须先确认：
+
+  \vspace{1.2cm}
+
+  \item 球模型中，\(R,r,d\) 分别应该在图中表示：
+
+  \vspace{1.2cm}
+
+  \item 本次我最需要重做的一题是：\blank{4cm}
+
+  原因是：\blank{10cm}
+
+  \vspace{1.0cm}
+\end{enumerate}
+
+\end{document}

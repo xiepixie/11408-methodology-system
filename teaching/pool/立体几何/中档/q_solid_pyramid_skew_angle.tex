@@ -1,0 +1,111 @@
+% =====================================================
+% 题型：立体几何单选题 (q_solid_pyramid_skew_angle.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qSolidPyramidSkewAngleStem}{%
+  在三棱锥 $M-ABC$ 中，$MA \perp$ 平面 $ABC$，$AB \perp BC$，$MA = AB = BC$，则直线 $MB$ 与 $AC$ 所成角的余弦值为%
+}
+
+\newcommand{\qSolidPyramidSkewAngleOptions}{%
+  \mcoptions[4]{$\dfrac{\sqrt{3}}{2}$}{$\dfrac{\sqrt{3}}{3}$}{$\dfrac{\sqrt{2}}{2}$}{$\dfrac{1}{2}$}%
+}
+
+\newcommand{\qSolidPyramidSkewAngleFigure}[1][1.2]{%
+  \begin{tikzpicture}[scale=#1, >=stealth]
+    % Coordinates
+    \coordinate (B) at (0,0);
+    \coordinate (C) at (2.5,0);
+    \coordinate (A) at (-1.2,1.2);
+    \coordinate (M) at (-1.2,3.5);
+    
+    % Visible edges
+    \draw[thick] (M) -- (B) -- (C) -- cycle;
+    \draw[thick] (M) -- (A);
+    \draw[thick] (A) -- (B);
+    
+    % Hidden edges
+    \draw[thick, dashed] (A) -- (C);
+    
+    % Points
+    \fill (A) circle (1.2pt);
+    \fill (B) circle (1.2pt);
+    \fill (C) circle (1.2pt);
+    \fill (M) circle (1.2pt);
+    
+    % Labels
+    \node[left] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[right] at (C) {\small $C$};
+    \node[above] at (M) {\small $M$};
+    
+    \ifteacher
+      % Coordinate system (gray dashed for printing)
+      \draw[->, gray, dashed, thin] (B) -- (3.5,0) node[right] {\small $x$};
+      \draw[->, gray, dashed, thin] (B) -- (-2.2,2.2) node[above left] {\small $y$};
+      \draw[->, gray, dashed, thin] (B) -- (0,3.5) node[above] {\small $z$};
+      
+      % Geometric construction helper lines (gray dashed)
+      \coordinate (D) at (-3.7, 1.2);
+      \fill[gray] (D) circle (1.2pt) node[left, gray] {\small $D$};
+      \draw[thick, dashed, gray] (B) -- (D);
+      \draw[thick, dashed, gray] (M) -- (D);
+      \draw[thick, dashed, gray] (A) -- (D);
+    \fi
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidPyramidSkewAngleAnswer}{D}
+
+\newcommand{\qSolidPyramidSkewAngleSolution}{%
+  设 $MA=AB=BC=1$。
+  
+  在底面内取点 $D$，使 $\overrightarrow{BD}=\overrightarrow{CA}$。
+  则 $BD\parallel AC$，所以直线 $MB$ 与 $AC$ 所成角等于直线 $MB$ 与 $BD$ 所成角。
+  
+  因为 $AB\perp BC$，所以在 Rt$\triangle ABC$ 中，
+  \[ AC=\sqrt{AB^2+BC^2}=\sqrt2, \]
+  从而有
+  \[ BD=\sqrt2. \]
+  
+  由 $\overrightarrow{BD}=\overrightarrow{CA}$ 可知四边形 $BCAD$ 为平行四边形，
+  所以有
+  \[ AD=BC=1. \]
+  
+  又 $MA\perp$ 平面 $ABC$，且 $AD\subset$ 平面 $ABC$，
+  所以有
+  \[ MA\perp AD. \]
+  因此，在 Rt$\triangle MAD$ 中，
+  \[ MD=\sqrt{MA^2+AD^2}=\sqrt{1^2+1^2}=\sqrt2. \]
+  
+  同理，在 Rt$\triangle MAB$ 中，因为 $MA \perp AB$，
+  \[ MB=\sqrt{MA^2+AB^2}=\sqrt{1^2+1^2}=\sqrt2. \]
+  
+  于是
+  \[ MB=BD=MD=\sqrt2, \]
+  所以 $\triangle MBD$ 为等边三角形，$\angle MBD = 60^\circ$。
+  
+  故直线 $MB$ 与 $AC$ 所成角为 $60^\circ$，
+  其余弦值为
+  \[ \frac12. \]
+  
+  故选 \textbf{D}。
+}
+
+\newcommand{\qSolidPyramidSkewAngleDiagnosis}{%
+  常见误区主要集中在异面直线角的定义不清，以及无法灵活在几何平移与空间坐标系之间切换。部分学习者容易忽略异面直线角应为锐角或直角这一限制，导致结果出现符号错误，或在构建辅助线时无法有效利用垂直关系简化计算。
+}
+
+\newcommand{\qSolidPyramidSkewAngleTeachingNotes}{%
+  \item \textbf{教学切入点}：先询问学生“如何求异面直线夹角？”，引导归纳两种方法：
+  一是平移法，把异面直线转化为共点直线；二是建系法，转化为向量夹角。
+  \item \textbf{几何法关键}：过 $B$ 作 $BD\parallel AC$。若取
+  $\overrightarrow{BD}=\overrightarrow{CA}$，则可以构造出等边三角形 $\triangle MBD$，
+  直接得到夹角为 $60^\circ$。
+  \item \textbf{建系模板}：以 $B$ 为原点，分别以 $BC,BA$ 为 $x,y$ 轴方向，
+  以过 $B$ 且平行于 $MA$ 的方向为 $z$ 轴。此时
+  $C(1,0,0)$，$A(0,1,0)$，$M(0,1,1)$。
+  \item \textbf{计算把关}：两条异面直线所成角取锐角或直角，向量数量积若为负，
+  最后应取绝对值。
+}

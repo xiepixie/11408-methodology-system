@@ -1,0 +1,16 @@
+% 1. 虚线坐标轴
+\draw[->, dashed, line width=0.8pt] (-2.5, 0) -- (2.5, 0) node[below=1pt] {$x$};
+\draw[->, dashed, line width=0.8pt] (0, -2.5) -- (0, 2.5) node[left=1pt] {$y$};
+
+% 2. 正方形边框 [-1.8, 1.8]
+\draw[line width=1.1pt] (-1.8, -1.8) rectangle (1.8, 1.8);
+
+% 3. 两条对角线
+\draw[line width=1.0pt] (-1.8, -1.8) -- (1.8, 1.8);
+\draw[line width=1.0pt] (-1.8, 1.8) -- (1.8, -1.8);
+
+% 4. 区域标号 (注意原题 D1上, D2左, D3下, D4右)
+\node at (0, 0.9) {$D_1$};
+\node at (-0.9, 0) {$D_2$};
+\node at (0, -0.9) {$D_3$};
+\node at (0.9, 0) {$D_4$};

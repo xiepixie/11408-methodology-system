@@ -1,0 +1,422 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\handbooksetup
+  {DS-01 线性关系与存储表示}
+  {408 · 数据结构 DS-01}
+  {Relation · Representation · Invariant · Cost}
+\tikzset{
+  cell/.style={draw=iparaDeep,minimum width=1.25cm,minimum height=0.72cm,align=center,fill=iparaSoft,font=\small},
+  node/.style={draw=iparaGreen,rounded corners=1.2mm,minimum width=1.7cm,minimum height=0.72cm,align=center,fill=white,font=\small},
+  flow/.style={-{Latex[length=2mm]},thick,draw=iparaDeep},
+  ref/.style={-{Latex[length=2mm]},dashed,draw=iparaRule}
+}
+\begin{document}
+\handbooktitle
+  {线性关系与存储表示}
+  {同一逻辑序列怎样换表示，操作为什么随之改变}
+  {408 · 数据结构 Topic DS-01}
+
+\begin{corebox}{母问题：逻辑线性关系怎样被有限存储兑现？}
+线性表不是“数组或链表的名字”，而是一组对元素顺序和操作结果的契约。手册的生成链是：
+\[
+\begin{aligned}
+\text{Linear Relation}&\to\text{Operation Contract}\to\text{Representation}\\
+&\to\text{Local Update}\to\text{Invariant}\to\text{Cost Vector}
+\end{aligned}
+\]
+箭头先表示建模顺序，再表示一次操作中信息和状态如何流动：先固定逻辑对象，才知道某种物理布局是否值得维护。不同表示必须给出相同的抽象结果，但不必承担相同的移动、寻址和额外空间成本。
+\end{corebox}
+
+\begin{methodbox}{本册定位与 Owner 边界}
+\begin{itemize}
+\item \kw{Owns：}线性表 ADT、顺序表、单链表、双链表、静态链式表示；数组的多维地址映射与特殊矩阵压缩；插入/删除/按位访问/按值查找的状态变化与边界。
+\item \kw{Uses：}Atlas Foundation 的问题规模、基本操作、最坏/平均/摊还成本和成本向量语言。
+\item \kw{Outputs：}向 DS02 提供“底层顺序/链接表示”，向 DS09 提供“有序序列上的访问与插入代价”；栈、队列、字符串和索引只调用本册表示，不复制本册机制。
+\item \kw{Stops：}受限端点语义归 DS02；KMP 归 DS03；树/图节点结构归 DS04/DS07；BST、AVL、B/B+ 的有序索引机制归 DS09。
+\end{itemize}
+\end{methodbox}
+
+\tableofcontents\newpage
+
+\section{先把“表”与“存储”分开}
+抽象线性表 $L=(a_1,a_2,\ldots,a_n)$ 只承诺元素的线性次序、长度和允许操作。它不承诺元素在内存中连续，也不承诺一次操作一定只访问一个地址。若把逻辑位置记为 $i$，必须先区分：
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.1cm}YY}
+\toprule
+层次 & 要回答的问题 & 不能直接推出的结论\\
+\midrule
+逻辑关系 & 谁是第 $i$ 个元素？插入后次序怎样？ & 元素一定相邻\\
+操作契约 & 按位访问、按值查找、插入、删除的输入是什么？ & 每种操作都同样便宜\\
+物理表示 & 数据、长度、容量、指针和空闲单元怎样保存？ & 只看元素字段就能判断状态\\
+成本模型 & 计数对象是比较、移动、指针跳转还是 I/O？ & 一个 $O(\cdot)$ 覆盖所有场景\\
+\bottomrule
+\end{tabularx}\end{center}
+
+\begin{examplebox}{最小反例：同一个“插入第 $k$ 个”}
+对逻辑表 $[a,b,c,d]$ 在位置 $3$ 插入 $x$，抽象结果只有一个：$[a,b,x,c,d]$。顺序表需要把 $c,d$ 向后移动；链表只需让 $x$ 接入正确的指针链，但前提是已经拿到插入点的前驱。若题目只给关键字而不给位置，寻找前驱的成本又回来了。
+\end{examplebox}
+
+\section{顺序表：地址映射换取按位访问}
+顺序表把元素放入一段可按下标解释的连续区域。设首地址为 $B$，每个元素占 $w$ 个存储单元，则零基下标 $i$ 的地址为
+\[
+\operatorname{addr}(A[i])=B+i\,w.
+\]
+这条式子不是“数组 API 口诀”，而是顺序表能在 $\Theta(1)$ 时间定位第 $i$ 个元素的原因：位置到地址是一次算术映射，不需要沿中间元素搜索。
+
+\subsection{长度、容量与合法状态}
+动态顺序表至少维护 $(data,\;length,\;capacity)$。合法状态包括
+\[
+0\le length\le capacity,\qquad 0\le i<length\Rightarrow A[i]\text{ 是有效元素}.
+\]
+插入前先检查 $length<capacity$；若需要扩容，旧元素必须按原次序复制到新区域，再改变容量和写入位置。扩容后的单次复制可能是 $\Theta(n)$，但若容量按固定倍数增长，连续追加的总复制量可摊还到每次 $O(1)$；这里的“摊还”不是把一次最坏成本改写成 $O(1)$。
+
+\subsection{插入与删除是区域移动}
+在长度为 $n$ 的表中，在逻辑位置 $k$（$0\le k\le n$）插入：
+\[
+\text{检查容量}\to A[n-1]\rightsquigarrow A[k]\text{ 右移}\to A[k]\leftarrow x\to length{+}{+}.
+\]
+需要移动 $n-k$ 个元素；在头部插入为 $\Theta(n)$，尾部追加在有剩余容量时为 $\Theta(1)$。删除位置 $k$ 则把区间 $A[k+1\ldots n-1]$ 左移，移动 $n-k-1$ 个元素，再递减长度。覆盖或清理被删除槽位是实现选择，但不能让无效槽位继续被逻辑遍历访问。
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.25cm]
+\node[cell](a0){a};\node[cell,right=of a0](a1){b};\node[cell,right=of a1](a2){c};\node[cell,right=of a2](a3){d};
+\node[cell,right=2.2cm of a3](b0){a};\node[cell,right=of b0](b1){b};\node[cell,right=of b1](b2){x};\node[cell,right=of b2](b3){c};\node[cell,right=of b3](b4){d};
+\node[above=0.18cm of a2,align=center]{插入前};\node[above=0.18cm of b2,align=center]{插入后};
+\draw[flow] (a3.east)--(b0.west);
+\draw[ref] (a2.south)--(b3.north);\draw[ref] (a3.south)--(b4.north);
+\end{tikzpicture}
+\end{center}
+
+\section{多维数组与特殊矩阵：坐标如何映射为线性偏移}
+数组的维数是逻辑坐标的个数，内存地址仍是一维序列。行优先、列优先不是两种数组对象，而是两种线性化函数。设二维数组 $A[L_1..U_1][L_2..U_2]$，每个元素占 $w$ 个存储单元，$N_1=U_1-L_1+1$，$N_2=U_2-L_2+1$，则
+\[
+\begin{aligned}
+\operatorname{addr}_{row}(A[i][j])&=B+\bigl((i-L_1)N_2+(j-L_2)\bigr)w,\\
+\operatorname{addr}_{col}(A[i][j])&=B+\bigl((j-L_2)N_1+(i-L_1)\bigr)w.
+\end{aligned}
+\]
+两式都从同一问题生成：目标坐标之前，线性序列中已经排了多少个元素？下界不从 $0$ 或 $1$ 开始时，必须先减去逻辑下界；只背 $i n+j$ 会在非零下界题中错位。
+
+对 $d$ 维数组，行优先偏移可递推为
+\[
+\operatorname{offset}=(((i_1-L_1)N_2+(i_2-L_2))N_3+\cdots)N_d+(i_d-L_d),
+\]
+本质是混合进位制，不需要另背展开式。
+
+\subsection{压缩存储：先找独立元素，再建立可逆编号}
+特殊矩阵只有在未存部分可由结构规则恢复时才能压缩。先确定独立元素集合，再为它建立连续编号 $k=f(i,j)$：
+\begin{itemize}
+\item 对称矩阵只存一个三角区，因为 $a_{ij}=a_{ji}$；访问另一半时先交换坐标再编号。
+\item 上/下三角矩阵存一个三角区和一个公共常数；另一三角区的元素不占独立槽位。
+\item 对角、带状矩阵只存满足带宽约束的坐标；带外元素由题设常数恢复。
+\item 稀疏矩阵通常保存非零三元组 $(row,column,value)$；它换掉了连续随机定位能力，查找需额外搜索或索引。
+\end{itemize}
+例如按行存储下三角矩阵（含主对角线），零基坐标满足 $0\le j\le i<n$。第 $i$ 行之前已有 $i(i+1)/2$ 个元素，所以
+\[
+k=\frac{i(i+1)}2+j.
+\]
+公式证据是“前面完整行的长度和 + 当前行内偏移”。若改用一基下标或上三角按列存储，应重新数前置元素，不能机械平移。
+
+\begin{methodbox}{数组映射题的停止条件}
+先写合法坐标域、存储顺序和独立元素集合；再数目标元素之前的槽位，最后乘元素宽度并加首地址。编号必须落在 $[0,m-1]$，其中 $m$ 是实际槽数；若两个本应独立的坐标映到同一编号，映射就不合法。
+\end{methodbox}
+
+\section{链式表示：指针关系换取局部修改}
+单链表节点保存 $(value,next)$，表对象通常保存头指针和可选的尾指针、长度。逻辑相邻不等于物理相邻：$a_i$ 的后继由指针给出，而不是由地址加 $w$ 得到。双链表再保存 $prev$，换取从后继回到前驱的能力。
+
+\subsection{链表的不变量}
+对无环单链表，必须保持：
+\begin{enumerate}
+\item 头指针要么为空，要么指向第一个有效节点；
+\item 从头沿 $next$ 访问，每个有效节点至多出现一次，最终到达空指针；
+\item 若维护 $tail$，则 $tail$ 是最后节点且 $tail.next=null$；
+\item 若维护 $length$，它等于从头可达节点数。
+\end{enumerate}
+双链表还要保持相邻互逆：$u.next=v\Rightarrow v.prev=u$。任一方向只改一条边都会暂时破坏结构，后续操作可能沿错误方向丢失节点。
+
+\subsection{局部插入的完整生命周期}
+已知前驱 $p$，在其后插入新节点 $x$ 的最小动作是：
+\[
+x.next\leftarrow p.next,\qquad p.next\leftarrow x.
+\]
+若 $p$ 原来是尾节点，还要更新 $tail$；若向空表插入，还要同时更新 $head$。删除节点 $x$ 时，必须先拿到前驱 $p$，令 $p.next\leftarrow x.next$，再处理尾指针、长度和资源回收。\kw{“指针修改 $O(1)$”只描述已定位节点后的局部动作，不包括按关键字寻找节点。}
+
+\subsection{线性表 ADT 的四条逻辑约束}
+外部资料把线性表的定义拆成四条容易被题面隐藏的约束。设非空表为
+$L=(a_1,a_2,\ldots,a_n)$，则：
+\begin{enumerate}
+\item 每个元素都有唯一的直接前驱和直接后继，首元素没有直接前驱，尾元素没有直接后继；
+\item 元素之间是单一的线性次序，而不是任意的多对多关系；
+\item $n$ 是有效元素个数，不等于分配槽位数，也不等于节点地址数量；
+\item 插入、删除会改变后继关系和位置编号，查找只观察而不改变逻辑次序。
+\end{enumerate}
+“线性”描述的是关系，不是内存布局。顺序表、带头结点的链表和静态链表都可以实现同一个 ADT；它们的差异来自怎样兑现位置、后继、空闲和更新契约。
+
+\subsection{带头结点、首元结点与空表}
+链表题经常把三个对象混用：$head$ 是指向头结点的指针，头结点是一个不存放有效数据的哨兵节点，首元结点才是第一个数据节点。若采用带头结点表示：
+\[
+head\neq null,\qquad first=head.next,
+\]
+空表的判据是 $head.next=null$，而不是 $head=null$。这样做的价值不是增加一个“没用节点”，而是把“在首元结点前插入”和“在普通前驱后插入”统一成同一种边操作。若题目没有头结点，头插、删除第一个数据节点和空表恢复必须单独分支；不能把带头结点代码的下标或指针起点直接套过去。
+
+\subsection{四种链式表示：同一关系，不同边界责任}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.2cm}YY}
+\toprule
+表示 & 新增的状态约束 & 典型收益与代价\\
+\midrule
+单链表 & 节点沿 $next$ 最终到 $null$ & 实现简单；从后继不能直接回前驱\\
+双链表 & $u.next=v\Leftrightarrow v.prev=u$ & 已知节点时双向删除/反向遍历方便；每节点多一个指针\\
+循环链表 & 尾节点后继回到首节点或头结点 & 无 $null$ 尾端，轮转和循环调度自然；终止条件必须改为“回到起点”\\
+静态链表 & 指针字段改为数组下标游标，空闲链也必须可达 & 不依赖动态指针；容量固定，空闲回收与越界由数组负责\\
+\bottomrule
+\end{tabularx}\end{center}
+
+循环链表的关键不是“把最后一个 next 改一下”，而是同时改写所有遍历终止条件：从首元节点出发时，停止条件是再次遇到首元节点；若采用带头结点，空表仍可用 $head.next=head$ 表示。带尾指针时，非空循环单链表满足 $tail.next=head$；因此尾插只需修改新节点、旧尾节点和 $tail$ 三条关系。删除唯一数据节点后必须恢复这个闭环，否则下一次插入会沿旧节点或 $null$ 走错。
+
+静态链表用整数下标代替地址：节点数组保存 $(data,nextIndex)$，$nextIndex$ 指向下一个数组槽位，特殊值表示空。它实际上维护两条链：一条从表头可达的有效链，另一条从空闲表头可达的空闲链。插入先从空闲链摘一个槽位，再把它接入有效链；删除先把节点摘出有效链，再头插回空闲链。若只修改有效链而不回收空闲槽，结构在短题中看似正确，连续插入后却会错误报告“满表”。
+
+\subsection{单链表的两种建表顺序}
+头插法每次把新节点接到当前首元之前，因此输入序列 $a_1,a_2,\ldots,a_n$ 建出的逻辑序列为 $a_n,\ldots,a_2,a_1$；尾插法保持输入次序，但需要维护尾指针或每次走到尾部。两种方法的差异可以由同一状态转移解释：
+\[
+\begin{aligned}
+\text{头插：}&\quad x.next\leftarrow head.next,\ head.next\leftarrow x;\\
+\text{尾插：}&\quad tail.next\leftarrow x,\ x.next\leftarrow null,\ tail\leftarrow x.
+\end{aligned}
+\]
+如果题目要求“按输入顺序建表”，头插后还必须反转，或直接选尾插；不能只看每次插入都是 $O(1)$ 就忽略最终关系。
+
+\subsection{双链表插入与删除的四条边}
+在双链表中，已知相邻节点 $p$ 与 $q=p.next$，把 $x$ 插入二者之间必须完成：
+\[
+x.prev\leftarrow p,\quad x.next\leftarrow q,\quad p.next\leftarrow x,\quad
+q.prev\leftarrow x.
+\]
+如果 $q$ 为空，第四条赋值改为更新 $tail$；如果 $p$ 是头结点，仍应保留头结点的边界约定。删除 $x$ 时则令 $x.prev.next=x.next$（若存在前驱）并令 $x.next.prev=x.prev$（若存在后继），再修复 $head/tail/length$。四步的重点不是固定代码顺序，而是保证在任何中间时刻仍保留至少一条可恢复的旧链；不能先丢掉唯一的后继引用。
+
+\subsection{链表题的通用位置算法：先把位置关系变成状态}
+外部真题与拓展题反复出现的“倒数第 $k$ 个、共同后缀、重排、判环、回文”并不是新的链表结构，而是对节点关系增加了一个位置约束。可统一为：
+\begin{enumerate}
+\item \kw{快慢指针：}让两个指针的速度差编码目标距离。例如先让 $fast$ 比 $slow$ 多走 $k$ 步，之后同步前进，$fast$ 到尾时 $slow$ 位于倒数第 $k$ 个位置。循环条件决定得到的是中点左侧还是右侧，必须在纸上声明“退出时 fast 指向哪里”。
+\item \kw{先对齐再同步：}两条链长度不同但共享尾部时，先分别求长度并让长链前移差值，再同步比较地址。比较的是节点身份/地址而不是节点值；值相同不代表共享后继。
+\item \kw{局部反转：}回文或重排题可先找中点，再原地反转后半链，最后逐节点比较。反转的不变量是“已处理前缀已经反向，未处理后缀仍保持原链”，循环结束后还要说明是否恢复原链。
+\item \kw{快慢相遇：}判环时 $slow$ 每次一步、$fast$ 每次两步；若存在环，进入环后相对距离每次改变一个模环长，必然相遇。若 $fast$ 或 $fast.next$ 为空，说明链表无环，不能在解引用前跳过边界判断。
+\end{enumerate}
+这些算法的共同成本不是“指针题都是 $O(n)$”，而是一次扫描的基本操作数量、是否需要长度/值域辅助空间、是否允许破坏并恢复原链，以及题目要求返回节点还是返回值。
+
+\subsection{数组、矩阵与压缩存储的完整口径}
+多维数组题至少有三种容易混淆的计数：逻辑下标、每维长度和每个元素占用的存储单元。对 $d$ 维数组
+$A[L_1..U_1]\cdots[L_d..U_d]$，令 $N_r=U_r-L_r+1$，行优先偏移可写成：
+\[
+offset=\sum_{r=1}^{d}(i_r-L_r)\prod_{s=r+1}^{d}N_s,
+\qquad \operatorname{addr}=B+offset\cdot w.
+\]
+空维度或越界坐标在进入公式前就已经违反操作契约；公式不能替代合法性检查。列优先只交换“前面完整块”的方向，不应把行优先式中的某一个 $N_r$ 随意换成维度下标。
+
+特殊矩阵压缩的通用步骤是“先判等价类，再给代表元编号”：
+\begin{enumerate}
+\item 对称矩阵：只存上三角或下三角，$a_{ij}$ 与 $a_{ji}$ 先规范化为 $(\max(i,j),\min(i,j))$ 再计算编号。
+\item 三角矩阵：按行存储含主对角线的一侧时，第 $i$ 行累计槽位为 $i+1$；带外元素若统一为 $c$，需要额外约定一个公共槽位。
+\item 对角/三对角矩阵：只保留满足 $|i-j|\le 1$ 的元素；带内编号随行变化，带外访问直接返回题设常数或零。
+\item 稀疏矩阵：三元组按行列记录非零项，或进一步建立行索引；它节省零值空间，却牺牲了任意坐标的直接 $O(1)$ 访问。
+\end{enumerate}
+压缩不是“少存几个数”这么简单：每个合法逻辑坐标必须映射到唯一独立槽位，每个被省略坐标必须能够由结构规则恢复，否则所谓压缩会丢失信息。反向验证时随机挑选两个对称位置、一个带外位置和一个边界行，检查编号是否越界、是否发生碰撞、是否能还原原值。
+
+\subsection{循环链表：只改一条边，所有终止条件都要重写}
+循环单链表的节点类型与普通单链表相同，区别是尾节点的 $next$ 指向头结点（带头结点口径）或首元节点（不带头结点口径），不再指向 $null$。因此必须成套改写：
+\[
+\begin{array}{c|c|c}
+&\text{普通带头结点链表}&\text{循环带头结点链表}\\\hline
+\text{判空}&head.next=null&head.next=head\\
+\text{遍历终点}&p=null&p=head\\
+\text{尾节点}&p.next=null&p.next=head
+\end{array}
+\]
+如果循环链表仍使用 $p\ne null$，遍历不会自然结束而会绕环；如果普通链表误用 $p\ne head$，则到达 $null$ 后会非法解引用。插入/删除的局部边操作仍是“先保存原后继，再接入/跨过”，变化只在定位前驱的终止条件。
+
+循环结构还允许只保存尾指针 $rear$：首元节点是 $rear.next.next$（若保留头结点），尾插和头插都可在 $O(1)$ 完成。两个非空循环单链表用尾指针合并时，只需交换两条环在尾部的后继：保存 $A$ 的首部，令 $A$ 尾接到 $B$ 首元，令 $B$ 尾接到 $A$ 原首；不需要遍历。空表必须先特判，否则可能把待释放的头结点当成数据链使用。
+
+循环双链表把头结点的 $prior$ 和 $next$ 都指向自己，非空时每个节点满足
+\[
+node.next.prev=node,\qquad node.prev.next=node.
+\]
+由于头结点充当首尾两端的哨兵，插入、删除和遍历不再分别特判“没有前驱/没有后继”；只要目标不是头结点，四条边的局部更新即可保持环。约瑟夫问题则通常选不带头结点的循环单链表：当前报数节点的前驱可直接摘除目标，删除后从其后继继续计数；头结点没有业务含义，反而会干扰报数起点。
+
+\subsection{静态链表：把地址换成游标，同时管理两条链}
+静态链表用数组槽位中的整数下标代替指针地址。约定下标 $0$ 不存数据，只作为备用链表头；数据链另保存一个 $head$ 下标，游标 $0$ 表示链尾。于是动态链表的机械对应关系是
+\[
+ p\leftrightarrow i,\quad p.next\leftrightarrow space[i].cursor,
+ \quad p=null\leftrightarrow i=0.
+\]
+静态链表必须同时维护数据链和空闲链：初始化时把所有空闲槽串成 $0\to1\to2\to\cdots\to0$；申请节点从空闲链头部摘一个，回收节点头插回空闲链。两者都是 $O(1)$，但容量固定，按位访问仍需沿游标走 $O(n)$，下标也不是逻辑位序。
+
+在已知前驱下插入的游标版仍是
+\[
+space[j].cursor\leftarrow space[k].cursor,\qquad space[k].cursor\leftarrow j;
+\]
+删除则先保存 $j=space[k].cursor$，令 $space[k].cursor\leftarrow space[j].cursor$，再把 $j$ 归还空闲链。若忘记回收，静态数组会逐渐“漏槽”；若先覆盖前驱游标再读取原后继，则和动态链表一样丢链。静态链表不是新的逻辑结构，只是用固定数组承担了动态链表的指针与内存管理责任。
+
+\subsection{链表算法的可证明模板}
+\textbf{中点：}快指针每轮走两步、慢指针走一步，退出条件决定偶数长度取左中点还是右中点；先声明口径，再用它切分或重排。\textbf{倒数第 $k$ 个：}前指针先走 $k$ 步，之后与后指针同步，前指针出界等价于后指针距尾 $k$ 个；第一段中必须先检查长度不足，不能在 $null$ 上解引用。\textbf{判环：}进入环后快慢相对速度为 $1$，有限模环长下必相遇；找入口时一个指针回到最初出发点，另一个留在相遇点，二者同速相遇于入口。\textbf{有序合并：}两条有序链各保留一个游标，每轮摘走更小节点；相等时优先左链才保持稳定，某链耗尽后整体挂接剩余段即可。
+
+链表重排 $a_1,a_2,\ldots,a_n\mapsto a_1,a_n,a_2,a_{n-1},\ldots$ 只是三种模板的组合：找中点、保存并断开后半段、原地反转后半段、交替摘接两段。所有就地算法都应在每次覆盖边前保存仍需访问的后继，并最终检查节点数、是否意外成环以及空/单节点/偶数长度边界。
+
+\section{同一操作的两套成本向量}
+不要用一个复杂度数字抹平表示差异。对典型操作，至少记录“是否已知位置/前驱、比较数、移动或跳转数、额外空间和最坏边界”：
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.5cm}C{1.8cm}C{1.8cm}YY}
+\toprule
+操作 & 顺序表 & 单链表 & 成本解释 & 关键前提\\
+\midrule
+按位访问 $i$ & $\Theta(1)$ & $\Theta(n)$ & 地址映射 vs 指针跳转 & $i$ 合法\\
+按值查找 & $\Theta(n)$ & $\Theta(n)$ & 逐项比较 & 无额外索引\\
+已知位置插入 & $\Theta(n)$ & $\Theta(1)$ & 区间移动 vs 改两条边 & 链表已知前驱\\
+头部插入/删除 & $\Theta(n)$ / $\Theta(n)$ & $\Theta(1)$ / $\Theta(1)$ & 顺序表整体移动；链表改头指针 & 正确维护 head\\
+尾部追加 & $\Theta(1)$ 摊还 & $\Theta(1)$ & 容量复制 vs tail 指针 & 无扩容/已维护 tail\\
+\bottomrule
+\end{tabularx}\end{center}
+空间也要分开：顺序表可能有未使用容量，链表每个节点额外保存指针；两者的逻辑元素空间都是 $\Theta(n)$，但常数、局部性和内存管理成本不同。
+
+\section{生成性例子：把“按值删除”拆成两个阶段}
+给定表 $L=[7,2,9,2,5]$，删除第一次出现的 $2$。这不是一个动作，而是：
+\begin{enumerate}
+\item \kw{Locate：}从头按逻辑次序比较，找到位置 $k=1$；
+\item \kw{Update：}顺序表把 $A[2\ldots4]$ 左移，链表把前驱的后继越过目标节点；
+\item \kw{Repair：}更新长度、尾指针、空槽或回收节点；
+\item \kw{Verify：}再次遍历，确认次序为 $[7,9,2,5]$ 且所有结构不变量成立。
+\end{enumerate}
+两种表示的 Locate 都可能是 $\Theta(n)$；因此不能看到链表的局部删除就断言“链表删除总是 $O(1)$”。真正改变的是 Update 的成本和维护方式。
+
+\section{代码把模型变成可执行状态转移}
+代码不是本册结论之后的语法附录。它必须逐项兑现操作契约、状态字段、不变量修复和边界分支。完整 C++17 实现位于 \codepath{code/ds01_linear_list.hpp}；下面的代码块直接从该文件抽取，因此正文与可运行实现共享同一来源。
+
+\subsection{顺序表：先保证容量，再从后向前移动}
+\lstinputlisting[
+  language=C++,
+  firstline=29,
+  lastline=50,
+  firstnumber=1,
+  numbers=left,
+  caption={顺序表插入与删除的核心转移}
+]{30_408/10_数据结构/01_线性关系与存储表示/code/ds01_linear_list.hpp}
+
+插入循环必须从 $length$ 向 $index$ 逆向移动；若正向覆盖，尚未复制的旧元素会被破坏。\code{ensure\_capacity} 在移动前执行，保证 $length+1\le capacity$。删除则正向覆盖被删位置，并在移动完成后递减长度。两段代码分别把“不覆盖未迁移数据”和“有效区恰为 $[0,length)$”落成了执行顺序。
+
+扩容本身是一次显式状态迁移：
+\lstinputlisting[
+  language=C++,
+  firstline=76,
+  lastline=90,
+  firstnumber=1,
+  numbers=left,
+  caption={容量倍增、复制和所有权切换}
+]{30_408/10_数据结构/01_线性关系与存储表示/code/ds01_linear_list.hpp}
+
+旧数据完全复制后才切换 \code{data\_} 与 \code{capacity\_}，因此异常或中途失败不会留下“容量已经变大但数据还没搬完”的半合法状态。一次扩容仍为 $\Theta(n)$；只有分析连续追加序列时，倍增策略才给出摊还 $O(1)$。
+
+\subsection{单链表：局部 \texorpdfstring{$O(1)$}{O(1)} 从“已知前驱”开始}
+\lstinputlisting[
+  language=C++,
+  firstline=142,
+  lastline=169,
+  firstnumber=1,
+  numbers=left,
+  caption={已知前驱后的插入与删除}
+]{30_408/10_数据结构/01_线性关系与存储表示/code/ds01_linear_list.hpp}
+
+插入先令新节点继承旧后继，再让前驱指向新节点；若交换这两步，新节点会把自己接成错误后继或丢失旧链。删除先保存目标节点，跨过它，再修复 \code{tail\_}、释放节点并递减长度。这里的 $O(1)$ 只从传入合法 \code{predecessor} 开始，不包含寻找前驱。
+
+\subsection{按值删除：Locate 与 Update 在代码中也必须分层}
+\lstinputlisting[
+  language=C++,
+  firstline=171,
+  lastline=192,
+  firstnumber=1,
+  numbers=left,
+  caption={按值删除第一次出现的节点}
+]{30_408/10_数据结构/01_线性关系与存储表示/code/ds01_linear_list.hpp}
+
+循环负责 Locate，最坏访问全部 $n$ 个节点；找到后才进入头节点分支或复用 \code{erase\_after}。删除唯一节点时必须同时把 \code{head\_} 和 \code{tail\_} 置空，这正是“边界属于合法状态集合”的代码证据。
+
+\subsection{不变量检查与测试不是生产操作的成本}
+伴随实现提供 \code{invariant()}：检查空表字段一致性、环、可达节点数、尾节点身份及“尾节点的 \code{next} 为空”。它用于教学验证和测试，不意味着每次生产操作都必须额外遍历全表。
+
+最小断言测试位于 \codepath{code/ds01_linear_list_test.cpp}，覆盖顺序表扩容与非法位置、链表空表、已知前驱插入、首尾删除和删除至空表。测试的关键部分直接验证抽象结果和结构不变量：
+\lstinputlisting[
+  language=C++,
+  firstline=35,
+  lastline=57,
+  firstnumber=1,
+  numbers=left,
+  caption={链表边界与不变量断言}
+]{30_408/10_数据结构/01_线性关系与存储表示/code/ds01_linear_list_test.cpp}
+
+编译验证命令为：
+\begin{lstlisting}[language=bash]
+clang++ -std=c++17 -Wall -Wextra -Werror -pedantic \
+  code/ds01_linear_list_test.cpp -o /tmp/ds01_test
+/tmp/ds01_test
+\end{lstlisting}
+
+\begin{methodbox}{做题时的第一判断}
+题目给“第 $k$ 个位置/下标”时，先判断表示能否直接映射位置；题目给“某个关键字”时，先把查找成本单列；题目给“节点指针/前驱指针”时，才可以把链式局部修改写成 $O(1)$。不要让操作名称替代输入契约。
+\end{methodbox}
+
+\section{空、首、尾与重复值不是补丁}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.2cm}YY}
+\toprule
+边界状态 & 顺序表检查 & 链式表示检查\\
+\midrule
+空表 & $length=0$，不能访问 $A[0]$ & $head=null$，$tail$ 也必须一致\\
+单元素 & 删除后长度变为 0 & 删除后 $head=tail=null$\\
+头部 & 插入/删除会移动或更新首位置 & 更新 head，不能丢掉旧链\\
+尾部 & 追加可能触发扩容 & 更新 tail，保持 $tail.next=null$\\
+重复值 & 明确删第一次、全部还是指定位置 & 不能用“找到一个”替代题目契约\\
+越界 & 先判 $0\le k\le length$ & 先判指针/位置可达\\
+\bottomrule
+\end{tabularx}\end{center}
+
+\begin{warnbox}{最常见的错误推理}
+“链表插入一定比数组快”忽略了定位；“数组访问一定 $O(1)$”忽略了按值查找；“长度字段存在就一定正确”忽略了每次分支更新；“删除节点后把指针设空就完成了删除”忽略了前驱、head/tail 和回收责任。
+\end{warnbox}
+
+\section{概念边界：把相似说法还原成判据}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{1.8cm}C{0.35cm}L{1.8cm}Y Y}
+\toprule
+概念 A & $\neq$ & 概念 B & 真正区别与题面信号 & 混淆后果\\
+\midrule
+逻辑线性表 & $\neq$ & 顺序表 & 前者是关系/操作契约，后者是连续表示 & 把一种实现当成 ADT 定义\\
+位置已知 & $\neq$ & 关键字已知 & 位置可直接进入更新，关键字仍需定位 & 漏算查找成本\\
+节点已定位 & $\neq$ & 节点可达 & 有指针只说明能沿链走，不说明已拿到前驱 & 把删除写成错误的 $O(1)$\\
+长度 & $\neq$ & 容量 & 有效元素数量 vs 已分配槽位数量 & 扩容/越界条件写反\\
+访问时间 & $\neq$ & 操作总成本 & 单次寻址/比较 vs 定位、移动、维护的总和 & 复杂度结论失真\\
+\bottomrule
+\end{tabularx}\end{center}
+
+\section{做题控制协议与压缩复原}
+遇到线性表题，按以下顺序写草稿：
+\begin{enumerate}
+\item 写清逻辑操作的输入契约：位置、关键字、节点还是前驱；
+\item 画表示：连续下标或节点/指针，并标出 length、capacity、head、tail；
+\item 写操作前不变量；
+\item 只执行最小状态更新，再补边界分支；
+\item 用一次遍历或边界地址验证逻辑次序、可达性和长度；
+\item 最后分别报告定位、局部更新、移动/跳转、额外空间的成本。
+\end{enumerate}
+
+\begin{corebox}{一页压缩}
+忘掉具体代码后，只需复原五个问题：\kw{对象是什么？输入契约是什么？数据在哪里？操作后必须保持什么？哪一项成本被表示换走了？}
+连续表示用地址映射换按位访问；链式表示用指针关系换局部插删。所有“快/慢”判断都必须回到操作输入和不变量。
+\end{corebox}
+
+\section{全科坐标与跨册交接}
+\begin{corebox}{Map Coordinate：Representation / Operation / Invariant / Cost}
+DS01 把 Atlas 的统一语言落到线性关系：输出“逻辑位置—物理地址/指针—可执行操作—合法状态—成本向量”。DS02 复用顺序/链接表示实现端点限制；DS09 复用有序线性存储讨论查找与索引代价；DS-B01 只把链式/数组状态作为 frontier 容器调用。
+\end{corebox}
+线性表的本册停止点是“表示如何支撑操作”。一旦题目转而问栈/队列为何产生时间秩序、树/图如何展开关系或索引如何维护有序查询，应交给相应 Owner。
+
+\section{来源处理}
+本册吸收归档《数据结构 MOC》和《算法时间复杂度：统一分析框架》的对象—表示—操作—成本语言，并将算法笔记中的列表/队列/字典 API 仅作为实现例子，不把 Python 容器行为提升为 408 数据结构定义。扩容摊还、缓存局部性和泛型容器保留为 Extension；栈、队列、串、树、图、Hash 与排序分别由其他 Topic Own。
+\end{document}

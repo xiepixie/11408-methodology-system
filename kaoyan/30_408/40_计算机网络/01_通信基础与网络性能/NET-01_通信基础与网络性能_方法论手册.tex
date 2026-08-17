@@ -1,0 +1,742 @@
+\documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
+\usepackage{ipara-handbook}
+\handbooksetup{NET-01 通信基础与网络性能}{408 · 计算机网络 NET-01}{Signal · Delay · Capacity · BDP}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\passthrough}[1]{#1}
+\begin{document}
+\handbooktitle{通信基础与网络性能}{把信息送过有限信道}{408 · NET-01}
+\section{本册定位}\label{0-ux672cux518cux5b9aux4f4d}
+
+本 Topic 回答一个问题：一个 bit
+要穿过有限带宽、有限传播速度且可能有噪声的真实信道，必须付出什么代价？
+
+本册拥有：source/destination、data/signal/symbol/bit
+的边界，传输介质与物理接口，repeater/hub，传输、传播、处理、排队四类时延，throughput、BDP、交换服务与存储转发，Nyquist/Shannon
+的 408 模型，以及编码、调制和复用的选择逻辑。
+
+本册不拥有：多站点怎样争用共享介质，见\href{../02_单跳交付_帧_MAC_局域网与交换机/README.md}{单跳交付}；窗口怎样填满管道，见\href{../03_可靠传输_序号_ACK_定时器与滑动窗口/README.md}{可靠传输}；拥塞造成的动态排队反馈，见\href{../07_拥塞_共享资源与反馈控制/README.md}{拥塞控制}。
+
+\section{独立阅读词典：先把量和对象说清楚}
+
+本册中第一次出现的英文词都按下面的具体对象理解。\textbf{bit} 是只能取
+0 或 1 的信息单位；\textbf{symbol（码元）} 是发送器一次发出的一个可区分物理状态，
+一个码元可以携带多个 bit。\textbf{signal（信号）} 是电、光或无线介质中随时间变化的
+物理量；\textbf{data（数据）} 是希望对方恢复的内容，不等于信号本身。
+
+\begin{handbooktable}{L{2.5cm} L{4.0cm} Y}
+\toprule
+术语 & 本册中的可操作定义 & 不要混成什么 \\
+\midrule
+bit rate $R$ & 每秒注入链路的 bit 数，单位 bit/s；$T_{tx}=L/R$ & 不是传播速度 \\
+baud rate $R_s$ & 每秒发送的 symbol 数；若有 $M$ 种状态，理想 $R=R_s\log_2M$ & 不是 bit 数本身 \\
+bandwidth $W$ & 信道允许通过的频率范围，单位 Hz；Nyquist/Shannon 中的 $W$ 指它 & 不是实际吞吐量 \\
+SNR & 信号功率与噪声功率的比值；越大越容易区分状态 & 不是信号强度的单位 \\
+transmission delay & 把整段 $L$ bit 推入链路所需时间 & 不是信号跑过距离的时间 \\
+propagation delay & 信号从发送端走到接收端所需时间；$T_{prop}=d/v$ & 不随包长 $L$ 增大 \\
+throughput & 实际每秒成功交付的有效 bit 数 & 不是链路标称容量 \\
+BDP & “带宽乘传播/往返时间”，表示同一时刻可能在途的 bit 预算 & 不是文件大小 \\
+\bottomrule
+\end{handbooktable}
+
+后文若只写“带宽变大”，默认指 $R$ 或可用容量变大；若只写“距离变远”，默认先影响
+$T_{prop}$。遇到题目同时给出两者，必须分别放回上面两个时钟，不能用一个词代替另一个量。
+
+\section{根本问题：距离不会因为链路变快而消失}\label{1-ux6839ux672cux95eeux9898ux8dddux79bbux4e0dux4f1aux56e0ux4e3aux94feux8defux53d8ux5febux800cux6d88ux5931}
+
+通信不是``把文件瞬移到另一台机器''，而是连续完成三件事：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  把信息表示成接收方能够区分的物理状态；
+\item
+  用有限速率把这些状态注入介质；
+\item
+  等待扰动沿有限距离传播到另一端。
+\end{enumerate}
+
+因此网络性能的第一母模型是：
+
+\[
+\boxed{
+\text{Information}
+\to \text{Symbol}
+\to \text{Signal}
+\to \text{Link}
+\to \text{Arrival}
+}
+\]
+
+箭头表示信息逐步获得物理表示并在空间中传播，不是协议分层。它导出两个不能混合的时钟：
+
+\[
+\boxed{T_{tx}=\frac{L}{R}}
+\qquad
+\boxed{T_{prop}=\frac{d}{v}}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \(T_{tx}\) 决定``最后一个 bit 何时离开发送端''，由数据长度 \(L\)
+  和发送速率 \(R\) 决定；
+\item
+  \(T_{prop}\) 决定``某个 bit 何时到达接收端''，由距离 \(d\) 和传播速度
+  \(v\) 决定。
+\end{itemize}
+
+提高带宽会缩短发送时延，却不会消除传播时延。这是后续窗口、流水线和拥塞机制出现的物理起点。
+
+\section{对象不等于表示}\label{2-ux5bf9ux8c61ux4e0dux7b49ux4e8eux8868ux793a}
+
+一次通信的最小物理链不是“发送端直接把 bit 给接收端”，而是：
+
+\[
+\boxed{
+\text{Source}\to\text{Transmitter}\to\text{Channel}\to
+\text{Receiver}\to\text{Destination}}
+\]
+
+Source 产生信息，transmitter 把信息编码/调制成适合介质的信号，channel 传播并叠加衰减、失真与噪声，receiver 从观测信号恢复数据，destination 消费数据。信源/信宿是信息语义的两端；发送器/接收器是物理表示转换的两端，不能因为它们常在同一设备中就合并概念。
+
+\begin{handbooktable}{L{2.0cm} C{0.35cm} L{2.2cm} Y Y}
+\toprule
+概念 A & ≠ & 概念 B & 真正区别与题目信号 & 混淆后果 \\
+\midrule
+Data & ≠ & Signal & Data 是要表达的信息；signal 是介质中的物理载体 &
+把``数字数据''误认为只能用数字信号传输 \\
+Bit & ≠ & Symbol & bit 是信息单位；symbol 是一次发送的可区分物理状态 &
+漏掉每码元可承载 \(\log_2 M\) bit \\
+Bit rate & ≠ & Baud rate & 前者数 bit/s，后者数 symbol/s & 曼彻斯特、QAM
+等题中倍数关系算反 \\
+Bandwidth & ≠ & Throughput & 前者是链路能力上限；后者是实际交付速率 &
+忽略瓶颈、协议等待和拥塞 \\
+Transmission & ≠ & Propagation & 前者是注入链路；后者是信号移动 &
+用距离计算发送时延或用包长计算传播时延 \\
+\bottomrule
+\end{handbooktable}
+
+\section{传输介质与物理接口：信号能走，不等于双方会通信}
+
+介质决定信号传播的物理约束，却不单独决定 bit rate、协议或可靠性。比较介质时使用四个维度：可用频带与衰减、抗干扰能力、部署距离与成本、是否易被共享或窃听。
+
+\begin{handbooktable}{L{2.2cm} Y Y Y}
+\toprule
+介质 & 物理直觉 & 主要优势 & 主要边界\\
+\midrule
+双绞线 & 两根绝缘铜线绞合，使外界干扰在两线中尽量共模抵消 & 成本低、布线方便 & 衰减和串扰限制距离/速率，类别与题设相关\\
+同轴电缆 & 中心导体与同轴屏蔽层形成受控传输结构 & 屏蔽和带宽通常优于普通双绞线 & 较粗重，现代 LAN 主干中不再是唯一选择\\
+光纤 & 光在纤芯/包层结构中传播 & 带宽高、衰减低、抗电磁干扰 & 光电转换与施工成本；单模/多模边界不同\\
+无线 & 电磁波在开放空间传播 & 移动性、广播可达、部署灵活 & 干扰、衰落、共享竞争和安全暴露\\
+\bottomrule
+\end{handbooktable}
+
+“光纤一定传播得更快”不是稳定结论。介质的传播速度与链路发送速率是两个维度；光纤常见优势是可用带宽、衰减和抗干扰，而不是把传播时延变为零。
+
+物理接口还必须让两端就四类约束达成一致：
+
+\begin{itemize}
+\tightlist
+\item \textbf{机械特性：}连接器形状、引脚数量和物理尺寸；
+\item \textbf{电气特性：}电平、阻抗、速率和信号持续时间；
+\item \textbf{功能特性：}每条线或信号的用途；
+\item \textbf{规程特性：}信号按什么先后次序出现、何时有效。
+\end{itemize}
+
+只有介质而没有接口契约，双方即使物理相连也不能正确解释信号。
+
+\subsection{Repeater 与 Hub：只延伸 bit 的可达范围}
+
+Repeater 在物理层接收衰减/失真的信号并重新整形、定时、发送，不读取 MAC 地址，也不隔离上层广播。Hub 是多端口 repeater：从一个端口观察到的 bit 被再生到其他端口，所有站共享带宽与冲突域。它没有 switch 的 source learning、MAC table 和定向转发状态。
+
+若每个码元有 \(M\) 个可可靠区分的状态，则理想映射下：
+
+\[
+R_b=R_s\log_2 M.
+\]
+
+增加 \(M\) 能让一个码元携带更多
+bit，但相邻状态更难区分，所需信噪比也更高。它不是免费的速率提升。
+
+\section{容量上限怎样生成}\label{3-ux5bb9ux91cfux4e0aux9650ux600eux6837ux751fux6210}
+
+\subsection{无噪声仍受带宽限制}\label{31-ux65e0ux566aux58f0ux4ecdux53d7ux5e26ux5bbdux9650ux5236}
+
+朴素想法是无限提高码元变化速度。失败原因是有限带宽会使相邻码元的波形互相干扰。408
+使用 Nyquist 模型表达无噪声低通信道的上限：
+
+\[
+R_{s,\max}=2W,
+\qquad
+R_{b,\max}=2W\log_2M.
+\]
+
+这里 \(W\) 是 Hz，\(M\)
+是码元状态数。第一式约束每秒可区分多少码元，第二式再乘每码元的信息量。
+
+\subsection{有噪声时不能无限增加状态数}\label{32-ux6709ux566aux58f0ux65f6ux4e0dux80fdux65e0ux9650ux589eux52a0ux72b6ux6001ux6570}
+
+若只看 Nyquist，增大 \(M\) 似乎能无限提高 bit
+rate。现实噪声会让密集状态不可区分。Shannon
+容量给出有噪声信道的可靠通信极限：
+
+\[
+C=W\log_2(1+\mathrm{SNR}).
+\]
+
+公式中的 SNR 是功率比；若题目给分贝：
+
+\[
+\mathrm{SNR}_{dB}=10\log_{10}\mathrm{SNR}.
+\]
+
+Nyquist 回答``带宽允许多快地摆放可区分码元''，Shannon
+回答``噪声存在时最多能可靠携带多少信息''。题目同时给出两组限制时，系统必须同时满足，不能任选一个公式。
+
+\section{编码、调制与复用解决不同问题}\label{4-ux7f16ux7801ux8c03ux5236ux4e0eux590dux7528ux89e3ux51b3ux4e0dux540cux95eeux9898}
+
+\subsection{编码：怎样把 bit
+变成可同步的基带波形}\label{41-ux7f16ux7801ux600eux6837ux628a-bit-ux53d8ux6210ux53efux540cux6b65ux7684ux57faux5e26ux6ce2ux5f62}
+
+线路编码必须同时考虑：接收方能否恢复时钟、是否存在难以传输的直流分量、付出多少额外码元。
+
+\begin{itemize}
+\tightlist
+\item
+  NRZ 简单，但长串同值缺少跳变；
+\item
+  Manchester 用位中跳变携带时钟，易同步但码元开销大；
+\item
+  4B/5B 先限制长串零，再配合 NRZI，在同步能力和效率之间折中。
+\end{itemize}
+
+编码不是可靠传输。它改善物理可判决性，却不替代 CRC、ACK 或重传。
+
+\subsection{调制：怎样把信息装到适合信道的载波上}\label{42-ux8c03ux5236ux600eux6837ux628aux4fe1ux606fux88c5ux5230ux9002ux5408ux4fe1ux9053ux7684ux8f7dux6ce2ux4e0a}
+
+载波可写作 \(A\cos(2\pi ft+\phi)\)。ASK、FSK、PSK
+分别改变振幅、频率或相位；QAM
+联合改变振幅和相位。调制阶数越高，每码元携带的 bit
+越多，但判决间隔越小、对 SNR 越敏感。
+
+\subsection{复用：怎样让多个信息流共享一条介质}\label{43-ux590dux7528ux600eux6837ux8ba9ux591aux4e2aux4fe1ux606fux6d41ux5171ux4eabux4e00ux6761ux4ecbux8d28}
+
+FDM、TDM、WDM、CDM
+分别在频率、时间、光波长或码空间上分离使用者。复用先划分资源；MAC
+则在共享资源未被预先完全划分时决定``现在轮到谁''。两者在概念上相邻，但责任不同。
+
+\begin{handbooktable}{L{1.8cm} Y Y Y}
+\toprule
+方式 & 正交/分离轴 & 必须支付的控制成本 & 典型计算接口\\
+\midrule
+FDM & 不重叠频带 & guard band、滤波 & 总带宽含各子带与保护带\\
+TDM & 周期性 time slot & frame/slot synchronization & 每轮槽数、每槽 bit 数、frame rate 决定线路 bit rate\\
+WDM & 光纤中的不同 wavelength & 光器件与通道间隔 & 可近似视为光域 FDM\\
+CDM & 近似正交 code sequence & chip rate、同步、相关检测 & 用内积/相关值分离用户\\
+\bottomrule
+\end{handbooktable}
+
+同步 TDM 即使某输入暂时无数据，也可能保留其固定 slot；统计 TDM 可动态分配槽位提高突发业务利用率，却需地址/调度与缓冲。若 $n$ 路输入每路每秒产生 $f$ 个样本、每样本 $b$ bit，且一帧各取一个样本，忽略额外开销时线路速率至少为 $nfb$ bit/s；题设给同步位或 framing overhead 时必须另加。CDM 的“同时同频”不等于无干扰，它依赖码序列相关性与接收同步。
+
+\section{交换服务：状态何时建立，节点按多大粒度等待}
+
+交换方式可以用两个问题生成：传输前是否建立沿途状态？中间节点必须收齐多大对象才能继续？
+
+\begin{handbooktable}{L{2.2cm} Y Y Y}
+\toprule
+模型 & 状态与资源 & 中间节点动作 & 主要代价\\
+\midrule
+电路交换 & 传输前建立端到端连接并预留资源 & 建立后连续转送 bit 流 & setup 时间；空闲时预留能力也不能被他人使用\\
+报文交换 & 不预留端到端电路 & 收齐整个 message 后存储、排队、选择下一跳 & 大报文要求大缓冲，并阻塞后续短报文\\
+分组交换 & 通常不预留完整物理电路；把 message 切成 packet & 按 packet 存储转发，可形成流水线 & 每包首部、排队、乱序/丢失与重组责任\\
+\bottomrule
+\end{handbooktable}
+
+报文交换与分组交换都可 store-and-forward，区别是缓存/调度粒度。packet 化不能消除总数据发送量，但允许第一包在整份 message 尚未发送完时进入下一跳，也让多个流细粒度交错。
+
+\subsection{数据报与虚电路：同为分组交换，状态位置不同}
+
+\begin{handbooktable}{L{2.2cm} Y Y Y}
+\toprule
+模型 & 建立阶段 & packet 携带/网络保存 & 故障与顺序直觉\\
+\midrule
+Datagram & 无连接建立要求 & 每包携带完整目的标识，router 按当前转发表独立处理 & 不同包可走不同路径、可能乱序；路由变化可影响后续包\\
+Virtual circuit & 先建立逻辑路径/表项 & 包携带较短 VC identifier；沿途设备保存映射状态 & 同一 VC 通常沿既定逻辑路径；沿途状态故障需要恢复/重建\\
+\bottomrule
+\end{handbooktable}
+
+虚电路是网络中的逻辑状态，不等于物理专线，也不必等于预留固定带宽；数据报无连接也不等于“网络没有任何状态”，router 仍保存 forwarding state。IP 的具体数据报转发由 NET04 Own，本节只拥有交换服务模型。
+
+\section{一个分组经过链路的一生}\label{5-ux4e00ux4e2aux5206ux7ec4ux7ecfux8fc7ux94feux8defux7684ux4e00ux751f}
+
+设长度为 \(L\) 的 packet 依次经过 \(N\)
+条等速率链路，每个中间交换节点采用 store-and-forward，暂忽略排队与处理：
+
+\begin{lstlisting}
+源端序列化第 1 个 packet
+-> 第 1 条链路传播
+-> 中间节点收齐后才能向第 2 条链路序列化
+-> ...
+-> 目的端收齐
+\end{lstlisting}
+
+单个 packet 的最早完整到达时间为：
+
+\[
+T=\sum_{i=1}^{N}\left(\frac{L}{R_i}+\frac{d_i}{v_i}\right).
+\]
+
+若有 \(P\) 个等长 packet、\(N\)
+条等速率链路且可形成稳定流水线，则忽略其他时延时：
+
+\[
+T=(N+P-1)\frac{L}{R}+\sum_{i=1}^{N}T_{prop,i}.
+\]
+
+\(N+P-1\) 来自``第一个 packet 填满 \(N\) 级流水线，余下 \(P-1\)
+个各增加一个发送周期''，不能机械背成适用于任意速率和任意交换方式的公式。
+
+\section{四类时延与瓶颈}\label{6-ux56dbux7c7bux65f6ux5ef6ux4e0eux74f6ux9888}
+
+每个节点的总时延拆为：
+
+\[
+d_{nodal}=d_{proc}+d_{queue}+d_{trans}+d_{prop}.
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  processing：解析首部、检错和查表；
+\item
+  queueing：等待输出资源，随 offered load 动态变化；
+\item
+  transmission：把所有 bit 推上当前链路；
+\item
+  propagation：信号穿过当前介质。
+\end{itemize}
+
+端到端 throughput 由路径上持续服务能力最弱的环节限制：
+
+\[
+R_{throughput}\le \min_i R_i.
+\]
+
+但``最小链路速率''等于实际吞吐量只在发送方、接收方、协议窗口和拥塞均不形成更小瓶颈时成立。
+
+\section{BDP：网络中同时在途的状态预算}\label{7-bdpux7f51ux7edcux4e2dux540cux65f6ux5728ux9014ux7684ux72b6ux6001ux9884ux7b97}
+
+带宽时延积不是``又一种时延''，而是一定传播时间内链路可注入的数据量：
+
+\[
+BDP=R\times T_{prop}.
+\]
+
+若讨论往返反馈闭环，常使用 \(R\times RTT\)
+估算填满路径所需的未确认数据量。它将物理 Topic 与可靠传输、TCP
+流控和拥塞控制连接起来：窗口小于在途容量时，发送方会等待反馈；窗口过大又可能积压队列。
+
+\section{正确性、代价与边界}\label{8-ux6b63ux786eux6027ux4ee3ux4ef7ux4e0eux8fb9ux754c}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+机制 & 换来的能力 & 主要代价 & 失效或边界 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+更高阶调制 & 每码元更多 bit & 更高 SNR 与实现复杂度 &
+噪声使星座点不可区分 \\
+分组交换 & 突发业务统计复用 & 排队、抖动、丢包 &
+高负载时延可能急剧增加 \\
+Store-and-forward & 完整检错和逐跳转发 & 每跳增加一个 packet 发送时延 &
+cut-through 模型不能直接套用 \\
+复用 & 多流共享昂贵介质 & 划分、同步或码设计开销 &
+资源空闲时可能利用不足 \\
+更高速率链路 & 缩短 transmission delay & 成本与物理实现要求 &
+不改变距离造成的 propagation delay \\
+\end{longtable}
+\section{从数据到信号：物理表示的完整生成链}
+
+现有母模型
+\(
+\text{Information}\to\text{Symbol}\to\text{Signal}\to\text{Link}\to\text{Arrival}
+\)
+只有落实到“谁变成谁、速率怎样换算、信道允许什么”时才真正可用。本节把 补充笔记中的通信基础、编码与调制细节接回这条生成链。
+
+\subsection{数据通信系统、传输方向与并串行}
+
+一个数据通信系统至少有 source、transmitter、channel、receiver、destination。source/destination 关心信息语义，transmitter/receiver 关心物理表示。发送端在并行内部总线和串行链路之间转换时，信息本身没有改变，改变的是同一时刻使用多少根线以及接收端如何恢复边界。
+
+\begin{handbooktable}{L{2.4cm} Y Y Y}
+\toprule
+维度 & 选项 & 真正判据 & 直接后果\\
+\midrule
+方向 & Simplex / Half-duplex / Full-duplex & 两端是否都能发送；能否同时发送 & 不是“有没有 ACK”，而是物理/逻辑信道的方向能力\\
+位组织 & Serial / Parallel & 一次沿一条通道依次发 bit，还是多线同时发一组 bit & parallel 近距离吞吐高，但线间 skew 与成本随距离增大\\
+信号形态 & Analog / Digital & 自变量和幅值是否连续取值 & 数字数据也可调制成模拟载波，模拟数据也可 PCM 数字化\\
+频谱位置 & Baseband / Passband & 是否直接用低通信道，还是搬移到载波频段 & 无线和带通信道通常需要调制\\
+\bottomrule
+\end{handbooktable}
+
+若码元速率为 \(R_s\)，一个码元有 \(M\) 个可区分状态且等概率映射，则
+\[
+R_b=R_s\log_2M.
+\]
+反推时先算 \(\log_2M\)，再在 bit/s 与 baud 之间转换。\(M\) 必须表示接收端在给定噪声下能够可靠区分的状态数，而不是发送端理论上愿意画多少种波形。
+
+\begin{examplebox}{QAM 速率反推}
+若 16-QAM 的码元速率为 \(2400\,\mathrm{Baud}\)，每码元承载
+\(\log_2 16=4\) bit，所以理想 bit rate 为
+\(9600\,\mathrm{bit/s}\)。若题目反给 \(9600\,\mathrm{bit/s}\) 与 8 种状态，则需要
+\(9600/3=3200\,\mathrm{Baud}\)，不能把 8 直接乘成 8 bit/码元。
+\end{examplebox}
+
+\subsection{模拟数据数字化：PCM 的三个不可交换阶段}
+
+Pulse Code Modulation 依次完成：
+\[
+\boxed{\text{Sampling}\to\text{Quantization}\to\text{Encoding}}.
+\]
+采样决定时间轴上取多少个观测；量化把连续幅值映到有限等级，会产生不可逆量化误差；编码再把等级编号写成 bit。编码不能恢复量化丢失的信息，因此三步不能倒置。
+
+若信号最高频率为 \(f_m\)，教材模型要求采样频率至少为 \(2f_m\)。每个样本量化为 \(Q\) 个等级时需要
+\(b=\lceil\log_2Q\rceil\) bit，PCM bit rate 为
+\[
+R_{PCM}=f_s b.
+\]
+标准话音示例取 \(f_s=8000\,\mathrm{sample/s}\)、每样本 8 bit，得到
+\(64\,\mathrm{kbit/s}\)。这里的 \(8000\) 是样本率，不是码元状态数。
+
+\subsection{五种线路编码：事件语义先于波形记忆}
+
+线路编码题不要从“高电平代表 1”开始背，因为不同教材允许极性约定不同；应先锁定“当前 bit 是否要求跳变、跳变发生在何处”。
+
+\begin{handbooktable}{L{2.5cm} Y Y Y}
+\toprule
+编码 & 当前 bit 的事件规则 & 同步与直流特性 & 典型边界\\
+\midrule
+NRZ-L & 整个位周期保持与 bit 对应的一个电平 & 长串同值无跳变，时钟恢复差 & 简单、频带利用较高，但不自同步\\
+RZ & 每个位周期内回到零电平 & 比 NRZ 多跳变 & 需要更高信号变化率\\
+Manchester & 位中必有一次跳变，跳变方向表示 bit & 自同步、直流分量较小 & 一个 bit 至少消耗两个信号区间\\
+Differential Manchester & 位中必跳；位开始处是否跳变表示 bit & 对极性反转更稳健 & 必须先给初始电平和 bit 约定\\
+NRZI & 某一 bit 值触发翻转，另一值保持 & 连续触发值同步较好；另一长串仍危险 & 常与 4B/5B 等块编码配合\\
+\bottomrule
+\end{handbooktable}
+
+“Manchester 的信号变化率一定恰好是 bit rate 的两倍”不是无条件真理。考试常把一个 bit 划成两个半位信号单元，所以需要的基本信号区间速率是 bit rate 的两倍；但实际跳变次数还取决于相邻 bit。若题目问最小带宽或波特率，必须采用题目给定的教材口径。
+
+\subsection{调制：载波参数与星座距离}
+
+带通信道用载波
+\(s(t)=A\cos(2\pi ft+\phi)\)
+承载信息：ASK 改 \(A\)，FSK 改 \(f\)，PSK 改 \(\phi\)，QAM 联合改变振幅和相位。阶数增加使每码元 bit 数增加，但星座点间隔缩小，同样噪声更容易造成判决错误。于是“提高 \(M\)”同时受到 Nyquist 的符号数收益与 Shannon 的噪声容量约束。
+
+\section{信道容量：从正算到反推的统一可行域}
+
+\subsection{四个量与两个独立上界}
+
+容量题先声明：带宽 \(W\)（Hz）、码元状态数 \(M\)、bit rate \(R_b\)、线性信噪比 \(S/N\)。无噪声低通信道的 Nyquist 上界为
+\[
+R_b\le 2W\log_2M,
+\]
+有噪声信道的 Shannon 上界为
+\[
+R_b\le W\log_2(1+S/N),
+\qquad
+S/N=10^{\mathrm{SNR}_{dB}/10}.
+\]
+两者同时给出时，可行 bit rate 是两个上界的最小值。Nyquist 说明有限带宽造成码间干扰；Shannon 说明噪声使过密状态不可可靠区分。它们不是同一公式的两个版本。
+
+\begin{examplebox}{联合判断与状态数反推}
+信道带宽 \(W=3\,\mathrm{kHz}\)，信噪比 \(30\,\mathrm{dB}\)，采用 \(M=16\) 状态。
+\[
+C_N=2\times3000\times4=24\,\mathrm{kbit/s},
+\]
+\[
+C_S=3000\log_2(1+1000)\approx29.9\,\mathrm{kbit/s}.
+\]
+因此当前表示受 Nyquist 限制，可靠速率不能超过 \(24\,\mathrm{kbit/s}\)。若目标是 \(18\,\mathrm{kbit/s}\)，Nyquist 反推
+\(\log_2M\ge 3\)，至少需要 8 状态；随后仍须验证 \(18<C_S\)。
+\end{examplebox}
+
+\begin{examplebox}{从目标容量反推 SNR}
+目标 \(R_b\)、带宽 \(W\) 已知时，Shannon 给出
+\[
+\frac SN\ge 2^{R_b/W}-1,
+\qquad
+\mathrm{SNR}_{dB}\ge10\log_{10}(2^{R_b/W}-1).
+\]
+这里先得到线性功率比，再转 dB；直接把 dB 数值代入 \(1+S/N\) 会产生数量级错误。
+\end{examplebox}
+
+提高 \(W\) 并不保证容量按比例无限增长：若总信号功率固定，扩大频带会改变单位带宽内的 SNR。408 题若把 SNR 作为独立常量，按公式直接计算；工程功率谱约束属于本册 Stop Boundary。
+
+\section{复用与多址：资源轴、控制开销与完整计算}
+
+\subsection{FDM、TDM、STDM 与 WDM}
+
+FDM 给每路分配不同频带。若 \(n\) 路各占 \(B_i\)，相邻路需要保护频带 \(G_j\)，总带宽至少为
+\[
+B_{total}=\sum_i B_i+\sum_jG_j.
+\]
+TDM 给每路分配周期性时隙。若每帧从 \(n\) 路各取 \(b\) bit，帧率为 \(f\)，另有 \(h\) bit 同步开销，则线路速率为
+\[
+R=f(nb+h).
+\]
+同步 TDM 即使输入空闲也保留槽位；Statistical TDM 动态分配槽位，换来地址、缓冲和调度开销。WDM 在光域按 wavelength 分离，可把它理解为光纤上的 FDM，但器件与通道间隔仍有成本。
+
+\begin{examplebox}{125 微秒 TDM 帧与 T1 口径}
+电话 PCM 每路每秒采样 8000 次，所以每 \(1/8000=125\,\mu s\) 必须形成一帧。T1 每帧承载 24 路、每路 8 bit，再加 1 bit framing：
+\[
+R=8000(24\times8+1)=1.544\,\mathrm{Mbit/s}.
+\]
+125 微秒来自采样周期，不来自“帧长固定为 125 bit”。
+\end{examplebox}
+
+\subsection{CDMA：用向量内积分离同时同频用户}
+
+令每个站分配长度为 \(m\) 的 chip sequence
+\(\mathbf c_i\in\{+1,-1\}^m\)，并满足
+\[
+\frac1m\mathbf c_i\cdot\mathbf c_j=
+\begin{cases}
+1,&i=j,\\
+0,&i\ne j.
+\end{cases}
+\]
+发送 bit 1 时发送 \(\mathbf c_i\)，发送 bit 0 时发送 \(-\mathbf c_i\)，静默才是不发送。信道中的叠加向量
+\(\mathbf r=\sum_i b_i\mathbf c_i\)，其中 \(b_i\in\{+1,-1,0\}\)。接收目标站 \(k\) 时计算
+\[
+\frac1m\mathbf r\cdot\mathbf c_k=b_k.
+\]
+得到 \(+1\) 表示 1，\(-1\) 表示 0，0 表示该站未发送。
+
+\begin{examplebox}{CDMA 的反向验算}
+设 \(\mathbf c_A=(1,1,1,1)\)，
+\(\mathbf c_B=(1,-1,1,-1)\)。A 发 1，B 发 0，则
+\[
+\mathbf r=\mathbf c_A-\mathbf c_B=(0,2,0,2).
+\]
+分别做归一化内积得到
+\(\mathbf r\cdot\mathbf c_A/4=1\)、
+\(\mathbf r\cdot\mathbf c_B/4=-1\)。反向验算同时检查码序列正交性和正负号，不应只给最终 bit。
+\end{examplebox}
+
+CDMA 没有“凭空增加容量”：每个信息 bit 被扩展成 \(m\) 个 chip，支付 chip rate、同步和码设计成本。复用回答一条介质如何划分给多个流；多址回答多个站如何获得共享资源，二者可使用同类技术但问题作用域不同。
+
+\section{介质与物理设备：传播优势不能替代协议能力}
+
+\subsection{有线与无线介质的可生成比较}
+
+双绞线通过绞合让外界干扰尽量在两线形成共模分量；shielded/unshielded 的取舍是抗干扰、成本与施工。Coaxial cable 依靠同轴屏蔽结构控制电磁场。Optical fiber 利用纤芯与包层折射率差形成全反射；multimode 允许多条光路、modal dispersion 更明显，single-mode 纤芯更细、适合远距离高带宽。无线介质开放共享，带来 mobility，也带来干扰、衰落、窃听和 MAC 竞争。
+
+Microwave relay 依赖视距并需要中继；satellite 路径长，传播时延通常显著，且不会因为发送速率提升而缩短。Infrared/laser 方向性强、通常不穿墙。具体频段、类别和最大距离若题目未给，不用工程型号表替代机制判断。
+
+\subsection{Repeater/Hub 的能力与级联边界}
+
+Repeater 再生 signal，hub 把一个端口收到的 bit 再生到其他端口；二者不读 MAC、不学习源地址、不隔离冲突域，也不能把不同速率站点变成独立全双工链路。Hub 的总能力由所有端口共享，任意两站同时发送可能碰撞。级联不能无限延长，因为传播、再生延迟和碰撞检测时间窗受协议约束；题目应以给定标准/最大级联规则为准。
+
+\section{时延、吞吐与交换：补全所有计算口径}
+
+\subsection{利用率、吞吐量与 BDP 的两种时间尺度}
+
+发送方利用率是“观察周期内真正序列化有效数据的时间比例”，不是链路物理带宽的同义词。Stop-and-Wait 且忽略 ACK 发送时间时，常见教材模型为
+\[
+U=\frac{T_{frame}}{T_{frame}+RTT+T_{proc}},
+\qquad
+Throughput=U\cdot R.
+\]
+若 ACK 长度、处理或排队不可忽略，必须显式加入时间线。单向链路在途量用 \(R T_{prop}\)，反馈闭环的未确认预算常用 \(R\,RTT\)；两者相差约一倍不是公式冲突，而是观察区间不同。
+
+\subsection{三种交换与最优分组粒度}
+
+设数据 \(D\) bit，分成 \(n\) 个 packet，每包首部 \(H\) bit，经过 \(k\) 条等速率链路，速率 \(R\)，每跳传播 \(d\)。忽略其他时延时：
+\[
+T_{message}=k\frac DR+kd,
+\]
+\[
+T_{packet}=(k+n-1)\frac{D/n+H}{R}+kd.
+\]
+第一式每跳收齐整份 message；第二式由第一个 packet 填满 \(k\) 级流水线、其余 \(n-1\) 个依次排出生成。展开与 \(n\) 有关的部分：
+\[
+\frac1R\left(\frac{(k-1)D}{n}+nH\right),
+\]
+连续近似下最优分组数为
+\[
+n^*=\sqrt{\frac{(k-1)D}{H}}.
+\]
+实际取相邻合法整数并代回比较。分包太少，流水线收益不足；分包太多，首部和处理开销反噬，因此“packet 越小越快”是错误的无条件规则。
+
+电路交换另有 setup time \(T_s\)，数据阶段发送时延只出现一次：
+\[
+T_{circuit}=T_s+\frac DR+kd.
+\]
+数据量增大时 \(T_s\) 被摊薄，电路交换可能反超 store-and-forward；结论必须绑定工作负载。
+
+\section{来源覆盖附录：NET01 逐 Source 核销}
+
+\begingroup\small
+\begin{handbooktable}{L{4.0cm} L{3.0cm} Y}
+\toprule
+Source & 本册承接位置 & 核销结论\\
+\midrule
+\texttt{overview/}\newline\texttt{network-overview} & 交换/流水线 & 定义/分类由 Atlas 路由；交换模型、流水线与粒度计算已展开\\
+\texttt{overview/}\newline\texttt{performance-metrics} & 四时延/BDP & 四时延、吞吐、利用率、RTT 与 BDP 双口径已展开\\
+\texttt{physical/}\newline\texttt{channel-basics} & 对象/生成链/容量 & 通信系统、方向、码元、调制、PCM 与容量出口已展开\\
+\texttt{physical/}\newline\texttt{encoding} & 线路编码 & 五种编码的事件规则、波形判据与带宽边界已展开\\
+\texttt{physical/}\newline\texttt{multiplexing} & 复用与多址 & FDM/TDM/STDM/WDM/CDM、T1 与开销计算已展开\\
+\texttt{physical/}\newline\texttt{nyquist-shannon} & 容量可行域 & 前提、联合上界、状态数/SNR 反推与边界已展开\\
+\texttt{physical/}\newline\texttt{cdma} & CDMA 向量模型 & 正交码片、叠加、内积解码、反向验算与扩频代价已展开\\
+\texttt{physical/}\newline\texttt{transmission-media} & 介质/接口 & 介质机制、接口四特性、传播/带宽边界已展开\\
+\texttt{physical/}\newline\texttt{physical-devices} & Repeater/Hub & repeater/hub、共享能力、冲突域与级联边界已展开\\
+\bottomrule
+\end{handbooktable}
+\endgroup
+
+补充笔记中的交互组件与站内真题链接只作为后续 Evidence 入口；本附录核销的是知识与计算口径，不声称学习者已经通过陌生题验证。
+
+\section{408 流程覆盖：选择、交换与时间线}
+
+\subsection{编码与调制选择不是名词配对}
+
+题目给定数据、信道和目标速率时，按以下顺序推进：
+\[
+\boxed{\text{Data type}\to\text{Baseband/Passband}\to\text{Symbol states}\to\text{Rate limits}\to\text{Feasibility}}
+\]
+先把 bit rate 换成 symbol rate，再同时检查 Nyquist 与 Shannon 上限。若候选方案超过任一上限，结论是该表示在给定条件下不可行，而不是继续提高码元状态数。
+
+\subsection{电路、报文与分组交换的事件账本}
+
+电路交换先经历资源建立，再持续占用预留能力，最后释放；报文交换逐份完整 message 排队；分组交换逐包排队、逐跳存储转发：
+\[
+\text{Setup}\to\text{Reserved transfer}\to\text{Release}
+\]
+\[
+\text{Whole message arrival}\to\text{Store}\to\text{Forward}
+\qquad\text{vs}\qquad
+\text{Packet arrival}\to\text{Queue}\to\text{Serialize}\to\text{Propagate}.
+\]
+因此计算端到端时间时，必须先问是否存在 setup cost、是否 store-and-forward、多个 packet 是否能形成流水线，以及各链路速率是否相同。
+
+\begin{examplebox}{三跳两包时间线}
+两包经过三条等速率 store-and-forward 链路。第一包要经历三个发送周期才能到达；此后第二包已在上一跳流水推进，只再增加一个发送周期，所以发送项为 $(3+2-1)L/R$，不是 $2\times3L/R$。传播、处理和排队仍按题设另加。
+\end{examplebox}
+
+\section{做题调用协议}\label{9-ux505aux9898ux8c03ux7528ux534fux8bae}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  标出对象：bit、symbol、frame、packet 还是整份数据；
+\item
+  统一单位：bit/Byte，Hz，bit/s，s；
+\item
+  画时间线，分别标注 serialization、propagation、processing、queueing；
+\item
+  判断是单链路、逐跳 store-and-forward 还是多 packet 流水线；
+\item
+  交换题先写是否 setup、节点按 message 还是 packet 缓存、网络是否保存 per-connection state；
+\item
+  容量题先判断 Nyquist、Shannon 或二者共同约束；
+\item
+  复用题先识别资源轴，再把 guard/sync/address/code 等开销计入总预算；
+\item
+  吞吐量题列出所有候选瓶颈，再取最小；
+\item
+  用数量级和量纲独立检查结果。
+\end{enumerate}
+
+\section{贯穿母例：高速远距离链路为什么仍需要窗口}\label{10-ux8d2fux7a7fux6bcdux4f8bux9ad8ux901fux8fdcux8dddux79bbux94feux8defux4e3aux4ec0ux4e48ux4ecdux9700ux8981ux7a97ux53e3}
+
+一条 \(100\,\mathrm{Mb/s}\) 链路，单向传播时延 \(20\,\mathrm{ms}\)，发送
+\(1000\,\mathrm{B}\) frame。
+
+\[
+T_{tx}=\frac{8000}{10^8}=80\,\mu s,
+\qquad
+RTT\approx40\,ms.
+\]
+
+停止等待时，发送方工作 \(80\,\mu s\) 后大约等待
+\(40\,ms\)。问题不是链路``慢''，而是反馈尚未返回。对应的往返在途容量约为：
+
+\[
+R\times RTT=4\times10^6\,bit=500\,kB.
+\]
+
+所以需要允许大量未确认数据同时在途。这个例子在\href{../03_可靠传输_序号_ACK_定时器与滑动窗口/README.md}{可靠传输}中会生成
+sliding
+window，在\href{../06_传输层_端点_UDP与TCP状态机/README.md}{TCP}中分别受到
+\passthrough{\lstinline!rwnd!} 和 \passthrough{\lstinline!cwnd!} 约束。
+
+\section{高频 First
+Divergence}\label{11-ux9ad8ux9891-first-divergence}
+
+\begin{itemize}
+\tightlist
+\item
+  看到``100 Mb/s''就用距离计算：把 transmission 与 propagation 混合；
+\item
+  看到带宽和 SNR 只算一个上限：没有求共同可行域；
+\item
+  把 packet 数乘在整条路径总时延上：没有识别流水线重叠；
+\item
+  把 BDP 当成已发送文件总量：没有说明它描述哪段路径、哪个时间尺度；
+\item
+  只找最慢链路：漏掉窗口、发送源或拥塞可能成为更小瓶颈。
+\item
+  把虚电路等同于物理电路：没有区分逻辑转发表状态与资源预留；
+\item
+  说 hub 根据 MAC 定向发送：把物理层 bit 再生错写成链路层转发。
+\end{itemize}
+
+\section{一页压缩与复原问题}\label{12-ux4e00ux9875ux538bux7f29ux4e0eux590dux539fux95eeux9898}
+
+\[
+\boxed{
+\begin{gathered}
+\text{Represent}\to \text{Inject at finite rate}\to \text{Propagate over distance}\\
+\to \text{Queue at shared resources}\to \text{Arrive under a bottleneck}
+\end{gathered}
+}
+\]
+
+复原本册时回答：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  为什么提高带宽不一定缩短 RTT？
+\item
+  Nyquist 与 Shannon 分别限制什么？
+\item
+  为什么 packet 化会增加单包开销，却改善突发业务共享？
+\item
+  多跳多 packet 总时延中的流水线项怎样生成？
+\item
+  BDP 为什么会自然导出窗口？
+\item
+  数据报与虚电路把状态分别放在哪里？
+\item
+  Repeater、hub 与 switch 读取的信息为何不同？
+\end{enumerate}
+
+\section{来源与校正说明}\label{13-ux6765ux6e90ux4e0eux6821ux6b63ux8bf4ux660e}
+
+\begin{itemize}
+\tightlist
+\item
+  归档笔记《网络概述》《物理层-编码与调制》《公式汇总》提供考点范围和旧例题；
+\item
+  旧笔记中的公式已按对象、作用域和前提重新组织，未保留``看到关键词套公式''的结构；
+\item
+  Nyquist/Shannon 在本册按 408
+  教材模型使用，工程通信中的脉冲成形、编码增益和具体信道模型不在本册展开。
+\item
+  Ethernet 介质与 repeater 的工程边界参考 IEEE 802.3-2022；本册只保留 408 所需的介质、PHY 与物理设备模型。
+\end{itemize}
+\end{document}

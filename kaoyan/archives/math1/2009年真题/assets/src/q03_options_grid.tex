@@ -1,0 +1,73 @@
+% 2009 Q03 四个选项图形 (A, B, C, D) 2x2 网格综合图
+\begin{scope}[shift={(0, 3.5)}]
+  % 选项 A
+  \node[above left] at (-1.8, 2.0) {\textbf{(A)}};
+  \draw[->, dashed, line width=0.7pt] (-1.8, 0) -- (3.6, 0) node[below=1pt] {$x$};
+  \draw[->, dashed, line width=0.7pt] (0, -1.2) -- (0, 2.2) node[left=1pt] {$F(x)$};
+  \node[below left=1pt] at (0,0) {$O$};
+  \node[below] at (-1.2, 0) {$-1$};
+  \node[left] at (0, 1.0) {$1$};
+  \node[below] at (1.0, 0) {$1$};
+  \node[below] at (2.0, 0) {$2$};
+  \node[below] at (3.0, 0) {$3$};
+  % 曲线 A: (-1, 1) -> (0, 0) -> (1, -0.6) -> (2, 0.6) -> (3, 0.6)
+  \draw[line width=1.0pt] (-1.2, 1.0) -- (0, 0);
+  \draw[line width=1.0pt, domain=0:2.0, samples=30] plot (\x, {0.6*(\x-1)*(\x-1) - 0.6 + 0.6*\x - 0.6});
+  \draw[line width=1.0pt] (2.0, 0.6) -- (3.0, 0.6);
+\end{scope}
+
+\begin{scope}[shift={(6.5, 3.5)}]
+  % 选项 B
+  \node[above left] at (-1.8, 2.0) {\textbf{(B)}};
+  \draw[->, dashed, line width=0.7pt] (-1.8, 0) -- (3.6, 0) node[below=1pt] {$x$};
+  \draw[->, dashed, line width=0.7pt] (0, -1.5) -- (0, 2.2) node[left=1pt] {$F(x)$};
+  \node[above left=1pt] at (0,0) {$O$};
+  \node[above] at (-1.2, 0) {$-1$};
+  \node[below] at (1.0, 0) {$1$};
+  \node[below] at (2.0, 0) {$2$};
+  \node[below] at (3.0, 0) {$3$};
+  \node[right] at (0, -1.0) {$-1$};
+  % 曲线 B: (-1, -1) -> (0, 0) -> (1, -0.6) -> (2, 1.2) 空心跳到 y=0
+  \draw[line width=1.0pt] (-1.2, -1.0) -- (0, 0);
+  \draw[line width=1.0pt, domain=0:2.0, samples=30] plot (\x, {0.45*\x*\x*\x - 1.1*\x});
+  \draw[line width=0.8pt, fill=themebg] (2.0, 0) circle (1.8pt);
+  \draw[line width=1.0pt] (2.08, 0) -- (3.0, 0);
+\end{scope}
+
+\begin{scope}[shift={(0, -1.8)}]
+  % 选项 C
+  \node[above left] at (-1.8, 2.0) {\textbf{(C)}};
+  \draw[->, dashed, line width=0.7pt] (-1.8, 0) -- (3.6, 0) node[below=1pt] {$x$};
+  \draw[->, dashed, line width=0.7pt] (0, -1.2) -- (0, 2.2) node[left=1pt] {$F(x)$};
+  \node[below left=1pt] at (0,0) {$O$};
+  \node[below] at (-1.2, 0) {$-1$};
+  \node[left] at (0, 1.0) {$1$};
+  \node[below] at (1.0, 0) {$1$};
+  \node[below] at (2.0, 0) {$2$};
+  \node[below] at (3.0, 0) {$3$};
+  % 曲线 C: (-1, 0) -> (0, 1) -> (1, 0.4) -> (2, 1.6) -> (3, 1.6)
+  \draw[line width=1.0pt] (-1.2, 0) -- (0, 1.0);
+  \draw[line width=1.0pt, domain=0:2.0, samples=30] plot (\x, {0.6*(\x-1)*(\x-1) + 0.4});
+  \draw[line width=1.0pt] (2.0, 1.0) -- (3.0, 1.0);
+\end{scope}
+
+\begin{scope}[shift={(6.5, -1.8)}]
+  % 选项 D (正确答案)
+  \node[above left] at (-1.8, 2.0) {\textbf{(D)}};
+  \draw[->, dashed, line width=0.7pt] (-1.8, 0) -- (3.6, 0) node[below=1pt] {$x$};
+  \draw[->, dashed, line width=0.7pt] (0, -1.5) -- (0, 2.2) node[left=1pt] {$F(x)$};
+  \node[above left=1pt] at (0,0) {$O$};
+  \node[above] at (-1.2, 0) {$-1$};
+  \node[below] at (1.0, 0) {$1$};
+  \node[below] at (2.0, 0) {$2$};
+  \node[below] at (3.0, 0) {$3$};
+  \node[right] at (0, -1.0) {$-1$};
+  % 曲线 D（正确答案）：严格满足 F'(x)=f(x)。
+  % 对输入图的矢量拟合 f(x)=0.55x^2+0.05x-0.60 积分，
+  % 得 F(x)=11x^3/60+x^2/40-3x/5（0<=x<=2）；
+  % [-1,0] 上 f=1，故 F=x；[2,3] 上 f=0，故 F 为常数 11/30。
+  \draw[line width=1.0pt] (-1.0, -1.0) -- (0, 0);
+  \draw[line width=1.0pt, domain=0:2.0, samples=60]
+    plot (\x, {(11/60)*\x*\x*\x+(1/40)*\x*\x-(3/5)*\x});
+  \draw[line width=1.0pt] (2.0, {11/30}) -- (3.0, {11/30});
+\end{scope}

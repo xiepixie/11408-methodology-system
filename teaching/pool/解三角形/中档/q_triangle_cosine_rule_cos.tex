@@ -1,0 +1,124 @@
+% =====================================================
+% 题型：正弦定理与余弦定理解答题 (q_triangle_cosine_rule_cos.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleCosineRuleCosStem}{在 \(\triangle ABC\) 中，\(a,b,c\) 分别为内角 \(A,B,C\) 所对的边，且满足 \(a\cos B + b\cos A = 2c\cos C\)。\\
+（1）求 \(\cos C\)；\\
+（2）若 \(c=3\)，且 \(\triangle ABC\) 的面积为 \(\dfrac{3\sqrt3}{4}\)，求 \(a,b\) 的值。}
+
+\newcommand{\qTriangleCosineRuleCosAnswer}{（1）\(\cos C=\dfrac12\)；（2）\(a,b\) 为 \(1,2\)（次序可交换）。}
+
+\newcommand{\qTriangleCosineRuleCosSolution}{%
+  （1）由正弦定理
+  \[
+    \frac{a}{\sin A}
+    = \frac{b}{\sin B}
+    = \frac{c}{\sin C}
+    = 2R,
+  \]
+  可令
+  \[
+    a=2R\sin A,
+    \qquad
+    b=2R\sin B,
+    \qquad
+    c=2R\sin C.
+  \]
+  代入原式得
+  \[
+    2R\sin A\cos B
+    +2R\sin B\cos A
+    =4R\sin C\cos C.
+  \]
+  两边同除以 \(2R\)，得
+  \[
+    \sin A\cos B+\sin B\cos A
+    =2\sin C\cos C.
+  \]
+  即
+  \[
+    \sin(A+B)=2\sin C\cos C.
+  \]
+  因为 \(A+B=\pi-C\)，所以
+  \[
+    \sin(A+B)=\sin C.
+  \]
+  从而
+  \[
+    \sin C=2\sin C\cos C.
+  \]
+  又因为三角形内角满足 \(C\in(0,\pi)\)，故 \(\sin C>0\)，所以可约去 \(\sin C\)，得
+  \[
+    1=2\cos C.
+  \]
+  因此
+  \[
+    \cos C=\frac12,
+    \qquad
+    C=\frac{\pi}{3}.
+  \]
+
+  （2）由面积公式
+  \[
+    S_{\triangle ABC}
+    =\frac12ab\sin C,
+  \]
+  得
+  \[
+    \frac12ab\cdot\frac{\sqrt3}{2}
+    =\frac{3\sqrt3}{4}.
+  \]
+  所以
+  \[
+    ab=3.
+  \]
+
+  又由余弦定理
+  \[
+    c^2=a^2+b^2-2ab\cos C.
+  \]
+  代入 \(c=3\)、\(ab=3\)、\(\cos C=\dfrac12\)，得
+  \[
+    9=a^2+b^2-3.
+  \]
+  因此
+  \[
+    a^2+b^2=12.
+  \]
+  所以
+  \[
+    (a+b)^2=a^2+b^2+2ab=12+6=18,
+  \]
+  即
+  \[
+    a+b=3\sqrt2.
+  \]
+  此时 \(a,b\) 是方程
+  \[
+    x^2-3\sqrt2\,x+3=0
+  \]
+  的两个正根。
+  解得
+  \[
+    x=\frac{3\sqrt2\pm\sqrt6}{2}.
+  \]
+  因此
+  \[
+    \{a,b\}
+    =
+    \left\{
+      \frac{3\sqrt2+\sqrt6}{2},
+      \frac{3\sqrt2-\sqrt6}{2}
+    \right\}.
+  \]
+}
+
+\newcommand{\qTriangleCosineRuleCosDiagnosis}{%
+  （留白待收集学生作答后补充）%
+}
+
+\newcommand{\qTriangleCosineRuleCosTeachingNotes}{%
+  第（1）问先用正弦定理统一成角，再用 \(\sin(A+B)=\sin C\) 化简；第（2）问用面积公式得到 \(ab\)，再用余弦定理得到 \(a^2+b^2\)，属于典型的“乘积 + 平方和”收束。%
+}

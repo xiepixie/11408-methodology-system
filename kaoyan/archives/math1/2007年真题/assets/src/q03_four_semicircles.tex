@@ -1,0 +1,26 @@
+% 2007 Q03 四段半圆周分段连续函数图形 (解析几何)
+% 坐标轴
+\draw[->, line width=0.9pt] (-3.8, 0) -- (3.8, 0) node[below=1pt] {$x$};
+\draw[->, line width=0.9pt] (0, -1.8) -- (0, 1.8) node[left=1pt] {$y$};
+\node[below left=1pt] at (0,0) {$O$};
+
+% 刻度标记
+\node[below] at (-3, 0) {$-3$};
+\node[below] at (-2, 0) {$-2$};
+\node[below] at (-1, 0) {$-1$};
+\node[below] at (1, 0) {$1$};
+\node[below] at (2, 0) {$2$};
+\node[below] at (3, 0) {$3$};
+
+% 4 段严格解析半圆周
+% 1. [-3, -2]: 直径 1 (半径 0.5) 上半圆
+\draw[line width=1.1pt] (-3, 0) arc[start angle=180, end angle=0, radius=0.5];
+
+% 2. [-2, 0]: 直径 2 (半径 1.0) 下半圆
+\draw[line width=1.1pt] (-2, 0) arc[start angle=180, end angle=360, radius=1.0];
+
+% 3. [0, 2]: 直径 2 (半径 1.0) 上半圆
+\draw[line width=1.1pt] (0, 0) arc[start angle=180, end angle=0, radius=1.0];
+
+% 4. [2, 3]: 直径 1 (半径 0.5) 下半圆
+\draw[line width=1.1pt] (2, 0) arc[start angle=180, end angle=360, radius=0.5];

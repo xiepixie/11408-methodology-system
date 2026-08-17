@@ -1,0 +1,10 @@
+% 坐标轴
+\draw[->, line width=0.9pt] (-3.2, 0) -- (3.5, 0) node[below=1pt] {$x$};
+\draw[->, line width=0.9pt] (0, -1.8) -- (0, 2.5) node[left=1pt] {$y$};
+\node[below left=1pt] at (0,0) {$O$};
+
+% 左半支: x < 0, U 型曲线在 x=-1.5 处切于 x 轴 (f''(x) >= 0)
+\draw[line width=1.1pt, domain=-2.8:-0.2, samples=50] plot (\x, {1.2*(\x+1.5)*(\x+1.5)});
+
+% 右半支: x > 0, 从负无穷穿过 x 轴 (x=0.5) 单调递增趋于平缓
+\draw[line width=1.1pt, domain=0.15:3.2, samples=50] plot (\x, {1.8 - 0.7/(\x)});

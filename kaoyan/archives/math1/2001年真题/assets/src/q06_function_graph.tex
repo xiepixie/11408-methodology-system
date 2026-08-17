@@ -1,0 +1,16 @@
+% 2001 数学一 Q06 输入函数图：严格解析模型
+% f(x)=1/2*(x^3/3-2x^2+3x), 因而 f'(x)=1/2*(x-1)*(x-3).
+
+\draw[->,line width=0.9pt] (-1.6,0) -- (4.9,0) node[below=1pt] {$x$};
+\draw[->,line width=0.9pt] (0,-4.0) -- (0,2.2) node[left=1pt] {$y$};
+\node[below left=1pt] at (0,0) {$O$};
+
+% 关键极值点的竖向参考线
+\draw[dashed,line width=0.6pt] (1,-0.2) -- (1,0.9);
+\draw[dashed,line width=0.6pt] (3,-0.2) -- (3,0.3);
+\node[below] at (1,0) {$1$};
+\node[below] at (3,0) {$3$};
+
+% 精确函数曲线
+\draw[line width=1.2pt,domain=-1.2:4.6,samples=100,smooth]
+  plot (\x,{0.5*((\x*\x*\x)/3-2*\x*\x+3*\x)});

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "exam_id": "408-2020",
+  "profile_id": "408",
+  "year": 2020,
+  "language": "zh-CN",
+  "title": "2020 年全国硕士研究生招生考试 计算机学科专业基础试题",
+  "main_file": "2020 年全国硕士研究生招生考试.md",
+  "status": "ready",
+  "question_count": 47,
+  "total_score": 150,
+  "question_scores": {
+    "41": 13,
+    "42": 10,
+    "43": 12,
+    "44": 11,
+    "45": 7,
+    "46": 8,
+    "47": 9
+  },
+  "content_features": {
+    "figures": [
+      4,
+      5,
+      7,
+      10,
+      14,
+      33,
+      35,
+      37,
+      40,
+      41,
+      47
+    ],
+    "code": [
+      14,
+      43,
+      44,
+      45
+    ],
+    "tables": [
+      2,
+      27
+    ]
+  },
+  "figure_assets": {
+    "4": "assets/q04_fig1.svg",
+    "5": "assets/q05_fig1.svg",
+    "7": "assets/q07_fig1.svg",
+    "10": "assets/q10_fig1.svg",
+    "14": "assets/q14_fig1.svg",
+    "33": "assets/q33_fig1.svg",
+    "35": "assets/q35_fig1.svg",
+    "37": "assets/q37_fig1.svg",
+    "40": "assets/q40_fig1.svg",
+    "41": "assets/q41_fig1.svg",
+    "47": "assets/q47_fig1.svg"
+  },
+  "routing": "profile-default",
+  "open_items": []
+}

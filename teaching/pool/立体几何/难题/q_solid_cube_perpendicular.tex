@@ -1,0 +1,104 @@
+% =====================================================
+% 题型：正方体垂直证明与二面角解答题 (q_solid_cube_perpendicular.tex)
+% =====================================================
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qSolidCubePerpendicularStem}{如图，在正方体 \(ABCD-A_1B_1C_1D_1\) 中，\\
+(1) 求证：\(A_1C_1 \perp B_1D\);\\
+(2) 求 \(A_1B_1\) 与平面 \(A_1C_1B\) 所成角的余弦值;\\
+(3) 求平面 \(A_1C_1B\) 与底面 \(ABCD\) 所成二面角的正弦值。}
+
+\newcommand{\qSolidCubePerpendicularFigure}[1][1.5]{%
+  \begin{tikzpicture}[scale=#1, >=stealth, line join=round, line cap=round]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (1.8,0);
+    \coordinate (D) at (0.65,0.45);
+    \coordinate (C) at (2.45,0.45);
+    \coordinate (A1) at (0,1.8);
+    \coordinate (B1) at (1.8,1.8);
+    \coordinate (D1) at (0.65,2.25);
+    \coordinate (C1) at (2.45,2.25);
+
+    \draw[dashed, gray!80, thick] (A) -- (D) -- (C);
+    \draw[dashed, gray!80, thick] (D) -- (D1);
+
+    \draw[thick] (A) -- (B) -- (C) -- (C1) -- (D1) -- (A1) -- (A);
+    \draw[thick] (B) -- (B1) -- (C1);
+    \draw[thick] (A1) -- (B1);
+
+    \ifteacher
+      \fill[blue!10, opacity=0.85] (A1) -- (C1) -- (B) -- cycle;
+    \fi
+    \draw[dashed, very thick] (B1) -- (D);
+    \draw[very thick, blue!80] (A1) -- (B);
+    \draw[very thick, blue!80] (B) -- (C1);
+    \draw[very thick, blue!80] (A1) -- (C1);
+
+    \node[below left] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[right] at (C) {\small $C$};
+    \node[left] at (D) {\small $D$};
+    \node[left] at (A1) {\small $A_1$};
+    \node[above] at (B1) {\small $B_1$};
+    \node[above right] at (C1) {\small $C_1$};
+    \node[above] at (D1) {\small $D_1$};
+
+    \ifteacher
+      \draw[->, dashed, thick, red!70] (B1) -- ($(B1)!0.55!(D)$)
+        node[midway, right, inner sep=1pt] {\tiny \(\vec n\)};
+      \node[blue!80, inner sep=1.5pt] at ($(A1)!0.34!(C1)!0.34!(B)$)
+        {\tiny \(A_1C_1B\)};
+    \fi
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidCubePerpendicularAnswer}{
+(1) 见解析; (2) \(\dfrac{\sqrt{6}}{3}\); (3) \(\dfrac{\sqrt{6}}{3}\).
+}
+
+\newcommand{\qSolidCubePerpendicularSolution}{%
+  以 \(D\) 为坐标原点，\(DA, DC, DD_1\) 所在直线分别为 \(x, y, z\) 轴建立空间直角坐标系。
+  设正方体的棱长为 \(1\)，则各顶点坐标分别为：
+  \(D(0,0,0)\), \(A(1,0,0)\), \(B(1,1,0)\), \(C(0,1,0)\),
+  \(D_1(0,0,1)\), \(A_1(1,0,1)\), \(B_1(1,1,1)\), \(C_1(0,1,1)\)。\\
+  
+  (1) 证明：
+  易得向量 \(\vec{A_1C_1} = (0-1, 1-0, 1-1) = (-1, 1, 0)\)，
+  \(\vec{B_1D} = (0-1, 0-1, 0-1) = (-1, -1, -1)\)。
+  计算数量积：
+  \[ \vec{A_1C_1} \cdot \vec{B_1D} = (-1) \cdot (-1) + 1 \cdot (-1) + 0 \cdot (-1) = 1 - 1 + 0 = 0 \]
+  因为 \(\vec{A_1C_1} \cdot \vec{B_1D} = 0\)，且两向量均非零，
+  所以 \(\vec{A_1C_1} \perp \vec{B_1D}\)，即 \(A_1C_1 \perp B_1D\)。\\
+  
+  (2) 解：
+  设平面 \(A_1C_1B\) 的法向量为 \(\vec{n} = (x, y, z)\)。
+  已知 \(\vec{BA_1} = (1-1, 0-1, 1-0) = (0, -1, 1)\)，
+  \(\vec{BC_1} = (0-1, 1-1, 1-0) = (-1, 0, 1)\)。
+  根据 \(\vec{n} \cdot \vec{BA_1} = 0\) 且 \(\vec{n} \cdot \vec{BC_1} = 0\)，可得：
+  \[ \begin{cases} -y + z = 0 \\ -x + z = 0 \end{cases} \implies x = y = z \]
+  取 \(z = 1\)，则平面 \(A_1C_1B\) 的一个法向量为 \(\vec{n} = (1, 1, 1)\)。
+  对于直线 \(A_1B_1\)，其方向向量为 \(\vec{A_1B_1} = (0, 1, 0)\)。
+  设直线 \(A_1B_1\) 与平面 \(A_1C_1B\) 所成的角为 \(\theta\)，则：
+  \[ \sin\theta = \frac{|\vec{A_1B_1} \cdot \vec{n}|}{|\vec{A_1B_1}| \cdot |\vec{n}|} = \frac{|0 \cdot 1 + 1 \cdot 1 + 0 \cdot 1|}{1 \cdot \sqrt{3}} = \frac{1}{\sqrt{3}} = \frac{\sqrt{3}}{3} \]
+  由于 \(\theta \in [0, \dfrac{\pi}{2}]\)，所以该角的余弦值为：
+  \[ \cos\theta = \sqrt{1 - \sin^2\theta} = \sqrt{1 - \frac{1}{3}} = \frac{\sqrt{6}}{3} \]
+  即 \(A_1B_1\) 与平面 \(A_1C_1B\) 所成角的余弦值为 \(\dfrac{\sqrt{6}}{3}\)。\\
+  
+  (3) 解：
+  易知底面 \(ABCD\) 的一个法向量为 \(\vec{m} = (0, 0, 1)\)。
+  平面 \(A_1C_1B\) 的法向量为 \(\vec{n} = (1, 1, 1)\)。
+  设平面 \(A_1C_1B\) 与底面 \(ABCD\) 所成二面角为 \(\phi\)，则：
+  \[ \cos\phi = \frac{|\vec{n} \cdot \vec{m}|}{|\vec{n}| \cdot |\vec{m}|} = \frac{|1 \cdot 0 + 1 \cdot 0 + 1 \cdot 1|}{\sqrt{3} \cdot 1} = \frac{1}{\sqrt{3}} = \frac{\sqrt{3}}{3} \]
+  因为 \(\phi \in [0, \pi]\)，所以该二面角的正弦值为：
+  \[ \sin\phi = \sqrt{1 - \cos^2\phi} = \sqrt{1 - \frac{1}{3}} = \frac{\sqrt{6}}{3} \]
+  即平面 \(A_1C_1B\) 与底面 \(ABCD\) 所成二面角的正弦值为 \(\dfrac{\sqrt{6}}{3}\)。%
+}
+
+\newcommand{\qSolidCubePerpendicularDiagnosis}{%
+  若第 (1) 问使用数量积证明垂直，则该思路成立。第 (2) 问若通过体积法求高后把 \(\frac{h}{A_1B_1}\) 当作线面角余弦，说明混淆了线面角的正弦与余弦；第 (3) 问还应规范说明所构造角为什么就是二面角。%
+}
+
+\newcommand{\qSolidCubePerpendicularTeachingNotes}{%
+  必讲。统一空间角三角函数：线面角中高/斜线为 \(\sin\theta\)，投影/斜线为 \(\cos\theta\)。二面角书写按“找交线 -> 两面内作垂线 -> 夹角即二面角”。%
+}

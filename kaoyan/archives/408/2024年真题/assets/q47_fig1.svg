@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="960" viewBox="0 0 1600 960" role="img" aria-labelledby="title desc" style="max-width: 100%; height: auto;">
+  <title id="title">题 47 自治系统互连拓扑</title>
+  <desc id="desc">AS1、AS2、AS3、AS4 及路由器 R11 至 R16、R22、R33、R44 的互连关系，AS1 内运行 RIP，并连接网络 210.2.3.0/24 与 210.2.4.0/24；外部目的网络为 136.5.16.0/20。</desc>
+  <rect id="background" width="1600" height="960" rx="18" fill="#30362d"/>
+  <g id="regions" fill="#394136" stroke="#c9d3c4" stroke-width="2.4">
+    <ellipse id="as1-region" cx="800" cy="695" rx="680" ry="205"/>
+    <ellipse id="as2-region" cx="285" cy="325" rx="180" ry="105"/>
+    <ellipse id="as3-region" cx="800" cy="245" rx="175" ry="105"/>
+    <ellipse id="as4-region" cx="1315" cy="325" rx="180" ry="105"/>
+    <path id="destination-network" d="M620 68 C650 28 720 30 760 46 C820 16 905 22 935 54 C1005 44 1035 78 1010 100 C980 118 620 118 590 100 C566 82 583 66 620 68 Z"/>
+  </g>
+  <g id="links" fill="none" stroke="#edf4e8" stroke-width="3">
+    <path id="link-r11-r12" d="M520 610 H770"/>
+    <path id="link-r12-r13" d="M830 610 H1080"/>
+    <path id="link-r11-r14" d="M490 642 V760"/>
+    <path id="link-r14-r15" d="M520 790 H770"/>
+    <path id="link-r15-r16" d="M830 790 H1080"/>
+    <path id="link-r13-r16" d="M1110 642 V760"/>
+    <path id="link-r15-r13" d="M815 765 L1085 635"/>
+    <path id="link-r22-r11" d="M320 385 L465 585"/>
+    <path id="link-r33-r12" d="M800 335 V580"/>
+    <path id="link-r44-r13" d="M1280 385 L1135 585"/>
+    <path id="link-net-left" d="M180 790 H455"/>
+    <path id="link-net-right" d="M1145 790 H1420"/>
+  </g>
+  <g id="external-dashed-links" fill="none" stroke="#c9d3c4" stroke-width="2.5" stroke-dasharray="8 7">
+    <path id="destination-as2" d="M650 112 L360 245"/>
+    <path id="destination-as3" d="M800 118 V140"/>
+    <path id="destination-as4" d="M950 112 L1240 245"/>
+  </g>
+  <g id="routers" fill="#4a5446" stroke="#edf4e8" stroke-width="2.2">
+    <g id="router-r11"><rect x="455" y="580" width="70" height="62" rx="15"/></g>
+    <g id="router-r12"><rect x="765" y="580" width="70" height="62" rx="15"/></g>
+    <g id="router-r13"><rect x="1075" y="580" width="70" height="62" rx="15"/></g>
+    <g id="router-r14"><rect x="455" y="760" width="70" height="62" rx="15"/></g>
+    <g id="router-r15"><rect x="765" y="760" width="70" height="62" rx="15"/></g>
+    <g id="router-r16"><rect x="1075" y="760" width="70" height="62" rx="15"/></g>
+    <g id="router-r22"><rect x="250" y="292" width="70" height="62" rx="15"/></g>
+    <g id="router-r33"><rect x="765" y="212" width="70" height="62" rx="15"/></g>
+    <g id="router-r44"><rect x="1280" y="292" width="70" height="62" rx="15"/></g>
+  </g>
+  <g id="labels" fill="#edf4e8" font-family="Arial, 'Noto Sans CJK SC', sans-serif" text-anchor="middle">
+    <text id="destination-label" x="800" y="84" font-size="30" font-weight="700">136.5.16.0/20</text>
+    <text id="as2-label" x="285" y="260" font-size="30" font-weight="700">AS2</text>
+    <text id="as3-label" x="800" y="180" font-size="30" font-weight="700">AS3</text>
+    <text id="as4-label" x="1315" y="260" font-size="30" font-weight="700">AS4</text>
+    <text id="as1-label" x="205" y="655" font-size="32" font-weight="700">AS1</text>
+    <text id="rip-label" x="800" y="885" font-size="26">内部网关协议：RIP</text>
+    <text id="net-left-label" x="290" y="777" font-size="25">210.2.3.0/24</text>
+    <text id="net-right-label" x="1310" y="777" font-size="25">210.2.4.0/24</text>
+    <g id="router-labels" font-size="24">
+      <text x="490" y="670">R11</text><text x="800" y="670">R12</text><text x="1110" y="670">R13</text>
+      <text x="490" y="850">R14</text><text x="800" y="850">R15</text><text x="1110" y="850">R16</text>
+      <text x="285" y="385">R22</text><text x="730" y="255">R33</text><text x="1360" y="350">R44</text>
+    </g>
+  </g>
+</svg>

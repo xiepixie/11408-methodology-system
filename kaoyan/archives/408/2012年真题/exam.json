@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "exam_id": "408-2012",
+  "profile_id": "408",
+  "year": 2012,
+  "language": "zh-CN",
+  "title": "2012 年全国硕士研究生招生考试 计算机学科专业基础试题",
+  "main_file": "2012 年全国硕士研究生招生考试.md",
+  "status": "ready",
+  "question_count": 47,
+  "total_score": 150,
+  "question_scores": {
+    "41": 10,
+    "42": 15,
+    "43": 8,
+    "44": 13,
+    "45": 7,
+    "46": 8,
+    "47": 9
+  },
+  "content_features": {
+    "figures": [
+      4,
+      7,
+      9,
+      27,
+      29,
+      40,
+      41,
+      42,
+      44,
+      47
+    ],
+    "code": [
+      1,
+      13,
+      15,
+      44
+    ],
+    "tables": [
+      7,
+      15,
+      17
+    ]
+  },
+  "figure_assets": {
+    "4": "assets/q04_fig1.svg",
+    "7": "assets/q07_fig1.svg",
+    "9": "assets/q09_fig1.svg",
+    "27": "assets/q27_fig1.svg",
+    "29": "assets/q29_fig1.svg",
+    "40": "assets/q40_fig1.svg",
+    "41": "assets/q41_fig1.svg",
+    "42": "assets/q42_fig1.svg",
+    "44": "assets/q44_fig1.svg",
+    "47": "assets/q47_fig1.svg"
+  },
+  "routing": "profile-default",
+  "open_items": []
+}

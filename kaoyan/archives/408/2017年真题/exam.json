@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "exam_id": "408-2017",
+  "profile_id": "408",
+  "year": 2017,
+  "language": "zh-CN",
+  "title": "2017 年全国硕士研究生招生考试 计算机学科专业基础试题",
+  "main_file": "2017 年全国硕士研究生招生考试.md",
+  "status": "ready",
+  "question_count": 47,
+  "total_score": 150,
+  "question_scores": {
+    "41": 15,
+    "42": 8,
+    "43": 13,
+    "44": 10,
+    "45": 7,
+    "46": 8,
+    "47": 9
+  },
+  "content_features": {
+    "figures": [
+      5,
+      8,
+      35,
+      41,
+      42,
+      47
+    ],
+    "code": [
+      1,
+      14,
+      41,
+      43,
+      44,
+      46
+    ],
+    "tables": [
+      23,
+      25,
+      45
+    ]
+  },
+  "figure_assets": {
+    "5": "assets/q05_fig1.svg",
+    "8": "assets/q08_fig1.svg",
+    "35": "assets/q35_fig1.svg",
+    "41": "assets/q41_fig1.svg",
+    "42": "assets/q42_fig1.svg",
+    "47": "assets/q47_fig1.svg"
+  },
+  "routing": "profile-default",
+  "open_items": []
+}

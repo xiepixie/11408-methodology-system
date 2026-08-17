@@ -1,0 +1,41 @@
+% =====================================================
+% 题型：解三角形恒等式与三角形判定多选题 (q_triangle_identities_three.tex)
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleIdentitiesThreeStem}{在 \(\triangle ABC\) 中，若 \(\sin A=2\sin B\cos C\)，则下列结论正确的是 \hfill （\quad）}
+
+\newcommand{\qTriangleIdentitiesThreeOptions}{%
+  \mcoptions[1]{\(A=2B\)}{\(a=2b\cos C\)}{\(a^2=b^2+c^2\)}{\(\triangle ABC\) 为直角三角形}%
+}
+
+\newcommand{\qTriangleIdentitiesThreeAnswer}{B}
+
+\newcommand{\qTriangleIdentitiesThreeSolution}{%
+  由正弦定理 \(\dfrac{a}{\sin A}=\dfrac{b}{\sin B}\)，有
+  \[
+    \frac{a}{b}=\frac{\sin A}{\sin B}=2\cos C.
+  \]
+  所以
+  \[
+    a=2b\cos C,
+  \]
+  故 B 正确。\\
+  进一步代入余弦定理
+  \[
+    c^2=a^2+b^2-2ab\cos C,
+  \]
+  由 \(a=2b\cos C\) 得
+  \[
+    c^2=b^2,
+  \]
+  因此 \(b=c\)，进而 \(B=C\)。结合三角形内角和，可继续分析角关系，但不能仅由原条件直接写出 \(A=2B\) 或断言为直角三角形。%
+}
+
+\newcommand{\qTriangleIdentitiesThreeDiagnosis}{%
+  看到三角函数条件时，优先用正弦定理把角函数比例翻译成边长关系；不要直接把 \(\sin A=2\sin B\cos C\) 误读为角的倍数关系。%
+}
+
+\newcommand{\qTriangleIdentitiesThreeTeachingNotes}{%
+  适合训练“角条件 → 边条件 → 再回到几何结构”的双向翻译。第一动作应是识别 \(\sin A/\sin B=a/b\)。%
+}

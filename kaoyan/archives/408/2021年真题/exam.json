@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "exam_id": "408-2021",
+  "profile_id": "408",
+  "year": 2021,
+  "language": "zh-CN",
+  "title": "2021 年全国硕士研究生招生考试 计算机学科专业基础试题",
+  "main_file": "2021 年全国硕士研究生招生考试.md",
+  "status": "ready",
+  "question_count": 47,
+  "total_score": 150,
+  "question_scores": {
+    "41": 13,
+    "42": 10,
+    "43": 12,
+    "44": 11,
+    "45": 7,
+    "46": 8,
+    "47": 9
+  },
+  "content_features": {
+    "figures": [
+      1,
+      6,
+      7,
+      8,
+      11,
+      28,
+      34,
+      37,
+      40,
+      43,
+      47
+    ],
+    "code": [
+      5,
+      6,
+      41,
+      42,
+      45
+    ],
+    "tables": [
+      37,
+      47
+    ]
+  },
+  "figure_assets": {
+    "1": "assets/q01_fig1.svg",
+    "6": "assets/q06_fig1.svg",
+    "7": "assets/q07_fig1.svg",
+    "8": "assets/q08_fig1.svg",
+    "11": "assets/q11_fig1.svg",
+    "28": "assets/q28_fig1.svg",
+    "34": "assets/q34_fig1.svg",
+    "37": "assets/q37_fig1.svg",
+    "40": "assets/q40_fig1.svg",
+    "43": "assets/q43_fig1.svg",
+    "47": "assets/q47_fig1.svg"
+  },
+  "routing": "profile-default",
+  "open_items": []
+}

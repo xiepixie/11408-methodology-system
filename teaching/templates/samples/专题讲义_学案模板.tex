@@ -1,0 +1,81 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[student]{../ipara}
+\input{questions.tex}
+
+% 专题讲义学案模板
+% 通过 infra/scripts/compile_tex.py 编译。
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 专题讲义版}
+\rhead{\small 姓名：\blank{2.5cm}}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\lessoninfo}[4]{%
+  \begin{center}
+    {\LARGE\bfseries #1}\par
+    \vspace{0.8em}
+    {\small 姓名：#2 \quad 日期：#3 \quad 讲次：#4}
+  \end{center}
+  \vspace{0.6em}
+}
+
+\begin{document}
+
+\lessoninfo{参数分离与分类讨论专题}{\blank{2.6cm}}{\blank{2.6cm}}{第 X 讲}
+
+\section{本讲目标与核心思维}
+
+\begin{itemize}[itemsep=0.3em]
+  \item \textbf{学完本讲后，你应该能够：}
+  \item 判断一道题是否需要分类讨论；
+  \item 找到分类变量与边界；
+  \item 避免漏解、重复讨论、讨论无效。
+\end{itemize}
+
+\mindsetcard{分离参数法}{不能分离时再考虑分类讨论}{遇到 $a \ge f(x)$ 恒成立，如果能将 $a$ 孤立在不等式一侧，即可转化为求 $f(x)$ 的最值问题。}
+
+\newpage
+
+\section{核心考向突破}
+
+\prehint{
+  1. 看到“恒成立”，优先尝试分离参数。\\
+  2. 如果分离后函数极难求导，考虑直接对含参函数求导并分类讨论。
+}
+
+\studentproblem{例题 1}
+{\small \qOneStem}
+\answerblank[7cm]{解：}
+
+\studentthink{
+  \item 我是否明确写出了函数的定义域？
+  \item 求解最值时，我是否说明了区间的开闭情况及是否能取到最值？
+}
+
+\variantproblem{对标 例 1}
+{\small \qOneStem（此处替换为变式题干）}
+\answerblank[7cm]{解：}
+
+\newpage
+
+\section{课堂错因大起底}
+
+\vspace{0.5em}
+\noindent\textbf{本讲我的主要问题集中在（请打勾）：}
+\begin{itemize}[itemsep=0.4em]
+  \item \checkbox 概念不清：没搞懂“恒成立”与“存在成立”的区别。
+  \item \checkbox 运算失误：求导法则用错，或者解不等式算错。
+  \item \checkbox 分类遗漏：没考虑到端点值（如 $a=0$）。
+  \item \checkbox 书写不规范：没有写“令 $f'(x)=0$”或忽略定义域。
+\end{itemize}
+
+\vspace{1em}
+\noindent\textbf{本讲我最需要记住的一句话是：}
+\vspace{0.5em}
+
+\blank{14cm}
+
+\end{document}

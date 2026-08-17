@@ -1,0 +1,136 @@
+% =====================================================
+% 题型：立体几何填空题 (q_solid_oblique_projection.tex)
+% =====================================================
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qSolidObliqueProjectionStem}{%
+  如图所示的 $\triangle A'B'C'$ 是水平放置的 $\triangle ABC$ 的斜二测画法的直观图，已知 $A'B' = 4$，$A'C' = B'C' = \sqrt{13}$，则在 $\triangle ABC$ 中，$AC = $ \blank{2cm}.%
+}
+
+\newcommand{\qSolidObliqueProjectionFigure}[1][1.2]{%
+  \begin{tikzpicture}[scale=#1, >=stealth]
+    % =====================================================
+    % 左图：原平面图形 \triangle ABC
+    % =====================================================
+    % 坐标轴
+    \draw[->, gray, thin] (-0.5,0) -- (3.0,0) node[below] {\small $x$};
+    \draw[->, gray, thin] (0,-0.5) -- (0,4.8) node[left] {\small $y$};
+    \node[below left, gray] at (0,0) {\tiny $O$};
+    
+    % 顶点 (原图比例缩小以适应版面，设 x 轴 1 单位 = 0.5cm，y轴缩放)
+    \coordinate (A) at (0.5,0); % 对应 OA = 1 (缩放0.5)
+    \coordinate (B) at (2.5,0); % 对应 OB = 5 (缩放0.5)
+    \coordinate (C) at (0,4.24); % 对应 OC = 6\sqrt{2} \approx 8.48 (缩放0.5)
+    
+    \draw[thick] (A) -- (B) -- (C) -- cycle;
+    \draw[thick, red] (0,0) -- (A); % OA
+    \draw[thick, blue] (0,0) -- (C); % OC
+    
+    \fill (0,0) circle (1.2pt);
+    \fill (A) circle (1.2pt);
+    \fill (B) circle (1.2pt);
+    \fill (C) circle (1.2pt);
+    
+    \node[below] at (A) {\small $A$};
+    \node[below] at (B) {\small $B$};
+    \node[left] at (C) {\small $C$};
+    
+    \node[below, red] at (0.25,0) {\small $1$};
+    \node[left, blue] at (0, 2.12) {\small $6\sqrt{2}$};
+    
+    % 直角符号
+    \draw[gray] (0.15, 0) -- (0.15, 0.15) -- (0, 0.15);
+    
+    \node[below] at (1.0, -0.6) {\textbf{原平面图形 $\triangle ABC$}};
+    
+    % =====================================================
+    % 右图：斜二测直观图 \triangle A'B'C'
+    % =====================================================
+    \begin{scope}[xshift=5.2cm]
+      % 坐标轴
+      \draw[->, gray, thin] (-0.5,0) -- (3.0,0) node[below] {\small $x'$};
+      \draw[->, gray, thin] (0,-0.5) -- (0,2.5) node[left] {\small $y'$ (垂直)};
+      \draw[->, blue, thin] (0,0) -- (45:3.0) node[above right] {\small $y'$ (斜轴)};
+      \node[below left, gray] at (0,0) {\tiny $O'$};
+      
+      % 顶点 (比例同样为 0.5)
+      \coordinate (Oprime) at (0,0);
+      \coordinate (Aprime) at (0.5,0); % 对应 O'A' = 1
+      \coordinate (Bprime) at (2.5,0); % 对应 O'B' = 5，即 A'B' = 4
+      % C' 在 y' 轴上，O'C' = 3\sqrt{2} \approx 4.24
+      % 页面坐标 C' 为 (4.24 * 0.5 * cos 45, 4.24 * 0.5 * sin 45) = (1.5, 1.5)
+      \coordinate (Cprime) at (1.5, 1.5); 
+      % C' 向 x' 轴作垂线
+      \coordinate (Dprime) at (1.5, 0); 
+      
+      \draw[thick] (Aprime) -- (Bprime) -- (Cprime) -- cycle;
+      
+      % 线段 O'A' 和 O'C'
+      \draw[thick, red] (Oprime) -- (Aprime);
+      \draw[thick, blue] (Oprime) -- (Cprime);
+      % 垂直高度 C'D'
+      \draw[thick, dashed, gray] (Cprime) -- (Dprime);
+      
+      \fill (Oprime) circle (1.2pt);
+      \fill (Aprime) circle (1.2pt);
+      \fill (Bprime) circle (1.2pt);
+      \fill (Cprime) circle (1.2pt);
+      \fill (Dprime) circle (1.2pt);
+      
+      \node[below] at (Aprime) {\small $A'$};
+      \node[below] at (Bprime) {\small $B'$};
+      \node[above left] at (Cprime) {\small $C'$};
+      \node[below] at (Dprime) {\small $D'$};
+      
+      \node[below, red] at (0.25, 0) {\small $1$};
+      \node[above left, blue] at ($(Oprime)!0.5!(Cprime)$) {\small $3\sqrt{2}$};
+      \node[right, gray] at ($(Cprime)!0.5!(Dprime)$) {\small $3$};
+      \node[below, gray] at ($(Aprime)!0.5!(Bprime)$) {\small $4$};
+      
+      % 直角符号 (D')
+      \draw[gray] (1.35, 0) -- (1.35, 0.15) -- (1.5, 0.15);
+      
+      \node[below] at (1.25, -0.6) {\textbf{直观图 $\triangle A'B'C'$}};
+    \end{scope}
+  \end{tikzpicture}%
+}
+
+\newcommand{\qSolidObliqueProjectionAnswer}{$\sqrt{73}$}
+
+\newcommand{\qSolidObliqueProjectionSolution}{%
+  【解题思路】\\
+  这道题最核心的“题眼”在于观察直观图中点与坐标轴的位置关系。根据直观图，点 \(C'\) 在斜轴 \(y'\) 上，点 \(A', B'\) 在轴 \(x'\) 上。由于直角坐标系下 \(x\) 轴与 \(y\) 轴天然垂直，我们可以在直观图求出各线段长度后，直接在原图中利用直角三角形的勾股定理求出 \(AC\)，从而避免繁琐的坐标计算。\\
+  【解析计算】\\
+  第一步：在直观图 \(\triangle A'B'C'\) 中，找出原点 \(O'\) 相关的线段长度。\\
+  根据原图图像，点 \(C'\) 落在斜 \(y'\) 轴上，点 \(A', B'\) 落在 \(x'\) 轴上。\\
+  在等腰 \(\triangle A'B'C'\) 中，作 \(C'D' \perp x'\) 轴于点 \(D'\)。\\
+  已知 \(A'B' = 4\)，\(A'C' = B'C' = \sqrt{13}\)，由等腰三角形三线合一得 \(D'\) 为 \(A'B'\) 中点，且 \(A'D' = 2\)。\\
+  在直角 \(\triangle A'D'C'\) 中，高 \(C'D' = \sqrt{(\sqrt{13})^2 - 2^2} = 3\)。\\
+  因为点 \(C'\) 在斜轴 \(y'\) 上（倾角 \(45^\circ\)），在直角 \(\triangle O'D'C'\) 中，\(\angle C'O'D' = 45^\circ\)。\\
+  所以 \(\triangle O'D'C'\) 是等腰直角三角形，\\
+  这就意味着水平偏移量 \(O'D' = C'D' = 3\)。\\
+  由于 \(\angle C'O'D' = 45^\circ\)，斜轴上的线段长度为 \(O'C' = \dfrac{C'D'}{\sin 45^\circ} = 3\sqrt{2}\)。\\
+  因为点 \(A'\) 在点 \(D'\) 左侧且距离为 \(2\)，所以线段 \(O'A' = O'D' - A'D' = 3 - 2 = 1\)。\\
+  第二步：利用斜二测规则还原到原平面图形 \(\triangle ABC\) 中。\\
+  根据“横不变，竖减半，平行关系不变”原则：\\
+  1. \(A\)、\(C\) 还原后必然分别在 \(x\) 轴和 \(y\) 轴上。且长度翻倍与保留关系为：\(OA = O'A' = 1\)，\(OC = 2O'C' = 6\sqrt{2}\)。\\
+  2. 原直角坐标系中，\(x\) 轴与 \(y\) 轴天然垂直。\\
+  所以，原点 \(O\)、点 \(C\)、点 \(A\) 构成的 \(\triangle COA\) 必然是一个直角三角形（\(\angle COA = 90^\circ\)）！\\
+  第三步：在 Rt\(\triangle COA\) 中直接求 \(AC\)。\\
+  利用最简单的勾股定理：\\
+  \(AC = \sqrt{OA^2 + OC^2} = \sqrt{1^2 + (6\sqrt{2})^2} = \sqrt{1 + 72} = \sqrt{73}\)。%
+}
+
+\newcommand{\qSolidObliqueProjectionDiagnosis}{%
+  本题学生极其容易被“设坐标代入距离公式”的代数计算思维束缚，忽略了仔细观察图像中 $C'$ 恰好在 $y'$ 轴上这一得天独厚的几何条件。一旦强行设未知点坐标，不仅计算量庞大，而且极易在等式推导中全盘崩溃。
+}
+
+\newcommand{\qSolidObliqueProjectionTeachingNotes}{%
+  \item \textbf{强调“看图”的几何直觉}：
+    \begin{itemize}
+       \item 带着学生看原卷配图，指出 $C'$ 在 $y'$ 轴上这最关键的一点。
+       \item 启发提问：“如果在直观图里，两个点分别在 $x'$ 和 $y'$ 两根轴上，还原回原图，它们连成什么三角形？”
+       \item 总结方法论：\textbf{斜二测还原问题，凡是落在了轴上的点，必产生垂直关系！优先用直角三角形的勾股定理去算，绝对不要去硬算坐标！}这不仅计算量极小而且完全不会出错。
+    \end{itemize}
+}

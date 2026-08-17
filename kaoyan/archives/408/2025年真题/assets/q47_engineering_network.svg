@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="610" viewBox="0 0 1320 610" role="img" aria-labelledby="title desc">
+<title id="title">题47 工程部与公司总部网络</title>
+<desc id="desc">工程部网络包含管理区、作业区和生活区子网，R1 经 TR1、天通一号卫星、TR2 与公司总部 R2 相连；总部网络含 S2、总部服务器及 Internet 连接。</desc>
+<defs>
+<style>.t{font-family:Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#edf4e8}.small{font-size:17px}.mid{font-size:21px}.big{font-size:24px;font-weight:600}.line{stroke:#edf4e8;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}.thin{stroke:#edf4e8;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}.node{fill:#3b4337;stroke:#edf4e8;stroke-width:2.3}.soft{fill:#394136;stroke:#edf4e8;stroke-width:2.1}</style>
+</defs>
+<rect width="100%" height="100%" fill="#30362d" rx="14" ry="14"/>
+<text x="660" y="35" class="t mid" text-anchor="middle">轨道高度 36 000 km，电磁波速度 300 000 km/s</text>
+<g id="engineering-network"><rect x="35" y="95" width="555" height="355" class="soft"/><text x="72" y="128" class="t big">工程部网络</text></g>
+<g id="management-subnet"><ellipse cx="215" cy="285" rx="155" ry="105" class="soft"/><text x="215" y="206" class="t mid" text-anchor="middle">管理区子网</text></g>
+<g id="host-h"><rect x="148" y="262" width="62" height="44" class="node"/><rect x="158" y="270" width="42" height="24" fill="#30362d" stroke="#edf4e8" stroke-width="1.5"/><text x="179" y="245" class="t mid" text-anchor="middle">H</text><text x="179" y="332" class="t small" text-anchor="middle">10.10.10.33/26</text></g>
+<g id="switch-s1"><rect x="275" y="256" width="52" height="52" rx="5" class="node"/><path d="M286 270 H316 M286 282 H316 M286 294 H316" class="thin"/><text x="301" y="242" class="t mid" text-anchor="middle">S1</text></g>
+<line x1="210" y1="284" x2="275" y2="284" class="line"/>
+<g id="router-r1"><circle cx="410" cy="284" r="30" class="node"/><path d="M397 271 L423 297 M423 271 L397 297" class="line"/><text x="410" y="243" class="t mid" text-anchor="middle">R1</text></g>
+<line x1="327" y1="284" x2="380" y2="284" class="line"/>
+<g id="work-subnet"><ellipse cx="410" cy="175" rx="76" ry="36" class="soft"/><text x="410" y="182" class="t mid" text-anchor="middle">作业区子网</text></g><line x1="410" y1="211" x2="410" y2="254" class="line"/>
+<g id="living-subnet"><ellipse cx="410" cy="390" rx="76" ry="36" class="soft"/><text x="410" y="397" class="t mid" text-anchor="middle">生活区子网</text></g><line x1="410" y1="314" x2="410" y2="354" class="line"/>
+<g id="tr1"><ellipse cx="515" cy="284" rx="47" ry="30" class="soft"/><text x="515" y="291" class="t mid" text-anchor="middle">TR1</text></g><line x1="440" y1="284" x2="468" y2="284" class="line"/>
+<g id="satellite"><ellipse cx="660" cy="135" rx="68" ry="35" class="soft"/><text x="660" y="142" class="t mid" text-anchor="middle">天通一号</text></g>
+<path d="M562 280 C590 245 600 210 625 177 C640 158 650 154 660 170" class="thin"/>
+<path d="M660 170 C675 155 690 170 705 190 C730 225 742 255 765 280" class="thin"/>
+<g id="hq-network"><rect x="745" y="95" width="540" height="355" class="soft"/><text x="1235" y="128" class="t big" text-anchor="end">公司总部网络</text></g>
+<g id="tr2"><ellipse cx="800" cy="284" rx="47" ry="30" class="soft"/><text x="800" y="291" class="t mid" text-anchor="middle">TR2</text></g>
+<g id="router-r2"><circle cx="930" cy="284" r="30" class="node"/><path d="M917 271 L943 297 M943 271 L917 297" class="line"/><text x="930" y="243" class="t mid" text-anchor="middle">R2</text></g>
+<line x1="847" y1="284" x2="900" y2="284" class="line"/>
+<g id="internet"><path d="M866 162 C850 142 867 121 891 128 C902 105 931 111 939 130 C963 117 985 137 976 158 C993 171 978 193 954 189 H889 C864 194 850 177 866 162 Z" class="soft"/><text x="921" y="163" class="t mid" text-anchor="middle">Internet</text></g><line x1="930" y1="254" x2="930" y2="190" class="line"/>
+<g id="switch-s2"><rect x="905" y="340" width="52" height="52" rx="5" class="node"/><path d="M916 354 H946 M916 366 H946 M916 378 H946" class="thin"/><text x="931" y="414" class="t mid" text-anchor="middle">S2</text></g><line x1="930" y1="314" x2="930" y2="340" class="line"/>
+<g id="hq-server"><rect x="1075" y="340" width="76" height="62" rx="6" class="node"/><line x1="1088" y1="356" x2="1138" y2="356" class="thin"/><line x1="1088" y1="369" x2="1138" y2="369" class="thin"/><text x="1113" y="430" class="t mid" text-anchor="middle">总部服务器</text></g><line x1="957" y1="366" x2="1075" y2="366" class="line"/>
+</svg>

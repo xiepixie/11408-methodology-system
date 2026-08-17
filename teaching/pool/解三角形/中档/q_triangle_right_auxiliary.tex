@@ -1,0 +1,67 @@
+% =====================================================
+% 题型：解三角形辅助角换元选择题 (q_triangle_right_auxiliary.tex)
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleRightAuxStem}{在 \(\triangle ABC\) 中，角 \(A,B,C\) 的对边分别为 \(a,b,c\)，满足 \(b\cos A + a\sin B = c\)。则角 \(B\) 的值为 \hfill （\quad）}
+
+\newcommand{\qTriangleRightAuxOptions}{%
+  \mcoptions[4]{\(\dfrac{\pi}{6}\)}{\(\dfrac{\pi}{4}\)}{\(\dfrac{\pi}{3}\)}{\(\dfrac{\pi}{2}\)}%
+}
+
+\newcommand{\qTriangleRightAuxAnswer}{D}
+
+\newcommand{\qTriangleRightAuxSolution}{%
+  由正弦定理，可设
+  \[
+    a=2R\sin A,
+    \qquad
+    b=2R\sin B,
+    \qquad
+    c=2R\sin C.
+  \]
+  代入条件：
+  \[
+    2R\sin B\cos A
+    +2R\sin A\sin B
+    =2R\sin C.
+  \]
+  两边同除以 \(2R\)，得
+  \[
+    \sin B(\cos A+\sin A)=\sin C.
+  \]
+  因为 \(C=\pi-A-B\)，所以
+  \[
+    \sin C=\sin(A+B).
+  \]
+  因而
+  \[
+    \sin B(\cos A+\sin A)=\sin(A+B).
+  \]
+  展开右边：
+  \[
+    \sin B\cos A+\sin A\sin B
+    =\sin A\cos B+\cos A\sin B.
+  \]
+  两边消去 \(\sin B\cos A\)，得
+  \[
+    \sin A\sin B=\sin A\cos B.
+  \]
+  又 \(A\in(0,\pi)\)，故 \(\sin A>0\)，于是
+  \[
+    \sin B=\cos B.
+  \]
+  因为 \(B\in(0,\pi)\)，解得
+  \[
+    B=\frac\pi4.
+  \]
+  故选 B。%
+}
+
+\newcommand{\qTriangleRightAuxDiagnosis}{%
+  若能完成边化角但无法继续，多半是没有想到把 \(\sin C\) 写成 \(\sin(A+B)\)。这一步是本题的结构入口。%
+}
+
+\newcommand{\qTriangleRightAuxTeachingNotes}{%
+  训练“正弦定理边化角 → 和角公式 → 约去必正项”的短链。应提醒学生最后必须结合 \(B\in(0,\pi)\) 确定唯一角。%
+}

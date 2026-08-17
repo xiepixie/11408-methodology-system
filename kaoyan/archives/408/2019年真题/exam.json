@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "exam_id": "408-2019",
+  "profile_id": "408",
+  "year": 2019,
+  "language": "zh-CN",
+  "title": "2019 年全国硕士研究生招生考试 计算机学科专业基础试题",
+  "main_file": "2019 年全国硕士研究生招生考试.md",
+  "status": "ready",
+  "question_count": 47,
+  "total_score": 150,
+  "question_scores": {
+    "41": 13,
+    "42": 10,
+    "43": 8,
+    "44": 7,
+    "45": 16,
+    "46": 7,
+    "47": 9
+  },
+  "content_features": {
+    "figures": [
+      4,
+      5,
+      6,
+      18,
+      31,
+      38,
+      42,
+      47
+    ],
+    "code": [
+      1,
+      13,
+      18,
+      41,
+      43,
+      45
+    ],
+    "tables": [
+      9,
+      29
+    ]
+  },
+  "figure_assets": {
+    "4": "assets/q04_fig1.svg",
+    "5": "assets/q05_fig1.svg",
+    "6": "assets/q06_fig1.svg",
+    "18": "assets/q18_fig1.svg",
+    "31": "assets/q31_fig1.svg",
+    "38": "assets/q38_fig1.svg",
+    "42": "assets/q42_fig1.svg",
+    "47": "assets/q47_fig1.svg"
+  },
+  "routing": "profile-override-2019",
+  "open_items": []
+}

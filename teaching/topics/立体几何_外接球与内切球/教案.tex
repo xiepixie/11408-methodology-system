@@ -1,0 +1,153 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{ipara}
+\input{questions.tex}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 立体几何专题教案}
+\rhead{\small 外接球与内切球模型}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\topicformula}[1]{%
+  \begin{center}
+    \fbox{\parbox{0.91\textwidth}{#1}}
+  \end{center}%
+}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 立体几何专题教案：外接球与内切球模型}
+\end{center}
+
+\section{教学定位}
+
+\teachblock{本讲目标}{%
+\begin{itemize}
+  \item 建立“球心—截面圆心—球面点”的统一直角三角形模型；
+  \item 将正方体、长方体、直棱柱、圆柱与正四面体外接球公式统一回母模型；
+  \item 训练“补形法 / 平面截球法 / 直径所对圆周角”三类核心入口；
+  \item 让学生从死记公式转向识别 $R,r,d$ 三个量。
+\end{itemize}
+}
+
+\teachblock{统一母模型}{%
+若球心为 $O$，截面圆圆心为 $O_1$，球半径为 $R$，截面圆半径为 $r$，球心到截面距离为 $d$，则
+\[
+  R^2=r^2+d^2.
+\]
+课堂中所有结论都应尽量回到这条关系解释其来源。
+}
+
+\section{120 分钟课堂流程}
+
+\begin{tabularx}{\textwidth}{p{2.8cm}p{3cm}X}
+\toprule
+时间 & 环节 & 教师动作\\
+\midrule
+0--15 分钟 & 模型总览 & 讲清 $R^2=r^2+d^2$，复习正方体、长方体、直棱柱、圆柱、正四面体的半径模型。\\ \midrule
+15--35 分钟 & 圆柱外接球 & 用轴截面建立“半高 + 底面半径”模型，完成基础题。\\ \midrule
+35--55 分钟 & 直棱柱外接球 & 底面外接圆半径与柱高结合，训练二维到三维的桥接。\\ \midrule
+55--80 分钟 & 球内接圆柱最值 & 建立变量约束，强调 $r,h$ 不独立，完成最值模型。\\ \midrule
+80--105 分钟 & 直径 + 三棱锥 & 用直径性质得到直角，再配合坐标法求体积。\\ \midrule
+105--120 分钟 & 总结与复练 & 回到母模型，要求学生口述每题中的 $R,r,d$ 分别对应哪条线段。\\
+\bottomrule
+\end{tabularx}
+
+\newpage
+
+\section{模型一：公式总览}
+
+{\small \qSolidSphereModelsSummaryStem}
+
+\teachblock{标准结论}{\qSolidSphereModelsSummaryAnswer}
+\teachblock{模型来源}{\qSolidSphereModelsSummarySolution}
+\teachblock{课堂处理}{\qSolidSphereModelsSummaryTeachingNotes}
+
+\section{模型二：圆柱外接球}
+
+{\small \qSolidCylinderSphereVolumeStem}
+\qSolidCylinderSphereVolumeOptions
+
+\begin{center}
+  \qSolidCylinderSphereVolumeFigure[1.0]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准答案}{\qSolidCylinderSphereVolumeAnswer}
+\teachblock{标准解答}{\qSolidCylinderSphereVolumeSolution}
+\switchcolumn
+\teachblock{常见问题}{\qSolidCylinderSphereVolumeDiagnosis}
+\teachblock{课堂追问}{\qSolidCylinderSphereVolumeTeachingNotes}
+\end{paracol}
+
+\section{模型三：直棱柱外接球}
+
+{\small \qSolidRightTriangularPrismSphereAreaStem}
+\qSolidRightTriangularPrismSphereAreaOptions
+
+\begin{center}
+  \qSolidRightTriangularPrismSphereAreaFigure[1.0]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准答案}{\qSolidRightTriangularPrismSphereAreaAnswer}
+\teachblock{标准解答}{\qSolidRightTriangularPrismSphereAreaSolution}
+\switchcolumn
+\teachblock{常见问题}{\qSolidRightTriangularPrismSphereAreaDiagnosis}
+\teachblock{课堂追问}{\qSolidRightTriangularPrismSphereAreaTeachingNotes}
+\end{paracol}
+
+\newpage
+
+\section{模型四：球内接圆柱最值}
+
+{\small \qSolidSphereInscribedCylinderMaxAreaStem}
+
+\begin{center}
+  \qSolidSphereInscribedCylinderMaxAreaFigure[1.0]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准答案}{\qSolidSphereInscribedCylinderMaxAreaAnswer}
+\teachblock{标准解答}{\qSolidSphereInscribedCylinderMaxAreaSolution}
+\switchcolumn
+\teachblock{常见问题}{\qSolidSphereInscribedCylinderMaxAreaDiagnosis}
+\teachblock{课堂处理}{\qSolidSphereInscribedCylinderMaxAreaTeachingNotes}
+\end{paracol}
+
+\section{模型五：球的直径性质与三棱锥体积}
+
+{\small \qSolidPyramidDiameterVolumeStem}
+\qSolidPyramidDiameterVolumeOptions
+
+\begin{center}
+  \qSolidPyramidDiameterVolumeFigure[1.0]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准答案}{\qSolidPyramidDiameterVolumeAnswer}
+\teachblock{标准解答}{\qSolidPyramidDiameterVolumeSolution}
+\switchcolumn
+\teachblock{常见问题}{\qSolidPyramidDiameterVolumeDiagnosis}
+\teachblock{课堂处理}{\qSolidPyramidDiameterVolumeTeachingNotes}
+\end{paracol}
+
+\section{本讲方法总结}
+
+\teachblock{模型选择顺序}{%
+\begin{enumerate}
+  \item 先问：能否补成熟悉几何体（正方体、长方体、直棱柱、圆柱）？
+  \item 若不能，再找球心所在轴线或截面圆心，构造 $R^2=r^2+d^2$；
+  \item 若出现“直径”，立即检查是否能用直径所对圆周角为直角；
+  \item 若最终仍有多个自由度，再考虑坐标法或体积法。
+\end{enumerate}
+}
+
+\teachblock{验收标准}{%
+学生能在不背公式名称的情况下，直接指出题图中的球半径、截面圆半径、球心到截面距离，并把问题降维到直角三角形。
+}
+
+\end{document}

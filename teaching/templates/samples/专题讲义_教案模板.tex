@@ -1,0 +1,100 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{../ipara}
+\input{questions.tex}
+
+% 专题讲义教案模板
+% 通过 infra/scripts/compile_tex.py 编译。
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 专题讲义：教师备课版}
+\rhead{\small 数学一对一}
+\cfoot{\small 第 \thepage\ 页\quad 共 \pageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\lessoninfo}[2]{%
+  \begin{center}
+    {\LARGE\bfseries #1 \quad (教师版)}\par
+    \vspace{0.8em}
+    {\small 学生：#2 \quad 时长：120 分钟}
+  \end{center}
+  \vspace{0.6em}
+}
+
+\begin{document}
+
+\lessoninfo{参数分离与分类讨论专题}{\blank{2.4cm}}
+
+\section{备课指导与学情预判}
+
+\begin{tabularx}{\textwidth}{p{2.8cm}p{3.2cm}X}
+\toprule
+时间 & 环节 & 教师动作\\
+\midrule
+0--10 分钟 & 概念抽查 & 询问“恒成立”转化最值的条件。\\ \hline
+10--50 分钟 & 核心考向 1 & 重点讲解分离参数。左栏讲解，右栏看错因。\\ \hline
+50--90 分钟 & 核心考向 2 & 重点讲解分类讨论。强调分类边界的确定。\\ \hline
+90--110 分钟 & 变式与诊断 & 让学生独立完成变式题，暴露问题。\\ \hline
+110--120 分钟 & 错因复盘 & 引导学生完成学案最后面的“错因大起底”。\\
+\bottomrule
+\end{tabularx}
+
+\section{知识引入策略}
+
+\teachblock{分离参数的几何意义}{
+  当讲分离参数 $a \ge f(x)$ 时，不要只讲代数变形。画一个曲线 $y=f(x)$，然后画一条水平直线 $y=a$。告诉学生：恒成立就是直线永远在曲线“上方”。
+}
+
+\newpage
+
+\section{核心考向突破}
+
+\teacherproblem{例题 1}{分离参数法解决恒成立}
+\teachvalue{本题通过典型的二次导数结构，训练学生遇到含参恒成立时的第一反应——分离参数，并能准确求出分离后函数的最值。}
+
+{\small \qOneStem}
+
+\begin{paracol}{2}
+\teachblock{标准解答}{
+  1. 确定定义域 $x \in (0, +\infty)$。\\
+  2. 分离参数得 $a \ge g(x)$。\\
+  3. 求导 $g'(x)$，列表分析单调性。\\
+  4. 求出 $g(x)$ 的最大值，从而得到 $a$ 的范围。
+}
+
+\teachblock{板书建议}{
+  重点板书：$a \ge g(x)_{\max}$ 这句话，以及求导后判断符号的那个不等式。
+}
+
+\switchcolumn
+\teachblock{常见错因}{
+  1. \textbf{没看定义域}：直接对整个实数轴求最值。\\
+  2. \textbf{分离时变号错误}：除以含 $x$ 的式子时，没判断其正负号，导致不等号方向错乱。
+}
+
+\teachblock{追问设计}{
+  追问：你刚才除以 $x$ 的时候，为什么不等号没有变方向？（引导说出 $x>0$）
+}
+
+\remedy{
+  若学生在求导环节算错，课后必须补充“除法求导法则”的专项默写。若分离参数后不等号弄反，安排变式 1 重做。
+}
+\end{paracol}
+
+\variantproblem{对标 例 1}
+
+{\small \qOneStem（此处为变式题解析）}
+
+\begin{paracol}{2}
+\teachblock{变式解析}{
+  该变式的核心在于分离后函数变为 $h(x)$，其单调性与原题相反。
+}
+\switchcolumn
+\teachblock{诊断与分层}{
+  - **基础学生**：能仿照例 1 写出过程即达标。
+  - **中等学生**：要求速度，5分钟内出结果。
+}
+\end{paracol}
+
+\end{document}

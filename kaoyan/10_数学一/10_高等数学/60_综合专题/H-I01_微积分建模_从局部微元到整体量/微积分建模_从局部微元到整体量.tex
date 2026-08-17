@@ -1,0 +1,86 @@
+\documentclass[UTF8,a4paper,10pt]{ctexart}
+\usepackage{ipara-handbook}
+\usepackage{booktabs,tabularx,tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\begin{document}
+\section*{H-I01\quad 微积分建模：从局部微元到整体量}
+\textbf{定位：}本 Integration 只验收跨 Topic 组合，不重新教授单个微元或积分机制。
+\begin{tcolorbox}[title=母流程]
+目标量 $\longrightarrow$ 选对象与坐标 $\longrightarrow$ 切出局部元
+$\longrightarrow$ 写 $dQ$ 与积分域 $\longrightarrow$ 累积
+$\longrightarrow$ 单位/边界/方向复核。
+\end{tcolorbox}
+\begin{center}
+\begin{tikzpicture}[node distance=7mm, every node/.style={draw,rounded corners,align=center,minimum width=2.8cm,minimum height=8mm,font=\small},>=Latex]
+\node (a) {目标量\\面积/质量/功};
+\node (b) [right=of a] {局部元\\$dQ$};
+\node (c) [right=of b] {区域或路径\\$\Omega,\ C,\ S$};
+\node (d) [right=of c] {积分与复核};
+\draw[->,thick] (a)--(b); \draw[->,thick] (b)--(c); \draw[->,thick] (c)--(d);
+\end{tikzpicture}
+\end{center}
+\subsection*{1.\ 平面薄片质量：密度先进入微元}
+对区域 $\Omega$ 上的面密度 $\rho(x,y)$，总质量先写
+\[
+dM=\rho(x,y)\,dA,\qquad M=\iint_{\Omega}\rho(x,y)\,dA.
+\]
+若 $\Omega$ 关于 $y$ 轴对称且 $\rho$ 为奇函数 $x$，则带符号积分发生抵消；物理质量仍要求 $\rho\ge0$，必须先检查题设是否允许该密度。
+\subsection*{2.\ 体积、弧长与功的切换}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+目标 & 典型微元与资格\\ \midrule
+旋转体体积 & $dV=\pi r^2\,dx$ 或壳元 $dV=2\pi r h\,dx$；先确认切片方向\\
+曲线弧长 & $ds=\sqrt{(dx)^2+(dy)^2}$；参数式用 $\sqrt{(x')^2+(y')^2}\,dt$\\
+力做功 & $dW=\mathbf F\cdot d\mathbf r$；方向和单位由位移元决定\\
+曲面通量 & $d\Phi=\mathbf F\cdot\mathbf n\,dS$；必须先定向\\
+\bottomrule
+\end{tabularx}
+\subsection*{3.\ 旋转体：选择的是切片方向，不是背公式}
+同一平面区域绕轴旋转时有两种局部化：垂直于轴切片得到圆盘/垫圈，平行于轴切片得到圆柱壳。
+若已知 $y=f(x)$ 且绕 $y$ 轴，比较两条路线：反解 $x=g(y)$ 后用圆盘，或保留 $x$ 用壳元
+\[
+dV=2\pi\,\underbrace{|x-x_{\rm axis}|}_{\text{半径}}
+\underbrace{h(x)}_{\text{壳高}}\,dx.
+\]
+选择标准是区域描述和反解成本；无论哪条路线，都必须保证切片不重不漏。
+
+旋转曲面面积使用另一种微元：
+\[
+dS=2\pi\,\underbrace{r}_{\text{到旋转轴距离}}\,ds.
+\]
+它累加“周长 $\times$ 弧长”，不能把 $ds$ 静默替换为 $dx$。体积有限也不推出表面积有限，两者尾部模型不同。
+
+\subsection*{4.\ 相关变化率：保持动态对象直到求导完成}
+把几何关系写成时间的恒等式 $G(x(t),y(t),\ldots)=0$，先对 $t$ 求导：
+\[
+G_x\frac{dx}{dt}+G_y\frac{dy}{dt}+\cdots=0,
+\]
+再代入题目给定时刻的长度、半径或体积。若求导前就把瞬时值代成常数，对应变化率会被错误地消掉。
+单位是这里的接口语言：$\mathrm m/\mathrm s$、$\mathrm m^2/\mathrm s$、$\mathrm m^3/\mathrm s$ 分别提示长度、面积、体积的变化率对象。
+
+\subsection*{5.\ 压力与做功：强度必须乘对几何载体}
+变力做功沿位移累积 $dW=F(x)\,dx$；抽水时局部贡献为
+\[
+dW=\underbrace{\rho g A(y)\,dy}_{\text{薄层重量}}
+\underbrace{D(y)}_{\text{提升距离}}.
+\]
+静水压力则在面积上累积，取从液面量起的竖直深度 $h$：
+\[
+dF=\rho gh\,dA=\rho gh\,L(h)\,dh.
+\]
+“深度”不是任意坐标值，“移动距离”也不是切片位置；二者都要从物理对象重新定义。
+
+\subsection*{6.\ 最小组合例：变密度细杆}
+细杆位于 $x\in[a,b]$，线密度 $\lambda(x)$，则
+\[
+dM=\lambda(x)\,dx,\quad M=\int_a^b\lambda(x)\,dx,\quad
+\bar x=\frac{1}{M}\int_a^b x\lambda(x)\,dx.
+\]
+先求总量 $M$ 才能定义质心；若 $\lambda$ 在区间变号，需先判断其物理意义。
+\begin{tcolorbox}[title=验收检查]
+微元单位是否与目标量一致？区域/路径/曲面边界是否完整？
+对称性作用于完整 integrand 还是只作用于几何域？有向积分是否明确方向？
+\end{tcolorbox}
+\subsection*{7.\ Anti-Bridge}
+单位检查只能发现量纲冲突，不能证明切片、区域或方向正确；“写出了积分”也不等于完成建模。若局部元无法从对象和坐标唯一解释，应回退到 Topic01/05/08/09 Owner。
+\end{document}

@@ -1,0 +1,631 @@
+% Legacy implementation preserved under infra/latex/legacy/.
+% Compatibility only; architecture ownership lives in infra/latex/README.md.
+
+% =====================================================
+% 选项定义与分支控制
+% =====================================================
+\newif\ifteacher
+\teacherfalse
+
+\DeclareOption{teacher}{\teachertrue}
+\DeclareOption{student}{\teacherfalse}
+\ProcessOptions\relax
+
+% =====================================================
+% 核心依赖包加载
+% =====================================================
+\RequirePackage[margin=1.5cm, top=1.8cm, bottom=1.8cm]{geometry}
+\RequirePackage{amsmath,amssymb,amsthm}
+\RequirePackage{enumitem}
+\RequirePackage{tabularx}
+\RequirePackage{array}
+\RequirePackage{xcolor}
+\RequirePackage{colortbl}
+\RequirePackage{booktabs}
+\RequirePackage{etoolbox}
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\RequirePackage{tikz}
+\usetikzlibrary{calc,angles,quotes}
+\RequirePackage{fancyhdr}
+\RequirePackage[user,lastpage]{zref}
+\RequirePackage{needspace}
+
+% 教师端专属依赖：双栏排版
+\ifteacher
+  \RequirePackage{paracol}
+\fi
+
+% =====================================================
+% 页面基础布局与公式间距微调（黑白出版级行间呼吸感）
+% =====================================================
+\linespread{1.38}\selectfont % 为分式、根式与中文提供舒适行间距
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em plus 0.1em minus 0.1em}
+\renewcommand{\arraystretch}{1.35}
+\setlength{\jot}{6pt} % 增加多行公式 (aligned/cases) 之间的行距
+
+% 优化展示公式与正文间距，防止公式前后出现过大或紧绷空白
+\AtBeginDocument{%
+  \setlength{\abovedisplayskip}{7pt plus 2pt minus 2pt}%
+  \setlength{\belowdisplayskip}{7pt plus 2pt minus 2pt}%
+  \setlength{\abovedisplayshortskip}{4pt plus 1pt minus 1pt}%
+  \setlength{\belowdisplayshortskip}{4pt plus 1pt minus 1pt}%
+}
+
+% =====================================================
+% 统一页眉页脚设置 (fancyhdr)
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\ifteacher
+  \lhead{\small\color{black!70}\textbf{一对一辅导 · 教师教案}}
+\else
+  \lhead{\small\color{black!70}\textbf{一对一辅导 · 学生学案}}
+\fi
+\rhead{\small\color{black!70}\leftmark}
+\cfoot{\small\thepage\ / \zpageref{LastPage}}
+
+% =====================================================
+% 色彩系统设计（黑白印刷高对比度纯净方案）
+% =====================================================
+\definecolor{rulecolor}{gray}{0.75} % 用于表格边框、分界线（清晰且不刺眼）
+\definecolor{gridcolor}{gray}{0.88} % 用于答题盒网格线（淡灰色，黑白印刷防黑且不易丢线）
+
+% =====================================================
+% 教师端双栏排版全局设置
+% =====================================================
+\ifteacher
+  \columnratio{0.68}
+  \setlength{\columnsep}{18pt}
+  \setlength{\columnseprule}{0.5pt}
+  \colseprulecolor{rulecolor}
+\fi
+
+% =====================================================
+% CTEX 标题样式与编号自动格式化
+% 注意：本样式包要求主文档使用 ctexart / ctexrep / ctexbook
+% =====================================================
+\ifteacher
+  \ctexset{
+    section={
+      format=\normalfont\large\bfseries,
+      beforeskip=1.5em,
+      afterskip=0.8em,
+      number=\chinese{section}、
+    }
+  }
+\else
+  \ctexset{
+    section={
+      format=\normalfont\large\bfseries,
+      beforeskip=1.2em,
+      afterskip=0.8em,
+      number=\chinese{section}、
+    }
+  }
+\fi
+
+% =====================================================
+% 基础与通用快捷命令
+% =====================================================
+\newcommand{\blank}[1]{\underline{\hspace{#1}}}  % 填空下划线
+\newcommand{\checkbox}{\ensuremath{\square}\ }            % 自查空复选框
+\newcommand{\checkedbox}{\ensuremath{\boxtimes}\ }        % 已勾选复选框（用于档案跟踪表）
+
+% =====================================================
+% 公式复习/默写条件宏与内容控制
+% 教师端默认显示答案，学生端默认隐藏答案供默写
+% =====================================================
+\newif\ifshowprompt
+\ifteacher
+  \showprompttrue
+\else
+  \showpromptfalse
+\fi
+
+\newcommand{\fblank}[2][3cm]{%
+  \ifshowprompt
+    \underline{#2}% 显示答案并带下划线（教师端/复习页）
+  \else
+    \underline{\hspace{#1}}% 隐藏答案，显示空白划线（学生默写页）
+  \fi
+}
+
+% =====================================================
+% 排版与排图组件设计
+% =====================================================
+
+% 1. 题目页眉：\problemheader{第 X 题}
+\newcommand{\problemheader}[1]{
+  \Needspace{5\baselineskip}
+  \vspace{0.6em}
+  \noindent{\large\textbf{#1}}
+  \par
+  \vspace{0.5em}
+}
+
+% 2. 网格答题盒：\answergrid[高度]{解：}（适合画图与几何题）
+\newcommand{\answergrid}[2][13.2cm]{
+  \vspace{0.4em}
+  \begin{tcolorbox}[
+    enhanced,
+    colback=white,
+    colframe=black,
+    boxrule=0.5pt,
+    arc=0pt,
+    boxsep=0pt,
+    left=8pt,
+    right=8pt,
+    top=8pt,
+    bottom=8pt,
+    height=#1,
+    underlay={
+      \begin{tcbclipinterior}
+        \draw[color=gridcolor, ystep=0.6cm, xstep=0.6cm, thin] (interior.south west) grid (interior.north east);
+      \end{tcbclipinterior}
+    }
+  ]
+    {\small\bfseries #2}
+  \end{tcolorbox}
+}
+
+% 3. 空白答题盒：\answerblank[高度]{解：}（纯白无网格，适合代数与计算题）
+\newcommand{\answerblank}[2][13.2cm]{
+  \vspace{0.4em}
+  \begin{tcolorbox}[
+    enhanced,
+    colback=white,
+    colframe=black,
+    boxrule=0.5pt,
+    arc=0pt,
+    boxsep=0pt,
+    left=8pt,
+    right=8pt,
+    top=8pt,
+    bottom=8pt,
+    height=#1
+  ]
+    {\small\bfseries #2}
+  \end{tcolorbox}
+}
+
+% 4. 回顾、自查与反思一体化组件：\postproblem{提示内容}{自查勾选}{反思高度}
+\newcommand{\postproblem}[3]{%
+  \vspace{0.6em}
+  {\color{rulecolor}\hrule height 0.4pt}
+  \vspace{0.6em}
+  
+  {\small\textbf{提示：}}
+  \ifblank{#1}{%
+    \vspace{2em}%
+  }{%
+    \begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.1em, topsep=0.2em]
+      #1
+    \end{enumerate}%
+  }
+  \vspace{0.4em}
+  
+  {\small\textbf{自查与反思：}}\quad #2
+  
+  \vspace{#3}
+}
+
+% 5. 选择题选项组件：\mcoptions[列数]{A}{B}{C}{D}
+\newcommand{\mcoptions}[5][1]{%
+  \par
+  \vspace{0.2em}
+  \def\temp{#1}%
+  \def\one{1}%
+  \def\two{2}%
+  \def\four{4}%
+  \ifx\temp\one
+    \begin{enumerate}[label=\Alph*. , leftmargin=1.8em, itemsep=0.1em, topsep=0.1em]
+      \item #2
+      \item #3
+      \item #4
+      \item #5
+    \end{enumerate}
+  \fi
+  \ifx\temp\two
+    \noindent
+    \begin{tabularx}{\linewidth}{@{}XX@{}}
+      A. #2 & B. #3 \\
+      C. #4 & D. #5
+    \end{tabularx}%
+  \fi
+  \ifx\temp\four
+    \noindent
+    \begin{tabularx}{\linewidth}{@{}XXXX@{}}
+      A. #2 & B. #3 & C. #4 & D. #5
+    \end{tabularx}%
+  \fi
+  \vspace{0.4em}
+}
+
+% 6. 图文混排选择题组件：\mcfigurequestion{题干}{选项块}{图片内容}
+\newcommand{\mcfigurequestion}[3]{
+  \vspace{0.6em}
+  \begin{minipage}[t]{0.65\textwidth}
+    \vspace{0pt}
+    #1 \hfill （\quad）\\
+    \vspace{0.3em}
+    #2
+  \end{minipage}
+  \begin{minipage}[t]{0.32\textwidth}
+    \vspace{0pt}
+    \hfill #3
+  \end{minipage}
+  \vspace{0.6em}
+}
+
+% 7. 自动编号与题型辅助组件
+\newcounter{question}
+
+% 自动编号的有图选择题
+\newcommand{\automcfigurequestion}[3]{%
+  \stepcounter{question}%
+  \mcfigurequestion{\arabic{question}. #1}{#2}{#3}%
+}
+
+% 自动编号的无图选择题
+\newcommand{\autoquestion}[1]{%
+  \stepcounter{question}%
+  \noindent\arabic{question}. #1%
+}
+
+% 自动编号的解答题页眉（学生端）
+\newcommand{\freequestionheader}{%
+  \stepcounter{question}%
+  \problemheader{第 \arabic{question} 题}%
+}
+
+% 自动编号的解答题页眉（教师端）
+\newcommand{\teachquestionheader}[1]{%
+  \stepcounter{question}%
+  \noindent{\large\textbf{第 \arabic{question} 题\quad #1}}
+  \par
+  \vspace{0.4em}
+}
+
+% 8. 选择题演算区与分隔线组件：\choiceworkarea[演算高度]
+\newcommand{\choiceworkarea}[1][3cm]{%
+  \vspace{#1}%
+  \par\noindent{\color{rulecolor}\hrule height 0.4pt}%
+  \vspace{0.8em}%
+}
+
+% =====================================================
+% 思维与错因诊断通用组件
+% =====================================================
+
+% 1. 方法要点卡片：\mindsetcard{思维名称}{学生直观释义}{具体描述}
+\newcommand{\mindsetcard}[3]{%
+  \vspace{0.6em}
+  \begin{tcolorbox}[
+    enhanced,
+    colback=white,
+    colframe=black,
+    boxrule=0.8pt,
+    arc=0pt,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    title={\small\bfseries 【核心思维】 #1 \hfill --- #2}
+  ]
+    {\small #3}
+  \end{tcolorbox}
+  \vspace{0.4em}
+}
+
+% 2. 错因诊断标签：\errortag{标签名称}
+\newcommand{\errortag}[1]{%
+  \noindent\textbf{【诊断标签：#1】}\quad
+}
+
+% 3. 解题决策扫描框环境
+\newenvironment{decisionscan}{%
+  \par\addvspace{0.6em}%
+  \noindent\textbf{【解题决策流程扫描】}\par\nobreak
+  \begingroup\small\setlength{\parskip}{0.25em}%
+}{%
+  \par\endgroup\addvspace{0.6em}%
+}
+
+% =====================================================
+% 专题讲义与复习手册核心布局组件
+% =====================================================
+
+\newtheorem*{proof*}{证明过程}
+
+% 定理/公式框
+\newtcolorbox{theorembox}[1]{
+    enhanced,
+    breakable,
+    colback=white,
+    colframe=black,
+    fonttitle=\large\bfseries,
+    coltitle=black,
+    title={#1},
+    boxrule=0.8pt,
+    arc=0pt,
+    left=10pt,
+    right=10pt,
+    top=6pt,
+    bottom=6pt,
+    attach title to upper,
+    after title={\par\vspace{0.4em}\hrule\vspace{0.4em}},
+    before=\vspace{0.6em},
+    after=\vspace{0.6em}
+}
+
+% 例题框
+\newenvironment{exbox}[1]{%
+  \par\addvspace{0.8em}%
+  \noindent\textbf{#1}\par\nobreak\begingroup
+}{%
+  \endgroup\par\addvspace{0.8em}%
+}
+
+% 核心思维/要点框
+\newenvironment{keybox}[1]{%
+  \par\addvspace{0.6em}%
+  \noindent\textbf{【#1】}\par\nobreak
+  \begingroup\setlength{\parskip}{0.35em}%
+}{%
+  \par\endgroup\addvspace{0.6em}%
+}
+
+% 灰色小注
+\newenvironment{graynote}{%
+  \par\addvspace{0.6em}%
+  \begingroup\small\setlength{\parskip}{0.25em}%
+}{%
+  \par\endgroup\addvspace{0.6em}%
+}
+
+% 教师建议/警告框
+\newtcolorbox{teachbox}[1]{
+  enhanced,
+  breakable,
+  colback=gray!4,
+  colframe=black!65,
+  boxrule=0.6pt,
+  arc=1mm,
+  left=0.8em,
+  right=0.8em,
+  top=0.6em,
+  bottom=0.6em,
+  fonttitle=\bfseries,
+  title={#1}
+}
+
+\newtcolorbox{warnbox}[1]{
+  enhanced,
+  breakable,
+  colback=gray!2,
+  colframe=black!85,
+  boxrule=0.8pt,
+  arc=1mm,
+  left=0.8em,
+  right=0.8em,
+  top=0.6em,
+  bottom=0.6em,
+  fonttitle=\bfseries,
+  title={#1}
+}
+
+% 教学讲解块
+\newcommand{\teachblock}[2]{%
+  \par\addvspace{0.45em}%
+  \noindent\textbf{【#1】}\par
+  \begingroup
+    \setlength{\parskip}{0.35em}%
+    #2\par
+  \endgroup
+}
+
+% =====================================================
+% 学案/教案统一组件
+% =====================================================
+
+% 左右图文排版（3 参数版，用于学案与题库：#1=左栏宽度比例, #2=题干/选项, #3=图形）
+\newcommand{\sidefigureproblem}[3]{%
+  \begin{minipage}[t]{#1\textwidth}
+    \vspace{0pt}
+    {\small #2}
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{\dimexpr 0.96\textwidth - #1\textwidth \relax}
+    \vspace{0pt}
+    \begin{center}
+      #3
+    \end{center}
+  \end{minipage}%
+}
+
+% 学生端题号页眉：\studentproblem{原卷第 X 题}
+\newcommand{\studentproblem}[1]{%
+  \problemheader{原卷第 #1 题}
+}
+
+% 教师端题号页眉：\teacherproblem{原卷第 X 题}{专题标签}
+\newcommand{\teacherproblem}[2]{%
+  \teachquestionheader{原卷第 #1 题\quad #2}
+}
+
+% 学生端思考与自查：\studentthink{题目列表内容}
+\newcommand{\studentthink}[1]{%
+  \vspace{0.4em}
+  {\small\textbf{思考与自查：}}
+  \ifblank{#1}{%
+    \vspace{2em}%
+  }{%
+    \begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.15em, topsep=0.2em]
+      #1
+    \end{enumerate}%
+  }
+}
+
+% =====================================================
+% 学案页面布局：选填题块与大题块
+% =====================================================
+
+% 大题块：独占一页，前后自动分页
+\newenvironment{freeblock}{%
+  \newpage
+}{%
+  \vspace*{\fill}
+}
+
+% 选填题块：紧密排列，不强制分页，一页可放 2-3 题
+\newenvironment{choiceblock}{%
+  \par\addvspace{0.4em}%
+}{%
+  \par\addvspace{0.4em}%
+}
+
+% =====================================================
+% 专题讲义与教学诊断组件
+% =====================================================
+
+% 1. 课前唤醒/思路脚手架（学生端优先）
+\newcommand{\prehint}[1]{%
+  \vspace{0.4em}
+  \begin{tcolorbox}[
+    enhanced,
+    breakable,
+    colback=white,
+    colframe=rulecolor,
+    boxrule=0pt,
+    leftrule=2pt,
+    arc=0pt,
+    left=8pt, right=8pt, top=4pt, bottom=4pt
+  ]
+    {\small\color{black!75}\textbf{【思路唤醒】}\par\vspace{0.2em}#1}
+  \end{tcolorbox}
+  \vspace{0.4em}
+}
+
+% 2. 同结构变式训练头
+\newcommand{\variantproblem}[1]{%
+  \vspace{1.2em}
+  \noindent{\large\textbf{◆ 变式训练\quad #1}}
+  \par\vspace{0.6em}
+}
+
+% 3. 教学价值判断（教师端）
+\newcommand{\teachvalue}[1]{%
+  \vspace{0.2em}
+  \begin{tcolorbox}[
+    enhanced,
+    colback=gray!6,
+    colframe=white,
+    boxrule=0pt,
+    arc=2pt,
+    left=8pt, right=8pt, top=6pt, bottom=6pt
+  ]
+    {\small\textbf{【本题价值】} #1}
+  \end{tcolorbox}
+  \vspace{0.4em}
+}
+
+% 4. 课后补救建议（教师端）
+\newcommand{\remedy}[1]{%
+  \par\addvspace{0.8em}%
+  \noindent\textbf{【补救建议】}\par
+  \begingroup
+    \raggedright
+    \setlength{\parskip}{0.35em}%
+    #1\par
+  \endgroup
+}
+
+% =====================================================
+% 教师课堂可用性与教学导引组件 (Teacher Usability v2)
+% =====================================================
+
+% 教师端安全双栏环境（仅在 \ifteacher 时展开 2 栏，学生端安全退化为单栏）
+\newenvironment{teachcolumns}{%
+  \ifteacher
+    \columnratio{0.68}%
+    \begin{paracol}{2}%
+  \fi
+}{%
+  \ifteacher
+    \end{paracol}%
+  \fi
+}
+
+% 课堂教学导引框
+\newtcolorbox{lessonbriefbox}[1]{
+  enhanced,
+  breakable,
+  colback=white,
+  colframe=black,
+  boxrule=0.8pt,
+  arc=0pt,
+  left=8pt,right=8pt,top=6pt,bottom=6pt,
+  fonttitle=\bfseries,
+  title={#1}
+}
+
+% 每题顶部元信息：处理方式 / 时间 / 目标 / 停止条件
+\newcommand{\teachmeta}[4]{%
+  \begin{tcolorbox}[
+    enhanced,
+    colback=gray!4,
+    colframe=black!55,
+    boxrule=0.5pt,
+    arc=0pt,
+    left=7pt,right=7pt,top=5pt,bottom=5pt
+  ]
+  {\small
+  \textbf{处理：}#1\quad
+  \textbf{预算：}#2\par
+  \textbf{本题目标：}#3\par
+  \textbf{停止条件：}#4}
+  \end{tcolorbox}
+}
+
+% 课堂检查点：让教师快速决定继续/降阶/跳过
+\newcommand{\checkpoint}[3]{%
+  \par\addvspace{0.45em}%
+  \noindent\textbf{【检查点】} #1\par
+  {\small
+  \textbf{通过：}#2\par
+  \textbf{未通过：}#3\par}
+}
+
+% 现场观察留白。可在打印稿上手写
+\newcommand{\liveobserve}[1][3.5cm]{%
+  \Needspace{6\baselineskip}%
+  \par\addvspace{0.6em}%
+  \noindent\textbf{【课堂观察记录】}\par
+  \vspace{0.2em}%
+  \begin{tcolorbox}[
+    enhanced,
+    colback=white,
+    colframe=rulecolor,
+    boxrule=0.5pt,
+    arc=0pt,
+    height=#1,
+    left=5pt,right=5pt,top=5pt,bottom=5pt
+  ]
+  \end{tcolorbox}
+}
+
+% 课后画像候选：强调“候选”，避免单次表现直接标签化
+\newcommand{\profilecandidate}[1]{%
+  \par\addvspace{0.5em}%
+  \noindent\textbf{【画像候选（课后确认）】}\par
+  {\small #1}\par
+}
+
+% 一页路线表建议列：顺序、题目、处理、时间、检查点、分支
+\newcommand{\teacherroutehint}{%
+  {\small\textbf{课堂使用：}先看检查点，再决定继续、降阶或跳过；不要因为教案准备了完整解法就机械讲完。}%
+}
+
+\endinput

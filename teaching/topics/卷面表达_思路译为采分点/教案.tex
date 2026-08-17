@@ -1,0 +1,1197 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[teacher]{ipara}
+\input{questions.tex}
+
+% 公共专题教案：卷面表达与逻辑规范
+% 教师版（黑白双印安全，符合卷面表达规范）
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 卷面表达与逻辑规范}
+\rhead{\small 教师版}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand{\topicteacherproblem}[2]{%
+  \teachquestionheader{#1\quad #2}
+}
+
+\newcommand{\topicproblem}[2]{%
+  \topicteacherproblem{#1}{#2}
+}
+
+% 备课模型：正弦定理一角两解的几何解释
+\newcommand{\sineAmbiguityModel}{%
+  \begin{center}
+    \begin{tikzpicture}[scale=1.1, line join=round, line cap=round]
+      % Coordinates
+      \coordinate (B) at (0,0);
+      \coordinate (C) at (3.46,2);
+      \coordinate (A1) at (1.96,0);
+      \coordinate (A2) at (4.96,0);
+      \coordinate (H) at (3.46,0);
+      
+      % Draw base line
+      \draw[thick] (-0.5,0) -- (5.8,0);
+      
+      % Draw lines
+      \draw[very thick] (B) -- (C) node[midway, above left] {\small \(a\)};
+      \draw[thick] (C) -- (A1) node[midway, left] {\small \(b\)};
+      \draw[thick] (C) -- (A2) node[midway, right] {\small \(b\)};
+      
+      % Draw height (dashed)
+      \draw[dashed, gray] (C) -- (H) node[midway, left] {\small \(h=a\sin B\)};
+      \draw (H) ++(0,0.18) -- ++(-0.18,0) -- ++(0,-0.18);
+      
+      % Draw circle arc of radius b centered at C
+      \draw[dashed, gray!80] (C) ++(-20:2.5) arc[start angle=-20,end angle=-160,radius=2.5];
+      
+      % Draw arc for B
+      \draw[->] (B) +(0.6,0) arc[start angle=0,end angle=30,radius=0.6];
+      \node at (0.8,0.2) {\small \(B\)};
+      
+      % Labels
+      \fill (B) circle (1.2pt) node[below left] {\small \(B\)};
+      \fill (C) circle (1.2pt) node[above] {\small \(C\)};
+      \fill (A1) circle (1.2pt) node[below] {\small \(A_1\)};
+      \fill (A2) circle (1.2pt) node[below] {\small \(A_2\)};
+      \fill (H) circle (1.2pt) node[below] {\small \(H\)};
+    \end{tikzpicture}
+  \end{center}
+}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries 卷面表达与逻辑规范教案}\\
+  \vspace{0.35em}
+  {\large 从解题思路到卷面采分点}\\
+  \vspace{0.35em}
+  多课时专题材料
+\end{center}
+
+\section{专题说明与学习目标}
+
+\teachblock{专题定位}{
+  本专题训练的是：学生会做题以后，怎样把理由、公式和结论写清楚。重点不是增加新的知识点，而是把已经会用的公式、定理和推理过程写成卷面上能得分的步骤，减少因条件缺失、范围不明、步骤跳跃造成的失分。
+  
+  前半部分从高考常见大题板块入手，帮助学生看清常见书写问题；后半部分重点放在立体几何和解三角形两个板块，训练条件书写、范围说明、定理引用和结论检验。
+}
+
+\teachblock{内容总览}{
+  \begin{enumerate}[label=\arabic*. , itemsep=0.1em]
+    \item \textbf{代数}：含参二次不等式退化讨论、对称轴动区间定分类及边界等号检验。
+    \item \textbf{立体几何}：线面与面面垂直证明的前提条件组书写规范。
+    \item \textbf{三角}：解三角形正弦定理一角两解检验、面积夹角、边角对应及弧度统一。
+    \item \textbf{解析几何}：“设、联、判、韦、代”五步四段式。
+    \item \textbf{导数}：导数符号与单调区间对应。
+    \item \textbf{数列}：累加法与错位相减过程书写。
+    \item \textbf{概率统计}：事件定义与独立性声明。
+  \end{enumerate}
+}
+
+\teachblock{常见表达问题与规范要求}{
+  \begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.3em]
+    \item \textbf{分类讨论收尾}
+      \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+        \item \textbf{为什么要这样写}：分类讨论中，每个分支只解决一种情况；最后要把所有符合条件的分支合在一起。
+        \item \textbf{常见问题}：学生容易在分支内部算完后，忘记在全局层面上将各个合法的子分支结论合并。
+        \item \textbf{讲解建议}：“每一路算出的结论只对当前分支成立。最后要用‘综上所述’把各分支的结论合并，答案才完整。”
+      \end{itemize}
+    \item \textbf{立体几何判定前提}
+      \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+        \item \textbf{为什么要这样写}：用线面垂直判定定理时，平面内的两条直线必须相交，并且都在同一个平面内。
+        \item \textbf{常见问题}：学生常写“因为 \(PA \perp AB, PA \perp AC \Rightarrow PA \perp \text{面} ABC\)”，漏写“\(AB \cap AC = A\)”和“\(AB, AC \subset \text{面} ABC\)”。
+        \item \textbf{讲解建议}：“使用判定定理时，必须通过大括号列齐相交、共面等四个前置条件，避免由于条件缺漏导致逻辑不完整。”
+      \end{itemize}
+    \item \textbf{退化与边界检查}
+      \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+        \item \textbf{为什么要这样写}：如果二次项系数含参数，当这个系数等于 0 时，原式不再是二次式，不能继续直接使用二次函数或判别式的方法。
+        \item \textbf{常见问题}：直接使用 \(\Delta < 0\) 处理，漏掉二次项系数为 0 的边界点讨论。
+        \item \textbf{讲解建议}：“若二次项系数含有参数，在第一步讨论参数为 0 的退化情况是建立分类前提的必要步骤。”
+      \end{itemize}
+    \item \textbf{正弦定理边角转化}
+      \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+        \item \textbf{为什么要这样写}：正弦定理说明边长与对应角的正弦值成比例，不是直接相等。把 \(\sin A\) 换成边 \(a\) 时，要写出比例关系。
+        \item \textbf{常见问题}：直接写 \(\sin A = a\)，混淆边长和正弦值。
+        \item \textbf{讲解建议}：“边与角正弦值成比例但不相等，边角转化时必须声明‘设外接圆半径为 \(R\)’，引入比例常数以保证步骤的量纲和逻辑严密。”
+      \end{itemize}
+    \item \textbf{余弦定理求角}
+      \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+        \item \textbf{为什么要这样写}：三角形内角满足 \(0<C<\pi\)。在这个范围内，余弦值能确定唯一的角。
+        \item \textbf{常见问题}：算出 \(\cos C = \frac{1}{2}\) 后直接写 \(C = \frac{\pi}{3}\)，不写角本身的范围 \(0 < C < \pi\)。
+        \item \textbf{讲解建议}：“由余弦值求三角形内角时，必须交代自变量范围 \(C \in (0, \pi)\)，以保证映射的唯一性。”
+      \end{itemize}
+    \item \textbf{三角形存在性检验}
+      \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+        \item \textbf{为什么要这样写}：已知两边和其中一边的对角时，用正弦定理求另一个角，可能出现锐角和钝角两个结果。两个结果都要用三角形内角和检验。
+        \item \textbf{常见问题}：要么直接漏掉钝角解，要么算出双解后，直接罗列而不做合法性判断说明。
+        \item \textbf{讲解建议}：“若正弦定理求出两解，必须利用内角和小于 \(180^\circ\) 的几何性质进行检验与过滤，并在卷面上呈现完整的筛选过程。”
+      \end{itemize}
+    \item \textbf{导数单调性区间说明}
+      \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+        \item \textbf{为什么要这样写}：导数符号只有和具体区间放在一起，才能推出函数在哪个区间单调。
+        \item \textbf{常见问题}：直接写“求导得 \(f'(x) = 1/x - a \ge 0 \Rightarrow x \le 1/a\)”，既漏写了定义域，又没有说明每个区间上的导数符号。
+        \item \textbf{讲解建议}：“导数的符号是单调性的判断依据，必须写明‘在某一区间上 \(f'(x)>0\) 或 \(f'(x)<0\)，所以函数在该区间上递增或递减’。”
+      \end{itemize}
+    \item \textbf{解析几何五步四段式}
+      \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+        \item \textbf{为什么要这样写}：解析几何的中间步骤较多，设点设线、联立、判别式、韦达、代入目标式都可能给分。
+        \item \textbf{常见问题}：忽视斜率不存在的情形；在韦达定理前不写判别式 \(\Delta > 0\)。
+        \item \textbf{讲解建议}：“解析几何的步骤分比较集中。把‘设点设线、联立消元、判别式与韦达定理’写完整，能减少因过程缺失造成的失分。”
+      \end{itemize}
+    \item \textbf{数列边界与回代检验}
+      \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+        \item \textbf{为什么要这样写}：由 \(S_n\) 求 \(a_n\) 时，关系式 \(a_n = S_n - S_{n-1}\) 只适用于 \(n \ge 2\)。首项需要单独检查。
+        \item \textbf{常见问题}：通项直接用，不检验 \(n=1\)，或者没有写出 \(n \ge 2\) 的声明。
+        \item \textbf{讲解建议}：“利用项与前项和关系推导通项时，所得关系式仅在 \(n \ge 2\) 下成立。首项 \(n=1\) 必须单独求出并进行回代检验。”
+      \end{itemize}
+    \item \textbf{概率独立性与模型}
+      \begin{itemize}[leftmargin=1.5em, itemsep=0.1em]
+        \item \textbf{为什么要这样写}：概率题要先说明研究的事件或随机变量。使用概率乘法公式前，要先写明事件相互独立。
+        \item \textbf{常见问题}：事件没设直接列出数值；或者不写“因为事件独立，所以概率相乘”直接计算。
+        \item \textbf{讲解建议}：“概率大题必须首先对研究对象定义事件。在使用概率乘法公式前，必须在步骤中写明‘两事件相互独立’的前置条件，这是计算成立的逻辑判定依据。”
+      \end{itemize}
+  \end{enumerate}
+}
+
+\newpage
+
+\section{诊断练习讲解}
+
+\topicteacherproblem{检测 1}{代数分类讨论与退化边界}
+{\small \qGeneralCheckOneStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  \(a \in (1, +\infty)\)。
+}
+\teachblock{标准解答}{
+  \qGeneralCheckOneSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \errortag{忽视系数退化}
+  学生易直接列出条件 \(\Delta < 0 \Rightarrow a > 1\)，由于忽视二次项系数为 0，导致扣步骤分。
+}
+\teachblock{课堂追问}{
+  1. 不等式二次项系数含参时，需首要防范什么？（最高次项系数退化为 0）。\\
+  2. 若可能为 0，如何规范表达？（分 \(a = 0\) 与 \(a \neq 0\) 讨论）。
+}
+\end{paracol}
+
+\addvspace{0.8em}
+\hrule
+\addvspace{0.8em}
+
+\topicteacherproblem{检测 2}{立体几何判定定理前提条件组}
+{\small \qGeneralCheckTwoStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  证明见解答。
+}
+\teachblock{标准解答}{
+  \qGeneralCheckTwoSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \errortag{判定条件缺失}
+  易漏写“相交直线”和“线在面内”的前提条件，直接写：
+  \(\because PA \perp AB, PA \perp AC \Rightarrow PA \perp \text{平面 } ABC\)。这是重度扣分点。
+}
+\teachblock{课堂追问}{
+  1. 线面垂直判定定理中，为什么必须强调“相交”？\\
+  2. 怎么用大括号规范排列这四个必备前置条件？
+}
+\end{paracol}
+
+\addvspace{0.8em}
+\hrule
+\addvspace{0.8em}
+
+\topicteacherproblem{检测 3}{解三角形正弦定理一角两解}
+{\small \qGeneralCheckThreeStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  \(B = 45^\circ\) 或 \(B = 135^\circ\)。
+}
+\teachblock{标准解答}{
+  \qGeneralCheckThreeSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \errortag{漏解与缺少检验}
+  易直接写出锐角解而漏掉钝角解；或虽写出双解，但未写明内角和过滤检验过程。
+}
+\teachblock{课堂追问}{
+  1. 已知 \(\sin B = \frac{\sqrt{2}}{2}\)，有几个角？\\
+  2. 解三角形多解时，如何利用“内角和小于 \(180^\circ\)”排除？
+}
+\end{paracol}
+
+\newpage
+
+\topicteacherproblem{检测 4}{导数单调性与区间说明}
+{\small \qGeneralCheckFourStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  当 \(a \le 0\) 时，单调递增区间为 \((0, +\infty)\)；当 \(a > 0\) 时，单调递增区间为 \(\left(0, \frac{1}{a}\right)\)。
+}
+\teachblock{标准解答}{
+  \qGeneralCheckFourSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \errortag{忽视定义域} 漏写定义域，导致讨论时出现负区间（如直接解得 \(x < 1/a\)，漏掉 \(x>0\) 限制）。\\
+  \errortag{导数符号未对应区间} 未指明令 \(f'(x)>0\) 的解集区间。
+}
+\teachblock{课堂追问}{
+  1. 求导大题开头，第一件事是什么？（写定义域）。\\
+  2. 当参数 \(a\) 的符号不同时，为什么要分类讨论？
+}
+\end{paracol}
+
+\addvspace{0.8em}
+\hrule
+\addvspace{0.8em}
+
+\topicteacherproblem{检测 5}{解析几何联立与中点条件}
+{\small \qGeneralCheckFiveStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  消元后方程及韦达公式见解答。
+}
+\teachblock{标准解答}{
+  \qGeneralCheckFiveSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \errortag{未设坐标} 韦达中的 \(x_1, x_2\) 凭空使用。\\
+  \errortag{忽视判别式} 联立消元后不写且不检验 \(\Delta > 0\)。
+}
+\teachblock{课堂追问}{
+  1. 韦达定理能被代入的前提是什么？（一元二次方程有实数根，必须指出判别式）。\\
+  2. 为什么在用 \(x_1, x_2\) 时必须在卷面上先设点？
+}
+\end{paracol}
+
+\addvspace{0.8em}
+\hrule
+\addvspace{0.8em}
+
+\topicteacherproblem{检测 6}{数列累加法通项}
+{\small \qGeneralCheckSixStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  \(a_n = 2^n - 1\) (\(n \in \mathbb{N}^*\))。
+}
+\teachblock{标准解答}{
+  \qGeneralCheckSixSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \errortag{无项数限制} 累加法不写 \(n \ge 2\)。\\
+  \errortag{漏回代检验} 算出通项后不检验 \(n = 1\) 的情况。
+}
+\teachblock{课堂追问}{
+  1. 使用相邻项相减的公式，为什么自变量必须有下限？（\(a_0\) 不存在，\(n-1 \ge 1 \Rightarrow n \ge 2\)）。\\
+  2. 为什么通项公式必须在最后加一句“综上所述，\(n \in \mathbb{N}^*\)”？
+}
+\end{paracol}
+
+\addvspace{0.8em}
+\hrule
+\addvspace{0.8em}
+
+\topicteacherproblem{检测 7}{概率事件与独立性}
+{\small \qGeneralCheckSevenStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  概率为 \(0.8\)。
+}
+\teachblock{标准解答}{
+  \qGeneralCheckSevenSolution
+}
+
+\switchcolumn
+\teachblock{学生问题}{
+  \errortag{未设事件} 直接写算式 \(1 - 0.4 \times 0.5\)。\\
+  \errortag{独立性未声明} 未写出“事件相互独立”即直接使用概率乘法公式，导致被扣去逻辑步骤分。
+}
+\teachblock{课堂追问}{
+  1. 概率题如果不定义字母事件，有什么弊端？（老师看不懂你的数值代表什么含义，无法给步骤分）。\\
+  2. 两个事件的概率相乘，隐含的逻辑前提是什么？
+}
+\end{paracol}
+
+\newpage
+
+\section{逻辑符号与等价号使用}
+
+\teachblock{一、核心书写原则：逻辑词 + 条件组 + 关键结论}{
+  最优表达结构：用短逻辑词引导推理，用大括号列齐前置条件，直接输出阶段或最终结论。避免情绪化与小作文式叙述。
+  \[
+    \boxed{\text{短逻辑词} + \text{条件组} + \text{关键结论}}
+  \]
+}
+
+\teachblock{二、常用数学逻辑符号工具箱}{
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabularx}{\textwidth}{p{2.2cm}p{2.2cm}X}
+  \toprule
+  符号 & 读作 & 典型场景与规范书写\\
+  \midrule
+  \(\forall\) & 对任意 & 恒成立、对所有实数。例：\(\forall x \in [0,1], f(x) \ge 0\)。\\ \hline
+  \(\exists\) & 存在 & 方程有解、有交点。例：\(\exists x \in D, f(x) = 0\)。\\ \hline
+  \(\exists!\) & 存在唯一 & 极值唯一性、唯一零点。例：\(\exists! x_0 \in (a, b), f'(x_0) = 0\)。\\ \hline
+  \(\Rightarrow\) & 推出 & 由条件得到结论。例：\(f'(x) > 0 \Rightarrow f(x)\) 在区间上单调递增。\\ \hline
+  \(\Leftrightarrow\) & 等价于 & 充要恒等变形。避免在单向推理中使用。\\ \hline
+  \(\subseteq\) & 包含于 & 集合关系、充要证明。例：\(A \subseteq B\)。\\ \hline
+  \(\cap\) & 交集 & 条件同时成立。例：\(\Delta < 0 \cap a > 0\)。\\ \hline
+  \(\cup\) & 并集 & 分类讨论最终合并。例：所求范围为 \(A \cup B\)。\\ \hline
+  \(\varnothing\) & 空集 & 无解、无公共点。例：解集为 \(\varnothing\)。\\ \hline
+  \(\because\) & 因为 & 引用前面已证条件或已知。例：\(\because a \neq 0\)。\\ \hline
+  \(\therefore\) & 所以 & 得到阶段性或最终结论。例：\(\therefore a > 1\)。\\ \hline
+  \(p \Rightarrow q\) & \(p\) 推出 \(q\) & 表示 \(p\) 是 \(q\) 的\textbf{充分条件}。\\ \hline
+  \(p \Leftarrow q\) & \(q\) 推出 \(p\) & 表示 \(p\) 是 \(q\) 的\textbf{必要条件}。\\
+  \bottomrule
+  \end{tabularx}
+}
+
+\teachblock{等价号使用说明}{
+  \textbf{谨慎使用 \(\Leftrightarrow\)}。只有双向逻辑成立时才能使用。
+  \begin{itemize}
+    \item \textbf{合法等价}：\(x+1 > 0 \Leftrightarrow x > -1\)。
+    \item \textbf{只能写单向推出}：\(x^2=4 \Rightarrow x=\pm 2\)。
+    \item \textbf{平方开方防增根}：\(\sqrt{x} = x-2 \Leftrightarrow \begin{cases} x-2 \ge 0, \\ x = (x-2)^2 \end{cases}\)。
+  \end{itemize}
+}
+
+\teachblock{三、必要文字与冗余文字对照表}{
+  （此处详见学案“必要文字与冗余文字对照表”。教师应重点提醒学生两类问题：一是只写算式、不写理由；二是文字太多、关键公式不突出。订正时要求学生用“由、又、所以、综上”等词把公式和条件连起来。）
+}
+
+\newpage
+
+\section{卷面书写规范与写法标准}
+
+\teachblock{一、三层书写法}{
+  \begin{itemize}
+    \item \textbf{骨架层（公式）}：大括号列齐定理前置条件，推出结论。
+    \item \textbf{逻辑词层}：用“由、又、代入、得、故、综上”粘合步骤。
+    \item \textbf{解释层}：对二次项系数退化、分类标准加简练文字说明。
+  \end{itemize}
+}
+
+\teachblock{二、不同层次学生的写法标准}{
+  教师需对不同学习阶段的学生，设定明确的书写达标界线：
+  \begin{itemize}
+    \item \textbf{基础档}：写清主要公式与代入，得出最终答案，不跳定理名称。对基础学生，首先要求其把所用公式和关键代入过程写出来。
+    \item \textbf{提升档}：标明取值范围，分类讨论完整无重漏，写清退化检查与“综上”。重点关注定义域、分母、底数、斜率存在和等号取值。
+    \item \textbf{高分档}：定理条件大括号罗列完整，文字简洁，步骤层次清楚。高分学生要避免表达过于个人化，应训练“因为……又……所以……综上……”等规范推理句式。
+  \end{itemize}
+}
+
+\teachblock{三、解题卷面书写六步法}{
+  \[
+    \boxed{\text{先设后限，联立再推；关键计算，综上收尾。}}
+  \]
+  \begin{enumerate}[label=第\arabic*步 , leftmargin=3.5em, itemsep=0.1em]
+    \item \textbf{设}：引入研究对象（设函数、参数、点线、事件），明确推理起点；
+    \item \textbf{限}：写明隐含限制（定义域、分母非零、斜率存在性），避免后续推理超出条件；
+    \item \textbf{联}：联立方程或列出定理前置条件组，确立代数与几何约束；
+    \item \textbf{推}：写出推理步骤，避免跨度过大，不用“显然”代替必要证明；
+    \item \textbf{算}：呈现关键计算步骤与化简过渡，直接写结果易失步骤分；
+    \item \textbf{综}：回代检验边界，分类讨论最后合并结论。
+  \end{enumerate}
+}
+
+\newpage
+
+\section{各板块表达规范}
+
+\teachblock{板块一：代数含参最值与分类讨论}{
+  \textbf{动轴定区间最值模板}：\\
+  1. 配方指出对称轴 \(x = x_0\)；\\
+  2. 分别讨论当轴在左侧、内部、右侧时的最值，并在各分支内部求交集；\\
+  3. 最终通过“综上所述”对各段结论求并集。
+}
+
+\teachblock{板块二：立体几何证明条件组}{
+  线面垂直判定大括号模板：
+  \[
+    \text{因为 }
+    \begin{cases}
+      l \perp a, \\
+      l \perp b, \\
+      a \cap b = A, \\
+      a, b \subset \text{平面 } \alpha
+    \end{cases}
+    \Rightarrow l \perp \text{平面 } \alpha.
+  \]
+  \textbf{教师讲解要点}：线面垂直判定的四要素（垂直、垂直、相交、在面内）在高考卷面中错一个扣一分，大括号能够有效防止学生丢条件。
+}
+
+\teachblock{板块三：解三角形表达要点}{
+  详见教案中对 SSA 多解判定的几何直观解释（\(\backslash\)sineAmbiguityModel），强调面积公式必须使用两边的夹角，并且在正弦定理边角转化时引入比例常数 \(R\)。
+}
+
+\teachblock{板块四：解析几何“五步式”表达模板}{
+  \textbf{高考五步四段式}：\\
+  1. 设点设线，首先分类讨论斜率不存在；\\
+  2. 联立方程消元整理，写出二次方程；\\
+  3. 判定有无实根，标明且计算 \(\Delta > 0\)；\\
+  4. 写出韦达定理关系式；\\
+  5. 目标式代换与化简计算。
+}
+
+\teachblock{板块五：导数单调性规范链条}{
+  定义域 \(\rightarrow\) 求导及化简 \(\rightarrow\) 令 \(f'(x)=0\) 并求根 \(\rightarrow\) 列表判号 \(\rightarrow\) 单调区间 \(\rightarrow\) 极值/最值。\\
+  \textbf{教师讲解要点}：导数符号判定（如 \(f'(x)>0\)）必须和自变量区间一起写，不可孤立出现。
+}
+
+\teachblock{板块六：数列推理过程模板}{
+  1. \textbf{累加法/累乘法}：求通项时必须写明 \(n \ge 2\) 的前置限制，最后对首项 \(n=1\) 进行回代检验。\\
+  2. \textbf{错位相减}：写出第一式与乘公比得到的第二式，对齐后相减，写出化简过程和等比求和代入，注意最后尾项的符号变化。
+}
+
+\teachblock{板块七：概率统计与事件定义}{
+  设事件 \(\rightarrow\) 独立性说明 \(\rightarrow\) 写明随机变量分布（如 \(X \sim B(n,p)\)） \(\rightarrow\) 列表呈现分布列 \(\rightarrow\) 期望计算。
+}
+
+\newpage
+
+\section{典型例题与评分点}
+
+\topicproblem{例题 1}{代数函数轴动区间定分类讨论与综合收尾}
+{\small \qGeneralExampleOneStem}
+
+\begingroup\small
+\noindent\textbf{【评分细则量化（总分 8 分）】}\par\nopagebreak\addvspace{0.3em}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|p{1.5cm}|}
+\hline
+步骤 & 采分点 & 分值 \\ \hline
+1. 设与对称轴 & 写出配方式与对称轴 \(x = a\) & 1分 \\ \hline
+2. 分类讨论 & 分支区间讨论条件 \(a \le 0\)、\(0 < a < 2\)、\(a \ge 2\) 不重不漏 & 3分 \\ \hline
+3. 最值变形 & 列出各段最值不等式并求解（分支内求交集） & 3分 \\ \hline
+4. 综上合并 & 对各段结论求并集，并写出“综上所述，\(\dots\)” & 1分 \\ \hline
+\end{tabularx}
+\endgroup
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  \(a \in (-\infty, -1] \cup [3, +\infty)\)。
+}
+\teachblock{标准解答与得分点}{
+  \qGeneralExampleOneSolution
+}
+
+\switchcolumn
+\teachblock{三栏分析}{
+  \teachblock{思维启动}{
+    根据对称轴 \(x = a\) 与区间 \([0, 2]\) 的位置关系，分三类求最小值。
+  }
+  \teachblock{卷面采分点}{
+    1. 配方并指出对称轴 \(x = a\)；\\
+    2. 分段列出讨论条件；\\
+    3. 写出各区间最小值表达式并求解；\\
+    4. 分支内求交集，分支间求并集，写明“综上所述”。
+  }
+  \teachblock{易丢分写法}{
+    \errortag{无分类讨论} 直接假设最小值在顶点处取得，得出 \(-1 \ge 0\)（无解）。\\
+    \errortag{缺少合并} 各分支算完后未写“综上所述”进行并集收尾。
+  }
+}
+\end{paracol}
+
+\addvspace{1.0em}
+\hrule
+\addvspace{1.0em}
+
+\topicproblem{例题 2}{立体几何逻辑链与条件组书写规范}
+{\small \qGeneralExampleTwoStem}
+
+\begingroup\small
+\noindent\textbf{【评分细则量化（总分 8 分）】}\par\nopagebreak\addvspace{0.3em}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|p{1.5cm}|}
+\hline
+步骤 & 采分点 & 分值 \\ \hline
+1. 对角线垂直 & 证明底面 \(BD \perp AC\) & 1分 \\ \hline
+2. 高线垂直 & 证明 \(PO \perp \text{平面 } ABCD\)，从而 \(PO \perp BD\) & 2分 \\ \hline
+3. 线面垂直 & 列齐判定定理四要素，推出 \(BD \perp \text{平面 } PAC\) & 3分 \\ \hline
+4. 面面垂直 & 声明线在面内前提 \(BD \subset \text{平面 } PBD\)，推出面面垂直 & 2分 \\ \hline
+\end{tabularx}
+\endgroup
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  证明见解答。
+}
+\teachblock{标准解答与得分点}{
+  \qGeneralExampleTwoSolution
+}
+
+\switchcolumn
+\teachblock{三栏分析}{
+  \teachblock{思维启动}{
+    将“线面垂直判定定理”翻译为四个必备条件组（垂直、垂直、相交、在面内）。
+  }
+  \teachblock{卷面采分点}{
+    1. 证明对角线垂直；\\
+    2. 证明高线垂直底面得出 \(PO \perp BD\)；\\
+    3. 用大括号列齐判定定理四要素；\\
+    4. 证明面面垂直时，明确指出线在面内。
+  }
+  \teachblock{易丢分写法}{
+    \errortag{判定条件缺漏} 漏写“在平面内相交直线”和“线在面内”的前提条件。
+  }
+}
+\end{paracol}
+
+\newpage
+
+\topicproblem{例题 3}{解三角形多定理融合与代数变形}
+{\small \qGeneralExampleThreeStem}
+
+\begingroup\small
+\noindent\textbf{【评分细则量化（总分 8 分）】}\par\nopagebreak\addvspace{0.3em}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|p{1.5cm}|}
+\hline
+步骤 & 采分点 & 分值 \\ \hline
+1. 边角转化 & 声明外接圆半径 \(R\)，化简等式得 \(a^2 + b^2 - c^2 = ab\) & 2分 \\ \hline
+2. 余弦求角 & 由余弦定理等式计算求得 \(\cos C = \frac{1}{2}\) & 2分 \\ \hline
+3. 角唯一性 & 声明范围 \(C \in (0, \pi)\)，求得唯一角 \(C = \frac{\pi}{3}\) & 2分 \\ \hline
+4. 代数整体变形 & 利用完全平方等价变形整体代换求出 \(ab = 6\)，并计算出面积 & 2分 \\ \hline
+\end{tabularx}
+\endgroup
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  (1) \(C = \frac{\pi}{3}\)。 (2) 面积 \(S = \frac{3\sqrt{3}}{2}\)。
+}
+\teachblock{标准解答与得分点}{
+  \qGeneralExampleThreeSolution
+}
+
+\switchcolumn
+\teachblock{三栏分析}{
+  \teachblock{思维启动}{
+    正弦边角转化需引入比例常数；求角必须指明角范围；利用完全平方公式进行整体代换。
+  }
+  \teachblock{卷面采分点}{
+    1. 正弦转化时声明“设外接圆半径为 \(R\)”；\\
+    2. 由余弦定理得出余弦值；\\
+    3. 声明范围 \(C \in (0, \pi)\) 求角；\\
+    4. 利用完全平方代换求出乘积。
+  }
+  \teachblock{易丢分写法}{
+    \errortag{无比例声明} 直接用边代换角（如 \(\sin A = a\)）。\\
+    \errortag{求角无说明} 直接求角，无角范围声明。
+  }
+}
+\end{paracol}
+
+\addvspace{1.0em}
+\hrule
+\addvspace{1.0em}
+
+\topicproblem{例题 4}{导数单调区间与零点判定}
+{\small \qGeneralExampleFourStem}
+
+\begingroup\small
+\noindent\textbf{【评分细则量化（总分 8 分）】}\par\nopagebreak\addvspace{0.3em}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|p{1.5cm}|}
+\hline
+步骤 & 采分点 & 分值 \\ \hline
+1. 定义域与求导 & 写出定义域 \((0, +\infty)\) 并求导化简 \(f'(x) = \frac{-x^2-x+a}{x}\) & 2分 \\ \hline
+2. 参数 \(a \le 0\) 讨论 & 判定导号小于 0 并写出递减区间结论 & 2分 \\ \hline
+3. 参数 \(a > 0\) 讨论 & 判定分子方程有唯一正根 \(x_0\)，并指明其落在定义域内 & 2分 \\ \hline
+4. 导数符号与区间 & 写明导数正负符号分别对应的区间，得出递增递减区间 & 2分 \\ \hline
+\end{tabularx}
+\endgroup
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  答案见解答。
+}
+\teachblock{标准解答与得分点}{
+  \qGeneralExampleFourSolution
+}
+
+\switchcolumn
+\teachblock{三栏分析}{
+  \teachblock{思维启动}{
+    函数单调性由导数符号决定，在定义域 \((0, +\infty)\) 内讨论导数的分子正负。
+  }
+  \teachblock{卷面采分点}{
+    1. 写明定义域；\\
+    2. 分路讨论参数 \(a\)；\\
+    3. 参数大于 0 时，对分子零点进行正数性讨论与判定；\\
+    4. 写明单调区间与导数正负的对应关系。
+  }
+  \teachblock{易丢分写法}{
+    \errortag{漏定义域} 漏写 \(x>0\)，导致求区间时错列为 \(x < x_0\)。\\
+    \errortag{符号未对应区间} 只写出导数方程的根，不提导数在哪个区间大于 0。
+  }
+}
+\end{paracol}
+
+\newpage
+
+\topicproblem{例题 5}{解析几何“五步式”规范}
+{\small \qGeneralExampleFiveStem}
+
+\begingroup\small
+\noindent\textbf{【评分细则量化（总分 8 分）】}\par\nopagebreak\addvspace{0.3em}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|p{1.5cm}|}
+\hline
+步骤 & 采分点 & 分值 \\ \hline
+1. 斜率不存在分类 & 验证斜率不存在时的特殊边界弦长，判断排除 & 1分 \\ \hline
+2. 设坐标与联立 & 设交点、设直线，联立方程消元得出二次方程 & 2分 \\ \hline
+3. 判别式与韦达 & 指明判别式 \(\Delta > 0\) 恒成立，列出韦达定理两公式 & 2分 \\ \hline
+4. 弦长计算 & 套用弦长公式整体代换消元，代入值求得斜率 \(k = \pm 1\) & 2分 \\ \hline
+5. 综合结论 & 整理写出最终的两条直线方程 & 1分 \\ \hline
+\end{tabularx}
+\endgroup
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  直线方程为 \(x-y-1=0\) 或 \(x+y-1=0\)。
+}
+\teachblock{标准解答与得分点}{
+  \qGeneralExampleFiveSolution
+}
+
+\switchcolumn
+\teachblock{三栏分析}{
+  \teachblock{思维启动}{
+    设直线方程时必须考虑斜率不存在；联立韦达前必须写判别式；弦长公式要整体代换。
+  }
+  \teachblock{卷面采分点}{
+    1. 讨论斜率不存在的边界；\\
+    2. 设点设线联立消元；\\
+    3. 计算判别式且写韦达；\\
+    4. 代入弦长公式求解；\\
+    5. 综上合并给出直线一般式。
+  }
+  \teachblock{易丢分写法}{
+    \errortag{漏边界讨论} 直接写直线为斜截式，漏掉斜率不存在时的讨论。\\
+    \errortag{无判别式} 韦达前不写判别式条件。
+  }
+}
+\end{paracol}
+
+\addvspace{1.0em}
+\hrule
+\addvspace{1.0em}
+
+\topicproblem{例题 6}{数列累加与错位相减}
+{\small \qGeneralExampleSixStem}
+
+\begingroup\small
+\noindent\textbf{【评分细则量化（总分 8 分）】}\par\nopagebreak\addvspace{0.3em}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|p{1.5cm}|}
+\hline
+步骤 & 采分点 & 分值 \\ \hline
+1. 项数限制 & 算出首项 \(a_1 = 2\)；说明“当 \(n \ge 2\) 时”作差得 \(a_n = 2a_{n-1}\) & 2分 \\ \hline
+2. 回代与通项 & 回代检验 \(n=1\) 满足通项，得出 \(a_n = 2^n\) & 2分 \\ \hline
+3. 错位乘公比 & 规范书写 \(T_n\) 与 \(2T_n\) 两个代数式并错位相减 & 2分 \\ \hline
+4. 化简整理结论 & 正确套用等比求和公式，注意尾项符号，化简得出结论 & 2分 \\ \hline
+\end{tabularx}
+\endgroup
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  (1) $a_n = 2^n$；\\
+  (2) $T_n = (2n-3)2^{n+1}+6$。
+}
+\teachblock{标准解答与得分点}{
+  \qGeneralExampleSixSolution
+}
+
+\switchcolumn
+\teachblock{三栏分析}{
+  \teachblock{思维启动}{
+    由前项和求通项必有项数限制；错位相减需乘以等比数列的公比并对齐相减。
+  }
+  \teachblock{卷面采分点}{
+    1. 计算首项与相减通项；\\
+    2. 写出项数限制条件 \(n \ge 2\)；\\
+    3. 回代检验并写结论；\\
+    4. 错位相减乘公比，注意等比求和及尾项符号。
+  }
+  \teachblock{易丢分写法}{
+    \errortag{漏自变量限制} \(S_n - S_{n-1}\) 不写 \(n \ge 2\)，漏检验 \(n=1\)。\\
+    \errortag{计算失误} 错位相减时把尾项 \(-(2n-1)2^{n+1}\) 符号写错。
+  }
+}
+\end{paracol}
+
+\newpage
+
+\topicproblem{例题 7}{概率统计事件与期望}
+{\small \qGeneralExampleSevenStem}
+
+\begingroup\small
+\noindent\textbf{【评分细则量化（总分 8 分）】}\par\nopagebreak\addvspace{0.3em}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|X|p{1.5cm}|}
+\hline
+步骤 & 采分点 & 分值 \\ \hline
+1. 事件定义与独立 & 设随机事件，写明事件独立性，说明对立事件概率 & 2分 \\ \hline
+2. 对立概率 & 计算对立事件概率得出 \(P(A) = 0.84\) & 2分 \\ \hline
+3. 分布列 & 明确随机变量可能值，写明二项分布，列出表格 & 2分 \\ \hline
+4. 期望计算 & 写出数学期望计算公式求出 \(E(X) = 1.8\) & 2分 \\ \hline
+\end{tabularx}
+\endgroup
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  (1) \(P(A) = 0.84\)。 (2) 分布列及 \(E(X) = 1.8\)。
+}
+\teachblock{标准解答与得分点}{
+  \qGeneralExampleSevenSolution
+}
+
+\switchcolumn
+\teachblock{三栏分析}{
+  \teachblock{思维启动}{
+    概率大题必须先用字母定义事件或随机变量，再说明所用分布的依据。
+  }
+  \teachblock{卷面采分点}{
+    1. 设事件并写概率；\\
+    2. 声明事件的相互独立性；\\
+    3. 写明 \(X \sim B(3, 0.6)\)；\\
+    4. 制作封闭的分布列表格；\\
+    5. 写期望公式求解。
+  }
+  \teachblock{易丢分写法}{
+    \errortag{直接堆数} 不设事件、不作独立声明，直接相乘相减。\\
+    \errortag{分布不明} 分布列前没有写明随机变量服从二项分布，期望前没有公式依据。
+  }
+}
+\end{paracol}
+
+\newpage
+
+\section{立体几何与解三角形专题训练}
+
+本章节重点讨论立体几何与解三角形中的卷面表达。通过中档题与综合题的配置，说明定理条件、范围限制、辅助线依据和结论检验在卷面中的呈现方式。
+
+\subsection{立体几何专题剖析}
+
+\topicteacherproblem{专题例题 1}{中档：三棱锥中异面直线夹角}
+{\small \qSolidPyramidSkewAngleStem}
+\begin{center}
+  \qSolidPyramidSkewAngleFigure[1.1]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  直线 $MB$ 与 $AC$ 所成角的余弦值为 \(\dfrac{1}{2}\)。（单选题对应选项 \textbf{D}）
+}
+\teachblock{标准解答}{
+  \qSolidPyramidSkewAngleSolution
+}
+
+\switchcolumn
+\teachblock{逻辑剖析与定理条件}{
+  \textbf{1. 异面直线夹角的平移判定依据}：\\
+  根据异面直线所成角的几何定义，求角必须将其平移至同一起点。
+  在底面内，过点 $B$ 作 $BD \parallel AC$ 且 $BD = AC$。此时直线 $MB$ 与 $AC$ 所成的角即为直线 $MB$ 与 $BD$ 所成的角 $\angle MBD$（或其补角）。这样就把空间中的异面直线角转为同一三角形中的平面角。\\
+  \textbf{2. 向量辅助法求解边长}：\\
+  在平行四边形 $ACDB$ 中，连接对角线 $AD$ 是几何法难点。通过向量等式：
+  \[ \overrightarrow{AD} = 2\overrightarrow{AB} + \overrightarrow{BC} \]
+  结合底面已知垂直条件 $AB \perp BC$，两边平方得 $AD^2 = 4AB^2 + BC^2 = 5$，从而得出 $AD = \sqrt{5}$。\\
+  \textbf{3. 余弦定理求角与钝角判定}：\\
+  在 $\triangle MBD$ 中利用余弦定理计算得 $\cos\angle MBD = -1/2$。由于异面直线所成的几何角 $\theta$ 的定义域为 $[0, \pi/2]$，其余弦值必为非负，故最终应取其余角（或补角）的余弦值绝对值，得到 $\cos\theta = 1/2$。
+}
+\teachblock{课堂追问与落实}{
+  1. 追问：为什么要过点 $B$ 平移直线 $AC$？（为了将不相交的异面直线平移至相交，以便在同一个三角形 $\triangle MBD$ 内求解）。\\
+  2. 追问：如果算出来的余弦值是负数，几何法的解释是什么？（说明 $\triangle MBD$ 中 $\angle MBD$ 为钝角 $120^{\circ}$，而异面直线所成的角取其补角 $60^{\circ}$，其对应的余弦值为 $1/2$）。
+}
+\end{paracol}
+
+\addvspace{0.8em}
+\hrule
+\addvspace{0.8em}
+
+\topicteacherproblem{专题例题 2}{中档：长方体中异面直线夹角}
+{\small \qSolidCuboidSkewAngleStem}
+\begin{center}
+  \qSolidCuboidSkewAngleFigure[1.1]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  直线 $AD_1$ 与 $BD$ 所成角的余弦值为 $\dfrac{\sqrt{6}}{4}$；\\
+  （单选题对应选项 \textbf{D}）
+}
+\teachblock{标准解答}{
+  \qSolidCuboidSkewAngleSolution
+}
+
+\switchcolumn
+\teachblock{逻辑剖析与定理条件}{
+  \textbf{1. 长方体面内平移依据}：\\
+  利用长方体平行面和侧棱平行的几何性质。因为 $D_1C_1 \parallel AB$ 且 $D_1C_1 = AB$，容易得出四边形 $ABC_1D_1$ 为平行四边形，进而得到 $D_1A \parallel C_1B$。从而将异面角平移为相交线 $C_1B$ 与 $BD$ 在侧面与底面所构成等腰三角形中的夹角。\\
+  \textbf{2. 对角线模长与直角三角形}：\\
+  长方体的侧面 $BCC_1B_1$ 和底面 $ABCD$ 各自包含互相垂直的棱。通过 Rt$\triangle C_1CB$、Rt$\triangle C_1CD$ 以及底面 Rt$\triangle BAD$ 分步使用勾股定理算出三角形的三边长 $BC_1 = C_1D = 4$，$BD = 2\sqrt{6}$。分步书写计算过程，可以减少计算错误，也便于阅卷时看出每一步依据。\\
+  \textbf{3. 等腰三角形与余弦定理}：\\
+  得到等腰 $\triangle C_1BD$ 后，直接利用余弦定理列出代数等式求角，无需做高线，是几何法中最稳定和通用的代数求解路径。
+}
+\teachblock{课堂追问与落实}{
+  1. 追问：除了平移 $AD_1$ 到 $BC_1$，还可以怎么平移？（也可以过点 $A$ 作 $BD$ 的平行线，或平移 $BD$ 到 $B_1D_1$ 等，但平移到侧面对角线在长方体中计算最为便捷）。\\
+  2. 追问：为什么在 $\triangle C_1BD$ 中可以直接用余弦定理？（因为三边长均已求出，余弦定理是解任意三角形已知三边求角的标准公式）。
+}
+\end{paracol}
+
+\addvspace{0.8em}
+\hrule
+\addvspace{0.8em}
+
+\topicteacherproblem{专题例题 3}{难题：四棱锥动点投影与点面距离}
+{\small \qSolidPyramidPointDistanceStem}
+\begin{center}
+  \qSolidPyramidPointDistanceFigure[1.1]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  点 $F$ 到平面 $BDE$ 的距离为 \(\dfrac{4\sqrt{3}}{9}\)。
+}
+\teachblock{标准解答}{
+  \qSolidPyramidPointDistanceSolution
+}
+
+\switchcolumn
+\teachblock{逻辑剖析与定理条件}{
+  \textbf{1. 几何投影与相似比例}：\\
+  利用线面交比性质。由于 $F$ 属于线段 $BP$，直线 $BP$ 与平面 $BDE$ 交于点 $B$，因此点 $F$ 与顶点 $P$ 到平面的距离之比等于 $BF : BP$。设此比值为 $\lambda$，这一步把动点到平面的距离转为点 $P$ 到平面的距离。\\
+  \textbf{2. 直角三角形中的射影关系}：\\
+  要确定 $F$ 的位置，必须利用 $EF \perp BP$。在直角 $\triangle PBC$ 内，通过三角函数 $\cos\angle BPC = \frac{PC}{BP}$，计算出 $PF = PE \cos\angle BPC = \frac{2\sqrt{3}}{3}$，进而得出 $BF : BP = 2 : 3$，确定点 $F$ 的位置。\\
+  \textbf{3. 等体积法公式应用}：\\
+  求点 $P$ 到平面 $BDE$ 的距离，可以使用三棱锥等体积法：$V_{P-BDE} = V_{E-PBD}$。把高线转移到点 $E$ 到平面 $PBD$ 的垂线，即半对角线长 $CO/2$，计算会比较简洁。\\
+  \textbf{4. 直角三角形形状验证}：\\
+  求底面 $\triangle BDE$ 的面积时，若直接使用海伦公式计算较繁。可先利用勾股定理逆定理验证 $DE^2 + BE^2 = BD^2$，证明其是以 $E$ 为直角顶点的直角三角形，再用两直角边乘积的一半求面积。
+}
+\teachblock{课堂追问与落实}{
+  1. 追问：为什么点 $F$ 到面的距离等于点 $P$ 到面距离的 $2/3$？（因为 $F$ 在线段 $BP$ 上且满足 $BF = \frac{2}{3}BP$，根据相似三角形的比例性质，它们到平面 $BDE$ 的距离比也等于 $2:3$）。\\
+  2. 追问：如何快速发现 $\triangle BDE$ 是直角三角形？（先求出三边长 $\sqrt{2}, \sqrt{6}, 2\sqrt{2}$，观察它们的平方关系 $2 + 6 = 8$ 是否成立，若满足勾股定理，则必然是直角三角形）。
+}
+\end{paracol}
+
+\newpage
+
+\subsection{解三角形专题剖析}
+
+\topicteacherproblem{专题例题 4}{中档：正余弦互化与中线向量模长}
+{\small \qTriangleAreaOneStem}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  (1) \(A = \dfrac{\pi}{3}\)；(2) \(a = 2\sqrt{3}\)。
+}
+\teachblock{标准解答}{
+  \qTriangleAreaOneSolution
+}
+
+\switchcolumn
+\teachblock{逻辑剖析与定理条件}{
+  \textbf{1. 正弦定理边角互化依据}：\\
+  在第一问中，由正弦定理将边化角。写出定理依据：
+  \[ \frac{a}{\sin A} = \frac{b}{\sin B} = \frac{c}{\sin C} \]
+  代入得 $\sin A \cos B = \sin C + \sin B \cos 2A$。\\
+  \textbf{2. 非零除法前提条件（高频扣分点）}：\\
+  推导中化简得 $\sin B(\cos A + \cos 2A) = 0$。要约去 $\sin B$，必须先声明前置条件：因为在三角形中内角 $B \in (0, \pi)$，所以 $\sin B > 0$（非零值）。否则，在代数上同除以可能为 0 的项是不合规的，高考中缺此句必扣 1 分。\\
+  \textbf{3. 三角函数单值对应范围限制}：\\
+  由因式分解求出 $\cos A = 1/2$ 或 $\cos A = -1$。由于三角形内角 $A \in (0, \pi)$，余弦函数在此区间内单调，且 $\cos A$ 无法取到 $-1$。必须在步骤中写出该范围以舍去负根，从而唯一确定 $A = \pi/3$。\\
+  \textbf{4. 中线长向量化与整体代换}：\\
+  第二问中，利用 $D$ 为 $BC$ 中点建立中线向量模型：
+  \[ \overrightarrow{AD} = \frac{1}{2}(\overrightarrow{AB} + \overrightarrow{AC}) \]
+  两边平方得 $AD^2 = \frac{1}{4}(c^2 + b^2 + 2bc\cos A)$。这是求中线长的常用方法。利用面积解出 $bc=12$ 后，直接整体代入求得 $b^2+c^2=24$，不必分别求出 $b,c$ 的值，可以减少根式计算。
+}
+\teachblock{课堂追问与落实}{
+  1. 追问：约去 $\sin B$ 时不写 $\sin B > 0$ 会扣分吗？（会，属于代数除法逻辑漏洞，扣 1 分）。\\
+  2. 追问：为什么将中线写成向量形式 $\overrightarrow{AD} = \frac{1}{2}(\overrightarrow{AB} + \overrightarrow{AC})$ 可以避开繁琐的几何定理？（平方求模能直接将中线长同三角形的三边以及夹角联系起来，无需做辅助线，是最稳定的通用解法）。
+}
+\end{paracol}
+
+\addvspace{0.8em}
+\hrule
+\addvspace{0.8em}
+
+\topicteacherproblem{专题例题 5}{中档：多选题恒等式判定与两解范围}
+{\small \qTriangleIdentitiesOneStem}
+\qTriangleIdentitiesOneOptions
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  正确选项为 \textbf{A, C, D}。
+}
+\teachblock{标准解答}{
+  \qTriangleIdentitiesOneSolution
+}
+
+\switchcolumn
+\teachblock{逻辑剖析与定理条件}{
+  \textbf{1. 形状判定多解完备性}：\\
+  对于 A 选项，由 $\sin 2A = \sin 2B$。由于内角和 $A+B < \pi$（即 $2A+2B < 2\pi$），利用诱导公式，正弦值相等只能推出 $2A=2B$（角相等，等腰）或 $2A+2B=\pi$（角互补，直角）。必须两分支同时讨论写明，漏掉直角分类是常见失分点。\\
+  \textbf{2. 函数单调性的自变量前提}：\\
+  对于 C 选项，由 $A > \pi/2 - B$ 推出 $\sin A > \sin(\pi/2-B)$ 必须指明前置自变量定义域：因为在锐角三角形中，这两个角都落在 $(0, \pi/2)$ 这个正弦函数的单调递增区间内。不标区间直接用单调性，在逻辑上属于“不证自明”式跳步。\\
+  \textbf{3. 两解条件的代数不等式}：\\
+  对于 D 选项，边 $b$ 和角 $A$ 固定。要使以 $C$ 为圆心、半径为 $a$ 的圆与 $AB$ 射线交于两点，圆的半径 $a$ 必须大于圆心到直线的距离（高 $h=b\sin A$）且小于邻边 $b$，即不等式：
+  \[ b\sin A < a < b \]
+  利用此几何性质得到不等式关系后，再代入数值即可求出两解的参数范围。
+}
+\teachblock{课堂追问与落实}{
+  1. 追问：$\sin 2A = \sin 2B$ 为什么不能直接得出 $2A=2B$？（因为在 $(0, 2\pi)$ 范围内，正弦函数不是单调函数，相同的正弦值可能对应两个角，即 $2A$ 和它的补角 $\pi - 2A$）。\\
+  2. 追问：如果三角形是钝角三角形，$\sin A > \cos B$ 还一定成立吗？（不一定，因为 $A$ 或 $B$ 有可能超过 $\pi/2$，此时单调区间改变，不等式可能会失效）。
+}
+\end{paracol}
+
+\addvspace{0.8em}
+\hrule
+\addvspace{0.8em}
+
+\topicteacherproblem{专题例题 6}{难题：角平分线、面积分拆与倒数和最值}
+{\small \qTriangleBisectorMinStem}
+\begin{center}
+  \qTriangleBisectorMinFigure[1.1]
+\end{center}
+
+\begin{paracol}{2}
+\teachblock{标准结论}{
+  (1) $\sin A : \sin C = 4:1$；\\
+  (2) $c + 9a$ 的最小值为 $\dfrac{32\sqrt{3}}{3}$。
+}
+\teachblock{标准解答}{
+  \qTriangleBisectorMinSolution
+}
+
+\switchcolumn
+\teachblock{逻辑剖析与定理条件}{
+  \textbf{1. 三角形角平分线定理}：\\
+  第 (1) 问中引用定理：角平分线分对边所得的两条线段的比等于这两条线段相邻的两边之比，即：
+  \[
+  \begin{aligned}
+    \frac{AB}{BC} &= \frac{AD}{DC} \\
+    &= \frac{1}{4}
+  \end{aligned}
+  \]
+  再结合正弦定理，可以得到角的正弦之比。\\
+  \textbf{2. 面积分拆恒等式}：\\
+  角平分线求解首选面积法。平分线 $BD$ 将三角形拆分为两个子三角形。根据面积相加关系 $S_{ABC} = S_{ABD} + S_{CBD}$，代入已知角 $B = \pi/3$ 和平分线长 $BD = 2$ 化简，即可求得倒数和式：\\$1/a + 1/c = \sqrt{3}/2$。\\
+  \textbf{3. 常数代换法与基本不等式}：\\
+  在已知倒数和为常数的条件下，求 $c+9a$ 最小值。直接用均值不等式等号无法同时成立，必须使用“常数代换法”，即乘以上述倒数和式展开，转化为关于 $c/a + 9a/c$ 的最值式。
+  再对括号内应用均值不等式求得最小值。\\
+  根据基本不等式的等号条件，验证等号成立时 $c=3a$，再由倒数和求得具体的 $a = 8\sqrt{3}/9$，说明最小值能够取到。
+}
+\teachblock{课堂追问与落实}{
+  1. 追问：为什么不能对 $c+9a$ 分别求最值？\\
+  （因为 $a, c$ 之间有倒数和条件，不能独立变化，\\
+  直接拆开会导致两个均值不等式的等号在\\
+  不同条件下取得，结果错误）．\\
+  2. 追问：面积法除了求角平分线，还能解决什么？\\
+  （可以解决共线线段的比例问题，\\
+  或是含有特定分角的高线与中线问题）．
+}
+\end{paracol}
+
+\newpage
+
+\section{问题答案的规范改写}
+
+在讲解完例题后，引导学生在学案上独立完成这 7 道改写题。教师巡视时重点关注跳步、漏条件和等价号使用不当等问题。
+
+\subsection{改写 1：代数分类讨论的退化边界}
+\noindent\textbf{【原卷题目】} \qGeneralCheckOneStem
+
+\begin{paracol}{2}
+\teachblock{规范书写与步骤要点}{
+  \textbf{标准规范作答：}\\
+  \qBadAlgebraCorrect\par
+  \textbf{教学强调：}\\
+  二次项系数含参是高考代数不等式的经典陷阱，分类讨论必须从退化边界 \(a=0\) 开始，否则逻辑判定直接扣掉步骤分。
+}
+
+\switchcolumn
+\teachblock{问题作答与原因分析}{
+  \textbf{学生原答案：}\\
+  \qBadAlgebraWriteup\par
+  \textbf{扣分点分析：}\\
+  \qBadAlgebraReason
+}
+\end{paracol}
+
+\addvspace{1.0em}
+\hrule
+\addvspace{1.0em}
+
+\subsection{改写 2：立体几何判定前提条件组}
+\noindent\textbf{【原卷题目】} \qGeneralCheckTwoStem
+
+\begin{paracol}{2}
+\teachblock{规范书写与步骤要点}{
+  \textbf{标准规范作答：}\\
+  \qBadGeometryCorrect\par
+  \textbf{教学强调：}\\
+  线面垂直判定定理要求四要素（垂直、垂直、相交、在面内）缺一不可，高考证明题中直接跨过判定前提直接写结论属于“逻辑跨步”，按步骤至少扣除 2 分。
+}
+
+\switchcolumn
+\teachblock{问题作答与原因分析}{
+  \textbf{学生原答案：}\\
+  \qBadGeometryWriteup\par
+  \textbf{扣分点分析：}\\
+  \qBadGeometryReason
+}
+\end{paracol}
+
+\newpage
+
+\subsection{改写 3：解三角形正弦一角两解}
+\noindent\textbf{【原卷题目】} \qGeneralCheckThreeStem
+
+\begin{paracol}{2}
+\teachblock{规范书写与步骤要点}{
+  \textbf{标准规范作答：}\\
+  \qBadTriangleCorrect\par
+  \textbf{教学强调：}\\
+  解三角形 SSA 情境中，求出正弦值后有两解可能，必须写出双解，并列明内角和过滤检验过程，否则属于严重漏解，扣分比答错更大。
+}
+
+\switchcolumn
+\teachblock{问题作答与原因分析}{
+  \textbf{学生原答案：}\\
+  \qBadTriangleWriteup\par
+  \textbf{扣分点分析：}\\
+  \qBadTriangleReason
+}
+\end{paracol}
+
+\addvspace{1.0em}
+\hrule
+\addvspace{1.0em}
+
+\subsection{改写 4：导数单调区间与零点正性}
+\noindent\textbf{【原卷题目】} \qGeneralCheckFourStem
+
+\begin{paracol}{2}
+\teachblock{规范书写与步骤要点}{
+  \textbf{标准规范作答：}\\
+  \qBadDerivativeCorrect\par
+  \textbf{教学强调：}\\
+  导数大题必须写明定义域。求出的分子零点 \(x_0\) 必须论证其正负性，确保其属于定义域。单调区间的结论必须写明是由导数大于 0 或小于 0 推出，并说明对应区间。
+}
+
+\switchcolumn
+\teachblock{问题作答与原因分析}{
+  \textbf{学生原答案：}\\
+  \qBadDerivativeWriteup\par
+  \textbf{扣分点分析：}\\
+  \qBadDerivativeReason
+}
+\end{paracol}
+
+\newpage
+
+\subsection{改写 5：解析几何条件不全与斜率忽视}
+\noindent\textbf{【原卷题目】} \qGeneralCheckFiveStem
+
+\begin{paracol}{2}
+\teachblock{规范书写与步骤要点}{
+  \textbf{标准规范作答：}\\
+  \qBadAnalyticCorrect\par
+  \textbf{教学强调：}\\
+  解析几何大题中，设直线方程时必须考虑斜率不存在的情况；在联立方程后、用韦达定理前，必须先写出判别式 \(\Delta > 0\) 的充要限制，且在韦达公式中先设交点坐标。
+}
+
+\switchcolumn
+\teachblock{问题作答与原因分析}{
+  \textbf{学生原答案：}\\
+  \qBadAnalyticWriteup\par
+  \textbf{扣分点分析：}\\
+  \qBadAnalyticReason
+}
+\end{paracol}
+
+\addvspace{1.0em}
+\hrule
+\addvspace{1.0em}
+
+\subsection{改写 6：数列范围含混与过程跨步}
+\noindent\textbf{【原卷题目】} \qGeneralExampleSixStem
+
+\begin{paracol}{2}
+\teachblock{规范书写与步骤要点}{
+  \textbf{标准规范作答：}\\
+  \qBadSequenceCorrect\par
+  \textbf{教学强调：}\\
+  使用相减公式作差时必须写明限制 \(n \ge 2\)，算出通项后必须回代检验首项 \(n=1\)。错位相减法求和的相减化简、求和公式代入步骤不可省略，需对齐写明。
+}
+
+\switchcolumn
+\teachblock{问题作答与原因分析}{
+  \textbf{学生原答案：}\\
+  \qBadSequenceWriteup\par
+  \textbf{扣分点分析：}\\
+  \qBadSequenceReason
+}
+\end{paracol}
+
+\newpage
+
+\subsection{改写 7：概率模型不明与独立未声明}
+\noindent\textbf{【原卷题目】} \qGeneralExampleSevenStem
+
+\begin{paracol}{2}
+\teachblock{规范书写与步骤要点}{
+  \textbf{标准规范作答：}\\
+  \qBadProbabilityCorrect\par
+  \textbf{教学强调：}\\
+  概率大题开头必须设事件；在使用独立乘法公式前必须指明事件相互独立；在使用二项分布公式或期望时，必须写明 \(X \sim B(n,p)\)，分布列画封闭框线表格。
+}
+
+\switchcolumn
+\teachblock{问题作答与原因分析}{
+  \textbf{学生原答案：}\\
+  \qBadProbabilityWriteup\par
+  \textbf{扣分点分析：}\\
+  \qBadProbabilityReason
+}
+\end{paracol}
+
+\newpage
+
+\section{落实与表达检查}
+
+\teachblock{一、核心公式与逻辑默写（答案）}{
+  本专题学案末尾设置了“公式默写”环节。教师应在此处展示完整公式答案，用于随堂订正或课后收卷批改：
+  
+  \begingroup
+  \large
+  \renewcommand{\arraystretch}{1.55}
+  \linespread{1.35}\selectfont
+  \showprompttrue
+  \topicformulas
+  \endgroup
+}
+
+\teachblock{二、交卷前 30 秒表达检查说明}{
+  本清单要求学生在平时限时训练、模拟考试乃至高考中，答完解答题后进行固定的表达检查。教师可要求学生将此清单放在错题本首页。详见学案最后一页。
+}
+
+\end{document}

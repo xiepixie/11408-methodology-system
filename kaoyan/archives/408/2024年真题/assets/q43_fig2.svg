@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="760" viewBox="0 0 1240 760" role="img" aria-labelledby="title desc" style="max-width: 100%; height: auto;">
+  <title id="title">题 43(b) 部分数据通路及控制信号</title>
+  <desc id="desc">ALU 的 A、B 输入，ALUBsrc 多路选择器，12 位立即数扩展器，ALUctr 与 Ext 控制信号，以及 ZF、OF、SF、CF 标志输出。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L9,4.5 L0,9 z" fill="#edf4e8"/></marker>
+  </defs>
+  <rect id="background" width="1240" height="760" rx="18" fill="#30362d"/>
+  <g id="datapath" fill="none" stroke="#edf4e8" stroke-width="2.4" marker-end="url(#arrow)">
+    <path id="input-a" d="M365 486 V325"/>
+    <path id="mux-to-alu" d="M595 486 V325"/>
+    <path id="reg-b-to-mux" d="M515 650 V560"/>
+    <path id="ext-to-mux" d="M665 650 V560"/>
+    <path id="ir-to-ext" d="M665 740 V720"/>
+    <path id="alu-result" d="M480 190 V85"/>
+    <path id="flag-zf" d="M370 190 V118"/>
+    <path id="flag-of" d="M420 190 V118"/>
+    <path id="flag-sf" d="M540 190 V118"/>
+    <path id="flag-cf" d="M590 190 V118"/>
+  </g>
+  <g id="components" stroke="#c9d3c4" stroke-width="2.4" fill="#3b4337">
+    <path id="alu" d="M300 190 H610 L675 325 H245 Z"/>
+    <path id="mux" d="M480 486 H700 L665 560 H515 Z"/>
+    <rect id="extender" x="625" y="650" width="80" height="70" rx="4"/>
+  </g>
+  <g id="control-lines" fill="none" stroke="#c9d3c4" stroke-width="2.2" stroke-dasharray="7 6" marker-end="url(#arrow)">
+    <path id="control-aluctr" d="M900 245 H675"/>
+    <path id="control-alubsrc" d="M900 520 H700"/>
+    <path id="control-ext" d="M900 685 H705"/>
+  </g>
+  <g id="labels" fill="#edf4e8" font-family="Arial, 'Noto Sans CJK SC', sans-serif">
+    <text x="460" y="262" text-anchor="middle" font-size="34" font-weight="700">ALU</text>
+    <text x="590" y="520" text-anchor="middle" font-size="26" font-weight="700">多路选择器</text>
+    <text x="590" y="551" text-anchor="middle" font-size="26" font-weight="700">MUX</text>
+    <text x="665" y="677" text-anchor="middle" font-size="22" font-weight="700">扩展器</text>
+
+    <text x="325" y="470" font-size="26">A</text>
+    <text x="560" y="470" font-size="26">B</text>
+    <text x="472" y="635" font-size="26">B</text>
+    <text x="325" y="405" font-size="22">32</text>
+    <text x="550" y="405" font-size="22">32</text>
+    <text x="475" y="620" font-size="22">32</text>
+    <text x="695" y="620" font-size="22">32</text>
+    <text x="630" y="742" font-size="22">12</text>
+    <text x="715" y="742" font-size="25">IR[31:20]</text>
+
+    <text id="flag-zf-label" x="350" y="105" font-size="24">ZF</text>
+    <text id="flag-of-label" x="402" y="105" font-size="24">OF</text>
+    <text id="flag-sf-label" x="522" y="105" font-size="24">SF</text>
+    <text id="flag-cf-label" x="572" y="105" font-size="24">CF</text>
+    <text id="result-label" x="490" y="72" font-size="26">F</text>
+
+    <text id="aluctr-label" x="800" y="232" font-size="27">ALUctr</text>
+    <text id="alubsrc-label" x="780" y="507" font-size="27">ALUBsrc</text>
+    <text id="ext-label" x="815" y="672" font-size="27">Ext</text>
+
+    <g id="alu-legend" font-size="25">
+      <text x="930" y="210">000：加</text>
+      <text x="930" y="250">001：减</text>
+      <text x="930" y="290">010：逻辑左移</text>
+      <text x="930" y="330">…</text>
+    </g>
+    <g id="ext-legend" font-size="25">
+      <text x="930" y="665">0：零扩展</text>
+      <text x="930" y="705">1：符号扩展</text>
+    </g>
+  </g>
+</svg>

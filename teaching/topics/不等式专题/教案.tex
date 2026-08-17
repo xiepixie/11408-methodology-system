@@ -1,0 +1,403 @@
+\documentclass[12pt,a4paper]{ctexart}
+\usepackage[teacher]{ipara}
+\input{questions.tex}
+
+% =====================================================
+% 页眉页脚设置（教案端）
+% =====================================================
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small 专题复习教案（教师备课用）}
+\rhead{\small 专题：不等式结构换元与消元方法}
+\cfoot{\small 第 \thepage\ 页\quad 共 \zpageref{LastPage} 页}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\begin{document}
+
+% =====================================================
+% 页头设计
+% =====================================================
+\begin{center}
+  {\Large\bfseries 不等式专题复习教案}\\
+  \vspace{0.6em}
+  {\large 教师备课专用\quad 专题：不等式结构换元与消元方法}
+\end{center}
+
+\section{教学目标与重难点}
+\textbf{【教学目标】}
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.1em, topsep=0.2em]
+  \item 深入理解单变量根式不等式的四类经典换元方式（一次根式整体换元、二次差/和/差平方三角换元），熟练实现去根号化归。
+  \item 熟练掌握多变量不等式的消元核心：主元消元、比值消元与轮换消元，学会利用齐次化构造将多变量问题转化为一元比值问题。
+  \item 掌握均值不等式链（\(H \leqslant G \leqslant L \leqslant A \leqslant Q\)）及其同阶齐次放缩特征。
+  \item 理解反证法在证明严格三元不等式中的“中介放缩条件构造”作用，掌握 2008 江西高考压轴不等式及同类 IMO 竞赛题的证明框架。
+  \item 掌握绝对值不等式的解法（零点分段讨论法）与绝对值三角不等式放缩，理解数形结合在绝对值代数区域分析中的桥梁作用。
+\end{enumerate}
+
+\vspace{0.8em}
+\textbf{【教学重难点】}
+\begin{description}[leftmargin=2em, itemsep=0.1em, topsep=0.2em]
+  \item[重点] 根式换元公式的记忆与三角有界性转换；多变量齐次化构造与比值消元求最值的步骤；三元循环轮换相消的代数证明；分类分段讨论的边界处理。
+  \item[难点] 反证假设（如 \(x+y+z \leqslant 1\)）向二次齐次放缩关系式（如 \(1-x^2 \geqslant (x+y+z)^2-x^2\)）的平移转化；国际数学竞赛题中乘积恒等式 512 的构造与证明；双绝对值零点分段讨论的区间交并集处理。
+\end{description}
+
+\newpage
+
+\section{备课公式与方法库}
+
+\subsection{一元根式经典换元模型}
+无理根式是一元不等式复杂度的核心来源。根据根式内部代数结构，分类采用以下稳定换元：
+
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=1.2em, topsep=0.2em]
+  \item \textbf{一次根式 \(\sqrt{1 \pm x}\) —— 整体换元}：
+  令整个根式为新变量 \(t = \sqrt{1-x} \geqslant 0\)，反解出有理式 \(x = 1-t^2\)，将无理表达式化归为二次函数。
+  
+  \item \textbf{二次差根式 \(\sqrt{1-x^2}\) —— \(\cos\theta\) 或 \(\sin\theta\) 三角换元}：
+  令 \(x = \cos\theta\)，由于 \(x \in [-1, 1]\)，可限制 \(\theta \in [0, \pi]\)，根式化为 \(\sin\theta\)。利用三角有界性求解。
+  
+  \item \textbf{二次和根式 \(\sqrt{1+x^2}\) —— \(\tan\theta\) 三角换元}：
+  令 \(x = \tan\theta\)，利用恒等式 \(1+\tan^2\theta = \dfrac{1}{\cos^2\theta}\)，将根式化为 \(\dfrac{1}{\cos\theta}\)。
+  
+  \item \textbf{二次差平方根式 \(\sqrt{x^2-1}\) —— \(\dfrac{1}{\cos\theta}\) 正割三角换元}：
+  令 \(x = \dfrac{1}{\cos\theta}\)，利用恒等式 \(\dfrac{1}{\cos^2\theta} - 1 = \tan^2\theta\)，将根式化为 \(\tan\theta\)。
+\end{enumerate}
+
+\subsection{多变量消元与齐次化理论}
+消元是不等式中解决多变量的核心上层处理思路：
+
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=1.2em, topsep=0.2em]
+  \item \textbf{比值消元与齐次化}：
+  齐次化的本质是将式子中的“常数 1”用已知约束条件替换为“同阶多项式”，从而使自变量能以比值 \(t = \dfrac{y}{x}\) 统一呈现。
+  例如已知 \(x+y=1\)：
+  求 \(\dfrac{1}{x} + \dfrac{1}{y}\) 的最值，由于分子是零阶，分母是一阶，乘以 \(x+y\) 齐次化得 \(\dfrac{x+y}{x} + \dfrac{x+y}{y} = 2 + \dfrac{y}{x} + \dfrac{x}{y}\)。
+  若求 \(\dfrac{1}{x^2} + \dfrac{4}{y}\)，第一项分母是二次，分子乘 \((x+y)^2\)；第二项分母是一次，分子乘 \((x+y)\)。齐次化为：
+  \[
+  \frac{1}{x^2} + \frac{4}{y} = \frac{(x+y)^2}{x^2} + \frac{4(x+y)}{y} = (1+t)^2 + 4\left(1+\frac{1}{t}\right) \quad \text{（其中 } t = \frac{y}{x}\text{）。}
+  \]
+  
+  \item \textbf{轮换消元（隔项相消）}：
+  适用于三元及以上的循环结构。单独分析某一项往往由于变量交错无法放缩，但将所有轮换项累乘或累加，利用齐次项与乘积恒等，所有变量的指数可以在对称相乘中完全抵消。
+\end{enumerate}
+
+\subsection{均值链的齐次阶次特征}
+对任意正实数 \(a, b\)，常见的五个均值按大小排序如下：
+\[
+H = \frac{2}{\frac{1}{a} + \frac{1}{b}} \leqslant G = \sqrt{ab} \leqslant L = \frac{a - b}{\ln a - \ln b} \leqslant A = \frac{a + b}{2} \leqslant Q = \sqrt{\frac{a^2 + b^2}{2}}
+\]
+\textit{备课指引}：提醒学生，所有参与基本不等式或均值放缩的代数式必须“同阶次”。若阶次不齐（例如一次量直接与二次量放缩），会导致等号取不到或无法消去自变量。
+
+\subsection{绝对值不等式性质与解法}
+绝对值不等式在高考与竞赛中常以代数求解与放缩证明的双重面貌出现：
+
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=1.2em, topsep=0.2em]
+  \item \textbf{绝对值三角不等式}：
+  对于任意实数 \(a, b\)，恒有：
+  \[
+  ||a| - |b|| \leqslant |a \pm b| \leqslant |a| + |b|
+  \]
+  其中，左侧等号成立的条件是 \(a(a \mp b) \geqslant 0\) 且 \(|a| \geqslant |b|\)；右侧等号成立的条件是 \(ab \geqslant 0\)（同号或至少有一个为0）。
+  
+  \item \textbf{绝对值不等式的解法（零点分段法）}：
+  处理含有多个绝对值符号的不等式（如 \(|x-a| + |x-b| < c\)），通常采用“零点分段讨论法”，其流程为：
+  寻找绝对值内的零点 \(\to\) 零点将数轴分成多个半开半闭区间 \(\to\) 分段去绝对值号化为一元一次不等式组 \(\to\) 求各段解集与区间限制的交集 \(\to\) 取并集得出最终解。
+\end{enumerate}
+
+\newpage
+
+% =====================================================
+% 核心题型精讲
+% =====================================================
+\section{核心题型精讲与诊断}
+
+% Q1
+\teachquestionheader{根式单变量整体换元题}
+\qOneStem
+\qOneOptions
+
+\begin{paracol}{2}
+  \textbf{【考查意图】}\\
+  考查一元根式求最值的基础方法；考查将无理有界函数换元为二次有理函数求顶点的能力。
+  
+  \textbf{【课堂主线】}\\
+  令整个根式为新变量 \(t = \sqrt{1-x} \geqslant 0\) \(\to\) 得到 \(x = 1-t^2\) \(\to\) 代入原式得有理二次二次型 \(-t^2+t+1\) \(\to\) 配方求顶点 \(\dfrac{5}{4}\)。
+  
+  \textbf{【标准解答】}\\
+  \qOneSolution
+  
+  \textbf{【一题多解】}\\
+  本题也可正面求导：\(f'(x) = 1 - \dfrac{1}{2\sqrt{1-x}} = 0 \implies \sqrt{1-x} = \dfrac{1}{2} \implies x = \dfrac{3}{4}\)。代入原式得最大值 \(\dfrac{5}{4}\)。但对根式求导易出现计算细节失误，整体代换法因“无理化有理”显得更加稳妥。
+
+  \switchcolumn
+  \textbf{【易错诊断】}\\
+  1. \textbf{忽视新元范围}：换元后，漏写自变量 \(t \geqslant 0\) 这一关键约束，在大题中易因扣分。\\
+  2. \textbf{反解式子项写错}：由 \(t=\sqrt{1-x}\) 错解为 \(x=t^2-1\)。
+  
+  \textbf{【课堂追问】}\\
+  1. “我们令整个根式等于 \(t\)，首先必须声明 \(t\) 满足什么范围约束？”\\
+  2. “如果二次函数顶点的对称轴不在定义域内，该怎么求最值？”
+\end{paracol}
+
+\vspace{0.8em}
+\par\noindent{\color{rulecolor}\hrule height 0.4pt}
+\vspace{0.8em}
+
+% Q2
+\teachquestionheader{二次差根式三角换元题}
+\qTwoStem
+\qTwoOptions
+
+\begin{paracol}{2}
+  \textbf{【考查意图】}\\
+  考查二次差平方根式下的三角恒等变换；考查将代数不等式转化为三角函数有界性的能力。
+  
+  \textbf{【课堂主线】}\\
+  由定义域 \(x \in [-1,1]\) 设 \(x = \cos\theta\) \(\to\) 根式化简为 \(\sin\theta\) \(\to\) 合并为 \(\sqrt{2}\sin(\theta+\pi/4)\) \(\to\) 三角函数最大值 \(\sqrt{2}\)。
+  
+  \textbf{【标准解答】}\\
+  \qTwoSolution
+  
+  \textbf{【一题多解】}\\
+  本题也可用柯西不等式正面直接得出：\\
+  \(x + \sqrt{1-x^2} \leqslant \sqrt{(1^2+1^2)(x^2+1-x^2)} = \sqrt{2 \cdot 1} = \sqrt{2}\)。等号在 \(x = \sqrt{1-x^2} \implies x = \dfrac{\sqrt{2}}{2}\) 时成立。课堂上应将三角换元与柯西不等式对比讲解，加深理解。
+
+  \switchcolumn
+  \textbf{【易错诊断】}\\
+  1. \textbf{三角符号判定错}：将 \(\sqrt{1-\cos^2\theta}\) 化为 \(\sin\theta\) 时，未限制 \(\theta\) 范围，导致偶发负值号错误。\\
+  2. \textbf{辅助角公式记混}：将 \(\sin\theta+\cos\theta\) 错化为 \(\sqrt{2}\sin(\theta-\pi/4)\)。
+\end{paracol}
+
+\vspace{0.8em}
+\par\noindent{\color{rulecolor}\hrule height 0.4pt}
+\vspace{0.8em}
+
+\newpage
+
+% Q3
+\teachquestionheader{非对称齐次化与比值消元题}
+\qThreeStem
+\qThreeOptions
+
+\begin{paracol}{2}
+  \textbf{【考查意图】}\\
+  考查二元非对称不等式最值的齐次化与比值消元消变量方法；考查导数在一元比值函数中的最值分析。
+  
+  \textbf{【课堂主线】}\\
+  利用 \(x+y=1\) 将两分式分子分别乘成二次和一次 \(\to\) 展开为只含有比值 \(\dfrac{y}{x}\) 的齐次型 \(\to\) 换元 \(t = \dfrac{y}{x}\) \(\to\) 一元函数导数求最值。
+  
+  \textbf{【标准解答】}\\
+  \qThreeSolution
+  
+  \textbf{【课堂追问】}\\
+  1. “第一项的分母是二次，为什么我们分子乘上的是 \((x+y)^2\) 展开式？”\\
+  2. “齐次化之后，为什么式子里的变量全部消失，变成了单纯的比值 \(\dfrac{y}{x}\)？”
+  
+  \switchcolumn
+  \textbf{【易错诊断】}\\
+  1. \textbf{阶数不配盲目乘}：很多学生习惯性两项都去乘 \(x+y\)，导致两分项在阶数上依然无法齐次化，无法消去变量。\\
+  2. \textbf{求导极值判断错}：分式导数分子通分时容易把常数项符号算错。
+\end{paracol}
+
+\vspace{0.8em}
+\par\noindent{\color{rulecolor}\hrule height 0.4pt}
+\vspace{0.8em}
+
+% Q4
+\teachquestionheader{根式转椭圆线性最值题}
+\begin{minipage}[t]{0.7\textwidth}
+  \vspace{0pt}
+  \qFourStem
+  \qFourOptions
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.26\textwidth}
+  \vspace{0pt}
+  \hfill
+  \qFourFigure[0.85]
+\end{minipage}
+
+\vspace{0.8em}
+
+\begin{paracol}{2}
+  \textbf{【考查意图】}\\
+  考查无理根式方程向二次椭圆约束条件转换的降维思想；考查椭圆上线性规划或辅助角公式的应用。
+  
+  \textbf{【课堂主线】}\\
+  设双根式为 \(M, N\) \(\to\) 平方消去变量 \(x\) 得到标准椭圆约束 \(\dfrac{M^2}{3}+\dfrac{2N^2}{9}=1\) \(\to\) 目标函数 \(M+N\) \(\to\) 柯西或三角换元求最大值。
+  
+  \textbf{【标准解答】}\\
+  \qFourSolution
+  
+  \textbf{【课堂追问】}\\
+  1. “如果本题我们直接整体代换 \(\sqrt{3x} = t\)，自变量代数会变成什么样？为什么用椭圆模型更简单？”\\
+  2. “柯西不等式放缩中，如何配凑分母的系数，使其正好与椭圆约束的常数 1 咬合？”
+  
+  \switchcolumn
+  \textbf{【易错诊断】}\\
+  1. \textbf{自变量消元关系算错}：由 \(N^2 = 3x\) 往 \(M^2 = 3 - 2x\) 中代入消元时把常数因子算错。\\
+  2. \textbf{忽视根式非负特征}：遗漏 \(M \geqslant 0, N \geqslant 0\) 限制，导致若求最小值时发生判误（椭圆仅局限在第一象限）。
+\end{paracol}
+
+\vspace{0.8em}
+\par\noindent{\color{rulecolor}\hrule height 0.4pt}
+\vspace{0.8em}
+
+\newpage
+
+% Q5
+\teachquestionheader{三元高考压轴不等式证明题}
+{\small
+\qFiveStem
+}
+
+\begin{paracol}{2}
+  \textbf{【考查意图】}\\
+  考查利用根式换元简化高度抽象不等式；考查利用反证假设构造齐次二次多项式进行均值轮换相消的严密逻辑链条。
+  
+  \textbf{【课堂主线】}\\
+  换元为自变量 \(x,y,z\) \(\to\) 得到乘积约束等于 8 \(\to\) 假设下界 \(x+y+z \leqslant 1\) \(\to\) 放缩出 \(1-x^2 \geqslant (y+z)(2x+y+z)\) \(\to\) 四项均值放缩后轮换相乘导出矛盾 \(\to\) 同样反证并放缩证明上界。
+  
+  \textbf{【标准解答】}\\
+  \qFiveSolution
+  
+  \textbf{【课堂追问】}\\
+  1. “为什么直接证明 \(x+y+z>1\) 极难，而假设 \(x+y+z \leqslant 1\) 之后，我们能瞬间把 \(1-x^2\) 换成齐次形式？”\\
+  2. “轮换相乘之后，为什么右侧的 \(x, y, z\) 变量的指数会刚好抵消为 0？这说明齐次性在其中起到了什么作用？”
+  
+  \switchcolumn
+  \textbf{【易错诊断】}\\
+  1. \textbf{反证放缩反向}：在证明下界反证中，写错 \(1-x^2\) 的大小号方向。\\
+  2. \textbf{上界极限放缩遗漏条件}：在证明上界中，忽略了自变量 \(0 < x, y, z < 1\) 这一隐性前提，导致式子无法放缩。
+  
+  \textbf{【教师备课微点】}\\
+  本题为 2008 年江西卷数学高考压轴大题，证明难度极高。讲解时应向学生指明：\textbf{“反证法在不等式里的最大价值，在于变目标为已知条件，主动为齐次化创造工具”}。
+\end{paracol}
+
+\vspace{0.8em}
+\par\noindent{\color{rulecolor}\hrule height 0.4pt}
+\vspace{0.8em}
+
+% Q6
+\teachquestionheader{国际竞赛（IMO）轮换根式不等式证明}
+{\small
+\qSixStem
+}
+
+\begin{paracol}{2}
+  \textbf{【考查意图】}\\
+  考查竞赛级三元对称分式不等式证明；考查通过换元将高度交错式转化为高考压轴题相同数理结构的化归思想。
+  
+  \textbf{【课堂主线】}\\
+  构造换元 \(x = \sqrt{\dfrac{a^2}{a^2+8bc}}\) \(\to\) 平方反解出 \(\dfrac{1-x^2}{x^2} = \dfrac{8bc}{a^2}\) \(\to\) 三项相乘得到乘积等式等于 512 \(\to\) 反证假设 \(x+y+z < 1\) \(\to\) 沿用上一题 Q5 证明方法，导出乘积大于 512 矛盾。
+  
+  \textbf{【标准解答】}\\
+  \qSixSolution
+  
+  \textbf{【课堂追问】}\\
+  1. “既然三项相乘得到的乘积等于 512，这与上一题乘积等于 8 在数理结构上有什么异同？”\\
+  2. “这道 IMO 竞赛题与高考压轴题能套用同一个证明框架，这体现了数学解题中的什么元思维？”
+  
+  \switchcolumn
+  \textbf{【易错诊断】}\\
+  1. \textbf{换元方向迷失}：很多学生看到 \(a^2 + 8bc\) 不知道设整个根式为 \(x\)，而是强行展开或使用柯西不等式，导致计算量爆炸。\\
+  2. \textbf{轮换消元常数因子算错}：在计算 \(\left(\dfrac{8bc}{a^2}\right)\left(\dfrac{8ca}{b^2}\right)\left(\dfrac{8ab}{c^2}\right)\) 时，把 \(8^3\) 误算为 64 或 128。
+  
+  \textbf{【教学建议】}\\
+  作为本讲专题课的压轴收尾题。应向学生指出：看似高深的竞赛题，剥离其复杂的外壳（通过换元）后，其底层的放缩核心、反证齐次化和指数消元动作，与高考题是高度重合的。
+\end{paracol}
+
+\vspace{0.8em}
+\par\noindent{\color{rulecolor}\hrule height 0.4pt}
+\vspace{0.8em}
+
+% Q7
+\teachquestionheader{分类讨论解绝对值不等式}
+\qSevenStem
+
+\begin{paracol}{2}
+  \textbf{【考查意图】}\\
+  考查含有两个绝对值的不等式求解的基本功；掌握利用零点分段法去掉绝对值号，并进行解集求并集的严谨分类讨论思想。
+  
+  \textbf{【课堂主线】}\\
+  求出两绝对值的零点 \(1/2\) 与 \(-2\) \(\to\) 将实数轴划分为三个区间：\(x < -2\)，\(-2 \leqslant x \leqslant 1/2\)，\(x > 1/2\) \(\to\) 分别去绝对值符号求解一元一次不等式组 \(\to\) 合并各段解集得 \(\left(-\dfrac{2}{3}, 4\right)\)。
+  
+  \textbf{【标准解答】}\\
+  \qSevenSolution
+
+  \switchcolumn
+  \textbf{【易错诊断】}\\
+  1. \textbf{去绝对值号符号错}：在负区间（如 \(x < -2\)）去绝对值时，漏掉负号或多加正号。\\
+  2. \textbf{未与区间条件求交集}：解出不等式后直接当作解，忘记与当前讨论的区间范围限制求交集。\\
+  3. \textbf{最后各段未求并集}：分类讨论完成后，习惯性去求了各段的交集而非并集，导致最后无解或漏解。
+  
+  \textbf{【课堂追问】}\\
+  1. “零点分段讨论的本质是什么？如果只有一个绝对值，我们需要分三段吗？”\\
+  2. “在各个区间内解出的范围，为什么要和该区间本身取交集？最后三段的范围又为什么要取并集？”
+\end{paracol}
+
+\vspace{0.8em}
+\par\noindent{\color{rulecolor}\hrule height 0.4pt}
+\vspace{0.8em}
+
+% Q8
+\teachquestionheader{绝对值三角不等式证明与几何法}
+\qEightStem
+
+\begin{paracol}{2}
+  \textbf{【考查意图】}\\
+  考查绝对值不等式的性质与放缩技巧；考查数形结合（代数表示与几何区域）的思维切换与综合论证能力。
+  
+  \textbf{【课堂主线】}\\
+  法一（代数讨论）：根据 \(ab\) 符号分类 \(\to\) 若同号 \(|a|+|b|=|a+b| \leqslant 1\)；若异号 \(|a|+|b|=|a-b| \leqslant 1\) \(\to\) 综上得证。\\
+  法二（几何法）：分析已知条件在坐标系中表示由两条带状区域交织而成的正方形 \(\to\) 目标不等式也表示相同的正方形 \(\to\) 区域完全重合，得证。
+  
+  \textbf{【标准解答】}\\
+  \qEightSolution
+
+  \switchcolumn
+  \textbf{【易错诊断】}\\
+  1. \textbf{代数法分类不全}：分类讨论时漏掉 \(ab=0\) 这种临界情况，或者对正负区间讨论时出现重叠或遗漏。\\
+  2. \textbf{几何区域画错}：把 \(|a+b| \leqslant 1\) 的带状区域画成了别的斜率或画错了正方形顶点的坐标。
+  
+  \textbf{【课堂追问】}\\
+  1. “代数证明中，为什么我们要根据 \(ab\) 的乘积正负来分类？这与绝对值拆分有什么本质联系？”\\
+  2. “在几何法中，\(|a+b| \leqslant 1\) 且 \(|a-b| \leqslant 1\) 围成的正方形顶点坐标是怎么计算出来的？这个正方形与目标 \(|a|+|b| \leqslant 1\) 为什么完全一致？”
+\end{paracol}
+
+\vspace{0.8em}
+\par\noindent{\color{rulecolor}\hrule height 0.4pt}
+\vspace{0.8em}
+
+\newpage
+
+% =====================================================
+% 教学总结与指引
+% =====================================================
+\section{学生薄弱点分析与教学指引}
+
+\begingroup
+\linespread{1.4}\selectfont
+
+\subsection{学生薄弱点归因摘要}
+本专题课后及作业诊断中，学生在不等式结构换元与消元上面临的薄弱点主要如下：
+\begin{enumerate}[label=\arabic*. , leftmargin=2em, itemsep=0.1em, topsep=0.2em]
+  \item \textbf{对齐次化结构的敏感度欠缺}：很多学生看到 \(x+y=1\) 条件下的分式求最值，依然习惯机械地“通分联立”或“乱套公式”，不知道分子与分母必须在阶数上保持一致（齐次）才能通过比值消元转化为一元问题。
+  \item \textbf{根式三角换元的公式链易遗忘}：虽然知道可以三角换元，但经常记混二次和 \(\sqrt{1+x^2}\) 与二次差平方 \(\sqrt{x^2-1}\) 所对应的正切、正割公式，对于新元范围约束也常有漏写。
+  \item \textbf{反证放缩的代数构造能力弱}：在面对高考压轴及竞赛级不等式时，不知道如何利用反证假设（如 \(s \leqslant 1\)）把突兀的非齐次项（如 \(1-x^2\)）向齐次项（如 \(s^2-x^2\)）转化。这说明对于“将未知转化为已知放缩工具”这一高阶解题动作理解不透。
+\end{enumerate}
+
+\subsection{课堂讲法改进建议}
+\begin{itemize}[leftmargin=2em, itemsep=0.1em, topsep=0.2em]
+  \item \textbf{“以阶观形”强化齐次理念}：在讲解多变量求最值（如第三题）时，先用彩色粉笔标出分子和分母的“阶数”（如零阶、一阶、二阶），强迫学生观察到阶数不配的事实，进而灌输“乘以 \(x+y\) 是为了利用 1 进行提阶齐次化”的解题动作。
+  \item \textbf{“四类根式换元”图表化记忆}：要求学生在课前公式复习中对比默写四类根式的三角和整体代换，强化“根号消失后即是三角有界性或椭圆”的直观感觉。
+  \item \textbf{“化归降维”专题演练}：对 Q4 椭圆线性规划最值和 Q5 反证法放缩大题，在黑板上分步展示“如何通过换元将高难度问题变成有理、齐次、一元或对称乘积恒等式”的化归步骤。要求学生闭卷限时重做 Q5，建立严密的逻辑表达肌肉记忆。
+\end{itemize}
+
+\subsection{落实更新摘要}
+\begin{itemize}[leftmargin=2em, itemsep=0.1em, topsep=0.2em]
+  \item 督促全体学生在课后认真填好学案第五页的反思，并对常用均值链与换元模型进行限时默写。
+  \item 教师在后续复习中重点检查学生对第 5 题高考大题的反证放缩及轮换指数消元步骤，纠正推导书写中可能存在的逻辑跳步或大括号符号书写不规范问题。
+\end{itemize}
+
+\endgroup
+
+\end{document}

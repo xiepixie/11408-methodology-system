@@ -1,0 +1,64 @@
+% =====================================================
+% 题型：正弦定理测距应用题 (q_triangle_lake_measurement.tex)
+% =====================================================
+% 难度：★★ (中档)
+% =====================================================
+\newcommand{\qTriangleLakeMeasurementStem}{如图，为测量湖面上两点 \(A,B\) 之间的距离，测量人员在岸边选取两点 \(C,D\)，测得 \(CD=100\sqrt3\) m，\(\angle ACD=30^\circ\)，\(\angle ADC=45^\circ\)，\(\angle BCD=105^\circ\)，\(\angle BDC=60^\circ\)。求 \(AB\) 的长度。}
+
+\newcommand{\qTriangleLakeMeasurementFigure}[1][0.8]{%
+  \begin{tikzpicture}[scale=#1, line join=round, line cap=round, >=stealth]
+    \coordinate (C) at (0,0);
+    \coordinate (D) at (5,0);
+    \coordinate (A) at (2.15,1.24);
+    \coordinate (B) at (1.2,4.5);
+
+    \draw[very thick] (C) -- (D);
+    \draw[thick] (C) -- (A) -- (D);
+    \draw[thick] (C) -- (B) -- (D);
+    \draw[thick] (A) -- (B);
+
+    \fill (A) circle (1.2pt) node[above left] {\small \(A\)};
+    \fill (B) circle (1.2pt) node[above] {\small \(B\)};
+    \fill (C) circle (1.2pt) node[below left] {\small \(C\)};
+    \fill (D) circle (1.2pt) node[below right] {\small \(D\)};
+
+    \node[below] at ($(C)!0.5!(D)$) {\small \(CD=100\sqrt3\text{ m}\)};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qTriangleLakeMeasurementAnswer}{\(AB=100(\sqrt6-\sqrt2)\) m}
+
+\newcommand{\qTriangleLakeMeasurementSolution}{%
+  先在 \(\triangle ACD\) 中，\(\angle CAD=105^\circ\)。由正弦定理：
+  \[
+    \frac{AC}{\sin45^\circ}=\frac{CD}{\sin105^\circ}
+  \]
+  得
+  \[
+    AC=\frac{100\sqrt3\cdot\frac{\sqrt2}{2}}{\frac{\sqrt6+\sqrt2}{4}}=100(3-\sqrt3).
+  \]
+  在 \(\triangle BCD\) 中，\(\angle CBD=15^\circ\)。由正弦定理：
+  \[
+    \frac{BC}{\sin60^\circ}=\frac{CD}{\sin15^\circ}
+  \]
+  得
+  \[
+    BC=\frac{100\sqrt3\cdot\frac{\sqrt3}{2}}{\frac{\sqrt6-\sqrt2}{4}}=150(\sqrt6+\sqrt2).
+  \]
+  因为 \(\angle ACB=\angle BCD-\angle ACD=75^\circ\)，在 \(\triangle ABC\) 中由余弦定理：
+  \[
+    AB^2=AC^2+BC^2-2AC\cdot BC\cos75^\circ.
+  \]
+  化简得
+  \[
+    AB=100(\sqrt6-\sqrt2)\text{ m}.
+  \]
+}
+
+\newcommand{\qTriangleLakeMeasurementDiagnosis}{%
+  容易在多三角形结构中把角对应关系抄错，尤其是 \(105^\circ\)、\(15^\circ\) 与 \(75^\circ\) 的位置。建议先在图上标全角，再逐个三角形调用正弦定理。%
+}
+
+\newcommand{\qTriangleLakeMeasurementTeachingNotes}{%
+  这类测距题的核心不是公式复杂，而是“分三角形取数”。建议按 \(\triangle ACD\to\triangle BCD\to\triangle ABC\) 的顺序，先求两条共边，再用余弦定理收束。%
+}

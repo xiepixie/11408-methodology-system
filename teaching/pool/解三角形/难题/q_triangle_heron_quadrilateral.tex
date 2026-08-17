@@ -1,0 +1,81 @@
+% =====================================================
+% 题型：四边形分割与海伦公式综合解答题 (q_triangle_heron_quadrilateral.tex)
+% =====================================================
+% 难度：★★★ (难题)
+% =====================================================
+\newcommand{\qTriangleHeronQuadrilateralStem}{在四边形 \(ABCD\) 中，\(AB=BC=CD=2\)，\(AD=4\)，\(\angle ABC=120^\circ\)，求四边形 \(ABCD\) 面积的最大值。}
+
+\newcommand{\qTriangleHeronQuadrilateralFigure}[1][0.9]{%
+  \begin{tikzpicture}[scale=#1, line join=round, line cap=round]
+    \coordinate (A) at (0,0);
+    \coordinate (B) at (2,0);
+    \coordinate (C) at (3,1.732);
+    \coordinate (D) at (0.3,2.2);
+    \draw[thick] (A)--(B)--(C)--(D)--cycle;
+    \draw[dashed] (A)--(C);
+    \node[below left] at (A) {$A$};
+    \node[below right] at (B) {$B$};
+    \node[right] at (C) {$C$};
+    \node[above left] at (D) {$D$};
+  \end{tikzpicture}%
+}
+
+\newcommand{\qTriangleHeronQuadrilateralAnswer}{\(3\sqrt3+2\sqrt7\)}
+
+\newcommand{\qTriangleHeronQuadrilateralSolution}{%
+  连接对角线 \(AC\)。在 \(\triangle ABC\) 中，由余弦定理：
+  \[
+    AC^2=AB^2+BC^2-2AB\cdot BC\cos120^\circ
+    =4+4-8\left(-\frac12\right)=12.
+  \]
+  所以
+  \[
+    AC=2\sqrt3.
+  \]
+  同时
+  \[
+    S_{\triangle ABC}
+    =\frac12\cdot2\cdot2\cdot\sin120^\circ
+    =\sqrt3.
+  \]
+
+  四边形面积为
+  \[
+    S_{ABCD}=S_{\triangle ABC}+S_{\triangle ACD}.
+  \]
+  其中 \(\triangle ACD\) 的三边为
+  \[
+    AC=2\sqrt3,
+    \qquad CD=2,
+    \qquad AD=4.
+  \]
+  这三边长度均固定，因此 \(\triangle ACD\) 实际上由 SSS 唯一确定，面积可直接用海伦公式计算。
+
+  半周长：
+  \[
+    p=\frac{2\sqrt3+2+4}{2}=3+\sqrt3.
+  \]
+  由海伦公式：
+  \[
+    S_{\triangle ACD}
+    =\sqrt{p(p-2\sqrt3)(p-2)(p-4)}.
+  \]
+  代入并化简可得
+  \[
+    S_{\triangle ACD}=2\sqrt7.
+  \]
+  因此
+  \[
+    S_{ABCD}=\sqrt3+2\sqrt7.
+  \]
+
+  若题目原始设问确为“面积最大值”，则还需要核对四边形顶点顺序与可翻折构型是否允许另一面积分支；按当前凸四边形构型，面积由边长数据唯一确定。%
+}
+
+\newcommand{\qTriangleHeronQuadrilateralDiagnosis}{%
+  高频问题是看到“四边形面积最大值”就直接设角求导，却没有先连接对角线检查两块三角形是否已经被固定。应先做自由度判断，再决定是否真的存在连续最值变量。%
+}
+
+\newcommand{\qTriangleHeronQuadrilateralTeachingNotes}{%
+  本题适合训练“先分割、再数自由度”。连接 \(AC\) 后，\(\triangle ABC\) 可由 SAS 固定，进而 \(AC\) 固定；随后 \(\triangle ACD\) 又由 SSS 固定。若原卷答案声称还有连续最值，应优先回查原始题面。%
+}

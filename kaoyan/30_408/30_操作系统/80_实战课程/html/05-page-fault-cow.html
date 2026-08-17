@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>05 · Page Fault → COW：把失败路径变成机制</title>
+  <style>
+    :root{--bg:#0a1020;--panel:#111a2e;--panel2:#0d1627;--line:#263552;--text:#edf3ff;--muted:#a7b6d2;--blue:#80baff;--green:#8ce8c7;--orange:#ffd084;--red:#ff9ca3;--purple:#c5a7ff}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#080f1d,#0a1020);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72}
+    a{color:var(--blue)}code{font-family:"SFMono-Regular",Consolas,monospace;background:#091223;border:1px solid #243757;border-radius:6px;padding:1px 5px}.wrap{max-width:1160px;margin:auto;padding:26px 22px 90px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}.back{text-decoration:none;color:var(--muted)}.badge{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--green)}
+    header{padding:36px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(197,167,255,.13),rgba(140,232,199,.06));border-radius:22px}h1{font-size:clamp(34px,6vw,60px);line-height:1.08;margin:8px 0 16px}.kicker{color:var(--green);font-size:13px;letter-spacing:.12em;text-transform:uppercase}.lead{font-size:18px;color:var(--muted);max-width:920px}.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.meta span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:6px 9px;background:rgba(255,255,255,.025)}
+    section{margin-top:34px}.section-title{font-size:27px;margin:0 0 14px}.panel{border:1px solid var(--line);border-radius:18px;background:rgba(17,26,46,.82);padding:20px}.question{font-size:22px;font-weight:700}.subtle{color:var(--muted)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mini{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:16px}.mini h3{margin:0 0 6px;font-size:17px}.mini p{margin:0;color:var(--muted);font-size:14px}
+    .flow{display:flex;align-items:stretch;gap:8px;overflow:auto;padding:6px 0}.node{min-width:145px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#0d1729}.node b{display:block}.node small{color:var(--muted)}.arrow{align-self:center;color:#6f86ad;font-size:22px}.callout{border-left:3px solid var(--blue);padding:13px 16px;background:rgba(128,186,255,.06);color:#cbd8ee;border-radius:0 12px 12px 0}.warn{border-left-color:var(--orange);background:rgba(255,208,132,.06)}.danger{border-left-color:var(--red);background:rgba(255,156,163,.055)}.good{border-left-color:var(--green);background:rgba(140,232,199,.055)}
+    table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:#dce7fa}.codebox{font-family:"SFMono-Regular",Consolas,monospace;white-space:pre-wrap;background:#07101e;border:1px solid var(--line);border-radius:14px;padding:16px;color:#d9e6ff;overflow:auto}
+    .stepper{display:grid;grid-template-columns:300px 1fr;gap:14px}.controls{display:flex;gap:8px;margin-top:14px}.controls button,.quiz button,.classifier button{border:1px solid var(--line);background:#13203a;color:var(--text);padding:9px 13px;border-radius:10px;cursor:pointer}.event-list{list-style:none;padding:0;margin:0}.event-list li{padding:9px 10px;border:1px solid transparent;border-radius:9px;color:#7f91ae;cursor:pointer}.event-list li.active{border-color:#5c4b87;background:#171b35;color:#fff}.state{min-height:360px}.state h3{margin-top:0}.kv{display:grid;grid-template-columns:145px 1fr;gap:7px 12px;font-size:14px}.kv b{color:#cbbaf5}.framebox{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}.frame{min-width:170px;border:1px solid var(--line);border-radius:12px;padding:12px;background:#0b1527}.frame.live{border-color:#3f7867}.frame.shared{border-color:#725aa2}.frame.new{border-color:#3d6f9f}.pte{font-family:monospace;font-size:13px;color:#d8e4fa}
+    .classifier{display:grid;grid-template-columns:1fr 1fr;gap:14px}.classifier label{display:block;color:var(--muted);font-size:13px;margin:8px 0 4px}.classifier select{width:100%;background:#091323;color:var(--text);border:1px solid var(--line);padding:9px;border-radius:9px}.decision{border:1px solid var(--line);border-radius:14px;background:#0b1527;padding:16px;min-height:250px}.decision strong{color:var(--green)}
+    .quiz{display:grid;gap:10px}.quiz-row{border:1px solid var(--line);background:#0d1627;border-radius:13px;padding:14px}.quiz-row b{display:block;margin-bottom:8px}.answer{display:none;color:var(--muted);margin-top:10px;border-top:1px dashed var(--line);padding-top:9px}.answer.show{display:block}.exam{border:1px solid #5d5032;background:rgba(255,208,132,.05);border-radius:15px;padding:16px}.check li{margin:8px 0}.footer-nav{display:flex;justify-content:space-between;margin-top:45px;padding-top:20px;border-top:1px solid var(--line)}
+    .repl-lab,.ws-lab{display:grid;grid-template-columns:320px 1fr;gap:14px}.lab-form label{display:block;color:var(--muted);font-size:13px;margin:8px 0 4px}.lab-form input,.lab-form select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:#091323;color:var(--text);font-family:monospace}.lab-form button{margin-top:10px;border:1px solid var(--line);background:#13203a;color:var(--text);padding:9px 13px;border-radius:10px;cursor:pointer}.fault-trace{overflow:auto}.fault-trace table{min-width:720px}.hit{color:var(--green)}.miss{color:var(--red)}.bitline{font-family:monospace;color:#cbbaf5}.metric-strip{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.metric-strip span{border:1px solid var(--line);border-radius:999px;padding:6px 9px;background:#0b1527;font-size:13px}.error{color:var(--red)}.ws-set{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.ws-set span{padding:7px 10px;border:1px solid #3d6f9f;border-radius:10px;background:#0d1d32;font-family:monospace}
+    @media(max-width:850px){.grid2,.grid3,.stepper,.classifier,.repl-lab,.ws-lab{grid-template-columns:1fr}.top{align-items:flex-start}header{padding:25px}}
+  </style>
+  <link rel="stylesheet" href="course.css">
+  <script src="course-ui.js" defer></script>
+</head>
+<body><main class="wrap">
+  <div class="top"><a class="back" href="index.html">← 返回课程地图</a><span class="badge">Lesson 05 · P0</span></div>
+  <header>
+    <div class="kicker">MIT 6.1810 × xv6-riscv × 408</div>
+    <h1>Page Fault → COW：<br>把“失败路径”变成可编程机制</h1>
+    <p class="lead">Page Fault 最值得学的地方，不是“缺页就去磁盘”。真正强大的思想是：<b>先让硬件阻止当前访问，再让内核根据 fault 原因修改映射，最后重新执行那条指令。</b>这让 lazy allocation、Copy-on-Write、demand paging、mmap 都可以建立在同一条慢路径上。</p>
+    <div class="meta"><span>2026 Schedule: LEC 8 + cow</span><span>2026 schedule → inherited 2025 Page Fault notes</span><span>Current xv6 main: lazy vmfault</span><span>2026 Lab: COW branch</span><span>408 Anchor: OS-04 · X-B02 · OS-I02</span><span>核心 150–210 min · 置换扩展 60–90 min</span></div>
+  </header>
+
+  <section><h2 class="section-title">1 · Mother Question</h2><div class="panel">
+    <div class="question">如果一次内存访问“现在不能合法完成”，为什么系统不必直接把进程杀掉？</div>
+    <div class="flow"><div class="node"><b>Instruction</b><small>load / store / fetch</small></div><div class="arrow">→</div><div class="node"><b>MMU detects failure</b><small>mapping / permission</small></div><div class="arrow">→</div><div class="node"><b>Page Fault</b><small>controlled trap</small></div><div class="arrow">→</div><div class="node"><b>Kernel classifies</b><small>repair or reject?</small></div><div class="arrow">→</div><div class="node"><b>Update mapping</b><small>if repairable</small></div><div class="arrow">→</div><div class="node"><b>Retry</b><small>same logical instruction</small></div></div>
+    <p class="callout good"><b>母模型：</b><code>Fault = 检测点，不是结论</code>。真正的结论由内核在看到 <b>fault address + fault type + saved PC + mapping metadata</b> 后决定。</p>
+  </div></section>
+
+  <section><h2 class="section-title">2 · Minimum Model：只追 6 个状态</h2><div class="grid3">
+    <div class="mini"><h3>Faulting VA</h3><p>哪一个虚拟地址导致访问失败。RISC-V page fault 时通常由 <code>stval</code> 提供。</p></div>
+    <div class="mini"><h3>Access Type</h3><p>取指、读还是写。它决定应该检查 X/R/W 哪一种权限以及 fault 分类。</p></div>
+    <div class="mini"><h3>Saved PC</h3><p>哪条指令需要恢复。可修复 fault 的关键是不丢失明确 retry point。</p></div>
+    <div class="mini"><h3>PTE State</h3><p>映射是否存在、权限是什么、是否带 COW 等软件语义。</p></div>
+    <div class="mini"><h3>Physical Frame</h3><p>真正存放数据的物理页。COW 的核心变化发生在“谁指向哪个 frame”。</p></div>
+    <div class="mini"><h3>Reference / Owner</h3><p>这个 frame 还有哪些有效映射要求它继续存活；最后一个引用消失前不能回收。</p></div>
+  </div></section>
+
+  <section><h2 class="section-title">3 · RISC-V 实例：Fault 时硬件到底给了什么线索？</h2><div class="panel">
+    <table><thead><tr><th>RISC-V 状态</th><th>Lesson 05 怎么用</th><th>边界</th></tr></thead><tbody>
+      <tr><td><code>scause = 12</code></td><td>Instruction page fault</td><td rowspan="3">这些数字是 RISC-V ISA 具体编码，不是“操作系统通用编号”。</td></tr>
+      <tr><td><code>scause = 13</code></td><td>Load page fault</td></tr>
+      <tr><td><code>scause = 15</code></td><td>Store/AMO page fault</td></tr>
+      <tr><td><code>stval</code></td><td>在 page fault 等异常上可报告 faulting virtual address</td><td>具体 CSR 名称属于 RISC-V</td></tr>
+      <tr><td><code>sepc</code></td><td>保存 faulting instruction 的恢复位置，使可修复 fault 能 retry</td><td>不同异常的“逻辑恢复语义”仍要由 OS/ISA 共同解释</td></tr>
+    </tbody></table>
+    <p class="callout warn"><b>不要背成万能模板：</b>408 需要掌握的是“异常原因 + 出错地址 + 可恢复现场 → 内核分类处理”，CSR 名称和 cause number 只作为真实 ISA 的落地例子。</p>
+  </div></section>
+
+  <section><h2 class="section-title">4 · 最关键边界：Page Fault ≠ 一定阻塞</h2><div class="grid2">
+    <div class="panel"><h3>Fast Repair · 纯内存内修复</h3><div class="codebox">fault
+→ validate
+→ kalloc / copy / zero
+→ edit PTE
+→ return
+→ retry same instruction</div><p class="subtle">典型：lazy demand-zero、COW split。若内存可立即取得，当前 task 可以一直在自己的 kernel path 中完成，不要求调度别人。</p></div>
+    <div class="panel"><h3>Slow Repair · 需要外部完成</h3><div class="codebox">fault
+→ validate
+→ submit disk/file I/O
+→ Blocked
+→ scheduler
+→ interrupt/completion
+→ Ready
+→ Running
+→ finish mapping
+→ retry</div><p class="subtle">典型：swap-in、真正需要磁盘 page-in、dirty victim write-back。此时才出现等待和调度链。</p></div>
+  </div><p class="callout danger"><b>408 的“缺页中断后进程阻塞”通常来自经典请求分页题设：</b>题目默认所需页需要从外存调入。在完整系统模型中，必须先问“这次 repair 是否需要等待外部事件”。</p></section>
+
+  <section><h2 class="section-title">5 · Fault Classifier：先分类，再决定机制</h2><div class="classifier">
+    <div class="panel">
+      <label>虚拟地址在逻辑上合法吗？</label><select id="legal"><option value="yes">是</option><option value="no">否</option></select>
+      <label>当前页级映射</label><select id="mapping"><option value="absent">PTE absent / lazy</option><option value="cow">PTE exists · RO + COW</option><option value="readonly">PTE exists · originally read-only</option><option value="swapped">nonresident · backing storage</option></select>
+      <label>本次访问</label><select id="access"><option value="write">write/store</option><option value="read">read/load</option></select>
+      <button id="classify">分类这次 fault</button>
+    </div><div class="decision" id="decision"></div>
+  </div></section>
+
+  <section><h2 class="section-title">6 · Lazy Allocation：当前 xv6 main 已经在用 Page Fault 做“延迟付款”</h2><div class="panel">
+    <p>当前 xv6 main 已经包含一个很适合作为 COW 前置模型的 <code>vmfault()</code>：进程可以先扩大逻辑地址空间，而不立即为每一页分配物理内存；第一次真正访问时，fault path 再分配、清零、建立 PTE。</p>
+    <div class="flow"><div class="node"><b>sbrk / size</b><small>reserve address range</small></div><div class="arrow">→</div><div class="node"><b>first touch</b><small>PTE absent</small></div><div class="arrow">→</div><div class="node"><b>usertrap</b><small>load/store fault</small></div><div class="arrow">→</div><div class="node"><b>vmfault()</b><small>kalloc + zero + map</small></div><div class="arrow">→</div><div class="node"><b>retry</b><small>same user instruction</small></div></div>
+    <p class="callout"><b>Lazy 的本质：</b>不是“免费”，而是把 <code>allocate + initialize + map</code> 从申请时搬到第一次真正使用时。若一部分申请最终从未访问，这些成本就永远不必支付。</p>
+  </div></section>
+
+  <section><h2 class="section-title">7 · 一个容易漏掉的入口：<code>copyout()</code> 为什么也要理解虚拟内存？</h2><div class="panel">
+    <div class="question">如果页还没映射，而 kernel 正准备把系统调用结果写进 user buffer，会发生 user page fault 吗？</div>
+    <p>不一定。当前 xv6 的 <code>copyout()</code> 是 kernel helper：它显式拿 user page table 做 <code>walkaddr()</code>，再通过 kernel 对物理内存的映射完成复制。若目标 user VA 尚未映射，当前 main 会主动调用 <code>vmfault()</code> 创建 lazy page。</p>
+    <div class="flow"><div class="node"><b>syscall in kernel</b><small>e.g. output to user buffer</small></div><div class="arrow">→</div><div class="node"><b>copyout()</b><small>walk user pagetable</small></div><div class="arrow">→</div><div class="node"><b>unmapped?</b><small>no user instruction running</small></div><div class="arrow">→</div><div class="node"><b>explicit repair</b><small>vmfault / COW split</small></div></div>
+    <p class="callout danger"><b>因此 COW lab 有一个关键完整性要求：</b>不能只处理“用户执行 store → hardware fault”这一条路径；kernel 代表用户写 user memory 的 helper 也必须维护同一个 COW 不变量。否则系统调用可以绕过你建立的只读共享边界。</p>
+  </div></section>
+
+  <section><h2 class="section-title">8 · 为什么 eager fork 很浪费？</h2><div class="panel">
+    <p>当前 xv6 main 的 <code>uvmcopy()</code> 会遍历 parent user pages：为 child 分配新 frame，复制整页内容，再建立 child mapping。语义很直观，但它把“child 可能永远不会写这些页”当成“child 现在就必须拥有独立副本”。</p>
+    <div class="grid2"><div class="exam"><b>Eager Copy</b><p><code>fork()</code> 时支付全部复制成本；如果 child 很快 <code>exec()</code>，刚复制的旧地址空间会被丢弃。</p></div><div class="exam"><b>Copy-on-Write</b><p><code>fork()</code> 先共享物理页；只有某一方第一次写、真正要让内容分叉时才复制。</p></div></div>
+    <p class="callout"><b>策略变换：</b><code>copy now</code> → <code>protect + share now, copy on first write</code>。Page Fault 在这里不只是“错误处理”，而是 deferred work 的触发器。</p>
+  </div></section>
+
+  <section><h2 class="section-title">9 · COW 的三个不变量</h2><div class="grid3">
+    <div class="mini"><h3>Private-Semantics Invariant</h3><p>父子可以暂时共享同一个 frame，但任一方完成写入后，另一方不能观察到本应私有的修改。</p></div>
+    <div class="mini"><h3>Permission Invariant</h3><p>只有“原本可写、因 COW 临时去掉写权限”的页可以在 write fault 后恢复写。原本只读代码页仍必须拒绝写。</p></div>
+    <div class="mini"><h3>Lifetime Invariant</h3><p>一个 frame 只要仍有有效 owner/reference 需要它，就不能回 free list；最后一个引用消失后才可释放。</p></div>
+  </div><p class="callout good"><b>这三个不变量比记函数名更重要。</b>MIT lab 的所有代码改动——<code>uvmcopy</code>、fault handler、refcount、<code>copyout</code>——本质上都在共同维护它们。</p></section>
+
+  <section><h2 class="section-title">10 · Interactive COW Trace：一页物理内存怎样从“共享”重新分叉</h2><div class="stepper">
+    <div class="panel"><ol class="event-list" id="events"></ol><div class="controls"><button id="prev">← 上一步</button><button id="next">下一步 →</button></div></div>
+    <div class="panel state" id="state"></div>
+  </div></section>
+
+  <section><h2 class="section-title">11 · COW 标记为什么不能只看 <code>PTE_W=0</code>？</h2><div class="panel">
+    <table><thead><tr><th>页面</th><th>fork 前</th><th>fork 后</th><th>write fault 时</th></tr></thead><tbody>
+      <tr><td>可写 data/heap</td><td>RW</td><td>RO + <b>COW software state</b></td><td>合法 COW repair：split / 必要时恢复写</td></tr>
+      <tr><td>代码 / 本来只读数据</td><td>RO</td><td>仍然 RO</td><td><b>非法写</b>，不能借 COW 变成 RW</td></tr>
+    </tbody></table>
+    <p>RISC-V PTE 的 <code>RSW</code> 字段保留给 supervisor software，硬件忽略，因此 MIT lab 建议可以利用这些软件位区分 COW 状态。具体选哪一位是实现细节；稳定语义是：<b>必须记住“为何只读”</b>。</p>
+    <p class="callout danger"><b>Anti-pattern：</b><code>PTE_W == 0 → 这是 COW → 改成可写</code> 会直接破坏代码段保护。</p>
+  </div></section>
+
+  <section><h2 class="section-title">12 · Reference Count：不是“有几个进程”，而是谁还要求 Frame 存活</h2><div class="panel">
+    <div class="flow"><div class="node"><b>kalloc</b><small>new frame</small></div><div class="arrow">→</div><div class="node"><b>ref = 1</b><small>one live owner/mapping</small></div><div class="arrow">→</div><div class="node"><b>fork shares</b><small>ref++</small></div><div class="arrow">→</div><div class="node"><b>unmap / split / exit</b><small>ref--</small></div><div class="arrow">→</div><div class="node"><b>ref = 0</b><small>free-list eligible</small></div></div>
+    <p>base xv6 的 <code>kalloc.c</code> 只有 free list，没有 COW reference count；COW branch 需要把“物理页生命周期”显式纳入 allocator bookkeeping。</p>
+    <p class="callout warn"><b>一个可选优化：</b>若 write fault 时发现旧 frame 事实上只剩当前 mapping 一个 owner，那么已经没有其他私有视图需要保护，可以直接恢复写权限而不复制。MIT 的核心 lab 语义不依赖这个优化；先把正确性做对，再谈少复制一次。</p>
+  </div></section>
+
+  <section><h2 class="section-title">13 · MIT 6.1810 Fall 2026 COW Lab：我们怎样做才最值 408 时间</h2><div class="panel">
+    <table><thead><tr><th>官方要求背后的机制</th><th>408 认知收益</th><th>我们的执行要求</th></tr></thead><tbody>
+      <tr><td>把 child mapping 指向 parent frame；原本可写页在父子两边去掉写权限</td><td>共享物理实现 ≠ 共享逻辑语义；PTE permission 可以主动制造 slow path</td><td><b>必做</b>：这是 COW 的最小骨架</td></tr>
+      <tr><td>write page fault 时识别 COW、分配/复制、更新 faulting PTE</td><td>Fault → classify → repair → retry</td><td><b>必做</b>：必须能画出一页的状态变化</td></tr>
+      <tr><td>维护 physical-page reference count</td><td>资源生命周期与共享对象回收</td><td><b>必做</b>：能解释 premature free / leak 两种坏状态</td></tr>
+      <tr><td>让 kernel-to-user <code>copyout()</code> 也遵守 COW</td><td>同一不变量必须覆盖所有写入入口</td><td><b>必做</b>：这是判断你是否只“修了 demo 路径”的关键</td></tr>
+      <tr><td>通过 <code>cowtest</code> 与完整 user tests</td><td>局部机制正确 ≠ 系统整体不变量仍成立</td><td><b>验证门禁</b>：测试通过后还要口述为什么</td></tr>
+    </tbody></table>
+    <p class="callout"><b>Stop Boundary：</b>408 同步阶段不需要追求生产级 VM。做到“COW 正确 + refcount 正确 + copyout 不绕过 + 测试完整 + 能无提示复原状态机”就停。性能计数与进一步少分配是 Extension。</p>
+  </div></section>
+
+  <section><h2 class="section-title">14 · 不给你 Lab 答案，给你调试控制器</h2><div class="panel">
+    <ol class="check">
+      <li><b>先列页状态：</b>fork 前/后父子 PTE 的 PA、W、COW marker、refcount 分别是什么？</li>
+      <li><b>先测原本只读页：</b>代码页 write 是否仍然被拒绝？如果被“修复”为可写，COW 分类错了。</li>
+      <li><b>再测单次 split：</b>child 写后，parent/child 是否指向不同 frame，内容是否只在 child 变化，旧页 ref 是否恰好减一？</li>
+      <li><b>再测 exit / unmap：</b>一个共享者退出时，另一个仍能读原页吗？如果 crash，通常是 premature free。</li>
+      <li><b>再测重复 fork：</b>一个 frame 被 3 个以上 page table 共享时，refcount 是否仍保持真实生命周期？</li>
+      <li><b>最后测 kernel write：</b>系统调用通过 <code>copyout()</code> 写 COW user page 时是否也能安全 split？</li>
+    </ol>
+    <p class="callout good"><b>调试原则：</b>不要从“哪行代码错了”开始。先找哪一个不变量第一次被破坏，再回到负责这个状态变化的入口。</p>
+  </div></section>
+
+  <section><h2 class="section-title">15 · 408 Bridge：经典请求分页与 COW 用的是同一个骨架，不是同一个原因</h2><div class="panel">
+    <table><thead><tr><th>408 / OS 概念</th><th>真实系统状态</th><th>第一动作</th></tr></thead><tbody>
+      <tr><td>缺页异常</td><td>当前 access 不能按现有 page-table state 完成</td><td>先找 fault reason；不要直接写“调页”</td></tr>
+      <tr><td>请求分页</td><td>合法页 nonresident，需要 backing store/page-in</td><td>若题设要求磁盘 I/O，再推 Blocked → Ready</td></tr>
+      <tr><td>COW</td><td>映射存在，但 write permission 被有意撤销以维持共享</td><td>验证 COW marker → split mapping → retry</td></tr>
+      <tr><td>页面置换</td><td>无空闲 frame 时才需要选择 victim 的 policy</td><td>fault 不自动推出 replacement；先判断是否真的缺 frame</td></tr>
+      <tr><td>引用计数</td><td>共享 frame 的存活责任</td><td>任何 unmap / split / exit 都检查 ref 生命周期</td></tr>
+    </tbody></table>
+    <p class="callout"><b>压缩：</b><code>translation → fault → classification → repair/reject → retry/terminate</code> 是机制；FIFO/LRU 是只有“需要 victim”时才进入的 policy。</p>
+  </div></section>
+
+  <section><h2 class="section-title">16 · xv6 Resident-only vs 408 Swap：先把两种“缺页世界”分开</h2><div class="panel">
+    <p>xv6 是教学内核：当前主线没有完整 swap 分区、匿名页换出和通用页面淘汰器。它非常适合看清 page table、fault、COW 与 frame lifecycle，但不能用“xv6 没有换页”去否定 408 的请求分页模型。</p>
+    <table><thead><tr><th>问题</th><th>xv6 当前教学主线</th><th>408 经典请求分页 / Swap 模型</th></tr></thead><tbody>
+      <tr><td>合法页暂时不在 RAM</td><td>主要由 lazy allocation / file-backed lab 等局部机制展示；无完整匿名 swap subsystem</td><td>PTE/页表状态表明 nonresident，后备存储记录页面内容来源</td></tr>
+      <tr><td>Page Fault 后有空闲 frame</td><td>可直接 <code>kalloc()</code> + repair</td><td>分配空闲 frame → page-in → 更新页表/TLB → retry</td></tr>
+      <tr><td>没有空闲 frame</td><td>base xv6 没有通用 victim selection</td><td>进入 replacement policy：FIFO/LRU/CLOCK/OPT 等选 victim</td></tr>
+      <tr><td>victim 是 dirty</td><td>无通用 swap write-back 主线</td><td>通常先写回后备存储；clean 且有可靠 backing 的页可直接丢弃</td></tr>
+      <tr><td>调用进程状态</td><td>纯内存 COW/lazy repair 可不 Block</td><td>若需要真正 page-in/page-out I/O，faulting process 典型 Blocked，完成后 Ready</td></tr>
+    </tbody></table>
+    <div class="flow"><div class="node"><b>fault</b><small>legal but nonresident</small></div><div class="arrow">→</div><div class="node"><b>free frame?</b><small>allocation question</small></div><div class="arrow">no</div><div class="node"><b>choose victim</b><small>replacement policy</small></div><div class="arrow">→</div><div class="node"><b>dirty?</b><small>write-back cost</small></div><div class="arrow">→</div><div class="node"><b>page-in</b><small>external I/O</small></div><div class="arrow">→</div><div class="node"><b>map + retry</b></div></div>
+    <p class="callout danger"><b>第一动作固定：</b><code>Page Fault ≠ Page Replacement</code>。只有“合法页需要驻留 + 当前没有可用 frame”时才进入 victim selection；有空闲 frame 时根本没有“淘汰谁”这个问题。</p>
+  </div></section>
+
+  <section><h2 class="section-title">17 · 408 Page Replacement Lab：OPT / FIFO / LRU / CLOCK 真正按状态跑一遍</h2><div class="repl-lab">
+    <div class="panel lab-form">
+      <label>页面引用串（空格/逗号分隔）</label><input id="refString" value="7 0 1 2 0 3 0 4 2 3 0 3 2" />
+      <label>页框数</label><input id="frameCount" type="number" min="1" max="8" value="3" />
+      <label>算法</label><select id="replAlgo"><option value="opt">OPT · 理论最优基线</option><option value="fifo">FIFO</option><option value="lru">LRU</option><option value="clock">CLOCK / Second Chance</option></select>
+      <button id="runRepl">运行置换轨迹</button>
+      <p class="subtle">Simulator 只训练 408 的 frame-state / fault-count / victim reason。它不假装模拟完整 OS 的 page-in latency、dirty write-back 与多进程配额。</p>
+    </div>
+    <div class="panel fault-trace" id="replOut"></div>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <h3>CLOCK、NRU、改进 CLOCK：三个名字不要糊成一个</h3>
+    <table><thead><tr><th>策略</th><th>主要状态</th><th>选择思想</th></tr></thead><tbody>
+      <tr><td>Basic CLOCK / Second Chance</td><td>访问位 <b>A/R</b> + 环形指针</td><td>指针遇 A=1 就清 0 并跳过；遇 A=0 才淘汰。它近似“最近是否被用过”。</td></tr>
+      <tr><td>NRU (Not Recently Used)</td><td>通常看 <b>(A/R, D/M)</b> 四类</td><td>周期性清 A/R 后，从较低类别优先选，例如 (0,0) 优于 (0,1)，体现“近期未访问 + clean 更便宜”。</td></tr>
+      <tr><td>Enhanced / Improved CLOCK</td><td>A/R + D/M + 环形扫描</td><td>把 CLOCK 的圆环扫描与 dirty 成本结合；不同教材的扫描轮次细节可能不同，考试必须按题设版本执行。</td></tr>
+    </tbody></table>
+    <p class="callout warn"><b>硬件支持怎样接上？</b>408 常把 PTE 的访问位 A/R 视为“最近是否使用”的证据，把脏位 D/M 视为“淘汰是否需要写回”的证据。RISC-V Sv39 PTE 也定义 A/D 语义，但当前 xv6 main 并没有据此实现完整 swap replacement，所以这里属于 <b>408 Policy Bridge</b>，不是 xv6 已有功能。</p>
+    <p class="callout"><b>OPT 为什么也放进 simulator？</b>OPT 需要知道未来，因此不能作为在线 OS 实现，但它给出同一引用串/页框数下的理论 fault 下界，最适合当比较基线。另一个高频边界：FIFO 可能出现 <b>Belady anomaly</b>（frame 更多反而 fault 更多）；理想 LRU/OPT 属于 stack-style 策略，不会出现这种容量反常。CLOCK 是近似 LRU，不要直接把 LRU 的所有数学性质无条件搬给 CLOCK。</p>
+  </div></section>
+
+  <section><h2 class="section-title">18 · Working Set / PFF / Thrashing：置换算法之外还有一个“系统是否装得下”的问题</h2><div class="ws-lab">
+    <div class="panel lab-form">
+      <label>引用串</label><input id="wsRefs" value="1 2 3 2 4 1 5 2 4 5" />
+      <label>观察时刻 t（按已发生的访问个数）</label><input id="wsTime" type="number" min="1" value="10" />
+      <label>窗口 Δ（最近多少次访问）</label><input id="wsDelta" type="number" min="1" value="5" />
+      <button id="runWs">计算 Working Set</button>
+    </div><div class="panel" id="wsOut"></div>
+  </div>
+  <div class="grid3" style="margin-top:14px">
+    <div class="mini"><h3>Working Set = 集合预测</h3><p><code>W(t,Δ)</code> 是最近窗口内出现过的不同页面。它在问“当前局部性阶段大约需要保留哪些页”。</p></div>
+    <div class="mini"><h3>PFF = 结果反馈</h3><p>缺页率过高 → 说明配额可能不足，应尝试增加 frames 或降低并发；缺页率很低 → 可能回收部分 frames。</p></div>
+    <div class="mini"><h3>Thrashing = 容量失配</h3><p>活跃工作集长期超过可用 frames，系统不断 fault → evict → I/O → retry，CPU 时间被换页吞掉。</p></div>
+  </div>
+  <p class="callout danger"><b>一个很容易写错的因果链：</b>CPU 利用率低并不自动意味着“应该再调入更多进程”。若低利用率来自大量 page fault I/O，继续提高多道程序度会扩大工作集竞争，形成颠簸正反馈。</p>
+  <p class="callout"><b>控制器视角：</b><code>Working Set</code> 提供“需要哪些页”的对象级估计；<code>PFF</code> 提供“当前 frame 配额是否够”的结果反馈。它们解决的不是同一个问题，也不能被某个更聪明的 replacement policy 完全替代。</p>
+  </section>
+
+  <section><h2 class="section-title">19 · Quick Attack</h2><div class="quiz">
+    <div class="quiz-row"><b>Q1 · Page Fault 发生后，当前进程一定从 Running 变 Blocked 吗？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不一定。COW、demand-zero 等可以完全在内存内修复，然后直接返回当前 task 并 retry；只有修复需要等待磁盘、文件 I/O 等外部完成事件时才必须阻塞。</div></div>
+    <div class="quiz-row"><b>Q2 · fork 后发现某页 <code>PTE_W=0</code>，写 fault 时能不能直接认定它是 COW？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不能。代码页可能本来就只读。COW 必须保留“原本可写、因为共享而临时只读”的软件语义；否则会把真正的 protection fault 错误修复成可写。</div></div>
+    <div class="quiz-row"><b>Q3 · child 第一次写 COW 页以后，为什么 parent 仍能看到 fork 时的旧内容？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">fault handler 给 child 建立了独立可写 frame 并复制旧内容，parent PTE 仍指向旧 frame。共享物理实现只持续到第一次需要内容分叉。</div></div>
+    <div class="quiz-row"><b>Q4 · 为什么只改 usertrap 的 store-fault 分支仍可能让 COW 实现不完整？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">因为 kernel 也会代表用户向 user buffer 写数据，例如 copyout。它可能显式 walk 用户页表并通过物理映射复制，不会执行那条用户 store，自然不会触发同一 user page fault；kernel helper 必须显式维护 COW 不变量。</div></div>
+    <div class="quiz-row"><b>Q5 · COW 与共享内存 IPC 的关键语义差别是什么？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">COW 虽暂时共享物理 frame，却继续承诺每个进程的私有内存语义；一旦写入会分裂。共享内存 IPC 的目标反而是让多个进程有意观察同一共享状态。</div></div>
+    <div class="quiz-row"><b>Q6 · Basic CLOCK 为什么只靠访问位也能近似 LRU？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">它不维护完整“最近访问时间全序”，只周期性区分“自上次检查后用过/没用过”。A=1 的页先清零并获得 second chance；只有再次绕到仍为 0 的页才优先淘汰，因此保留近期活跃页的概率更高。</div></div>
+    <div class="quiz-row"><b>Q7 · Working Set 总和一度大于 frames，就能断言系统已经 Thrashing 吗？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不能只凭一个瞬时快照下结论。Thrashing 强调持续的工作集容量失配与高频 fault/换入换出。工作集总需求超过可用内存是强风险信号，还要结合持续时间、PFF 和实际 I/O 行为。</div></div>
+    <div class="quiz-row"><b>Q8 · 页框数增加后，缺页数是否一定不会增加？</b><button onclick="toggleAnswer(this)">显示答案</button><div class="answer">不是对所有算法都成立。FIFO 可能出现 Belady anomaly；理想 LRU/OPT 的驻留集合具有 stack property，容量增加时缺页数不会增加。不要把这个结论无条件套给任意近似算法。</div></div>
+  </div></section>
+
+  <section><h2 class="section-title">20 · xv6 Code Path：只读这些点</h2><div class="panel"><div class="codebox">kernel/trap.c
+  usertrap()       // page-fault classification / retry entry
+
+kernel/vm.c
+  vmfault()        // current main: lazy allocation repair
+  uvmcopy()        // current main: eager fork copy; COW lab changes this responsibility
+  copyout()        // kernel → user write path must preserve VM invariants
+  uvmunmap()       // mapping removal affects frame lifetime
+
+kernel/kalloc.c
+  kalloc()/kfree() // base free-list allocator; COW branch adds lifetime bookkeeping
+
+kernel/riscv.h
+  PTE_R/W/X/U/V, page size, stval/scause helpers
+  RSW is ISA-defined software-owned PTE state (see RISC-V spec)
+
+kernel/proc.c
+  fork lifecycle and page-table ownership</div>
+    <p class="subtle">先用 current main 理解“现在为什么 eager copy / lazy fault”，再切 MIT cow branch 做实验。不要把 lab branch 改动误写成 current main 已有能力。</p>
+  </div></section>
+
+  <section><h2 class="section-title">21 · Retrieval Check</h2><div class="panel"><ol class="check">
+    <li>关闭页面后完整复原：<code>store → page fault → classify COW → split → update PTE/refcount → retry</code>。</li>
+    <li>解释为什么 Page Fault 不等于磁盘 I/O，也不等于 context switch。</li>
+    <li>解释为什么 <code>PTE_W=0</code> 不能单独作为 COW 判据。</li>
+    <li>从“共享 frame 的生命周期”推导为什么必须 refcount，而不是背“COW 要计数”。</li>
+    <li>解释 <code>copyout()</code> 为什么可能绕过 user store-fault path，以及因此必须维护什么不变量。</li>
+    <li>给出经典请求分页与 COW 的共同骨架，以及它们在 repair reason 上的差异。</li>
+    <li>对任意引用串手算 OPT/FIFO/LRU/CLOCK：每一步先写 frame state，再写 hit/fault，再说明 victim 为什么被选；能用 OPT 作为理论下界比较。</li>
+    <li>解释 Belady anomaly 为什么能出现在 FIFO，却不能据此推翻“更多内存通常更有利”的一般直觉；准确说出 stack algorithm 的边界。</li>
+    <li>明确区分 Basic CLOCK、NRU 与改进 CLOCK；看到 A/R、D/M 位时先确认题设到底定义哪一种扫描规则。</li>
+    <li>用 <code>W(t,Δ)</code> 算一个工作集，并解释 PFF 为什么是“反馈配额”而不是“预测页面集合”。</li>
+  </ol><p class="callout"><b>通过标准：</b>你既能从三个 COW 不变量重新推导“共享映射、写保护、fault split、refcount、copyout 完整性”，也能把 408 请求分页题拆成 <code>fault → free frame? → replacement? → dirty? → page-in → map → retry</code>，不会被 xv6 没有 swap 的实现边界带偏。</p></div></section>
+
+  <section><h2 class="section-title">Sources / Version Boundary</h2><div class="panel"><ul>
+    <li>MIT 6.1810 Fall 2026 schedule：LEC 8 Page faults，随后分配 COW lab；2026 schedule 对未来日期材料有继承旧版的明确警告。</li>
+    <li>2026 schedule 当前的 Page Fault notes 文件标题仍为 <b>2025 Lecture 8</b>，因此本页只把它作为 inherited lecture material。</li>
+    <li>MIT Fall 2026 COW lab：COW mapping、write-fault repair、reference count、kernel-to-user copy path 与完整测试要求。</li>
+    <li>当前 xv6 main：<code>usertrap()</code> 已处理 lazy load/store faults；<code>vmfault()</code> 分配 zero page；<code>uvmcopy()</code> 仍是 eager copy；<code>copyout()</code> 会显式处理未映射目标。</li>
+    <li>RISC-V Supervisor ISA：page-fault cause codes、<code>stval</code> fault address、RSW software field 等架构语义。</li>
+    <li>408 Canonical Owner：OS-04 虚拟内存与页生命周期；软硬件 handoff：X-B02；fork+COW 综合过程：OS-I02。</li>
+  </ul></div></section>
+
+  <div class="footer-nav"><a href="04-page-table.html">← Lesson 04 · Page Table</a><a href="06-process-scheduler.html">Lesson 06 · Process / Scheduler →</a></div>
+</main>
+<script>
+const steps=[
+ {name:'0. fork 前',title:'状态 0 · Parent 独占一个可写页',desc:'只有 parent 的 VPN 0x4 指向 Frame A。它是普通可写私有页。',kv:{Parent:'VPN4 → Frame A · RW',Child:'尚不存在',FrameA:'ref = 1',Invariant:'private semantics trivially holds'},frames:[['Frame A','ref=1 · parent only','live']]},
+ {name:'1. fork 共享',title:'状态 1 · 不复制 Frame，只复制映射关系',desc:'COW fork 让 child PTE 指向同一个 Frame A。因为原页本来可写，父子 PTE 都撤销 W，并留下 COW 软件语义。',kv:{Parent:'VPN4 → Frame A · RO/COW',Child:'VPN4 → Frame A · RO/COW',FrameA:'ref = 2',WhyRO:'任何一方写之前都必须先经过 kernel'},frames:[['Frame A','ref=2 · shared','shared']]},
+ {name:'2. child store',title:'状态 2 · Child 写入，被硬件阻止',desc:'child 执行 store。PTE 存在，但 W=0，于是产生 write page fault；RISC-V 上这是 Store/AMO page fault 类别。原数据仍未改变。',kv:{Event:'child store VPN4',Fault:'write page fault',FaultVA:'stval → target VA',SavedPC:'sepc → faulting instruction',Data:'Frame A still unchanged'},frames:[['Frame A','ref=2 · unchanged','shared']]},
+ {name:'3. classify',title:'状态 3 · Kernel 先判断“为什么只读”',desc:'不能看到 W=0 就复制。handler 必须确认地址合法、这是 write fault，而且 PTE 带 COW 语义。若它是原本只读 text，则应该拒绝而不是升级权限。',kv:{LegalVA:'yes',Access:'write',PTE:'RO + COW marker',Decision:'repairable COW',AntiPattern:'RO alone ≠ COW'},frames:[['Frame A','ref=2 · shared','shared']]},
+ {name:'4. split',title:'状态 4 · 为 Child 建立真正的私有副本',desc:'旧页仍有多个 owner，因此给 child 分配 Frame B，把 Frame A 内容复制过去，并让 child PTE 改指 Frame B、恢复 RW。',kv:{Parent:'VPN4 → Frame A · RO/COW',Child:'VPN4 → Frame B · RW',FrameA:'ref 2 → 1',FrameB:'ref = 1',Invariant:'parent cannot observe child write'},frames:[['Frame A','ref=1 · parent','live'],['Frame B','ref=1 · child private copy','new']]},
+ {name:'5. retry store',title:'状态 5 · 返回到同一条 store，再执行一次',desc:'内核没有“替 child 完成那条用户 store”。它修好映射后恢复现场，CPU 重试 faulting instruction；这次 W permission 合法，于是写入 Frame B。',kv:{Retry:'same logical store',ParentData:'old value in A',ChildData:'new value in B',BlockRequired:'no, if memory repair completed synchronously'},frames:[['Frame A','old data · parent','live'],['Frame B','new data · child','new']]},
+ {name:'6. parent later writes',title:'状态 6 · 只剩一个 owner 时可以有优化',desc:'若此时 parent 也写 Frame A，系统已经没有第二个地址空间依赖 A 的旧私有视图。实现可以直接把 parent PTE 恢复 RW 而不复制；即使选择再复制也可保持语义，只是更浪费。',kv:{FrameA:'ref = 1',PossibleOptimization:'restore W without copy',SemanticRequirement:'parent gets writable private view',Status:'optimization, not COW definition'},frames:[['Frame A','ref=1 · parent writable','live'],['Frame B','ref=1 · child','new']]}
+];
+let si=0;const ev=document.getElementById('events'),state=document.getElementById('state');
+function renderStep(){ev.innerHTML=steps.map((s,n)=>`<li class="${n===si?'active':''}">${s.name}</li>`).join('');const s=steps[si];state.innerHTML=`<h3>${s.title}</h3><p class="subtle">${s.desc}</p><div class="kv">${Object.entries(s.kv).map(([k,v])=>`<b>${k}</b><span class="pte">${v}</span>`).join('')}</div><div class="framebox">${s.frames.map(f=>`<div class="frame ${f[2]}"><b>${f[0]}</b><div class="subtle">${f[1]}</div></div>`).join('')}</div>`;[...ev.children].forEach((x,n)=>x.onclick=()=>{si=n;renderStep()});}
+document.getElementById('prev').onclick=()=>{si=Math.max(0,si-1);renderStep()};document.getElementById('next').onclick=()=>{si=Math.min(steps.length-1,si+1);renderStep()};renderStep();
+function classify(){const legal=document.getElementById('legal').value,m=document.getElementById('mapping').value,a=document.getElementById('access').value;let title='',body='',path='';if(legal==='no'){title='Reject · Invalid Address';body='VA 根本不属于合法地址空间。内核没有可维护的映射承诺，不应伪造页面来“修复”。';path='fault → validate VA → reject / kill';}else if(m==='absent'){title='Repair · Lazy / Demand-zero candidate';body='地址合法但尚无映射。若它属于允许 lazy allocation 的区域，可以分配并清零 frame、建立与访问类型一致的 PTE，然后 retry。';path='fault → legal region → allocate/zero/map → retry';}else if(m==='cow'){if(a==='write'){title='Repair · COW write';body='映射存在但因 COW 临时只读。验证 COW marker 和原始可写语义后，按引用关系 split 或恢复写权限。';path='write fault → verify COW → split/restore W → retry';}else{title='No COW split needed';body='对 RO/COW 页进行 read 本身应当合法；若真的产生 fault，要继续检查其他原因，而不是因为“看到 COW”就复制。';path='read fault → investigate mapping/other permission state';}}else if(m==='readonly'){if(a==='write'){title='Reject · Genuine protection fault';body='页面本来就是只读。不能把它当 COW 升级成可写，否则破坏代码/只读数据保护。';path='write fault → not COW → reject';}else{title='Unexpected read fault';body='本来只读的映射允许 read。若出现 load page fault，应继续检查 V/U/R、地址层级等状态。';path='read fault → inspect full PTE / mapping';}}else{title='Slow Repair · Page-in candidate';body='逻辑页合法但内容不在 RAM；若 backing object 在外存，需要提交 I/O。此类 repair 才典型产生 Blocked → completion → Ready。';path='fault → page-in I/O → Blocked → completion → Ready → retry';}document.getElementById('decision').innerHTML=`<h3>${title}</h3><p>${body}</p><div class="codebox">${path}</div><p class="subtle">分类器是机制训练，不替代题设：真实系统还会检查更多权限、VMA/backing metadata 与资源状态。</p>`;}
+document.getElementById('classify').onclick=classify;classify();
+function parsePageRefs(id){return document.getElementById(id).value.trim().split(/[\s,]+/).filter(Boolean).map(x=>{const n=Number(x);if(!Number.isInteger(n)||n<0)throw new Error(`非法页号：${x}`);return n;});}
+function runReplacement(){const out=document.getElementById('replOut');let refs;try{refs=parsePageRefs('refString');}catch(e){out.innerHTML=`<p class="error">${e.message}</p>`;return;}const cap=Math.max(1,Math.min(8,Number(document.getElementById('frameCount').value)||3)),algo=document.getElementById('replAlgo').value;let frames=Array(cap).fill(null),faults=0,hits=0,fifo=0,clock=0,bits=Array(cap).fill(0),last=new Map(),rows=[];refs.forEach((p,step)=>{let idx=frames.indexOf(p),victim='—',event='HIT';if(idx>=0){hits++;if(algo==='lru')last.set(p,step);if(algo==='clock')bits[idx]=1;}else{faults++;event='FAULT';let free=frames.indexOf(null);if(free>=0){idx=free;frames[idx]=p;victim='空闲框';if(algo==='fifo')fifo=(idx+1)%cap;if(algo==='clock'){bits[idx]=1;clock=(idx+1)%cap;}if(algo==='lru')last.set(p,step);}else if(algo==='opt'){let far=-1;for(let i=0;i<cap;i++){const next=refs.indexOf(frames[i],step+1),score=next===-1?Infinity:next;if(score>far){far=score;idx=i;}}victim=`${frames[idx]} · next use ${far===Infinity?'never':`at #${far+1}`}`;frames[idx]=p;}else if(algo==='fifo'){idx=fifo;victim=String(frames[idx]);frames[idx]=p;fifo=(fifo+1)%cap;}else if(algo==='lru'){let oldest=Infinity;for(let i=0;i<cap;i++){const age=last.get(frames[i])??-1;if(age<oldest){oldest=age;idx=i;}}victim=String(frames[idx]);last.delete(frames[idx]);frames[idx]=p;last.set(p,step);}else{let scans=[];while(bits[clock]===1){scans.push(`${frames[clock]}:A1→0`);bits[clock]=0;clock=(clock+1)%cap;}idx=clock;victim=`${frames[idx]}${scans.length?`；second chance ${scans.join(' / ')}`:''}`;frames[idx]=p;bits[idx]=1;clock=(clock+1)%cap;}}rows.push({step:step+1,p,event,victim,frames:[...frames],bits:[...bits],hand:clock});});const bitHead=algo==='clock'?'<th>A bits / hand</th>':'';const bitCell=r=>algo==='clock'?`<td class="bitline">[${r.bits.join(' ')}] · hand→${r.hand}</td>`:'';out.innerHTML=`<h3>${algo.toUpperCase()} Trace</h3><div class="fault-trace"><table><thead><tr><th>#</th><th>Ref</th><th>Hit/Fault</th><th>Victim / Reason</th><th>Frames</th>${bitHead}</tr></thead><tbody>${rows.map(r=>`<tr><td>${r.step}</td><td>${r.p}</td><td class="${r.event==='HIT'?'hit':'miss'}">${r.event}</td><td>${r.victim}</td><td>[${r.frames.map(x=>x===null?'·':x).join(' ')}]</td>${bitCell(r)}</tr>`).join('')}</tbody></table></div><div class="metric-strip"><span>Faults <b>${faults}</b></span><span>Hits <b>${hits}</b></span><span>Fault rate <b>${refs.length?(faults/refs.length*100).toFixed(1):'0.0'}%</b></span></div><p class="subtle">考试手算时把“页框状态”和“算法元数据（FIFO 指针 / LRU recency / CLOCK A bit + hand）”分两行维护，错误率会明显下降。</p>`;}
+document.getElementById('runRepl').onclick=runReplacement;runReplacement();
+function runWorkingSet(){const out=document.getElementById('wsOut');let refs;try{refs=parsePageRefs('wsRefs');}catch(e){out.innerHTML=`<p class="error">${e.message}</p>`;return;}if(!refs.length){out.innerHTML='<p class="error">引用串不能为空。</p>';return;}const t=Math.max(1,Math.min(refs.length,Number(document.getElementById('wsTime').value)||refs.length)),delta=Math.max(1,Number(document.getElementById('wsDelta').value)||1),start=Math.max(0,t-delta),window=refs.slice(start,t),set=[...new Set(window)];out.innerHTML=`<h3>W(${t}, ${delta})</h3><p>观察窗口覆盖第 <b>${start+1}</b>～<b>${t}</b> 次访问：</p><div class="codebox">${window.join('  ')}</div><div class="ws-set">${set.map(p=>`<span>page ${p}</span>`).join('')}</div><div class="metric-strip"><span>Working-set size <b>${set.length}</b> pages</span><span>窗口长度 <b>${window.length}</b> references</span></div><p class="subtle">Working Set 统计的是“窗口内不同页面集合”，不是访问次数。Δ 过小会漏掉仍活跃页面，过大会把已经离开的旧 locality phase 保留太久。</p>`;}
+document.getElementById('runWs').onclick=runWorkingSet;runWorkingSet();
+function toggleAnswer(btn){btn.nextElementSibling.classList.toggle('show');btn.textContent=btn.nextElementSibling.classList.contains('show')?'隐藏答案':'显示答案';}
+</script>
+</body></html>

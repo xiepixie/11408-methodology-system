@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="250" viewBox="0 0 1120 250" role="img" aria-labelledby="title desc">
+  <title id="title">题 43 指令字段</title>
+  <desc id="desc">16 位单字长指令，由 OP、Ms、Rs、Md、Rd 五个字段组成。Ms 和 Rs 构成源操作数字段，Md 和 Rd 构成目的操作数字段。</desc>
+  <rect id="background" width="1120" height="250" rx="18" fill="#fafaf7"/>
+  <g id="bit-labels" fill="#111111" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-size="23" font-weight="600">
+    <text x="78" y="47">15</text>
+    <text x="286" y="47">12</text>
+    <text x="316" y="47">11</text>
+    <text x="650" y="47">6</text>
+    <text x="676" y="47">5</text>
+    <text x="1012" y="47">0</text>
+  </g>
+  <g id="instruction-fields" stroke="#333333" stroke-width="2.5" fill="#ffffff">
+    <rect id="field-op" x="70" y="62" width="240" height="70"/>
+    <rect id="field-ms" x="310" y="62" width="180" height="70"/>
+    <rect id="field-rs" x="490" y="62" width="180" height="70"/>
+    <rect id="field-md" x="670" y="62" width="180" height="70"/>
+    <rect id="field-rd" x="850" y="62" width="180" height="70"/>
+  </g>
+  <g id="field-names" fill="#111111" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-size="27" font-weight="700" text-anchor="middle">
+    <text x="190" y="107">OP</text>
+    <text x="400" y="107">Ms</text>
+    <text x="580" y="107">Rs</text>
+    <text x="760" y="107">Md</text>
+    <text x="940" y="107">Rd</text>
+  </g>
+  <g id="operand-groups" stroke="#333333" stroke-width="2" fill="none">
+    <path id="source-bracket" d="M310 152 V168 H670 V152"/>
+    <path id="destination-bracket" d="M670 152 V168 H1030 V152"/>
+  </g>
+  <g id="operand-labels" fill="#111111" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-size="25" font-weight="600" text-anchor="middle">
+    <text x="490" y="207">源操作数</text>
+    <text x="850" y="207">目的操作数</text>
+  </g>
+</svg>

@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "exam_id": "math1-2003",
+  "profile_id": "math1",
+  "year": 2003,
+  "language": "zh-CN",
+  "title": "2003 年全国硕士研究生招生考试 数学（一）真题",
+  "main_file": "2003 年全国硕士研究生招生考试 数学（一）真题.md",
+  "status": "ready",
+  "question_count": 22,
+  "total_score": 150,
+  "question_scores": {
+    "1": 4,
+    "2": 4,
+    "3": 4,
+    "4": 4,
+    "5": 4,
+    "6": 4,
+    "7": 4,
+    "8": 4,
+    "9": 4,
+    "10": 4,
+    "11": 4,
+    "12": 4,
+    "13": 10,
+    "14": 12,
+    "15": 10,
+    "16": 10,
+    "17": 10,
+    "18": 10,
+    "19": 10,
+    "20": 10,
+    "21": 10,
+    "22": 10
+  },
+  "content_features": {
+    "figures": [
+      7
+    ],
+    "code": [],
+    "tables": []
+  },
+  "figure_assets": {
+    "7": "assets/q07_derivative_graph.svg"
+  },
+  "routing": "profile-default",
+  "open_items": []
+}
