@@ -117,6 +117,10 @@ EXAM_SOLUTION_COMPREHENSIVE_HEADINGS = (
     "易错边界",
 )
 EXAM_SOLUTION_H2_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
+EXAM_SOLUTION_ANCHOR_OWNER_RE = re.compile(
+    r"^-\s+(?:Topic(?:\s*/\s*(?:Owner|Bridge|Rules))?|Owner|Model Owner|Bridge|Rules)\s*[:：]",
+    re.MULTILINE,
+)
 EXAM_SOLUTION_ANSWER_RE = re.compile(r"^answer:\s*([ABCD])\s*$", re.MULTILINE)
 EXAM_INDEX_ANSWER_RE = re.compile(r"\*\*Q(\d{2})\*\*\s*\|\s*`([ABCD])`")
 
@@ -1354,13 +1358,15 @@ def exam_solution_findings() -> list[Finding]:
             missing_anchor = [
                 label for label in ("题目信号", "第一动作") if label not in anchor_text
             ]
+            if not EXAM_SOLUTION_ANCHOR_OWNER_RE.search(anchor_text):
+                missing_anchor.insert(0, "Model Owner / Topic / Bridge / Rules")
             if missing_anchor:
                 findings.append(
                     Finding(
                         "ERROR",
                         "E-EXAM-SOLUTION-ANCHOR",
                         f"{rel_path} 的 Model Anchor 缺少：{', '.join(missing_anchor)}。",
-                        "补成可执行的题目信号与第一动作；不要只写知识点名称。",
+                        "先显式定位 Model Owner / Topic / Bridge / Rules，再补成可执行的题目信号与第一动作；不要只写知识点名称。",
                     )
                 )
 

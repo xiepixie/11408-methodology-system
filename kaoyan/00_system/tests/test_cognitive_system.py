@@ -143,6 +143,12 @@ class ExamSolutionIntegrityTests(unittest.TestCase):
     def test_completed_exam_solution_years_pass_machine_gate(self):
         self.assertEqual(MODULE.exam_solution_findings(), [])
 
+    def test_model_anchor_requires_explicit_owner_marker(self):
+        self.assertIsNotNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- Topic：DS07｜DFS\n"))
+        self.assertIsNotNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- Topic / Owner：CO-03 数据通路\n"))
+        self.assertIsNotNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- Rules：先定 Scope\n"))
+        self.assertIsNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- 题目信号：出现 Cache\n"))
+
 
 class AtlasFormatTests(unittest.TestCase):
     def test_course_atlas_is_declared_markdown_canonical(self):

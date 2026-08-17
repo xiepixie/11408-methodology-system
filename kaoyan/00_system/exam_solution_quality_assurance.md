@@ -383,7 +383,7 @@ Canonical Source fidelity
 - Frontmatter 必填字段；
 - Q1～Q40 answer；
 - H2 完整、唯一、顺序一致；
-- `题目信号 / 第一动作` 存在；
+- `Model Owner / Topic / Bridge / Rules` 至少有一个显式锚点，且 `题目信号 / 第一动作` 存在；
 - `source_exam / legacy_reference` 目标存在；
 - 整年完成态的年度 `README.md / solution_review.md` 存在。
 
