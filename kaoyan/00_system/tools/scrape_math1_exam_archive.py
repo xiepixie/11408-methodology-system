@@ -48,11 +48,12 @@ def get_math1_metadata(year, q_num):
             score = 5
         else:
             q_type = '解答题'
-            score = 10 if q_num <= 19 else 12
+            # 2021 起解答题结构：Q17 为 10 分，Q18~Q22 为 12 分。
+            score = 10 if q_num == 17 else 12
 
         if q_num in [1, 2, 3, 4, 11, 12, 13, 14, 17, 18, 19, 20]:
             subject = '高等数学'
-        elif q_num in [5, 6, 15, 21]:
+        elif q_num in [5, 6, 7, 15, 21]:
             subject = '线性代数'
         else:
             subject = '概率论与数理统计'
@@ -67,6 +68,13 @@ def get_math1_metadata(year, q_num):
         else:
             q_type = '解答题'
             score = 10 if q_num in [15, 16, 17, 18, 19] else 11
+            # 2008~2020 的题量结构相同，但少数年份的大题分值并非统一 10/11。
+            historical_score_overrides = {
+                2008: {15: 9, 16: 9, 17: 11, 19: 11, 20: 10, 21: 12},
+                2009: {15: 9, 16: 9, 17: 11, 18: 11},
+                2011: {16: 9, 19: 11},
+            }
+            score = historical_score_overrides.get(year, {}).get(q_num, score)
 
         if q_num in [1, 2, 3, 4, 9, 10, 11, 12, 15, 16, 17, 18, 19]:
             subject = '高等数学'
@@ -92,9 +100,13 @@ def get_math1_metadata(year, q_num):
             subject = '线性代数'
         else:
             subject = '概率论与数理统计'
-    elif 1991 <= year <= 2006:
-        # 1991~2006：已逐年核对的历史结构。年度大题分值并不统一，不能用单一默认值覆盖。
+    elif 1987 <= year <= 2006:
+        # 1987~2006：已逐年核对的历史结构。年度大题分值并不统一，不能用单一默认值覆盖。
         audited_scores = {
+            1987: [3, 3, 3, 3, 3, 8, 3, 4, 8, 3, 3, 3, 3, 10, 10, 10, 8, 2, 2, 2, 6],
+            1988: [5, 5, 5, 3, 3, 3, 3, 3, 3, 3, 3, 3, 6, 8, 9, 6, 8, 9, 2, 2, 2, 6],
+            1989: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 6, 7, 7, 6, 8, 9, 2, 2, 2, 6],
+            1990: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 6, 8, 7, 6, 8, 8, 2, 2, 2, 6],
             1991: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 6, 8, 7, 8, 6, 8, 3, 3, 6],
             1992: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 6, 8, 7, 8, 7, 7, 3, 3, 6],
             1993: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 5, 5, 5, 6, 7, 5, 5, 8, 6, 6, 3, 3, 6],
@@ -117,7 +129,35 @@ def get_math1_metadata(year, q_num):
             raise ValueError(f"{year} 年数学一不存在题号 Q{q_num:02d}")
         score = score_list[q_num - 1]
 
-        if year == 1991:
+        if year == 1987:
+            if q_num <= 5 or q_num in {18, 19, 20}:
+                q_type = '填空题'
+            elif 10 <= q_num <= 13:
+                q_type = '单项选择题'
+            else:
+                q_type = '解答题'
+        elif year == 1988:
+            if 4 <= q_num <= 7 or q_num in {19, 20, 21}:
+                q_type = '填空题'
+            elif 8 <= q_num <= 12:
+                q_type = '单项选择题'
+            else:
+                q_type = '解答题'
+        elif year == 1989:
+            if q_num <= 5 or q_num in {20, 21, 22}:
+                q_type = '填空题'
+            elif q_num <= 10:
+                q_type = '单项选择题'
+            else:
+                q_type = '解答题'
+        elif year == 1990:
+            if q_num <= 5 or q_num in {20, 21, 22}:
+                q_type = '填空题'
+            elif q_num <= 10:
+                q_type = '单项选择题'
+            else:
+                q_type = '解答题'
+        elif year == 1991:
             if q_num <= 5 or q_num in {20, 21}:
                 q_type = '填空题'
             elif q_num <= 10:
@@ -168,6 +208,10 @@ def get_math1_metadata(year, q_num):
                 q_type = '解答题'
 
         linear_algebra = {
+            1987: {5, 8, 13, 17},
+            1988: {7, 12, 16, 17},
+            1989: {5, 10, 17, 18},
+            1990: {5, 10, 17, 18},
             1991: {5, 10, 17, 18},
             1992: {5, 10, 18, 19},
             1993: {5, 10, 18, 19},
@@ -186,6 +230,10 @@ def get_math1_metadata(year, q_num):
             2006: {5, 11, 12, 20, 21},
         }
         probability = {
+            1987: {18, 19, 20, 21},
+            1988: {19, 20, 21, 22},
+            1989: {20, 21, 22, 23},
+            1990: {20, 21, 22, 23},
             1991: {20, 21, 22},
             1992: {20, 21, 22},
             1993: {21, 22, 23},
@@ -210,7 +258,7 @@ def get_math1_metadata(year, q_num):
         else:
             subject = '高等数学'
     else:
-        # 1987~1990 尚未完成逐年人工核定：fail closed，禁止静默写入猜测元数据。
+        # 1986 及更早年份不在当前归档范围内：fail closed，禁止静默写入猜测元数据。
         raise ValueError(
             f"{year} 年数学一历史题型/分值/学科路由尚未人工核定；"
             "请先校准年度 exam.json，再扩展 get_math1_metadata。"

@@ -28,6 +28,10 @@ Topic03、Topic11。
 
 旧 `I-06` 中 Taylor 局部模型、`II-09` 幂级数相关内容为主要来源。
 
+## 训练导航
+
+- [有限 Taylor 与无限表示分流](有限Taylor与无限表示分流.md) —— 先区分有限误差模型与无限函数表示，再分别审计余项、收敛半径、端点与和函数身份。
+
 ## Manual
 
 - Canonical Source：[有限Taylor模型与无限Taylor表示.tex](有限Taylor模型与无限Taylor表示.tex)

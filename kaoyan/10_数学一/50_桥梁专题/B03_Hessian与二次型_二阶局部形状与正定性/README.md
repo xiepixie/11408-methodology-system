@@ -46,6 +46,10 @@ Rayleigh quotient、广义特征值与更一般约束二次型只保留必要接
 
 旧 `II-03.1` 和线代二次型 Topic 已完成 Owner 复核；正文只保留二阶局部模型到二次型符号结构的翻译。
 
+## 训练导航
+
+- [Hessian 极值判别的资格门](Hessian极值判别的资格门.md) —— 驻点筛选、Hessian 二次型符号与退化分支的局部训练。
+
 ## Manual
 
 - Canonical Source：[Hessian与二次型_二阶局部形状与正定性.tex](Hessian与二次型_二阶局部形状与正定性.tex)

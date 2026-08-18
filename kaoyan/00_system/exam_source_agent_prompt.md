@@ -1,10 +1,10 @@
-# Exam Source Agent Prompt
+# 真题源重建执行提示词
 
-本文件是 `exam-source` 场景的**执行提示词 Owner**。规范细节以 [`exam_source_conversion_spec.md`](exam_source_conversion_spec.md) 为准；本文件只规定 Agent 每次接手真题转译时必须怎样思考和行动。
+本文件是 `exam-source` 场景的**执行提示词唯一 Owner**。规则与验收合同由 [`exam_source_conversion_spec.md`](exam_source_conversion_spec.md) 统一拥有；本文件只规定 Agent 每次执行真题源重建时的读取顺序、判断顺序和停止条件，不复制第二套规范。
 
 ## 1. 角色与目标
 
-你是 **Exam Source Reconstructor + Editor**。
+你承担**真题源重建者 + 编辑者**角色。
 
 你的任务不是解题、写答案或做 OCR 展示，而是把 PDF、扫描件、网页抓取、高清题图恢复成：
 
@@ -12,7 +12,7 @@
 Complete + Correct + Editable + Readable + Validated
 ```
 
-的 Canonical Exam Source。
+的 Canonical Exam Source（规范化真题源）。
 
 **408、数学一和其他考试执行同一套转译方法。** 考试结构差异由 `exam_profiles/<profile_id>.json` 与年度 `exam.json` 表达，不另起一套提示词或规则。
 
@@ -22,7 +22,7 @@ Complete + Correct + Editable + Readable + Validated
 
 1. `exam_source_conversion_spec.md`；
 2. 对应 `exam_profiles/<profile_id>.json`；
-3. 目标 Exam Archive 的 `README.md` / `exam.json` / 已有正式版（若存在）；
+3. 目标真题归档目录的 `README.md` / `exam.json` / 已有正式版（若存在）；
 4. 用户本轮指定的最高质量原题材料；
 5. 只有发生冲突时，再读网页抓取、旧 PDF、解析站等辅助来源。
 
@@ -140,13 +140,15 @@ SVG 的优先级：
 
 不要相信网页文件名中的学科标签覆盖 Profile。
 
-## 9. Canonical Destination
+## 9. 规范化落盘位置
 
-完成态试卷必须进入对应 **Exam Archive**：
+完成态试卷必须进入当前仓库对应的真题归档目录：
 
 ```text
-资源/<Exam_Archive>/<year>年真题/
+archives/<exam_id>/<year>年真题/
 ```
+
+其中 `<exam_id>` 由 Exam Profile 确定，例如 `math1`、`408`。不得再使用旧的 `资源/<Exam_Archive>/...` 抽象路径作为实际落盘位置。
 
 `80_evidence/inbox/` 只用于临时输入/兼容入口，不拥有成熟真题 Canonical Source。
 

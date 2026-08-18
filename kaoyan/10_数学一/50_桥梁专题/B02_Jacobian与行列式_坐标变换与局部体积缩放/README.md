@@ -39,6 +39,10 @@ B01、线代行列式、高数重积分。
 
 高数 II-01/II-04 与线代行列式 Topic 已完成 Owner 复核；正文只保留变换方向、体积因子和失效边界。
 
+## 训练导航
+
+- [Jacobian 换元的方向与逆像](Jacobian换元的方向与逆像.md) —— 正/逆变换、新区域、覆盖分支与 determinant 方向的联合审计。
+
 ## Manual
 
 - Canonical Source：[Jacobian与行列式_坐标变换与局部体积缩放.tex](Jacobian与行列式_坐标变换与局部体积缩放.tex)

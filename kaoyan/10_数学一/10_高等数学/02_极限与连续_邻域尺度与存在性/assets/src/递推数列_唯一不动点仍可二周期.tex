@@ -1,0 +1,69 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+\begin{scope}[x=8.2cm,y=8.2cm]
+  % 1. 坐标轴与辅助虚线（底层）
+  \draw[themefg, line width=0.9pt, -{Stealth[scale=1.3, length=3.0mm]}]
+    (-0.035,0) -- (1.08,0) node[below left=1pt] {$x$};
+  \draw[themefg, line width=0.9pt, -{Stealth[scale=1.3, length=3.0mm]}]
+    (0,-0.035) -- (0,1.08) node[below left=1pt] {$y$};
+
+  \draw[themegray, densely dotted, line width=0.8pt] (0.5,0) -- (0.5,0.5);
+  \draw[themegray, densely dotted, line width=0.8pt] (0,0.5) -- (0.5,0.5);
+
+  \draw[themegray, line width=0.7pt] (0.20,-0.012) -- (0.20,0.012);
+  \draw[themegray, line width=0.7pt] (0.80,-0.012) -- (0.80,0.012);
+
+  % 2. 函数主曲线（中层）
+  \draw[themecurve, line width=2.0pt] (0,0) -- (1,1);
+  \draw[themeamber, line width=2.0pt] (0,1) -- (1,0);
+
+  % 3. 蛛网二周期迭代轨道（大箭头，高亮层）
+  \draw[themealert, line width=1.8pt, -{Stealth[scale=1.4, length=3.2mm, width=2.4mm]}] (0.20,0) -- (0.20,0.80);
+  \draw[themealert, line width=1.8pt, -{Stealth[scale=1.4, length=3.2mm, width=2.4mm]}] (0.20,0.80) -- (0.80,0.80);
+  \draw[themealert, line width=1.8pt, -{Stealth[scale=1.4, length=3.2mm, width=2.4mm]}] (0.80,0.80) -- (0.80,0.20);
+  \draw[themealert, line width=1.8pt, -{Stealth[scale=1.4, length=3.2mm, width=2.4mm]}] (0.80,0.20) -- (0.20,0.20);
+  \draw[themealert, line width=1.8pt, -{Stealth[scale=1.4, length=3.2mm, width=2.4mm]}] (0.20,0.20) -- (0.20,0.80);
+
+  % 4. 重点标记点
+  \fill[themecurve] (0.5,0.5) circle (2.8pt);
+  \fill[themealert] (0.20,0.80) circle (2.6pt);
+  \fill[themealert] (0.80,0.20) circle (2.6pt);
+
+  % 5. 所有文字注记与遮罩（顶层，绝不被任何线条穿过覆盖）
+  \node[text=themeamber, fill=themebg, inner sep=0.8pt, anchor=south west] at (0.10,0.92) {$y=1-x$};
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south east] at (0.94,0.96) {$y=x$};
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=north west] at (0.53,0.48) {$L=\dfrac12$};
+
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (0.20,-0.018) {$x_1=0.2$};
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (0.80,-0.018) {$x_2=0.8$};
+
+  % 结论徽标
+  \node[
+    draw=themegray,
+    rounded corners=1.5mm,
+    fill=themebg,
+    inner xsep=6pt,
+    inner ysep=4pt,
+    anchor=north,
+    text=themefg
+  ] at (0.50,-0.15) {唯一不动点仍不足以保证收敛：这里 $x_{n+2}=x_n$};
+\end{scope}
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

@@ -1,0 +1,76 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+\begin{axis}[
+    name=mainax,
+    width=13.5cm,
+    height=7.6cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\small},
+    every axis label/.style={color=themefg},
+    xmin=-4.6, xmax=4.8,
+    ymin=-1.6, ymax=1.8,
+    xtick={-3.14159, -1.5708, 0, 0.5236, 1.5708, 2.618, 3.14159},
+    xticklabels={$-\pi$, $-\frac{\pi}{2}$, $0$, $\frac{\pi}{6}$, $\frac{\pi}{2}$, $\frac{5\pi}{6}$, $\pi$},
+    ytick={-1, 0, 0.5, 1},
+    yticklabels={$-1$, $0$, $\frac{1}{2}$, $1$},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={at={(0.5,1.08)},anchor=south,color=themefg,font=\bfseries\normalsize},
+    title={正弦函数在全实轴上非单射；反正弦取主值分支 $[-\frac{\pi}{2},\frac{\pi}{2}]$},
+]
+% full periodic sine curve (dashed)
+\addplot[themegray, dashed, thick, domain=-4.2:4.2, samples=300] {sin(deg(x))};
+\node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south west] at (axis cs:2.8,1.1) {\small $y=\sin x$（在 $\mathbb R$ 上非单射）};
+
+% principal branch [-pi/2, pi/2]
+\addplot[themecurve, line width=2.4pt, domain=-1.5708:1.5708, samples=200] {sin(deg(x))};
+
+% boundary vertical dashed lines
+\draw[dashed, themegray, thick] (axis cs:-1.5708,-1.4) -- (axis cs:-1.5708,1.4);
+\draw[dashed, themegray, thick] (axis cs:1.5708,-1.4) -- (axis cs:1.5708,1.4);
+
+% Endpoints of principal branch: (-pi/2, -1) and (pi/2, 1)
+\addplot[only marks, mark=*, mark size=2.8pt, fill=themecurve, draw=themefg] coordinates {(-1.5708, -1) (1.5708, 1)};
+\node[text=themecurve, fill=themebg, inner sep=0.8pt, below left] at (axis cs:-1.5708, -1) {\small $(-\frac{\pi}{2},-1)$};
+\node[text=themecurve, fill=themebg, inner sep=0.8pt, above right] at (axis cs:1.5708, 1) {\small $(\frac{\pi}{2},1)$};
+
+% horizontal test line y = 0.5
+\draw[dashed, themegray, line width=1.1pt] (axis cs:-4.4, 0.5) -- (axis cs:4.4, 0.5);
+\node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south east] at (axis cs:-3.9, 0.52) {\small $y=\frac{1}{2}$};
+
+% principal intersection (pi/6, 0.5)
+\addplot[only marks, mark=*, mark size=3.2pt, fill=themecurve, draw=themefg] coordinates {(0.5236, 0.5)};
+\draw[dotted, themegray, thick] (axis cs:0.5236, 0.5) -- (axis cs:0.5236, 0);
+\node[text=themecurve, fill=themebg, inner sep=0.8pt, above] at (axis cs:0.5236, 0.75) {\small 主值唯一原像 $\arcsin\frac{1}{2}=\frac{\pi}{6}$};
+
+% other intersections on sine wave (outside principal branch)
+\addplot[only marks, mark=o, mark size=3.2pt, thick, themegray] coordinates {(-3.6652, 0.5) (2.618, 0.5)};
+\node[text=themegray, fill=themebg, inner sep=0.8pt, above] at (axis cs:2.618, 0.68) {\small 舍弃分支 $x=\frac{5\pi}{6}$};
+
+\end{axis}
+
+% Bottom caption outside axis
+\node[font=\small\bfseries, color=themefg, anchor=north] at ($(mainax.south)-(0, 0.55cm)$) {关键关系：$\sin:[-\frac{\pi}{2},\frac{\pi}{2}]\to[-1,1]$ 严格递增且取遍 $[-1,1]$，因此为双射};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

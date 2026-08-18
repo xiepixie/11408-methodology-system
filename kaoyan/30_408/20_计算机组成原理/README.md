@@ -7,15 +7,29 @@
 
 计算机组成原理研究：怎样用有限数量、有限速度和有限带宽的硬件，正确而高效地实现 ISA 对软件承诺的程序语义。
 
+把软件可见的体系结构状态记为 $S_{\mathrm{arch}}$。对一条已定义语义的指令 $I$，ISA 规定它在合法前提下应产生怎样的下一架构状态，可抽象为
+
 $$
-\text{ISA Semantic}
-\to \text{Data Movement}
-\to \text{Hardware Path}
-\to \text{Timing}
-\to \text{Architectural State Commit}
+S'_{\mathrm{arch}}=\operatorname{Spec}_I(S_{\mathrm{arch}}).
 $$
 
-硬件内部可以重叠、缓存和推测，但对软件可见的程序语义必须保持。
+一个具体硬件实现可以在内部采用不同的数据通路、缓存、流水或其他微架构机制。记正常完成一次执行后得到的软件可见状态为
+
+$$
+S_{\mathrm{visible}}
+:=
+\operatorname{VisibleState}\!\left(\operatorname{Execute}_{\mathrm{impl}}(I,S_{\mathrm{arch}})\right).
+$$
+
+实现正确性要求
+
+$$
+S_{\mathrm{visible}}
+=
+\operatorname{Spec}_I(S_{\mathrm{arch}}).
+$$
+
+若发生异常，则下一可见状态必须服从 ISA 对异常入口与可见状态的规定，而不是任意留下部分更新。因此“有限硬件怎样实现既定程序语义”才是后续通路、时序、存储层次与 I/O 机制的共同约束。
 
 \textbf{考纲总览入口：}传统的存储程序思想把指令和数据都放入可寻址存储器，由 PC 驱动“取指—解释—执行—更新状态”的循环；高级语言程序则经编译、汇编、链接和装入，才成为这条循环可以消费的机器级映像。这个历史模型只规定可观察的程序存储与执行入口，不规定某一台机器必须采用单一总线或固定节拍。
 
@@ -23,11 +37,15 @@ $$
 
 ## 计组统一六格坐标
 
-这条链是本 Atlas 的分析顺序，不是要求每道题机械写六行：
+本 Atlas 用六个坐标观察同一次硬件执行：
 
-```text
-ISA State -> Data Location -> Datapath / Control -> Timing -> Commit -> Cost
-```
+$$
+\mathcal M_{\mathrm{CO}}
+:=
+(\text{ISA State},\text{Data Location},\text{Datapath/Control},\text{Timing},\text{Architectural Visibility},\text{Cost}).
+$$
+
+它们是同时约束一次实现的观察维度，不是六个依次发生的物理阶段。这里的 `Architectural Visibility` 沿用项目中的 `Commit` 简称，指结果何时成为软件可见的架构状态；它不假设所有处理器都存在某个名为 commit 的独立流水级。
 
 | 坐标 | 首要问题 | 当前 Owner |
 |---|---|---|
@@ -94,9 +112,7 @@ ISA State -> Data Location -> Datapath / Control -> Timing -> Commit -> Cost
 
 ## 计组做题六步入口
 
-```text
-State -> Data Location -> Path -> Resource -> Timing -> Commit / Cost
-```
+下面是**检查顺序**，不是硬件事件的唯一时间顺序：
 
 1. 抄出题目给定的 PC、寄存器、PTE、Cache 行、队列和目标架构状态；
 2. 标记指令与操作数当前在哪里，miss 后下一层是谁；
@@ -147,11 +163,11 @@ bus transaction、arbitration、timing、controller registers、port addressing�
 
 - [CO-B01｜ISA Semantic × Datapath](85_科内桥梁/CO-B01_ISA语义与数据通路/README.md)：指令承诺的状态变化怎样翻译成微操作、通路与控制；
 - [CO-B02｜Address Translation × Cache Access](85_科内桥梁/CO-B02_地址翻译与Cache访问/README.md)：VA/PA 位怎样进入 TLB/Page Table 与 Cache 的组合访问路径；
-- [CO-I01｜一条指令的一生](86_综合专题/CO-I01_一条指令的一生/README.md)：优先以 LOAD 追踪 ISA -> CPU -> Pipeline -> Translation -> Cache/Memory -> Commit。
+- [CO-I01｜一条指令的一生](86_综合专题/CO-I01_一条指令的一生/README.md)：优先以 LOAD 为贯穿对象，按执行过程追踪 ISA 语义、CPU 通路、流水时序、地址翻译、Cache/Memory 与最终架构可见状态；具体事件顺序由该 Integration 明确标注。
 
 CO-B01、CO-B02 与 CO-I01 的 Canonical 候选正文均已建立并发布；它们只拥有跨 Owner handoff 或组合过程，不复制八个 Topic 的局部机制。
 
-`C -> ISA` 的机器级映射仍由 ISA Topic Own，不再把 `C × ISA × CPU` 建成跨科 Bridge。原 `85_科内桥梁与综合/` 旧稿保留为 Source/legacy work draft，不再拥有新的 Bridge/Integration 定义。
+C 语言语义到 ISA 机器级语义的映射仍由 ISA Topic Own，不再把 `C × ISA × CPU` 建成跨科 Bridge。原 `85_科内桥梁与综合/` 旧稿保留为 Source/legacy work draft，不再拥有新的 Bridge/Integration 定义。
 
 Cross-Subject Bridge 统一上移到 [408 Cross-Subject Bridge Atlas](../50_桥梁专题/README.md)：Privilege/Exception × OS、Hardware Address Translation × OS VM、Interrupt/DMA × OS I/O。
 
@@ -161,15 +177,7 @@ Cross-Subject Bridge 统一上移到 [408 Cross-Subject Bridge Atlas](../50_桥�
 
 ## Question Control Adapter
 
-$$
-\text{State}
-\to \text{Location}
-\to \text{Path}
-\to \text{Resource}
-\to \text{Timing}
-\to \text{Commit}
-\to \text{Cost}
-$$
+下面七问是推荐检查顺序：
 
 1. 当前软件可见状态是什么？
 2. 数据现在在哪里？
@@ -181,14 +189,6 @@ $$
 
 ## 建议审查顺序
 
-```text
-Atlas
--> CPU 数据通路与控制
--> ISA 与机器级程序
--> 流水线
--> Cache / 地址翻译
--> 数据表示 / 主存 / I/O
--> 一条指令的一生
-```
+建议依次审查 Atlas、CPU 数据通路与控制、ISA 与机器级程序、流水线、Cache / 地址翻译、数据表示 / 主存 / I/O，最后用《一条指令的一生》做组合验收。这个顺序服务审查效率，不表示这些 Topic 构成单向因果链。
 
-审查时优先攻击《CPU 数据通路与控制》的“状态差 -> 路径 -> 微操作”以及《一条指令的一生》的跨层慢路径；它们决定其余 Topic 是否能被统一调用。
+审查时优先攻击《CPU 数据通路与控制》的“架构状态差、数据依赖、合法通路与微操作”以及《一条指令的一生》的跨层慢路径；它们决定其余 Topic 是否能被统一调用。

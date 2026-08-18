@@ -1,9 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="980" height="610" viewBox="0 0 980 610" role="img" aria-labelledby="title desc">
 <title id="title">题44图(b) 补码除法器逻辑结构</title>
 <desc id="desc">除数寄存器Y连接32位ALU，ALU连接余数寄存器R与余数/商寄存器Q；控制逻辑产生ALUop、左移和写使能信号，并接收时钟。</desc>
-<defs>
-<style>.t{font-family:Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#edf4e8}.small{font-size:18px}.mid{font-size:22px}.big{font-size:26px}.line{stroke:#edf4e8;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}.dash{stroke:#edf4e8;stroke-width:2.2;fill:none;stroke-dasharray:7 6;stroke-linecap:round}.node{fill:#3b4337;stroke:#edf4e8;stroke-width:2.4}</style>
-<marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0,0 L0,8 L10,4 z" fill="#edf4e8"/></marker>
+
+<style>
+  @media print, (prefers-color-scheme: light) {
+    [fill="#30362d"], [fill="#30362D"], [fill="#30362d" i] { fill: #fafaf7 !important; }
+    [stroke="#30362d"], [stroke="#30362D"], [stroke="#30362d" i] { stroke: #fafaf7 !important; }
+    [fill="#edf4e8"], [fill="#EDF4E8"], [fill="#edf4e8" i] { fill: #111111 !important; }
+    [stroke="#edf4e8"], [stroke="#EDF4E8"], [stroke="#edf4e8" i] { stroke: #111111 !important; }
+    [fill="#9ea897"], [fill="#9EA897"], [fill="#9ea897" i] { fill: #666666 !important; }
+    [stroke="#9ea897"], [stroke="#9EA897"], [stroke="#9ea897" i] { stroke: #666666 !important; }
+  }
+</style>
+<defs><marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0,0 L0,8 L10,4 z" fill="#edf4e8"/></marker>
 </defs>
 <rect width="100%" height="100%" fill="#30362d" rx="14" ry="14"/>
 <g id="divisor-y"><rect x="355" y="38" width="210" height="58" class="node"/><text x="460" y="75" class="t mid" text-anchor="middle">除数寄存器 Y</text></g>

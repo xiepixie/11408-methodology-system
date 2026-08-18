@@ -1,0 +1,70 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+\begin{axis}[
+    width=9.5cm,
+    height=9.5cm,
+    axis equal image,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\footnotesize},
+    every axis label/.style={color=themefg},
+    xmin=-4.2, xmax=4.5,
+    ymin=-4.2, ymax=4.5,
+    xtick={-3,-2,-1,0,1,2,3},
+    ytick={-3,-2,-1,0,1,2,3},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={at={(0.5,1.08)},anchor=south,color=themefg,font=\bfseries\small},
+    title={分段函数按值域分别求逆：$f(x) \leftrightarrow f^{-1}(x)$ 关于 $y=x$ 对称},
+]
+  % Symmetry line y = x
+  \addplot[dashed, themegray, thick, domain=-3.8:4.0] {x};
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south west] at (axis cs:3.8,3.8) {\footnotesize $y=x$};
+
+  % Original function f(x): x < 0 -> x-1; x >= 0 -> x+1 (Blue solid)
+  \addplot[themecurve, line width=2.0pt, domain=-3.5:-0.05, samples=50] {x-1};
+  \addplot[themecurve, line width=2.0pt, domain=0:3.2, samples=50] {x+1};
+  
+  % f(x) endpoints: (0,1) solid, (0,-1) hollow
+  \addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(0,1)};
+  \addplot[only marks, mark=o, mark size=2.5pt, thick, draw=themecurve] coordinates {(0,-1)};
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south east] at (axis cs:2.8,3.5) {\footnotesize $y=f(x)$};
+
+  % Inverse function f^{-1}(x): x < -1 -> x+1; x >= 1 -> x-1 (Red solid)
+  \addplot[themealert, line width=2.0pt, domain=-3.5:-1.05, samples=50] {x+1};
+  \addplot[themealert, line width=2.0pt, domain=1:3.5, samples=50] {x-1};
+
+  % f^{-1}(x) endpoints: (1,0) solid, (-1,0) hollow
+  \addplot[only marks, mark=*, mark size=2.5pt, fill=themealert, draw=themefg] coordinates {(1,0)};
+  \addplot[only marks, mark=o, mark size=2.5pt, thick, draw=themealert] coordinates {(-1,0)};
+  \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=north west] at (axis cs:3.2,2.0) {\footnotesize $y=f^{-1}(x)$};
+
+  % Orthogonal connecting lines for sample point pair: (1.5, 2.5) on f and (2.5, 1.5) on f^{-1}
+  \addplot[only marks, mark=*, mark size=2.2pt, fill=themefg, draw=themefg] coordinates {(1.5, 2.5) (2.5, 1.5)};
+  \draw[dotted, themegray, line width=1pt] (axis cs:1.5, 2.5) -- (axis cs:2.5, 1.5);
+
+  % Bottom note
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (axis cs:0,-3.6) {\footnotesize 关键关系：原函数各段的值域 $R_{f_1}, R_{f_2}$ 分别成为反函数对应分段的定义域};
+
+\end{axis}
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

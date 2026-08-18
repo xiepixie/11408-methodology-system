@@ -290,12 +290,12 @@ TikZ→SVG 同理：共享脚本只接受显式文件/目录；“扫描哪些�
 
 ## 12. 一句话架构
 
-\[
+$$
 \boxed{
 \text{KOMA owns mechanics}
 +\text{CTeX owns Chinese infrastructure}
 +\text{I.P.A.R.A owns semantics and profiles}
 }
-\]
+$$
 
 长期目标不是继续制造迁移层，而是让真实 Teaching / Kaoyan 资产持续验证同一个 Design Language，并在出现真实重复需求时再抽取新的 Family API。

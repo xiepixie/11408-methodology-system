@@ -1180,4 +1180,24 @@ footer {
   a { color: #0f172a; text-decoration: none; }
   section { break-inside: auto; }
   table, .panel, .codebox, .flow { break-inside: avoid; }
+  img, svg { display: block !important; margin: 1.2cm auto !important; max-width: 90% !important; width: auto !important; break-inside: avoid !important; }
 }
+
+/* ==========================================================================
+   Image & SVG Diagram Intelligent Layout (Center & Bounded Scaling)
+   ========================================================================== */
+
+img, svg.diagram-asset {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1.6rem;
+  margin-bottom: 1.6rem;
+  width: 96%;
+  max-width: 96%;
+  max-height: min(540px, 68vh);
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+

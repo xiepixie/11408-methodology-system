@@ -1,0 +1,59 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning,shapes.geometric}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[
+    color=themefg, text=themefg,
+    every node/.style={color=themefg},
+    block/.style={draw=themefg, line width=1.2pt, rounded corners=3pt, minimum height=1.1cm, font=\small, align=center},
+    pill/.style={draw=themecurve, line width=1.5pt, rounded corners=6pt, minimum height=1.2cm, font=\bfseries\small, align=center},
+    edge/.style={->, line width=1.2pt, -{Stealth[length=5pt]}},
+    pullback/.style={->, dashed, line width=1.2pt, color=themealert, -{Stealth[length=5pt]}}
+]
+
+  % Title
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, font=\bfseries\normalsize, anchor=south] at (3.5, 2.0) {嵌套复合函数的定义条件逐层回到原变量};
+
+  % Forward pipeline
+  \node[block, minimum width=1.8cm] (x) at (0, 0.6) {$x$};
+  \node[block, minimum width=2.6cm, right=1.6cm of x] (u) {$u=g(x)$\\{\footnotesize 内部变量}};
+  \node[block, minimum width=2.6cm, right=1.6cm of u] (y) {$y=f(u)$\\{\footnotesize 外部函数}};
+  \node[pill, minimum width=2.8cm, right=1.6cm of y] (d) {$D_F=\{x\in D_g:g(x)\in D_f\}$\\{\footnotesize 最终定义域}};
+
+  % Forward arrows with constraints
+  \draw[edge] (x) -- node[above, font=\footnotesize] {内层有效 $x\in D_g$} (u);
+  \draw[edge] (u) -- node[above, font=\footnotesize] {外层定义条件 $u\in D_f$} (y);
+  \draw[edge] (y) -- node[above, font=\footnotesize] {取交集} (d);
+
+  % Concrete example: y = arcsin(ln(x-1))
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, font=\footnotesize, anchor=south] at (3.5, -0.6) {示例：$y=\arcsin(\ln(x-1))$};
+
+  % Lower Pullback demonstration
+  \node[block, draw=themegray, minimum width=1.8cm] (ex_x) at (0, -1.8) {$x$};
+  \node[block, draw=themegray, minimum width=2.6cm, right=1.6cm of ex_x] (ex_u) {$u=\ln(x-1)$};
+  \node[block, draw=themegray, minimum width=2.6cm, right=1.6cm of ex_u] (ex_y) {$y=\arcsin u$};
+  \node[pill, draw=themecurve, minimum width=2.8cm, right=1.6cm of ex_y] (ex_d) {$D=[1+e^{-1},\,1+e]$};
+
+  \draw[edge, color=themegray] (ex_x) -- node[above, font=\footnotesize] {$x-1>0$} (ex_u);
+  \draw[edge, color=themegray] (ex_u) -- node[above, font=\footnotesize] {$-1\le u\le 1$} (ex_y);
+  \draw[edge, color=themegray] (ex_y) -- (ex_d);
+
+  % Pullback curve
+  \draw[pullback] (ex_u.south) .. controls +(0,-0.8) and +(0,-0.8) .. node[below, font=\footnotesize, color=themealert] {回拉求交：$-1\le\ln(x-1)\le1 \implies 1+e^{-1}\le x\le 1+e$} (ex_x.south);
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

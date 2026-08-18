@@ -1,0 +1,91 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,decorations.pathreplacing}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+\begin{scope}[x=2.25cm,y=2.05cm]
+  % 语义参数只用于读图：a=2, delta=0.8, L=1.5, epsilon=0.55。
+  % 输入 δ 带与输出 ε 带。大面积填充低不透明度，避免压住主曲线。
+  \fill[themecurve, opacity=0.08] (1.20,0.18) rectangle (2.80,3.05);
+  \fill[themecurve, opacity=0.08] (0.02,0.95) rectangle (4.55,2.05);
+
+  % 坐标轴
+  \draw[themefg, line width=0.9pt, -{Stealth[length=2.0mm]}]
+    (0,0.18) -- (4.65,0.18) node[below left=1pt] {$x$};
+  \draw[themefg, line width=0.9pt, -{Stealth[length=2.0mm]}]
+    (0,0.18) -- (0,3.13) node[below left=1pt] {$y$};
+
+  % ε / δ 边界虚线
+  \draw[themegray, densely dashed, line width=0.95pt] (1.20,0.18) -- (1.20,3.02);
+  \draw[themegray, densely dashed, line width=0.95pt] (2.80,0.18) -- (2.80,3.02);
+  \draw[themegray, densely dashed, line width=0.95pt] (0.02,0.95) -- (4.48,0.95);
+  \draw[themegray, densely dashed, line width=0.95pt] (0.02,2.05) -- (4.48,2.05);
+  \draw[themegray, densely dotted, line width=0.8pt] (0.02,1.50) -- (4.48,1.50);
+
+  % 一般化非对称曲线
+  \draw[themecurve, line width=2.1pt]
+    plot[domain=0.18:1.965, samples=150]
+      (\x,{1.50+0.38*(\x-2)+0.18*(\x-2)*(\x-2)-0.06*(\x-2)*(\x-2)*(\x-2)});
+  \draw[themecurve, line width=2.1pt]
+    plot[domain=2.035:4.35, samples=170]
+      (\x,{1.50+0.38*(\x-2)+0.18*(\x-2)*(\x-2)-0.06*(\x-2)*(\x-2)*(\x-2)});
+
+  % 双向挤压逼近箭头：展示 x 向 a 靠拢的动态
+  \draw[themecurve, line width=1.1pt, -{Stealth[length=1.8mm]}] (1.35,0.40) -- (1.82,0.40);
+  \draw[themecurve, line width=1.1pt, -{Stealth[length=1.8mm]}] (2.65,0.40) -- (2.18,0.40);
+
+  % x=a 处的极限值与点值分离
+  \draw[themefg, fill=themebg, line width=1.0pt] (2.00,1.50) circle (2.6pt);
+  \fill[themealert] (2.00,2.66) circle (2.5pt);
+  \draw[themegray, densely dotted, line width=0.8pt] (0.10,2.66) -- (2.00,2.66);
+  \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=west] at (2.08,2.66) {\small $f(a)$};
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south west] at (3.42,2.43) {\small $y=f(x)$};
+
+  % 轴标签微遮罩
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=east] at (-0.05,2.05) {\footnotesize $L+\varepsilon$};
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=east] at (-0.05,1.50) {\footnotesize $L$};
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=east] at (-0.05,0.95) {\footnotesize $L-\varepsilon$};
+
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (1.20,0.14) {\footnotesize $a-\delta$};
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (2.00,0.14) {\footnotesize $a$};
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (2.80,0.14) {\footnotesize $a+\delta$};
+
+  % 输入带与输出带花括号
+  \draw[themegray, decorate, decoration={brace, amplitude=4pt, mirror}]
+    (1.20,-0.10) -- (2.80,-0.10);
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=north] at (2.00,-0.18)
+    {\footnotesize 输入去心邻域：$0<|x-a|<\delta$};
+
+  \draw[themegray, decorate, decoration={brace, amplitude=4pt}]
+    (4.62,0.95) -- (4.62,2.05);
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=west] at (4.72,1.50)
+    {\footnotesize 输出控制：$|f(x)-L|<\varepsilon$};
+
+  % 结论徽标
+  \node[
+    draw=themegray,
+    rounded corners=1.5mm,
+    fill=themebg,
+    inner xsep=7pt,
+    inner ysep=4pt,
+    anchor=north,
+    text=themefg
+  ] at (2.30,-0.48)
+    {\small $0<|x-a|<\delta\implies|f(x)-L|<\varepsilon$};
+\end{scope}
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

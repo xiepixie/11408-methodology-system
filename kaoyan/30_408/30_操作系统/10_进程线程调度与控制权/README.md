@@ -14,6 +14,11 @@
 - **Uses**：OS-00 的运行环境入口；OS-03 的同步协议；OS-04 的 address-space 机制；OS-05 的 I/O 完成；OS-06/07 的文件引用。
 - **Stop Boundary**：不重讲 PV/管程、页表与 COW、fd/OFD/inode、DMA 搬运或运输层 socket 语义。
 
+## 训练导航
+
+- [进程线程状态与控制权](进程线程状态与控制权.md)：承接旧 Canonical 的线程九问、进程状态、系统调用/中断、PCB/TCB 与 IPC 控制清单；只训练状态推演与 Owner 路由。
+- [调度计算](调度计算.md)：训练决策事件点、ready set、Gantt 时间线、HRRN/RR/MLFQ 与指标反推；调度机制与策略定义仍由 Canonical 拥有。
+
 ## Read Next
 
 同步与共享状态进入[并发、同步与死锁](../20_并发同步与死锁/README.md)；阻塞 I/O 的设备侧进入[I/O 请求、等待与完成](../40_IO请求等待与完成/README.md)。

@@ -120,9 +120,9 @@ Owner 应尽量定位到具体 Handbook 或 Rules 文件。尚未建立工作文
 | 数学一 Integration Layer | `10_数学一/60_综合专题/README.md` | 只拥有代表性完整问题（Canonical Problem）的模块组合轨迹，不重新拥有 Topic/Bridge |
 | 高数 internal Bridge | `10_数学一/10_高等数学/50_桥梁专题/README.md` | 只处理高数 Topic↔Topic 接口；Jacobian/Hessian 等跨 Subject 接口必须上移 |
 | 高数微积分建模 Integration | `10_数学一/10_高等数学/60_综合专题/H-I01_微积分建模_从局部微元到整体量/README.md` | 拥有完整建模协作轨迹，不拥有局部积分/求导机制 |
-| 定义域、非零和等价性检查 | 数学 Subject Rules | 是操作检查，不重新定义函数和代数机制 |
+| 定义域、非零和等价性检查 | `10_数学一/10_高等数学/01_函数对象_表示与结构/函数对象与定义域.md` | 专题01局部训练 Owner；只拥有题目表示、起手与检查，不重新定义函数和代数机制 |
 | 分部积分机制 | 高数积分 Topic | 负责公式、适用条件和结构变化 |
-| 分部积分拆法选择 | 高数做题 Rules | 负责识别信号和起手动作，引用机制 Topic |
+| 分部积分拆法选择 | 规划归属：高数 Topic05 同目录对应训练 Markdown | 负责母题、拆法选择、复杂度下降与检查；建立训练文件前不得假装已有 Canonical Owner |
 | 线性代数学科母模型与 Topic 地图 | `10_数学一/20_线性代数/README.md` | 当前 Canonical Subject Atlas；直接拥有“对象—表示—合法变换—不变量—最简合法表示”、三类标准化关系、Topic 地图与跨册路由。旧 Atlas `.tex` 只作为 Source / 旧阅读视图 |
 | 线性组合、基、维数、坐标与正交 | `10_数学一/20_线性代数/01_向量空间_生成基与坐标/向量空间_生成基与坐标.tex` | Canonical Topic01；README 只做 Landing。拥有表示骨架，不拥有映射作用、rank 的统一机制与谱结构 |
 | 线性映射、矩阵表示、可逆与行列式 | `10_数学一/20_线性代数/02_线性映射_矩阵与行列式/线性映射_矩阵与行列式.tex` | Canonical Topic02；拥有两端换基、矩阵运算/可逆与 determinant 机制，rank/kernel/image 完整分解交给 Topic03，具体方程解集交给 Topic04 |

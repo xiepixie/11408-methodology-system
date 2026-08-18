@@ -53,6 +53,10 @@ B02、B06A/B06B、概率联合分布 Topic。
 
 概率变量变换 Topic 与 B02 已完成 Owner 复核；正文只保留质量守恒、support 迁移和多分支边界。
 
+## 训练导航
+
+- [随机变量变换的逆像与 Jacobian](随机变量变换的逆像与Jacobian.md) —— 完整逆像、新支撑、局部逆分支与 probability Jacobian 的联合审计。
+
 ## Manual
 
 - Canonical Source：[随机变量变换与Jacobian_概率质量守恒.tex](随机变量变换与Jacobian_概率质量守恒.tex)

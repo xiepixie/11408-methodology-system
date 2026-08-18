@@ -3,20 +3,27 @@
 状态：已采用；Canonical Bridge 正文已建立并发布。
 
 ## Owners
-CO07 地址翻译硬件 ↔ OS03 Virtual Memory。
+CO07 地址翻译硬件 ↔ OS-04 虚拟内存与页生命周期。
 
 ## Mother Interface
-`OS Mapping Decision -> PTE/Page Table State -> MMU/TLB Consumption -> Translation Success or Fault -> OS Repair -> Retry`
+
+OS 先把地址空间决策**编码为页表/PTE 状态**；MMU/TLB 再**消费这些状态完成翻译与权限检查**。成功时输出合法 PA 并进入后续数据访问；失败时以 fault 把原因与现场交给 OS，OS 修复或拒绝后，才可能在明确的 retry 点重新尝试原访问。
 
 ## Owns
 OS 怎样把地址空间策略编码成硬件可消费 mapping；硬件何时能继续翻译、何时必须以 fault 把控制权交回 OS；修复后为什么可以 retry。
 
 ## Responsibility Split
-- 计组：TLB、page walk、PTE 硬件可见字段、VA->PA path；
+- 计组：TLB、page walk、PTE 硬件可见字段与 VA 到 PA 的翻译路径；
 - OS：address space、page allocation/residency、fault handling、replacement、COW。
 
 ## Anti-Bridge
-`TLB miss != Page Fault`；`Hardware Cache != OS Page Cache`。
+
+- `TLB miss ≠ Page Fault`：前者缺翻译缓存副本，后者表示当前访问不能按现有映射/权限继续；
+- `Hardware Cache ≠ OS Page Cache`：两者缓存的对象、Owner 与失效/填充事件不同。
+
+## 训练导航
+
+- [地址翻译软硬件交接](地址翻译软硬件交接.md)：把跨科题的完整落笔顺序、三种 miss 分流、旧翻译一致性与 retry 检查迁到训练层。
 
 ## Manual
 

@@ -3,10 +3,12 @@
 """
 generate_math1_svgs.py
 ======================
-全量生成考研数学一真题库中的所有 Semantic SVG 资产（暗色+亮色双主题）。
+显式重生成仍由 legacy direct-SVG 管线拥有的数学一 Semantic SVG 资产（暗色+亮色双主题）。
+已经建立 assets/src/*.tex 的 TikZ-backed 图不属于本脚本 Owner。
 严格执行：kaoyan/00_system/exam_source_conversion_spec.md (Section 10)
 """
 
+import argparse
 import os
 import re
 import json
@@ -425,26 +427,6 @@ def gen_2017_q03(theme):
     return make_svg(440, 260, content, theme)
 
 # 2024
-def gen_2024_q05(theme):
-    content = """
-  <line x1="180" y1="140" x2="180" y2="20" class="axis" marker-end="url(#arrow)"/>
-  <line x1="180" y1="140" x2="330" y2="140" class="axis" marker-end="url(#arrow)"/>
-  <line x1="180" y1="140" x2="70" y2="240" class="axis" marker-end="url(#arrow)"/>
-  <text x="195" y="30" class="text">z</text>
-  <text x="325" y="165" class="text">y</text>
-  <text x="60" y="250" class="text">x</text>
-  <text x="168" y="155" class="text">O</text>
-  <line x1="120" y1="210" x2="240" y2="50" class="curve-accent" stroke-width="3"/>
-  <text x="255" y="55" class="text-sm">L</text>
-  <polygon points="50,160 120,210 240,50 170,0" class="plane1"/>
-  <polygon points="120,210 240,50 310,110 190,270" class="plane2"/>
-  <polygon points="120,210 240,50 220,280 100,240" class="plane3"/>
-  <text x="90" y="90" class="text-sm">π₁</text>
-  <text x="290" y="90" class="text-sm">π₂</text>
-  <text x="140" y="270" class="text-sm">π₃</text>
-"""
-    return make_svg(360, 300, content, theme)
-
 def deploy_svg(year, filename, generator):
     ydir = os.path.join(ARCHIVE_ROOT, f"{year}年真题")
     assets_dir = os.path.join(ydir, "assets")
@@ -460,9 +442,21 @@ def deploy_svg(year, filename, generator):
     with open(os.path.join(light_dir, filename), "w", encoding="utf-8") as f:
         f.write(light_svg)
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description="显式重生成 Math1 legacy direct-SVG 资产；TikZ-backed Canonical Asset 不在此范围。"
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="确认重生成全部 legacy direct-SVG 暗/亮双主题资产",
+    )
+    args = parser.parse_args(argv)
+    if not args.all:
+        parser.error("这是写操作；请显式传入 --all。查看说明可使用 --help。")
+
     print("=" * 60)
-    print(" 生成数学一全量 Semantic SVG 资产 (暗色 + 亮色)")
+    print(" 生成 Math1 legacy direct-SVG 资产 (暗色 + 亮色)")
     print("=" * 60)
 
     deploy_svg(1990, "q01_force_semicircle.svg", gen_1990_q01)
@@ -488,9 +482,12 @@ def main():
     deploy_svg(2009, "q05_opt_d.svg", gen_2009_q03_opt_d)
     deploy_svg(2015, "q01_d2f_inflection.svg", gen_2015_q01)
     deploy_svg(2017, "q01_speed_curves.svg", gen_2017_q03)
-    deploy_svg(2024, "q01_three_planes.svg", gen_2024_q05)
 
-    print(" 24 组 Semantic SVG (共 48 文件) 全部生成完毕。")
+    # 2024 Q5 已迁移为 TikZ-backed Canonical Asset：
+    # assets/src/q05_three_planes_pencil.tex -> infra/scripts/compile_tikz_to_svg.py
+    # 这里不得再生成第二份 q01/q05 SVG Owner，更不得覆盖 Canonical q05 资产。
+
+    print(" 23 组 legacy direct-SVG 资产 (共 46 文件) 全部生成完毕。")
 
 if __name__ == "__main__":
     main()

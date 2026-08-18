@@ -51,6 +51,10 @@ $$
 
 概率一维分布 Topic 与高数 FTC 相关材料已完成 Owner 复核；正文只保留 CDF/PDF 层级和正则性边界。
 
+## 训练导航
+
+- [CDF 与 PDF 的局部累积切换](CDF与PDF的局部累积切换.md) —— 先辨 CDF/密度/原子，再在连续段调用 FTC 做局部—累积切换。
+
 ## Manual
 
 - Canonical Source：[PDF与CDF_局部概率密度与累积.tex](PDF与CDF_局部概率密度与累积.tex)

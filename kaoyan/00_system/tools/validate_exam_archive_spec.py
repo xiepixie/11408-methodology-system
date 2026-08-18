@@ -14,6 +14,26 @@ import re
 import argparse
 import xml.etree.ElementTree as ET
 
+
+def _profile_scope_for_year(profile, year):
+    """返回某一年度真正生效的 Profile 片段；无 eras 的考试直接使用顶层 Profile。"""
+    eras = profile.get('eras')
+    if not eras:
+        return profile
+
+    matches = []
+    for era in eras:
+        years = era.get('years', {})
+        start = years.get('from')
+        end = years.get('to')
+        if isinstance(start, int) and isinstance(end, int) and start <= year <= end:
+            matches.append(era)
+
+    if len(matches) != 1:
+        return None
+    return matches[0]
+
+
 def main():
     parser = argparse.ArgumentParser(description="Exam Archive 规范校验工具")
     parser.add_argument('--exam', choices=['408', 'math1'], default='408', help="选择校验考试科目")
@@ -96,19 +116,18 @@ def main():
         if not os.path.exists(exam_json_path):
             issues.append("Missing exam.json")
 
-        if exam_type == '408':
-            expected_q_count = 47
-            expected_total_score = 150
+        # Profile 是考试结构的唯一 Owner：校验器不得再复制一份年份硬编码。
+        profile_scope = _profile_scope_for_year(profile, y_int)
+        if profile_scope is None:
+            issues.append(f"Profile 年度分期无法唯一解析: {y_int}")
+            expected_q_count = None
+            expected_total_score = None
         else:
-            if y_int >= 2021:
-                expected_q_count = 22
-            elif y_int == 2007:
-                expected_q_count = 24
-            elif 2008 <= y_int <= 2020:
-                expected_q_count = 23
-            else:
-                expected_q_count = None  # 1987~2006 由试卷本身自洽定义
-            expected_total_score = 100 if y_int <= 2002 else 150
+            expected_q_count = profile_scope.get('question_count')
+            expected_total_score = profile_scope.get(
+                'total_score',
+                profile.get('total_score', profile.get('total_score_current')),
+            )
 
         has_figures = False
 
@@ -124,7 +143,7 @@ def main():
                     issues.append(f"exam.json profile_id mismatch: {ej.get('profile_id')} != {exam_type}")
                 if expected_q_count is not None and ej.get('question_count') != expected_q_count:
                     issues.append(f"exam.json question_count: {ej.get('question_count')} != {expected_q_count}")
-                if ej.get('total_score') != expected_total_score:
+                if expected_total_score is not None and ej.get('total_score') != expected_total_score:
                     issues.append(f"exam.json total_score: {ej.get('total_score')} != {expected_total_score}")
                 if ej.get('year') != int(y_num):
                     issues.append(f"exam.json year: {ej.get('year')} != {y_num}")
@@ -181,9 +200,28 @@ def main():
         if len(q_files) != target_count:
             issues.append(f"Question markdown count mismatch: {len(q_files)} != {target_count}")
 
-        # 5. Check markdown asset links
+        # 5. Check question routing and markdown asset links
+        subject_by_question = {}
+        if profile_scope is not None:
+            for route in profile_scope.get('subject_routing', []):
+                subject = route.get('subject')
+                questions = route.get('questions', [])
+                if isinstance(questions, list):
+                    for qn in questions:
+                        subject_by_question[int(qn)] = subject
+
         for qf in q_files:
             qfp = os.path.join(ydir, qf)
+            q_match = re.match(r'^q(\d{2})_(.+)\.md$', qf)
+            if q_match and subject_by_question:
+                qn = int(q_match.group(1))
+                actual_subject = q_match.group(2)
+                expected_subject = subject_by_question.get(qn)
+                if expected_subject is not None and actual_subject != expected_subject:
+                    issues.append(
+                        f"Question routing mismatch in {qf}: {actual_subject} != {expected_subject}"
+                    )
+
             with open(qfp, 'r', encoding='utf-8') as f:
                 content = f.read()
             links = re.findall(r'!\[[^\]]*\]\(\./assets/([^\)]+\.svg)\)', content)

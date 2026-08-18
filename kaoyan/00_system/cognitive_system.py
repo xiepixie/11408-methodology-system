@@ -19,7 +19,6 @@ import os
 import re
 import subprocess
 import sys
-import textwrap
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -73,6 +72,19 @@ TYPE_RE = re.compile(
 TITLE_RE = re.compile(r"^#\s+(.+?)\s*$", re.MULTILINE)
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 INLINE_LINK_RE = re.compile(r"\[([^\]]+)\]\([^)]+\)")
+TRAINING_NAV_HEADING_RE = re.compile(r"^##\s+训练导航\s*$", re.MULTILINE)
+LOCAL_TRAINING_RULE_RE = re.compile(r"^#{2,4}\s+局部规则(?:[：:].*)?$", re.MULTILINE)
+TRAINING_FIGURE_PLACEHOLDER_RE = re.compile(
+    r"^>\s*\*\*(待补图|候选配图)｜([^*\n]+)\*\*[：:]\s*(\S.*)$",
+    re.MULTILINE,
+)
+TRAINING_FIGURE_PLACEHOLDER_PREFIX_RE = re.compile(
+    r"^>\s*\*\*(?:待补图|候选配图)", re.MULTILINE
+)
+REQUIRED_TRAINING_FIGURE_RE = re.compile(
+    r"^>\s*\*\*待补图｜([^*\n]+)\*\*[：:]\s*(\S.*)$",
+    re.MULTILINE,
+)
 LEGACY_ROUTE_RE = re.compile(
     r"(?:comm" + r"on/考研|comm" + r"on/scripts|408_Exam_Archive|Math1_Exam_Archive)(?:/|\\b)|(?:\.\./)+kaoyan/"
 )
@@ -137,7 +149,7 @@ EXAM_SOLUTION_LEGACY_COMPREHENSIVE_HEADINGS = (
 )
 EXAM_SOLUTION_H2_RE = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
 EXAM_SOLUTION_ANCHOR_OWNER_RE = re.compile(
-    r"^-\s+(?:Topic(?:\s*/\s*(?:Owner|Bridge|Rules))?|Owner|Model Owner|Bridge|Rules)\s*[:：]",
+    r"^-\s+(?:模型归属|主题|桥梁|规则|所有者|Topic(?:\s*/\s*(?:Owner|Bridge|Rules))?|Owner|Model Owner|Bridge|Rules)\s*[:：]",
     re.MULTILINE,
 )
 EXAM_SOLUTION_ANSWER_RE = re.compile(r"^answer:\s*([ABCD])\s*$", re.MULTILINE)
@@ -149,136 +161,10 @@ EXCLUDED_PROGRESS_SOURCES = {
 }
 
 # ---------------------------------------------------------------------------
-# Interaction routing: scenario prompts, subject aliases, and Context Packs.
+# Interaction routing: scenario metadata, subject aliases, and Context Packs.
+# The executable scenario contract lives in SCENARIOS; long-form instructions
+# live in 00_system/agent_context_protocol.md and the scenario-specific specs.
 # ---------------------------------------------------------------------------
-
-PROMPTS = {
-    "explore": """
-        当前角色：Mapper + Socratic Tutor。
-
-        我还没有形成这个专题的稳定心智模型。下面是我目前的直觉和困惑。
-        请先读取对应 Course / Subject Atlas，并明确仓库当前是否已有成熟 Topic。
-
-        不要直接写完整讲义。请从母问题开始，建立最小对象/关系/过程，
-        用一个生成性例子运行它，再改变条件攻击它，最后让我重新解释。
-        请区分仓库已有模型、你的工作假设和我已经确认的理解。
-    """,
-    "model-diff": """
-        当前角色：Socratic Tutor + Mapper。
-
-        这是我先用自己的话形成的理解，以及对应的现有 Handbook。
-        不要重新讲整章，也不要先给标准总结。
-
-        请依次完成：
-        1. 标出我已经抓住的正确主干；
-        2. 标出层次混淆、缺失连接和边界错误；
-        3. 区分事实问题与只是表达不清；
-        4. 给出最少但有区分力的反例或边界问题；
-        5. 等我重新解释后，再判断 No Update、Inbox 还是需要挑战 Handbook。
-    """,
-    "first-divergence": """
-        当前角色：Debugger。
-
-        我会提供题目、原始过程、答案和用时。不要先重做整题，不要补造缺失思路。
-
-        请依次完成：
-        1. 复原我实际识别了什么、选择了什么路径；
-        2. 定位第一次偏离有效路径的位置，而不是最后写错的位置；
-        3. 区分观察事实、主要假设和至少一个竞争解释；
-        4. 判断最有用的一类：模型、识别、路径、执行/检查/表达、考试决策；
-        5. 给出能区分解释的最小复测；
-        6. 建议 No Update、Inbox 或待验证 Rule，但不要替我做最终晋升决定。
-    """,
-    "solve": """
-        当前角色：Model-Grounded Solver。
-
-        这道题我不会，请先读取我们已有的 Atlas、Topic 和 Subject Rules。
-        如果 Topic 尚无成熟正文，请明确说明，不要把临时解释冒充项目模型。
-
-        请按以下顺序回答：
-        1. Model Anchor；
-        2. 题面到模型的表示；
-        3. 路径选择理由；
-        4. 逐步解题链，并标出每一步调用的机制；
-        5. Verification；
-        6. 下次可调用的压缩信号；
-        7. 一个让我复原起手或关键转折的问题。
-    """,
-    "adversary": """
-        当前角色：Adversary。
-
-        下面是一条候选规则及已有表现。请不要因为它听起来合理就接受。
-
-        请检查：
-        1. 最小反例；
-        2. 表面形式变化后是否仍可调用；
-        3. 缺少哪个条件会失效；
-        4. 它是机制结论、通用动作还是局部技巧；
-        5. 时间和注意力成本；
-        6. 是否有更简单的竞争规则；
-        7. 下一次最小验证动作。
-
-        最后给出“采用 / 收窄后验证 / 局部保留 / 否定 / No Update”的建议，决定权留给我。
-    """,
-    "import-handbook": """
-        当前角色：Mapper + Editor。
-
-        我要导入一份新手册、旧 LaTeX 或外部材料。它目前只是输入，不自动成为 Canonical Owner。
-
-        请依次完成：
-        1. 判断它属于 Atlas、Topic、Bridge、Integration、Rules 还是 Publication；
-        2. 查找当前 Canonical Owner；
-        3. 做 Handbook Diff：重复、真正新增、冲突、越界、Control/Evidence 混入；
-        4. 列出需要我人工确认的模型选择；
-        5. 确认后再更新正确 Owner；
-        6. 说明必须更新、条件更新和不应更新的文件；
-        7. 更新资产状态，运行 progress 和 check。
-
-        不要为了完整阅读体验复制其他 Topic 的完整机制。
-    """,
-    "weekly-review": """
-        当前角色：Adversary + Editor + Coach。
-
-        下面是本周 Inbox、待验证 Rules 和真实表现。
-
-        请找出：
-        1. 可以删除的一次性或重复记录；
-        2. 重复出现但仍有竞争解释的模式；
-        3. 值得继续攻击的候选规则；
-        4. 已有迁移证据、可由我决定采用的规则；
-        5. 与 Handbook 冲突的证据；
-        6. 最少的下一轮诊断题；
-        7. CURRENT.md 应更新的当前焦点和下一步。
-
-        不以新增文档数量作为进度。
-    """,
-    "practice": """
-        当前角色：Coach。
-
-        下面是已经确认的具体断点。请读取相关 Topic 和 Subject Rules，
-        只设计少量有区分力的诊断题，不继续堆同质练习。
-
-        对每道题说明：观察目标、为什么能区分当前假设、何时停止基础训练，
-        以及下一步升级或降阶条件。不要预先给完整答案。
-    """,
-    "publish": """
-        当前角色：Editor。
-
-        我要编译并发布一个 Handbook。
-
-        请先检查：
-        1. 目标 .tex 是否就是该 Handbook 的 Canonical Source；
-        2. README 是否只承担 Landing Page，而没有复制正文；
-        3. 受影响的 Uses、Bridge、Integration 和发布链接；
-        4. 是否还有待人工确认的模型结论；
-        5. 使用项目 compile_tex.py 后的引用、页数和警告；
-        6. PDF 是否进入 90_publish/，专题目录是否保持零同名 PDF；
-        7. 发布后需要更新的状态与进度。
-
-        不在 PDF 或 README 中创造 Canonical .tex 尚未拥有的新结论。
-    """,
-}
-
 
 SUBJECTS = {
     "general": {
@@ -404,6 +290,26 @@ SCENARIOS = {
         "minimum": "题目 + 卡住的位置；已有尝试可选",
         "first": "先给 Model Anchor 和起手，再展开完整解题链。",
     },
+    "exam-source": {
+        "role": "Editor + Source Reconstructor",
+        "minimum": "考试科目 + 年份 + 原始材料；若有最高质量题图，明确其优先级",
+        "first": "先确定题源权威顺序、目标 Exam Archive 与对应 Exam Profile，再开始恢复题面。",
+        "context": [
+            Path("00_system/exam_source_agent_prompt.md"),
+            Path("00_system/exam_source_conversion_spec.md"),
+        ],
+    },
+    "exam-solution": {
+        "role": "Model-Grounded Solver + Editor",
+        "minimum": "年度 / 题号范围；题面从 Canonical Exam Source 读取",
+        "first": "先锁定 Canonical Exam Source 与模型 Owner，再独立求解并执行题解质量门。",
+        "context": [
+            Path("00_system/exam_solution_agent_prompt.md"),
+            Path("00_system/exam_solution_authoring_spec.md"),
+            Path("00_system/exam_solution_quality_assurance.md"),
+            Path("01_control/problem_solving_kernel.md"),
+        ],
+    },
     "wrong": {
         "role": "Debugger",
         "minimum": "题目 + 原始过程 + 自己答案；用时可选",
@@ -490,7 +396,16 @@ def command_start(scenario: str, subject: str, topic: str | None) -> int:
 
     scenario_config = SCENARIOS[scenario]
     label = str(subject_config["label"])
-    context_paths = [Path(path) for path in subject_config["context"]]
+    context_paths = [Path(path) for path in scenario_config.get("context", [])]
+    context_paths.extend(Path(path) for path in subject_config["context"])
+
+    if scenario in {"exam-source", "exam-solution"}:
+        if subject_key in {"math", "calculus", "linear-algebra", "probability"}:
+            context_paths.append(Path("00_system/exam_profiles/math1.json"))
+        elif subject_key in {"408", "data-structure", "computer-organization", "os", "network"}:
+            context_paths.append(Path("00_system/exam_profiles/408.json"))
+
+    context_paths = list(dict.fromkeys(context_paths))
 
     print(f"场景：{scenario}")
     print(f"主要角色：{scenario_config['role']}")
@@ -868,6 +783,19 @@ def status_claims_published(status: str) -> bool:
     if status_is_source_only(status):
         return False
     return "已发布" in status or "Published PDF" in status
+
+
+def status_claims_adopted(status: str) -> bool:
+    """Return True only when the status claims current content has been adopted."""
+    if not status or status_is_source_only(status):
+        return False
+    return (
+        "已采用" in status
+        and "框架已采用" not in status
+        and "架构已采用" not in status
+        and "尚无已采用" not in status
+        and "无已采用" not in status
+    )
 
 
 def broken_link_findings() -> list[Finding]:
@@ -1389,16 +1317,139 @@ def exam_solution_findings() -> list[Finding]:
                 label for label in ("题目信号", "第一动作") if label not in anchor_text
             ]
             if not EXAM_SOLUTION_ANCHOR_OWNER_RE.search(anchor_text):
-                missing_anchor.insert(0, "Model Owner / Topic / Bridge / Rules")
+                missing_anchor.insert(0, "模型归属（主题 / 桥梁 / 规则）")
             if missing_anchor:
                 findings.append(
                     Finding(
                         "ERROR",
                         "E-EXAM-SOLUTION-ANCHOR",
-                        f"{rel_path} 的 Model Anchor 缺少：{', '.join(missing_anchor)}。",
-                        "先显式定位 Model Owner / Topic / Bridge / Rules，再补成可执行的题目信号与第一动作；不要只写知识点名称。",
+                        f"{rel_path} 的模型锚点缺少：{', '.join(missing_anchor)}。",
+                        "先用中文字段显式定位模型归属（主题 / 桥梁 / 规则），再补成可执行的题目信号与第一动作；不要只写知识点名称。", 
                     )
                 )
+
+    return findings
+
+
+def training_markdown_findings() -> list[Finding]:
+    """Validate Markdown files explicitly registered under a README 训练导航 section.
+
+    This is intentionally opt-in through navigation rather than a blind scan of every
+    legacy Markdown file. Once a file becomes an official training entry, the minimal
+    header and local-rule tuple become hard contracts.
+    """
+    findings: list[Finding] = []
+
+    for readme in PROJECT_ROOT.rglob("README.md"):
+        text = readme.read_text(encoding="utf-8")
+        nav_match = TRAINING_NAV_HEADING_RE.search(text)
+        if not nav_match:
+            continue
+
+        section_start = nav_match.end()
+        next_h2 = re.search(r"^##\s+", text[section_start:], re.MULTILINE)
+        section_end = section_start + next_h2.start() if next_h2 else len(text)
+        nav_text = text[section_start:section_end]
+
+        for raw_link in LINK_RE.findall(nav_text):
+            parsed = urlparse(raw_link)
+            if parsed.scheme or parsed.netloc:
+                continue
+            link_path = unquote(parsed.path)
+            if not link_path.endswith(".md"):
+                continue
+
+            target = (readme.parent / link_path).resolve()
+            try:
+                target_rel = target.relative_to(PROJECT_ROOT)
+            except ValueError:
+                continue
+            if not target.is_file():
+                # broken_link_findings owns the missing-target error.
+                continue
+
+            training_text = target.read_text(encoding="utf-8")
+            head = "\n".join(training_text.splitlines()[:12])
+
+            if not re.search(r"\A#\s+\S", training_text):
+                findings.append(
+                    Finding(
+                        "ERROR",
+                        "E-TRAINING-HEADER",
+                        f"{target_rel} 已进入训练导航，但文件开头没有唯一 H1。",
+                        "按 topic_practice_writing_spec.md《专题训练写作规范》补成‘# 问题族名称’。",
+                    )
+                )
+            if not re.search(r"^>\s*训练定位[：:]", head, re.MULTILINE):
+                findings.append(
+                    Finding(
+                        "ERROR",
+                        "E-TRAINING-HEADER",
+                        f"{target_rel} 已进入训练导航，但头部缺少‘训练定位’。",
+                        "在 H1 后补最小头部契约，说明这份文件负责什么训练场景。",
+                    )
+                )
+            if not re.search(r"^>\s*模型归属[：:]", head, re.MULTILINE):
+                findings.append(
+                    Finding(
+                        "ERROR",
+                        "E-TRAINING-HEADER",
+                        f"{target_rel} 已进入训练导航，但头部缺少‘模型归属’。",
+                        "链接真实 Canonical .tex Owner；训练 Markdown 不拥有第二套理论正文。",
+                    )
+                )
+
+            placeholder_lines = [
+                line
+                for line in training_text.splitlines()
+                if re.match(r"^>\s*\*\*(?:待补图|候选配图)", line)
+            ]
+            for line in placeholder_lines:
+                if not TRAINING_FIGURE_PLACEHOLDER_RE.fullmatch(line):
+                    findings.append(
+                        Finding(
+                            "ERROR",
+                            "E-TRAINING-FIGURE-PLACEHOLDER",
+                            f"{target_rel} 的图意图占位格式不完整：{line}",
+                            "统一写成‘> **待补图｜图名**：图的解释责任。’或‘> **候选配图｜图名**：图的解释责任。’，不要提前创建不存在的图片链接。",
+                        )
+                    )
+
+            required_figures = list(REQUIRED_TRAINING_FIGURE_RE.finditer(training_text))
+            if required_figures and status_claims_adopted(status_text(readme)):
+                names = ", ".join(match.group(1).strip() for match in required_figures)
+                findings.append(
+                    Finding(
+                        "ERROR",
+                        "E-TRAINING-FIGURE-TODO",
+                        f"{target_rel} 所属专题已采用，但仍有必要图未闭环：{names}。",
+                        "在‘已采用’前把每个待补图处理为删除、复用既有图、链接 Canonical 图或建立真实图源并替换为图片引用；候选配图不阻塞采用。",
+                    )
+                )
+
+            rule_matches = list(LOCAL_TRAINING_RULE_RE.finditer(training_text))
+            for index, match in enumerate(rule_matches):
+                block_end = (
+                    rule_matches[index + 1].start()
+                    if index + 1 < len(rule_matches)
+                    else len(training_text)
+                )
+                block = training_text[match.start():block_end]
+                missing = [
+                    label
+                    for label in ("**触发信号**", "**第一动作**", "**检查与退出**")
+                    if label not in block
+                ]
+                if missing:
+                    heading = match.group(0).lstrip("# ")
+                    findings.append(
+                        Finding(
+                            "ERROR",
+                            "E-TRAINING-RULE-TUPLE",
+                            f"{target_rel} 的‘{heading}’缺少：{', '.join(missing)}。",
+                            "局部规则统一使用‘触发信号—第一动作—检查与退出’三元组；纯母题/反例不要硬写成规则。",
+                        )
+                    )
 
     return findings
 
@@ -1411,6 +1462,7 @@ def structural_findings() -> list[Finding]:
     findings.extend(publish_collision_findings())
     findings.extend(ownership_findings())
     findings.extend(exam_solution_findings())
+    findings.extend(training_markdown_findings())
     findings.extend(current_findings())
 
     for path in markdown_files():
@@ -1684,12 +1736,13 @@ def command_publish(raw_path: str, keep_aux: bool = False) -> int:
         print(f"{len(findings)} publish preflight error(s) found.")
         return 1
 
+    target_dir = publish_target_dir(tex_path)
     command = [
         sys.executable,
         str(SHARED_COMPILE_SCRIPT),
         str(tex_path),
         "--publish-dir",
-        str(PUBLISH_DIR),
+        str(target_dir),
     ]
     if keep_aux:
         command.append("--keep-aux")
@@ -1700,7 +1753,7 @@ def command_publish(raw_path: str, keep_aux: bool = False) -> int:
         print(f"[ERROR][P-COMPILE] shared compiler exited with code {result.returncode}.")
         return result.returncode or 1
 
-    expected_pdf = PUBLISH_DIR / f"{tex_path.stem}.pdf"
+    expected_pdf = target_dir / f"{tex_path.stem}.pdf"
     local_pdf = tex_path.with_suffix(".pdf")
     postflight: list[Finding] = []
     if not expected_pdf.is_file():
@@ -1751,12 +1804,13 @@ def command_publish_view(raw_path: str, keep_aux: bool = False) -> int:
         print(f"{len(findings)} publish-view preflight error(s) found.")
         return 1
 
+    target_dir = publish_target_dir(tex_path)
     command = [
         sys.executable,
         str(SHARED_COMPILE_SCRIPT),
         str(tex_path),
         "--publish-dir",
-        str(PUBLISH_DIR),
+        str(target_dir),
     ]
     if keep_aux:
         command.append("--keep-aux")
@@ -1767,7 +1821,7 @@ def command_publish_view(raw_path: str, keep_aux: bool = False) -> int:
         print(f"[ERROR][PV-COMPILE] shared compiler exited with code {result.returncode}.")
         return result.returncode or 1
 
-    expected_pdf = PUBLISH_DIR / f"{tex_path.stem}.pdf"
+    expected_pdf = target_dir / f"{tex_path.stem}.pdf"
     local_pdf = tex_path.with_suffix(".pdf")
     postflight: list[Finding] = []
     if not expected_pdf.is_file():
@@ -1882,7 +1936,7 @@ def audit_atlas_duplicate_tex() -> list[Finding]:
                 "A-ATLAS-DUPLICATE-TEX",
                 f"{readme.relative_to(PROJECT_ROOT)} 已是 Canonical Atlas，但同目录仍有根级 .tex："
                 + ", ".join(path.name for path in siblings),
-                "把旧 .tex 明确降为 legacy/source；真正的 Atlas 视觉海报放入 assets/，且不得拥有 README 中没有的新结论。",
+                "把这些根级 .tex 视为待吸收 Source：先完成逐项 Source Diff，并确认有效信息已被 Canonical Owner 无损承接；在此之前默认保留，不得因 Atlas README 已存在就删除。真正的 Atlas 视觉海报放入 assets/。",
             )
         )
     return findings
@@ -1915,7 +1969,7 @@ def audit_orphan_pdfs() -> list[Finding]:
                     "AUDIT",
                     "A-ORPHAN-PDF",
                     f"{pdf.relative_to(PROJECT_ROOT)} 找不到当前仓库中的同 stem .tex。",
-                    "把它视为 legacy-unregistered；只在真实重构该手册时决定纳管或删除。",
+                    "把它视为待吸收的 legacy/source：先做 Source Diff，确认有效信息已进入唯一 Canonical Owner；完成前默认保留，之后再决定重新纳管、退休或删除。",
                 )
             )
     return findings
@@ -1965,6 +2019,51 @@ def audit_current_publication() -> list[Finding]:
     return findings
 
 
+def audit_training_figure_todos() -> list[Finding]:
+    """Surface unresolved required figure intents in official training navigation."""
+    findings: list[Finding] = []
+    for readme in PROJECT_ROOT.rglob("README.md"):
+        text = readme.read_text(encoding="utf-8")
+        nav_match = TRAINING_NAV_HEADING_RE.search(text)
+        if not nav_match:
+            continue
+
+        section_start = nav_match.end()
+        next_h2 = re.search(r"^##\s+", text[section_start:], re.MULTILINE)
+        section_end = section_start + next_h2.start() if next_h2 else len(text)
+        nav_text = text[section_start:section_end]
+
+        for raw_link in LINK_RE.findall(nav_text):
+            parsed = urlparse(raw_link)
+            if parsed.scheme or parsed.netloc:
+                continue
+            link_path = unquote(parsed.path)
+            if not link_path.endswith(".md"):
+                continue
+            target = (readme.parent / link_path).resolve()
+            if not target.is_file():
+                continue
+            try:
+                target_rel = target.relative_to(PROJECT_ROOT)
+            except ValueError:
+                continue
+
+            training_text = target.read_text(encoding="utf-8")
+            matches = list(REQUIRED_TRAINING_FIGURE_RE.finditer(training_text))
+            if not matches:
+                continue
+            names = ", ".join(match.group(1).strip() for match in matches)
+            findings.append(
+                Finding(
+                    "AUDIT",
+                    "A-TRAINING-FIGURE-TODO",
+                    f"{target_rel} 还有 {len(matches)} 个必要图意图未闭环：{names}。",
+                    "正文语义可以先完成；专题集中图审时逐项决定删除、复用、链接 Canonical 图或新建 assets/src 图源。父专题进入‘已采用’前必须清零。",
+                )
+            )
+    return findings
+
+
 def audit_duplicate_titles() -> list[Finding]:
     findings: list[Finding] = []
     titles: dict[str, list[Path]] = defaultdict(list)
@@ -1996,6 +2095,7 @@ def audit_findings() -> list[Finding]:
     findings.extend(audit_tex_without_readme())
     findings.extend(audit_orphan_pdfs())
     findings.extend(audit_current_publication())
+    findings.extend(audit_training_figure_todos())
     findings.extend(audit_duplicate_titles())
     return findings
 
@@ -2027,11 +2127,6 @@ def command_audit(show_all: bool = False) -> int:
 # ---------------------------------------------------------------------------
 # CLI surface.
 # ---------------------------------------------------------------------------
-
-
-def command_prompt(name: str) -> int:
-    print(textwrap.dedent(PROMPTS[name]).strip())
-    return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -2082,8 +2177,6 @@ def build_parser() -> argparse.ArgumentParser:
         "--topic", help="optional topic/bridge/integration keyword used to find nearby assets"
     )
 
-    prompt_parser = subparsers.add_parser("prompt", help="print a reusable AI prompt")
-    prompt_parser.add_argument("name", choices=sorted(PROMPTS))
     return parser
 
 
@@ -2101,8 +2194,6 @@ def main() -> int:
         return command_publish_view(args.tex, args.keep_aux)
     if args.command == "start":
         return command_start(args.scenario, args.subject, args.topic)
-    if args.command == "prompt":
-        return command_prompt(args.name)
     return 2
 
 

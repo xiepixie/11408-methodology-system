@@ -1820,7 +1820,7 @@ A_{\text{user}} \xrightarrow{\text{Trap / Interrupt}} A_{\text{kernel}} \xrighta
 \item \kw{恢复与返回}：恢复软件保存的现场，再通过体系结构规定的中断返回指令恢复硬件入口保存的返回状态。若这次中断产生了抢占需求，也应在允许调度的安全点先进入 scheduler，而不是在处理程序任意位置强行切走。
 \end{enumerate}
 
-\begin{exam}[408 高频辨析]
+\begin{exam}[边界辨析]
 \begin{itemize}
 \item 硬件保存\kw{最小返回状态}，不等于硬件替软件保存了所有通用寄存器；
 \item “中断到来”只意味着获得一次内核控制机会，不等于一定调度，更不等于一定换进程；
@@ -2195,98 +2195,11 @@ Rust Async / C++20 & 编译器自动生成的有限状态机 (State Machine) & �
 从而既享受了百万级逻辑执行流（$U$）的超低内存与用户态切换优势，又彻底避开了底层操作系统 Carrier（$K$）的被动阻塞。
 \end{corebox}
 
-\section{408 解题检查表：从概念辨析到状态推演}
+\section{最小调用接口：先定实体、调度域与控制权}
 
-\subsection{线程做题九问控制器 (Thread Control Adapter)}
+遇到进程/线程问题时，本册只要求先锁定三个接口问题：\kw{当前是哪一级执行实体、谁能调度它、什么事件正在改变控制权或状态}。如果题目进入固定状态检查、线程共享/私有辨析、系统调用/中断落笔协议或 IPC 路由，转入同目录 \texttt{进程线程状态与控制权.md}；如果进入 CPU 调度算法的时间线与指标计算，转入 \texttt{调度计算.md}。
 
-遇到任何线程共享、ULT/KLT、M:N、阻塞传播、多核并行或线程切换考题，按以下九步严格推演：
-
-\begin{enumerate}
-\item \kw{当前对象处于哪一层？}
-  区分 Process Resource Context ($R$)、User Execution Context ($U$)、Kernel Schedulable Context ($K$)、Thread Group ($G$) 还是物理 CPU ($C$)？
-\item \kw{这条执行流属于哪个资源世界？}
-  其虚拟地址空间（页表基址）、代码段、数据段、堆与打开文件表属于哪个进程？
-\item \kw{哪些状态是 shared，哪些状态是 per-thread？}
-  牢记：代码/堆/全局变量/文件表共享；PC/寄存器/SP/栈帧/TLS/信号屏蔽字独立私有。
-\item \kw{题目问“私有/共享”时是在问 Ownership、Addressability 还是 Concurrency Safety？}
-  所有权归线程上下文；同一地址空间内其他线程只要拿到指针就能直接访问（无硬件隔离）；但并发修改必须加锁同步。
-\item \kw{谁能看见并调度它？}
-  用户态运行时维护 User TCB 调度 $U$；内核调度器维护 Kernel TCB 调度 $K$。内核看不见纯 ULT。
-\item \kw{U 到 K 的映射模型是什么？}
-  M:1、1:1 还是 M:N？两级队列 $Q_U$ 与 $Q_K$ 的容量关系如何？
-\item \kw{当前状态属于哪一级？这个事件是否真的需要等待？}
-  User-Ready 还是 Kernel-Blocked？Syscall 与 Page Fault 不天然等于 Blocked；若阻塞，标出哪个底层 Carrier 失去运行资格。
-\item \kw{事件的作用域 (Event Scope) 是单线程还是整个线程组？}
-  单线程退出 (\code{pthread\_exit}) vs 进程级退出 (\code{exit})；线程定向信号 (SIGSEGV) vs 进程定向信号 (SIGINT)。
-\item \kw{若发生切换，究竟换了什么？还剩多少物理并行算力？}
-  Mode Switch、Execution Context Switch、Memory Context Switch 还是 Mapping Change？用 $P_{\text{actual}} \le \min(U_{\text{runn}}, K_{\text{runn}}, CPU_{\text{avail}})$ 精确计算剩余并行度。
-\end{enumerate}
-
-\begin{exam}[线程题的最短定性口诀]
-\[
-\boxed{\text{先分层，再看谁能看见；先找承载，再谈阻塞；先定调度实体，再谈时间片。}}
-\]
-\end{exam}
-
-\subsection{进程状态题八问}
-\begin{enumerate}
-\item 当前实体属于 New、Ready、Running、Blocked、Exit 中哪一类基本状态？
-\item 题目是否额外引入 Suspend？若引入，它现在是 Ready-Suspend 还是 Blocked-Suspend？
-\item 它当前缺的是 CPU、外部事件，还是“重新激活/换入”条件？
-\item 发生了什么事件？这条状态箭头是否有明确事件依据？
-\item 若等待事件发生，Blocked-Suspend 应先到 Ready-Suspend 还是可以直接 Running？
-\item 这次变化涉及高级、中级还是低级调度？
-\item 事件只是改变 task state，还是同时产生调度机会？
-\item 是否混淆“进程在内核态执行”和“已经换成另一个进程”？
-\end{enumerate}
-
-\subsection{调度计算题九步}
-\begin{enumerate}
-\item 先判断题目讨论高级/中级/低级调度中的哪一层；经典算法计算题通常是低级 CPU 调度；
-\item 圈出题目优化的目标：throughput/turnaround、response/fairness，还是 deadline/predictability；
-\item 写出 arrival time、burst/service time、priority、quantum 等输入；
-\item 确定算法是抢占还是非抢占；
-\item 每个调度决策事件点重新确定当前 ready set；
-\item 若是 HRRN，只在需要重新选任务时计算 $R=1+W/S$；
-\item 按策略选择，并明确同值时题目采用什么 tie-break；
-\item 画 Gantt 图并逐段检查到达、完成、抢占事件；
-\item 从完成时刻反推 turnaround / waiting / response，最后检查单位与定义。
-\end{enumerate}
-
-\subsection{系统调用/中断题九问}
-\begin{enumerate}
-\item 入口是 syscall、exception 还是 interrupt？
-\item 是同步事件还是异步事件？
-\item 若题目问中断响应，哪些是硬件自动入口动作，哪些由软件 ISR 保存/恢复？
-\item CPU 是否发生 privilege/mode transition？
-\item 当前是否仍处于原进程的执行上下文？
-\item 当前任务处理完事件后还能继续吗？
-\item 若不能，它进入哪个等待队列/状态？
-\item 即使产生了调度请求，当前是否已经到允许 context switch 的安全点？
-\item 最终是 return same task，还是 scheduler 选择 another task？
-\end{enumerate}
-
-\subsection{PCB / TCB / 进程资源接口题八问}
-\begin{enumerate}
-\item 题目问的是进程身份、CPU 执行现场、调度状态，还是资源引用？先把 PCB 信息类别定位清楚；
-\item 当前信息属于整个进程的 resource/protection context，还是某一条线程的 execution context？若是后者，优先按 TCB 语义定位；
-\item 需要恢复执行的是 PC/寄存器/栈等 execution context，还是进程级 resource context？
-\item PCB/任务结构保存的是对象本体，还是能找到对象的引用与管理信息？
-\item \code{fork()} 后哪些进程管理状态新建，哪些资源引用按语义继承？
-\item 若代码根据 \code{fork()} 返回值分支，父进程得到 child PID、子进程得到 0 后，各自会走哪条控制流？
-\item \code{exec()} 是创建新进程，还是在同一进程身份下替换程序映像？
-\item 如果题目继续追问 offset、OFD、inode、unlink 等文件内部语义，立即切换到 OS-06/07，不在本专题继续猜。
-\end{enumerate}
-
-\subsection{IPC 题六问}
-\begin{enumerate}
-\item 两个进程之间要传递的是共享状态、数据流/消息，还是事件通知？
-\item 承载通信的对象在哪里：共享映射、pipe buffer、message queue/mailbox，还是 notification state？
-\item 当前哪一方缺少什么条件，因此可能 Blocked？
-\item 哪个事件改变了通信对象状态，并使 waiter 从 Blocked 变成 Ready？
-\item 如果是共享内存，题目是否已经从“能通信”进入了“怎样同步”？若是，切到 OS-03；
-\item 如果继续追问映射、OFD/inode 或 transport socket 内部语义，是否应该切到 OS-04、OS-06/07 或 Network？
-\end{enumerate}
+Canonical 继续拥有进程/线程对象、两级调度域、状态迁移、trap、block/wakeup、调度策略与 IPC 机制；训练文档只把这些机制压成可重复执行的题面动作。
 
 \section{原笔记与教材中值得保留、但必须升格的内容}
 

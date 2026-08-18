@@ -63,7 +63,8 @@
 \begin{itemize}
   \item 多元联合极限、路径法边界与极坐标统一估计；
   \item 偏导、方向导数、全微分/Fréchet 可微的层级关系；
-  \item 梯度、Jacobian matrix、链式法则与沿参数轨迹求导；
+  \item 梯度、Jacobian matrix、链式法则、沿参数轨迹求导与线性变量变换下的高阶链式；
+  \item 已知偏导/全微分数据时的相容性检查与函数恢复；
   \item 逆函数/隐函数的局部可解资格和导数公式；
   \item 梯度到切平面、法线和等值面的高数几何读法；
   \item Hessian、多元二阶 Taylor 与非退化局部极值判别；
@@ -78,7 +79,7 @@
   \item 梯度、切/法空间与 Lagrange 的子空间几何归 B04；
   \item II-03.1 的广义特征值/Rayleigh 商主体归 B03 与线性代数；
   \item KKT、一般流形和一般赋范空间导数不进入数学一主干；
-  \item 题目信号、第一动作、检查点和退出条件进入《高等数学做题规则》。
+  \item 单一多元问题族的题目信号、第一动作、检查点和退出条件进入同目录训练 Markdown；跨多个训练专题稳定复用并经证据验证的控制才进入《高等数学做题规则》。
 \end{itemize}
 
 \section{母模型：多方向信息怎样统一？}
@@ -225,6 +226,80 @@ D\mathbf F={\left(\frac{\partial F_i}{\partial x_j}\right)}_{m\times n},
 \frac d{dt}f(\mathbf r(t))=\nabla f(\mathbf r(t))\cdot\mathbf r'(t).
 \]
 
+\subsection{沿路径降维：梯度数据可以通过一维积分恢复函数差}
+若线段 $\{t\mathbf x:0\le t\le1\}$ 位于定义域内，令 $g(t)=f(t\mathbf x)$，则一元基本定理给出
+\[
+f(\mathbf x)-f(\mathbf0)
+=\int_0^1 g'(t)\,dt
+=\int_0^1\nabla f(t\mathbf x)\cdot\mathbf x\,dt.
+\]
+因此“已知偏导”并不只意味着逐点求导信息；沿一条合法路径积分梯度，就能恢复端点函数差。更一般地，对任意分段 $C^1$ 路径 $\gamma$，有
+\[
+f(\gamma(1))-f(\gamma(0))
+=\int_0^1\nabla f(\gamma(t))\cdot\gamma'(t)\,dt.
+\]
+前提是当前向量场确实来自同一个梯度；若只给出两个候选分量而未说明存在势函数，必须先检查相容性。
+
+\begin{corebox}{齐次函数的 Euler 恒等式来自“沿射线求导”}
+若定义域沿正比例缩放保持，且
+\[
+f(t\mathbf x)=t^k f(\mathbf x)\qquad(t>0),
+\]
+对 $t$ 求导并取 $t=1$ 得
+\[
+\boxed{\mathbf x\cdot\nabla f(\mathbf x)=k f(\mathbf x).}
+\]
+反过来，若在每条允许正射线段上 $f$ 可微并满足该偏微分关系，令
+\[
+h(t)=t^{-k}f(t\mathbf x),
+\]
+则 $h'(t)=0$，故沿该射线恢复 $f(t\mathbf x)=t^k f(\mathbf x)$。所以“齐次性 $\leftrightarrow$ Euler 恒等式”的关键资格不是口诀，而是定义域必须允许沿射线连续移动。
+\end{corebox}
+
+\subsection{二阶链式：再次求导会增加“外层曲率 + 内层曲率”两类项}
+设标量函数 $g=f\circ\Phi$。一阶链式只组合两个一阶线性映射；二阶再求导时，一般有
+\[
+D^2g(\mathbf a)[\mathbf h,\mathbf k]
+=D^2f(\Phi(\mathbf a))[D\Phi\,\mathbf h,D\Phi\,\mathbf k]
++Df(\Phi(\mathbf a))\,D^2\Phi(\mathbf a)[\mathbf h,\mathbf k].
+\]
+因此“高阶求导仍沿同一依赖图”是对的，但不能误解成只把一阶链式机械再乘一次：若内层映射本身非线性，会新增它的二阶导数项。
+
+若内层是线性变量变换 $\mathbf u=A\mathbf x+\mathbf b$，则 $D^2\Phi=0$，公式显著简化为
+\[
+\boxed{H_{\mathbf x}(f\circ\Phi)=A^{\mathsf T}H_{\mathbf u}(f)A.}
+\]
+这正是用线性换元化简二阶偏微分算子的局部依据。例如
+\[
+\xi=x+y,\qquad \eta=x-y,
+\]
+若 $u(x,y)=U(\xi,\eta)$，则直接由链式法则得到
+\[
+u_{xx}-u_{yy}=4U_{\xi\eta}.
+\]
+本册只拥有这种“变量变换怎样搬运导数”的机制；偏微分方程的一般分类与求解理论不进入数学一主干。
+
+\section{从偏导/全微分反求函数：先审相容性，再积分恢复}
+若已知
+\[
+df=M(x,y)\,dx+N(x,y)\,dy,
+\]
+真正的信息是
+\[
+f_x=M,\qquad f_y=N.
+\]
+如果题目已经保证 $f$ 存在，则在足够正则处必有 $M_y=N_x$。若题目只给 $M,N$ 并询问它们是否能组成某个函数的全微分，则在矩形、星形或通常的单连通考试区域上，$M_y=N_x$ 是常用的全局相容性门槛。
+
+重建时不要把积分常数误写成普通常数。先对 $x$ 积分：
+\[
+f(x,y)=\int M(x,y)\,dx+C(y),
+\]
+再对 $y$ 求偏导并与 $N$ 对齐，才能确定 $C'(y)$。若给的是 $f_{xy}$ 与边界迹，例如 $f_x(x,0)$、$f(0,y)$，则每积分一次都会产生一个只依赖剩余变量的未知函数；边界数据负责逐层裁掉这些“函数型积分常数”。
+
+\begin{warnbox}{偏导数据不是任意拼装的}
+若 $M_y\ne N_x$，就不可能在该正则区域内存在同时满足 $f_x=M,f_y=N$ 的 $C^2$ 函数。若定义域有孔洞，即使局部相容，也还要额外审计全局路径无关；数学一常规题通常给出简单区域或直接保证目标函数存在。
+\end{warnbox}
+
 \section{隐函数：局部可解先于求导公式}
 
 若 $F(x_0,y_0)=0$，$F$ 在邻域 $C^1$，且 $F_y(x_0,y_0)\ne0$，则局部可唯一解成 $y=\varphi(x)$，并有
@@ -274,6 +349,20 @@ f(\mathbf a+\mathbf h)
 
 在驻点，正定 Hessian 给严格极小，负定给严格极大，不定给鞍点。半正定、半负定或奇异时二阶信息不足，必须看更高阶、特殊路径或原函数结构；“判别失效”不等于“没有极值”。Hessian 与二次型的跨学科翻译由 B03 拥有。
 
+\subsection{首个定号主部比 Hessian 更一般}
+Hessian 判别只是“首个非零局部主部恰好是二次型”的特殊情形。更一般地，若
+\[
+f(\mathbf a+\mathbf h)-f(\mathbf a)
+=Q_m(\mathbf h)+o(\lVert\mathbf h\rVert^m),
+\]
+其中 $Q_m$ 是 $m$ 次齐次主部，并且在单位球面上严格正（或严格负），则主部会压过余项，$\mathbf a$ 分别为严格局部极小（或极大）。若 $Q_m$ 在任意小方向上取正负两种符号，则 $\mathbf a$ 不是局部极值点。
+
+因此题目给出
+\[
+\frac{f(\mathbf a+\mathbf h)-f(\mathbf a)}{q(\mathbf h)}\to c\ne0
+\]
+时，第一件事不是强行求 Hessian，而是先判断 $q$ 在邻域内的符号结构；当 $cq$ 定号时，它已经提供极值类型证据，当 $cq$ 变号时则直接否定极值。这个接口也解释了若干只给极限而不给显式函数的多元极值判断题。
+
 \section{无约束极值：驻点只是候选}
 
 内点可微极值的必要条件是 $\nabla f(\mathbf a)=\mathbf0$。对二元函数，设
@@ -289,6 +378,16 @@ A=f_{xx},\quad B=f_{xy},\quad C=f_{yy},\quad \Delta=AC-B^2.
 \boxed{\nabla f(\mathbf a)=\lambda\nabla g(\mathbf a)}.
 \]
 这是候选方程，要求 $\nabla g\ne0$。多个独立约束时，目标梯度位于约束梯度张成的法空间。该几何接口归 B04。
+
+\begin{corebox}{两个高频技巧都应从几何本体生成}
+在二维单约束中，若只想消去乘子，不要先写 $\lambda=f_x/g_x=f_y/g_y$。直接交叉消元
+\[
+\boxed{f_xg_y-f_yg_x=0}
+\]
+没有除法；在 $\nabla g\ne0$ 的正则点，它正是“两个梯度平行”的坐标表达。若 $\nabla g=0$，该式自动退化，必须把奇异约束点另列候选。
+
+若目标与可行集在变量交换 $S(x,y)=(y,x)$ 下保持不变，对称性可靠地告诉我们的是：候选按 $p\leftrightarrow S(p)$ 成轨道出现。$x=y$ 只是 $S$ 的固定点分支，检查它成本很低，却\textbf{不能推出极值必在对称轴上}。因此对称性的做题价值是“生成伙伴 + 查漏”，不是“擅自降维”。
+\end{corebox}
 
 \begin{examplebox}{贯穿母例：球面约束下的线性函数}
 在 $x^2+y^2+z^2=1$ 上求 $f=x+2y+3z$。Lagrange 条件给
@@ -352,6 +451,7 @@ II-02 几何应用 & 切线、切平面、法向、交线切向与正则门 & �
 II-02.1 隐式曲面 & 正则边界、隐式求导与极值 & B04 接收切/法空间接口\\
 II-03 多元极值 & 内部—边界—端点候选全集和 Lagrange & KKT 只作 Extension\\
 II-03.1 二次型条件极值 & 只保留正定约束—广义特征候选接口 & Rayleigh/广义特征值归 B03/线代\\
+用户上传《高数下册进阶》多元微分 & 沿路径恢复、齐次函数 Euler 恒等式、二阶链式/线性变量变换、偏导数据重建、首个定号主部判极值 & 题型触发与大量例题进入同目录训练 Markdown；可疑题面不进入 Canonical\\
 \bottomrule
 \end{longtable}
 
@@ -374,9 +474,10 @@ f(\mathbf a+\mathbf h)=f(\mathbf a)+{\nabla f(\mathbf a)}^{\mathsf T}\mathbf h
   \item 当前基点是内点、边界点还是正则约束点？
   \item 需要联合控制所有路径，还是只做一个方向探测？
   \item 已知信息只是偏导/方向导数，还是已有统一线性余项？
-  \item 梯度/Jacobian 的维度和乘法次序是否一致？
+  \item 梯度/Jacobian 的维度和乘法次序是否一致？二阶复合是否漏掉内层二阶导数项？
+  \item 已知偏导/全微分时，相容性是否成立，积分产生的函数型常数是否由边界数据确定？
   \item 隐函数被求解变量块的 Jacobian 是否可逆？
-  \item 一阶项是否消失，Hessian 是否非退化，退化后该换哪条路？
+  \item 一阶项是否消失；若 Hessian 不可用，首个非零主部是否仍能定号？
   \item Lagrange 候选是否满足正则性并已代回原约束？
   \item 闭区域的内部、每段边界、端点/角点是否全部覆盖？
   \item 是否已经越界到 B01、B02、B03、B04 或 Topic08？
@@ -393,6 +494,7 @@ f(\mathbf a+\mathbf h)=f(\mathbf a)+{\nabla f(\mathbf a)}^{\mathsf T}\mathbf h
 联合极限 & 所有允许路径/序列统一 & 极限与连续\\
 偏导/方向导数 & 固定坐标或固定方向差商 & 局部探测值\\
 可微 & 统一线性主部加范数小量 & 梯度/Jacobian 与全微分\\
+梯度/偏导数据 & 路径可积、混合偏导相容与边界数据 & 函数差或函数本身的恢复\\
 隐函数 & 相应 Jacobian 块可逆 & 局部可解与导数\\
 Hessian & 二阶可微/足够正则 & 二阶方向形状与局部判别\\
 约束极值 & 正则约束、候选代回、边界完整 & 局部/全局最值候选全集\\

@@ -3,140 +3,274 @@
 \usepackage{amsmath,booktabs,tabularx,hyperref}
 \usetikzlibrary{arrows.meta,positioning,fit,calc}
 
-\handbooksetup{X-B03 Interrupt / DMA × OS I/O}{408 · Cross-Subject Bridge}{Submit · Ownership · Completion · Wake}
+\handbooksetup
+  {X-B03 中断、DMA 与操作系统 I/O}
+  {408 · 跨科桥梁 X-B03}
+  {提交 · 搬运 · 完成证据 · 软件交付}
 
 \tikzset{
-  appnode/.style={draw=iparaDeep,fill=iparaSoft,rounded corners=1.5mm,align=center,minimum width=2.5cm,minimum height=0.88cm,font=\small},
-  dmanode/.style={draw=iparaGreen,fill=white,rounded corners=1.5mm,align=center,minimum width=2.5cm,minimum height=0.88cm,font=\small},
-  hwnode/.style={draw=iparaDeep,double,double distance=1.2pt,fill=white,rounded corners=1.5mm,align=center,minimum width=2.5cm,minimum height=0.88cm,font=\small},
-  warnnode/.style={draw=iparaAccent,fill=white,rounded corners=1.5mm,align=center,minimum width=2.5cm,minimum height=0.88cm,font=\small},
-  mainflow/.style={-{Latex[length=2mm]},thick,draw=iparaDeep},
-  dmaflow/.style={-{Latex[length=2mm]},thick,dashed,draw=iparaGreen}
+  osnode/.style={draw=iparaDeep,fill=iparaSoft,rounded corners=1.5mm,align=center,minimum width=2.6cm,minimum height=0.9cm,font=\small},
+  hwnode/.style={draw=iparaGreen,fill=white,rounded corners=1.5mm,align=center,minimum width=2.6cm,minimum height=0.9cm,font=\small},
+  evnode/.style={draw=iparaAccent,fill=white,rounded corners=1.5mm,align=center,minimum width=2.6cm,minimum height=0.9cm,font=\small},
+  flow/.style={-{Latex[length=2mm]},thick,draw=iparaDeep}
 }
 
 \begin{document}
-\handbooktitle{Interrupt / DMA × OS I/O}{设备异步完成怎样变成内核可确认的 request completion 与任务唤醒}{408 · Cross-Subject X-B03}
+\handbooktitle
+  {中断、DMA 与操作系统 I/O}
+  {硬件异步完成怎样跨过软硬件边界，变成内核可确认的软件完成}
+  {408 · 跨科桥梁 X-B03}
 
-\begin{corebox}{Mother Interface}
-\[
-\boxed{
-\begin{aligned}
-\text{OS Driver Submit} &\xrightarrow{\text{DMA Mapping / Descriptor}} \text{Device Transfer} \\
-&\xrightarrow{\text{DMA}} \text{Memory Buffer + Completion State} \\
-&\xrightarrow{\text{Interrupt / Poll}} \text{Driver Verify} \\
-&\xrightarrow{\text{Software Completion}} \text{Wake / CQ / Callback}
-\end{aligned}
-}
-\]
-本 Bridge 专门负责连接“计算机组成原理（I/O 接口、DMA 控制器、中断硬件通路）”与“操作系统（I/O 子系统、设备驱动、缓冲区管理与等待唤醒）”的交互契约；磁盘底层物理结构与总线仲裁分别回到各自专题。
+\section{本册定位：只拥有软硬件完成交接}
+
+本册不是第二本 I/O 教材。它只回答一个接口问题：
+
+\begin{corebox}{母问题}
+设备可以脱离当前 CPU 指令流独立推进。那么当一次设备请求真正取得结果以后，\kw{什么硬件状态能够证明它已经完成，CPU/内核怎样发现这份证据，又怎样把它转换成软件可见的 request completion？}
 \end{corebox}
 
-\begin{methodbox}{先定义接口两侧的词}
+责任边界固定为：
+
 \begin{itemize}
-  \item \kw{I/O Request（I/O 请求描述符）}：操作系统为一次 I/O 交互分配的元数据结构（如 Linux \code{struct bio / request}），保存目标设备、物理页缓冲区、偏移量与完成回调。
-  \item \kw{DMA (Direct Memory Access，直接内存访问)}：设备或 DMA 引擎在 CPU/驱动建立请求与可访问映射后，直接在设备与内存之间搬运数据；CPU 不必用通用寄存器逐字节参与，但仍负责请求建立、描述符提交、同步与完成处理。
-  \item \kw{DMA-visible Mapping（设备可见映射）}：驱动必须让设备获得在本次传输生命周期内有效的 DMA address / descriptor。经典 408 模型常把它直接视为主存物理地址；现代平台还可能经过 IOMMU 或总线地址翻译，因此不能把 DMA address 与 CPU physical address 永久画等号。
-  \item \kw{Buffer Ownership（缓冲区所有权）}：提交后到完成前，CPU 与设备对缓冲区的读写必须遵守传输方向、平台 DMA API 与一致性协议；稳定要求是双方不能以会破坏本次传输语义的方式并发修改同一数据，而不是跨所有平台绝对化为“CPU 一律不能碰缓冲区”。
-  \item \kw{Completion Evidence（完成证据）}：设备状态寄存器中的成功标志位或完成队列描述符；操作系统不能仅凭“中断信号到达”就断定数据有效，必须由驱动读取/消费相应完成状态核实。
+  \item \kw{使用 CO-08：}设备控制器、总线事务、中断入口、DMA 搬运及完成状态怎样由硬件形成；
+  \item \kw{使用 OS-05：}驱动、I/O request、缓冲、阻塞语义和软件完成处理；
+  \item \kw{使用 OS-B01：}等待者怎样从 Blocked 被解除等待并进入 Ready/Runnable；
+  \item \kw{本 Bridge 独立拥有：}提交状态如何成为硬件输入；完成证据怎样被发现、核验并交回 OS；软硬件交接期间必须保持哪些合法性不变量；
+  \item \kw{停止边界：}不重新讲轮询/中断/DMA/通道的完整机制，不展开磁盘调度、文件块映射、系统调用全过程，也不重新定义进程调度。
 \end{itemize}
-\end{methodbox}
 
-\begin{methodbox}{Owners 与职责边界}
-\begin{itemize}
-  \item \kw{左侧 Owner (CO-08 I/O 系统)：}拥有设备控制器寄存器（控制/状态/数据）、DMA 计数器与主存物理地址寄存器、中断引脚与仲裁。
-  \item \kw{右侧 Owner (OS-05 I/O 管理)：}拥有设备独立性软件、设备驱动程序、I/O 请求排队调度、阻塞任务休眠与唤醒（OS-B01）。
-  \item \kw{本 Bridge Owns：}DMA 传输启动配置、缓冲区所有权交接、中断完成确认与任务状态迁移契约。
-\end{itemize}
-\end{methodbox}
+\section{接口对象：不要把“一个 I/O”压成一个动作}
 
-\section{核心机制：缓冲区所有权（Buffer Ownership）交接契约}
-
-在中断驱动与 DMA 模式下，CPU 与外部设备呈现高度异步解耦：
-\begin{enumerate}
-  \item \textbf{所有权转移（OS $\to$ DMA 控制器）}：
-  \begin{itemize}
-    \item OS 设备驱动准备缓冲区并建立本次传输所需的 DMA-visible mapping / descriptor；在经典 408 直连模型中可把 DMA address 视为目标主存地址，现代平台则可能经 IOMMU；同时写入方向、长度、描述符/队列位置等控制信息；
-    \item 提交请求后，设备获得按协议访问 Buffer 的资格。\kw{调用线程是否阻塞是 API/请求语义的另一条轴}：阻塞式 I/O 可能 sleep 让出 CPU，异步/非阻塞提交也可以先返回，不能由“使用 DMA”单独推出 Blocked。
-  \end{itemize}
-  \item \textbf{硬件直接搬运（卸载逐字节 CPU 搬运）}：
-  \begin{itemize}
-    \item 设备/DMA 引擎按描述符直接与内存交换数据；经典总线模型可表现为\textbf{周期挪用（Cycle Stealing）}、突发/块传送等方式；
-    \item CPU 不用执行逐字节 load/store 搬运循环，可以并发执行其他工作，但 DMA 仍会消耗内存/互连带宽，并可能带来 cache/IOMMU 同步成本，因此不等于“零 CPU/零系统成本”。
-  \end{itemize}
-  \item \textbf{所有权回收与完成确认（DMA 控制器 $\to$ OS）}：
-  \begin{itemize}
-    \item 设备把完成结果写入状态寄存器/完成队列，并可能通过中断通知 CPU；有些高性能路径也会由软件 polling completion queue，因此\kw{DMA completion 与 interrupt 是两种不同事件}；
-    \item 若采用中断，CPU 进入驱动 ISR/完成处理；驱动读取并消费设备完成证据、处理错误与同步要求；
-    \item 对阻塞式 waiter，完成路径可调用 \code{wakeup()} 使其重新进入 Ready/Runnable；对异步请求，则可更新 completion queue/callback 等其他软件状态。
-  \end{itemize}
-\end{enumerate}
-
-\section{母模型：DMA 控制器与操作系统 I/O 交互拓扑}
-
-\begin{center}
-\begin{tikzpicture}[x=3.40cm,y=1.55cm]
-  % Process & OS
-  \node[appnode] (task) at (0, 0.7) {Blocked Process\\[-1pt]\scriptsize Wait Queue};
-  \node[appnode] (driver) at (0, -0.7) {OS Device Driver\\[-1pt]\scriptsize Configure DMA};
-
-  % Hardware DMA & Memory
-  \node[dmanode] (dma) at (1.3, -0.7) {DMA Controller\\[-1pt]\scriptsize Channel \& Counter};
-  \node[hwnode] (ram) at (1.3, 0.7) {Physical RAM\\[-1pt]\scriptsize Target Page Frame};
-
-  % Device & Interrupt
-  \node[hwnode] (dev) at (2.6, -0.7) {Disk / Device\\[-1pt]\scriptsize Data Buffer};
-  \node[dmanode] (isr) at (2.6, 0.7) {Interrupt ISR\\[-1pt]\scriptsize Verify \& Wakeup};
-
-  % Connections
-  \draw[mainflow] (driver) -- (dma);
-  \draw[dmaflow] (dev) -- (dma);
-  \draw[dmaflow] (dma) -- node[left,font=\scriptsize]{DMA Transfer} (ram);
-  \draw[mainflow] (dma) -- node[right,font=\scriptsize]{Completion/IRQ} (isr);
-  \draw[mainflow] (isr) -- node[above,font=\scriptsize]{Wake / Complete} (task);
-\end{tikzpicture}
-\end{center}
-
-\section{四种 I/O 控制方式全景对比}
+一次跨界 I/O 至少涉及五类不同对象：
 
 \begin{center}
 \small
 \renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X X}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.19\linewidth} X X}
 \toprule
-控制方式 & 数据传输单位 & CPU 参与度与开销 & 适用场景与硬件成本 \\
+对象 & 它保存什么 & 主要 Owner \\
 \midrule
-程序轮询 (Polling) & 字 / 字节 & CPU 全程死等状态寄存器，极其空耗算力 & 极低速设备（早年打印机）或超高速设备无切换 \\
-中断驱动 (Interrupt) & 字 / 字节 & 每次传输一个字触发一次中断，频繁切换上下文 & 中低速字符设备（键盘、鼠标、串口） \\
-DMA 控制 (DMA) & 连续物理数据块 (Block) & 仅在块传输启动与结束时介入两次，中间零参与 & 高速块设备（磁盘、SSD、网卡）；成本适中 \\
-通道控制 (Channel) & 一组复杂数据块列表 & CPU 发送通道指令后完全脱身，通道独立执行通道程序 & 大型主机与复杂存储阵列；硬件成本高 \\
+I/O request & 本次请求的目标、方向、长度、缓冲位置及软件完成状态 & OS-05 \\
+设备可见映射/描述符 & 设备在本次传输生命周期内能够使用的地址与传输描述 & CO-08 与 OS-05 的交接口 \\
+数据缓冲区 & 设备与内存之间实际交换的数据，以及提交前后访问资格 & OS-05 管理，硬件按描述符访问 \\
+完成证据 & 控制器状态位、完成队列项、错误码等“这次请求推进到什么状态”的硬件可观察事实 & CO-08 产生，驱动消费 \\
+等待者/完成目标 & 阻塞线程、完成队列、回调或其他软件接收者 & OS-05 / OS-B01 \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-\section{阻塞磁盘读取的完整时序轨迹}
+这里最重要的对象—表示边界是：\kw{“中断信号”不是“完成结果”本身。} 中断只是一种让 CPU 获得处理机会的通知形式；真正的软件完成必须能够追溯到与本次 request 对应的完成证据。
+
+\section{母接口：提交、推进、证明、发现、交付}
+
+\begin{corebox}{接口压缩}
+\[
+\boxed{
+\begin{aligned}
+\text{OS 请求状态}
+&\xrightarrow{\text{提交描述符/设备可见映射}}
+\text{控制器/设备} \\
+&\xrightarrow{\text{搬运数据并写完成状态}}
+\text{完成证据} \\
+&\xrightarrow{\text{中断或轮询发现}}
+\text{驱动核验} \\
+&\xrightarrow{\text{软件完成}}
+\text{唤醒 / 完成队列 / 回调}
+\end{aligned}}
+\]
+这些箭头都表示\kw{接口交接或状态信息传递}，不是逻辑蕴含。每一条箭头都标出了跨界动作，因此不能把它们读成“前一个概念推出后一个概念”。
+\end{corebox}
+
+\begin{center}
+\begin{tikzpicture}[x=3.05cm,y=1.55cm]
+  \node[osnode] (req) at (0,0) {OS 请求对象\\[-1pt]\scriptsize request + buffer};
+  \node[hwnode] (dev) at (1.2,0) {控制器 / 设备\\[-1pt]\scriptsize 按描述符推进};
+  \node[evnode] (ev) at (2.4,0) {完成证据\\[-1pt]\scriptsize status / completion};
+  \node[osnode] (verify) at (2.4,-1.25) {驱动核验\\[-1pt]\scriptsize 成功 / 短传输 / 错误};
+  \node[osnode] (done) at (1.2,-1.25) {软件完成\\[-1pt]\scriptsize 更新 request};
+  \node[osnode] (target) at (0,-1.25) {完成目标\\[-1pt]\scriptsize 唤醒 / 队列 / 回调};
+  \draw[flow] (req) -- node[above,font=\scriptsize]{提交映射/描述符} (dev);
+  \draw[flow] (dev) -- node[above,font=\scriptsize]{搬运并写完成状态} (ev);
+  \draw[flow] (ev) -- node[right,font=\scriptsize]{IRQ / 轮询发现} (verify);
+  \draw[flow] (verify) -- node[below,font=\scriptsize]{核验完成证据} (done);
+  \draw[flow] (done) -- node[below,font=\scriptsize]{交付软件完成} (target);
+\end{tikzpicture}
+\end{center}
+
+图中所有实线箭头都表示\kw{接口交接}；状态机内部的因果或逻辑推导不使用这组箭头。若只记这张图，应能从“完成证据”这个中点分别向左复原硬件怎样产生它、向右复原 OS 怎样消费它。
+
+\subsection{为什么必须按这个顺序}
+
+驱动不能在设备尚未获得合法描述符时假定它知道该搬什么；设备也不能只凭“数据已经搬了一部分”就让 OS 宣布 request 成功。稳定顺序来自责任约束：
 
 \begin{enumerate}
-  \item \textbf{用户调用发起}：应用进程调用 \code{read(fd, buf, 4096)} 陷入内核；
-  \item \textbf{驱动准备与启动}：文件系统定位磁盘块号（LBN），驱动将物理页框地址写入 DMA 目标地址寄存器，写入块数 1，向控制寄存器写入启动读命令；
-  \item \textbf{进程休眠让出}：内核将当前线程移入该设备的等待队列，状态置为 \code{TASK\_UNINTERRUPTIBLE}，调度器切换至其他就绪线程运行；
-  \item \textbf{硬件后台搬运}：磁盘寻道旋转，控制器将扇区数据经总线直接写入物理内存，计数器减至 0；
-  \item \textbf{中断响应与验核}：DMA 向中断控制器发送中断信号；CPU 暂停当前指令流执行 ISR；驱动读取状态字确认无校验错，标记 request 完成；
-  \item \textbf{唤醒与返回}：调用 \code{wakeup()} 将休眠线程移入 Run Queue；调度器选中该线程后，数据已在内存中就绪，系统调用正常返回用户态。
+  \item OS 先建立本次请求及设备可消费的传输描述；
+  \item 设备/控制器只按这份描述推进数据与硬件状态；
+  \item 硬件形成与本次请求对应的完成证据；
+  \item CPU/驱动通过中断或轮询发现该证据；
+  \item 驱动核验成功、短传输或错误，再更新软件 request；
+  \item 只有软件完成已经成立以后，才有资格唤醒等待者或交付异步完成。
 \end{enumerate}
 
-\begin{warnbox}{Anti-Bridge：三个必须阻断的误区}
-\begin{itemize}
-  \item \(\text{DMA} \neq \text{CPU 内存拷贝}\)：DMA 把逐字节/逐字搬运从 CPU 指令流卸载给设备/DMA 引擎，但 CPU 仍负责 setup、submission、completion 与资源回收。
-  \item \(\text{中断到达} \neq \text{数据已保证正确}\)：中断只说明有设备事件需要处理；驱动仍须消费完成队列/状态并确认本次 request 的结果。反过来，DMA completion 也不要求所有系统都用“一次完成一次中断”的发现方式。
-  \item \(\text{DMA 地址} \neq \text{用户虚拟地址}\)：用户 VA 不能直接作为设备访问契约；驱动必须建立设备可用的 DMA-visible mapping。经典教材可按“物理主存地址”推演，现代平台则还可能经过 IOMMU，因此也不要再推出 \(\text{DMA address}=\text{CPU PA}\) 的普遍结论。
-\end{itemize}
-\end{warnbox}
+\subsection{知识映射与 Owner 去向}
 
-\begin{corebox}{30 秒极速调用协议}
-做题遇到“I/O 控制方式、DMA 传输周期与中断处理”时，严格按三步判定：
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.22}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} X X}
+\toprule
+母接口位置 & 深入时回到哪里 & 典型题面追问 \\
+\midrule
+提交与 DMA 描述 & CO-08 + OS-05 & DMA 地址、传送方式、描述符、缓冲区 \\
+硬件推进与完成证据 & CO-08 & 控制器状态、中断请求、完成队列、总线/DMA 时序 \\
+发现与驱动核验 & 本 Bridge + OS-05 & “中断到了是否等于完成”“轮询能否发现完成” \\
+Blocked 到 Ready & OS-B01 / 调度专题 & 唤醒后为何不一定立即运行 \\
+完整 `read()` 前后文 & OS-I01 / X-I02 综合专题 & 文件对象、页缓存、I/O、调度怎样接成完整生命周期 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+这张表就是本册的章节/考纲映射：当前问题若继续向某一侧深入，立即回到对应 Owner，而不是让 Bridge 扩张成第二本 Topic。
+
+\section{接口为什么会出现：从朴素等待到异步交接}
+
+这一节采用 Problem、Naive Solution、Failure、Mechanism 的解释顺序；它描述设计动机，不表示四项之间存在数学蕴含关系。
+
+\subsection{问题}
+
+设备完成时间通常不与当前 CPU 指令流同步。系统既要让设备继续工作，又要在结果真正可用时恢复软件语义。
+
+\subsection{朴素方案}
+
+最直接的办法是让 CPU 不断读取设备状态，发现设备就绪后再由 CPU 指令完成后续处理。这个方案在简单场景中完全可以正确。
+
+\subsection{失败点}
+
+当等待时间远大于一次状态检查、或数据搬运量很大时，CPU 会把大量时间花在“重复确认还没完成”或逐单位搬运上。问题不在正确性，而在\kw{等待和搬运的 CPU 占用成本}。
+
+\subsection{接口机制}
+
+硬件可以把“持续搬运”交给 DMA/设备，把“何时有事件需要软件处理”交给中断或完成队列；但这两个机制仍必须在一个明确的交接点重新汇合：\kw{设备形成完成证据，驱动核验并把它转换成软件完成。}
+
+因此本 Bridge 的生成性结论不是“DMA 比中断高级”，而是：
+
 \[
-\boxed{\text{Submit DMA-visible mapping / descriptor}} \xrightarrow{\text{设备搬运并产生完成证据}} \boxed{\text{Interrupt/Poll 发现并由驱动核验、交付软件完成}}
+\boxed{\text{异步硬件要被软件可靠使用} \Rightarrow \text{必须存在可核验的完成交接}}
 \]
+
+这里的 $\Rightarrow$ 是当前接口目标下的必要设计约束：没有可识别、可归属到具体 request 的完成状态，OS 就无法可靠决定“谁已经完成、谁可以继续”。
+
+\section{生命周期：一个阻塞式设备读取怎样跨过接口}
+
+下面只跑\kw{软硬件交接段}，不重讲完整 `read()` 生命周期。
+
+\begin{enumerate}
+  \item \textbf{请求形成：}上层已经判断本次读取需要真实设备 I/O，OS-05 建立一个 I/O request，并准备目标缓冲区。
+  \item \textbf{提交：}驱动建立本次 DMA 可见映射/描述符，写入方向、长度和设备命令。此时设备获得按协议访问目标缓冲区的资格。
+  \item \textbf{等待：}若用户接口采用阻塞语义且结果尚不可得，OS-05/OS-B01 使调用线程进入等待关系。状态变化应写成
+  \[
+  \text{Running}\xrightarrow{\text{等待 I/O 完成}}\text{Blocked}.
+  \]
+  \item \textbf{硬件推进：}设备/DMA 按描述符在设备与内存之间搬运数据，并更新控制器内部状态。CPU 可以执行其他工作，但 DMA 仍可能占用内存/互连资源。
+  \item \textbf{形成完成证据：}控制器写入完成队列项或状态字段；如果请求失败，证据中还应包含可供驱动区分的错误状态。
+  \item \textbf{发现并核验：}CPU 可以因 IRQ 进入完成处理，也可以由软件轮询完成队列。驱动读取并消费与本 request 对应的完成证据，确认成功、短传输或错误。
+  \item \textbf{软件完成：}只有核验通过以后，request 才被更新为软件可见的完成状态。若存在阻塞等待者，则
+  \[
+  \text{Blocked}\xrightarrow{\text{request 完成并唤醒}}\text{Ready/Runnable}.
+  \]
+  \item \textbf{停止在 Bridge 边界：}Ready/Runnable 以后何时真正 Running，由调度 Owner 决定；系统调用余下的复制、返回与文件状态更新由 OS Integration/Topic 继续负责。
+\end{enumerate}
+
+\section{接口不变量：哪些状态绝不能被破坏}
+
+\begin{enumerate}
+  \item \kw{请求身份不变量：}完成证据必须能够归属到正确的 request；不能把“有一个中断”直接当成“当前等待的请求成功”。
+  \item \kw{映射有效性不变量：}设备在传输生命周期内使用的 DMA-visible mapping 必须持续指向预期缓冲区；相关内存不能被错误回收并改作别用。
+  \item \kw{缓冲区所有权不变量：}CPU 与设备何时可以读写缓冲区必须符合传输方向和平台一致性协议，不能产生破坏本次 I/O 语义的并发修改。
+  \item \kw{完成资格不变量：}只有驱动消费并核验完成证据以后，软件 request 才能被标为完成。
+  \item \kw{调度边界不变量：}I/O 完成最多直接解除等待；它不能单独推出线程已经获得 CPU。稳定状态关系是
+  \[
+  \text{Blocked}\xrightarrow{\text{completion/wakeup}}\text{Ready}
+  \qquad\text{而不是}\qquad
+  \text{Blocked}\xrightarrow{\text{completion}}\text{Running}.
+  \]
+\end{enumerate}
+
+\section{代价与权衡：交接越解耦，状态管理越多}
+
+本 Bridge 不比较哪一种 I/O 控制方式“最好”，只说明跨界接口的代价来源：
+
+\begin{itemize}
+  \item \kw{轮询发现完成：}减少中断进入/返回成本，但持续占用 CPU 检查时间；适合何种时间尺度由 CO-08/OS-05 的具体成本模型决定。
+  \item \kw{中断发现完成：}避免持续忙等，但要支付中断入口、完成处理以及可能的调度成本；事件过密时还会产生较高通知开销。
+  \item \kw{DMA 搬运：}减少 CPU 逐单位搬运，却引入描述符建立、DMA 映射、缓存一致性、互连争用和完成回收等状态成本。
+  \item \kw{批量完成：}可以摊薄每次通知成本，但通常会增加单个请求等待被批量处理的延迟。
+\end{itemize}
+
+因此稳定的 Tradeoff 不是“技术越新越快”，而是：\kw{减少 CPU 对慢设备的细粒度参与，换来更多硬件状态、映射、队列和完成协议。}
+
+\section{概念边界：相似词不能互相推出}
+
+\begin{center}
+\scriptsize
+\renewcommand{\arraystretch}{1.28}
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.15\linewidth} >{\centering\arraybackslash}p{0.035\linewidth} >{\bfseries}p{0.15\linewidth} X X}
+\toprule
+概念 A & $\neq$ & 概念 B & 为什么容易混、真正判据与题目信号 & 混淆后果 \\
+\midrule
+DMA 完成 & $\neq$ & 中断到达 & 两者常相邻发生。DMA 完成描述传输/request 状态已经形成完成证据；中断只是一种让 CPU 发现设备事件的入口。题目若给 completion queue/polling，就更不能把二者画等号 & 会把“结果已产生”和“CPU 已收到通知”压成同一时刻，写错事件顺序 \\
+中断驱动 & $\neq$ & 异步 I/O & 都含“异步”直觉。前者回答设备事件怎样被 CPU 发现；后者回答调用返回与结果交付的 API 语义。阻塞 `read()` 也可以由中断驱动设备完成 & 会由“用了中断”错误推出“调用线程立即返回” \\
+DMA & $\neq$ & 零拷贝 & 都减少某类 CPU 数据搬运。DMA 只说明设备与内存之间的搬运主体；用户/内核之间是否还复制要看完整数据路径 & 会漏算用户缓冲复制、映射与一致性成本 \\
+I/O 完成 & $\neq$ & 进程运行 & 完成处理可能唤醒 waiter，但 CPU 是否交给它仍由调度器决定。题目出现“中断完成后进程状态”时，应先写 Blocked 到 Ready & 会把唤醒误写成直接调度，破坏进程状态机 \\
+DMA 地址 & $\neq$ & 用户虚拟地址 & 用户 VA 是进程地址空间表示；设备需要可访问的 DMA-visible mapping。经典题可按题设直接给物理主存地址，现代平台还可能经过 IOMMU & 会把用户地址直接交给设备，混淆地址空间与访问主体 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{最小题面调用：什么时候打开这座 Bridge}
+
+只有题目同时跨过“硬件完成”和“OS 软件状态”时，才调用 X-B03。第一动作依次问：
+
+\begin{enumerate}
+  \item \kw{请求对象是谁？} 哪个 request、哪个缓冲区、方向和长度是什么？
+  \item \kw{硬件怎样推进？} 数据主要由 CPU/PIO 还是 DMA/设备搬运？
+  \item \kw{什么证明完成？} 状态寄存器、完成队列项还是其他 completion evidence？
+  \item \kw{CPU 怎样发现？} IRQ 还是 polling？发现以后由谁核验？
+  \item \kw{软件哪一层改变？} request 完成、Blocked 到 Ready、完成队列/回调，还是尚未发生任何用户可见返回？
+\end{enumerate}
+
+如果题目只问 DMA 控制器怎样传一块数据，停在 CO-08；如果只问阻塞线程怎样被唤醒，停在 OS-05/OS-B01；只有两边真正交接时才进入本 Bridge。
+
+\section{贯穿母例：中断到了，但请求并没有成功}
+
+设一个阻塞式设备读取已经提交，设备随后产生 IRQ。朴素判断是“中断到了，所以数据已经读好，可以把线程改为 Ready”。
+
+这条路径为什么不可靠？因为 IRQ 只说明存在待处理的设备事件。驱动仍需要读取与本 request 对应的完成证据。若完成项报告校验错误、短传输或设备失败，那么软件状态应进入错误处理，而不是伪造成功结果并唤醒为“读取成功”。
+
+这个母例同时校准三层：
+
+\begin{itemize}
+  \item \kw{硬件层：}IRQ 是通知入口，不是成功值；
+  \item \kw{Bridge 层：}completion evidence 必须被驱动核验；
+  \item \kw{OS 层：}只有软件完成语义成立后，才决定唤醒、错误返回或其他后续动作。
+\end{itemize}
+
+只改变一个条件即可做微扰检查：若设备没有发 IRQ，但驱动轮询完成队列发现了成功项，请求仍然可以完成。这说明“中断”不是完成语义的必要组成部分；\kw{可核验的完成证据}才是本 Bridge 的稳定接口对象。
+
+\section{一页压缩：用五问重建整座桥}
+
+\begin{corebox}{一句话}
+设备/DMA 负责把请求推进到一个可观察的硬件完成状态；中断或轮询只负责让软件发现这份证据；驱动核验以后，OS 才能把硬件完成翻译成 request completion、唤醒或异步交付。
 \end{corebox}
+
+离开本册前，只需要能重新回答五问：
+
+\begin{enumerate}
+  \item OS 提交给硬件的到底是什么状态？
+  \item 设备在传输期间凭什么合法访问目标缓冲区？
+  \item 哪个对象才是真正的“完成证据”？
+  \item 中断、轮询和完成证据分别处在哪一层？
+  \item 为什么 I/O completion 只能直接推出 Ready，而不能直接推出 Running？
+\end{enumerate}
 
 \end{document}

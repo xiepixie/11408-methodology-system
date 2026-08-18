@@ -1,0 +1,511 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.70cm]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,backgrounds}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\setlength{\parindent}{2em}
+\setcounter{secnumdepth}{0}
+\setlength{\parskip}{0.28em}
+\setlist[itemize]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\setlist[enumerate]{itemsep=0.15em,topsep=0.25em,leftmargin=2em}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!50!black,pdftitle={英语一学科总图：任务如何调用语言能力空间}}
+
+\definecolor{mainblue}{RGB}{43,85,135}
+\definecolor{deepblue}{RGB}{28,60,98}
+\definecolor{softblue}{RGB}{238,245,252}
+\definecolor{softgreen}{RGB}{238,249,243}
+\definecolor{softorange}{RGB}{253,246,233}
+\definecolor{softred}{RGB}{253,239,239}
+\definecolor{softgray}{RGB}{246,247,249}
+\definecolor{deepgreen}{RGB}{35,105,75}
+\definecolor{deeporange}{RGB}{165,98,22}
+\definecolor{deepred}{RGB}{150,55,55}
+\definecolor{purple}{RGB}{94,66,140}
+\definecolor{softpurple}{RGB}{245,241,251}
+\definecolor{teal}{RGB}{38,112,115}
+\definecolor{softteal}{RGB}{238,248,248}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{英语一 · Subject Atlas}
+\rhead{任务调用语言能力空间}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14pt}
+
+\newtcolorbox{corebox}[1][]{colback=softblue,colframe=mainblue,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{exam}[1][]{colback=softorange,colframe=deeporange,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{warn}[1][]{colback=softred,colframe=deepred,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{method}[1][]{colback=softgray,colframe=black!45,title=#1,fonttitle=\bfseries,boxrule=0.6pt,arc=2mm}
+\newtcolorbox{bridge}[1][]{colback=softpurple,colframe=purple,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+\newtcolorbox{statebox}[1][]{colback=softteal,colframe=teal,title=#1,fonttitle=\bfseries,boxrule=0.8pt,arc=2mm}
+
+\newcommand{\kw}[1]{\textbf{#1}}
+\newcommand{\term}[2]{\textbf{#1（#2）}}
+
+\tikzset{
+  cnode/.style={draw=mainblue,rounded corners=1.8mm,minimum width=2.65cm,minimum height=0.92cm,
+    align=center,inner sep=3pt,font=\small,fill=softblue,line width=0.8pt},
+  cnodeblue/.style={cnode,draw=mainblue,fill=softblue},
+  cnodegreen/.style={cnode,draw=deepgreen,fill=softgreen,font=\small\bfseries},
+  cnodeorange/.style={cnode,draw=deeporange,fill=softorange},
+  cnodepurple/.style={cnode,draw=purple,fill=softpurple},
+  cnodeteal/.style={cnode,draw=teal,fill=softteal},
+  cnodegray/.style={cnode,draw=black!45,fill=softgray},
+  mainflow/.style={-{Latex[length=2.2mm,width=1.5mm]},line width=1.0pt,draw=deepblue},
+  altflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt,draw=deepgreen},
+  bridgeflow/.style={-{Latex[length=2.0mm,width=1.4mm]},densely dashed,line width=0.85pt,draw=purple},
+  labelnote/.style={font=\scriptsize\bfseries,fill=white,inner sep=1.5pt,rounded corners=0.5mm,text=black!80,draw=black!25,line width=0.4pt},
+  boxgroup/.style={draw=black!25,dashed,rounded corners=2mm,fill=black!2,inner sep=6pt}
+}
+
+\title{\vspace{-1.15cm}\textbf{英语一 · 学科总图}\\[0.35em]
+\large 任务如何调用语言能力空间：从语言系统到专题路由}
+\author{个人认知系统 · Canonical Subject Atlas}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{corebox}[母问题]
+面对任意一个英语一任务，怎样判断它正在要求学习者\kw{调用哪类语言资源、完成哪类语言活动、承受哪种处理条件}，并把真正需要的机制路由到唯一专题 Owner？
+\end{corebox}
+
+\begin{corebox}[一句话母模型]
+英语一不是五套题型技巧，而是若干考试任务对同一个语言能力空间的不同取样：
+\[
+\boxed{
+\text{Task / Context}
+\longrightarrow
+\left[
+\text{Activity}
+\times
+\text{Resource System}
+\times
+\text{Processing}
+\right]
+\longrightarrow
+\text{Performance}
+}
+\]
+题型决定本次任务需要调用空间中的哪一部分；专题手册负责其中具体机制；做题规则负责考场动作控制。
+\end{corebox}
+
+\begin{warn}[本册只负责 Atlas]
+本册只拥有 \kw{Why + Where + Relationship}：英语一在研究什么、各类知识挂在哪里、专题之间如何连接。
+\begin{itemize}
+  \item 不重复阅读、完形、新题型、翻译、写作的完整算法；
+  \item 不把 First Breakpoint、训练闭环、时间分配写成学科本体；
+  \item 不把通用 Control 链重新包装成每个专题的理论；
+  \item 不把一次分数、题型熟练度或词汇量直接等同于英语能力。
+\end{itemize}
+\end{warn}
+
+\tableofcontents
+\newpage
+
+\section{第 0 章：为什么英语一需要一张真正的学科总图}
+
+\subsection{0.1 教材目录、题型目录都不是学科本体}
+英语一表面上由完形、阅读、新题型、翻译、写作等任务组成，但这些题型反复调用相同的底层对象：语言形式、词汇与结构、命题意义、语篇关系，以及在有限时间中识别、整合、判断和生成语言的能力。
+
+如果把题型当最高层，学生会得到五套互不相干的口诀；如果把语言知识当最高层，又会得到词汇、语法、长难句、逻辑词的教材目录。两种结构都无法回答一个更重要的问题：
+\begin{quote}
+\kw{为什么同一个句法关系会同时影响完形、阅读和翻译，而三种题型又不能因此合并成一个专题？}
+\end{quote}
+答案是：它们\kw{共享资源，但拥有不同的任务对象和判断责任}。
+
+\subsection{0.2 Subject Atlas 的责任}
+本册建立一个坐标系统，使新知识可以被问成四个问题：
+\begin{enumerate}
+  \item 当前任务在\kw{做什么语言活动}？
+  \item 它调用了\kw{哪一层语言资源}？
+  \item 它对\kw{在线处理}提出什么要求？
+  \item 这个具体机制应该由\kw{哪一本 Topic 或 Control}拥有？
+\end{enumerate}
+
+\newpage
+\section{Part I：唯一母模型——任务调用一个多坐标能力空间}
+
+\section{第 1 章：母模型的三个内部坐标}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.45cm]
+\node[cnodeorange,minimum width=2.75cm] (task) {Task / Context\\[-1pt]\scriptsize 题目目标、材料、限制};
+\node[cnodeblue,right=0.55cm of task,minimum width=2.75cm] (act) {Activity\\[-1pt]\scriptsize 接收/产出/互动/中介};
+\node[cnodeteal,right=0.45cm of act,minimum width=2.85cm] (res) {Resource System\\[-1pt]\scriptsize 形式到语篇/语用};
+\node[cnodepurple,right=0.45cm of res,minimum width=2.75cm] (pro) {Processing\\[-1pt]\scriptsize 可访问性与实时控制};
+\node[cnodegreen,right=0.55cm of pro,minimum width=2.75cm] (perf) {Performance\\[-1pt]\scriptsize 本次可观察表现};
+
+\draw[mainflow] (task) -- node[labelnote,above=2pt] {规定调用需求} (act);
+\draw[bridgeflow] (act) -- node[labelnote,above=2pt] {联合坐标} (res);
+\draw[bridgeflow] (res) -- node[labelnote,above=2pt] {联合坐标} (pro);
+\draw[altflow] (pro) -- node[labelnote,above=2pt] {在任务中实现} (perf);
+\end{tikzpicture}
+\end{center}
+
+这张图只是一种可视化压缩。为了避免把版面顺序误当成学科本体，必须明确箭头语义：
+\begin{itemize}
+  \item \texttt{Task / Context} $\to$ \texttt{Activity} 表示\kw{任务规定需要完成哪类语言行为}；
+  \item \texttt{Activity -- Resource System -- Processing} 之间的虚线表示\kw{联合描述}，不是时间、因果或学习顺序；
+  \item \texttt{Processing} $\to$ \texttt{Performance} 表示已有资源在当前限制下被调用后形成\kw{可观察表现}；
+  \item 方括号中的 $\times$ 表示\kw{多坐标联合刻画}，不是数学乘法。
+\end{itemize}
+
+\begin{warn}[为什么不再使用旧版“四层流水线”]
+旧稿曾分别画出：
+\[
+\text{Resource}\to\text{Activity}\to\text{Processing}\to\text{Assessment}
+\]
+和
+\[
+\text{Resource}\to\text{Processing}\to\text{Activity}\to\text{Repair}.
+\]
+两者都把不同解释责任压成了单一先后链。新版取消这种伪因果：Activity、Resource、Processing 是观察同一个任务的不同坐标。
+\end{warn}
+
+\section{第 2 章：坐标一——Activity：当前用英语完成什么行为？}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
+\toprule
+活动 & Atlas 级定义 & 英语一中的典型位置 \\
+\midrule
+Reception 接收 & 从已有语言输入恢复任务所需意义 & 完形、阅读、新题型、翻译的理解阶段 \\
+Production 产出 & 从任务意图与意义生成语言表达 & 写作 \\
+Interaction 互动 & 多方实时更新共同语境并回应 & 英语一笔试不是主要直接取样对象 \\
+Mediation 中介 & 保留来源意义，再为新目标重新编码 & 翻译是最直接实例 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+这四类是\kw{任务活动分类}，不是四个独立学科。一个复杂任务可以组合多个活动；Atlas 只说明它们的位置，不展开每类活动的完整处理链。
+
+\section{第 3 章：坐标二——Resource System：英语材料由哪些稳定关系组成？}
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.35cm]
+\node[cnodeblue,minimum width=2.5cm] (r1) {Form\\[-1pt]\scriptsize 声音/拼写/词形/词序};
+\node[cnodeorange,right=of r1,minimum width=2.7cm] (r2) {Lexicon / Grammar\\[-1pt]\scriptsize 词义/搭配/句法};
+\node[cnodeteal,right=of r2,minimum width=2.5cm] (r3) {Meaning\\[-1pt]\scriptsize 命题与作用范围};
+\node[cnodepurple,right=of r3,minimum width=2.5cm] (r4) {Discourse\\[-1pt]\scriptsize 指代/关系/功能};
+\node[cnodegreen,right=of r4,minimum width=2.6cm] (r5) {Pragmatics\\[-1pt]\scriptsize 目的/受众/语体};
+
+\draw[mainflow] (r1) -- (r2);
+\draw[mainflow] (r2) -- (r3);
+\draw[mainflow] (r3) -- (r4);
+\draw[altflow] (r4) -- (r5);
+\end{tikzpicture}
+\end{center}
+
+这里的箭头表示\kw{常用的解释与整合层级}：更高层通常建立在较低层提供的信息上；它不是“学习时必须先学完左边再学右边”的课程顺序。
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.19\linewidth} X X}
+\toprule
+资源层 & 回答什么 & 典型跨专题接口 \\
+\midrule
+Form & 实际看到/听到的形式是什么？ & 完形词形、拼写、词序 \\
+Lexicon/Grammar & 词怎样组合，结构怎样成立？ & 完形约束、长句解析、翻译结构恢复、写作实现 \\
+Meaning & 句子究竟断言什么？限定和情态如何作用？ & 阅读证据命题、翻译不变量、写作内容命题 \\
+Discourse & 多句如何形成指代、逻辑、主题与功能？ & 新题型、阅读、写作连贯 \\
+Pragmatics & 表达对谁、为了什么、以什么语体完成？ & 写作任务与语体；其他题型的作者意图判断 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{bridge}[Object $\neq$ Representation]
+同一个意义关系可以用不同表面形式表达。尤其在翻译与同义改写中，必须区分：
+\[
+\boxed{\text{Language Form} \neq \text{Meaning Structure}}
+\]
+Atlas 只保留这条跨专题边界；具体怎样恢复与重构，由翻译、阅读、完形等 Topic 各自拥有。
+\end{bridge}
+
+\section{第 4 章：坐标三——Processing：为什么“知道”仍可能做不出来？}
+
+本册只保留最小边界：
+\[
+\boxed{\text{Stored Knowledge} \neq \text{Online Availability}}
+\]
+即：知道某个词、结构或关系，不等于在有限时间内能及时识别、整合、提取和检查。
+
+Processing 因而描述\kw{资源在具体任务约束下是否能够被及时调用}。工作记忆、自动化、监控与修复的具体机制属于后续 Processing / Proficiency Topic；本 Atlas 不再展开故障链或训练方案。
+
+\newpage
+\section{Part II：能力、表现与分数必须分开}
+
+\section{第 5 章：Proficiency、Performance、Score 的边界}
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node[cnodeblue,minimum width=3.3cm] (p1) {Proficiency\\[-1pt]\scriptsize 可稳定工作的能力范围};
+\node[cnodeorange,right=of p1,minimum width=3.5cm] (p2) {Performance\\[-1pt]\scriptsize 某次任务中的实际表现};
+\node[cnodegreen,right=of p2,minimum width=3.3cm] (p3) {Observed Score\\[-1pt]\scriptsize 按评分规则得到的结果};
+
+\draw[mainflow] (p1) -- node[labelnote,above=2pt] {任务条件下实现} (p2);
+\draw[altflow] (p2) -- node[labelnote,above=2pt] {按规则量化} (p3);
+\end{tikzpicture}
+\end{center}
+
+三个对象不能互换：
+\begin{itemize}
+  \item \term{Proficiency}{能力范围}：在一类任务中长期、稳定可工作的范围；
+  \item \term{Performance}{实际表现}：这一次，在这个材料、时间与状态下做得怎样；
+  \item \term{Observed Score}{观察分数}：把表现放进某套评分规则后得到的结果。
+\end{itemize}
+
+因此，“这次阅读错很多”不能直接推出“英语能力整体很差”；“词汇量增加”也不能直接推出所有任务表现同步提高。真正需要的是定位\kw{哪一个任务坐标限制了表现}，但具体诊断属于 Control / Practice System。
+
+\section{第 6 章：Exam Adapter——英语一怎样从能力空间取样}
+
+\term{考试适配器}{Exam Adapter} 不创造新的英语本体，它只规定：
+\begin{enumerate}
+  \item 给学习者什么输入；
+  \item 要求完成什么输出或判断；
+  \item 主要调用哪些 Activity；
+  \item 对哪些 Resource 层施加强约束；
+  \item 给予怎样的时间与交付条件；
+  \item 最终怎样评分。
+\end{enumerate}
+
+英语一各题型因此应被理解为同一能力空间的不同 Adapter，而不是不同学科。
+
+\newpage
+\section{Part III：英语一各专题在母模型中的位置}
+
+\section{第 7 章：五类题型为什么既共享底层能力，又必须分册}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.14\linewidth} p{0.21\linewidth} p{0.29\linewidth} Y}
+\toprule
+Topic & 主要活动 & Canonical Object / Problem & Atlas 中的位置 \\
+\midrule
+完形 & Reception & 被删除的词项如何在多层约束下恢复？ & Resource System 的多层约束实例 \\
+新题型 & Reception & 被破坏的语篇单元、顺序或功能怎样恢复？ & Discourse 关系与功能实例 \\
+阅读 & Reception & 怎样由题干路由到足够证据，并验证候选命题？ & Meaning/Discourse 到任务判断的接口 \\
+翻译 & Reception + Mediation & 怎样恢复英文意义结构并用中文重构而不改义？ & Form/Meaning 与跨语言重编码接口 \\
+写作 & Production & 怎样从任务生成意义、组织语篇并实现为英语？ & Pragmatics、Meaning、Discourse 的生成接口 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+关键区别是：\kw{共享资源不等于共享 Canonical Owner}。同一个“指代”可以被多册使用，但解释责任按照核心问题分配：新题型可拥有“指代怎样形成语篇方向约束”，翻译可拥有“译文怎样保持指代不变量”，阅读只调用它来解释证据命题。
+
+\section{第 8 章：Canonical Ownership}
+
+\begin{center}
+\small
+\begin{longtable}{>{\bfseries}p{0.22\linewidth} p{0.34\linewidth} p{0.36\linewidth}}
+\toprule
+概念/规则 & Canonical Owner & Atlas 的责任 \\
+\midrule
+英语一学科坐标系 & \texttt{00\_学科总图} & Own \\
+语言资源分类 & \texttt{00\_学科总图} & Own 分类；不展开专题机制 \\
+Activity 分类 & \texttt{00\_学科总图} & Own 分类；不展开执行算法 \\
+Exam Adapter / Proficiency 边界 & \texttt{00\_学科总图} & Own \\
+完形约束满足 & \texttt{20\_完形与新题型/完形} & Route / Use \\
+新题型语篇结构重构 & \texttt{20\_完形与新题型/新题型} & Route / Use \\
+阅读证据定位与选项判定 & \texttt{10\_阅读} & Route / Use \\
+翻译意义恢复与中文重构 & \texttt{30\_翻译} & Route / Use \\
+写作任务到语言生成 & \texttt{40\_写作} & Route / Use \\
+跨题型考试执行协议 & \texttt{90\_学科做题规则} & Bridge / Route \\
+通用词汇/搭配机制 & 待建 Language Resource Topic & 只保留位置 \\
+通用句法/长难句机制 & 待建 Syntax / Meaning Topic & 只保留位置 \\
+自动化、工作记忆与熟练度形成 & 待建 Processing / Proficiency Topic & 只保留接口 \\
+个人错题与训练闭环 & 待建 Practice System & 不进入稳定理论正文 \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\begin{warn}[One Concept / Rule $\to$ One Canonical Owner]
+一个概念可以在多册出现，但不能在多册拥有同一个解释问题。其他文档只能：
+\begin{itemize}
+  \item \kw{Use}：直接调用已建立机制；
+  \item \kw{Bridge}：只解释它如何跨越两个专题；
+  \item \kw{Route}：告诉学习者应该去哪一本手册继续。
+\end{itemize}
+\end{warn}
+
+\newpage
+\section{Part IV：一份母例怎样跑过整张 Atlas}
+
+\section{第 9 章：同一句材料，在不同任务中为什么会变成不同专题}
+
+考虑这个人工构造的句子：
+\begin{quote}
+Although the policy may reduce short-term costs, researchers warn that it could create larger risks later.
+\end{quote}
+
+这句话本身提供同一套资源：
+\begin{itemize}
+  \item Form：词形、词序、标点；
+  \item Lexicon/Grammar：\texttt{although}、\texttt{may/could}、从句结构；
+  \item Meaning：政策可能降低短期成本，同时可能带来更大后续风险；
+  \item Discourse：让步/对照关系；
+  \item Pragmatics：\texttt{warn} 与情态共同控制作者转述的风险强度。
+\end{itemize}
+
+但不同任务改变了核心对象：
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.16\linewidth} X X}
+\toprule
+若题目这样改造材料 & 真正问题 & 应路由到 \\
+\midrule
+删掉 \texttt{although} 让四选一恢复 & 哪个词项使多层约束重新成立？ & 完形 Topic \\
+删掉整句让它插回段落 & 它怎样连接前后语篇？ & 新题型 Topic \\
+问研究者担忧什么 & 哪组原文证据支持哪个候选命题？ & 阅读 Topic \\
+要求译成中文 & 哪些意义关系必须保持，中文怎样重构？ & 翻译 Topic \\
+要求围绕该政策写评论 & 任务要求什么命题，怎样组织并实现为英语？ & 写作 Topic \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+这说明：\kw{材料的语言资源可以相同，Task 改变以后，Canonical Object 和 Owner 就会改变。}
+这正是本 Atlas 的核心价值：新知识不是按“它出现在哪一章教材”归档，而是按它解释的任务问题与责任归档。
+
+\newpage
+\section{Part V：Atlas 与 Control 的边界}
+
+\section{第 10 章：知道“在哪里”不等于规定“现在做什么”}
+
+Subject Atlas 回答：
+\begin{quote}
+\kw{当前问题属于哪个坐标？应该调用哪一个 Topic？}
+\end{quote}
+
+Control 回答：
+\begin{quote}
+\kw{在考场的当前状态下，第一动作是什么？接下来怎样选择 Route、执行并验证？}
+\end{quote}
+
+因此跨题型通用执行协议统一由 \texttt{90\_学科做题规则/} 拥有。Atlas 只保留接口：
+\[
+\boxed{
+\text{Atlas: Locate the problem}
+\quad\Longrightarrow\quad
+\text{Control: Decide the next action}
+}
+\]
+
+\begin{bridge}[Topic 与 Control 的关系]
+Topic 拥有具体机制，Control 把机制动作化。例如：阅读 Topic 可以拥有“最小充分证据”与选项判定机制；Control 决定考试中何时进入阅读 Route、何时退出、怎样与时间和整卷状态协调。二者不应互相复制。
+\end{bridge}
+
+\section{第 11 章：学习证据为什么不进入 Stable Core}
+
+错题中的 First Breakpoint、个人瓶颈、训练周期、错误频率都非常重要，但它们属于\kw{Learning / Evidence Plane}，不是英语本体。
+
+因此：
+\begin{itemize}
+  \item 一次个人错误可以触发新的候选规则；
+  \item 候选规则需要新题复测后才能晋升；
+  \item “高频错误”“最常错”必须有个人或题库证据；
+  \item Atlas 不直接把观察写成稳定理论。
+\end{itemize}
+
+\newpage
+\section{Part VI：新知识怎样进入体系}
+
+\section{第 12 章：四问路由协议}
+
+遇到一个新概念、新技巧、新错题观察时，不先问“放在哪个文件夹”，而依次问：
+\begin{enumerate}
+  \item \kw{Object：}它真正操作或解释的对象是什么？词项、句子意义、语篇单元、证据、目标语表达，还是考场状态？
+  \item \kw{Question：}它回答 Why/Where，还是 How/Mechanism，还是 Next Action？
+  \item \kw{Scope：}它跨多个题型稳定成立，还是只对一个 Topic 生效？
+  \item \kw{Owner：}现有哪本手册已经拥有同一个解释问题？
+\end{enumerate}
+
+路由结果：
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} X}
+\toprule
+内容性质 & 去向 \\
+\midrule
+Why / Where / Relationship & Atlas \\
+How / State / Mechanism / Boundary / Cost & Topic \\
+跨 Topic 的输入输出契约 & Bridge \\
+多个 Topic 组合成一条完整过程 & Integration \\
+题目信号 / 第一动作 / Route / Verify & Control \\
+个人错误、观察、复测与更新 & Practice / Evidence System \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\newpage
+\section{Part VII：一页压缩}
+
+\begin{corebox}[英语一的生成性总句]
+英语一的不同题型并不是不同英语；它们是不同任务对同一个语言能力空间进行取样，而每个专题只拥有自己那个\kw{恢复、判断或生成对象}的机制。
+\end{corebox}
+
+\begin{statebox}[唯一母模型]
+\[
+\boxed{
+\text{Task / Context}
+\longrightarrow
+\left[
+\text{Activity}
+\times
+\text{Resource System}
+\times
+\text{Processing}
+\right]
+\longrightarrow
+\text{Performance}
+}
+\]
+
+\textbf{Activity：}
+Reception / Production / Interaction / Mediation
+
+\textbf{Resource System：}
+Form $\to$ Lexicon/Grammar $\to$ Meaning $\to$ Discourse $\to$ Pragmatics
+
+\textbf{Processing：}
+资源是否能在当前任务限制下及时被识别、整合、提取与控制。
+\end{statebox}
+
+\begin{method}[题型路由]
+\begin{itemize}
+  \item 缺词，要恢复多层语言约束 $\to$ 完形；
+  \item 缺句/顺序/功能，要恢复语篇结构 $\to$ 新题型；
+  \item 有题干，要从文本证据验证候选命题 $\to$ 阅读；
+  \item 要把英文意义换成中文形式且不改义 $\to$ 翻译；
+  \item 要从任务主动生成英语语篇 $\to$ 写作；
+  \item 要决定考场下一动作与跨题型 Route $\to$ \texttt{90\_学科做题规则}。
+\end{itemize}
+\end{method}
+
+\begin{exam}[六个重建问题]
+忘掉细节后，用这六问重新展开整套体系：
+\begin{enumerate}
+  \item 当前 Task 真正在要求什么语言行为？
+  \item 它主要属于哪一种 Activity？
+  \item 决定成败的是哪一层 Resource？
+  \item 是资源缺失，还是 Processing 使资源不能及时可用？
+  \item 这个具体机制的 Canonical Owner 是谁？
+  \item 我现在需要的是 Topic 的机制解释，还是 Control 的下一动作？
+\end{enumerate}
+\end{exam}
+
+\begin{warn}[最终纪律]
+总图不再长成“浓缩教材”。任何新增内容若开始详细回答“具体怎样做”，先尝试下沉 Topic 或 Control；只有它真正改变英语一的坐标系、边界或 Ownership 时，才有资格修改 Atlas。
+\end{warn}
+
+\end{document}

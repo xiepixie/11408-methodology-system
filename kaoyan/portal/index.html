@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kaoyan Knowledge & Reading Portal | 11408 方法论阅读门户</title>
+  <link rel="stylesheet" href="portal.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>">
+</head>
+<body>
+  <div class="app-container" id="app">
+    
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Left Navigation & Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <div class="brand">
+          <span class="brand-icon">🏛️</span>
+          <div class="brand-text">
+            <h1 class="brand-title">Kaoyan Portal</h1>
+            <span class="brand-subtitle">11408 知识体系交付门户</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="icon-btn theme-toggle-btn" id="theme-toggle" title="切换明暗主题 (T)" aria-label="Toggle Theme">
+            <span class="theme-icon">🌓</span>
+          </button>
+          <button class="icon-btn sidebar-collapse-btn" id="sidebar-toggle" title="折叠侧栏 ([)" aria-label="Collapse Sidebar">
+            <span>◀</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Search Bar -->
+      <div class="search-trigger-box">
+        <div class="search-input-wrapper" id="cmd-k-trigger" role="button" tabindex="0">
+          <span class="search-icon">🔍</span>
+          <span class="search-placeholder">全局检索 (标题/代号/公式/标签)...</span>
+          <kbd class="shortcut-badge">⌘K</kbd>
+        </div>
+      </div>
+
+      <!-- Subject Tabs (Segmented Grid Control) -->
+      <div class="subject-tabs-container">
+        <div class="subject-tabs" id="subject-tabs">
+          <button class="tab-btn active" data-subject="all">
+            <span class="tab-name">全部</span>
+            <span class="tab-count" id="count-all">0</span>
+          </button>
+          <button class="tab-btn" data-subject="math1">
+            <span class="tab-dot" style="background:#2563eb;"></span>
+            <span class="tab-name">数一</span>
+            <span class="tab-count" id="count-math1">0</span>
+          </button>
+          <button class="tab-btn" data-subject="408">
+            <span class="tab-dot" style="background:#0d9488;"></span>
+            <span class="tab-name">408</span>
+            <span class="tab-count" id="count-408">0</span>
+          </button>
+          <button class="tab-btn" data-subject="english1">
+            <span class="tab-dot" style="background:#d97706;"></span>
+            <span class="tab-name">英一</span>
+            <span class="tab-count" id="count-english1">0</span>
+          </button>
+          <button class="tab-btn" data-subject="system">
+            <span class="tab-dot" style="background:#7c3aed;"></span>
+            <span class="tab-name">系统</span>
+            <span class="tab-count" id="count-system">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub-Subject / Module Filter Chips (Smooth horizontal scroll without scrollbar) -->
+      <div class="sub-filter-section" id="sub-filter-section">
+        <div class="sub-filter-chips" id="sub-filter-chips">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Compact Unified Filter & Meta Bar -->
+      <div class="filter-control-bar">
+        <div class="type-pills-wrapper">
+          <div class="type-pills" id="type-pills">
+            <button class="pill-btn active" data-type="all">全部类型</button>
+            <button class="pill-btn" data-type="Atlas">🗺️ 总图</button>
+            <button class="pill-btn" data-type="Topic">📘 专题</button>
+            <button class="pill-btn" data-type="Bridge">🌉 桥梁</button>
+            <button class="pill-btn" data-type="Integration">🧩 综合</button>
+            <button class="pill-btn" data-type="Control">📋 规则</button>
+          </div>
+        </div>
+        <div class="filter-right-tools">
+          <button class="filter-star-btn" id="filter-star-btn" title="只看收藏手册">⭐ 收藏</button>
+          <span class="list-stats-compact" id="list-stats">0 篇</span>
+        </div>
+      </div>
+
+      <!-- Document List -->
+      <div class="document-list-container">
+        <div class="document-list" id="document-list">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <span>正在加载知识库索引...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <span class="footer-tip">按 <kbd>J</kbd> / <kbd>K</kbd> 切换 · <kbd>F</kbd> 全屏</span>
+        <span class="manifest-date" id="manifest-date">v1.0</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-view" id="main-view">
+      
+      <!-- Top Action Bar -->
+      <header class="top-nav-bar" id="top-nav-bar">
+        <div class="nav-left">
+          <button class="icon-btn mobile-menu-btn" id="mobile-menu-btn" title="打开导航菜单" aria-label="Open Menu">
+            <span>☰</span>
+          </button>
+          <button class="icon-btn expand-sidebar-btn" id="expand-sidebar-btn" title="展开侧边栏 ([)">
+            <span>▶</span>
+          </button>
+          <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb">
+            <span class="crumb-link" id="crumb-root" title="查看全部学科">11408 知识库</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-link" id="crumb-subject" title="筛选此学科">-</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-link" id="crumb-module" title="筛选此模块">-</span>
+            <span class="crumb-sep">/</span>
+            <span class="crumb-active" id="crumb-title">请从左侧选择手册</span>
+          </nav>
+        </div>
+
+        <!-- Middle Stepper / Pager -->
+        <div class="nav-center" id="nav-stepper" style="display:none;">
+          <button class="stepper-btn" id="prev-doc-btn" title="上一篇手册 (快捷键 K)">
+            <span>◀</span>
+          </button>
+          <span class="stepper-pos" id="doc-stepper-pos">0 / 0</span>
+          <button class="stepper-btn" id="next-doc-btn" title="下一篇手册 (快捷键 J)">
+            <span>▶</span>
+          </button>
+        </div>
+
+        <!-- Right Actions -->
+        <div class="nav-right" id="nav-actions">
+          <button class="action-btn" id="pdf-invert-btn" title="夜间护眼暗色阅读模式 (Shift+D)" disabled>
+            <span class="action-icon">🌙</span>
+            <span class="btn-text">护眼暗色</span>
+          </button>
+          <button class="action-btn" id="star-btn" title="收藏此手册" disabled>
+            <span class="action-icon">☆</span>
+            <span class="btn-text">收藏</span>
+          </button>
+          
+          <!-- Copy Dropdown / Button -->
+          <div class="copy-dropdown-wrapper">
+            <button class="action-btn" id="copy-btn" title="复制路径或引用链接" disabled>
+              <span class="action-icon">📋</span>
+              <span class="btn-text">复制</span>
+              <span class="dropdown-caret">▾</span>
+            </button>
+            <div class="copy-menu" id="copy-menu" style="display:none;">
+              <button class="copy-menu-item" data-copy-type="rel-path">
+                <span>相对文件路径</span>
+                <kbd>kaoyan/90_publish/...</kbd>
+              </button>
+              <button class="copy-menu-item" data-copy-type="obsidian">
+                <span>Obsidian 双链</span>
+                <kbd>[[手册名称]]</kbd>
+              </button>
+              <button class="copy-menu-item" data-copy-type="latex">
+                <span>LaTeX 引用命令</span>
+                <kbd>\href{...}</kbd>
+              </button>
+            </div>
+          </div>
+
+          <button class="action-btn" id="open-external-btn" title="在系统新窗口打开 PDF" disabled>
+            <span class="action-icon">↗</span>
+            <span class="btn-text">新窗口</span>
+          </button>
+          <button class="action-btn primary" id="zen-btn" title="全屏专注阅读模式 (快捷键 F)" disabled>
+            <span class="action-icon">⛶</span>
+            <span class="btn-text">专注阅读</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Viewer Container -->
+      <div class="content-viewport" id="content-viewport">
+        
+        <!-- Welcome Hero View (Default before selecting doc) -->
+        <div class="welcome-screen" id="welcome-screen">
+          <div class="welcome-card">
+            <div class="welcome-badge">11408 METHODOLOGY SYSTEM</div>
+            <h2 class="welcome-title">考研领域知识与交付手册门户</h2>
+            <p class="welcome-desc">
+              收敛数学一、408 计算机、英语一与解题控制系统的全套 Canonical Handbook 与心智模型图谱。
+            </p>
+
+            <div class="stats-grid">
+              <div class="stat-box" data-subject="math1">
+                <div class="stat-num" id="hero-math-count">47</div>
+                <div class="stat-label">📐 数学一手册</div>
+                <div class="stat-sub">高数 / 线代 / 概率论</div>
+              </div>
+              <div class="stat-box" data-subject="408">
+                <div class="stat-num" id="hero-408-count">67</div>
+                <div class="stat-label">💻 408 计算机手册</div>
+                <div class="stat-sub">DS / CO / OS / NET</div>
+              </div>
+              <div class="stat-box" data-subject="english1">
+                <div class="stat-num" id="hero-eng-count">7</div>
+                <div class="stat-label">📖 英语一手册</div>
+                <div class="stat-sub">写作 / 阅读 / 翻译</div>
+              </div>
+              <div class="stat-box" data-subject="system">
+                <div class="stat-num" id="hero-sys-count">2</div>
+                <div class="stat-label">⚙️ 控制与规范</div>
+                <div class="stat-sub">做题控制 / 模板</div>
+              </div>
+            </div>
+
+            <!-- External Course Feature Banner -->
+            <div class="external-course-banner">
+              <div class="ext-course-left">
+                <div class="ext-course-tag">🎓 外部精选母语级课程 · 考研与复试进阶</div>
+                <div class="ext-course-title">English with Lucy · Beautiful British English C2 (Proficiency)</div>
+                <div class="ext-course-sub">12 周母语级进阶体系：地道功能语法、精准动词与介词搭配、母语者思维与考研复试口语</div>
+              </div>
+              <a href="file:///Users/xpx/Downloads/%E6%95%99%E8%82%B2/%E5%9C%A8%E7%BA%BF%E8%AF%BE%E7%A8%8B/English%20with%20Lucy%20-%20Beautiful%20British%20English%20C2%20Programme%20(Proficiency)%202026-5/index.html" target="_blank" class="ext-course-btn" title="在新窗口中启动本地 C2 课程播放器">
+                <span>进入本地播放器</span>
+                <span style="font-size:14px;">↗</span>
+              </a>
+            </div>
+
+            <div class="quick-start-section">
+              <h3>⚡ 快捷操作指南</h3>
+              <div class="shortcuts-grid">
+                <div class="shortcut-item"><kbd>⌘</kbd> + <kbd>K</kbd> <span>呼出 Spotlight 全局秒级模糊搜索</span></div>
+                <div class="shortcut-item"><kbd>J</kbd> / <kbd>K</kbd> <span>上下切换当前列表手册</span></div>
+                <div class="shortcut-item"><kbd>[</kbd> <span>展开 / 折叠侧边栏</span></div>
+                <div class="shortcut-item"><kbd>F</kbd> <span>一键进入/退出全屏专注模式</span></div>
+                <div class="shortcut-item"><kbd>T</kbd> <span>切换深色 (Dark) / 浅色主题</span></div>
+                <div class="shortcut-item"><kbd>Shift</kbd> + <kbd>D</kbd> <span>切换 PDF 护眼夜间反色滤镜</span></div>
+              </div>
+            </div>
+
+            <div class="recent-access-section" id="recent-section" style="display:none;">
+              <h3>🕒 最近阅读</h3>
+              <div class="recent-chips" id="recent-chips"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PDF Reader Viewport -->
+        <div class="pdf-viewer-frame-wrapper" id="pdf-viewer-wrapper" style="display:none;">
+          <iframe id="pdf-viewer" class="pdf-iframe" src="" title="PDF Viewer"></iframe>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Command Palette / Spotlight Modal (Raycast-grade Evolution) -->
+  <div class="modal-backdrop" id="cmd-modal" style="display: none;">
+    <div class="modal-box">
+      
+      <!-- Modal Search Header -->
+      <div class="modal-search-header">
+        <span class="modal-search-icon">🔍</span>
+        <input type="text" id="cmd-input" class="cmd-input" placeholder="输入关键词、代号(如 CO-B02)、学科、知识点..." autocomplete="off" spellcheck="false">
+        <button class="modal-clear-btn" id="cmd-clear-btn" style="display:none;" title="清空输入">✕</button>
+        <kbd class="modal-esc-badge" id="cmd-close-btn">ESC</kbd>
+      </div>
+
+      <!-- Quick Category Scope Filter Tabs inside Modal -->
+      <div class="cmd-scope-bar">
+        <div class="cmd-filter-tabs" id="cmd-filter-tabs">
+          <button class="cmd-scope-btn active" data-cmd-scope="all">全部</button>
+          <button class="cmd-scope-btn" data-cmd-scope="math1">📐 数学一</button>
+          <button class="cmd-scope-btn" data-cmd-scope="408">💻 408</button>
+          <button class="cmd-scope-btn" data-cmd-scope="english1">📖 英语一</button>
+          <button class="cmd-scope-btn" data-cmd-scope="Atlas">🗺️ 总图</button>
+          <button class="cmd-scope-btn" data-cmd-scope="star">⭐ 收藏</button>
+        </div>
+      </div>
+
+      <!-- Search Results List -->
+      <div class="modal-results-container" id="cmd-results">
+        <!-- Dynamically rendered -->
+      </div>
+
+      <!-- Modal Footer Hints -->
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <span class="results-counter" id="cmd-results-count">找到 0 篇手册</span>
+        </div>
+        <div class="modal-footer-right">
+          <span><kbd>Tab</kbd> 切换范围</span>
+          <span><kbd>↑</kbd> <kbd>↓</kbd> 导航</span>
+          <span><kbd>↵</kbd> 打开</span>
+          <span><kbd>ESC</kbd> 关闭</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Scripts: Load manifest.js directly for zero-CORS file:// protocol, fallback handled in portal.js -->
+  <script src="data/manifest.js"></script>
+  <script src="portal.js"></script>
+</body>
+</html>

@@ -2,7 +2,17 @@
   <title id="title">题 43 指令字段</title>
   <desc id="desc">16 位单字长指令，由 OP、Ms、Rs、Md、Rd 五个字段组成。Ms 和 Rs 构成源操作数字段，Md 和 Rd 构成目的操作数字段。</desc>
   <rect id="background" width="1120" height="250" rx="18" fill="#30362d"/>
-  <g id="bit-labels" fill="#edf4e8" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-size="23" font-weight="600">
+<style>
+  @media print, (prefers-color-scheme: light) {
+    [fill="#30362d"], [fill="#30362D"], [fill="#30362d" i] { fill: #fafaf7 !important; }
+    [stroke="#30362d"], [stroke="#30362D"], [stroke="#30362d" i] { stroke: #fafaf7 !important; }
+    [fill="#edf4e8"], [fill="#EDF4E8"], [fill="#edf4e8" i] { fill: #111111 !important; }
+    [stroke="#edf4e8"], [stroke="#EDF4E8"], [stroke="#edf4e8" i] { stroke: #111111 !important; }
+    [fill="#9ea897"], [fill="#9EA897"], [fill="#9ea897" i] { fill: #666666 !important; }
+    [stroke="#9ea897"], [stroke="#9EA897"], [stroke="#9ea897" i] { stroke: #666666 !important; }
+  }
+</style>
+<g id="bit-labels" fill="#edf4e8" font-family="Arial, 'Noto Sans CJK SC', sans-serif" font-size="23" font-weight="600">
     <text x="78" y="47">15</text>
     <text x="286" y="47">12</text>
     <text x="316" y="47">11</text>

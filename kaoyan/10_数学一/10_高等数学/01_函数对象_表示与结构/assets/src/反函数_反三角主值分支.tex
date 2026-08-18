@@ -1,0 +1,73 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+\begin{axis}[
+    name=mainax,
+    width=13.5cm,
+    height=7.6cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\small},
+    every axis label/.style={color=themefg},
+    xmin=-8.6, xmax=9.2,
+    ymin=-2.3, ymax=2.5,
+    xtick={-6.28318, -4.71239, -3.14159, -1.5708, 0, 1.5708, 3.14159, 4.71239, 6.28318},
+    xticklabels={$-2\pi$, $-\frac{3\pi}{2}$, $-\pi$, $-\frac{\pi}{2}$, $0$, $\frac{\pi}{2}$, $\pi$, $\frac{3\pi}{2}$, $2\pi$},
+    ytick={-1.5708, 0, 1.5708},
+    yticklabels={$-\frac{\pi}{2}$, $0$, $\frac{\pi}{2}$},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={at={(0.5,1.08)},anchor=south,color=themefg,font=\bfseries\normalsize},
+    title={$F(x)=\arcsin(\sin x)$：全局输入映到主值区间中的代表 $[-\frac{\pi}{2},\frac{\pi}{2}]$},
+]
+
+  % Value range horizontal dashed bounds: y = +- pi/2
+  \draw[dashed, themegray, thick] (axis cs:-8.2,1.5708) -- (axis cs:8.2,1.5708);
+  \draw[dashed, themegray, thick] (axis cs:-8.2,-1.5708) -- (axis cs:8.2,-1.5708);
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=west] at (axis cs:8.25,1.5708) {\small $y=\frac{\pi}{2}$};
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=west] at (axis cs:8.25,-1.5708) {\small $y=-\frac{\pi}{2}$};
+
+  % Periodic extension triangle wave (themegray)
+  \addplot[themegray, thick, domain=-8.2:8.2, samples=300] {rad(asin(sin(deg(x))))};
+
+  % Principal identity branch [-pi/2, pi/2]: y = x (High contrast bold blue)
+  \addplot[themecurve, line width=2.6pt, domain=-1.5708:1.5708, samples=50] {x};
+  
+  % Vertical window bounds for principal branch
+  \draw[dashed, themegray, thick] (axis cs:-1.5708,-1.85) -- (axis cs:-1.5708,1.85);
+  \draw[dashed, themegray, thick] (axis cs:1.5708,-1.85) -- (axis cs:1.5708,1.85);
+
+  % Key inflection points
+  \addplot[only marks, mark=*, mark size=2.8pt, fill=themecurve, draw=themefg] coordinates {(-1.5708,-1.5708) (0,0) (1.5708,1.5708)};
+  \addplot[only marks, mark=*, mark size=2.8pt, fill=themefg, draw=themefg] coordinates {(-4.7124,1.5708) (-3.1416,0) (3.1416,0) (4.7124,-1.5708)};
+
+  % Branch formula annotations
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south east] at (axis cs:1.3,0.7) {\small $y=x$};
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south west] at (axis cs:1.8,0.7) {\small $y=\pi-x$};
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south east] at (axis cs:-1.8,0.7) {\small $y=-\pi-x$};
+
+\end{axis}
+
+% Bottom caption outside axis
+\node[font=\small\bfseries, color=themefg, anchor=north] at ($(mainax.south)-(0, 0.55cm)$) {结论：只有 $x\in[-\frac{\pi}{2},\frac{\pi}{2}]$ 时 $F(x)=x$；其余输入返回主值区间中具有相同正弦值的唯一代表};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

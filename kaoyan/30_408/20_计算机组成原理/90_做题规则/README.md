@@ -191,9 +191,9 @@ VIPT 只有使用 page-offset 位索引时才能并行查找而不依赖未知 P
 ### CPI 低不等于程序必然快
 
 比较两台机器或两种实现时统一写
-\[
+$$
 CPU\ time=IC\times CPI\times clock\ period.
-\]
+$$
 若指令数、CPI、频率或时钟周期同时变化，必须代入完整口径；只比较 CPI、IPC、MIPS 或 GHz 都不足以判定总时间。
 
 ### 流水线题分 throughput 与 latency

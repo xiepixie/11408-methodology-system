@@ -1,7 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="760" viewBox="0 0 1240 760" role="img" aria-labelledby="title desc" style="max-width: 100%; height: auto;">
   <title id="title">题 43(b) 部分数据通路及控制信号</title>
   <desc id="desc">ALU 的 A、B 输入，ALUBsrc 多路选择器，12 位立即数扩展器，ALUctr 与 Ext 控制信号，以及 ZF、OF、SF、CF 标志输出。</desc>
-  <defs>
+<style>
+  @media print, (prefers-color-scheme: light) {
+    [fill="#30362d"], [fill="#30362D"], [fill="#30362d" i] { fill: #fafaf7 !important; }
+    [stroke="#30362d"], [stroke="#30362D"], [stroke="#30362d" i] { stroke: #fafaf7 !important; }
+    [fill="#edf4e8"], [fill="#EDF4E8"], [fill="#edf4e8" i] { fill: #111111 !important; }
+    [stroke="#edf4e8"], [stroke="#EDF4E8"], [stroke="#edf4e8" i] { stroke: #111111 !important; }
+    [fill="#9ea897"], [fill="#9EA897"], [fill="#9ea897" i] { fill: #666666 !important; }
+    [stroke="#9ea897"], [stroke="#9EA897"], [stroke="#9ea897" i] { stroke: #666666 !important; }
+  }
+</style>
+<defs>
     <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L9,4.5 L0,9 z" fill="#edf4e8"/></marker>
   </defs>
   <rect id="background" width="1240" height="760" rx="18" fill="#30362d"/>

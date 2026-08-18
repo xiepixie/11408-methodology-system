@@ -957,74 +957,11 @@ VA\arr PageFault\arr File/PageCache\arr PhysicalFrame\arr PTE.
 \end{enumerate}
 \end{method}
 
-\section{408 题型地图：每一类题到底在考哪一层}
-\begingroup
-\small
-\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{>{\bfseries}p{0.20\linewidth} p{0.34\linewidth} p{0.38\linewidth}}
-\toprule
-408 常见题型分类 & 题目涉及的系统层次 & 考场标准推理与定性动作\\
-\midrule
-\endfirsthead
-\toprule
-408 常见题型分类 & 题目涉及的系统层次 & 考场标准推理与定性动作\\
-\midrule
-\endhead
-地址拆分与页号 & Paging Math (数学模型) & Page Size $\rightarrow$ Offset Bits $\rightarrow$ VPN 位数划分\\
-多级页表空间计算 & Sparse Mapping Structure & 每级 Index 位数 $\rightarrow$ PTE 数 $\rightarrow$ 只为已用区域建低级页表\\
-TLB / EAT 计算 & Translation Cache (硬件加速) & 画 Hit / Miss 路径，精准数 TLB、页表与主存访问次数\\
-缺页次数模拟 & Residency Transitions (驻留) & 按访存串动态维护 Resident Set 框状态与置换规则\\
-FIFO/LRU/CLOCK & Replacement Policy (策略) & 每次访问后及时更新 Queue 位置、Timestamp 或 Ref Bit\\
-Belady 异常分析 & Policy Anomaly (算法异常) & 比较框数增加时 FIFO 缺页数反常增加的特例序列\\
-页面分配策略 & Resource Allocation (配额) & 明确 Fixed / Variable 框架与 Local / Global 置换作用域\\
-COW 机制分析 & Permission + Sharing + Fault & 校验父子共享只读 PFN、写 Fault、复制 Frame、更新 PTE\\
-连续分区管理 & Free-space Management & FF / BF / WF / NF 找块规则，合并空闲区与计算外部碎片\\
-Buddy 系统分配 & Physical Page Allocator & 计算阶数 Order $2^k$，执行分裂 Split 与按位 XOR 伙伴合并\\
-TLB + Cache 综合 & OS × 计组 软硬件协作 & 先 VA $\rightarrow$ PA 翻译，再按 PA 访问 Cache，严格按题目假设推导\\
-\bottomrule
-\end{longtable}
-\endgroup
+\section{最小调用接口：先定位地址、映射、驻留还是翻译}
 
-\section{408 虚拟内存十二问：考场固定协议}
-\begin{corebox}[拿到任何地址翻译/虚存综合题，依次问]
-\begin{enumerate}
-  \item 当前讨论的是\kw{虚拟空间、页表映射、物理页分配，还是页面置换}？
-  \item VA/PA 各多少位？page size 多少？
-  \item offset 有几位？VPN/PFN 如何拆？
-  \item 页表几级？每级 index 如何取得？
-  \item TLB 是否命中？若 miss，题目规定 page walk 需要几次访问？
-  \item PTE 是否 present/valid？本次 R/W/X 权限合法吗？
-  \item 是否 page fault？fault 是“页面不驻留”还是 COW/权限/非法地址？
-  \item 若需物理 frame，当前有 free frame 吗？
-  \item 若需 replacement，用什么 policy，victim 作用域是 local 还是 global？
-  \item victim 是否 dirty，需要额外 write-back 吗？
-  \item fault 修复后，原指令是否会重试？最终状态怎样更新？
-  \item 最后再算时间：到底统计了几次 TLB、页表、Cache/Memory、Disk 访问？
-\end{enumerate}
-\end{corebox}
+遇到虚拟内存问题时，本册只要求先确定当前问题落在哪一层：\kw{地址表示、页表映射、物理驻留、硬件翻译、fault 修复或回收策略}。若题目开始要求固定计算步骤、页面访问串模拟、题型路由或考场检查顺序，转入同目录训练文档 \texttt{地址翻译与缺页.md} 与 \texttt{页面驻留与置换.md}；若同时追踪 TLB/MMU 与 OS fault handler 的软硬件交接，则转入 X-B02。
 
-\section{高频错因诊断：错一道题到底是哪层模型坏了}
-\begingroup
-\small
-\renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} X X}
-\toprule
-高频错误表现 & 模型理解根因漏洞 & 考场自我纠偏追问\\
-\midrule
-把 \code{malloc()} 当物理页申请 & 概念层级混淆 & 当前讨论的是 Runtime Chunk、VMA 还是 Physical Frame？\\
-TLB Miss 就判缺页 Page Fault & Fast / 慢路径 混淆 & PTE 是否其实有效且 Resident？硬件 Walk 成功则不缺页！\\
-Page Fault 一律去磁盘读盘 & Fault 分类缺失 & Demand-zero / COW / File / Swap / Invalid 哪一种？\\
-页表项存在就判页面在 RAM & Mapping / Residency 混淆 & PTE 的 Present / Valid 标志位状态是什么？\\
-地址拆分计算漏 Offset & 翻译对象范围错误 & 页表只翻译 VPN，Offset 保持不变原样拼接！\\
-LRU / FIFO 模拟算错 & 状态更新时机错误 & 每次 Reference 后队列/时间戳何时更新？\\
-Dirty Bit 被忽略 & 换出成本模型缺失 & Victim 是 Clean 还是 Dirty？是否触发额外 Write-back 延迟？\\
-COW 当共享内存 IPC & 语义目标混淆 & COW 最终承诺的是私有独立写语义还是共享写？\\
-\code{mmap} 当“整文件装入 RAM” & 映射与驻留混淆 & 建立 VA-File 映射关系不等于所有物理页立刻 Resident！\\
-Buddy 与 Best Fit 混淆 & Allocator 层级混淆 & 讨论的是连续进程分区还是物理内存 Order 页框管理？\\
-\bottomrule
-\end{tabularx}
-\endgroup
+第一观察点不是“这像哪种题型”，而是：\kw{当前缺失或变化的究竟是哪一层状态？} 只要这一层没有锁定，就不应继续累加访问次数或套置换算法。
 
 \section{教材模型与现代工程：哪些细节要分层记忆}
 \begingroup
@@ -1080,18 +1017,6 @@ Physical Memory & Cache / Memory Hierarchy 硬件完成物理数据读写 & 管�
 \[
 \boxed{PageFault\arr Kernel\ SlowPath\arr Repair\arr Retry.}
 \]
-
-\section{训练阶梯：从地址计算到完整解释访存过程}
-\begin{enumerate}[label=\textbf{L\arabic*.}]
-  \item 能区分 VA、PA、VPN、PFN、offset；
-  \item 能完成单级/多级页表地址拆分；
-  \item 能区分 TLB miss、cache miss、page fault；
-  \item 能手推一次 page fault 的完整状态变化；
-  \item 能模拟 FIFO/LRU/CLOCK 和 frame allocation；
-  \item 能手推一个 page 的 residency 生命周期；
-  \item 能推演 fork+COW、lazy allocation、file-backed mmap；
-  \item 能把“地址空间、页表、物理页、页缓存、文件”放到同一张系统图上，并解释每层状态由谁维护。
-\end{enumerate}
 
 \section{六条核心结论}
 \begin{corebox}[复原主干]

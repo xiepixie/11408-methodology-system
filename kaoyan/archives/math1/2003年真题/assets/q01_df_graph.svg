@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 260" width="420" height="260"><rect width="100%" height="100%" class="bg"/>
+  
+<style>
+  @media print, (prefers-color-scheme: light) {
+    [fill="#30362d"], [fill="#30362D"], [fill="#30362d" i] { fill: #fafaf7 !important; }
+    [stroke="#30362d"], [stroke="#30362D"], [stroke="#30362d" i] { stroke: #fafaf7 !important; }
+    [fill="#edf4e8"], [fill="#EDF4E8"], [fill="#edf4e8" i] { fill: #111111 !important; }
+    [stroke="#edf4e8"], [stroke="#EDF4E8"], [stroke="#edf4e8" i] { stroke: #111111 !important; }
+    [fill="#9ea897"], [fill="#9EA897"], [fill="#9ea897" i] { fill: #666666 !important; }
+    [stroke="#9ea897"], [stroke="#9EA897"], [stroke="#9ea897" i] { stroke: #666666 !important; }
+  }
+</style>
+<defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#edf4e8"/>
+    </marker>
+    <marker id="arrow-sm" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 2 L 7 5 L 0 8 z" fill="#edf4e8"/>
+    </marker>
+  </defs>
+  
+  <line x1="40" y1="140" x2="380" y2="140" class="axis" marker-end="url(#arrow)"/>
+  <line x1="160" y1="240" x2="160" y2="30" class="axis" marker-end="url(#arrow)"/>
+  <text x="375" y="165" class="text">x</text>
+  <text x="145" y="40" class="text">y</text>
+  <text x="145" y="158" class="text">O</text>
+  <path d="M 60 40 C 90 90, 110 140, 120 140 C 130 140, 140 180, 160 140 C 180 100, 200 90, 220 90 C 240 90, 260 140, 280 140 C 300 140, 330 180, 360 180" class="curve"/>
+  <circle cx="120" cy="140" r="3.5" class="point"/>
+  <circle cx="160" cy="140" r="3.5" class="point"/>
+  <circle cx="280" cy="140" r="3.5" class="point"/>
+  <text x="115" y="160" class="text-sm">x₁</text>
+  <text x="280" y="160" class="text-sm">x₂</text>
+  <text x="340" y="90" class="text">y = f'(x)</text>
+
+</svg>

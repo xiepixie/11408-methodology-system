@@ -7,18 +7,15 @@
 
 计算机网络研究：在机器彼此独立、链路有限、传输有时延、数据可能丢失、资源需要共享、系统没有全局即时状态的条件下，怎样让不同机器上的进程完成通信。
 
-网络不是协议字段集合，而是分布式状态机。观察任一机制时沿同一条主轴追踪：
+网络不是协议字段集合。更准确地说，**许多网络协议机制可以建模为多个只持有局部状态的实体，通过报文、定时器和链路事件相互作用的状态机。** 若实体 $i$ 的局部状态为 $s_i$，收到事件 $e$ 后可抽象为
 
 $$
-\text{Scope}
-\to \text{State}
-\to \text{Event}
-\to \text{Transition}
-\to \text{Feedback}
-\to \text{Cost}
+s_i' = \delta_i(s_i,e).
 $$
 
-八个 Topic 由六类现实约束生成，而不是按协议名机械堆叠：Distance 生成时延/BDP/流水发送，Finite Capacity 生成队列与拥塞反馈，Unreliability 生成 Seq/ACK/Timer/Retransmission，Sharing 生成 MAC 与端口复用，Heterogeneity/Scale 生成分层与前缀聚合，No Global Instant State 生成分布式路由控制。应用层再负责把可传输的 bytes 解释成名字、资源和操作语义。
+分析协议时统一检查六个坐标：Scope、State Owner、Event、Transition、Feedback、Cost。它们是观察维度，不是一条固定因果链；真正的状态变化必须指出事件和状态所有者。
+
+八个 Topic 不是按协议名机械堆叠，而是由六类现实约束反复提出设计压力：Distance 带来传播时延与 BDP；Finite Capacity 带来排队和拥塞；Unreliability 要求端点维护序号、确认、定时与重传证据；Sharing 要求介质访问和端点复用；Heterogeneity / Scale 要求分层寻址与聚合；No Global Instant State 使路由知识只能通过分布式交换逐步收敛。应用层再负责把可传输的 bytes 解释成名字、资源和操作语义。
 
 ## Foundation：先建立网络的坐标系
 
@@ -53,7 +50,7 @@ $$
 - **SDU**：上层交给本层处理的数据；
 - **PDU**：本层给 SDU 加入本层控制信息后形成的协议数据单元。
 
-发送端执行 `上层 SDU -> 加本层控制信息 -> 本层 PDU -> 作为下层 SDU`；接收端反向解释。这里的箭头表示封装关系，不表示每层都与远端建立物理连接。
+发送端的封装关系是：上层 SDU 与本层控制信息共同构成本层 PDU；该 PDU 再作为下层的 SDU。接收端按相反方向解释各层控制信息。这里描述的是**封装/解封装关系**，不表示每一层都与远端建立一条物理连接。
 
 ### OSI 与 TCP/IP：责任地图，不是两套物理网络
 
@@ -99,33 +96,32 @@ OSI 是七层参考模型；Internet 协议族的工程分层通常把 OSI 的�
 | Switch Table | 单跳交付 | 综合册只调用 source learning/destination forwarding |
 | FIB 的使用 | IP 转发 | 对当前 packet 执行 LPM 和 next-hop action |
 | RIB 选择与 FIB 安装 | 路由专题 | 解释 distributed knowledge 怎样形成候选、选择并安装 forwarding state |
-| DNS | 应用层 | 综合册只调用 Name -> IP |
+| DNS | 应用层 | 综合册只调用 Domain Name 到地址记录的解析接口 |
 
 ## 三个必须反复区分的关系
 
 ### 名字与交付
 
-$$
-\text{Domain Name}
-\to \text{Destination IP}
-\to \text{Next-hop IP}
-\to \text{MAC}
-\to \text{Signal}
-$$
+不同名字由不同 Owner 解释，不能压成一条“地址逐级变换”的裸箭头链。以典型 IPv4 + Ethernet 路径为例：
 
-Domain、IP、MAC 和 Port 不是同一种名字。无 NAT 等中间机制时，目的 IP 通常保持端到端语义；目的 MAC 随每一跳重新封装。
+- DNS 解析把 Domain Name 查询为一个或多个目标 IP 地址记录；
+- 对当前目的 IP，FIB/LPM 计算得到 `(egress interface, next-hop)`；
+- 在需要 Ethernet 单跳交付时，ARP 把 next-hop IPv4 地址解析为当前链路所需的 MAC 地址；
+- 链路层把 packet 封装进 frame，物理层再把 frame 编码并发送为信号。
+
+因此 Domain、IP、MAC 和 Port 不是同一种名字。无 NAT 等中间机制时，目的 IP 通常保持端到端语义；Ethernet 目的 MAC 则按每一跳的 next-hop 重新选择。IPv6 或非 Ethernet 链路使用相应的邻居发现/链路接口，不能把“IP 地址总要转换成 MAC 地址”当成所有网络的普遍定律。
 
 ### 转发与路由
 
-$$
-\text{Routing/Control Plane}
-\to \text{Forwarding State}
-$$
+Routing / Control Plane 负责产生、选择并安装 forwarding state；这是控制信息流。Forwarding / Data Plane 则对当前 packet 应用已经安装的状态，例如
 
 $$
-\text{Forwarding/Data Plane}
-\to \text{Apply State to Packet}
+(\text{destination IP},\text{FIB})
+\mapsto
+(\text{egress},\text{next-hop action}).
 $$
+
+因此“表怎样形成”和“拿现成表怎样处理当前包”是两个不同问题。
 
 ### 可靠、流控与拥塞
 
@@ -133,9 +129,21 @@ $$
 - Flow Control：receiver 是否接得住，典型约束为 `rwnd`；
 - Congestion Control：network path 是否扛得住，典型约束为 `cwnd`。
 
+在 408 常用的简化模型中，接收端流控与网络拥塞控制共同给出发送端允许保持的在途数据上界：
+
 $$
-W_{send}=\min(rwnd,cwnd)
+W_{\mathrm{limit}}:=\min(rwnd,cwnd).
 $$
+
+若题目问“当前还能新发送多少数据”，还必须扣除已经在途但尚未确认的数据量 `FlightSize`：
+
+$$
+W_{\mathrm{usable}}
+:=
+\max\bigl(0,\min(rwnd,cwnd)-\mathrm{FlightSize}\bigr).
+$$
+
+因此 `rwnd`、`cwnd` 是约束来源，不等于“此刻可以立刻再发送的字节数”。
 
 ### 其他核心分流边界
 
@@ -167,19 +175,7 @@ Graph Algorithm × Routing 当前只作为 Routing Topic 对数据结构图算�
 
 Canonical product：[NET-I01｜一个网络请求的一生](60_综合专题/NET-I01_一个网络请求的一生/README.md)，已发布阅读版。
 
-它只追踪：
-
-```text
-URL
--> DHCP（若尚未配置）
--> DNS
--> Same Subnet?
--> Gateway / ARP
--> Ethernet / Switch
--> Router / LPM / Re-encapsulation
--> TCP State
--> HTTP Request/Response
-```
+它只追踪一个请求在实际条件下可能调用的模块：若主机尚未配置则先处理 DHCP；解析 DNS；判断目标是否同子网并选择 next-hop；必要时完成邻居地址解析和链路封装；经交换机/路由器逐跳转发；维护 TCP 端点状态；最后交换 HTTP 请求与响应。具体条件分支和事件顺序由 Integration 正文显式标注，不把这些模块写成每次请求都必经的固定线性链。
 
 同时维护 Name/Address、Encapsulation、Distributed State 和 Scope 四条轨迹，不重写任何协议机制。
 
@@ -204,19 +200,9 @@ URL
 
 ## 学习入口
 
-机制生成顺序：
+若按机制依赖建立认知，可优先阅读：Foundation、通信基础、单跳交付、IP 转发、路由，再进入可靠传输、TCP、拥塞控制、应用层，最后用 Integration 做组合验收。若按课程教学进度，也可以直接按 Topic01--08 顺序学习。
 
-```text
-00 -> 01 -> 02 -> 04 -> 05 -> 03 -> 06 -> 07 -> 08 -> Integration
-```
-
-课程同步顺序也允许：
-
-```text
-01 -> 02 -> 03 -> 04 -> 05 -> 06 -> 07 -> 08
-```
-
-Atlas 必须支持两种入口，不把编号误当作唯一认知顺序。
+Atlas 必须支持两种入口；这些只是推荐阅读顺序，不把编号误当作唯一认知因果顺序。
 
 ## 来源分层
 

@@ -1,0 +1,75 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+\begin{axis}[
+    name=mainax,
+    width=11.5cm,
+    height=8.5cm,
+    axis equal image,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\footnotesize},
+    every axis label/.style={color=themefg},
+    xmin=-2.2, xmax=3.8,
+    ymin=-0.8, ymax=3.8,
+    xtick={-2,-1,0,1,2,3},
+    ytick={0,1,2,3},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+]
+% full parabola negative branch (dashed / discarded)
+\addplot[themegray, dashed, thick, domain=-1.9:0, samples=100] {x^2};
+\node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=east] at (axis cs:-1.5, 2.6) {\footnotesize $y=x^2\;(x<0\text{ 舍弃})$};
+
+% restricted branch x >= 0
+\addplot[themecurve, line width=1.8pt, domain=0:1.9, samples=200] {x^2};
+\node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=west] at (axis cs:1.8, 3.1) {\footnotesize $y=x^2\;(x\ge0)$};
+
+% symmetry line y = x
+\addplot[dashed, themegray, thick, domain=-0.5:3.5] {x};
+\node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south west] at (axis cs:3.25,3.25) {\footnotesize $y=x$};
+
+% inverse y = sqrt(x)
+\addplot[themealert, line width=1.8pt, domain=0:3.6, samples=200] {sqrt(x)};
+\node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=north west] at (axis cs:3.1, 1.8) {\footnotesize $y=\sqrt{x}\;(x\ge0)$};
+
+% Fixed point (1,1)
+\addplot[only marks, mark=*, mark size=2.5pt, fill=themefg, draw=themefg] coordinates {(1.0, 1.0)};
+\node[text=themefg, fill=themebg, inner sep=0.8pt, above left] at (axis cs:0.95, 1.05) {\footnotesize $(1,1)$};
+
+% Reflected pair of points: (1.5, 2.25) and (2.25, 1.5)
+\addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(1.5, 2.25)};
+\node[text=themecurve, fill=themebg, inner sep=0.8pt, above left] at (axis cs:1.45, 2.25) {\footnotesize $A(1.5, 2.25)$};
+
+\addplot[only marks, mark=*, mark size=2.5pt, fill=themealert, draw=themefg] coordinates {(2.25, 1.5)};
+\node[text=themealert, fill=themebg, inner sep=0.8pt, below right] at (axis cs:2.25, 1.45) {\footnotesize $A'(2.25, 1.5)$};
+
+% Connecting segment perpendicular to y=x
+\draw[themegray, line width=1pt, dotted] (axis cs:1.5, 2.25) -- (axis cs:2.25, 1.5);
+
+% Midpoint on y=x is (1.875, 1.875)
+\addplot[only marks, mark=x, mark size=3pt, thick, themegray] coordinates {(1.875, 1.875)};
+
+\end{axis}
+
+\node[font=\small\bfseries, color=themefg, anchor=north] at ($(mainax.south)-(0, 0.45cm)$) {核心机制：先限制单射分支 $(x\ge 0)$，再关于 $y=x$ 作轴对称反射};
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

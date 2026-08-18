@@ -1130,130 +1130,42 @@ $t_8$ & 系统调用返回用户态 & 用户进程可直接读 buf 数据 & A: U
 能够独立模拟这条路径，才算能说明 Polling、DMA、Spooling 在一次 I/O 中分别由谁执行、改变什么状态。
 \end{corebox}
 
-\section{第 13 章：高频概念辨析与错因诊断}
+\section{第 13 章：概念边界}
 
 \begingroup
-\small
-\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{>{\bfseries}p{0.28\linewidth} p{0.64\linewidth}}
+\footnotesize
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{>{\bfseries}p{0.15\linewidth} >{\centering\arraybackslash}p{0.025\linewidth} >{\bfseries}p{0.15\linewidth} p{0.31\linewidth} p{0.25\linewidth}}
 \toprule
-容易混淆的极高频概念对 & 考场定性标准与正确系统诊断 \\
+对象 A & $\neq$ & 对象 B & 真正区别与题目信号 & 混淆后果\\
 \midrule
 \endfirsthead
 \toprule
-容易混淆的极高频概念对 & 考场定性标准与正确系统诊断 \\
+对象 A & $\neq$ & 对象 B & 真正区别与题目信号 & 混淆后果\\
 \midrule
 \endhead
-System Call vs Interrupt & 前者通常是程序主动进入内核请求服务；后者是外部/异步硬件事件进入内核。两者都可能触发 Mode Switch，但原因不同。\\
-Interrupt vs Context Switch & 中断只保证内核获得处理机会；是否切换进程要看后续调度决策。\\
-Polling vs PIO & Polling 关注“怎么发现设备完成”；PIO 关注“谁来搬数据”。二者可同时存在。\\
-Interrupt vs Async I/O & 设备使用中断完成，不代表用户 API 一定异步；阻塞 \code{read()} 也常由中断驱动设备完成。\\
-DMA vs Zero-copy & DMA 只是设备与内存间搬运卸载；用户/内核之间仍可能复制，也可能存在 IOMMU、cache 同步等开销。\\
-Buffer vs Cache & Buffer 主要解决速率/粒度不匹配；Cache 主要保存可能再次被访问的慢对象副本。\\
-Cache vs 页缓存 & CPU Cache 缓存物理/地址数据访问的硬件层内容；页缓存 是 OS 管理的文件内容缓存。\\
-Spooling vs Buffer & Spooling 不只是“多放一块缓冲区”，而是中转存储 + 队列 + 后台服务，把独占设备虚拟化成可排队服务。\\
-\code{write()} return vs durable & buffered write 返回通常只说明内核接受了数据，不代表已落盘到非易失介质。\\
-\code{fsync()} vs Writethrough & 前者是显式持久性边界接口；后者是缓存写策略术语。\\
-I/O complete vs Process Running & 完成事件通常使 waiter Blocked $\rightarrow$ Ready；Ready $\rightarrow$ Running 还要等待调度器选择。\\
-SCAN vs LOOK & SCAN 可走到物理端点；LOOK 只走到该方向最后一个请求。\\
-C-SCAN vs C-LOOK & 都单向服务；C-LOOK 同样避免扫到无请求的物理端点。\\
+System Call & $\neq$ & Interrupt & 前者通常由程序主动请求内核服务；后者通常由外部异步硬件事件触发。两者都可能进入内核，但事件来源不同。 & 把“进入内核”误当成同一种事件，进而错判同步性、返回点与处理路径。\\
+Interrupt & $\neq$ & Context Switch & 中断只给内核一次处理机会；是否切换执行实体还取决于后续状态变化与调度决策。 & 把每次中断都计为一次进程切换。\\
+Polling & $\neq$ & PIO & Polling 说明怎样发现设备状态变化；PIO 说明 CPU 是否亲自执行设备数据搬运。两者可以组合。 & 把控制发现方式和数据传输方式混成一个维度。\\
+Interrupt & $\neq$ & Async I/O & 设备可以用中断报告完成，但用户接口仍可能同步阻塞；异步性描述调用者是否需要等待结果。 & 看到中断就误判用户调用不会阻塞。\\
+DMA & $\neq$ & Zero-copy & DMA 卸载设备与内存之间的一段搬运；zero-copy 还要求减少其他内存复制和数据重排。 & 低估用户/内核复制、IOMMU 与 cache 同步等剩余成本。\\
+Buffer & $\neq$ & Cache & Buffer 主要吸收速率或粒度不匹配；Cache 主要保留未来可能复用的慢对象副本。 & 不能解释数据取走后是否仍值得保留，以及命中/替换策略为何存在。\\
+Hardware Cache & $\neq$ & 页缓存 & 前者属于硬件存储层级；后者由 OS 按文件对象与页索引管理文件内容副本。 & 把地址翻译/Cache 行为与文件缓存状态混在同一 Owner。\\
+SPOOLing & $\neq$ & Buffer & SPOOLing 是中转存储、请求队列与后台服务的组合，用于把独占设备虚拟成可排队服务。 & 把设备虚拟化问题降格成“多放一块缓冲区”。\\
+\code{write()} 返回 & $\neq$ & 持久化完成 & buffered write 返回通常只表示内核已接受数据；持久化还涉及 writeback、提交与设备稳定介质。 & 把接口返回时间错误当成断电后数据必然存在的时间。\\
+\code{fsync()} & $\neq$ & Write-through & 前者是应用显式请求的持久边界接口；后者是缓存写策略。 & 用缓存策略术语替代具体系统调用的完成承诺。\\
+I/O Complete & $\neq$ & Process Running & 完成通常使等待条件成立并令任务 Blocked $\rightarrow$ Ready；获得 CPU 仍由 scheduler 决定。 & 把 wakeup 直接画成 Running。\\
+SCAN & $\neq$ & LOOK & SCAN 可继续走到物理端点；LOOK 只走到该方向最后一个待服务请求。 & 磁头移动距离与服务终点计算错误。\\
+C-SCAN & $\neq$ & C-LOOK & 两者都单向服务；C-LOOK 同样只走到有请求的边界，不扫无请求的物理端点。 & 把两种循环策略的回绕距离机械算成相同。\\
 \bottomrule
 \end{longtable}
 \endgroup
 
-\section{第 14 章：408 I/O 解题检查表}
+\section{第 14 章：最小调用接口}
 
-\begin{method}[I/O 十三问]
-拿到任何 I/O 题，建议按以下顺序扫描：
-\begin{enumerate}
-  \item \kw{主体是谁？} 哪个进程/线程/设备发起或等待？
-  \item \kw{对象是什么？} 字符设备、块设备、缓存页、队列、打印任务？
-  \item \kw{请求怎样进入内核？} syscall、fault、已有内核路径？
-  \item \kw{设备由谁控制？} 驱动、控制器、DMA、通道各负责什么？
-  \item \kw{完成怎样被发现？} polling、interrupt、completion queue？
-  \item \kw{数据由谁搬？} CPU/PIO、DMA、内存复制？
-  \item \kw{调用者现在怎么办？} Running、spin、Blocked、立即返回？
-  \item \kw{中间有没有 Buffer/Cache/Queue？} 它解决的是速率、复用还是排队？
-  \item \kw{走 快路径 还是 慢路径？} 页缓存 hit/miss、队列空闲/拥塞？
-  \item \kw{完成后谁的状态改变？} Blocked $\to$ Ready 还是直接返回？
-  \item \kw{是否涉及调度策略？} CPU scheduler、disk scheduler、spool queue？
-  \item \kw{正确性边界是什么？} 数据已复制、I/O 已完成、还是已经持久化？
-  \item \kw{成本在哪里？} syscall、中断、复制、DMA、寻道、排队、writeback、context switch？
-\end{enumerate}
-\end{method}
+遇到 I/O 问题时，先区分三条机制线：\kw{控制路径}回答谁提交、谁发现完成；\kw{数据路径}回答谁搬数据、经过哪些缓冲或缓存；\kw{任务状态路径}回答调用者何时继续、何时阻塞以及完成后进入什么状态。只要题目开始要求固定十三问、题型路由、时间轴计算或考场检查，转入同目录训练文档 \texttt{IO请求与完成.md}。
 
-\subsection{题型到核心模型的映射}
-\begingroup
-\small
-\renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.3\linewidth} X}
-\toprule
-408 常见题型分类 & 优先调用的核心核心模型与推导步骤 \\
-\midrule
-程序查询 / 中断 / DMA 比较 & “等待由谁承担 + 数据由谁搬 + CPU 参与度”三问模型 \\
-中断后进程状态变化 & Control Flow + Process State Flow，特别检查 Blocked $\rightarrow$ Ready \\
-单双缓冲计算 & 先画设备生产、buffer 占用、CPU 消费时间线，再找可重叠区间 \\
-SPOOLing 系统原理 & Exclusive Device $\to$ Queue $\to$ Background Service 虚拟化框架 \\
-页缓存 读写逻辑 & File Offset $\to$ Cache Hit/Miss；读路径与 dirty/writeback 写路径分开 \\
-磁盘调度算法题 & HDD cost model $\to$ 服务顺序 $\to$ 磁头移动距离精确累加 \\
-跨计组系统综合 & CPU/Bus/DMA/Interrupt + OS Block/Wakeup/Scheduler 共同推演 \\
-\bottomrule
-\end{tabularx}
-\endgroup
-
-\section{第 15 章：知识树与查漏清单}
-
-\begin{corebox}[I/O 知识树]
-\[
-\boxed{\text{I/O}}
-\]
-\[
-\begin{array}{lllll}
-\text{入口/控制} & \text{设备接口} & \text{数据传输} & \text{性能/解耦} & \text{策略/调度}\\[0.3em]
-\text{syscall} & \text{controller} & \text{PIO} & \text{buffer} & \text{device allocation}\\
-\text{interrupt} & \text{MMIO/port} & \text{DMA} & \text{页缓存} & \text{disk scheduling}\\
-\text{exception} & \text{driver} & \text{channel} & \text{readahead} & \text{spool queue}\\
-\text{mode switch} & \text{char/block} & \text{bus contention} & \text{writeback} & \text{fairness/latency}
-\end{array}
-\]
-\end{corebox}
-
-\subsection{408 Core：必须形成自动反应}
-\begin{itemize}
-  \item I/O 硬件基本组成：设备、控制器、状态/控制/数据接口；
-  \item 程序查询、中断驱动、DMA、I/O 通道的分工和 CPU 参与度；
-  \item 中断完成、阻塞、唤醒与调度之间的状态关系；
-  \item I/O 软件层次：用户 I/O、设备独立层、驱动、中断处理；
-  \item Buffer、双缓冲/循环缓冲的目的；
-  \item 设备分配、独占/共享/虚拟设备；
-  \item SPOOLing 原理及输入/输出井、后台服务思想；
-  \item HDD 访问时间与 FCFS/SSTF/SCAN/C-SCAN/LOOK/C-LOOK；
-  \item 页缓存 与 read/write 的接口理解，用于跨章节综合；
-  \item DMA 与计组总线/中断、OS 状态切换的跨科综合。
-\end{itemize}
-
-\subsection{Mechanism Layer：理解后做综合题更稳}
-\begin{itemize}
-  \item Request Path 与 Completion Path；
-  \item Control/Data/State 三条线；
-  \item Polling vs Interrupt 的等待成本模型；
-  \item DMA setup/transfer/completion/cleanup；
-  \item Blocking/Nonblocking 与 Sync/Async 的维度拆分；
-  \item 页缓存 hit/miss、readahead、dirty/writeback；
-  \item \code{write()} return、writeback、durability 三个时间点；
-  \item 设备成本模型改变以后调度策略为何必须变化。
-\end{itemize}
-
-\subsection{工程扩展：用于限定教材模型的边界}
-\begin{itemize}
-  \item x86/Linux 具体 syscall/interrupt entry；
-  \item IOMMU 与 DMA address；
-  \item interrupt moderation、polling/interrupt hybrid；
-  \item Linux block multiqueue 与 mq-deadline/BFQ/Kyber/none；
-  \item folio、现代 页缓存/writeback 实现；
-  \item O\_DIRECT、io\_uring、异步完成队列等现代接口。
-\end{itemize}
+若问题继续追踪完整 blocking \code{read()}，转入 OS-I01；若追踪 DMA/IRQ 的硬件责任边界，转入对应跨科 Bridge。本册不在 Canonical 中重复维护训练清单。
 
 \section{第 16 章：专题接口}
 

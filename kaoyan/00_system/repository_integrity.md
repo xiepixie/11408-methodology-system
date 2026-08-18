@@ -121,6 +121,20 @@ python3 00_system/cognitive_system.py progress --write
 
 这些都是纯文件事实，因此属于硬错误。脚本**不**判断题解推理是否正确、Verification 是否独立、Model Anchor 是否选对 Owner，也不判断 Handbook 是否应更新；这些仍由 [`exam_solution_quality_assurance.md`](exam_solution_quality_assurance.md) 的人工/Agent Gate 负责。
 
+### E-TRAINING-HEADER / E-TRAINING-RULE-TUPLE / E-TRAINING-FIGURE-*｜正式训练 Markdown 契约
+
+只对 README `## 训练导航` 中已经正式登记的 Markdown 生效；不盲扫尚未完成身份核销的 legacy Source。
+
+进入正式训练导航后：
+
+- 文件开头必须有 H1；
+- 前 12 行必须声明 `训练定位` 与 `模型归属`；
+- 每一个显式 `局部规则` 区块必须包含 `触发信号`、`第一动作`、`检查与退出` 三元组；
+- 图意图占位必须使用规范单行语法 `> **待补图｜图名**：解释责任。` 或 `> **候选配图｜图名**：解释责任。`，不能写半截占位；
+- 工作态允许保留 `待补图`，但父专题状态进入 `已采用` 后，正式训练导航中不得再有必要图占位；`候选配图` 不阻塞采用。
+
+这样新训练资产一旦进入正式导航就受到硬约束，同时允许“语义先写、图后补”的低摩擦工作流，也避免用不存在的图片链接制造假断链。具体写作、拆分和配图要求见 [`topic_practice_writing_spec.md`](topic_practice_writing_spec.md)。
+
 ### E-LEGACY-ROUTE｜活动资产重新引用退休路径
 
 迁移完成后，活动合同、Handbook/Rules、Archive 元数据、题解与工具脚本不得重新引用已废弃的历史路径。历史路径如果仅作为 provenance，必须留在 `80_evidence/` 等 Source/Evidence 语境，而不能继续承担运行入口或 Canonical 链接。
@@ -151,6 +165,12 @@ python3 00_system/cognitive_system.py audit --all
 
 当前审计项目如下。
 
+### A-TRAINING-FIGURE-TODO｜必要配图尚未闭环
+
+正式训练 Markdown 中允许先用 `待补图` 记录视觉解释责任；`audit` 会把这些必要图意图列出来，便于专题内容稳定后集中图审和批量生成。
+
+它在 `待人工确认` 等工作态只是维护债务，不阻塞 `check`。如果父专题准备进入 `已采用`，同一占位会升级为 `E-TRAINING-FIGURE-TODO` 硬错误。`候选配图` 只是可选增强，不进入该债务清单。
+
 ### A-README-LONG｜README 可能越过自己的解释粒度
 
 行数只是启发式信号，不是知识质量判据：
@@ -166,9 +186,11 @@ python3 00_system/cognitive_system.py audit --all
 
 **Atlas 永远不进入 A-NO-TEX。** 它的 Canonical Source 就是 README。
 
-### A-ATLAS-DUPLICATE-TEX｜Atlas 旁仍有根级 `.tex`
+### A-ATLAS-DUPLICATE-TEX｜Atlas 旁仍有待吸收的历史 `.tex`
 
-若 `类型：Atlas` 的 README 同目录仍存在 `.tex`，脚本提示人工确认它是不是旧的重复正文。真正的 Atlas 视觉海报应放在 `assets/`，并且只重复 README 已有的地图语义。
+若 `类型：Atlas` 的 README 同目录仍存在根级 `.tex`，脚本只提示这里存在**尚未完成 Source Diff 的历史信息源**。这类文件可以是刻意保留的迁移输入，不得仅因 Atlas 已有 Canonical README 就删除。
+
+处理原则固定为：先逐项比较历史 `.tex` 与当前 Atlas / Topic / Bridge / Integration Owner，记录 `Covered / Update / Reject / 未决`；只有确认其有效信息已经被 Canonical 资产无损承接后，才允许退休或删除。真正的 Atlas 视觉海报仍应放在 `assets/`，且不得拥有 README 中没有的新结论。
 
 ### A-TEX-NO-README｜只有正文，没有导航页
 
@@ -176,7 +198,9 @@ python3 00_system/cognitive_system.py audit --all
 
 ### A-ORPHAN-PDF｜发布区 PDF 找不到当前 `.tex`
 
-通常表示旧发布物尚未纳管。它不等于内容错误。
+通常表示旧发布物尚未纳管，或其中仍有尚未完全消化进当前系统的信息。它是**待吸收 Source 的存在提醒**，不等于内容错误，更不等于应删除。
+
+只有完成对应 Source Diff，并确认其中有效信息已经进入唯一 Canonical Owner 后，才决定退休、删除或重新纳管该 PDF。没有完成这一步时，默认保留。
 
 ### A-PUBLISH-NOT-BUILT / A-PUBLISH-STALE｜深度正文与阅读版不同步
 
@@ -185,7 +209,7 @@ python3 00_system/cognitive_system.py audit --all
 - 没有同 stem PDF：`A-PUBLISH-NOT-BUILT`；
 - PDF 早于 `.tex`：`A-PUBLISH-STALE`。
 
-这两项只属于维护债务，不阻止继续编辑工作稿。需要同步阅读版时使用安全 `publish` 入口。
+这两项只属于维护债务，不阻止继续编辑工作稿。**不得仅为了清零 `A-PUBLISH-NOT-BUILT` / `A-PUBLISH-STALE` 就自动发布仍处于持续修改、`待人工确认` 或语义/配图尚未稳定的 Topic。** Published View 的同步时机应由内容稳定度决定；工作态允许阅读版暂时落后于 Canonical Source。确需阶段性阅读快照或稳定修订完成后，再使用安全 `publish` 入口。
 
 ### A-DUPLICATE-TITLE｜Markdown 标题重复
 

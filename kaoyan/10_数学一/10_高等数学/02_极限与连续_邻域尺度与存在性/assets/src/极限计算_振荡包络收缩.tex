@@ -1,0 +1,66 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+\begin{scope}[x=8.8cm,y=8.8cm]
+  % 坐标轴
+  \draw[themefg, line width=0.9pt, -{Stealth[length=2.0mm]}]
+    (-0.62,0) -- (0.64,0) node[below left=1pt] {$x$};
+  \draw[themefg, line width=0.9pt, -{Stealth[length=2.0mm]}]
+    (0,-0.58) -- (0,0.60) node[below left=1pt] {$y$};
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north east] at (-0.012,-0.006) {$0$};
+
+  % 收缩包络
+  \draw[themegray, densely dashed, line width=1.35pt]
+    plot[domain=-0.57:0.57, samples=120] (\x,{abs(\x)});
+  \draw[themegray, densely dashed, line width=1.35pt]
+    plot[domain=-0.57:0.57, samples=120] (\x,{-abs(\x)});
+
+  % 包络夹逼收缩向原点的导向箭头
+  \draw[themegray, line width=1.0pt, -{Stealth[length=1.8mm]}] (0.48,0.48) -- (0.34,0.34);
+  \draw[themegray, line width=1.0pt, -{Stealth[length=1.8mm]}] (0.48,-0.48) -- (0.34,-0.34);
+  \draw[themegray, line width=1.0pt, -{Stealth[length=1.8mm]}] (-0.48,0.48) -- (-0.34,0.34);
+  \draw[themegray, line width=1.0pt, -{Stealth[length=1.8mm]}] (-0.48,-0.48) -- (-0.34,-0.34);
+
+  % 主体曲线：在 0 两侧分别绘制
+  \draw[themecurve, line width=2.15pt]
+    plot[domain=-0.57:-0.018, samples=520] (\x,{abs(\x)*sin(deg(1/\x))});
+  \draw[themecurve, line width=2.15pt]
+    plot[domain=0.018:0.57, samples=520] (\x,{abs(\x)*sin(deg(1/\x))});
+
+  % 数学标签
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=west]
+    at (0.40,0.47) {$y=|x|$};
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=west]
+    at (0.40,-0.47) {$y=-|x|$};
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=west]
+    at (0.30,0.17) {$y=|x|\sin\!\dfrac1x$};
+
+  % 结论徽标
+  \node[
+    draw=themegray,
+    rounded corners=1.5mm,
+    fill=themebg,
+    inner xsep=6pt,
+    inner ysep=4pt,
+    anchor=north,
+    text=themefg
+  ] at (0,-0.66) {振荡没有消失；真正收缩的是振幅包络 $\implies \lim_{x\to 0} |x|\sin\frac{1}{x} = 0$};
+\end{scope}
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

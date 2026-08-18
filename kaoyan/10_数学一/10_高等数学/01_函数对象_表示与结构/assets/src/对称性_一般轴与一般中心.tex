@@ -1,0 +1,108 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% Left: Axis Symmetry x = a
+\begin{axis}[
+    name=axleft,
+    width=7.5cm,
+    height=7.2cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\small},
+    every axis label/.style={color=themefg},
+    xmin=-1.5, xmax=3.6,
+    ymin=-0.5, ymax=3.8,
+    xtick={-0.3, 0.9, 2.1},
+    xticklabels={$a-t$, $a$, $a+t$},
+    ytick={0},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={at={(0.5,1.08)},anchor=south,color=themefg,font=\bfseries\small},
+    title={轴对称：$f(a-t) = f(a+t)$},
+]
+  % Vertical symmetry axis
+  \draw[dashed, themegray, line width=1.1pt] (axis cs:0.9, -0.3) -- (axis cs:0.9, 3.4);
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south] at (axis cs:0.9, 3.4) {\small 对称轴 $x=a$};
+
+  % 一般轴对称母图：只保留 t -> -t 的镜像，不使用抛物线这类“轴对称=U形”的特殊模板。
+  % h(t)=1+0.75t^2-0.22t^4 在每侧都有转折，因此不会额外暗示全局凸性或单调性。
+  \addplot[themecurve, line width=2pt, domain=-1.1:2.9, samples=180] {1.0 + 0.75*(x-0.9)^2 - 0.22*(x-0.9)^4};
+
+  % Symmetric points, t=1.2
+  \addplot[only marks, mark=*, mark size=2.8pt, fill=themecurve, draw=themefg] coordinates {(-0.3, 1.623808) (2.1, 1.623808)};
+  \draw[dotted, themegray, thick] (axis cs:-0.3, 1.623808) -- (axis cs:-0.3, 0);
+  \draw[dotted, themegray, thick] (axis cs:2.1, 1.623808) -- (axis cs:2.1, 0);
+  \draw[dashed, themegray, thick] (axis cs:-0.3, 1.623808) -- (axis cs:2.1, 1.623808);
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south] at (axis cs:0.9, 1.72) {\footnotesize 等高：$f(a-t)=f(a+t)$};
+\end{axis}
+
+% Left subcaption outside axis
+\node[font=\small\bfseries, color=themefg, anchor=north] at ($(axleft.south)-(0, 0.45cm)$) {几何特征：关于直线 $x=a$ 左右镜像};
+
+% Right: Center Symmetry (a,b)
+\begin{axis}[
+    at={($(axleft.east)+(2.4cm,0)$)},
+    anchor=west,
+    name=axright,
+    width=7.5cm,
+    height=7.2cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\small},
+    every axis label/.style={color=themefg},
+    xmin=-1.5, xmax=3.6,
+    ymin=-0.6, ymax=3.6,
+    xtick={-0.3, 0.9, 2.1},
+    xticklabels={$a-t$, $a$, $a+t$},
+    ytick={0, 1.2},
+    yticklabels={$0$, $b$},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={at={(0.5,1.08)},anchor=south,color=themefg,font=\bfseries\small},
+    title={中心对称：$f(a-t) + f(a+t) = 2b$},
+]
+  % Center of symmetry (a,b)
+  \addplot[only marks, mark=*, mark size=3.2pt, fill=themefg, draw=themefg] coordinates {(0.9, 1.2)};
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, above left] at (axis cs:0.85, 1.25) {\small $(a,b)$};
+
+  % 一般中心对称母图：用含多个奇次项的局部形态制造转折，避免“中心对称=单调三次曲线”的特殊暗示。
+  % 以 t=x-a 表示，h(t)-b=0.7t-0.45t^3+0.08t^5 为奇函数。
+  \addplot[themealert, line width=2pt, domain=-1.1:2.9, samples=180]
+    {1.2 + 0.7*(x-0.9) - 0.45*(x-0.9)^3 + 0.08*(x-0.9)^5};
+
+  % Symmetric points, t=1.2；数值由源函数直接回代得到。
+  \addplot[only marks, mark=*, mark size=2.8pt, fill=themealert, draw=themefg] coordinates {(-0.3, 0.9385344) (2.1, 1.4614656)};
+  \draw[dotted, themegray, thick] (axis cs:-0.3, 0.9385344) -- (axis cs:-0.3, 0);
+  \draw[dotted, themegray, thick] (axis cs:2.1, 1.4614656) -- (axis cs:2.1, 0);
+
+  % Connecting segment through (a,b)
+  \draw[line width=1.3pt, dotted, themealert] (axis cs:-0.3, 0.9385344) -- (axis cs:2.1, 1.4614656);
+  \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=south west] at (axis cs:1.0, 1.42) {\footnotesize 中点平均高度为 $b$};
+\end{axis}
+
+% Right subcaption outside axis
+\node[font=\small\bfseries, color=themefg, anchor=north] at ($(axright.south)-(0, 0.45cm)$) {几何特征：关于点 $(a,b)$ 旋转 $180^\circ$ 重合};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

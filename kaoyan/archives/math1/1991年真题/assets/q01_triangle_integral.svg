@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="360" height="300"><rect width="100%" height="100%" class="bg"/>
+  
+<style>
+  @media print, (prefers-color-scheme: light) {
+    [fill="#30362d"], [fill="#30362D"], [fill="#30362d" i] { fill: #fafaf7 !important; }
+    [stroke="#30362d"], [stroke="#30362D"], [stroke="#30362d" i] { stroke: #fafaf7 !important; }
+    [fill="#edf4e8"], [fill="#EDF4E8"], [fill="#edf4e8" i] { fill: #111111 !important; }
+    [stroke="#edf4e8"], [stroke="#EDF4E8"], [stroke="#edf4e8" i] { stroke: #111111 !important; }
+    [fill="#9ea897"], [fill="#9EA897"], [fill="#9ea897" i] { fill: #666666 !important; }
+    [stroke="#9ea897"], [stroke="#9EA897"], [stroke="#9ea897" i] { stroke: #666666 !important; }
+  }
+</style>
+<defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#edf4e8"/>
+    </marker>
+    <marker id="arrow-sm" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 2 L 7 5 L 0 8 z" fill="#edf4e8"/>
+    </marker>
+  </defs>
+  
+  <line x1="30" y1="150" x2="330" y2="150" class="axis" marker-end="url(#arrow)"/>
+  <line x1="180" y1="270" x2="180" y2="30" class="axis" marker-end="url(#arrow)"/>
+  <text x="325" y="175" class="text">x</text>
+  <text x="165" y="40" class="text">y</text>
+  <text x="168" y="168" class="text">O</text>
+  <polygon points="80,250 80,50 280,50" class="shade"/>
+  <polygon points="180,150 180,50 280,50" class="plane1"/>
+  <line x1="80" y1="250" x2="80" y2="50" class="curve"/>
+  <line x1="80" y1="50" x2="280" y2="50" class="curve"/>
+  <line x1="80" y1="250" x2="280" y2="50" class="curve"/>
+  <circle cx="80" cy="250" r="3.5" class="point"/>
+  <circle cx="80" cy="50" r="3.5" class="point"/>
+  <circle cx="280" cy="50" r="3.5" class="point"/>
+  <text x="55" y="260" class="text-xs">(-1,-1)</text>
+  <text x="55" y="45" class="text-xs">(-1,1)</text>
+  <text x="295" y="45" class="text-xs">(1,1)</text>
+  <text x="215" y="95" class="text">D₁</text>
+  <text x="130" y="110" class="text">D</text>
+
+</svg>

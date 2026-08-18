@@ -1,0 +1,92 @@
+# I/O 请求与完成
+
+> 训练定位：面对程序查询、中断驱动、DMA、缓冲、SPOOLing、磁盘调度以及阻塞 I/O 综合题时，训练把请求入口、等待者、数据搬运、完成通知和进程状态分成独立时间线。  
+> 模型归属：[OS-05 I/O 系统方法论手册](OS-05_IO系统_方法论手册.tex)。I/O request、driver、completion、buffering、device allocation 与 HDD 调度机制由 Canonical 正文拥有；本文件只负责题面表示、路径选择和独立检查。
+
+## 母题表示：先分三条线
+
+任何 I/O 题先把信息放进三条线，而不是看到“中断/DMA”就直接套结论：
+
+| 观察线 | 核心问题 | 典型状态 |
+|---|---|---|
+| 控制线 | 谁提交请求？谁发现完成？谁获得 CPU 控制权？ | syscall / driver / polling / interrupt |
+| 数据线 | 数据由谁从哪里搬到哪里？ | PIO / DMA / memory copy / page cache |
+| 任务状态线 | 调用者能否继续？完成后进入什么状态？ | Running / Blocked / Ready |
+
+## 局部规则：发现完成与搬运数据分开问
+
+**触发信号**：题目同时出现 polling、interrupt、PIO、DMA，或者选项把“中断方式”和“DMA 方式”当成同一维度比较。
+
+**第一动作**：分别写“完成怎样被发现”和“数据主要由谁搬”。Polling / interrupt 解决前者，PIO / DMA 主要回答后者。
+
+**检查与退出**：如果一句答案里把“用中断”直接等价成“CPU 不搬数据”，停止并重新分维度；中断驱动的 PIO 完全可能存在。
+
+## 局部规则：设备完成不等于进程立即运行
+
+**触发信号**：阻塞进程等待设备，随后发生 I/O completion interrupt。
+
+**第一动作**：先写 `Blocked → Ready`，再单独判断调度器是否、何时让它 `Ready → Running`。
+
+**检查与退出**：除非题设明确发生立即抢占且满足调度条件，否则不要把 wakeup 画成直接获得 CPU。
+
+## 局部规则：先判快路径还是慢路径
+
+**触发信号**：`read/write`、页缓存、设备队列、buffer 或已有数据状态同时出现。
+
+**第一动作**：先问当前请求能否在内存/已有队列状态中立即满足。只有真正需要设备进展时，才展开 driver、DMA/PIO、completion 和等待。
+
+**检查与退出**：系统调用不天然阻塞，中断也不天然触发上下文切换；每个状态变化都必须有当前题设事件依据。
+
+## 常见问题族与第一观察点
+
+| 问题族 | 第一观察点 | 后续调用 |
+|---|---|---|
+| 程序查询 / 中断驱动 / DMA 比较 | 等待由谁承担、数据由谁搬、CPU 参与在哪些阶段 | I/O 控制与数据路径 |
+| 中断后进程状态 | 当前 waiter 原来为何 Blocked，completion 改变了什么条件 | OS-01/02 block/wakeup |
+| 单/双/循环缓冲计算 | 设备生产、buffer 占用、CPU 消费能否重叠 | buffering 成本模型 |
+| SPOOLing | 独占设备如何变成“中转存储 + 队列 + 后台服务” | device virtualization |
+| 页缓存读写 | cache hit/miss 与 dirty/writeback 分支 | OS-B04 / 文件系统 |
+| HDD 调度 | 当前设备成本是否由 seek/rotation 主导 | FCFS/SSTF/SCAN/C-SCAN/LOOK/C-LOOK |
+| 计组 × OS 综合 | hardware completion 与 OS wait/wakeup 的交接点 | X-B03 / OS-I01 |
+
+## I/O 综合题落笔协议
+
+完整流程属于训练层，Canonical 只保留机制。做题时按下面顺序扫描：
+
+1. **主体**：哪个进程/线程/设备发起或等待？
+2. **对象**：字符设备、块设备、缓存页、请求队列还是打印任务？
+3. **入口**：syscall、fault 还是已有内核路径？
+4. **控制者**：driver、controller、DMA/channel 各负责哪一段？
+5. **完成发现**：polling、interrupt 还是 completion queue？
+6. **数据搬运**：CPU/PIO、DMA 还是额外 memory copy？
+7. **调用者状态**：继续 Running、spin、Blocked 还是异步返回？
+8. **中间层**：buffer/cache/queue 解决的是速率、复用、缓存还是排队？
+9. **快慢路径**：已有数据/空闲设备能否立即完成？
+10. **完成后的状态**：谁从 Blocked 变 Ready，谁仍需 scheduler？
+11. **调度策略**：CPU、disk、spool queue 中哪一种 policy 正在决定顺序？
+12. **完成语义**：数据已复制、设备 I/O 已完成，还是已经持久化？
+13. **成本**：syscall、中断、复制、DMA setup、寻道、排队、writeback、context switch 分别在哪里？
+
+## 局部规则：所有时间计算先声明“哪些阶段能重叠”
+
+**触发信号**：题目要求单缓冲/双缓冲、DMA、磁盘 I/O 或流水式处理时间。
+
+**第一动作**：画时间轴并标出设备、buffer、CPU 各阶段的占用区间；先确定数据依赖和资源互斥，再做 max/sum 计算。
+
+**检查与退出**：如果没有证明两个阶段可以并行，就不要因为“有双缓冲/DMA”自动把它们完全重叠。
+
+## 易错边界
+
+> **Polling ≠ PIO。** 一个回答如何发现完成，一个回答 CPU 是否亲自搬数据。
+
+> **Interrupt ≠ Async I/O。** 设备可通过中断完成，但用户 API 仍可能是阻塞调用。
+
+> **DMA ≠ Zero-copy。** DMA 只卸载设备与内存之间的一段搬运，用户/内核之间仍可能复制。
+
+> **I/O complete ≠ Process running。** completion 通常先改变等待条件与 Ready 状态。
+
+> **`write()` return ≠ durable。** buffered write、writeback、journal/commit 与持久边界必须分层。
+
+## 最短压缩
+
+I/O 题不要问“这是中断题还是 DMA 题”，而先问：**谁提交、谁等待、谁搬、谁通知、谁变状态、哪里付成本。** 六个主语写清楚以后，绝大多数名词会自动落到正确层。

@@ -1,0 +1,55 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning,shapes.geometric}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[
+    color=themefg, text=themefg,
+    every node/.style={color=themefg},
+    box/.style={draw=themefg, line width=1.1pt, rounded corners=3pt, minimum height=1.0cm, font=\small, align=center},
+    debt/.style={draw=themealert, line width=1.3pt, rounded corners=4pt, minimum height=1.0cm, font=\footnotesize, text=themealert, align=center},
+    edge/.style={->, line width=1.2pt, -{Stealth[length=5pt]}}
+]
+
+  % Title
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, font=\bfseries\normalsize, anchor=south] at (3.6, 3.2) {三类非等价表示变形与必须恢复的原始约束};
+
+  % Row 1: Rational Cancellation
+  \node[box, minimum width=3.2cm] (r1_left) at (0, 2.0) {$y = \dfrac{x^2-1}{x-1}$};
+  \node[box, minimum width=2.4cm] (r1_right) at (4.2, 2.0) {$y = x+1$};
+  \node[debt, minimum width=3.8cm] (r1_debt) at (8.5, 2.0) {丢失禁点信息：$x \neq 1$\\(定义域隐式扩大)};
+  \draw[edge] (r1_left) -- node[above, font=\footnotesize] {约分化简} (r1_right);
+  \draw[edge, dashed, color=themealert] (r1_right) -- (r1_debt);
+
+  % Row 2: Squaring Equation
+  \node[box, minimum width=3.2cm] (r2_left) at (0, 0.4) {$\sqrt{x} = x-2$};
+  \node[box, minimum width=2.4cm] (r2_right) at (4.2, 0.4) {$x = (x-2)^2$};
+  \node[debt, minimum width=3.8cm] (r2_debt) at (8.5, 0.4) {丢失符号分支：$x-2 \ge 0$\\(引入虚假增根)};
+  \draw[edge] (r2_left) -- node[above, font=\footnotesize] {两边平方} (r2_right);
+  \draw[edge, dashed, color=themealert] (r2_right) -- (r2_debt);
+
+  % Row 3: Parameter Elimination
+  \node[box, minimum width=3.2cm] (r3_left) at (0, -1.2) {$\begin{cases} x = \cos t \\ y = \sin t \end{cases}$};
+  \node[box, minimum width=2.4cm] (r3_right) at (4.2, -1.2) {$x^2 + y^2 = 1$};
+  \node[debt, minimum width=3.8cm] (r3_debt) at (8.5, -1.2) {丢失范围/轨迹/重数：\\$t\in I_t$ 的取值覆盖};
+  \draw[edge] (r3_left) -- node[above, font=\footnotesize] {消去参数 $t$} (r3_right);
+  \draw[edge, dashed, color=themealert] (r3_right) -- (r3_debt);
+
+  % Summary
+  \node[font=\footnotesize, color=themefg, anchor=north] at (4.2, -2.4) {\textbf{检查原则}：非等价变形后，必须显式恢复原定义域、符号、分支或参数范围};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

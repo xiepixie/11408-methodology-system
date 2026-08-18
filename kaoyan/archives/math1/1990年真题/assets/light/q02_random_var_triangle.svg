@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="360" height="300">
+  <style>
+    .bg { fill: #fafaf7; }
+    .fg { stroke: #111111; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .axis { stroke: #111111; stroke-width: 1.8; fill: none; }
+    .grid { stroke: #eceee8; stroke-width: 1; stroke-dasharray: 4,4; fill: none; }
+    .curve { stroke: #111111; stroke-width: 2.4; fill: none; }
+    .curve-accent { stroke: #2e7d32; stroke-width: 2.4; fill: none; }
+    .curve-dashed { stroke: #111111; stroke-width: 2; stroke-dasharray: 5,5; fill: none; }
+    .shade { fill: rgba(0, 0, 0, 0.08); stroke: #111111; stroke-width: 1.5; }
+    .plane1 { fill: rgba(46, 125, 50, 0.20); stroke: #111111; stroke-width: 1.5; }
+    .plane2 { fill: rgba(25, 118, 210, 0.20); stroke: #111111; stroke-width: 1.5; }
+    .plane3 { fill: rgba(230, 81, 0, 0.20); stroke: #111111; stroke-width: 1.5; }
+    .text { fill: #111111; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', Arial, sans-serif; font-size: 15px; text-anchor: middle; }
+    .text-sm { fill: #111111; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', Arial, sans-serif; font-size: 13px; text-anchor: middle; }
+    .text-xs { fill: #111111; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', Arial, sans-serif; font-size: 11px; text-anchor: middle; }
+    .point { fill: #111111; }
+  </style>
+  <rect width="100%" height="100%" class="bg"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#111111"/>
+    </marker>
+    <marker id="arrow-sm" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 2 L 7 5 L 0 8 z" fill="#111111"/>
+    </marker>
+  </defs>
+  
+  <line x1="30" y1="150" x2="330" y2="150" class="axis" marker-end="url(#arrow)"/>
+  <line x1="60" y1="270" x2="60" y2="30" class="axis" marker-end="url(#arrow)"/>
+  <text x="325" y="175" class="text">x</text>
+  <text x="45" y="40" class="text">y</text>
+  <text x="48" y="168" class="text">O</text>
+  <polygon points="60,150 240,60 240,240" class="shade"/>
+  <line x1="60" y1="150" x2="270" y2="45" class="curve"/>
+  <line x1="60" y1="150" x2="270" y2="255" class="curve"/>
+  <line x1="240" y1="40" x2="240" y2="260" class="curve-dashed"/>
+  <text x="240" y="170" class="text-sm">1</text>
+  <text x="280" y="55" class="text-sm">y = x</text>
+  <text x="280" y="250" class="text-sm">y = -x</text>
+  <text x="160" y="155" class="text">D</text>
+
+</svg>

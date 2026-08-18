@@ -5,7 +5,7 @@
 \usepackage{enumitem}
 \usepackage[most]{tcolorbox}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,decorations.pathreplacing}
 \usepackage{xcolor}
 \usepackage{fancyhdr}
 \usepackage{hyperref}
@@ -28,6 +28,13 @@
 \definecolor{greenish}{RGB}{57,92,76}
 \definecolor{warn}{RGB}{136,68,63}
 \definecolor{purple}{RGB}{87,72,116}
+% 训练图与 Markdown SVG 共用的语义色；本册 PDF 固定使用亮色映射。
+\definecolor{themebg}{HTML}{FAFAF7}
+\definecolor{themefg}{HTML}{111111}
+\definecolor{themegray}{HTML}{666666}
+\definecolor{themecurve}{HTML}{1D63B8}
+\definecolor{themealert}{HTML}{C53030}
+\definecolor{themeamber}{HTML}{B86E00}
 \hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={极限与连续：邻域、尺度与存在性}}
 \pagestyle{fancy}
 \fancyhf{}
@@ -59,32 +66,33 @@
 \section{本册定位}
 % ============================================================
 
-本册是高等数学 Subject Atlas 下的 Topic02。Topic01 先确认函数对象、定义域和表示；本册随后建立极限这套共同底座，使微分、积分、级数和微分方程中的“无限逼近”拥有可检查的合法性语言。
+本册是高等数学学科总图下的专题02。专题01先确认函数对象、定义域和表示；本册随后建立极限这套共同底座，使微分、积分、级数和微分方程中的“无限逼近”拥有可检查的合法性语言。
 
-\subsection{Own}
+\subsection{本册拥有}
 
 本册独立负责：
 \begin{itemize}
   \item 数列极限、函数极限、单侧极限、无穷远极限与无穷大记号；
   \item 极限存在性的邻域控制、夹逼、归结原则与反例构造；
   \item 无穷小的阶、同阶、等价、小 $o$ 与主导尺度；
+  \item 七类未定式的判别、标准化与“需要哪一级信息”的计算方法地图；
   \item 连续、单侧连续、连续运算的资格条件与间断点分类；
   \item 一阶递推数列中“合法轨道 $\to$ 收敛发动机 $\to$ 不动点识别”的基本机制；
   \item 极限问题的统一检查协议与独立验证方式。
 \end{itemize}
 
-\subsection{Uses / Stop Boundary}
+\subsection{调用与停止边界}
 
-本册调用 Topic01 的定义域、复合接口与表示边界，但不重复定义函数对象。下列内容只保留接口：
+本册调用专题01的定义域、复合接口与表示边界，但不重复定义函数对象。下列内容只保留接口：
 \begin{itemize}
-  \item 有限 Taylor 模型、导数定义和局部线性化由 Topic03 拥有；
-  \item L'Hospital 的中值定理基础、闭区间存在性、零点与函数形状由 Topic04 拥有；
-  \item 变上限积分、Riemann 和与反常积分由 Topic05 拥有；
-  \item 数项级数研究部分和数列的尾部，完整判敛机制由 Topic10 拥有；
-  \item 函数列的一致收敛、逐项操作等只作 Extension，不占据数学一 Topic02 主干。
+  \item 有限泰勒模型、导数定义和局部线性化由专题03拥有；
+  \item 洛必达的中值定理基础、闭区间存在性、零点与函数形状由专题04拥有；
+  \item 变上限积分、黎曼和与反常积分由专题05拥有；
+  \item 数项级数研究部分和数列的尾部，完整判敛机制由专题10拥有；
+  \item 函数列的一致收敛、逐项操作等只作扩展，不占据数学一专题02主干。
 \end{itemize}
 
-工具为何成立属于对应 Knowledge Owner；看到什么信号、选哪条路径、何时停止属于《高等数学做题规则》。本册提供选择工具所需的结构判据，不写成技巧清单。
+工具的本体机制由对应知识归属专题负责；单一问题族中“看到什么信号、第一步做什么、什么时候换路或停止”由同目录训练 Markdown 承担。只有同一控制动作跨多个训练专题反复成立并经证据验证，才晋升《高等数学做题规则》。但本册必须拥有极限计算的\textbf{知识层方法地图}：为什么一个未定式需要标准化、不同变形保留或丢失什么信息、当前目标需要哪一级局部精度，以及为什么此时应该调用等价、夹逼、洛必达、泰勒、导数定义或累积接口。否则专题02会退化成“只讲极限定义，却把极限怎样计算全部丢给训练层”的空心模型。
 
 % ============================================================
 \section{根本问题：一个不能直接到达的状态，怎样被精确定义？}
@@ -114,6 +122,21 @@
 量词顺序不能交换：阈值可以依赖 $\varepsilon$，但不能在看见挑战者选定的某个 $x$ 或 $n$ 后再临时改变。
 \end{corebox}
 
+\begin{center}
+\begin{tikzpicture}[
+  >=Stealth,
+  line cap=round,
+  line join=round,
+  color=themefg,
+  text=themefg,
+  every node/.style={color=themefg}
+]
+\input{assets/src/极限_输入邻域与输出控制.tex}
+\end{tikzpicture}
+\end{center}
+
+这张母图把量词契约翻译成几何动作：先由任意给定的 $\varepsilon$ 锁定输出水平带，再寻找一个足够小的 $\delta$，使整个去心输入邻域都被映入该输出带。图中特意让 $f(a)\ne L$，用来阻断“极限必须等于点值”的错误直觉。
+
 % ============================================================
 \section{母模型：趋近规范、统一控制与点值接缝}
 % ============================================================
@@ -121,43 +144,72 @@
 本册把极限与连续压缩为五个依次发生的判断：
 \[
 \boxed{
-\text{Approach}
-\to \text{Allowed Set}
-\to \text{Output Control}
-\to \text{Agreement}
-\to \text{Stitch}
+\text{趋近规范}
+\to \text{合法输入}
+\to \text{输出控制}
+\to \text{路径一致}
+\to \text{点值接缝}
 }
 \]
 
 这里的箭头是\textbf{检查顺序}：
 \begin{enumerate}
-  \item \kw{Approach}：明确 $n\to\infty$、$x\to a^\pm$、$x\to a$ 还是 $x\to\infty$；
-  \item \kw{Allowed Set}：由定义域与趋近方向确定真正允许的尾部或邻域；
-  \item \kw{Output Control}：用界、恒等变形或主导尺度把输出压入目标邻域；
-  \item \kw{Agreement}：所有允许路径是否趋向同一值；
-  \item \kw{Stitch}：若还问连续，检查这个共同邻域值是否等于点值。
+  \item \kw{趋近规范}：明确 $n\to\infty$、$x\to a^\pm$、$x\to a$ 还是 $x\to\infty$；
+  \item \kw{合法输入}：由定义域与趋近方向确定真正允许的尾部或邻域；
+  \item \kw{输出控制}：用界、恒等变形或主导尺度把输出压入目标邻域；
+  \item \kw{路径一致}：所有允许路径是否趋向同一值；
+  \item \kw{点值接缝}：若还问连续，检查这个共同邻域值是否等于点值。
 \end{enumerate}
 
 \begin{center}
 \begin{tikzpicture}[
-  node distance=0.65cm,
-  box/.style={draw=deep,rounded corners=1.5mm,minimum width=2.65cm,minimum height=1.0cm,align=center,fill=soft,font=\small},
-  arr/.style={-{Latex[length=2mm]},thick,draw=deep}
+  node distance=0.8cm and 0.8cm,
+  box/.style={draw=deep,rounded corners=1.8mm,minimum width=3.3cm,minimum height=1.05cm,align=center,fill=soft,font=\small,inner sep=4pt},
+  succbox/.style={draw=greenish,rounded corners=1.8mm,minimum width=3.3cm,minimum height=1.05cm,align=center,fill=white,font=\small,inner sep=4pt,thick},
+  failbox/.style={draw=warn,rounded corners=1.8mm,minimum width=3.3cm,minimum height=1.05cm,align=center,fill=white,font=\small,inner sep=4pt,thick},
+  gatebox/.style={draw=accent,rounded corners=1.8mm,minimum width=3.3cm,minimum height=1.05cm,align=center,fill=white,font=\small,inner sep=4pt,thick},
+  arr/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,draw=deep},
+  warnarr/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,draw=warn,densely dashed},
+  succarr/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,draw=greenish}
 ]
-\node[box] (a) {趋近规范\\$x\to a^+,\ n\to\infty$};
-\node[box,right=of a] (b) {合法输入\\定义域内尾部/邻域};
-\node[box,right=of b] (c) {输出控制\\$|f-L|<\varepsilon$};
-\node[box,below=of c] (d) {路径一致\\左右/子列无冲突};
-\node[box,left=of d] (e) {连续接缝\\$L=f(a)$};
-\draw[arr] (a)--(b);
-\draw[arr] (b)--(c);
-\draw[arr] (c)--(d);
-\draw[arr] (d)--(e);
-\draw[arr,dashed,draw=warn] (b.south) -- ++(0,-0.35) -| node[pos=0.25,below,font=\scriptsize,align=center]{发现两条合法路径冲突\\立即否定极限} (d.west);
+% 第一排：主干认知链 (Approach -> Allowed Set -> Output Control -> Agreement)
+\node[box] (app)  at (0,0)    {\textbf{1. 趋近规范}\\[2pt]\scriptsize $n\to\infty,\, x\to a^\pm,\, x\to a$};
+\node[box] (dom)  at (4.2,0)  {\textbf{2. 合法输入}\\[2pt]\scriptsize 定义域截断 / 去心邻域};
+\node[box] (ctrl) at (8.4,0)  {\textbf{3. 输出控制}\\[2pt]\scriptsize 主导尺度 / 夹逼 $|f-L|<\varepsilon$};
+\node[box] (agr)  at (12.6,0) {\textbf{4. 路径一致}\\[2pt]\scriptsize 全称检验：左右/子列同值};
+
+\draw[arr] (app) -- (dom);
+\draw[arr] (dom) -- (ctrl);
+\draw[arr] (ctrl) -- (agr);
+
+% 第二排左侧：快速否定分支 (Fast Fail)
+\node[failbox] (fail) at (4.2,-2.1) {\textbf{\color{warn}否定极限 (不存在)}\\[2pt]\scriptsize 发现两列/左右冲突或无界振荡};
+\draw[warnarr] (dom) -- node[fill=white,inner sep=2pt,font=\scriptsize\color{warn},align=center]{构造一对冲突路径\\(存在反例即结束)} (fail);
+
+% 第二排右侧：通过检验 -> 极限存在
+\node[gatebox] (lim) at (12.6,-2.1) {\textbf{极限存在：$\lim f = L$}\\[2pt]\scriptsize 唯一确定目标状态};
+\draw[succarr] (agr) -- node[fill=white,inner sep=2pt,font=\scriptsize\color{greenish}]{全部路径一致} (lim);
+
+% 第三排：连续接缝与间断分类
+\node[box] (stitch) at (12.6,-4.2) {\textbf{5. 连续接缝}\\[2pt]\scriptsize 核对点值：$L \overset{?}{=} f(a)$};
+\draw[arr] (lim) -- (stitch);
+
+\node[succbox] (cont)  at (6.3,-4.2) {\textbf{\color{greenish}连续}\\[2pt]\scriptsize 极限存在且 $L=f(a)$};
+\node[failbox] (remov) at (12.6,-6.1) {\textbf{\color{warn}可去间断}\\[2pt]\scriptsize 极限存在但 $L\ne f(a)$ 或无定义};
+
+\draw[succarr] (stitch) -- node[above=2pt,font=\scriptsize\color{greenish},fill=white,inner sep=2pt]{$L=f(a)$ (点值缝合)} (cont);
+\draw[warnarr] (stitch) -- node[fill=white,inner sep=2pt,font=\scriptsize\color{warn}]{$L\ne f(a)$ (缝合失败)} (remov);
+
 \end{tikzpicture}
 \end{center}
 
-这张图同时解释了章节映射：数列与函数极限建立 Approach/Allowed Set；夹逼与尺度完成 Output Control；左右极限和海涅定理负责 Agreement；连续与间断负责 Stitch。
+这张图完整呈现了极限的控制与验证拓扑：
+\begin{itemize}
+  \item \textbf{主干控制}：数列与函数极限先确定趋近规范与合法输入；夹逼与尺度完成输出控制；左右极限和海涅定理负责路径一致；连续与间断负责点值接缝。
+  \item \textbf{第一类间断}：左右极限均存在（$\lim_{x\to a^-}=\lim_{x\to a^+}\ne f(a)$ 为\textbf{可去间断}；$\lim_{x\to a^-}\ne\lim_{x\to a^+}$ 为\textbf{跳跃间断}）。
+  \item \textbf{第二类间断}：至少一侧极限不存在（无穷间断、振荡间断）。
+  \item \textbf{控制不对称性}：证明存在需控制全部输入；否定极限只需构造一对冲突路径或一个振荡反例。
+\end{itemize}
 
 % ============================================================
 \section{同一控制契约的四种对象}
@@ -196,7 +248,7 @@ $N$ 之前有多少异常项都不影响极限；极限只拥有\kw{尾部状态
 \lim_{x\to a^-}f(x)=\lim_{x\to a^+}f(x)=L.
 \]
 
-分段点、绝对值规则切换点、取整点、分母变号点和定义域端点，都会改变 Allowed Set。端点处若定义域只提供一侧，就只讨论相应单侧连续，不凭空要求另一侧。
+分段点、绝对值规则切换点、取整点、分母变号点和定义域端点，都会改变合法输入集合。端点处若定义域只提供一侧，就只讨论相应单侧连续，不凭空要求另一侧。
 
 \subsection{无穷远极限与无穷大：把阈值换成远端尾部}
 
@@ -210,6 +262,175 @@ $N$ 之前有多少异常项都不影响极限；极限只拥有\kw{尾部状态
 \begin{warnbox}{无界不等于趋于正无穷}
 $f(x)=x\sin x$ 在 $x\to+\infty$ 时无界，但它反复取很大的正值和负值，不能满足“所有足够大的 $x$ 都高于任意给定阈值”。无界只否定有限范围；趋于 $+\infty$ 还要求最终保持方向一致。
 \end{warnbox}
+
+\subsection{有限极限怎样传递有界、符号与大小关系？}
+
+有限极限不仅给出一个数值 $L$，还给出\kw{最终邻域中的结构控制}。设
+\[
+\lim_{x\to a}f(x)=L\in\mathbb R.
+\]
+
+首先，有限极限自动产生局部有界性。取 $\varepsilon=1$，则存在去心邻域使
+\[
+|f(x)-L|<1,
+\]
+于是
+\[
+|f(x)|\le |L|+1.
+\]
+所以“有有限极限 $\Rightarrow$ 局部有界”；反向当然不成立，有界振荡就是最小反例。
+
+其次，\kw{严格离开零点的极限会保号}。若 $L>0$，取 $\varepsilon=L/2$，则充分靠近 $a$ 时
+\[
+f(x)>L-\frac L2=\frac L2>0.
+\]
+若 $L<0$ 同理最终恒负。因此极限保号真正依赖的是“极限值与 $0$ 之间存在正距离”，而不是只知道 $L\ge0$。例如 $f(x)=-x^2\to0$，却在去心邻域内始终为负。
+
+\begin{warnbox}{先过存在性与共同定义域门，再谈次序传递}
+“邻域里谁大”与“极限谁大”不是同一层信息。若命题的结论中出现 $\lim f$、$\lim g$，第一步必须确认这些极限已经由题设或前面的证明保证存在；邻域内的大小关系本身不会制造收敛性。例如 $x\to0$ 时
+\[
+f(x)=2+\sin\frac1x>0=g(x),
+\]
+但 $\lim_{x\to0}f(x)$ 不存在，因此不能仅凭 $f>g$ 写出两个极限的大小关系。
+
+反向从极限值推邻域函数值时，在本册采用的函数极限约定下，“$\lim_{x\to a}f(x)$ 存在”已经包含 $f$ 在某个去心邻域内有定义；$g$ 同理。取两个去心邻域的交集即可得到共同可比较区域，$f(a)$、$g(a)$ 本身是否定义不影响这一步。
+\end{warnbox}
+
+\begin{corebox}{先抓住两个对比：严格号在两个方向上的命运不同}
+先不要急着记“三道门”，先记住下面这两个成对结论：
+
+\textbf{对比一：从极限值到邻域函数值，严格间隙可以保住严格号。}
+\[
+\boxed{\lim f=A,\ \lim g=B,\ A>B}
+\quad\Longrightarrow\quad
+\boxed{\text{充分靠近时 }f(x)>g(x)}.
+\]
+原因是 $A-B>0$ 给出了一个\kw{不会消失的正间隙}。令 $h=f-g$，则
+\[
+h(x)\to A-B>0,
+\]
+由极限保号性，充分靠近时 $h(x)>0$，也就是 $f(x)>g(x)$。
+
+例如若
+\[
+f(x)\to3,\qquad g(x)\to1,
+\]
+那么两极限之间相差 $2$。函数值即使在附近有小幅波动，也不可能无限靠近后仍跨过这条固定间隙；最终必有 $f(x)>g(x)$。
+
+\textbf{对比二：从邻域函数值到极限值，严格号可能在取极限时压成等号。}
+\[
+\boxed{\text{充分靠近时 }f(x)>g(x),\ \lim f,\lim g\text{ 都存在}}
+\quad\Longrightarrow\quad
+\boxed{\lim f\ge\lim g},
+\]
+但一般\textbf{不能}推出 $\lim f>\lim g$。
+
+最小反例是
+\[
+f(x)=x^2,\qquad g(x)=0,\qquad x\to0.
+\]
+任意 $x\ne0$ 都有 $x^2>0$，所以去心邻域里始终 $f(x)>g(x)$；但
+\[
+\lim_{x\to0}f(x)=0=\lim_{x\to0}g(x).
+\]
+也就是说，两个函数可以在每一个靠近点都严格分开，却让这段差距不断缩小并最终在极限处压到同一个值。
+
+因此可以先用一句话记住：
+\[
+\boxed{\text{极限有固定正间隙}\Rightarrow\text{邻域严格分开；}\qquad
+\text{邻域严格分开}\Rightarrow\text{极限未必严格分开}.}
+\]
+
+还有一个配套反例用于防止反向误读：若
+\[
+f(x)=x,\qquad g(x)=0,\qquad x\to0,
+\]
+则
+\[
+\lim f=\lim g=0,
+\]
+但任意双侧去心邻域内都有 $x>0$ 与 $x<0$，所以既不能由“极限相等”推出最终 $f\ge g$，也不能推出最终 $f\le g$。\kw{极限相等时没有正间隙，邻域次序通常是不确定的。}
+\end{corebox}
+
+更一般地，\textbf{先假设相关极限存在}：
+\[
+f(x)\to A,\qquad g(x)\to B.
+\]
+此时大小关系才有两条方向完全不同的命题：
+\begin{enumerate}
+  \item \textbf{极限值有严格间隙 $\Rightarrow$ 邻域最终保持严格次序。} 若 $A>B$，令 $h=f-g$，则 $h\to A-B>0$，由保号性知充分靠近时 $f(x)>g(x)$。
+  \item \textbf{邻域最终保持非严格次序 $+$ 两极限存在 $\Rightarrow$ 取极限后仍保持非严格次序。} 若充分靠近时 $f(x)\ge g(x)$，则必有 $A\ge B$。否则若 $A<B$，第一条应用于 $g-f$ 会推出充分靠近时 $g>f$，与题设矛盾。
+\end{enumerate}
+
+\begin{warnbox}{严格不等式经过极限通常会降级}
+在已经确认两极限存在的前提下，若充分靠近时 $f(x)>g(x)$，仍只能推出 $A\ge B$，不能保证 $A>B$。例如 $x\to0$ 时
+\[
+f(x)=x^2>0=g(x),
+\qquad
+\lim f=\lim g=0.
+\]
+反过来，$A=B$ 也不能决定邻域中的大小方向；$f=-x^2$、$g=0$ 就给出相反次序。要把严格性传到极限，必须保留一个不会消失的统一间隙，例如存在 $\eta>0$ 使最终 $f\ge g+\eta$。
+\end{warnbox}
+
+\subsection{极限四则运算：先有部件极限，才能无损拼装}
+
+设 $f(x)\to A$、$g(x)\to B$，其中 $A,B\in\mathbb R$。则有限极限对和、差、积封闭：
+\[
+\lim(f\pm g)=A\pm B,
+\qquad
+\lim(fg)=AB.
+\]
+当 $B\ne0$ 时，由极限保号/离零性可知 $g$ 在某个去心邻域内不为零，从而
+\[
+\lim\frac{f}{g}=\frac AB.
+\]
+这里“两个部件极限存在”是\kw{资格}，不是形式装饰。若一个部件极限不存在，不能机械把“$\lim$”拆进表达式。
+
+反过来，四则关系有时能用于\kw{存在性反证}。若 $\lim f$ 存在而 $\lim g$ 不存在，则 $\lim(f+g)$ 不可能存在；否则由
+\[
+g=(f+g)-f
+\]
+会推出 $g$ 也有极限，矛盾。但乘积不能照抄这个逻辑：$g$ 不收敛而 $f\to0$ 时，$fg$ 仍可能因包络压制而收敛。
+
+因此“存在 $\pm$ 不存在”在加减结构中可由可逆恒等式判断；“不存在 $\times$ 不存在”或“零 $\times$ 不存在”则必须回到具体尺度，不能靠标签运算。
+
+四则运算还有两个常用的\kw{反向存在性推论}。若商本身在相应去心邻域有定义且
+\[
+\lim\frac{f}{g}=C\in\mathbb R,
+\qquad
+\lim g=0,
+\]
+则由 $f=(f/g)g$ 得
+\[
+\lim f=0.
+\]
+反过来，若
+\[
+\lim\frac{f}{g}=C\ne0,
+\qquad
+\lim f=0,
+\]
+则 $f/g$ 最终离零，从
+\[
+g=\frac{f}{f/g}
+\]
+可得
+\[
+\lim g=0.
+\]
+这两条都来自已经合法的四则拼装，不是新的极限口诀；若商极限不存在、商在邻域中无定义，或分母极限为零却准备直接套商法则，都必须退回资格检查。
+
+\begin{corebox}{次序传递的三道门：存在性 $\to$ 方向 $\to$ 严格性}
+\[
+\boxed{\text{存在性与共同定义域}\to\text{传递方向}\to\text{严格性}}
+\]
+
+\textbf{第一道门：存在性与共同定义域。} 从邻域性质推极限结论时，必须先证明相关极限存在；从极限推邻域性质时，先取各自合法去心邻域的交集。
+
+\textbf{第二道门：方向。} 从极限到邻域，需要极限值之间存在严格间隙；从邻域到极限，在极限已经存在时只能保留次序。
+
+\textbf{第三道门：严格性。} 取极限时严格次序可能压到边界而退化成等号。于是“有没有统一正间隙”只在通过前两道门之后才是正确问题。
+\end{corebox}
 
 % ============================================================
 \section{存在性：证明要控制全部路径，否定只需制造一次冲突}
@@ -314,6 +535,20 @@ f=O(g)&\iff \frac{f}{g}\text{ 在相关邻域有界}.
 \]
 使用较弱信息可以换取速度，但不能从较弱关系反推出较强关系。
 
+\subsection{展开中心先于展开公式：真正趋零的是“相对中心的增量”}
+
+局部公式从来不是因为题面写着 $x\to0$ 就自动可用。先问\kw{被展开的内部变量趋向哪里}，再把它改写成相对该中心的小增量。
+
+例如 $x\to0$ 时
+\[
+e^{1+x+\frac12x^2}-1\to e-1\ne0,
+\]
+因此不能把整个式子套成 $e^u-1\sim u$。真正的小量是 $u=x+\frac12x^2\to0$，所以若需要研究围绕 $e$ 的变化，应写成
+\[
+e^{1+u}-e=e\bigl(e^u-1\bigr)\sim eu.
+\]
+同理，$\ln u\sim u-1$ 的资格是 $u\to1$；$e^u-1\sim u$ 的资格是 $u\to0$。\kw{展开中心错位会让后续阶数判断从第一步就失效。}
+
 \subsection{为什么乘除可替换，而加减会失真？}
 
 若 $f\sim g$，则 $f=g(1+o(1))$。在乘除结构中，这个相对误差通常仍是 $1+o(1)$，所以主部得以保留。
@@ -322,7 +557,7 @@ f=O(g)&\iff \frac{f}{g}\text{ 在相关邻域有界}.
 \[
 \sin x\sim x,
 \]
-却不能据此把 $x-\sin x$ 写成 $x-x=0$。被消掉的正是当前已知的全部主部，答案由下一阶决定。此时必须切换到 Topic03 的有限 Taylor 模型，或者使用能够保留下一阶信息的恒等变形。
+却不能据此把 $x-\sin x$ 写成 $x-x=0$。被消掉的正是当前已知的全部主部，答案由下一阶决定。此时必须切换到专题03的有限泰勒模型，或者使用能够保留下一阶信息的恒等变形。
 
 \begin{methodbox}{尺度账本}
 每次近似都记录三件事：
@@ -336,17 +571,111 @@ f=O(g)&\iff \frac{f}{g}\text{ 在相关邻域有界}.
 
 \subsection{未定式只报告“当前信息不足”}
 
-$0/0$、$\infty/\infty$、$0\cdot\infty$、$\infty-\infty$、$1^\infty$、$0^0$、$\infty^0$ 不是答案类型，而是说当前粗尺度还无法决定结果。标准化的职责是把它们转换到可比较的共同尺度：
+$0/0$、$\infty/\infty$、$0\cdot\infty$、$\infty-\infty$、$1^\infty$、$0^0$、$\infty^0$ 不是答案类型，而是说当前粗尺度还无法决定结果。它们共同表达的是：\textbf{只知道各部件各自趋向哪里，还不足以决定组合后的极限；必须继续暴露相对速度、最低非零主部或更强约束。}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{L{2.2cm}L{3.1cm}Y}
+\toprule
+\textbf{原始形态} & \textbf{先标准化成什么} & \textbf{为什么这样做}\\
+\midrule
+$0/0$ & 保持商型，先看能否约分、等价、局部展开或求导 & 两个量都趋零，关键是比较谁消失得更快\\
+$\infty/\infty$ & 提最高增长尺度、倒数化或保持商型 & 关键是比较两者增长速度，而不是把“无穷”当数相除\\
+$0\cdot\infty$ & $u/(1/v)$ 或 $v/(1/u)$ & 把乘积竞争改写为可比较的商型竞争\\
+$\infty-\infty$ & 通分、有理化、提最大项或同尺度归一 & 差的结果由两项主部是否抵消决定\\
+$1^\infty$ & 取对数：$v\ln u$ & 底数的一阶偏移与指数发散速度共同决定结果\\
+$0^0,\ \infty^0$ & 取对数：$v\ln u$ & 幂型不确定性被翻译为乘积尺度问题\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+因此“识别未定式”不是做题终点，而是一道\kw{信息需求诊断}：当前还缺的是相对尺度、下一阶主部、统一上下界，还是导数/累积提供的另一种表示？
+
+在正底数、指数趋于 $+\infty$ 的合法语境下，$0^\infty$ 通常趋于 $0$，不是未定式；若底数符号或定义域不稳定，必须先回到专题01检查对象是否合法。
+
+\subsection{标准化的四种基本变换：每一步都要知道保留了什么}
+
+\begin{enumerate}
+  \item \kw{恒等变形}：约分、通分、拆项、提公因子、三角恒等式。若在合法定义域内等价，它几乎不丢信息，优先级最高。
+  \item \kw{有理化}：把根式差
+  \[
+  \sqrt{A(x)}-\sqrt{B(x)}
+  \]
+  改写为
+  \[
+  \frac{A(x)-B(x)}{\sqrt{A(x)}+\sqrt{B(x)}}.
+  \]
+  它的价值不是“看到根式就乘共轭”，而是把隐藏在平方根里的\textbf{差尺度}暴露出来。趋于负无穷时还必须单独处理 $\sqrt{x^2}=|x|$ 的符号。
+  \item \kw{变量归一}：有限点令 $h=x-a$，无穷远可令 $t=1/x$ 或先提最高增长尺度。它把不同题面统一到 $h\to0$ 或一个明确尾部上，便于比较阶数。
+  \item \kw{取对数}：只在幂型且底数保持为正时使用。若 $y=u(x)^{v(x)}$，则
+  \[
+  \ln y=v(x)\ln u(x).
+  \]
+  先求乘积极限，再用指数连续性恢复原极限。取对数改变的是表示，不允许忽略原表达式的正值与定义域资格。
+\end{enumerate}
+
+\subsection{中值定理的差值运输接口：外层相同、输入靠近时先搬运差}
+
+若 $u(x),v(x)\to a$，且 $\Phi$ 在两者之间满足 Lagrange 中值定理资格，则对每个充分靠近且 $u(x)\ne v(x)$ 的 $x$，存在位于 $u(x)$ 与 $v(x)$ 之间的 $\xi_x$ 使
+\[
+\Phi(u(x))-\Phi(v(x))=\Phi'(\xi_x)\bigl(u(x)-v(x)\bigr).
+\]
+于是 $\xi_x\to a$；若进一步有 $\Phi'(t)\to\Phi'(a)$，便得到
+\[
+\frac{\Phi(u(x))-\Phi(v(x))}{u(x)-v(x)}\to\Phi'(a).
+\]
+这个接口的价值是把两个外层函数值的\kw{差}一次性运输成“局部变化率 $\times$ 输入差”，避免分别展开后再处理相消。中值定理本体与资格由专题04拥有；本册只使用它比较局部尺度。
+
+\subsection{方法选择的知识层判据：不是题型表，而是“需要什么信息”}
+
+极限计算的核心不是记“某类题用某招”，而是判断\textbf{当前表示缺哪一级信息}：
+
+\begin{tabularx}{\linewidth}{L{3.0cm}L{3.0cm}Y}
+\toprule
+\textbf{当前缺失的信息} & \textbf{优先接口} & \textbf{典型原因}\\
+\midrule
+统一绝对误差上界 & 夹逼/有界量乘无穷小 & 振荡本身不可控，但振幅可被压到零\\
+稳定最低阶主部 & 等价无穷小 & 乘除结构只需相对主部，不需要更高阶细节\\
+主部抵消后的下一阶 & 专题03的有限泰勒 & 加减把现有主部消掉，低精度信息已经失效\\
+商的相对变化率 & 专题04的洛必达 & 合法的 $0/0$ 或 $\infty/\infty$，且求导确实降低复杂度\\
+固定基点的一阶变化率 & 专题03的导数定义 & 差商已围绕同一基点，可直接解释成局部一阶系数\\
+离散和的连续累积极限 & 专题05的黎曼和接口 & 归一化后出现 $\frac1n f(k/n)$ 的网格累积结构\\
+收缩积分区间的局部面积 & 专题05的变限积分接口 & 区间宽度与被积函数局部高度共同决定主部\\
+\bottomrule
+\end{tabularx}
+
+\begin{corebox}{方法不会替你判断信息精度}
+等价无穷小、洛必达、泰勒都可能算出同一道题，但它们保留的信息量不同。若一阶主部已经足够，泰勒是过度展开；若一阶主部相消，等价就是信息不足；若求导后结构更坏，洛必达即使形式可用也不是好的表示。真正的停止条件是：\textbf{目标极限已由当前信息唯一决定，而且剩余误差严格低于目标尺度。}
+\end{corebox}
+
+\subsection{几类特殊结构怎样进入正确归属专题}
+
+旧题型笔记中的很多“极限方法”其实是跨专题接口，不能全部复制进专题02，但必须在这里保留路由逻辑：
 \begin{itemize}
-  \item 乘积型改写为商；
-  \item 根式差用有理化暴露被隐藏的差；
-  \item 指数型取对数，把幂的竞争转成乘积尺度；
-  \item 主部相消时升级到更高阶局部模型。
+  \item \kw{差函数与参数配阶}：先在本册判断主部是否抵消；需要具体高阶系数时转专题03的泰勒模型。
+  \item \kw{导数定义型极限}：本册负责识别“这是局部尺度问题”；固定基点差商的机制与左右导数边界归专题03。
+  \item \kw{变上限积分极限}：本册负责比较收缩速度和主导尺度；“高度 $\times$ 宽度”、莱布尼茨求导与黎曼累积本体归专题05/H-B03。
+  \item \kw{和式极限}：本册先判断是否存在统一尺度与误差压制；标准黎曼和及网格累积机制归专题05。
+  \item \kw{增长阶比较}：$\ln^k x\ll x^\alpha\ll b^x$ 属于尺度锚点；若有差分抵消、振荡或符号分支，不能仅凭增长阶结束。
 \end{itemize}
 
-在正底数、指数趋于 $+\infty$ 的合法语境下，$0^\infty$ 通常趋于 $0$，不是未定式；若底数符号或定义域不稳定，必须先回到 Topic01 检查对象是否合法。
+\subsection{离散差分接口：斯托尔茨定理}
 
-\subsection{工具的 Knowledge 接口}
+数列比值有时不是靠连续化，而是靠“\textbf{累计量的比值由相邻增量比控制}”。设 $b_n$ 严格递增且 $b_n\to+\infty$。若
+\[
+\lim_{n\to\infty}\frac{a_{n+1}-a_n}{b_{n+1}-b_n}=L
+\]
+存在（允许扩展实数意义下的无穷极限），则斯托尔茨定理给出
+\[
+\lim_{n\to\infty}\frac{a_n}{b_n}=L.
+\]
+
+它的认知作用不是“把数列极限机械改成作差”，而是把 $b_n$ 看成不断累积的尺度：每新增一单位尺度时，$a_n$ 的局部增量比若稳定，长期累计的平均比值也被锁定。特别地，当 $b_n=n$ 时，问题从 $a_n/n$ 转成相邻差 $a_{n+1}-a_n$。
+
+\begin{warnbox}{斯托尔茨不是离散版洛必达口诀}
+必须先验证分母序列严格递增并趋于 $+\infty$；差分比只是满足这些资格后的接口。分母振荡、有界或差分比本身没有稳定极限时，不能因为“分子分母都趋于无穷”就强行作差。
+\end{warnbox}
+
+\subsection{工具的知识接口}
 
 \begin{tabularx}{\linewidth}{L{2.5cm}YY}
 \toprule
@@ -355,9 +684,10 @@ $0/0$、$\infty/\infty$、$0\cdot\infty$、$\infty-\infty$、$1^\infty$、$0^0$�
 恒等变形/有理化 & 不损失信息地改变表示 & 先维护定义域与非零条件\\
 夹逼/有界量乘无穷小 & 给出统一绝对误差包络 & 需要真实上下界或有界性\\
 等价无穷小 & 提取稳定相对主部 & 加减相消时信息不足\\
-L'Hospital & 把合法商型的极限转移到导数比 & 只对满足条件的 $0/0$ 或 $\infty/\infty$；中值定理基础归 Topic04\\
-有限 Taylor & 给出指定阶主部与余项 & 局部模型归 Topic03；必须按目标阶数截断\\
-Riemann 和/变限积分 & 把离散和或收缩区间翻译成累积 & 累积对象归 Topic05\\
+洛必达 & 把合法商型的极限转移到导数比，用局部变化率比较原商 & 只对满足条件的 $0/0$ 或 $\infty/\infty$；机制与资格链归专题04，每次连续使用都必须重新验型与验资格；导数比极限不存在\textbf{不能反推}原商极限不存在\\
+有限泰勒 & 给出指定阶主部与余项 & 局部模型归专题03；必须按目标阶数截断\\
+黎曼和/变限积分 & 把离散和或收缩区间翻译成累积 & 累积对象归专题05\\
+斯托尔茨 & 用相邻增量比控制累计量比值 & 分母序列须严格递增且无界，差分比极限须存在\\
 \bottomrule
 \end{tabularx}
 
@@ -373,7 +703,7 @@ Riemann 和/变限积分 & 把离散和或收缩区间翻译成累积 & 累积�
 \]
 它包含三个资格：$f(a)$ 有定义、双侧极限存在、极限等于点值。
 
-用增量语言，令 $Delta x=x-a$，则
+用增量语言，令 $\Delta x=x-a$，则
 \[
 \Delta x\to0\quad\Longrightarrow\quad
 \Delta y=f(a+\Delta x)-f(a)\to0.
@@ -384,6 +714,42 @@ Riemann 和/变限积分 & 把离散和或收缩区间翻译成累积 & 累积�
 \forall\varepsilon>0,\ \exists\delta>0,
 \quad |x-a|<\delta\Longrightarrow |f(x)-f(a)|<\varepsilon.
 \]
+
+\subsection{单侧连续与区间连续：连续性必须服从合法输入集合}
+
+右连续与左连续分别是
+\[
+\lim_{x\to a^+}f(x)=f(a),
+\qquad
+\lim_{x\to a^-}f(x)=f(a).
+\]
+若 $a$ 是定义域内部点，则
+\[
+f\text{ 在 }a\text{ 连续}
+\iff
+f\text{ 在 }a\text{ 左连续且右连续}.
+\]
+这里的“两侧”不是形式要求，而是当前定义域确实允许的两条趋近通道。
+
+因此闭区间上的连续应写成：$f$ 在 $(a,b)$ 每一点连续，并且在左端点 $a$ 右连续、在右端点 $b$ 左连续，记为
+\[
+f\in C[a,b].
+\]
+这与前文的合法输入集合完全一致：端点没有定义域外侧的输入，不需要虚构另一侧极限。闭区间连续以后能产生哪些全局性质，由专题04负责。
+
+\subsection{连续函数保号只是“极限保号 + 点值接缝”}
+
+若 $f$ 在 $a$ 连续且 $f(a)>0$，则
+\[
+\lim_{x\to a}f(x)=f(a)>0.
+\]
+由前面的极限保号性，存在 $\delta>0$，使充分靠近 $a$ 的输入都有 $f(x)>0$；而 $x=a$ 本身又满足 $f(a)>0$，故整个小邻域内保持正号。$f(a)<0$ 同理。
+
+所以连续函数保号不需要再记成一条孤立定理：它只是
+\[
+\boxed{\text{点值有严格符号}\xrightarrow{\text{连续接缝}}\text{极限有同一严格符号}\xrightarrow{\text{极限保号}}\text{邻域最终同号}}.
+\]
+如果只知道 $f(a)=0$，这条链立即失效；连续函数可以在该点穿过零点、接触零点，也可以在两侧同号。
 
 \subsection{运算封闭性是带资格的}
 
@@ -434,6 +800,27 @@ L^+ = \lim_{x\to a^+}f(x).
 \]
 只有当外层把两者映成同一值，并且点值也接上时，跳跃才可能被隐藏。这里发生的是\kw{输出信息压缩}，不是原函数突然连续。
 
+\subsection{扩展：连续函数列的点态极限为什么可能断掉？}
+
+若每个 $f_n$ 都连续，而只知道对每个固定 $x$ 都有
+\[
+f_n(x)\to f(x),
+\]
+这只是\kw{点态收敛}：允许达到给定误差所需的 $N$ 随 $x$ 改变。不同空间点可以以完全不同的速度收敛，因此无法自动把“每个 $f_n$ 的连续控制”统一传给极限函数。
+
+例如在 $[0,1]$ 上令 $f_n(x)=x^n$。每个 $f_n$ 都连续，但点态极限为
+\[
+f(x)=\begin{cases}
+0,&0\le x<1,\\
+1,&x=1,
+\end{cases}
+\]
+在 $x=1$ 不连续。
+
+若进一步有\kw{一致收敛}，即对每个 $\varepsilon>0$ 都能找到一个与 $x$ 无关的统一 $N$，使全体 $x$ 同时满足 $|f_n(x)-f(x)|<\varepsilon$，那么连续性才会传给极限函数。因此在连续函数列的语境中：\textbf{若点态极限已经不连续，则这列函数不可能在该集合上一致收敛。}
+
+这条结论在本册只作为扩展，用来解释“连续对象逐点取极限为什么会产生间断”；一般函数列的一致收敛理论不扩入数学一核心主干。
+
 % ============================================================
 \section{递推数列：把极限放回一条离散轨道}
 % ============================================================
@@ -443,15 +830,35 @@ L^+ = \lim_{x\to a^+}f(x).
 x_{n+1}=\varphi(x_n),
 \]
 方程 $L=\varphi(L)$ 只给出\kw{可能的终点}。正确生命周期是
-\[
-\boxed{
-\text{合法初值}
-\to \text{不变区间}
-\to \text{收敛发动机}
-\to \text{极限存在}
-\to \text{连续传递}
-\to \text{不动点筛选}}
-\]
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.8cm and 0.8cm,
+  box/.style={draw=deep,rounded corners=1.8mm,minimum width=3.8cm,minimum height=1.05cm,align=center,fill=soft,font=\small,inner sep=4pt},
+  succbox/.style={draw=greenish,rounded corners=1.8mm,minimum width=3.8cm,minimum height=1.05cm,align=center,fill=white,font=\small,inner sep=4pt,thick},
+  arr/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,draw=deep},
+  warnarr/.style={-{Latex[length=2.2mm,width=1.5mm]},thick,draw=warn,densely dashed}
+]
+% 第一排：轨道准备与收敛保证
+\node[box] (init) at (0,0)    {\textbf{1. 合法初值}\\[2pt]\scriptsize 确定初值点 $x_1\in I$};
+\node[box] (inv)  at (4.8,0)  {\textbf{2. 不变区间}\\[2pt]\scriptsize 验证映射保持 $\varphi(I)\subseteq I$};
+\node[box] (eng)  at (9.6,0)  {\textbf{3. 收敛引擎}\\[2pt]\scriptsize 单调有界 / 压缩映射};
+
+% 第二排：极限确立与不动点筛选
+\node[succbox] (lim)  at (9.6,-2.3) {\textbf{\color{greenish}4. 极限确立}\\[2pt]\scriptsize 证明存在 $\lim x_n = L$};
+\node[box]     (cont) at (4.8,-2.3) {\textbf{5. 连续传递}\\[2pt]\scriptsize 传入方程 $L = \varphi(L)$};
+\node[box]     (filt) at (0,-2.3)   {\textbf{6. 不动点筛选}\\[2pt]\scriptsize 排除伪根 / 二周期};
+
+\draw[arr] (init) -- (inv);
+\draw[arr] (inv) -- (eng);
+\draw[arr] (eng) -- (lim);
+\draw[arr] (lim) -- (cont);
+\draw[arr] (cont) -- (filt);
+
+% 警示旁路：未证收敛直接设极限
+\draw[warnarr] (inv.south) -- node[fill=white,inner sep=2.5pt,font=\scriptsize\color{warn},align=center] {\textbf{致命陷阱}：未证收敛直接设极限求解\\（必要非充分：无法排除发散、二周期或多根错选）} (cont.north);
+
+\end{tikzpicture}
+\end{center}
 
 \subsection{先保证轨道存在并留在可控区域}
 
@@ -475,7 +882,7 @@ L_2=\varphi(L_1),\qquad L_1=\varphi(L_2),\qquad L_1\ne L_2
 \]
 这种二周期。反例 $x_{n+1}=1-x_n$ 说明“有唯一不动点”也不能自动排除二周期轨道。
 
-\subsection{离散母例：Newton 轨道逼近根号二}
+\subsection{离散母例：牛顿递推逼近根号二}
 
 设 $x_1>0$，
 \[
@@ -510,114 +917,139 @@ x_{n+1}-\sqrt2
 若未证明收敛，写 $L=\varphi(L)$ 只能说“任何可能的有限极限必须是不动点”。它不能排除发散、振荡、二周期，也不能决定多个不动点中轨道会到哪一个。
 \end{warnbox}
 
-\subsection{Extension：压缩与误差传播}
+\subsection{双数列均值递推：先建立夹链，再让两个轨道合流}
+
+有一类递推不是单个 $x_{n+1}=\varphi(x_n)$，而是两个量互相取均值，例如算术--几何平均型结构。此时最有用的对象不是分别猜两个极限，而是寻找一条保持的\kw{夹链}：
+\[
+b_n\le b_{n+1}\le a_{n+1}\le a_n.
+\]
+一旦这条链成立，便立即得到：$\{a_n\}$ 单调递减且有下界，$\{b_n\}$ 单调递增且有上界，所以分别存在极限
+\[
+a_n\to A,\qquad b_n\to B,
+\]
+并且始终 $B\le A$。
+
+最后才把递推关系传入极限。若递推的连续性进一步强迫 $A=B$，两条轨道便\kw{合流到同一个终点}。这比“先设两个极限再解方程”多了一步真正的存在性证明。
+
+典型地，若
+\[
+a_{n+1}=\frac{a_n+b_n}{2},\qquad
+b_{n+1}=\sqrt{a_nb_n},\qquad 0<b_1\le a_1,
+\]
+由算术--几何平均不等式
+\[
+b_n\le b_{n+1}\le a_{n+1}\le a_n,
+\]
+两列分别收敛；再令 $n\to\infty$ 得
+\[
+A=\frac{A+B}{2},
+\]
+故 $A=B$。
+
+\begin{corebox}{双轨递推的母模型}
+\[
+\boxed{\text{排序/不变量}\to\text{夹链}\to\text{一增一减}\to\text{各自收敛}\to\text{极限方程迫使合流}}
+\]
+看到“两个数互相取算术/几何/调和均值”时，先找次序是否被保持以及两条轨道是否互相夹住，而不是先做复杂通项展开。
+\end{corebox}
+
+\subsection{扩展：压缩与误差传播}
 
 若 $I$ 是完备的闭区间、$\varphi(I)\subseteq I$，且存在 $0\le q<1$ 使
 \[
 |\varphi(x)-\varphi(y)|\le q|x-y|\qquad(x,y\in I),
 \]
-则误差满足几何压缩，轨道收敛到 $I$ 内唯一不动点。这一压缩映射语言可作为递推题的强工具，但复杂动力系统与完整 Banach 理论不进入数学一主干。
+则误差满足几何压缩，轨道收敛到 $I$ 内唯一不动点。这一压缩映射语言可作为递推题的强工具，但复杂动力系统与完整巴拿赫压缩原理不进入数学一主干。
 
 % ============================================================
 \section{概念边界：真正判据、题目信号与错误后果}
 % ============================================================
 
-\begin{longtable}{L{1.95cm}@{}>{\centering\arraybackslash}p{0.35cm}@{}L{1.95cm}L{5.55cm}L{\dimexpr\linewidth-10.15cm\relax}}
+\noindent
+\begin{tabularx}{\linewidth}{L{2.1cm}>{\centering\arraybackslash}p{0.45cm}L{2.1cm}L{5.8cm}Y}
 \toprule
 \textbf{概念 A} & & \textbf{概念 B} & \textbf{为什么容易混 / 真正判据与题目信号} & \textbf{混淆后果}\\
 \midrule
 极限 & $\neq$ & 函数值 & 极限看去心邻域，函数值看点上定义；补定义、分段点和可去间断是信号。 & 直接代入，把一个点的信息当成邻域信息\\
 有限极限 & $\neq$ & 无穷大记号 & 有限极限稳定到实数；$+\infty$ 表示最终超过任意高度，是扩展发散状态。 & 把发散方向当作普通数参与四则运算\\
 有界 & $\neq$ & 收敛 & 有界只把输出关在某个范围；收敛还要求最终进入任意小的同一邻域。振荡是典型信号。 & 由有界直接宣布极限存在\\
+邻域次序 & $\neq$ & 极限次序 & 邻域内 $f\ge g$ 或 $f>g$ 只描述最终点态关系；要推出 $\lim f\ge\lim g$，必须先保证两个极限存在。反向若两极限存在且有严格间隙，先取共同去心邻域再保序。 & 跳过存在性/共同定义域，直接在函数值与极限之间搬运不等号\\
 左右极限 & $\neq$ & 双侧极限 & 双侧存在要求两侧都存在且相等；分段、绝对值、定义域边界必须拆侧。 & 漏掉单侧冲突或要求不存在的另一侧\\
 $O(g)$ & $\neq$ & $\sim g$ & $O(g)$ 只要求比值有界；等价要求比值趋于 $1$。有界振荡乘包络是典型反例。 & 把尺度上界误当稳定主部\\
 等价 & $\neq$ & 相等 & 等价只控制趋近过程中的相对误差；加减相消会暴露被丢掉的高阶项。 & 在相消结构中直接替换，得到错误零值\\
 极限候选 & $\neq$ & 极限存在 & 代入、数值观察或不动点方程只能产生候选；存在性还要控制全部路径/尾部。 & 先设极限后忘记证明收敛\\
 映射单调 & $\neq$ & 轨道单调 & 递推轨道增减看 $\varphi(x_n)-x_n$；映射单调只说明次序如何传播。 & 用 $\varphi'\ge0$ 直接证明数列递增\\
 不动点唯一 & $\neq$ & 轨道收敛 & 唯一不动点不排除发散或二周期；还需不变区间与收敛发动机。 & 解出唯一根就结束递推证明\\
-连续 & $\neq$ & 可导 & 连续只把邻域趋势接到点值；可导还要求统一的一阶局部主部，由 Topic03 拥有。 & 从连续直接推出导数存在\\
+连续 & $\neq$ & 可导 & 连续只把邻域趋势接到点值；可导还要求统一的一阶局部主部，由专题03拥有。 & 从连续直接推出导数存在\\
 点态极限 & $\neq$ & 一致极限 & 点态控制阈值可依赖空间点；一致控制要求一个阈值对全域有效。 & 把连续函数列的点态极限无条件判为连续\\
 \bottomrule
-\end{longtable}
+\end{tabularx}
 
 % ============================================================
-\section{Topic02 的问题求解协议}
+\section{最小调用接口：把学生送进正确模型即可}
 % ============================================================
 
-面对极限、连续或递推数列问题，按下列顺序维护状态：
-\[
-\boxed{
-\text{Approach}
-\to \text{Domain}
-\to \text{Existence Gate}
-\to \text{Normalize}
-\to \text{Scale Ledger}
-\to \text{Owner Call}
-\to \text{Verify}}
-\]
+本册规范正文的责任到“识别当前在处理哪一种极限机制、知道缺什么信息、知道何时转交”即停止。完整题型树、局部技巧和考场状态机由同目录《极限计算》《连续与间断》《递推数列》承担。
 
-\subsection{Step 1：Approach}
-写清对象与趋近方向：数列尾部、有限点双侧/单侧、正负无穷，还是递推轨道。不同 Approach 不能在计算中悄悄互换。
+\subsection{题目信号}
 
-\subsection{Step 2：Domain}
-检查去心邻域、端点、根式、对数、分母、复合值域和分段规则。必要时先拆左右极限。
-
-\subsection{Step 3：Existence Gate}
-先识别振荡、左右冲突、无界变号等“不存在”信号。若可以用一对路径否定，就不要进入冗长计算。
-
-\subsection{Step 4：Normalize}
-有限点令 $h=x-a$；指数型取对数；根式差有理化；递推先找不变区间。目标是暴露共同尺度，不是追求形式花哨。
-
-\subsection{Step 5：Scale Ledger}
-标记分子分母最低可能阶数，检查主部是否抵消。若当前近似精度不够，明确升级到哪一阶。
-
-\subsection{Step 6：Owner Call}
-根据结构调用夹逼、等价无穷小，或切换 Topic03/04/05 的 Taylor、L'Hospital、中值定理、Riemann 和等机制。选择理由必须是“它保留了当前所需信息”，而不是“这类题通常这么做”。
-
-\subsection{Step 7：Verify}
-至少做一项独立检查：
+看到下列对象时，应回到本册：
 \begin{itemize}
-  \item 左右极限、不同趋近数列是否一致；
-  \item 结果的符号、数量级是否与原式匹配；
-  \item 等价代换是否发生加减相消；
-  \item 连续题是否同时核对点值；
-  \item 递推题是否真的证明了轨道合法、有界/单调或误差趋零。
+  \item $x\to a^\pm$、$x\to a$、$x\to\pm\infty$ 或 $n\to\infty$；
+  \item 分段、绝对值、取整、振荡、定义域端点等可能改变合法输入集合或路径一致性的结构；
+  \item $0/0$、$\infty/\infty$ 等未定式，或根式差、指数差、幂型等把相对尺度隐藏起来的表示；
+  \item 连续/间断问题中的左右极限与点值接缝；
+  \item 递推数列中“候选不动点”与“轨道是否真的收敛”的区分。
+\end{itemize}
+
+\subsection{第一观察层}
+
+进入本册后只先确认三件事：
+\begin{enumerate}
+  \item \textbf{允许怎样趋近？} 定义域是否迫使拆左右、单侧或子列？
+  \item \textbf{极限是否已经有存在性资格？} 是否能立即找到路径冲突、振荡或无界变号？
+  \item \textbf{当前信息精度够不够？} 最低阶主部是否已经唯一决定答案，还是加减相消后必须升级到下一阶？
+\end{enumerate}
+
+这三问给出机制入口，但不规定一条所有题都必须执行到底的算法。
+
+\subsection{退出与转交边界}
+
+\begin{itemize}
+  \item 只需相对主部时，可在本册调用等价、夹逼等尺度机制；主部相消并需要具体高阶系数时转专题03的有限泰勒；
+  \item 差值适合用中值点运输，或商型适合洛必达时，转专题04检查相应定理资格；
+  \item 出现黎曼和、收缩积分区间或变上限积分时，转专题05；
+  \item 固定基点差商已经成为导数定义时，转专题03；
+  \item 连续接缝已经确认后，不在本册继续越级推可导；递推极限已证存在后，才允许用不动点方程筛选终点。
 \end{itemize}
 
 % ============================================================
-\section{高频失败路径：第一次偏离发生在哪里？}
+\section{认知边界与失败路径}
 % ============================================================
 
-\begin{tabularx}{\linewidth}{L{3.0cm}YY}
+\begin{tabularx}{\linewidth}{L{3.2cm}YY}
 \toprule
-\textbf{可观察行为} & \textbf{第一次偏离} & \textbf{修正动作}\\
+\textbf{错误直觉} & \textbf{为什么失效} & \textbf{应回到的机制}\\
 \midrule
-分段点只代入一侧 & Approach/Domain 未拆分 & 先写左右极限两个入口\\
-看到有界就判收敛 & Existence Gate 把范围控制当唯一状态 & 查振荡或构造两列\\
-等价代换后出现 $0$ & Scale Ledger 未识别主部抵消 & 恢复原式并升级精度\\
-L'Hospital 连续求导 & Owner Call 未逐次重检资格与收益 & 每次先验型别，再比较复杂度\\
-间断分类只看 $f(a)$ & Stitch 层覆盖了邻域层 & 先算左右极限，最后看点值\\
-复合函数只看外层坏点 & 未追踪内层实际输出路径 & 先求内层极限/值域，再看外层\\
-递推题先写 $L=\varphi(L)$ & 候选识别早于存在性证明 & 回到不变区间与收敛发动机\\
-奇偶子列各自收敛就结束 & 未排除二周期 & 解 $L_2=\varphi(L_1),L_1=\varphi(L_2)$\\
+分段点只代入某一侧 & 双侧极限要求所有合法路径一致，点值又属于更后的接缝层 & 合法输入 / 路径一致\\
+有界就等于收敛 & 有界只限制范围，不能提供唯一稳定状态 & 夹逼、归结原则或冲突子列\\
+邻域内 $f>g$ 就直接搬到极限 & 邻域次序本身不制造两个极限的存在性，严格号取极限还可能退化 & 极限存在性 + 次序传递边界\\
+等价替换后把差式变成 $0$ & 当前最低阶信息已被相消，答案由被丢掉的下一阶决定 & 尺度账本；必要时转专题03\\
+连续使用洛必达 & 每次得到的新商都是新的极限问题，且定理是单向充分路径 & 专题04的资格链\\
+只看 $f(a)$ 判断连续 & 点值不能代表去心邻域行为 & 左右极限 + 点值接缝\\
+复合函数只看外层是否连续 & 内层实际输出路径可能触及不同分支，外层也可能压掉信息 & 复合极限的路径追踪\\
+递推题先解 $L=\varphi(L)$ & 不动点方程只筛候选终点，不证明轨道到达 & 不变区间 + 收敛发动机\\
+奇偶子列各自收敛就结束 & 两个子列极限可能构成二周期而不相等 & 二步映射与二周期排除\\
 \bottomrule
 \end{tabularx}
 
 % ============================================================
-\section{传统章节与 Source Corpus 映射}
+\section{考纲覆盖与归属边界}
 % ============================================================
 
-\begin{tabularx}{\linewidth}{L{3.2cm}L{3.4cm}Y}
-\toprule
-\textbf{旧 Source} & \textbf{进入本册的主干} & \textbf{分流到其他 Owner / Rules}\\
-\midrule
-I-01 数列计算 & 数列极限、递推轨道、不变区间、单调有界、奇偶子列与二周期边界 & Stolz 的考场调用进入 Rules；完整压缩映射与临界动力学仅作 Extension\\
-I-02 函数极限 & 邻域定义、左右极限、归结原则、夹逼、主导尺度、连续/间断主干 & Taylor/导数归 Topic03；L'Hospital 理论归 Topic04 接口；变限积分/Riemann 和归 Topic05；工具选择进入 Rules\\
-I-03 函数连续 & 点值接缝、单侧连续、间断分类、运算与复合边界、修复/压制反例 & 闭区间存在性归 Topic04；原函数与变限积分资格归 H-B03；函数列一致收敛只作 Extension\\
-\bottomrule
-\end{tabularx}
+按考纲查漏，本册覆盖：数列与函数极限、左右极限、极限性质与运算、无穷小/无穷大及阶比较、七类未定式判别与标准化、斯托尔茨差分比接口、夹逼与单调有界准则、连续与间断、初等函数连续性。
 
-按考纲查漏，本册覆盖：数列与函数极限、左右极限、极限性质与运算、无穷小/无穷大及阶比较、夹逼与单调有界准则、连续与间断、初等函数连续性。两个重要极限及具体计算工具在 Rules 中保留调用入口；闭区间连续函数定理在 Topic04 展开。
+具体计算工具不在本册重复拥有：有限泰勒与导数定义归专题03，洛必达及其中值定理资格归专题04，黎曼和与变限积分归专题05，级数尾部归专题10。本册只解释“当前缺哪一级信息、为什么应转交”；具体题面触发、第一动作与退出条件由同目录训练 Markdown 维护。来源材料的逐项吸收关系由证据层的来源差异记录维护，不在规范正文维护第二份迁移台账。
 
 % ============================================================
 \section{一页压缩：忘掉公式后怎样重建？}
@@ -637,9 +1069,10 @@ I-03 函数连续 & 点值接缝、单侧连续、间断分类、运算与复合
 \to \text{与点值接缝}}
 \]
 
-\subsection{三个生成原则}
+\subsection{四个生成原则}
 \begin{enumerate}
-  \item \kw{存在性原则}：证明要控制全部允许输入；否定只需制造一对合法冲突。
+  \item \kw{存在性原则}：证明要控制全部允许输入；否定只需制造一对合法冲突。任何结论一旦出现极限，先问“这个极限是谁保证存在的？”
+  \item \kw{次序原则}：邻域与极限之间传递不等式时，先过存在性/共同定义域门；极限的严格间隙可以保留到邻域，而邻域的严格次序取极限时可能降级为非严格次序。
   \item \kw{尺度原则}：近似是在丢信息；主部抵消时必须升级精度，不能继续使用已失效的等价。
   \item \kw{接缝原则}：极限、点值、连续是三层信息；改变单点值只能修复可去间断，不能修复邻域结构。
 \end{enumerate}
@@ -647,12 +1080,13 @@ I-03 函数连续 & 点值接缝、单侧连续、间断分类、运算与复合
 \subsection{重建问题}
 \begin{enumerate}
   \item 当前允许怎样趋近？定义域是否迫使我拆左右或只看单侧？
+  \item 结论中出现的每个极限，题设或前面的推理是否已经保证它存在？比较两个函数时，是否已经取得共同合法去心邻域？
   \item 我是在产生候选值，还是已经证明所有路径一致？
   \item 当前近似保留到哪一阶？加减后主部是否抵消？
   \item 外层运算保留了哪些信息，又压掉了哪些差异？
   \item 连续题是否核对了左右极限与点值三者？
   \item 递推题是否先证明轨道存在并收敛，再使用不动点方程？
-  \item 当前机制属于 Topic02，还是应该切换到 Topic03/04/05/10？
+  \item 当前机制属于专题02，还是应该切换到专题03/04/05/10？
 \end{enumerate}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
@@ -684,11 +1118,23 @@ I-03 函数连续 & 点值接缝、单侧连续、间断分类、运算与复合
 \sin h&\sim h,& \tan h&\sim h,&
 \arcsin h&\sim h,& \arctan h&\sim h,\\
 e^h-1&\sim h,& \ln(1+h)&\sim h,&
-a^h-1&\sim h\ln a,& {(1+h)}^\alpha-1&\sim \alpha h,\\
+\ln\!\left(h+\sqrt{1+h^2}\right)&\sim h,& a^h-1&\sim h\ln a,\\
+{(1+h)}^\alpha-1&\sim \alpha h,&
 1-\cos h&\sim \frac{h^2}{2},&
+1-(\cos h)^\alpha&\sim \frac{\alpha}{2}h^2,&
 \sqrt[m]{1+h}-1&\sim \frac{h}{m}.&&
 \end{aligned}
 \]
+其中 $a>0$、$a\ne1$，$\alpha\ne0$ 为固定常数，$m\in\mathbb N_+$；所有幂、根式与对数仍必须满足相应实数定义域资格。
+更一般地，若 $u\to1$，则
+\[
+\ln u\sim u-1.
+\]
+若 $\alpha(x)\to0$、$\alpha(x)\beta(x)\to0$，并且 $1+\alpha(x)$ 最终为正、$\alpha(x)\beta(x)$ 在相应去心邻域内非零，则
+\[
+\bigl[1+\alpha(x)\bigr]^{\beta(x)}-1\sim \alpha(x)\beta(x).
+\]
+它来自先取对数：$\beta\ln(1+\alpha)\sim\alpha\beta$，再用 $e^t-1\sim t$；因此这条结论的资格不是可省略的装饰。
 
 主部发生加减抵消时，常见下一阶锚点为
 \[
@@ -697,7 +1143,7 @@ h-\sin h\sim\frac{h^3}{6},\qquad
 \arcsin h-h\sim\frac{h^3}{6},\qquad
 h-\arctan h\sim\frac{h^3}{3}.
 \]
-这些高阶主部的生成与余项控制调用 Topic03 的有限 Taylor 模型；本册只拥有它们作为尺度比较结果的语义。
+这些高阶主部的生成与余项控制调用专题03的有限泰勒模型；本册只拥有它们作为尺度比较结果的语义。
 
 \subsection{无穷远增长阶}
 
@@ -709,6 +1155,12 @@ h-\arctan h\sim\frac{h^3}{3}.
 
 因此多项式压过对数，指数压过任意固定次幂。这个序列只比较主导尺度；若表达式含正负抵消、振荡或定义域分支，仍须返回正文的存在性与尺度账本。
 
-\noindent\textbf{Source note.} 本册由归档笔记 I-01《数列计算》、I-02《函数极限理论与计算方法》、I-03《函数连续》做 Source Diff / Owner Diff 后重组。静态旧稿提供候选模型与反例；正文状态仍待使用者审阅，做题动作仍待陌生题验证。
+数列题还常用更长的增长阶梯。固定 $m,p>0$、$a>1$ 时，
+\[
+(\ln n)^m\ll n^p\ll a^n\ll n!\ll n^n.
+\]
+它同样只比较主导增长速度；阶乘可优先通过相邻项比值理解，$n^n$ 可通过取对数转成 $n\ln n$ 理解，不能把增长阶梯替代具体的符号、抵消和存在性审计。
+
+\noindent\textbf{来源说明。} 本册由归档笔记 I-01《数列计算》、I-02《函数极限理论与计算方法》、I-03《函数连续》做来源差异与归属差异核对后重组。详细迁移台账保留在 Evidence 层；正文状态仍待使用者审阅，做题动作仍待陌生题验证。
 
 \end{document}

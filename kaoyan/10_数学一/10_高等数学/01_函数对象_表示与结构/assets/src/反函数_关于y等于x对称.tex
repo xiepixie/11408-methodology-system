@@ -1,0 +1,69 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+\begin{axis}[
+    width=10.5cm,
+    height=10.5cm,
+    axis equal image,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\footnotesize},
+    every axis label/.style={color=themefg},
+    xmin=-2.0, xmax=3.1,
+    ymin=-2.0, ymax=3.1,
+    xtick={-1,0,1,2,3},
+    ytick={-1,0,1,2,3},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+]
+% 用指数/对数这一对互逆函数承担“关于 y=x 反射”的一般解释责任。
+% 不使用 x^3 与立方根，避免把逆映射镜像偷带成“奇函数/原点中心对称”的特殊情形。
+\addplot[themecurve, line width=1.8pt, domain=-1.7:1.05, samples=220] {exp(x)};
+\node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south east] at (axis cs:0.92,2.58) {\footnotesize $y=e^x$};
+
+\addplot[themealert, line width=1.8pt, domain=0.18:2.86, samples=220] {ln(x)};
+\node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=north west] at (axis cs:2.45,0.95) {\footnotesize $y=\ln x$};
+
+% 对称轴 y=x；横纵数值范围一致，保持真实 45° 反射几何。
+\addplot[dashed, themegray, thick, domain=-1.75:2.9] {x};
+\node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south west] at (axis cs:2.55,2.55) {\footnotesize $y=x$};
+
+% 两组非对称点对，只展示坐标交换，不额外制造原点奇偶或固定点结构。
+% P=(0.6,e^0.6)≈(0.6,1.822)，P'=(e^0.6,0.6)。
+\addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(0.6,1.82212)};
+\node[text=themecurve, fill=themebg, inner sep=0.8pt, above left] at (axis cs:0.55,1.87) {\footnotesize $P(a,b)$};
+\addplot[only marks, mark=*, mark size=2.5pt, fill=themealert, draw=themefg] coordinates {(1.82212,0.6)};
+\node[text=themealert, fill=themebg, inner sep=0.8pt, below right] at (axis cs:1.87,0.55) {\footnotesize $P'(b,a)$};
+\draw[themegray, line width=1pt, dotted] (axis cs:0.6,1.82212) -- (axis cs:1.82212,0.6);
+\addplot[only marks, mark=x, mark size=3pt, thick, themegray] coordinates {(1.21106,1.21106)};
+
+% Q=(-1.1,e^-1.1)≈(-1.1,0.333)，Q'=(e^-1.1,-1.1)。
+\addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(-1.1,0.33287)};
+\node[text=themecurve, fill=themebg, inner sep=0.8pt, above left] at (axis cs:-1.05,0.38) {\footnotesize $Q(c,d)$};
+\addplot[only marks, mark=*, mark size=2.5pt, fill=themealert, draw=themefg] coordinates {(0.33287,-1.1)};
+\node[text=themealert, fill=themebg, inner sep=0.8pt, below right] at (axis cs:0.38,-1.05) {\footnotesize $Q'(d,c)$};
+\draw[themegray, line width=1pt, dotted] (axis cs:-1.1,0.33287) -- (axis cs:0.33287,-1.1);
+\addplot[only marks, mark=x, mark size=3pt, thick, themegray] coordinates {(-0.38357,-0.38357)};
+
+\node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north west] at (axis cs:-2.1,2.35) {\footnotesize \textbf{坐标互换}：$f(a)=b\iff f^{-1}(b)=a$};
+\end{axis}
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

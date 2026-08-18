@@ -1,0 +1,47 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[
+    color=themefg, text=themefg,
+    setbox/.style={draw=themefg, line width=1.1pt, rounded corners=6pt, minimum width=3.4cm, minimum height=1.4cm, font=\small\bfseries, align=center},
+    flowarr/.style={->, line width=1.3pt, -{Stealth[length=5pt]}},
+    corresp/.style={<->, dashed, line width=1pt, color=themegray, -{Stealth[length=4pt]}}
+]
+
+  % Title
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, font=\bfseries\normalsize, anchor=south] at (4.2, 3.2) {反函数集合接口映射模型：定义域与值域角色对调};
+
+  % Row 1: Original Function f: D_f -> R_f
+  \node[setbox, draw=themecurve] (Df) at (0.5, 1.4) {原定义域 $D_f$\\\footnotesize (原函数输入集合)};
+  \node[setbox, draw=themecurve] (Rf) at (7.9, 1.4) {原值域 $R_f$\\\footnotesize (原函数输出集合)};
+  \draw[flowarr, color=themecurve] (Df) -- node[above=2pt, font=\small\bfseries] {原映射 $y = f(x)$} (Rf);
+
+  % Row 2: Inverse Function f^{-1}: D_{f^{-1}} -> R_{f^{-1}}
+  \node[setbox, draw=themealert] (Dinv) at (7.9, -1.4) {反函数定义域 $D_{f^{-1}}$\\\footnotesize ($= R_f$)};
+  \node[setbox, draw=themealert] (Rinv) at (0.5, -1.4) {反函数值域 $R_{f^{-1}}$\\\footnotesize ($= D_f$)};
+  \draw[flowarr, color=themealert] (Dinv) -- node[below=2pt, font=\small\bfseries] {反映射 $x = f^{-1}(y)$} (Rinv);
+
+  % Vertical equivalence dual arrows
+  \draw[corresp] (Df.south) -- node[left=2pt, font=\footnotesize] {全等交换} (Rinv.north);
+  \draw[corresp] (Rf.south) -- node[right=2pt, font=\footnotesize] {全等交换} (Dinv.north);
+
+  % Bottom Summary Box
+  \node[font=\small\bfseries, color=themefg, inner sep=0.8pt, anchor=north] at (4.2, -2.6) {核心接口法则：$D_{f^{-1}} = R_f,\qquad R_{f^{-1}} = D_f$};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

@@ -8,7 +8,7 @@ build_math1_archive.py
 特性：
 - 统一标识体系：profile_id="math1", exam_id="math1-<year>"
 - 纯净题面：100% 剥离答案与解析
-- 全矢量化：100% 图件直接生成 Semantic SVG (Dark #30362d + Light #fafaf7)
+- 图形分流：legacy direct-SVG 显式生成；TikZ-backed 图由 assets/src/*.tex + Infra 编译链拥有
 """
 
 import os
@@ -285,7 +285,7 @@ YEAR_SVG_MAP = {
     2009: [("q01", "assets/q01_f_graph.svg"), ("q02", "assets/q02_opt_a.svg"), ("q03", "assets/q03_opt_b.svg"), ("q03_dup", "assets/q03_opt_b.svg"), ("q04", "assets/q04_opt_c.svg"), ("q05", "assets/q05_opt_d.svg")],
     2015: [("q01", "assets/q01_d2f_inflection.svg")],
     2017: [("q01", "assets/q01_speed_curves.svg")],
-    2024: [("q01", "assets/q01_three_planes.svg")]
+    2024: [("q05", "assets/q05_three_planes_pencil.svg")]
 }
 
 def process_single_year(year: int):
@@ -515,7 +515,7 @@ def main():
     scope.add_argument("--year", type=int, choices=ALL_YEARS, help="补建一个缺失年份；已有 Canonical 年份自动跳过")
     scope.add_argument("--all", action="store_true", help="检查并补建 1987-2026 全部年份；已有 Canonical 年份自动跳过")
     parser.add_argument("--refresh-index", action="store_true", help="重新生成 archive.json 与年度索引；保留手工维护的 README")
-    parser.add_argument("--regenerate-svg", action="store_true", help="显式重生成全库 Semantic SVG；可能覆盖现有派生图件")
+    parser.add_argument("--regenerate-svg", action="store_true", help="显式重生成 legacy direct-SVG；不覆盖 TikZ-backed Canonical Asset")
     args = parser.parse_args()
 
     if not any((args.year, args.all, args.refresh_index, args.regenerate_svg)):
@@ -533,7 +533,7 @@ def main():
 
     if args.regenerate_svg:
         import generate_math1_svgs
-        generate_math1_svgs.main()
+        generate_math1_svgs.main(["--all"])
 
     if years or args.refresh_index:
         build_master_indexes()

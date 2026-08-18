@@ -707,7 +707,7 @@ LBN\xrightarrow{index}PBN.
 但如果索引块已缓存，次数会下降。因此任何 I/O 计算都先写：\kw{inode 是否在内存？索引块是否缓存？目录块是否缓存？页缓存 是否命中？}
 
 \begin{eng}[现代 ext4：extent 不是“12+1+1+1”的简单延长]
-经典 direct/single/double/triple 模型非常适合 408 计算题；现代 ext4 可使用 extent tree，把“连续逻辑范围 $\to$ 连续物理范围”作为映射单位。Linux ext4 文档明确区分 inode 的 extent 格式等结构。工程边界用于理解“现代文件系统为何减少大文件映射元数据”，但不替代经典计算模型。
+经典 direct/single/double/triple mixed-indexing 机制非常适合 408 中的索引计算；现代 ext4 可使用 extent tree，把“连续逻辑范围 $\to$ 连续物理范围”作为映射单位。Linux ext4 文档明确区分 inode 的 extent 格式等结构。工程边界用于理解“现代文件系统为何减少大文件映射元数据”，但不替代题设采用的经典 mixed-indexing 机制。
 \end{eng}
 
 \section{Part IV：空间从哪里来——Global Layout 与 Free Space}
@@ -795,15 +795,6 @@ Journal（扩展） & 多结构更新如何恢复？ & transaction records / com
 \end{tikzpicture}
 \captionof{figure}{open() 的核心不是读数据，而是把“名字”转成“运行时访问关系”。}
 \end{center}
-
-\subsection{open 题型的状态跟踪}
-\begin{enumerate}
-  \item 路径从哪个起点解析？绝对、cwd 还是 dirfd？
-  \item 每个 component 是否命中 dcache？如果题目按磁盘 I/O 计数，需要哪些目录块/inode？
-  \item 最终对象权限是否允许请求模式？
-  \item 是 independent open 还是已有 fd 的 dup/fork 共享？
-  \item 返回的 fd 是否按题设采用“最小可用非负整数”？
-\end{enumerate}
 
 \section{第 13 章：一次 read(fd, buf, n) 的文件系统路径}
 
@@ -956,119 +947,39 @@ ext4 使用 jbd2 journal 保护文件系统免于元数据更新中途崩溃造�
 \end{itemize}
 文件系统可以在 crash 后结构一致，但丢失最近尚未达到持久边界的数据。因此 \code{write()} 返回、后台 writeback、journal commit、\code{fsync()} 完成、设备 cache flush 是不同层次的时间点。
 
-\section{Part VII：408 计算与解题工具箱}
+\section{第 18 章：概念边界}
 
-\section{第 18 章：经典计算模型}
-
-\subsection{模型 A：最大文件大小}
-步骤：
-\begin{enumerate}
-  \item 求索引块地址项数 $K=B/a$；
-  \item 分别计算 direct、single、double、triple 能覆盖的数据块数；
-  \item 相加后乘块大小；
-  \item 检查题目是否还有 inode 本身大小、最大文件长度字段、编号位宽等额外限制。
-\end{enumerate}
-
-\subsection{模型 B：判断目标字节属于哪一级索引}
-先：
-\[
-LBN=\left\lfloor\frac{x}{B}\right\rfloor.
-\]
-再与区间比较：
-\[
-[0,d),\quad[d,d+sK),\quad[d+sK,d+sK+qK^2),\ldots
-\]
-确定索引级别，然后计算对应索引项序号。
-
-\subsection{模型 C：磁盘 I/O 次数}
-任何次数题先写假设表：
-\begin{center}
-\small
-\renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.26\linewidth} X}
+\begingroup
+\footnotesize
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{>{\bfseries}p{0.15\linewidth} >{\centering\arraybackslash}p{0.025\linewidth} >{\bfseries}p{0.15\linewidth} p{0.31\linewidth} p{0.25\linewidth}}
 \toprule
-对象 & 题设状态 \\
+对象 A & $\neq$ & 对象 B & 真正区别与题目信号 & 混淆后果\\
 \midrule
-目录块/dentry & 在内存？需要逐级读盘？ \\
-inode & 已在内存？ \\
-间接索引块 & 已缓存？ \\
-数据页/页缓存 & hit 还是 miss？ \\
-FAT & 是否假设常驻内存？ \\
-写回 & 题目只算逻辑读取，还是连 metadata/writeback 都算？ \\
-\bottomrule
-\end{tabularx}
-\end{center}
-不写这些前提就直接报一个 I/O 次数，通常是不严谨的。
-
-\subsection{模型 D：路径查找 I/O}
-不要机械说 \code{/a/b/c} 就一定 3 次或 6 次。路径解析可能涉及每一级目录 inode、目录数据块以及目标 inode；缓存与题设会极大改变次数。正确方法是画访问序列，再按“哪些对象已在内存”删除对应磁盘 I/O。
-
-\section{第 19 章：高频辨析表}
-\begin{center}
-\small
-\renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.23\linewidth} X X}
+\endfirsthead
 \toprule
-容易混淆 & 错误心智模型 & 正确判断 \\
+对象 A & $\neq$ & 对象 B & 真正区别与题目信号 & 混淆后果\\
 \midrule
-inode vs filename & inode 里面存文件名 & 名字属于目录项；inode 表示对象元数据 \\
-directory entry vs dentry & 两个完全同义 & 前者可指磁盘目录记录；Linux dentry 是内存 VFS 对象 \\
-fd vs inode & fd 就是文件 & fd 是进程句柄，先指向 OFD \\
-OFD vs inode & 同文件只存在一个 OFD & 每次独立 open 可产生独立 OFD，共享同 inode \\
-link count vs open ref & nlink=0 立刻释放数据 & 仍有打开引用时内容继续存活 \\
-file offset vs PBN & offset/B 就是磁盘块 & 先得到 LBN，再经 block mapping \\
-页缓存 vs block map & 先求 PBN 才能查缓存 & buffered file cache 更自然按 file mapping + page index 组织 \\
-FS block vs sector & 文件系统块就是设备最小原子写 & FS block、sector、atomic write unit 是不同概念 \\
-write return vs durable & write 返回就永久落盘 & buffered write、writeback、commit、durability 分层 \\
-classic inode vs ext4 & ext4 就固定 12+1+1+1 & 408 经典模型保留；现代 ext4 常用 extents \\
+\endhead
+filename & $\neq$ & inode / FCB & 名字属于目录命名关系；inode/FCB 表示持久对象的身份与元数据。 & 把 rename/link/unlink 错写成直接修改对象身份。\\
+directory entry & $\neq$ & dentry & 前者可指持久目录记录；Linux dentry 是 VFS 的内存命名缓存对象。 & 把教材磁盘结构与工程内存对象混成一层。\\
+fd & $\neq$ & inode & fd 是进程句柄，通常先引用打开文件描述；inode 是持久文件对象。 & 无法解释同一 inode 上多个独立 open 的不同 offset。\\
+OFD & $\neq$ & inode & OFD 保存一次打开实例的 offset/flags 等运行时状态；多个 OFD 可以共享同一 inode。 & 把独立 open、dup、fork 的共享关系判错。\\
+link count & $\neq$ & open reference & 前者统计持久命名边；后者反映运行时打开引用。 & 误以为 $nlink=0$ 时数据必然立即释放。\\
+file offset & $\neq$ & PBN & offset 先定位 file page/LBN，再经文件映射结构得到存储位置。 & 把逻辑文件位置直接当成设备块号。\\
+页缓存 & $\neq$ & block mapping & 页缓存按文件对象与页索引保存内容副本；block mapping 在 miss/后端访问时解析存储位置。 & 无条件先求 PBN，错误增加底层 I/O。\\
+FS block & $\neq$ & sector / atomic write unit & 文件系统分配单位、设备扇区和设备原子写保证不是同一层概念。 & 错判空间利用率、I/O 粒度或 crash 原子性。\\
+\code{write()} 返回 & $\neq$ & durable & 接口返回、后台 writeback、journal commit、\code{fsync()} 和设备稳定介质属于不同时间边界。 & 把“内核已接受”误写成“断电后必然存在”。\\
+经典 mixed inode & $\neq$ & ext4 extent & 前者是 408 的经典索引模型；现代 ext4 常使用 extent tree 表示连续范围。 & 用现代实现细节替换题设经典模型，或反过来把经典结构冒充现代事实。\\
 \bottomrule
-\end{tabularx}
-\end{center}
+\end{longtable}
+\endgroup
 
-\section{第 20 章：文件系统十四问——解题检查表}
-\begin{method}[遇到任何文件系统题，按顺序扫描]
-\begin{enumerate}
-  \item 输入给的是 pathname 还是 fd？
-  \item 当前操作的是名字（namespace）还是已经打开的对象？
-  \item pathname 从 root、cwd 还是 dirfd 开始？
-  \item 题目中的“目录项”是持久 entry 还是内存 dentry？
-  \item fd 指向哪个 OFD？是否与别的 fd 共享？
-  \item 当前 file offset 在哪里保存，怎样变化？
-  \item byte offset 属于哪个 LBN / file page index？
-  \item 页缓存 是否命中？
-  \item 若需要存储访问，LBN 怎样映射到 block？
-  \item 使用连续、链接/FAT、索引还是混合索引？索引块是否缓存？
-  \item 是否需要分配新 inode/block？空闲空间由什么结构管理？
-  \item 这次操作会修改哪些 metadata 与 data？
-  \item 如果 crash 发生在任意两次持久写之间，状态是否合法？
-  \item 最终题目问的是逻辑状态、生命周期、空间、I/O 次数还是持久性？
-\end{enumerate}
-\end{method}
+\section{第 19 章：最小调用接口}
 
-\section{第 21 章：五道综合题，把整册重新跑一遍}
-\subsection*{综合题 1：一个名字的一生}
-\[
-\texttt{/home/x/a.txt}\arr\text{component walk}\arr\text{dentry/directory lookup}\arr\text{inode/object}.
-\]
-训练：目录、路径、VFS、mount、link。
+遇到文件系统问题时，先判当前对象属于 \kw{Name、Object、Open State、Data Mapping 还是 Persistent Protocol}。Canonical 负责解释这些对象怎样存在、引用和变化；固定十四问、路径/打开实例状态追踪与 `unlink` 变式进入 \texttt{路径与文件对象.md}，mixed indexing、字节定位与 I/O 次数进入 \texttt{文件索引与IO计算.md}，crash point、fsck/journaling 与持久边界进入 \texttt{崩溃一致性.md}。
 
-\subsection*{综合题 2：一次 open() 的一生}
-\[
-Path\arr Object\arr OFD\arr fd.
-\]
-训练：VFS、fd、offset、independent open/fork/dup。
-
-\subsection*{综合题 3：一次 read() 的文件系统路径}
-\[
-fd\arr OFD\arr(file,offset)\arr PageCache\arr BlockMapping\arr I/O~System.
-\]
-训练：引用链、offset、缓存、索引计算与专题边界。
-
-\subsection*{综合题 4：unlink 一个仍被打开的文件}
-训练：Name $\neq$ Object、链接计数、打开引用与最终回收。
-
-\subsection*{综合题 5：create/write 过程中突然 crash}
-训练：bitmap、inode、directory、data 多结构更新，崩溃点分析，fsck/journaling。
+第一观察点始终是：\kw{当前操作改变的是哪一层状态？} 若问题继续进入设备 request、DMA、interrupt 或 block/wakeup，则停止在本册展开并转交 OS-05 / OS-I01。
 
 \begin{corebox}[三条核心结论]
 文件系统最值得记住的不是某个 inode 字段，而是三句话：

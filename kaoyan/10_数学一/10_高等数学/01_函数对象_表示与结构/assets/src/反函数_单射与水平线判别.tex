@@ -1,0 +1,104 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% Left Subplot: Injective (Single intersection)
+\begin{axis}[
+    name=axleft,
+    width=7.5cm,
+    height=7.2cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\small},
+    every axis label/.style={color=themefg},
+    xmin=-2.4, xmax=2.5,
+    ymin=-2.4, ymax=2.6,
+    xtick={-2,-1,0,1,2},
+    ytick={-2,-1,0,1,2},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={at={(0.5,1.08)},anchor=south,color=themefg,font=\bfseries\small},
+    title={单射：水平线至多一交点},
+]
+  % Curve y = x^3/2
+  \addplot[themecurve, line width=2.2pt, domain=-1.65:1.65, samples=200] {0.5*x^3};
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south west] at (axis cs:1.45, 1.85) {\small $y=\frac{1}{2}x^3$};
+
+  % Horizontal line y = 1.0 -> x = cbrt(2) ~ 1.2599
+  \draw[dashed, themegray, thick] (axis cs:-2.2,1.0) -- (axis cs:2.2,1.0);
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south east] at (axis cs:-1.2, 1.05) {\small $y=y_0$};
+
+  % Intersection point (1.2599, 1.0)
+  \addplot[only marks, mark=*, mark size=2.8pt, fill=themecurve, draw=themefg] coordinates {(1.25992, 1.0)};
+  \draw[dotted, themegray, thick] (axis cs:1.25992, 1.0) -- (axis cs:1.25992, 0);
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, below] at (axis cs:1.25992, -0.05) {\small $x_0$};
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south east] at (axis cs:1.05, 1.15) {\small $(x_0, y_0)$ 唯一原像};
+\end{axis}
+
+% Left subcaption outside axis
+\node[font=\small\bfseries, color=themecurve, anchor=north] at ($(axleft.south)-(0, 0.45cm)$) {结论：任取 $y_0$，原像至多一个 $\implies f$ 单射；$f:D\to f(D)$ 存在逆映射};
+
+% Right Subplot: Non-injective (Multiple intersections)
+\begin{axis}[
+    at={($(axleft.east)+(2.4cm,0)$)},
+    anchor=west,
+    name=axright,
+    width=7.5cm,
+    height=7.2cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\small},
+    every axis label/.style={color=themefg},
+    xmin=-2.4, xmax=2.5,
+    ymin=-0.6, ymax=3.6,
+    xtick={-2,-1,0,1,2},
+    ytick={0,1,2,3},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={at={(0.5,1.08)},anchor=south,color=themefg,font=\bfseries\small},
+    title={非单射：水平线存在多交点},
+]
+  % Curve y = x^2
+  \addplot[themealert, line width=2.2pt, domain=-1.75:1.75, samples=200] {x^2};
+  \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=south east] at (axis cs:1.85, 2.7) {\small $y=x^2$};
+
+  % Horizontal line y = 1.44 -> x = +-1.2
+  \draw[dashed, themegray, thick] (axis cs:-2.2,1.44) -- (axis cs:2.2,1.44);
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south east] at (axis cs:-1.4, 1.48) {\small $y=y_0$};
+
+  % Intersection points (-1.2, 1.44) and (1.2, 1.44)
+  \addplot[only marks, mark=*, mark size=2.8pt, fill=themealert, draw=themefg] coordinates {(-1.2, 1.44) (1.2, 1.44)};
+  
+  \draw[dotted, themegray, thick] (axis cs:-1.2, 1.44) -- (axis cs:-1.2, 0);
+  \draw[dotted, themegray, thick] (axis cs:1.2, 1.44) -- (axis cs:1.2, 0);
+  
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, below] at (axis cs:-1.2, -0.05) {\small $x_1$};
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, below] at (axis cs:1.2, -0.05) {\small $x_2$};
+  \node[text=themealert, fill=themebg, inner sep=0.8pt, above] at (axis cs:0, 2.1) {\small 两个原像：$x_1\ne x_2,\ f(x_1)=f(x_2)=y_0$};
+\end{axis}
+
+% Right subcaption outside axis
+\node[font=\small\bfseries, color=themealert, anchor=north] at ($(axright.south)-(0, 0.45cm)$) {结论：存在 $y_0$ 有至少两个原像 $\implies f$ 非单射};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

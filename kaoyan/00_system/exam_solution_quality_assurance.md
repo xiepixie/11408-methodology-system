@@ -50,9 +50,9 @@
 
 ## 3. 固定结构：同类信息永远出现在同一位置
 
-### 3.1 Q1～Q40 单项选择题
+### 3.1 单项选择题
 
-一级标题固定且顺序固定：
+题号范围由 Exam Profile / 年度 `exam.json` 决定。一级标题固定且顺序固定：
 
 ```text
 模型锚点
@@ -65,9 +65,23 @@
 
 不得把 `选项判断` 改成“逐项判断”“其他选项为什么不对”等平行一级标题；需要展开时放在 `选项判断` 内部。
 
-### 3.2 Q41～Q47 综合应用题
+### 3.2 填空题
 
-一级标题固定且顺序固定：
+题号范围由 Exam Profile / 年度 `exam.json` 决定。一级标题固定且顺序固定：
+
+```text
+模型锚点
+-> 解题链
+-> 校验
+-> 压缩
+-> 易错边界
+```
+
+填空题必须明确最终填写内容；不增加虚假的 `选项判断`，也不机械复制综合题的 `问题表征 / 关键决策`。高推理风险填空题可以在 `解题链` 内用更低层级展开。
+
+### 3.3 解答题 / 综合应用题
+
+题号范围由 Exam Profile / 年度 `exam.json` 决定。一级标题固定且顺序固定：
 
 ```text
 模型锚点
@@ -88,14 +102,14 @@
 ```yaml
 ---
 type: exam-solution
-exam_id: 408-YYYY
-question_id: 408-YYYY-QNN
+exam_id: <exam>-YYYY
+question_id: <exam>-YYYY-QNN
 question_number: NN
 subject: ...
 status: model-grounded-v1
 source_exam: ../YYYY 年全国硕士研究生招生考试.md
 legacy_reference: ../qNN_*.md
-answer: A   # 仅 Q1~Q40
+answer: A   # 仅在题型具有可稳定机器比较的答案时按 Profile / 年度合同要求
 ---
 ```
 
@@ -331,7 +345,7 @@ Canonical Source fidelity
 ### 质量门 A｜源题与答案正确性
 
 - 题面事实只来自 Canonical Exam Source；
-- Q1～Q40 `answer` 与年度索引一致；
+- 客观题或其他可稳定机器比较的题型，其 `answer` 与年度答案索引一致；
 - 综合题小问、单位、代码合同完整；
 - Legacy 只用于交叉检查。
 
@@ -379,9 +393,9 @@ Canonical Source fidelity
 机器可以硬检查：
 
 - partial 阶段已有题解的题级格式/路由/链接事实；
-- 整年完成态的 47 题 Coverage；
+- 整年完成态由 Exam Profile / 年度 `exam.json` 定义的完整 Coverage；
 - Frontmatter 必填字段；
-- Q1～Q40 answer；
+- Profile / 年度合同要求的可机器比较答案；
 - H2 完整、唯一、顺序一致；
 - `Model Owner / Topic / Bridge / Rules` 至少有一个显式锚点，且 `题目信号 / 第一动作` 存在；
 - `source_exam / legacy_reference` 目标存在；
@@ -415,7 +429,7 @@ Candidate Rule 是否已经跨年重复到值得 Promotion Review？
 一个年度只有同时满足下面条件才可写“完成”：
 
 ```text
-47/47 Coverage
+Profile-defined Full Coverage
 + Answer Consistency
 + Fixed Format
 + Model-Grounded

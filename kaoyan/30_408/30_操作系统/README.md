@@ -9,20 +9,34 @@
 
 操作系统研究：怎样在并发、资源有限和硬件异步事件存在的条件下，为程序提供受保护、可组合、可管理的执行环境。
 
-统一推演镜头：
+本 Atlas 选择下面的状态表示作为统一观察接口：
 
-```text
-State
--> Transition
--> Bad State
--> Safety / Liveness
--> Minimal Mechanism
--> Tradeoff
-```
+$$
+S:=
+(\text{Objects},\text{Relations},\text{Resource Metadata},\text{Queues}).
+$$
+
+它不是声称所有 OS 实现都只保存这四类字段，而是要求分析时至少明确：内核管理哪些对象，它们之间有哪些引用/映射/所有权关系，资源元数据由谁维护，哪些执行实体在什么队列中等待。
+
+若事件 $e_t$ 在当前机制 $M$ 与策略 $P$ 下触发状态变化，可写成
+
+$$
+S_{t+1}=\delta(S_t,e_t;M,P).
+$$
+
+因此真正的状态迁移必须写清触发事件，而不能只画两个状态之间的无标签箭头。Safety 可以用合法状态谓词表示：若当前状态安全且本次迁移合法，应保持
+
+$$
+\operatorname{Safe}(S_t)\land\operatorname{Legal}(S_t,e_t)
+\Longrightarrow
+\operatorname{Safe}(S_{t+1}).
+$$
+
+Liveness 与 Safety 不同：它通常要求在调度、公平性、资源最终可获得等额外条件下，某个等待中的目标**最终会发生**；因此不能把 Liveness 简化成普通状态不变量。
+
+统一推演时依次问：当前状态是什么；什么事件有资格改变它；若不加控制会出现什么 Bad State；要保护的是哪项 Safety 或 Liveness 性质；什么最小机制足以满足性质；该机制付出什么 Trade-off。这里是设计/诊断顺序，不是学科本体的因果链。
 
 本 README 直接拥有 Subject Atlas 地图。
-
-OS 状态坐标压缩为 `S = (Objects, Relations, Queues)`：先列内核管理的对象、引用/映射关系和等待队列，再用 `Event + Mechanism + Policy` 推演新状态。任何转换都必须说明触发事件，并分别检查 Safety / Liveness、不变量与成本。
 
 OS 的五项上位职责是 Control、Virtualization、Coordination、Protection 与 Persistence。它们只是跨 Topic 的导航坐标：控制权进入进程/调度，协调进入调度/并发/I/O，保护进入权限与 VM，持久化进入文件系统；不据此新增第五册之外的平行机制 Topic。
 

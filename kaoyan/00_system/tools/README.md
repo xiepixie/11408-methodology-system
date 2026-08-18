@@ -11,7 +11,7 @@
 | Source Reconstructor | `scrape_408_exam_archive.py` | 必须显式 `--year` / `--all`；已有年度默认 skip，覆盖需 `--force` |
 | Source Reconstructor | `scrape_math1_exam_archive.py` | 必须显式 `--year` / `--historical` / `--all`；已有 Canonical 默认 skip，覆盖需 `--force` |
 | Archive Builder | `build_math1_archive.py` | 只补缺或刷新机器索引；已有 Canonical 年度正文和手工 README 默认保留 |
-| Derived Asset Generator | `generate_math1_svgs.py` | 显式执行即代表允许重生成 Math1 Semantic SVG；不得由普通索引刷新隐式触发 |
+| Derived Asset Generator | `generate_math1_svgs.py` | 必须显式 `--all` 才允许重生成 legacy direct-SVG；`--help` / 无写入确认不得触发生成；TikZ-backed Canonical Asset 不归本脚本覆盖 |
 
 ## Steady-State Invariants
 
@@ -20,7 +20,7 @@
 3. **Explicit Upstream Route**：当前抓取入口由 scraper 顶层 `BASE_URL` 显式声明：408 使用 `https://www.csgraduates.com/study_methods/408quiz`，数学一使用 `https://www.csgraduates.com/study_methods/math/math1`；早年数学卷仍按脚本中的 `math_old/<year>/1/` 特例处理。上游站点改路由时必须同步更新测试，不允许靠未定义变量或隐式拼接兜底。
 4. **Explicit Mutation**：会写仓库的脚本不能在“无参数”时偷偷选择某一年或全库作为目标。
 5. **Canonical Protection**：已有精校 Canonical Source 默认不可被批处理脚本覆盖；确需重建必须显式 `--force`，并先确认 Source 依据。
-6. **Derived ≠ Source**：SVG、索引、solutions 等派生资产可以重生成，但不能反向成为题面或 Handbook 的知识 Owner。Math1 Semantic SVG 的实现唯一由 `generate_math1_svgs.py` 拥有，`build_math1_archive.py` 只显式委托，不复制主题/渲染实现。
+6. **Derived ≠ Source**：SVG、索引、solutions 等派生资产可以重生成，但不能反向成为题面或 Handbook 的知识 Owner。Math1 图形按资产形态分流：仍为 legacy direct-SVG 的图由 `generate_math1_svgs.py` 拥有；已经建立 `assets/src/*.tex` 的 TikZ-backed 图由该 TikZ Source 拥有几何语义，并统一交给 `infra/scripts/compile_tikz_to_svg.py` 编译。`build_math1_archive.py` 只维护年度资产路由，不复制几何/渲染实现，也不得让 direct-SVG 生成器覆盖 TikZ-backed Canonical Asset。
 7. **Machine Failure = Non-zero Exit**：验证器打印 ERROR 后必须非零退出，供 Agent/CI 可靠判定。
 8. **No Hidden Cleanup**：普通检查不得删除旧文件、PDF 或 aux；清理必须属于显式、可解释的维护动作。
 
@@ -43,8 +43,11 @@ python3 kaoyan/00_system/tools/scrape_math1_exam_archive.py --year 2026 --force
 python3 kaoyan/00_system/tools/build_math1_archive.py --all
 python3 kaoyan/00_system/tools/build_math1_archive.py --refresh-index
 
-# Derived SVG 全库重生成必须显式授权
+# legacy direct-SVG 全库重生成必须显式授权；不会覆盖 TikZ-backed Canonical Asset
 python3 kaoyan/00_system/tools/build_math1_archive.py --regenerate-svg
+
+# 也可直接调用底层生成器，但必须显式 --all；--help 只查看说明、不写文件
+python3 kaoyan/00_system/tools/generate_math1_svgs.py --all
 ```
 
 执行真题 Source 重建前仍必须遵守上层 [`../exam_source_agent_prompt.md`](../exam_source_agent_prompt.md) 与 [`../exam_source_conversion_spec.md`](../exam_source_conversion_spec.md)；工具不能替代 Source/Logic Review。

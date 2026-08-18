@@ -5,21 +5,35 @@
 
 ## 1. 学科母问题
 
-数据结构研究：面对某种数据关系与 workload，怎样选择表示并维护必要不变量，使关键操作以可接受的代价完成。
+数据结构研究：给定要表达的数据对象与逻辑关系、允许的操作契约以及实际 workload，怎样选择表示与算法，并维护必要不变量，使这些操作以可接受的成本完成。
 
-```text
-Workload
--> Logical Relation
--> Required Operations
--> Representation
--> Invariant
--> Algorithm
--> Cost Vector
-```
+本 Atlas 把一个数据结构设计问题写成六类对象：
 
-不存在脱离 workload 的“最好数据结构”。
+$$
+\mathcal M_{\mathrm{DS}}
+:=
+(\mathcal S,\mathcal O,W,R,I,C),
+$$
 
-贯穿母例：若任务是持续插入并反复取得/删除最大值，目标操作只要求极值，不要求全序。Heap 用完全二叉树的紧凑表示和父子偏序作为不变量，使 `FindMax = O(1)`，插入与删除极值通过上滤/下滤在 `O(log n)` 内恢复合法状态。具体机制归 DS05；Atlas 只用它说明 `Workload -> Representation -> Invariant -> Cost` 怎样运行。
+其中 $\mathcal S$ 是抽象状态/逻辑对象，$\mathcal O$ 是允许的操作集合，$W$ 描述这些操作在实际任务中的频率或分布，$R$ 是物理表示，$I$ 描述表示的合法状态，$C$ 是操作成本向量。逻辑关系和操作语义先由问题/ADT 给定；workload 不生成逻辑关系，而是决定哪些操作成本更值得优化。
+
+若操作 $o\in\mathcal O$ 在表示状态 $s$ 上由算法 $A_o$ 实现，则正确实现至少要满足：在前置条件成立时，操作结果满足 ADT 的后置条件，并恢复表示不变量。可压成
+
+$$
+I(s)\land\operatorname{Pre}_o(s)
+\Longrightarrow
+I(A_o(s))\land\operatorname{Post}_o(s,A_o(s)).
+$$
+
+不同表示都正确时，再依据 workload 比较成本。例如给操作权重 $w(o)$，可比较
+
+$$
+\sum_{o\in\mathcal O}w(o)C_R(o),
+$$
+
+或题目指定的 worst-case / space / I/O 等成本坐标。因此不存在脱离操作契约与 workload 的“最好数据结构”。
+
+贯穿母例：若任务是持续插入并反复取得/删除最大值，ADT 只要求维护集合并支持极值操作，不要求全序。Heap 选择完全二叉树的紧凑表示，并把父子偏序作为合法性不变量；因此根结点直接给出最大值，插入和删除极值后只需沿一条根—叶路径恢复不变量。具体复杂度证明归 DS05；Atlas 这里只说明“操作契约 + workload 决定优化目标，表示 + 不变量决定可实现的成本结构”。
 
 ## 2. Atlas Foundation
 
@@ -39,15 +53,22 @@ Workload
 
 ### 基础概念的完整地基
 
-外部资料中的“数据”层次应先与“结构”层次分开。数据是可被计算机识别、存储和加工的符号总称；数据对象是性质相同的数据元素集合；数据元素是通常作为整体处理的基本单位（记录/结点）；数据项是构成数据元素的不可分割最小单位。`数据对象 ⊆ 数据` 是集合包含，数据元素是数据对象的成员，数据项则是整体的组成部分，三种关系不能混写成同一种集合符号。
+外部资料中的“数据”层次应先与“结构”层次分开。教材常把数据对象、数据元素、数据项作为描述粒度不同的术语：数据对象由若干数据元素构成，数据元素又可由若干数据项构成。这里不把这些自然语言层级强写成同一种集合包含关系；真正进入数据结构模型以后，先明确元素集合与元素间关系。
 
-一个完整的数据结构有三个要素：
+可把逻辑结构最低限度写成关系结构
 
-1. **逻辑结构**：元素之间要表达的关系；
-2. **存储结构**：值与关系如何落到机器存储；
-3. **数据运算**：对该关系允许做什么，以及这些运算如何实现。
+$$
+L:=(D,\mathcal R),
+$$
 
-逻辑结构按直接前驱/后继的数量可分为集合、线性结构、树形结构和图状结构。栈、队列和串仍是线性结构：前两者是访问运算受限，串是元素类型受限；数组是线性表的多维推广，维数不等于非线性关系；广义表是允许元素为子表的线性推广。
+其中 $D$ 是数据元素集合，$\mathcal R$ 是题目要求表达的一个或多个关系。完整的数据结构还必须给出：
+
+1. **逻辑结构** $L$：元素之间是什么关系；
+2. **操作契约** $\mathcal O$：允许查询或改变什么，以及前置/后置条件；
+3. **存储表示** $R$：如何在机器中编码元素与关系；
+4. **实现算法**：怎样在 $R$ 上实现 $\mathcal O$ 并保持不变量。
+
+教材常按关系形态把逻辑结构分为集合型、线性、树形和图状：线性结构除端点外具有唯一直接前驱和直接后继；树形结构表达层次化的一对多关系；图状结构允许更一般的多对多关系；集合型不额外规定元素间次序关系。栈和队列的底层逻辑关系仍是线性的，区别主要来自允许的访问操作；串还额外限定元素类型与字符串操作语义。
 
 四种基本存储方法分别把关系交给不同机制表达：
 
@@ -62,7 +83,7 @@ Workload
 
 ### ADT、数据类型与实现
 
-数据类型是值集合及其操作；抽象数据类型（ADT）是面向应用定义的数据对象、逻辑关系和基本操作的数学模型。ADT 只写“做什么”，不写数组、指针或内存布局，从而把运算定义与运算实现隔离。一个 ADT 操作至少应标出初始条件和操作结果；会改变对象的参数用引用/指针语义表达，不修改对象的查询参数保持只读。顺序表、链表、树和哈希表可以实现同一个 ADT，但它们对同一操作的成本向量不同。
+数据类型可以抽象为一个值域及定义在其上的操作。抽象数据类型（Abstract Data Type, ADT）进一步把**抽象状态、允许操作及其语义契约**作为公开接口，而隐藏具体数组、指针或内存布局。对操作 $o$，至少应明确 $\operatorname{Pre}_o$ 与 $\operatorname{Post}_o$；实现层再决定如何修改内部状态。顺序表、链表、树或哈希结构可以服务不同 ADT，也可能为同一抽象接口提供不同表示；是否可互换取决于操作语义是否一致，而成本向量通常不同。
 
 ```text
 ADT OrderedList {
@@ -102,17 +123,7 @@ ADT OrderedList {
 
 数据结构的核心机制最终必须落实为可执行的状态转移。每个 Topic 的 Canonical 深度正文除定义、推导、图示和例题外，还应包含与核心机制对应的代码；代码必须能反向解释本册的对象、表示、不变量、边界和成本，而不是只展示语言 API。
 
-Topic 的代码交付遵循同一契约：
-
-```text
-Operation Contract
--> State Fields
--> Core Transition
--> Invariant Repair
--> Boundary Branches
--> Complexity
--> Executable Tests
-```
+Topic 的代码交付同时覆盖六项：Operation Contract、State Fields、Core Transition、Invariant Repair、Boundary Branches、Complexity 与 Executable Tests。这里是实现审查清单，不把这些字段写成因果链。
 
 - Canonical `.tex` 直接讲解并引用关键代码段；
 - 同目录 `code/` 保存可编译、可测试的完整实现与最小断言测试，作为正文的伴随实现，不成为第二知识 Owner；
@@ -189,25 +200,10 @@ Bridge 只解释接口；Tree/Graph/Heap/Union-Find 本体仍由各 Topic Own。
 
 - [DS-I01｜从 Workload 到数据结构选择](60_综合专题/DS-I01_从Workload到数据结构选择/README.md)
 
-```text
-Workload
--> Required Operations
--> Candidate Structures
--> Invariants
--> Cost Vector
--> Choice
-```
+Integration 的控制顺序是：先明确 Required Operations 与 workload；枚举 Candidate Structures；检查各自需要维护的不变量；在统一成本口径下比较 Cost Vector；最后作 Choice。这个顺序是设计协议，不是逻辑蕴含。
 
 ## 7. Control Adapter
 
-```text
-Relation
--> Workload
--> Representation
--> Operation
--> Invariant
--> Boundary
--> Cost
-```
+做题时依次检查：Relation、Operation Contract、Workload、Representation、Invariant / Boundary、Cost。这里是 Control Adapter 的推荐检查顺序。
 
 Rules：[数据结构做题规则](90_做题规则/README.md)。

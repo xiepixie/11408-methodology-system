@@ -1,0 +1,65 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+\begin{axis}[
+    name=mainax,
+    width=13.0cm,
+    height=7.2cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\small},
+    every axis label/.style={color=themefg},
+    xmin=-3.8, xmax=4.2,
+    ymin=-2.2, ymax=2.4,
+    xtick={-3.14159, -1.5708, 0, 1.5708, 3.14159},
+    xticklabels={$-\pi$, $-\frac{\pi}{2}$, $0$, $\frac{\pi}{2}$, $\pi$},
+    ytick={-1.5, 0, 1.5},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={at={(0.5,1.08)},anchor=south,color=themefg,font=\bfseries\normalsize},
+    title={反例：奇性 + 周期性 $\not\Rightarrow$ 指定平移后的反号关系（以 $f(x)=\sin x+\sin 2x$ 为例）},
+]
+
+  % Curve 1: Original f(x) = sin x + sin 2x (Blue solid)
+  \addplot[themecurve, line width=2pt, domain=-3.5:3.5, samples=200] {sin(deg(x)) + sin(deg(2*x))};
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south west] at (axis cs:1.2, 1.5) {\small 原函数 $y = f(x)$};
+
+  % Curve 2: Shifted by pi: f(x+pi) = -sin x + sin 2x (themegray dashed)
+  \addplot[themegray, line width=1.5pt, dashed, domain=-3.5:3.5, samples=200] {-sin(deg(x)) + sin(deg(2*x))};
+  \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south east] at (axis cs:-1.2, 1.5) {\small 平移 $\pi$：$y = f(x+\pi)$};
+
+  % Curve 3: Negated -f(x) = -sin x - sin 2x (red dotted)
+  \addplot[themealert, line width=1.8pt, dotted, domain=-3.5:3.5, samples=200] {-sin(deg(x)) - sin(deg(2*x))};
+  \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=north east] at (axis cs:-1.2, -1.5) {\small 严格反号：$y = -f(x)$};
+
+  % 在 x=pi/4 处给出真正的差异点：f(x+pi)=1-sqrt(2)/2，而 -f(x)=-1-sqrt(2)/2。
+  \addplot[only marks, mark=*, mark size=2.5pt, fill=themegray, draw=themefg] coordinates {(0.7854, 0.2929)};
+  \addplot[only marks, mark=*, mark size=2.5pt, fill=themealert, draw=themefg] coordinates {(0.7854, -1.7071)};
+  \draw[themegray, dotted, line width=1pt] (axis cs:0.7854,0.2929) -- (axis cs:0.7854,-1.7071);
+  \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=west] at (axis cs:1.15, -0.7) {\small $x=\frac{\pi}{4}$ 时两者不等};
+
+\end{axis}
+
+% Bottom caption
+\node[font=\small\bfseries, color=themefg, anchor=north] at ($(mainax.south)-(0, 0.55cm)$) {核心认知：$\sin 2x$ 在平移 $\pi$ 后符号保持不变，因此整体不满足平移 $\pi$ 后反号};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

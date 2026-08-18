@@ -14,6 +14,12 @@
 - **Uses**：VM/I-O Bridge 的 Page Cache；I/O Topic 的 request/driver/completion；进程 Topic 的 fd 引用交接。
 - **Stop Boundary**：`read/write` 形成 I/O request 后停止，不重讲 DMA、interrupt、block/wakeup 或 page-replacement policy。
 
+## 训练导航
+
+- [路径与文件对象](路径与文件对象.md)：训练 pathname / inode / OFD / fd / offset、open/dup/fork/unlink 与引用生命周期，把旧十四问中 namespace/open-state 部分迁出 Canonical。
+- [文件索引与 I/O 计算](文件索引与IO计算.md)：调用 Canonical 的 mixed indexing 与 block mapping 公式，训练最大文件、字节定位、缓存假设和 I/O 次数，不在 `.tex` 重复维护计算模板。
+- [崩溃一致性](崩溃一致性.md)：训练多结构持久写、crash point、fsck、journal/commit 与 `write`/`fsync` 持久边界。
+
 ## Read Next
 
 进程与打开文件引用见 [Process × File Reference](../60_科内桥梁/OS-B03_Process与FileReference/README.md)，完整读路径见 [OS-I01](../70_综合专题/OS-I01_BlockingRead/README.md)。

@@ -150,7 +150,7 @@ $$\boxed{Object \rightarrow Representation \rightarrow AllowedTransform \rightar
 
 ## 5. 第四原则：任何抽象模型都必须"落地"
 
-严禁只写 $A \to B \to C$ 然后默认读者理解。任何第一次出现的英文术语、箭头、符号、流程、母模型，都必须完成下面五步：
+严禁只画一串没有关系类型的 $A\to B\to C$ 然后默认读者理解。任何第一次出现的英文术语、箭头、符号、流程、母模型，都必须完成下面五步：
 
 ### Step 1：Plain-language Meaning
 
@@ -158,7 +158,7 @@ $$\boxed{Object \rightarrow Representation \rightarrow AllowedTransform \rightar
 
 ### Step 2：Why this order?
 
-解释为什么是 $A \to B$ 而不是 $B \to A$。箭头究竟表示：时间顺序？因果生成？信息流？映射？解题检查顺序？状态转换？必须说清楚。
+先判断 $A$ 与 $B$ 的关系类型。若是逻辑推导，写 $A\Rightarrow B$；若是状态变化，写 $S\xrightarrow{e}S'$；若是映射，写 $x\mapsto f(x)$；若只是阅读或检查顺序，直接用编号列表。不能让一个裸箭头同时承担这些语义。
 
 ### Step 3：Chapter Mapping
 
@@ -166,15 +166,15 @@ $$\boxed{Object \rightarrow Representation \rightarrow AllowedTransform \rightar
 
 ### Step 4：Worked Example
 
-至少用一个足够简单的具体例子，把整个模型完整走一遍。不是只举名词，而是真的 $A \to B \to C$ 跑一次。
+至少用一个足够简单的具体例子，把整个模型完整运行一次。不是只举名词，而是逐项展示对象、关系类型、条件和结果。
 
 ### Step 5：Problem-solving Call
 
 说明做题时什么时候应该调用这条模型？题目给什么信号时，它成为你的第一观察方式？
 
-因此我们的固定契约是：
+这里的“调用”只要求给出**最小接口**：让学习者知道当前问题应该回到哪个模型观察。不要因此在 Handbook 里继续展开整套题型树、所有变式、速算技巧和长控制流程。若这些内容对训练有价值，应进入同目录按内容命名的训练 Markdown，由 README 导航；训练文档再把母题、局部规则、技巧与代表题放在一起。
 
-$$\boxed{AbstractModel \rightarrow Meaning \rightarrow ChapterMapping \rightarrow WorkedExample \rightarrow ProblemAction}$$
+因此任何抽象模型都必须同时具备五项信息：`Abstract Model / Meaning / Chapter Mapping / Worked Example / Problem Action`。这是**覆盖契约**，不是逻辑蕴含链。
 
 **缺任何一环，都不能算真正完成。**
 
@@ -185,7 +185,7 @@ $$\boxed{AbstractModel \rightarrow Meaning \rightarrow ChapterMapping \rightarro
 | 结论类型 | 最低证据要求 | 不能省略的边界 |
 |---|---|---|
 | 定义、恒等式、基本运算 | 从定义或公理写出关键等式变形；至少展示首步和收尾 | 定义域、存在条件、符号方向 |
-| 本册主干定理/公式 | `前提 → 关键推导或计算链 → 结论`；省略技术细节时必须给出证明骨架 | 假设、参数范围、适用对象、失败反例 |
+| 本册主干定理/公式 | 写清前提，并用等式变形、`$\Rightarrow$` / `$\Leftrightarrow$` 或明确调用的定理得到结论；省略技术细节时必须给出证明骨架 | 假设、参数范围、适用对象、失败反例 |
 | 调用外部定理的结论 | 说清定理名称/版本、当前对象如何逐项满足前提，以及它输出什么 | 哪个前提一旦缺失就不能套用 |
 | 经验性策略或近似 | 给出机制解释、误差/代价来源和一个反例或失效区间 | 不能把经验规律伪装成必然定理 |
 
@@ -198,19 +198,44 @@ $$\boxed{AbstractModel \rightarrow Meaning \rightarrow ChapterMapping \rightarro
 
 因此，“结论证据”可以是完整证明、压缩推导或可检查的证明骨架，但不能只有“记住公式”。证明与心智模型承担不同职责：证明保证结论可靠，模型保证学生知道何时生成和调用它。
 
+### 5.2 正式定义与推理先行；直觉负责解释“为什么”
+
+心智模型既要可理解，也必须先把对象、条件和逻辑资格钉死。**定义、定理和主干推理不得由比喻代替，也不得先用比喻偷偷加入正式定义没有的性质。**
+
+对于需要进入稳定 Handbook 的核心概念，默认顺序是：
+
+1. **正式对象 / 定义**：使用本学科的专业术语、量词、集合、函数、状态或等式明确“它是什么”；
+2. **成立条件**：写清定义域、参数范围、前提、合法变换或事件资格；
+3. **推理 / 定理**：用等式、逻辑蕴含、等价关系或明确标注的状态迁移说明“由什么推出什么”；
+4. **结论与边界**：明确可以推出什么，以及不能反推什么；
+5. **直觉解释**：在正式关系已经成立以后，再用几何图像、最小数值例子、物理意义或类比解释“为什么这样定义、为什么这个结论合理”；
+6. **微扰校准**：只改变一个条件，检查结论怎样变化，用最小反例阻断过度直觉。
+
+对数学正文，可压成：
+
+$$
+\text{Definition/Assumption}
+\Longrightarrow
+\text{Derivation/Theorem}
+\Longrightarrow
+\text{Consequence},
+$$
+
+随后再给 Intuition / Why。这里的 $\Longrightarrow$ 只表示逻辑推导，不表示阅读顺序。
+
+直觉仍然重要，但它的职责是**解释和预测**，不是定义和证明。进入例题或探索场景时，可以在正式对象已经明确后先做方向、符号、数量级或候选位置的直觉预判，再用正式推导验证；若预判失败，以定义和推理链为准。
+
+> **禁止三种退化：**只有术语却没有严格定义；只有严谨推导却无法解释“为什么”；只有形象类比却说不清对象、条件、量词和可推出的结论。
+
 ---
 
 ## 6. 第五原则：机制必须从问题中长出来
 
-专题手册最忌讳"定义 → 性质 → 公式 → 例题"。更好的机制推导结构是：
+专题手册最忌讳按“定义、性质、公式、例题”机械堆叠。更好的机制生成叙事应依次回答四件事：**Problem、Naive Solution、Failure、Mechanism**。这里是解释顺序，不自动构成数学蕴含；只有能够由前提严格推出的步骤才使用 `$\Rightarrow$`。
 
-$$\boxed{Problem \rightarrow NaiveSolution \rightarrow Failure \rightarrow Mechanism}$$
+例如解释为什么需要滑动窗口时，应分别说明：目标是可靠传输；Stop-and-Wait 在可靠性上可行；当 RTT 相对发送时间很大时，它使链路长期空闲；若希望提高链路利用率，就需要允许多个 packet 同时在途；窗口机制为“允许多少数据在途”提供状态约束。这里每一步的因果或设计关系都应在文字中说清，而不是用一串裸箭头代替论证。
 
-例如为什么需要滑动窗口？不是直接讲窗口，而是：
-
-$$\text{需要可靠传输} \;\to\; \text{Stop-and-Wait 可以可靠} \;\to\; \text{但 RTT 很长导致链路空闲} \;\to\; \text{需要多个 packet 同时在途} \;\to\; \text{于是产生 Window}$$
-
-这种写法让机制变成**必要结果**，而不是教材规定。
+这种写法让机制从已确认的问题和约束中长出来，而不是看起来像教材规定。
 
 ---
 
@@ -222,7 +247,7 @@ $$\text{需要可靠传输} \;\to\; \text{Stop-and-Wait 可以可靠} \;\to\; \t
 - 什么事件改变它？有哪些分支？
 - 失败后怎样处理？最后怎样结束？
 
-$$S_0 \xrightarrow{E_1} S_1 \xrightarrow{E_2} S_2 \to \cdots$$
+$$S_0 \xrightarrow{E_1} S_1 \xrightarrow{E_2} S_2 \xrightarrow{E_3} \cdots$$
 
 需要明确：Object、State、Event、Transition、Branch、End condition。
 
@@ -234,15 +259,13 @@ $$S_0 \xrightarrow{E_1} S_1 \xrightarrow{E_2} S_2 \to \cdots$$
 
 这是前期手册最重要的教训之一。只写 $A \neq B$ 几乎没有教学价值。
 
-完整的概念边界必须回答：
-
-$$\boxed{A \neq B \rightarrow WhyConfused \rightarrow TrueCriterion \rightarrow QuestionSignal \rightarrow FailureIfConfused}$$
+完整的概念边界必须同时回答五件事：$A\neq B$、Why Confused、True Criterion、Question Signal、Failure If Confused。它们是诊断字段，不是一条逻辑蕴含链。
 
 排版标准为 **5 列表格**（`≠` 符号独占居中列）：
 
 | 概念 A | ≠ | 概念 B | 真正区别与题目信号 | 混淆后果 |
 |---|:---:|---|---|---|
-| Routing | ≠ | Forwarding | Routing：表怎样生成（Dijkstra/RIP/OSPF）；Forwarding：已有表时当前 packet 去哪里（LPM）。给现成转发表做 LPM → Forwarding | 混淆后会把控制平面和数据平面混为一谈 |
+| Routing | ≠ | Forwarding | Routing：表怎样生成（Dijkstra/RIP/OSPF）；Forwarding：已有表时当前 packet 去哪里（LPM）。若题目给现成转发表并要求做 LPM，应判断为 Forwarding | 混淆后会把控制平面和数据平面混为一谈 |
 
 概念边界最终必须改变做题行为，否则就是术语表。
 
@@ -336,50 +359,39 @@ $$\boxed{MainText = Understanding} \qquad \boxed{Appendix = Coverage}$$
 2. 结构足够丰富；
 3. 能覆盖多个章节；
 4. 后面可以不断升级；
-5. **能暴露至少一个常见错误**——好的母例在某个环节天然地诱导出一个典型错误路径，让学习者在这个具体场景中经历"差点走错 → 发现边界 → 修正理解"的过程。
+5. **能暴露至少一个可验证的失败路径或边界**——好的母例应允许学习者在具体场景中看见“某个看似合理的路径为什么失效、哪条条件阻止它”。只有已有题目、错题或教学证据支持时，才称该路径为“常见错误”或“典型错误”；没有证据时只写反例或候选失败路径。
 
 如果母例只能展示"正确做法"，它就退化成了普通例题。
 
 ---
 
-## 15. 第十四原则：每一章都必须回答"怎么用"
+## 15. 第十四原则：每个重要模型都必须提供最小调用接口
 
-知识不能停在理解层。每一个重要模型至少应该有：
+知识不能停在理解层，但 **Canonical Handbook 的调用责任只到“把学习者送进正确模型”**，不能继续扩成第二套训练控制系统。每一个重要模型至少应让读者知道：
 
 ### 题目信号
 
-看到哪些关键词、结构、条件时，应想到它？
+看到哪些对象、结构、条件或事件时，应想到本模型？
 
-### 第一动作
+### 第一观察层
 
-第一步到底做什么？不是"灵活应用"，而是真正可执行的动作：
+进入本模型后，第一眼应该确认什么对象、状态、关系或合法性条件？例如“先确定 support”“先找 state owner”“先判断当前对象属于哪个空间”。这里给的是观察入口，不是完整做题步骤。
 
-- 画区域。
-- 找 state owner。
-- 写 kernel。
-- 先判断 rank。
-- 先确定 support。
-- 把目标式反推成辅助函数导数。
+### 退出 / 转交边界
+
+出现什么信息后，应停止在本册继续展开并切换到另一个 Topic / Bridge / Integration？
+
+完整的“触发信号—第一动作—检查与退出”局部规则、固定问答清单、题型路由、速算技巧、作答模板和训练阶梯，统一进入同目录训练 Markdown；真正跨多个训练专题的控制才进入 Subject Rules。
 
 ---
 
-## 16. 第十五原则：每个专题必须形成自己的 Problem-Solving Protocol
+## 16. 第十五原则：专题模型必须能被训练层特化，而不是在 Canonical 中内置完整解题协议
 
-可以先有通用底座：
+通用解题控制底座可以使用 `Object / Goal / Structure / Representation / Route / Execute / Verify`，但它属于控制层。Canonical Handbook 只需要提供足够清晰的机制对象和最小调用接口，使训练层能够在不重写理论的前提下把底座特化成当前问题族的具体动作。
 
-$$\boxed{Object \rightarrow Goal \rightarrow Structure \rightarrow Representation \rightarrow Route \rightarrow Execute \rightarrow Verify}$$
+例如，积分训练可以把底座特化成 `Quantity / Region / Coordinates / Element / Bounds`，方程组训练可以特化成 `Goal / Rank / Consistency / Nullity / Solution Structure`；这些完整检查顺序应写在对应训练 Markdown，而 Canonical 正文只解释为什么这些对象和判据成立。
 
-但每个专题必须继续具体化。**Adapter 是底座的特化（specialization），不是替代（replacement）**——底座的每一步在不同学科中被具体化为不同的检查动作，但步骤顺序和职责不变。
-
-例如：
-
-| 专题 | Protocol 特化 |
-|---|---|
-| 积分 | $Quantity \to Region \to Coordinates \to Element \to Bounds$ |
-| 方程组 | $Goal \to Rank \to Consistency \to Nullity \to SolutionStructure$ |
-| 网络 | $Scope \to Object \to StateOwner \to Event \to Transition$ |
-
-> **通用模型负责控制思考流程，专题模型负责告诉你具体看什么。**
+> **Handbook 负责让控制动作有机制根据；训练 Markdown 负责把机制压成可执行协议。**
 
 ---
 
@@ -426,13 +438,13 @@ $$\boxed{Abstraction \;\text{without}\; OperationalConsequence = Decoration}$$
 
 不同学科必须允许拥有不同世界模型。例如：
 
-| 学科 | 世界模型 |
+| 学科 | 代表性观察坐标（不是用 `+` 定义的新数学对象） |
 |---|---|
-| 高数 | $Limit + LocalModel + Accumulation + LocalGlobal + Dynamics$ |
-| 线代 | $Space + Map + Coordinates + Invariant$ |
-| 概率 | $RandomObject + Distribution + Information + Inference$ |
-| 计算机网络 | $Scope + LocalState + Message + Feedback$ |
-| 操作系统 | $Objects + Relations + Queues + Transition + Invariant$ |
+| 高数 | Limit；Local Model；Accumulation；Local–Global；Infinite Construction；Dynamics |
+| 线代 | Object；Representation；Allowed Transform；Invariant；Simplest Valid Form |
+| 概率 | Random Object；Distribution；Information Operation；Sampling；Inference |
+| 计算机网络 | Scope；State Owner；Event / Transition；Feedback；Cost |
+| 操作系统 | Objects / Relations；Resource Metadata；Queues；Event / Transition；Safety / Liveness |
 
 这比制造一个覆盖所有学科的"万能公式"更重要。我们的目标是：
 
@@ -449,6 +461,30 @@ $$\boxed{\textbf{统一写作方法，不统一学科本体。}}$$
 - 英文术语首次出现时解释；
 - 不随意使用近义词制造假区别；
 - 箭头、符号、框架含义固定。
+
+### 20.1 形式语言与箭头语义契约
+
+稳定正文中的符号必须先有唯一语义，再承担压缩作用。默认约定如下：
+
+| 记号 | 唯一职责 | 例子 |
+|---|---|---|
+| `$:=$` | 定义一个新记号或本册明确约定的表示 | `$S:=\{x:f(x)=0\}$` |
+| `$=$` | 数学相等、恒等或已经建立的同一数值/对象关系 | `$\dim V=n$` |
+| `$\Rightarrow$` / `$\Longrightarrow$` | 在当前前提下的逻辑蕴含或可复原推导 | `$A\text{ 可逆}\Rightarrow\ker A=\{0\}$` |
+| `$\Leftrightarrow$` | 充要关系 | `$A\text{ 可逆}\Leftrightarrow\det A\neq0$` |
+| `$f:A\to B$` | 函数的定义域与陪域 | `$T:V\to W$` |
+| `$x\mapsto f(x)$` | 元素在映射下的像 | `$x\mapsto Ax$` |
+| `$S\xrightarrow{e}S'$` | 事件 `$e$` 触发的状态迁移 | `$Blocked\xrightarrow{wake}Ready$` |
+| `$A\xrightarrow{\text{label}}B$` | 明确标注的信息流、接口交接或物理传输 | `$SDU\xrightarrow{\text{encapsulation}}PDU$` |
+| `$\approx,\sim,\propto$` | 近似、渐近/分布关系、比例等各自标准数学语义 | 按学科定义使用 |
+
+硬规则：
+
+1. **不要用裸 `$A\to B$` 表示“所以”“然后”“建议先看”。** 如果关系是逻辑推理，用 `$\Rightarrow$`；如果只是检查顺序，改成编号列表或明确写“检查顺序”；如果是状态变化，必须标事件。
+2. **不要用 `$=$` 表示“本册把它理解成”“大致相当于”“可以看作”。** 这类工作模型用自然语言说明，数学定义用 `$:=$`，近似用相应近似符号。
+3. **同一张图中的箭头必须同义。** 如果必须混用因果、信息流、状态迁移和调用顺序，使用不同线型或显式标签，并给出图例。
+4. **推理链必须可逐步复原。** 对数学与逻辑结论，优先写等式、等价变形和 `$\Rightarrow$` / `$\Leftrightarrow$`；不能把教学叙事顺序画成“证明”。
+5. **直觉解释不得反向修改正式语义。** 比喻只能在定义、条件或定理之后解释“为什么”，不能成为新前提。
 
 避免："关注结构""理解本质""灵活转换""建立联系"——这种无法直接执行的句子。
 
@@ -501,7 +537,7 @@ $$\boxed{\textbf{统一写作方法，不统一学科本体。}}$$
 
 ### §4 机制生成
 
-$$Problem \to Naive \to Failure \to Mechanism$$
+按 Problem、Naive Solution、Failure、Mechanism 的解释顺序组织，并逐项说明它们之间究竟是因果、设计约束还是逻辑推导。
 
 ### §5 生命周期 / 动态轨迹
 
@@ -527,35 +563,37 @@ $$Problem \to Naive \to Failure \to Mechanism$$
 
 这个模型覆盖哪些传统知识点？
 
-### §11 做题控制协议
+### §11 最小调用接口
 
-看到题以后第一步到最后检查分别做什么？
+说明题面出现什么对象/结构/事件时应回到本模型，第一眼观察什么，以及何时停止并转交相邻 Owner。不要在这里展开完整题型树、固定问答清单、作答模板或速算流程。
 
 ### §12 贯穿母例
 
-完整跑一遍，且暴露至少一个典型错误路径。
+完整跑一遍，且暴露至少一个可验证的失败路径或边界。
 
-### §13 高频错因
+### §13 认知边界与失败路径
 
-错误发生在哪一个认知节点？
+说明哪些混淆来自对象、表示、状态、前提或因果链错误；若需要把这些失败压成反复执行的纠偏动作，迁入对应训练 Markdown。
 
 ### §14 一页压缩
 
-留下：一句话 + 一张母图 + 若干重建问题。
+留下：一句话 + 一张母图 + 若干重建问题，以及最小调用入口。
 
 ---
 
-## 23. 一本手册完成后的七项验收测试
+## 23. 一本手册完成后的九项验收测试
 
 | # | 测试 | 问题 |
 |---|---|---|
-| 1 | **Compression** | 能不能压成一句话和一张图？ |
-| 2 | **Generation** | 忘掉某些公式以后，能不能从模型重新推出？ |
-| 3 | **Mapping** | 新知识进来以后，能不能知道应该挂在哪里？ |
-| 4 | **Boundary** | 相邻概念能不能给出稳定判据？ |
-| 5 | **Lifecycle** | 动态对象是否能完整推演？ |
-| 6 | **Exam** | 能不能从题面信号转化成第一步行动？ |
-| 7 | **Growth** | 以后做题产生的新经验，能不能被吸收到系统中而不会破坏原结构？ |
+| 1 | **压缩** | 能不能压成一句话和一张图？ |
+| 2 | **生成** | 忘掉某些公式以后，能不能从模型重新推出？ |
+| 3 | **映射** | 新知识进来以后，能不能知道应该挂在哪里？ |
+| 4 | **边界** | 相邻概念能不能给出稳定判据？ |
+| 5 | **生命周期** | 动态对象是否能完整推演？ |
+| 6 | **应试调用** | 能不能从题面信号转化成第一步行动？ |
+| 7 | **生长性** | 以后做题产生的新经验，能不能被吸收到系统中而不会破坏原结构？ |
+| 8 | **直觉** | 不看最终公式时，能不能先预测符号、方向、尺度、趋势或候选位置，并解释这种预判来自什么对象？ |
+| 9 | **细节** | 能不能主动指出最可能改变结论的符号、方向、端点、定义域、分支、量词或严格性细节，并用一个最小例子检查？ |
 
 **如果其中任何一项失败，手册都还没有完成。**
 
@@ -593,7 +631,7 @@ $$\boxed{\text{Mechanistic Understanding} + \text{Operational Control}}$$
 | "这个公式怎么背？" | "它解决什么问题？" |
 | "这是哪个题型？" | "当前对象是什么？结构是什么？目标是什么？" |
 | "粗心。" | "我第一次偏离正确推理发生在哪个节点？" |
-| 复习靠重新看几十页 | $30 \to 10 \to 3 \to 1$ 页，仍然能从最后一页重新展开整套知识 |
+| 复习靠重新看几十页 | 从 30 页压缩到 10 页、3 页、1 页后，仍然能从最后一页重新展开整套知识 |
 
 因此，本系列手册最终追求的并不是把知识写得更多，而是：
 
@@ -606,6 +644,7 @@ $$\boxed{\textbf{用尽可能少而稳定的生成性结构，重新生成尽可
 本规范只拥有“正文怎样写才合格”。Handbook 的物理 package、状态语义、编译发布和仓库检查分别服从：
 
 - [`handbook_contract.md`](handbook_contract.md)：Handbook 物理职责与最低契约；
+- [`latex_layout_spec.md`](latex_layout_spec.md)：LaTeX 视觉/几何参数与数学符号定界符排版契约（`\lvert ... \rvert`、`\lVert ... \rVert` 等通用标准）；
 - [`terminology.md`](terminology.md)：Canonical、Landing Page、状态等术语；
 - [`repository_integrity.md`](repository_integrity.md)：发布文件和仓库一致性检查。
 
@@ -613,4 +652,4 @@ $$\boxed{\textbf{用尽可能少而稳定的生成性结构，重新生成尽可
 
 $$\boxed{\text{认知结构不合格} \implies \text{不进入正式正文}} \qquad \boxed{\text{物理交付不合格} \implies \text{不标记为已发布}}$$
 
-本规范仍拥有正文内部的写作/排版要求，例如 TikZ 图表可读性、概念边界表格和压缩页设计；但不再复制 README、`.tex`、PDF 的 Source-of-Truth 或编译命令。
+本规范仍拥有正文内部的写作/排版要求，例如 TikZ 图表可读性、概念边界表格和压缩页设计；数学公式符号（绝对值 `\lvert`、范数 `\lVert`、条件 `\mid` 等）无论在 `.tex` 源码还是日常 `.md` 笔记中均服从 `latex_layout_spec.md` §3.3；但本规范不再复制 README、`.tex`、PDF 的 Source-of-Truth 或编译命令。

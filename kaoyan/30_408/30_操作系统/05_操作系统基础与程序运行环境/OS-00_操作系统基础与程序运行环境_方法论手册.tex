@@ -323,7 +323,7 @@ OSTEP 用三条主线组织操作系统：
 }
 \]
 
-\begin{exam}[408 高频辨析]
+\begin{exam}[边界辨析]
 \begin{itemize}
   \item \kw{并发 $\neq$ 并行}：并发强调时间段内多个活动都在推进；并行强调同一时刻同时执行。
   \item \kw{共享是并发的资源条件之一}：若完全没有资源关系，很多并发冲突就不会出现。
@@ -1055,43 +1055,11 @@ OSTEP 三条主线也可挂回这个总图：
 }
 \]
 
-\section{第十章：OS-00 做题控制器——先定位层，再调用 Owner}
+\section{第十章：最小调用接口——先定位层，再调用 Owner}
 
-\subsection{七问协议}
+OS-00 只负责把问题送进正确的对象层和后续 Owner。第一观察点是：\kw{当前谈的是物理资源、受保护机制、OS 抽象、程序可见对象，还是某个已经进入细节的局部子系统？} 一旦题目开始要求进程状态、同步、页表、I/O 或文件系统内部推演，就停止在本册展开。
 
-看到操作系统基础题，按顺序问：
-\begin{enumerate}
-  \item \kw{题目现在谈的是物理资源、OS 抽象，还是程序可见对象？}
-  \item \kw{它在问 abstraction、virtualization、protection 还是 policy？}
-  \item \kw{并发/共享/虚拟/异步中，题面真正描述的是哪一个性质？}
-  \item \kw{当前对象是 program、object file、executable、process image 还是 process？}
-  \item \kw{题目在追踪数据/符号绑定，还是追踪 CPU 控制权？}
-  \item \kw{题目在比较 OS 结构时，privilege boundary 画在哪里？}
-  \item \kw{若已经进入进程、同步、页表、I/O、文件内部机制，应该切到哪个 Canonical Owner？}
-\end{enumerate}
-
-\subsection{高频概念区分清单}
-
-\begin{center}
-\small
-\renewcommand{\arraystretch}{1.25}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.29\linewidth} X}
-\toprule
-必须区分 & 判断依据\\
-\midrule
-Abstraction $\neq$ Virtualization & 接口简化 vs 资源逻辑化/复用\\
-Concurrency $\neq$ Parallelism & 时间段内共同推进 vs 同一时刻同时执行\\
-Mechanism $\neq$ Policy & 如何做到 vs 选择谁/选择什么\\
-Program $\neq$ Process & 静态描述 vs 动态执行实体\\
-Executable $\neq$ Process Image & 文件静态表示 vs 某次执行的运行时表示\\
-Loading $\neq$ All Pages Resident & 建立运行映像/映射不要求所有页立即进入物理内存\\
-Task State $\neq$ CPU Mode & Ready/Blocked 等 vs User/Kernel privilege\\
-Monolithic $\neq$ Non-modular & 内核边界位置 vs 软件组织方式\\
-Firmware $\neq$ Bootloader $\neq$ Kernel & 早期平台环境 vs OS 装载阶段 vs OS 核心\\
-OS Virtualization $\neq$ Machine Virtualization & 给应用虚拟资源 vs 给 guest OS 虚拟机器\\
-\bottomrule
-\end{tabularx}
-\end{center}
+完整的概念辨析、七问定位与 Owner 路由统一进入同目录训练文档 \texttt{基础概念与Owner定位.md}；Canonical 继续保留 abstraction、virtualization、protection、程序运行环境与启动/结构机制本身。
 
 \subsection{忘掉名词时怎样重新推出来？}
 

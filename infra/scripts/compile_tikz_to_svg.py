@@ -21,16 +21,21 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LATEX_ROOT = REPO_ROOT / "infra" / "latex"
 
-TIKZ_STANDALONE_TEMPLATE = r"""\documentclass[dvisvgm,tikz,border=8pt]{standalone}
+TIKZ_STANDALONE_TEMPLATE = r"""\documentclass[dvisvgm,tikz,border=3pt]{standalone}
 \usepackage{amsmath,amssymb}
 \usepackage{xcolor}
+\usepackage{CJKutf8}
 \usetikzlibrary{arrows.meta,calc,positioning,decorations.pathreplacing,patterns}
 
 \definecolor{themebg}{HTML}{__BG_HEX__}
 \definecolor{themefg}{HTML}{__FG_HEX__}
 \definecolor{themegray}{HTML}{__GRAY_HEX__}
+\definecolor{themecurve}{HTML}{__CURVE_HEX__}
+\definecolor{themealert}{HTML}{__ALERT_HEX__}
+\definecolor{themeamber}{HTML}{__AMBER_HEX__}
 
 \begin{document}
+\begin{CJK*}{UTF8}{gbsn}
 \pagecolor{themebg}
 \begin{tikzpicture}[
   >=Stealth,
@@ -43,6 +48,7 @@ TIKZ_STANDALONE_TEMPLATE = r"""\documentclass[dvisvgm,tikz,border=8pt]{standalon
 ]
 __TIKZ_BODY__
 \end{tikzpicture}
+\end{CJK*}
 \end{document}
 """
 
@@ -118,16 +124,17 @@ def compile_tikz_source(
     latex_bin, dvisvgm_bin = get_tex_bin()
     env = build_environment(source.parent)
 
+    # (theme_name, bg, fg, gray, curve, alert, amber, destination)
     themes = [
-        ("dark", "30362d", "edf4e8", "9ea897", dark_output),
-        ("light", "fafaf7", "111111", "666666", light_output),
+        ("dark", "30362d", "edf4e8", "9ea897", "7eb6ff", "ff7b7b", "f5b942", dark_output),
+        ("light", "fafaf7", "111111", "666666", "1d63b8", "c53030", "b86e00", light_output),
     ]
 
     print(f"[tikz] {source.name} -> dark/light SVG")
     with tempfile.TemporaryDirectory(prefix="ipara-tikz-") as tmp:
         build_dir = Path(tmp)
 
-        for theme_name, bg_hex, fg_hex, gray_hex, destination in themes:
+        for theme_name, bg_hex, fg_hex, gray_hex, curve_hex, alert_hex, amber_hex, destination in themes:
             prefix = f"{source.stem}_{theme_name}"
             build_tex = build_dir / f"{prefix}.tex"
 
@@ -147,12 +154,30 @@ def compile_tikz_source(
                     rf"\\definecolor{{themegray}}{{HTML}}{{{gray_hex}}}",
                     content,
                 )
+                content = re.sub(
+                    r"\\definecolor\{themecurve\}\{HTML\}\{[0-9a-fA-F]+\}",
+                    rf"\\definecolor{{themecurve}}{{HTML}}{{{curve_hex}}}",
+                    content,
+                )
+                content = re.sub(
+                    r"\\definecolor\{themealert\}\{HTML\}\{[0-9a-fA-F]+\}",
+                    rf"\\definecolor{{themealert}}{{HTML}}{{{alert_hex}}}",
+                    content,
+                )
+                content = re.sub(
+                    r"\\definecolor\{themeamber\}\{HTML\}\{[0-9a-fA-F]+\}",
+                    rf"\\definecolor{{themeamber}}{{HTML}}{{{amber_hex}}}",
+                    content,
+                )
             else:
                 content = (
                     TIKZ_STANDALONE_TEMPLATE
                     .replace("__BG_HEX__", bg_hex)
                     .replace("__FG_HEX__", fg_hex)
                     .replace("__GRAY_HEX__", gray_hex)
+                    .replace("__CURVE_HEX__", curve_hex)
+                    .replace("__ALERT_HEX__", alert_hex)
+                    .replace("__AMBER_HEX__", amber_hex)
                     .replace("__TIKZ_BODY__", src_code)
                 )
 
@@ -163,6 +188,8 @@ def compile_tikz_source(
                 cwd=build_dir,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 env=env,
             )
             if latex_result.returncode != 0:
@@ -176,37 +203,95 @@ def compile_tikz_source(
                 cwd=build_dir,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
             )
             if dvisvgm_result.returncode != 0:
                 print(f"[error] dvisvgm failed ({theme_name})\n{dvisvgm_result.stdout}\n{dvisvgm_result.stderr}")
                 return False
 
+            svg_file = build_dir / svg_name
+            if theme_name == "dark":
+                svg_text = svg_file.read_text(encoding="utf-8")
+                adaptive_style = (
+                    "\n<style>\n"
+                    "  @media print, (prefers-color-scheme: light) {\n"
+                    "    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #fafaf7 !important; }\n"
+                    "    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }\n"
+                    "    [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }\n"
+                    "    [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }\n"
+                    "    [fill='#9ea897'], [fill='#9EA897'], [fill='#9ea897' i] { fill: #666666 !important; }\n"
+                    "    [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }\n"
+                    "    [fill='#7eb6ff'], [fill='#7EB6FF'], [fill='#7eb6ff' i] { fill: #1d63b8 !important; }\n"
+                    "    [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }\n"
+                    "    [fill='#ff7b7b'], [fill='#FF7B7B'], [fill='#ff7b7b' i] { fill: #c53030 !important; }\n"
+                    "    [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }\n"
+                    "    [fill='#f5b942'], [fill='#F5B942'], [fill='#f5b942' i] { fill: #b86e00 !important; }\n"
+                    "    [stroke='#f5b942'], [stroke='#F5B942'], [stroke='#f5b942' i] { stroke: #b86e00 !important; }\n"
+                    "  }\n"
+                    "</style>\n"
+                )
+                if "<style>" not in svg_text:
+                    svg_text = re.sub(r"(<defs|<path|<g)", rf"{adaptive_style}\1", svg_text, count=1)
+                    svg_file.write_text(svg_text, encoding="utf-8")
+
             destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(build_dir / svg_name, destination)
+            shutil.copyfile(svg_file, destination)
             print(f"  [{theme_name}] {destination}")
 
     return True
 
 
+def is_tikz_source(path: Path) -> bool:
+    """Check whether a TeX file is a standalone TikZ figure source."""
+    if path.name.endswith(".tmp.tex"):
+        return False
+    parts = set(path.parts)
+    return "src" in parts or "tikz" in parts
+
+
 def compile_all_in_dir(directory: str | Path) -> bool:
-    """Compile every TeX source below an explicit directory."""
+    """Compile every TikZ source below an explicit directory in parallel."""
+    import concurrent.futures
+
     root = Path(directory).resolve()
-    files = sorted(path for path in root.rglob("*.tex") if not path.name.endswith(".tmp.tex"))
-    print(f"[scan] {root}: {len(files)} TeX sources")
-    ok = True
-    for source in files:
-        ok &= compile_tikz_source(source)
-    return ok
+    files = sorted(path for path in root.rglob("*.tex") if is_tikz_source(path))
+    total = len(files)
+    print(f"[scan] {root}: Found {total} TikZ TeX sources", flush=True)
+
+    if total == 0:
+        return True
+
+    success_count = 0
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
+        future_to_file = {executor.submit(compile_tikz_source, f): f for f in files}
+        for i, future in enumerate(concurrent.futures.as_completed(future_to_file), 1):
+            f = future_to_file[future]
+            try:
+                ok = future.result()
+                if ok:
+                    success_count += 1
+                    print(f"[{i}/{total}] [ok] {f.name}", flush=True)
+                else:
+                    print(f"[{i}/{total}] [fail] {f.name}", flush=True)
+            except Exception as e:
+                print(f"[{i}/{total}] [error] {f.name}: {e}", flush=True)
+
+    print(f"[summary] Completed {success_count}/{total} TikZ figures successfully.", flush=True)
+    return success_count == total
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="TikZ -> paired semantic SVG compiler")
     parser.add_argument("file", nargs="?", help="TikZ .tex source")
     parser.add_argument("--dir", help="explicit directory to compile recursively")
+    parser.add_argument("--all", action="store_true", help="compile all TikZ sources in repository")
     parser.add_argument("--dark-output", help="custom dark SVG output path (single-file mode)")
     parser.add_argument("--light-output", help="custom light SVG output path (single-file mode)")
     args = parser.parse_args()
 
+    if args.all:
+        return 0 if compile_all_in_dir(REPO_ROOT / "kaoyan") else 1
     if args.file:
         return 0 if compile_tikz_source(args.file, args.dark_output, args.light_output) else 1
     if args.dir:

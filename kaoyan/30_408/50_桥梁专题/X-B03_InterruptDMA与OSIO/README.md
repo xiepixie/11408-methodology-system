@@ -1,26 +1,42 @@
-# X-B03｜Interrupt / DMA × OS I/O
+# X-B03｜中断、DMA 与操作系统 I/O
 
-状态：已采用；Canonical Bridge 正文已建立并发布。
+状态：已采用；规范桥梁正文已建立并发布。
 
-## Owners
-CO08 总线与 I/O 硬件 ↔ OS04 I/O，并连接 OS01 Process/Control。
+## 接口两侧
 
-## Mother Interface
-`OS Submit -> Controller/DMA Transfer -> Device Completion -> Interrupt Delivery -> Kernel Completion -> Wakeup`
+CO-08 总线与 I/O 硬件 ↔ OS-05 I/O 请求、等待与完成，并通过 OS-B01 使用进程的阻塞/唤醒接口。
 
-## Owns
-硬件异步完成怎样被 OS 观察并转换成 request completion 与 task state 变化。
+## 母接口
 
-## Responsibility Split
-- 计组：controller register、bus transaction、DMA transfer、interrupt delivery/arbitration；
-- OS：driver/request、submit/wait、completion、buffering、wakeup。
+\[
+\text{OS 请求状态}
+\xrightarrow{\text{提交描述符/设备可见映射}}
+\text{控制器/设备}
+\xrightarrow{\text{形成完成证据}}
+\text{驱动发现并核验}
+\xrightarrow{\text{软件完成}}
+\text{唤醒/完成队列/回调}
+\]
 
-## Boundary
-Wait/Block/Wakeup 的 OS 科内统一接口由 OS-B01 Own；本 Bridge 只拥有软硬件完成 handoff。
+## 独立责任
 
-## Manual
-- [Canonical 正文](X-B03_InterruptDMA与OSIO_桥梁手册.tex)
-- [Published PDF](../../../90_publish/408/X-B03_InterruptDMA与OSIO_桥梁手册.pdf)
+本桥梁只解释：硬件异步完成怎样形成可核验的完成证据，并被操作系统转换成软件可见的请求完成与等待关系变化。
 
-## Review v1
-已核对 buffer ownership、DMA address、completion evidence、interrupt/polling 分支和 wake 边界；下一轮用阻塞 read 与异步设备完成题验证。
+## 责任划分
+
+- 计算机组成原理：控制器状态、总线事务、DMA 搬运、完成证据和中断入口；
+- 操作系统：驱动与请求对象、阻塞语义、完成处理、缓冲和唤醒；
+- 本桥梁：提交状态如何成为硬件输入，完成证据怎样被发现、核验并跨界交回操作系统。
+
+## 停止边界
+
+阻塞、唤醒与重新获得 CPU 的科内统一语义由 OS-B01 和调度专题拥有；轮询、中断、DMA、通道的完整硬件机制回 CO-08；完整 `read()` 生命周期进入综合专题。本桥梁不复制这些正文。
+
+## 正文与发布版
+
+- [规范正文](X-B03_InterruptDMA与OSIO_桥梁手册.tex)
+- [发布版 PDF](../../../90_publish/408/X-B03_InterruptDMA与OSIO_桥梁手册.pdf)
+
+## 审阅记录
+
+2026-08-18 按 `handbook_writing_spec.md` 重新收敛：删除桥梁册中越界展开的“四种 I/O 控制方式教材式总表”，补齐母问题、对象、接口生成、生命周期、不变量、代价权衡、五列概念边界、最小调用协议与压缩复原；同时统一阻断“DMA 完成 = 中断到达”“I/O 完成 = 立即运行”等错误联想。

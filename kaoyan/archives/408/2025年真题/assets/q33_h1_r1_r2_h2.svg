@@ -1,12 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260">
-<defs>
+
 <style>
-  .t{font-family:Arial,'PingFang SC','Microsoft YaHei',sans-serif;fill:#edf4e8}
-  .small{font-size:16px}.mid{font-size:20px}.big{font-size:24px}
-  .line{stroke:#edf4e8;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}.thin{stroke:#edf4e8;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-  .node{fill:#3b4337;stroke:#edf4e8;stroke-width:2.4}
+  @media print, (prefers-color-scheme: light) {
+    [fill="#30362d"], [fill="#30362D"], [fill="#30362d" i] { fill: #fafaf7 !important; }
+    [stroke="#30362d"], [stroke="#30362D"], [stroke="#30362d" i] { stroke: #fafaf7 !important; }
+    [fill="#edf4e8"], [fill="#EDF4E8"], [fill="#edf4e8" i] { fill: #111111 !important; }
+    [stroke="#edf4e8"], [stroke="#EDF4E8"], [stroke="#edf4e8" i] { stroke: #111111 !important; }
+    [fill="#9ea897"], [fill="#9EA897"], [fill="#9ea897" i] { fill: #666666 !important; }
+    [stroke="#9ea897"], [stroke="#9EA897"], [stroke="#9ea897" i] { stroke: #666666 !important; }
+  }
 </style>
-<marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#edf4e8"/></marker>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#edf4e8"/></marker>
 </defs>
 <rect width="100%" height="100%" fill="#30362d" rx="12" ry="12"/>
 <g id="host-H1"><rect x="70" y="115" width="90" height="50" class="node"/><line x1="80" y1="175" x2="150" y2="175" class="line"/><text x="115" y="205" text-anchor="middle" class="t mid">H1</text></g>

@@ -2,7 +2,7 @@
 
 > **性质**：兼容路由，不拥有调研结论。
 >
-> 全局 Research Log 已提升到：[`latex_reference_pool.md`](latex_reference_pool.md)。
+> 全局 Research Log 已提升到：[`../../infra/latex/reference_pool.md`](../../infra/latex/reference_pool.md)。
 >
 > 全局 Design System Canonical Owner：[`../../infra/latex/README.md`](../../infra/latex/README.md)。
 

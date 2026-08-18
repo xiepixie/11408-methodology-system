@@ -92,6 +92,24 @@ Canonical Handbook 必须能在另一台装有标准 TeX Live 的机器上复现
 - 箭线短标签：允许 `\scriptsize`；
 - 不用整页 `\footnotesize` 挽救几何超载；如果必须缩到 `\footnotesize` 才能装下，先重构表格或图的拓扑。
 
+### 3.3 数学符号与定界符规范（全仓 Markdown 笔记与 LaTeX 通用标准）
+
+无论是在正式 `.tex` 手册，还是在日常 Markdown 笔记（`*.md`）、题解与草稿中，**只要进入数学公式环境（`$...$` 或 `$$...$$`），必须严格遵循统一的数学符号与定界符契约**：
+
+1. **绝对值与模长（Absolute Value / Modulus）**：
+   - 统一使用 `\lvert ... \rvert`（动态伸缩使用 `\left\lvert ... \right\rvert`），写作 `\lvert x \rvert`、`\lvert f(x) \rvert`；
+   - **严禁直接使用键盘单竖线 `|x|`**：因为键盘单竖线 `|` 在 $\TeX$/MathJax 中缺乏开闭定界符语义（会被识别为 `\mathord`）。当内部出现负号如 `|-x|` 时，负号会被错判为二元减号运算符，从而在左右产生异常的大间隙；
+2. **范数（Norm）**：
+   - 统一使用 `\lVert ... \rVert`（动态伸缩使用 `\left\lVert ... \right\rVert`），写作 `\lVert \boldsymbol{x} \rVert`；
+   - **严禁双竖线拼接 `||x||`**：字符拼接会导致双线间距失真与跨平台字体渲染断裂；
+3. **条件与集合定界（Condition / Set Builder）**：
+   - 条件概率与集合条件一律使用 `\mid`（如 `$P(A \mid B)$`、`$\{x \in \mathbb{R} \mid x > 0\}$`），严禁使用单竖线 `|`；
+4. **微积分与变量类型**：
+   - 正体微分算子使用 `\mathrm{d}`，偏导使用 `\partial`，写作 `\mathrm{d}x`、`\frac{\partial z}{\partial x}`；
+   - 向量与矩阵使用粗斜体 `\boldsymbol{x}`、`\boldsymbol{A}`，严禁使用过时的 `\pmb`；
+   - 基础常数与特殊函数名：自然底数使用正体 `\mathrm{e}^x`，函数名使用内置算子 `\lim`、`\sin`、`\cos`、`\ln`；
+   - 不等号统一使用 `\le` 与 `\ge`。
+
 ---
 
 ## 4. 版心与“模式隔离”
@@ -580,6 +598,127 @@ ipara label
 ```
 
 学科可以在此基础上定义局部 style，例如 `cacheline`、`probnode`、`geom`，但不要重新定义全仓字体和色彩系统。
+
+### 10.3 TikZ 数学可视化与图表工程化通用规范
+
+数学图表是**压缩心智模型、降低认知负荷、呈现几何不变性**的精密视觉接口。全仓所有数学与系统图表必须严格遵循以下工程化准则。这里记录的是已经踩过坑后形成的执行规则；若后续要补充边界或例外，只能在原规则之后增量说明，不能用“抽象”“去重”直接删除原约束。
+
+#### 1. 认知职责与一般性（Cognitive Purpose & Generality）
+- **单图单一责任**：每张图只负责阐明一个核心几何或代数机制（如：定义域回拉、单射判别、不可逆信息债务、对称反射周期生成、反例证伪）；
+- **拒绝特殊形态误导（Anti-Special-Case Bias）**：
+  - 展示一般规律（如反射生成周期、单调性、拓扑连接）时，**严禁使用具有内部特殊对称性的曲线（如对称正弦单峰）**，防止其镜像与原图重合误导周期长度或几何本质；
+  - 必须选用**一般化的非对称形态（Asymmetric Curve / General Region）**，使几何变换（镜像、旋转、平移、投影）前后的差异与不变性一目了然；
+  - **边界说明**：若图研究的对象本来就是 $\sin x$、偶函数、圆、中心对称等特定对象，则必须忠实保留对象本身的真实结构；这里禁止的是“用特殊对象冒充一般示意”，不是禁止研究特殊对象本身。
+- **几何与公式自解释，拒绝生造标签（Minimal Verbal Clutter）**：
+  - 图表依靠纯粹的几何形态与标准数学符号表达逻辑，**严禁在图内自造冗余口诀词汇**（如“原波形”、“正半峰”、“负半峰”等）；
+  - 解释性长句留给 Markdown 正文，图内只保留标准数学记号、坐标刻度与核心结论算子。
+
+#### 2. 舒展画幅与保角保距几何真实性（Viewport Geometry）
+- **舒展画幅原则（Generous Sizing & Breathing Space）**：
+  - **宁愿画幅宽一些、高一些，绝不让几何要素与注记拥挤挨靠**；单子图推荐宽度 $6.5\text{cm}\sim8.5\text{cm}$、高度 $5.8\text{cm}\sim7.5\text{cm}$，多子图总宽推荐 $13.5\text{cm}\sim20\text{cm}$；
+  - 曲线极值、折转点与视口外框之间必须预留 $15\%\sim20\%$ 的呼吸留白，严禁坐标轴端点箭头触碰或穿透标题与注记；
+- **几何真实长宽比（Aspect Ratio Fidelity）**：
+  - 涉及垂直正交、保角变换、斜率 $\pm 1$ 折线、关于 $y=x$ 镜像对称时，坐标轴必须保持等比例（`axis equal image` 或真实长宽比），严禁纵向/横向过度压扁导致几何直觉失真。
+
+#### 3. 物理分层与零干涉排布（Physical Layering & Zero-Collision）
+- **垂直/横向三层物理隔离（Vertical/Horizontal Layering）**：
+  - **几何基准层（上/背景）**：对称轴、渐近线、包络带、间距标注 $d$；虚线必须在数据区内适可而止，严禁向下贯穿后续文字；
+  - **函数与算子层（中/核心）**：函数曲线、离散特征点、代数映射链，拥有独立无遮挡的演化横带；
+  - **结论徽标层（下/外围）**：周期间距、单射结论、充要条件统一外置在坐标轴或卡片正下方；
+- **轴刻度与文字物理避让**：
+  - 严禁在已有刻度数值的坐标轴点上叠加相同坐标的文字节点；
+  - 严禁将总结性说明文字放置在坐标轴刻度数字区域（如 $x$ 轴正负刻度区）；
+- **边界线标注引至最外侧空白端**：
+  - 上下界（$y=M, y=m$）、水平渐近线等标注文本，统一引到图表最右侧空白端，不堆叠在 $y$ 轴刻度上；
+- **背景遮罩作为安全防护，而非排版遮丑**：
+  - 数据区内的关键注记必须添加背景遮罩 `fill=themebg, inner sep=1.5pt` 隔离背景线条；
+  - 但**遮罩绝不能作为掩盖拥挤排版的借口**，严禁遮罩切断轴刻度、关键连线或相邻文字。
+
+#### 4. 视觉主次层级契约（Visual Hierarchy）
+- **主体前景（Primary Subject）**：当前考察的函数曲线、主值区间、可逆分支 —— 采用主题前景色或强调色（`blue!70!themefg` / `red!70!themefg`）、加粗实线（`line width=2.0pt~2.5pt`）；
+- **全域背景（Context / Inactive）**：全域未限制曲线、周期延拓分支 —— 采用次级中性灰（`themegray`）、细线（`1.2pt~1.5pt`）、虚线（`dashed`）；
+- **几何基准与动作连接（Guides & Mappings）**：对称轴、渐近线使用中性灰虚线（`dashed`）；投影垂线、正交连接使用细点线（`dotted`）或引导箭头。
+
+#### 5. 多子图隔离契约（Subplot Isolation）
+- 并列多子图横向间距统一不小于 $1.8\text{cm}\sim2.2\text{cm}$（如 `\begin{axis}[at={($(axleft.east)+(2.0cm,0)$)}]`）；
+- 各子图的子标题、局部结论徽标必须独立对齐于各子图轴框，互不跨界干扰。
+- 如果三列或更多子图在满足单图尺寸与安全间距后会突破总画幅预算，优先改成 `2+1`、`2+2` 或纵向分组，不允许靠缩字、压轴或把间距降到安全阈值以下硬塞。
+
+#### 6. 额外结构与最小周期攻击（Extra-Invariant / Minimal-Period Attack）
+- 凡图用于说明“由条件推出某个周期、对称或单调结构”，完成后必须反向检查：示意母段是否又偶然产生了更小周期、额外对称轴/中心、额外奇偶性或额外单调性；
+- 若结论只是“$2d$ 是一个周期”，示意图也必须避免视觉上同时暗示“$d$ 也是周期”。优先通过端点值不等、峰谷位置不对齐或非对称母段直接排除伪周期；必要时用一个最小反证标记显式说明。
+
+#### 7. 双主题与 Markdown 嵌入管线（Theme & Asset Contract）
+- 严格使用 `themebg`、`themefg`、`themegray` 语义色彩宏；
+- 由 `compile_tikz_to_svg.py` 编译生成暗色（`assets/*.svg`）与亮色（`assets/light/*.svg`）纯路径矢量文件；
+- Markdown 正文统一采用原生图片链接：`!` + `[说明]` + `(./assets/图名.svg)`，严禁嵌入 HTML `<picture>` 或 `<img>` 标签。
+
+#### 8. 图解注释语义色彩与高对比排版契约（Semantic Diagrammatic Palette）
+数学与系统图表严禁使用刺眼的高饱和原生红/蓝/绿，必须严格遵循经过 WCAG AAA 高对比度校准的 4 大语义图解色系：
+1. **核心主体曲线（Primary Curve & Function）**：
+   - **语义**：函数主曲线 $y=f(x)$、正向映射轨迹、正确收敛分支；
+   - **宏写法**：`blue!75!themefg` 或十六进制（暗色 `#7EB6FF` / 亮色 `#1D63B8`）；
+   - **线型**：加粗实线 `line width=2.0pt~2.5pt`。
+2. **结论焦点 / 反例证伪 / 边界渐近线（Focus, Counterexamples & Traps）**：
+   - **语义**：反例离散点、不可逆断点、渐近线 $y=M$、证伪算子；
+   - **宏写法**：`red!75!themefg` 或十六进制（暗色 `#FF7B7B` / 亮色 `#C53030`）；
+   - **线型**：加粗实线或带外框标记（如 `\draw[red!75!themefg, fill=themebg, line width=1.5pt] circle (2.5pt);`）。
+3. **辅助算子 / 切线导数 / 中间状态（Operators, Tangents & Guides）**：
+   - **语义**：切线斜率、中间变量 $u=g(x)$、极值点投影引导线；
+   - **宏写法**：`orange!80!yellow` 或十六进制（暗色 `#F5B942` / 亮色 `#B86E00`）；
+   - **线型**：细线 `1.2pt~1.5pt` 或虚线 `densely dashed`。
+4. **区域填充 / 值域水平带（Bands & Area Fills）**：
+   - **语义**：值域水平带 $[m, M]$、积分区域 $D$、不可逆信息债务区域；
+   - **宏写法**：`fill=blue!15!themebg, fill opacity=0.5`（暗色）/ `fill=blue!8!themebg, fill opacity=0.6`（亮色）；
+   - **要求**：绝不允许使用高不透明度深色直接大面积平涂遮挡主曲线。
+5. **文字背景微遮罩（Text Masking）标准写法**：
+   - 数据区内注记节点统一声明：`\node[text=..., fill=themebg, inner sep=0.8pt] at (...) {注记};`，既精准切断穿字线条，又极致紧凑贴合文字轮廓。
+
+#### 9. TikZ 独立源文件标准开发模版（Standalone TikZ Template）
+全仓所有新绘制的 TikZ 数学与计算机图表，必须保存于 `assets/src/<图名>.tex`，统一采用以下标准模板骨架：
+
+```latex
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning,decorations.pathreplacing,patterns}
+
+% ── 双主题语义色彩定义 (由编译管线自动注入与映射) ──
+\definecolor{themebg}{HTML}{30362d}     % 背景底色 (暗色墨绿 / 亮色米白)
+\definecolor{themefg}{HTML}{edf4e8}     % 主体前景 (暗色柔白 / 亮色炭黑)
+\definecolor{themegray}{HTML}{9ea897}   % 中性网格与辅助虚线
+\definecolor{themecurve}{HTML}{7eb6ff}  % 主体曲线与正向映射 (晶蓝 / 皇家蓝)
+\definecolor{themealert}{HTML}{ff7b7b}  % 焦点/反例/边界渐近线 (珊瑚红 / 朱砂红)
+\definecolor{themeamber}{HTML}{f5b942}  % 导数切线/中间算子 (暖金 / 金褐)
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% 在此处编写你的 pgfplots 坐标系或 tikz 图形...
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}
+```
+
+##### 编译与引用操作闭环：
+1. **执行编译**：`python3 infra/scripts/compile_tikz_to_svg.py assets/src/<图名>.tex`；
+2. **生成资产**：自动输出 `assets/<图名>.svg`（带自适应暗色）与 `assets/light/<图名>.svg`；
+3. **Markdown 引用**：正文统一采用标准相对链接语法：`!` + `[说明文本]` + `(./assets/图名.svg)`。
+
+#### 10. 视图呈现与多媒体排版控制契约（Presentation & Sizing Contract）
+在 Markdown / Obsidian / Web 视图与打印介质中，图表呈现严格遵循以下自适应与居中契约：
+1. **全景居中（Universal Centering）**：所有多媒体图表默认采用 `display: block; margin-left: auto; margin-right: auto;` 保证在段落与版心中轴线上居中呈现；
+2. **智能尺寸分流（Non-Destructive Sizing）**：
+   - 严禁对所有图片无差别施加 `width: 100%` 强行拉伸；
+   - 默认采用 `width: auto; max-width: 94%;`，使单概念窄图保持紧凑原生清晰度，多子图宽图（$\ge 2/3$ 版心）舒展延展并预留呼吸留白；
+3. **打印与 PDF 导出防护（Print Mode Safety）**：
+   - 触发 `@media print` 时，图表强制设置 `break-inside: avoid; max-width: 90%;`，防止图表被打印机从中间跨页切割；
+   - 配合 SVG 内置媒体查询，背景色自动切为 `#FAFAF7` 纸质米白，文字与曲线切为高对比度印刷色。
 
 ---
 

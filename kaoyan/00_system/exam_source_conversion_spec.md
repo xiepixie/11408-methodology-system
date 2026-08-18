@@ -74,10 +74,10 @@ Complete
 
 ## 2. 最终目录合同
 
-稳定真题统一进入对应考试的 **Exam Archive**，不再把完成态试卷留在 `80_evidence/inbox/`。默认目录合同：
+稳定真题统一进入 `kaoyan/archives/<exam_id>/`，不再把完成态试卷留在 `80_evidence/inbox/`。其中 `<exam_id>` 由 Exam Profile 定义，例如 `math1`、`408`。默认目录合同：
 
 ```text
-资源/<Exam_Archive>/
+kaoyan/archives/<exam_id>/
 └── <year>年真题/
     ├── <year> 年全国硕士研究生招生考试.md   # 核心契约：文件名与正文一级标题 1:1 完全相同
     ├── exam.json

@@ -1,6 +1,6 @@
-# Exam Solution Agent Prompt
+# 真题题解执行提示词
 
-你正在维护 I.P.A.R.A 考研真题的 **Derived Solution Layer**。目标不是把旧网站解析重新排版，而是让每道题真正成为心智模型的运行样本。
+本文件是 `exam-solution` 场景的**执行提示词唯一 Owner**。你正在维护 I.P.A.R.A 考研真题的 Derived Solution Layer（派生题解层）。目标不是把旧网站解析重新排版，而是让每道题真正成为心智模型的运行样本。
 
 ## 任务目标
 
@@ -15,7 +15,7 @@
 7. 做源题 / 模型 / 校验 / 压缩质量门；
 8. 若暴露**疑似**模型缺口，先登记 Challenge；若已独立确认 Canonical Handbook 存在事实、机制或适用边界硬错误，则立即走 Stable Write 更新唯一 Owner，并重新验证受影响题解。无论哪种情况，都不得在题解正文里悄悄重定义 Handbook 机制。
 
-正式合同：[`exam_solution_authoring_spec.md`](exam_solution_authoring_spec.md)。学生学习责任、跨年度风格一致性、质量 Gate 与模型反馈闭环：[`exam_solution_quality_assurance.md`](exam_solution_quality_assurance.md)。
+具体写作合同由 [`exam_solution_authoring_spec.md`](exam_solution_authoring_spec.md) 统一拥有；学生学习责任、跨年度一致性、质量门与模型反馈闭环由 [`exam_solution_quality_assurance.md`](exam_solution_quality_assurance.md) 统一拥有。本文件只负责执行顺序，不复制第二套写作或 QA 规则。
 
 ## 必读上下文顺序
 
@@ -23,9 +23,9 @@
 AGENTS.md
 -> CURRENT.md
 -> agent_context_protocol.md
--> problem_solving_kernel.md
 -> exam_solution_authoring_spec.md
 -> exam_solution_quality_assurance.md
+-> problem_solving_kernel.md
 -> 对应 408 Course / Subject Atlas
 -> Subject Rules
 -> 当前题真正调用的 Topic / Bridge / Integration Canonical .tex
@@ -76,7 +76,7 @@ AGENTS.md
 
 这条压缩必须带适用前提。
 
-## 选择题写作要求
+## 单项选择题写作要求
 
 - 给最终答案；
 - **固定保留** `模型锚点 / 解题链 / 选项判断 / 校验 / 压缩 / 易错边界` 六个一级结构，不因题目简单而合并标题；
@@ -85,14 +85,21 @@ AGENTS.md
 - 高混淆题解释错误选项偷换了什么；
 - 不把四个选项都写成重复教材段落。
 
-## 综合题写作要求
+## 填空题写作要求
+
+- 明确给出最终填写内容；
+- **固定保留** `模型锚点 / 解题链 / 校验 / 压缩 / 易错边界` 五个一级结构；
+- 不虚构 `选项判断`，也不为了形式统一强行增加综合题专用栏目；
+- 数值、区间、表达式、矩阵等结果保留决定答案的关键中间量，并至少给出一个独立校验。
+
+## 解答题 / 综合应用题写作要求
 
 - **固定保留** `模型锚点 / 问题表征 / 关键决策 / 求解链 / 校验 / 压缩 / 易错边界` 七个一级结构；
 - `模型锚点` 固定写清 `Topic / 题目信号 / 第一动作`；
 - 按小问组织；
 - 每一问明确输入状态与输出要求；
 - 数值题写单位；
-- 地址/位宽/窗口/资源题写状态表或关键中间量；
+- 状态、地址、位宽、窗口、资源或矩阵题优先写状态表、字段预算或关键中间量；
 - 算法题必须有正确性不变量与复杂度；
 - 代码只表达题目合同，不补无关框架。
 
@@ -106,7 +113,7 @@ AGENTS.md
 
 ## 批量格式质量门
 
-批量生成时，**结构一致性与答案正确性同级**。写完一个 Subject 或一整年后，必须从目录视角再验一次，而不是只逐题自检：
+批量生成时，**结构一致性与答案正确性同级**。题型、题号范围和完成覆盖必须从 Exam Profile / 年度 `exam.json` 读取，不能在通用合同里硬编码某一门考试的题号结构。写完一个 Subject 或一整年后，必须从目录视角再验一次，而不是只逐题自检：
 
 ```text
 覆盖率
@@ -119,7 +126,7 @@ AGENTS.md
 -> 重复 Owner 检查
 ```
 
-出现“某些题只有答案 + 解析”“某些题没有选项判断”“综合题缺少关键决策”等情况时，视为**未完成**，必须先统一结构再交付。
+出现“某些题只有答案 + 解析”“选择题没有选项判断”“填空题没有明确填写结果”“解答题缺少关键决策”等情况时，视为**未完成**，必须先统一结构再交付。
 
 可读性优先采用：短段落、状态表、对齐公式、事件时间线；禁止用长段落把对象、机制、计算和校验揉成一块。
 
@@ -128,13 +135,13 @@ AGENTS.md
 推荐顺序：
 
 ```text
-2025 作为校准年
--> 按 Subject 批量：DS -> CO -> OS -> NET
--> 综合题单独做深度 Gate
--> 校准稳定后按年份倒序处理 2024 -> ... -> 2009
+选择一个题源质量高、年度元数据完整的校准年
+-> 按 Subject + 题型批量处理
+-> 高推理风险的解答题 / 综合题单独做深度 Gate
+-> 校准稳定后再按目标年份顺序推进
 ```
 
-同一 Subject 批量时，先读 Atlas/Rules；切 Topic 时再加载对应 Canonical `.tex`。不要一题一题重复读整门学科。
+同一 Subject 批量时，先读 Atlas/Rules；切 Topic 时再加载对应 Canonical `.tex`。具体 Subject 顺序服从当前 Course Atlas 与任务范围，不在通用合同里硬编码。不要一题一题重复读整门学科。
 
 ## 每题结束内部分类
 

@@ -17,6 +17,8 @@
 
 本 README 本身就是 408 的 Canonical Atlas。旧 `408_Course_Atlas.tex` / PDF 不再作为导航入口或地图 Owner，但在逐项 Source Diff 完成前继续保留；后续若需要视觉海报，只从本 README 已确认的关系派生。
 
+官方考查基准与考纲原件见：[408 官方考试大纲完整版](408_考试大纲_官方原件完整版.md)。
+
 仓库为什么这样切，见[408 Canonical Topology 设计依据](00_统一总图/README.md)。后者是架构设计文档，不是学生 Atlas。
 
 ## 四个 Subject Atlas
@@ -49,14 +51,14 @@
 
 ## 做题时怎么用
 
-四科共享的只是控制语言，不共享一个万能世界模型：
+四科共享的只是控制语言，不共享一个万能世界模型。进入不同 Subject 后，应切换到各自的检查坐标：
 
-```text
-Data Structure -> Relation / Representation / Operation / Invariant / Cost
-CO             -> State / Location / Path / Resource / Timing / Commit
-OS             -> Object / Queue / Event / Mechanism / Policy / New State
-Network        -> Scope / Name / State Owner / Event / Feedback / Cost
-```
+- **Data Structure**：Relation、Operation Contract、Workload、Representation、Invariant / Boundary、Cost；
+- **CO**：ISA State、Location、Path / Resource、Timing、Architectural Visibility、Cost；
+- **OS**：Object / Relation、Resource Metadata / Queue、Event、Mechanism / Policy、New State、Safety / Liveness；
+- **Network**：Scope、Name / Object、State Owner、Event / Transition、Feedback、Cost。
+
+这些是检查职责，不是四条学科本体的因果链。
 
 规则入口：[408 通用做题规则](90_408做题规则/README.md)。
 
@@ -70,7 +72,7 @@ Network        -> Scope / Name / State Owner / Event / Feedback / Cost
 4. **Invariant / Boundary**：什么必须保持，哪些相似概念不能混？
 5. **Cost / Workload**：时间、空间、带宽、I/O 或等待代价从哪里来？
 
-箭头的语义由上下文决定：`A -> B` 可能表示推理顺序、依赖或转换；只有写成状态转换时，才必须同时指出触发事件。共同镜头只负责切换学科，不覆盖四个 Subject Atlas 的母模型。
+共同镜头只负责切换学科，不覆盖四个 Subject Atlas 的母模型。全项目不再让无标签箭头依靠上下文猜关系：逻辑推导使用 $\Rightarrow$；元素映射使用 $\mapsto$；状态迁移写明事件；接口/信息流必须加标签；推荐检查顺序直接使用编号列表。
 
 ## 跨科重复出现的关系
 
@@ -78,7 +80,7 @@ Network        -> Scope / Name / State Owner / Event / Feedback / Cost
 
 | 关系 | 典型落点 | 使用边界 |
 |---|---|---|
-| Representation / Indirection | Hash bucket、VA -> PTE -> frame、Name -> IP | 多一层映射换定位、共享或隔离；具体机制回各 Topic |
+| Representation / Indirection | Hash bucket 定位；VA 经页表项形成 PA/frame；Domain Name 经解析得到地址记录 | 多一层映射换定位、共享或隔离；每个映射的输入、输出和 Owner 必须单独说明，具体机制回各 Topic |
 | State / Invariant | Heap 偏序、ISA 提交、PV 条件、TCP 窗口 | 用来解释动作资格与校验，不把四科压成同一种状态机 |
 | Scarcity / Sharing | ALU/总线冲突、ready queue、共享链路 queue | 需求超过瞬时供给时出现等待、排队或仲裁 |
 | Locality / Caching | Cache、TLB、Page Cache、DNS cache | 必须区分副本 Owner、miss 处理者与一致性边界 |

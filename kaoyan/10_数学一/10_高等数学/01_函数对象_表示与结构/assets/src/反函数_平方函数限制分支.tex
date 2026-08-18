@@ -1,0 +1,100 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% Left: Non-negative Branch D = [0, +infty)
+\begin{axis}[
+    name=axleft,
+    width=7.2cm,
+    height=6.8cm,
+    axis equal image,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\small},
+    every axis label/.style={color=themefg},
+    xmin=-1.6, xmax=3.2,
+    ymin=-0.6, ymax=3.4,
+    xtick={0, 1, 2},
+    ytick={0, 1, 2},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={at={(0.5,1.10)},anchor=south,color=themecurve,font=\bfseries\small},
+    title={分支一：定义域 $D_1 = [0, +\infty)$},
+]
+  % Discarded negative branch
+  \addplot[themegray, dashed, thick, domain=-1.5:0, samples=80] {x^2};
+
+  % Active positive branch y = x^2
+  \addplot[themecurve, line width=2pt, domain=0:1.75, samples=100] {x^2};
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south east] at (axis cs:1.7, 2.9) {\footnotesize $y=x^2$};
+
+  % Symmetry line y = x
+  \addplot[dashed, themegray, thick, domain=-0.4:3.0] {x};
+
+  % Inverse y = sqrt(x)
+  \addplot[themecurve, line width=2pt, domain=0:3.0, samples=150] {sqrt(x)};
+  \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=north west] at (axis cs:2.5, 1.6) {\footnotesize $f_1^{-1}(x)=\sqrt{x}$};
+\end{axis}
+
+\node[font=\small\bfseries, color=themecurve, anchor=north] at ($(axleft.south)-(0, 0.4cm)$) {反函数分支：$f_1^{-1}(x) = \sqrt{x}\quad (x \ge 0)$};
+
+% Right: Non-positive Branch D = (-infty, 0]
+\begin{axis}[
+    at={($(axleft.east)+(2.0cm,0)$)},
+    anchor=west,
+    name=axright,
+    width=7.2cm,
+    height=6.8cm,
+    axis equal image,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\small},
+    every axis label/.style={color=themefg},
+    xmin=-1.6, xmax=3.2,
+    ymin=-2.0, ymax=3.4,
+    xtick={0, 1, 2},
+    ytick={-1, 0, 1, 2},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={at={(0.5,1.10)},anchor=south,color=themealert,font=\bfseries\small},
+    title={分支二：定义域 $D_2 = (-\infty, 0]$},
+]
+  % Discarded positive branch
+  \addplot[themegray, dashed, thick, domain=0:1.5, samples=80] {x^2};
+
+  % Active negative branch y = x^2 (x <= 0)
+  \addplot[themealert, line width=2pt, domain=-1.75:0, samples=100] {x^2};
+  \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=south west] at (axis cs:-1.7, 2.9) {\footnotesize $y=x^2$};
+
+  % Symmetry line y = x
+  \addplot[dashed, themegray, thick, domain=-1.4:2.6] {x};
+
+  % Inverse y = -sqrt(x) (x >= 0, y <= 0)
+  \addplot[themealert, line width=2pt, domain=0:3.0, samples=150] {-sqrt(x)};
+  \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=north west] at (axis cs:2.2, -1.5) {\footnotesize $f_2^{-1}(x)=-\sqrt{x}$};
+\end{axis}
+
+\node[font=\small\bfseries, color=themealert, anchor=north] at ($(axright.south)-(0, 0.4cm)$) {反函数分支：$f_2^{-1}(x) = -\sqrt{x}\quad (x \ge 0)$};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

@@ -1,0 +1,47 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning,shapes.geometric}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[
+    color=themefg, text=themefg,
+    every node/.style={color=themefg},
+    box/.style={draw=themefg, line width=1.2pt, rounded corners=3pt, minimum height=1.1cm, font=\small, align=center},
+    resultbox/.style={draw=themecurve, line width=1.5pt, rounded corners=5pt, minimum height=1.2cm, font=\bfseries\small, align=center},
+    edge/.style={->, line width=1.2pt, -{Stealth[length=5pt]}},
+    jump/.style={->, dashed, line width=1.4pt, color=themealert, -{Stealth[length=6pt]}}
+]
+
+  % Title
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, font=\bfseries\normalsize, anchor=south] at (4.0, 2.2) {两次轴反射的复合是平移；双轴对称由此推出周期};
+
+  % Sequential Reflection Pipeline
+  \node[box, minimum width=1.8cm] (x) at (0, 0.8) {$x$};
+  \node[box, minimum width=2.8cm, right=1.6cm of x] (ra) {$R_a(x) = 2a - x$\\{\footnotesize 关于 $x=a$ 第一次反射}};
+  \node[box, minimum width=3.4cm, right=1.6cm of ra] (rb) {$R_b(R_a(x)) = x + 2(b-a)$\\{\footnotesize 关于 $x=b$ 第二次反射}};
+
+  \draw[edge] (x) -- node[above, font=\footnotesize] {算子 $R_a$} (ra);
+  \draw[edge] (ra) -- node[above, font=\footnotesize] {算子 $R_b$} (rb);
+
+  % Composite translation result
+  \node[resultbox, minimum width=7.2cm] (res) at (4.0, -1.0) {$R_b\circ R_a:\ x\mapsto x+2(b-a)$\\{\footnotesize 若 $f\circ R_a=f$ 且 $f\circ R_b=f$，则 $f(x+2(b-a))=f(x)$；$a\ne b$ 时 $2\lvert b-a\rvert$ 是一个周期}};
+
+  % Curved Jump from x to result to rb
+  \draw[jump] (x.south) .. controls +(0,-1.0) and +(-1.5,0) .. (res.west);
+  \draw[jump] (res.east) .. controls +(1.5,0) and +(0,-1.0) .. (rb.south);
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

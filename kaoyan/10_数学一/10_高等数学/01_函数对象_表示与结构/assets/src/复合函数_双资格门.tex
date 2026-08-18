@@ -1,0 +1,57 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning,shapes.geometric}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[
+    color=themefg, text=themefg,
+    every node/.style={color=themefg},
+    gate/.style={draw=themefg, line width=1.2pt, rounded corners=4pt, minimum height=1.3cm, font=\small, align=center},
+    outbox/.style={draw=themecurve, line width=1.5pt, rounded corners=5pt, minimum height=1.3cm, font=\bfseries\small, align=center},
+    edge/.style={->, line width=1.3pt, -{Stealth[length=5pt]}},
+    fail/.style={->, dashed, line width=1.2pt, color=themealert, -{Stealth[length=5pt]}}
+]
+
+  % Title
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, font=\bfseries\normalsize, anchor=south] at (4.2, 2.4) {复合函数定义域的两个必要条件};
+
+  % Condition 1: inner domain
+  \node[gate, minimum width=3.0cm] (g1) at (0, 0.6) {\textbf{条件 1}\\{\footnotesize $x \in D_g$}};
+  
+  % Intermediate output
+  \node[gate, minimum width=3.0cm, right=1.6cm of g1] (mid) {\textbf{条件 2}\\{\footnotesize $g(x) \in D_f$}};
+
+  % Gate 2: Final composite output
+  \node[outbox, minimum width=3.2cm, right=1.6cm of mid] (out) {\textbf{复合成功}\\{\footnotesize $y = f(g(x)) \in R_f$}};
+
+  % Arrows
+  \node[left=1.2cm of g1] (input) {$x$};
+  \draw[edge] (input) -- (g1);
+  \draw[edge] (g1) -- node[above, font=\footnotesize] {生成中间量 $u=g(x)$} (mid);
+  \draw[edge] (mid) -- node[above, font=\footnotesize] {进入外层运算 $f(u)$} (out);
+
+  % Failure branches
+  \node[font=\footnotesize, color=themealert, below=0.9cm of g1] (f1) {$x \notin D_g$\\内函数无定义};
+  \node[font=\footnotesize, color=themealert, below=0.9cm of mid] (f2) {$g(x) \notin D_f$\\外函数无定义};
+
+  \draw[fail] (g1.south) -- (f1);
+  \draw[fail] (mid.south) -- (f2);
+
+  % Bottom summary formula
+  \node[font=\footnotesize, anchor=north] at (4.2, -1.8) {\textbf{复合定义域}：$D_{f\circ g}=\{x\in D_g:g(x)\in D_f\}$};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

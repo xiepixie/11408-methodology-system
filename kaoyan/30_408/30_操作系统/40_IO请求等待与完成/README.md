@@ -14,6 +14,10 @@
 - **Uses**：进程 Topic 的 block/wakeup；VM 的页驻留；文件系统的 block mapping；计组的 interrupt/DMA hardware。
 - **Stop Boundary**：DMA 总线与中断控制器硬件属于计组；pathname、inode、OFD 和 journaling 属于文件系统。
 
+## 训练导航
+
+- [I/O 请求与完成](IO请求与完成.md)：把程序查询、中断、DMA、缓冲、SPOOLing、磁盘调度与阻塞 I/O 统一放进控制线、数据线和任务状态线；承接旧 Canonical 的十三问检查表与题型路由。
+
 ## Read Next
 
 完整 blocking `read()` 进入 [OS-I01](../70_综合专题/OS-I01_BlockingRead/README.md)；DMA 的软硬件交接进入 Cross-Subject X-B03。

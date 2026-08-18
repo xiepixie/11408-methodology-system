@@ -19,14 +19,16 @@ Plane 是思考职责，资产是实际维护对象：
 | Plane | 逻辑资产 | 默认物理载体 | 负责什么 |
 |---|---|---|---|
 | Knowledge | Handbooks | **Atlas: Markdown README**；**Topic/Bridge/Integration: `.tex` + README Landing** | 保存稳定的世界模型 |
-| Control | Rules | Markdown | 保存可执行的做题和考场动作 |
-| Learning | Inbox + 真实练习 | Markdown | 暴露问题、形成假设、积累检验 |
+| Control | 局部训练规则 + Subject Rules | Markdown | 保存可执行的做题和考场动作；局部规则优先进入对应训练专题 |
+| Learning | 专题训练 + Inbox + 真实练习 | Markdown | 用母题、变式和代表题压缩题目空间，并积累真实检验 |
 
 **Publication View 不是第四个 Plane，也不是第四类资产。** 它只是把前三者中已经确认需要发布的内容投影成阅读视图；对 Handbook 来说，就是 `90_publish/<category>/*.pdf`（按 `math1/`, `english1/`, `408/`, `system/` 分类组织）。
 
 这里必须区分“逻辑资产”和“文件格式”。`Atlas / Topic / Bridge / Integration` 是认知职责，不要求共用一种载体：Atlas 的责任就是地图、关系和 Routing，因此 Canonical Source 直接使用 Markdown README；Topic / Bridge / Integration 需要长机制正文，Canonical Source 使用 LaTeX，README 只做入口。
 
-Learning Plane 不是独立知识库。Case、测试记录和反例都可以只作为 Inbox 或待验证规则的一部分存在；只有复杂问题才单独成文。
+Learning Plane 不是独立知识库。Case、测试记录和反例都可以只作为 Inbox、母题与训练或待验证规则的一部分存在；只有复杂问题才单独成文。
+
+这里固定一条重要原则：**知识与训练分文件，训练内部不再人为拆散。** 一个 Topic / Bridge / Integration 目录中，Canonical `.tex` 只拥有数学机制；同目录可以有若干按内容命名的训练 Markdown，例如 `反函数.md`、`周期性.md`、`单调性.md`。训练文档可以把母题、变式、局部技巧、起手规则、检查动作与代表题放在一起，因为这些内容在复习时本来就共同服务同一个问题族。README 负责导航，不再要求固定的 `母题与训练.md` 或 `做题规则.md`。除 README 外，专题目录中长期保留的普通 Markdown 默认视为训练文档；历史 Source / Review 应显式标注并尽量移出正式训练入口。训练 Markdown 的头部契约、规则三元组、拆分/合并信号和配图工作流由 [`topic_practice_writing_spec.md`](topic_practice_writing_spec.md) 唯一维护。
 
 ## 3. Knowledge Plane
 
@@ -92,9 +94,19 @@ Rule 必须足够具体，至少让人知道：
 
 Rule 可以先放在“待验证”区域，不需要立即证明自己是长期规律。
 
+规则按作用范围就近归属：
+
+- 只服务一个具体问题族的规则，直接写进对应训练 Markdown，与母题和变式放在一起；
+- 真正跨多个训练专题、多个 Topic 反复使用的规则，才进入 Subject Rules；
+- 跨学科、跨考试的通用控制继续由 `01_control/problem_solving_kernel.md` 与 Exam Control 拥有。
+
+因此 Subject Rules 不再承担“收集本学科所有局部技巧”的职责，它主要负责跨专题控制与训练专题导航。
+
 ## 5. Learning Plane
 
-Learning 回答：“这次体验是否值得修改系统？”
+Learning 同时回答两个问题：“题目空间怎样被压缩？”以及“这次体验是否值得修改系统？”
+
+专题训练文档负责保存稳定的问题表示、母题、变式轴、局部技巧、局部做题规则与代表题。它不是第二本 Handbook：不重新证明数学机制；其核心职责是把大量具体题压缩为少量可生成的问题族，并让“怎么识别、怎么起手、怎么检查”紧贴对应母题。文件按内容命名，不按资产类型命名。训练图形采用“图意图早记录、图资产晚生成”：正文语义成形时先声明必要视觉责任，专题集中图审后再生成派生 SVG；图形生产不成为日常写作的前置阻塞，但必要图必须在专题成熟采用前闭环。
 
 主路径只有：
 
@@ -141,9 +153,10 @@ README.md = Canonical map + navigation
 optional poster/PDF = derived visual view
 
 Topic / Bridge / Integration:
-README.md = Landing Page
-.tex      = Canonical deep body
-PDF       = compiled reading view
+README.md       = Landing Page + training navigation
+.tex            = Canonical deep body
+<训练主题>.md   = optional training topic; names follow content, not asset type
+PDF             = compiled reading view
 ```
 
 因此 Publication 不创造新结论，也不拥有知识。Atlas 海报只能视觉化 README 已有关系；深度 Handbook PDF 只能展示 `.tex`。这样不会因为“Markdown 好改、PDF 好看”而演化成多份可修改真相。

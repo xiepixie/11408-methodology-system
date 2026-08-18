@@ -42,6 +42,22 @@ Inbox + 待验证 Rules + 新题表现
 -> 更新 Canonical Handbook / Rules
 ```
 
+### 训练文档内部循环：语义先行，视觉后置
+
+专题训练 Markdown 不要求“写一段就同步画一张图”。最佳节奏是：
+
+```text
+先写清问题表示 / 母题 / 局部规则 / 反例
+-> 发现图能显著压缩推理时，立即留下规范“待补图”或“候选配图”占位
+-> 继续完成本轮语义审阅与 Source Diff
+-> 整个专题集中图审：去重、复用、决定是否真的值得画
+-> 批量建立图源并生成 SVG
+-> 视觉验收后替换占位
+-> 必要图清零后再进入“已采用”
+```
+
+这里强调的是“**图意图早记录，图资产晚生成**”，而不是“把图永远拖到以后”。具体占位语法、TikZ→SVG 管线和成熟门槛见 [`topic_practice_writing_spec.md`](topic_practice_writing_spec.md)。
+
 ### 发布循环：阶段
 
 Topic / Bridge / Integration：
@@ -126,7 +142,7 @@ Handbook 状态词义统一见 [`terminology.md`](terminology.md) §10；本工�
 |---|---|
 | 偶发、不可解释、无具体改进 | No Update |
 | 还不确定是否重复 | Inbox |
-| 已形成可执行动作 | Subject Rules 的“待验证” |
+| 已形成可执行动作 | 若只属于一个问题族，进入对应训练 Markdown；真正跨多个训练专题时才进入 Subject Rules |
 | 明确是世界模型错误 | 先记录冲突，再进入场景 F |
 | 时间、退出、返回和风险错误 | Exam Control |
 
@@ -134,12 +150,12 @@ Handbook 状态词义统一见 [`terminology.md`](terminology.md) §10；本工�
 
 ### 场景 D：验证一条候选规则
 
-1. 打开 Subject Rules 的“待验证”；
+1. 先判断规则作用范围：局部规则打开对应训练 Markdown；跨多个训练专题的规则才打开 Subject Rules；
 2. AI 生成最小反例、表面不同的新题和竞争规则；
 3. 记录实际收益、失效条件和时间成本；
 4. 人决定已采用、收窄后继续验证、局部保留、已否定或 No Update。
 
-只修改对应 Rules。若规则实际上揭示了机制错误，再单独启动 Handbook 更新，不把机制定义塞进 Rules。
+只修改对应训练文档或 Subject Rules。若验证过程中发现它其实只是某个问题族的局部技巧，就保留在对应训练 Markdown；若规则实际上揭示了机制错误，再单独启动 Handbook 更新，不把机制定义塞进训练文档或 Rules。
 
 ### 场景 E0：转译真题 / PDF / 扫描试卷
 
@@ -192,13 +208,14 @@ Canonical Exam Question
 1. **定位**：先判断 Atlas、Topic、Bridge、Integration 还是 Rules；若只是指出真实但超纲的连接或阻断伪连接，再标记为 Extension / Anti-Bridge 关系，不新建第五、第六类 Handbook；
 2. **找 Owner**：检查对应 Course / Subject Atlas 和 `ownership_matrix.md`；
 3. **Handbook Diff**：与当前 Owner 比较重复、新增、冲突和越界；
-4. **拆分**：Knowledge 内容进入 Handbook Owner，Control 内容进入 Rules，Evidence 留在学习证据；若 Source 自带旧 PDF/排版稿，只把它登记为发布/Source 线索，不把 Publication View 当成新的知识 Owner；
-5. **人工决定**：接受哪些模型、保留哪些候选、拒绝哪些说法；
-6. **纳管**：先看类型。Atlas 的稳定地图内容进入 Canonical README；Topic / Bridge / Integration 的深度正文进入 Canonical `.tex`，README 只建立/更新 Landing Page。旧 Markdown 先作为 Source 做 Diff，不机械搬运；
-7. **状态**：更新该资产入口顶部的状态；
-8. **依赖**：只有产品拓扑或 Owner 改变时，才更新对应 Course / Subject Atlas 与 Ownership；
-9. **发布**：旧 LaTeX/PDF 先标为 legacy；Topic / Bridge / Integration 以 `.tex` 为正文 Owner，Atlas 以 README 为地图 Owner；PDF 仅是派生阅读/视觉视图，不反向拥有知识；
-10. **检查**：运行 `progress --write` 和 `check`。
+4. **Source 纠错**：若输入材料是用户自有、当前可编辑的原笔记，并且已独立确认存在事实、机制、适用边界或计算硬错误，则在继续迁移前直接回修原 Source；review log 同时记录“原错法 → 修正 → 受影响 Owner”。不得只在 Canonical 里写对、却让原笔记继续保留已知错误。外部不可编辑材料只记录勘误，不改原件；
+5. **拆分**：Knowledge 内容进入 Handbook Owner；可复用的问题表示、变式轴、代表题、局部技巧和局部规则进入最相关专题中按内容命名的训练 Markdown；只有跨多个训练专题的 Control 才进入 Subject Rules；Evidence 留在学习证据。若 Source 自带旧 PDF/排版稿，只把它登记为发布/Source 线索，不把 Publication View 当成新的知识 Owner；
+6. **人工决定**：接受哪些模型、保留哪些候选、拒绝哪些说法；
+7. **纳管**：先看类型。Atlas 的稳定地图内容进入 Canonical README；Topic / Bridge / Integration 的深度正文进入 Canonical `.tex`，README 只建立/更新 Landing Page。旧 Markdown 先作为 Source 做 Diff，不机械搬运；
+8. **状态**：更新该资产入口顶部的状态；
+9. **依赖**：只有产品拓扑或 Owner 改变时，才更新对应 Course / Subject Atlas 与 Ownership；
+10. **发布**：旧 LaTeX/PDF 先标为 legacy；Topic / Bridge / Integration 以 `.tex` 为正文 Owner，Atlas 以 README 为地图 Owner；PDF 仅是派生阅读/视觉视图，不反向拥有知识；
+11. **检查**：运行 `progress --write` 和 `check`。
 
 ### 场景 F：修改稳定 Handbook
 
@@ -214,7 +231,8 @@ Canonical Exam Question
 
 - Owner 或依赖改变：`ownership_matrix.md`；
 - 专题地图改变：对应 Course / Subject Atlas；
-- 做题动作改变：Subject Rules；
+- 做题动作、题目族表示、变式轴或局部技巧改变：优先更新对应训练 Markdown；
+- 真正跨多个训练专题的控制动作改变：更新 Subject Rules；
 - 发布稿因此过时：标记待同步，之后进入发布循环。
 
 ### 场景 G：形成跨专题理解
@@ -303,12 +321,6 @@ python3 00_system/cognitive_system.py progress --write
 python3 00_system/cognitive_system.py check
 python3 00_system/cognitive_system.py publish "<Topic-or-Bridge-or-Integration.tex>"
 python3 00_system/cognitive_system.py publish-view "<Atlas>/assets/<Atlas>_Poster.tex"
-python3 00_system/cognitive_system.py prompt model-diff
-python3 00_system/cognitive_system.py prompt first-divergence
-python3 00_system/cognitive_system.py prompt adversary
-python3 00_system/cognitive_system.py prompt import-handbook
-python3 00_system/cognitive_system.py prompt weekly-review
-python3 00_system/cognitive_system.py prompt publish
 ```
 
 脚本不依赖第三方包，不读取私人仓库外材料，也不自动修改 Canonical 内容。

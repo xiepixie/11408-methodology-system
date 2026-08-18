@@ -1,0 +1,120 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+\tikzset{
+  axisline/.style={themefg, line width=0.8pt, -{Stealth[length=1.8mm]}},
+  guide/.style={themegray, densely dashed, line width=0.9pt},
+  maincurve/.style={themecurve, line width=1.9pt},
+  openpt/.style={circle, draw=themefg, fill=themebg, line width=0.9pt, inner sep=2.2pt},
+  valuept/.style={circle, draw=themealert, fill=themealert, inner sep=2.0pt},
+  paneltitle/.style={font=\bfseries\small, anchor=south, text=themefg},
+  conclusion/.style={font=\footnotesize, anchor=north, text=themefg, fill=themebg, inner sep=0.8pt}
+}
+
+% -------------------- 可去间断 --------------------
+\begin{scope}[shift={(0,5.6)}, x=1.12cm, y=1.0cm]
+  \node[paneltitle] at (0,3.05) {1. 可去间断（极限存在但点值脱落）};
+  \draw[axisline] (-2.28,0) -- (2.35,0) node[below left] {$x$};
+  \draw[axisline] (-2.08,-0.18) -- (-2.08,2.82) node[below left] {$y$};
+  \draw[guide] (0,0) -- (0,2.78);
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (0,-0.03) {$x=a$};
+
+  \draw[maincurve]
+    plot[domain=-1.98:-0.035, samples=100] (\x,{0.12*\x*\x*\x-0.25*\x+1.10});
+  \draw[maincurve]
+    plot[domain=0.035:2.12, samples=100] (\x,{0.12*\x*\x*\x-0.25*\x+1.10});
+
+  % 两侧沿曲线向空心点的逼近箭头
+  \draw[themecurve, line width=1.0pt, -{Stealth[length=1.6mm]}] (-1.0, 1.23) -- (-0.35, 1.18);
+  \draw[themecurve, line width=1.0pt, -{Stealth[length=1.6mm]}] (1.1, 1.0) -- (0.45, 1.01);
+
+  \node[openpt] at (0,1.10) {};
+  \node[valuept] at (0,1.86) {};
+  \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=west] at (0.14,1.86) {\small $f(a)$};
+  \node[conclusion] at (0,-0.42) {$L^-=L^+=L,\quad f(a)\ne L$};
+\end{scope}
+
+% -------------------- 跳跃间断 --------------------
+\begin{scope}[shift={(7.25,5.6)}, x=1.12cm, y=1.0cm]
+  \node[paneltitle] at (0,3.05) {2. 跳跃间断（左右极限存在但不等）};
+  \draw[axisline] (-2.28,0) -- (2.35,0) node[below left] {$x$};
+  \draw[axisline] (-2.08,-0.18) -- (-2.08,2.82) node[below left] {$y$};
+  \draw[guide] (0,0) -- (0,2.78);
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (0,-0.03) {$x=a$};
+
+  \draw[maincurve]
+    plot[domain=-1.98:-0.035, samples=100] (\x,{0.08*\x*\x+0.16*\x+0.70});
+  \draw[maincurve]
+    plot[domain=0.035:2.12, samples=100] (\x,{-0.05*\x*\x+0.18*\x+1.72});
+
+  % 跳跃高度箭头指示
+  \draw[themealert, line width=1.2pt, {Stealth[length=1.6mm]}-{Stealth[length=1.6mm]}] (0.28,0.70) -- (0.28,1.72);
+  \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=west] at (0.35,1.21) {\scriptsize 跳跃度 $|L^+-L^-|$};
+
+  \node[openpt] at (0,0.70) {};
+  \node[openpt] at (0,1.72) {};
+  \node[valuept] at (0,1.18) {};
+  \node[conclusion] at (0,-0.42) {$L^-\ne L^+$（第一类间断）};
+\end{scope}
+
+% -------------------- 无穷间断 --------------------
+\begin{scope}[shift={(0,0)}, x=1.12cm, y=1.0cm]
+  \node[paneltitle] at (0,3.05) {3. 无穷间断（至少一侧极限发散）};
+  \draw[axisline] (-2.28,0) -- (2.35,0) node[below left] {$x$};
+  \draw[axisline] (-2.08,-0.18) -- (-2.08,2.82) node[below left] {$y$};
+  \draw[guide] (0,0) -- (0,2.78);
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (0,-0.03) {$x=a$};
+
+  \begin{scope}
+    \clip (-2.02,0.02) rectangle (2.18,2.78);
+    \draw[maincurve]
+      plot[domain=-1.98:-0.23, samples=120] (\x,{-0.58/\x+0.62});
+    \draw[maincurve]
+      plot[domain=0.25:2.12, samples=120] (\x,{0.72/\x+0.34});
+  \end{scope}
+
+  % 向上发散的指示箭头
+  \draw[themecurve, line width=1.0pt, -{Stealth[length=1.8mm]}] (-0.35,2.0) -- (-0.25,2.65);
+  \draw[themecurve, line width=1.0pt, -{Stealth[length=1.8mm]}] (0.35,2.0) -- (0.27,2.65);
+
+  \node[conclusion] at (0,-0.42) {单侧趋于 $+\infty$（第二类间断）};
+\end{scope}
+
+% -------------------- 振荡间断 --------------------
+\begin{scope}[shift={(7.25,0)}, x=1.12cm, y=1.0cm]
+  \node[paneltitle] at (0,3.05) {4. 振荡间断（单侧极限不存在且不趋无穷）};
+  \draw[axisline] (-2.28,0) -- (2.35,0) node[below left] {$x$};
+  \draw[axisline] (-2.08,-0.18) -- (-2.08,2.82) node[below left] {$y$};
+  \draw[guide] (0,0) -- (0,2.78);
+  \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (0,-0.03) {$x=a$};
+
+  \begin{scope}
+    \clip (-2.02,0.03) rectangle (2.18,2.78);
+    \draw[maincurve]
+      plot[domain=-1.98:-0.055, samples=360] (\x,{1.24+0.72*sin(deg(2.10/\x))+0.08*\x+0.05*\x*\x});
+    \draw[maincurve]
+      plot[domain=0.055:2.12, samples=360] (\x,{1.24+0.72*sin(deg(2.10/\x))+0.08*\x+0.05*\x*\x});
+  \end{scope}
+
+  \node[conclusion] at (0,-0.42) {任意小邻域内无限振荡（第二类间断）};
+\end{scope}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

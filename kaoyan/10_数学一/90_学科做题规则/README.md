@@ -1,13 +1,13 @@
 # 数学一 学科做题规则
 
-> 状态：目录已建立，规则正在积累
+> 状态：已按项目契约完成本轮职责收缩；Subject Rules 只保留跨训练专题控制。
 
-本目录存放数学一各模块的做题控制规则（Subject Rules）。
+本目录只保存数学一**跨训练专题、跨 Topic**仍值得独立维护的学科级做题控制规则，并作为各专题训练入口的汇总导航。
 
-规则不是知识摘要，必须能改变下一道题中的行为。详见 [handbook_contract.md](../../00_system/handbook_contract.md) §6。
+局部母题、变式、技巧和局部规则不再集中堆到这里，而是与对应 Topic / Bridge / Integration 共置在按内容命名的训练 Markdown 中；训练文件的头部、三元组、Owner 与导航格式遵循 [topic_practice_writing_spec.md](../../00_system/topic_practice_writing_spec.md)。规则不是知识摘要，必须能改变下一道题中的行为。职责边界详见 [handbook_contract.md](../../00_system/handbook_contract.md) §8。
 
 ## 当前规则
 
-- [线性代数做题规则](线性代数.md) — 由旧个人笔记中的执行经验做 Source Diff 后形成，当前全部候选动作先进入“待验证”；
-- [概率统计做题规则](概率统计.md)
-- [高等数学做题规则](高等数学.md) — 由 Topic01 函数对象与结构 Source Diff 提炼，当前全部动作先进入“待验证”；后续按专题继续补充。
+- [线性代数做题规则](线性代数.md) — 本轮局部规则已全部下沉到 Topic/Bridge Practice；当前仅保留迁移导航与未来学科级晋升入口；
+- [概率统计做题规则](概率统计.md) — 只保留复合题交接、独立性证据层级等真正跨 P01--P08 的控制；其余局部规则已下沉；
+- [高等数学跨专题做题规则](高等数学.md) — 只保留跨多个训练专题/Topic 的控制动作；局部规则由各高数专题 README 导航到同目录训练 Markdown。

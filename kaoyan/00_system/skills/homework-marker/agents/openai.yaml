@@ -1,0 +1,3 @@
+interface:
+  display_name: "HomeworkMarker"
+  short_description: "面向真实学习者作答的通用批改与认知诊断：定位 First Divergence、设计复测，并选择性反哺错题库和知识系统"

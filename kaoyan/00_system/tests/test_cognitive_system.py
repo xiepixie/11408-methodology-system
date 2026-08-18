@@ -95,6 +95,63 @@ class StatusSemanticsTests(unittest.TestCase):
         self.assertFalse(MODULE.is_handbook_area(path))
 
 
+class TrainingFigureLifecycleTests(unittest.TestCase):
+    def setUp(self):
+        self._old_project_root = MODULE.PROJECT_ROOT
+        self._tmp = tempfile.TemporaryDirectory()
+        MODULE.PROJECT_ROOT = Path(self._tmp.name).resolve()
+
+    def tearDown(self):
+        MODULE.PROJECT_ROOT = self._old_project_root
+        self._tmp.cleanup()
+
+    def _write_training_package(self, status: str, placeholder: str) -> None:
+        topic = MODULE.PROJECT_ROOT / "10_数学一" / "10_高等数学" / "01_测试专题"
+        topic.mkdir(parents=True, exist_ok=True)
+        (topic / "README.md").write_text(
+            "# 测试专题\n\n"
+            f"> 状态：{status}\n\n"
+            "## 训练导航\n\n"
+            "- [反函数](反函数.md)\n",
+            encoding="utf-8",
+        )
+        (topic / "反函数.md").write_text(
+            "# 反函数\n\n"
+            "> 训练定位：测试图意图生命周期。  \n"
+            "> 模型归属：[《测试正文》](测试正文.tex)。\n\n"
+            f"{placeholder}\n",
+            encoding="utf-8",
+        )
+
+    def test_required_figure_is_audit_only_while_pending_confirmation(self):
+        self._write_training_package(
+            "待人工确认；Canonical LaTeX 工作稿已建立",
+            "> **待补图｜反函数_单射判别**：用水平线展示一个输出是否对应多个输入。",
+        )
+        hard_codes = {finding.code for finding in MODULE.training_markdown_findings()}
+        self.assertNotIn("E-TRAINING-FIGURE-TODO", hard_codes)
+        audit_codes = {finding.code for finding in MODULE.audit_training_figure_todos()}
+        self.assertIn("A-TRAINING-FIGURE-TODO", audit_codes)
+
+    def test_required_figure_blocks_adopted_topic(self):
+        self._write_training_package(
+            "已采用；Canonical LaTeX 正文已建立",
+            "> **待补图｜反函数_单射判别**：用水平线展示一个输出是否对应多个输入。",
+        )
+        hard_codes = {finding.code for finding in MODULE.training_markdown_findings()}
+        self.assertIn("E-TRAINING-FIGURE-TODO", hard_codes)
+
+    def test_candidate_figure_neither_blocks_nor_enters_required_audit(self):
+        self._write_training_package(
+            "已采用；Canonical LaTeX 正文已建立",
+            "> **候选配图｜反函数_图像补充**：若文字不够直观，再补图。",
+        )
+        hard_codes = {finding.code for finding in MODULE.training_markdown_findings()}
+        self.assertNotIn("E-TRAINING-FIGURE-TODO", hard_codes)
+        audit_codes = {finding.code for finding in MODULE.audit_training_figure_todos()}
+        self.assertNotIn("A-TRAINING-FIGURE-TODO", audit_codes)
+
+
 class PostMigrationContractTests(unittest.TestCase):
     def test_repo_root_is_parent_of_kaoyan_domain(self):
         self.assertEqual(MODULE.REPO_ROOT, MODULE.PROJECT_ROOT.parent)
@@ -144,9 +201,10 @@ class ExamSolutionIntegrityTests(unittest.TestCase):
         self.assertEqual(MODULE.exam_solution_findings(), [])
 
     def test_model_anchor_requires_explicit_owner_marker(self):
+        self.assertIsNotNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- 主题：DS07｜DFS\n"))
+        self.assertIsNotNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- 模型归属：CO-03 数据通路\n"))
+        self.assertIsNotNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- 规则：先定作用域\n"))
         self.assertIsNotNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- Topic：DS07｜DFS\n"))
-        self.assertIsNotNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- Topic / Owner：CO-03 数据通路\n"))
-        self.assertIsNotNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- Rules：先定 Scope\n"))
         self.assertIsNone(MODULE.EXAM_SOLUTION_ANCHOR_OWNER_RE.search("- 题目信号：出现 Cache\n"))
 
     def test_exam_solution_preferred_headings_are_chinese(self):
@@ -249,6 +307,16 @@ class PublishPreflightTests(unittest.TestCase):
         env = MODULE.project_compile_env()
         texinputs = env.get("TEXINPUTS", "")
         self.assertTrue(texinputs.startswith(f"{MODULE.PROJECT_ROOT}:"))
+
+    def test_math1_handbook_publishes_into_math1_category(self):
+        target = (
+            MODULE.PROJECT_ROOT
+            / "10_数学一"
+            / "10_高等数学"
+            / "02_极限与连续_邻域尺度与存在性"
+            / "极限与连续_邻域尺度与存在性.tex"
+        )
+        self.assertEqual(MODULE.publish_target_dir(target), MODULE.PUBLISH_DIR / "math1")
 
     def test_system_handbook_template_is_not_a_missing_landing_page_debt(self):
         template = MODULE.PROJECT_ROOT / "00_system" / "handbook_template.tex"

@@ -50,5 +50,13 @@ python3 00_system/cognitive_system.py start wrong --subject os --topic 虚拟内
 python3 00_system/cognitive_system.py start explore --subject data-structure --topic 图
 ```
 
+## 启动交互式阅读门户
+
+在本地以现代 Web 界面全局检索并阅读 120+ 篇 PDF 交付件（支持 `Cmd+K` 全局检索、全屏专注阅读、明暗主题与多维过滤）：
+
+```bash
+python3 ../infra/scripts/serve_portal.py
+```
+
 完整路由规则见 [Agent 场景路由与 Context Pack 协议](00_system/agent_context_protocol.md)。
 

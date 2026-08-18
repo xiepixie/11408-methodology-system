@@ -4,6 +4,7 @@
 
 - [Canonical LaTeX](OS-00_操作系统基础与程序运行环境_方法论手册.tex)
 - [Published PDF](../../../90_publish/408/OS-00_操作系统基础与程序运行环境_方法论手册.pdf)
+- [基础概念与 Owner 定位](基础概念与Owner定位.md)：承接旧 Canonical 的七问控制器与概念路由；只训练定位和转交，不复制 OS-00 机制正文。
 
 ## Position
 

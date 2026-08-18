@@ -2,7 +2,17 @@
   <title id="title">题 47 自治系统互连拓扑</title>
   <desc id="desc">AS1、AS2、AS3、AS4 及路由器 R11 至 R16、R22、R33、R44 的互连关系，AS1 内运行 RIP，并连接网络 210.2.3.0/24 与 210.2.4.0/24；外部目的网络为 136.5.16.0/20。</desc>
   <rect id="background" width="1600" height="960" rx="18" fill="#30362d"/>
-  <g id="regions" fill="#394136" stroke="#c9d3c4" stroke-width="2.4">
+<style>
+  @media print, (prefers-color-scheme: light) {
+    [fill="#30362d"], [fill="#30362D"], [fill="#30362d" i] { fill: #fafaf7 !important; }
+    [stroke="#30362d"], [stroke="#30362D"], [stroke="#30362d" i] { stroke: #fafaf7 !important; }
+    [fill="#edf4e8"], [fill="#EDF4E8"], [fill="#edf4e8" i] { fill: #111111 !important; }
+    [stroke="#edf4e8"], [stroke="#EDF4E8"], [stroke="#edf4e8" i] { stroke: #111111 !important; }
+    [fill="#9ea897"], [fill="#9EA897"], [fill="#9ea897" i] { fill: #666666 !important; }
+    [stroke="#9ea897"], [stroke="#9EA897"], [stroke="#9ea897" i] { stroke: #666666 !important; }
+  }
+</style>
+<g id="regions" fill="#394136" stroke="#c9d3c4" stroke-width="2.4">
     <ellipse id="as1-region" cx="800" cy="695" rx="680" ry="205"/>
     <ellipse id="as2-region" cx="285" cy="325" rx="180" ry="105"/>
     <ellipse id="as3-region" cx="800" cy="245" rx="175" ry="105"/>

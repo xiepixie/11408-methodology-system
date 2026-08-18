@@ -32,6 +32,7 @@ Agent 不应为了显得全面而通读整个仓库。上下文加载分为 **Bo
 
 - 稳定资产写入、导入、状态/拓扑变化：`collaboration_workflow.md`；
 - Handbook/Rules 新建或重构：`handbook_contract.md`；
+- Topic / Bridge / Integration 同目录训练 Markdown 的新建、拆分、局部规则与配图：`topic_practice_writing_spec.md`；
 - 大规模 Handbook 正文打磨：`handbook_writing_spec.md`；
 - LaTeX Family/Profile/依赖/Semantic API：`../../infra/latex/README.md`（全局 Owner；本仓库路由见 `latex_design_system.md`）；
 - LaTeX 字体/表格/图示/版心：`latex_layout_spec.md`；
@@ -64,12 +65,15 @@ Boot Core 已经包含 `CURRENT.md`。如果本任务需要判断全局成熟度
 
 ### L3：当前任务
 
-若当前资产是 Atlas，直接读取其 Canonical README；若当前资产是 Topic / Bridge / Integration，则按顺序读取：
+若当前资产是 Atlas，直接读取其 Canonical README；若当前资产是 Topic / Bridge / Integration，则按任务需要读取当前专题目录：
 
 1. 当前目录的 `README.md` Landing Page；
 2. 同目录或 Landing Page 指向的 Canonical `.tex`；
-3. 用户提供的题目、原始过程和答案；
-4. 与本场景有关的 Rules / Inbox / Source。
+3. 若是做题、训练、错题或规则验证，再按 README 导航读取相关训练 Markdown，例如 `反函数.md`、`周期性.md`、`对称性.md`；
+4. 用户提供的题目、原始过程和答案；
+5. 只有需要跨训练专题控制时，再补充 Subject Rules / Inbox / Source。
+
+训练 Markdown 可以同时拥有母题、变式、局部技巧与局部规则。新建或重构时必须遵守 [`topic_practice_writing_spec.md`](topic_practice_writing_spec.md) 的最小头部、局部规则三元组与图形 Source/Derived 约束。正文阶段遇到必要视觉解释时，先用规范 `待补图` / `候选配图` 记录图意图，不创建不存在的图片链接；专题语义稳定后再集中补图，必要图在父专题进入 `已采用` 前清零。不能为了方便继续把这些内容复制回 Subject Rules；Subject Rules 主要提供跨专题规则与导航。
 
 Topic / Bridge / Integration 如果没有 Canonical `.tex`，或者状态明确为“README 旧工作稿待迁移 / 正文未建”，Agent 必须说明当前没有成熟深度 Handbook。旧长 README 只能当 Source 使用，不能假装在调用仓库现有模型。
 
@@ -81,11 +85,11 @@ Topic / Bridge / Integration 如果没有 Canonical `.tex`，或者状态明确�
 |---|---|---|---|---|
 | `explore` | 还没有模型、想深入讨论 | Mapper + Socratic Tutor | Course / Subject Atlas、相邻 Topic | 临时工作模型（provisional model）+ 反例 + 用户复述 |
 | `model-diff` | 刚学完，这是我的理解 | Socratic Tutor + Mapper | Atlas、Topic | 主干/混淆/缺口/边界 |
-| `solve` | 这题不会，按现有模型讲 | Model-Grounded Solver | Atlas、Topic、Subject Rules | 模型锚点 + 解题链 + 校验 + 复原问题 |
+| `solve` | 这题不会，按现有模型讲 | Model-Grounded Solver | Atlas、Topic、对应训练 Markdown；必要时 Subject Rules | 模型锚点 + 母题表示 + 解题链 + 校验 + 复原问题 |
 | `exam-solution` | 批量优化历年真题解析、用心智模型重写题解 | Model-Grounded Solver + Editor | `exam_solution_agent_prompt.md` + `exam_solution_authoring_spec.md` + `exam_solution_quality_assurance.md` + Canonical Exam Source + Subject Atlas / Rules + 当前 Topic/Bridge/Integration | `solutions/qNN.md` + 年度 solution review + 题解验证 + Model Feedback Closure |
 | `wrong` | 这是错题和原过程 | Debugger | Topic、Rules、Evidence 协议 | First Divergence + 诊断假设 + 最小复测 |
 | `adversary` | 攻击这条理解/规则 | Adversary | Topic 或 Rules、已有表现 | 反例、失效条件、成本与下一次测试 |
-| `practice` | 针对这个断点出题 | Coach | Topic、Rules、已确认断点 | 少量诊断题 + 每题观察目标 |
+| `practice` | 针对这个断点出题 | Coach | Topic、对应训练 Markdown、已确认断点 | 少量诊断题 + 变式轴 + 每题观察目标 |
 | `import` | 导入新手册/旧稿 | Mapper + Editor | Handbook Contract、Ownership、对应 Course / Subject Atlas | Handbook Diff + 人工决策点 |
 | `exam-source` | 转真题/PDF/扫描试卷、重画题图 | Editor + Source Reconstructor | `exam_source_agent_prompt.md` + `exam_source_conversion_spec.md` + 对应 Exam Profile + 目标 Exam Archive 状态 + 用户提供的最高质量题面 | Canonical Exam Markdown + `exam.json` + Semantic SVG + Logic Review + Validation |
 | `review` | 周复盘/专题复盘 | Adversary + Editor + Coach | Inbox、Rules、CURRENT、PROGRESS | 删除/继续/采用/更新建议 |
@@ -178,7 +182,7 @@ Cross-Subject Bridge / Integration 问题只在需要时读取四科相关 Owner
 ## 6. 用户最少需要提供什么
 
 | 场景 | 最少输入 |
-|---|---|
+| --------------- | --------------------------------------------- |
 | explore | 学科/专题 + 目前的直觉或最困惑的问题 |
 | model-diff | 自己的解释 |
 | solve | 题目 + 卡在哪里；已有尝试可选 |

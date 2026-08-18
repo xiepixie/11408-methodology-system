@@ -447,87 +447,11 @@ $t_i$ 是允许事务发生的测试下限，$d_i$ 是真正消耗量；$d_i=0$ 
 \boxed{\text{Binary Semaphore can implement mutual exclusion, but is not conceptually identical to a mutex.}}
 \]
 
-\section{PV 大题统一建模算法：先建模，再填 P/V}
+\section{最小调用接口：从共享状态进入许可模型}
 
-\subsection{旧式做法的问题}
+当题目出现多个执行流、共享状态、等待条件或资源计数时，先回到本册确认三件事：\kw{谁在等待什么事实、谁能制造这个事实、哪些共享更新必须保持原子不变量}。本册负责解释 semaphore/PV 为什么能够表达这些约束，以及等待依赖如何产生死锁；完整的落笔流程、P/V 排序检查、最少信号量与作答控制统一进入同目录训练文档 \texttt{PV同步题.md}。
 
-“找互斥、找同步、塞 P/V”很实用，但遇到复杂变式时容易机械。更稳定的方法是从共享状态和不变量出发。
-
-\subsection{七步法}
-
-\begin{method}[PV 通用七步法]
-\begin{enumerate}
-\item \kw{列执行流}：有哪几类进程/线程？每类反复执行什么业务动作？
-\item \kw{画共享状态}：共享缓冲区、计数器、资源、标志位、队列分别是什么？
-\item \kw{写不变量}：哪些关系永远不能被破坏？如 $0\le count\le N$。
-\item \kw{写继续条件}：每类执行流在什么谓词成立时才能继续？
-\item \kw{找原子区域}：哪些多步修改必须表现得像一个整体？
-\item \kw{把约束映射成信号量}：互斥许可、资源数量、事件前驱分别需要什么信号量及初值？
-\item \kw{证明与检查}：Safety、Deadlock、Liveness、Starvation、锁粒度和 P/V 完备性。
-\end{enumerate}
-\end{method}
-
-\begin{center}
-
-\begingroup
-\small
-\begin{tikzpicture}[>=Stealth, node distance=1.0cm and 1.1cm]
-\tikzset{
-  stepnode/.style={draw=mainblue, ultra thick, fill=softblue, rounded corners=2.5mm, align=center, minimum width=2.4cm, minimum height=0.85cm, font=\small\bfseries}
-}
-\node[stepnode] (s1) {1. 列执行流};
-\node[stepnode, right=of s1] (s2) {2. 画共享状态};
-\node[stepnode, right=of s2] (s3) {3. 写不变量};
-\node[stepnode, right=of s3] (s4) {4. 写继续条件};
-
-\node[stepnode, below=1.2cm of s4] (s5) {5. 找原子区域};
-\node[stepnode, left=of s5] (s6) {6. 映射信号量};
-\node[stepnode, left=of s6, fill=softgreen, draw=deepgreen] (s7) {7. 证明与检查};
-
-\draw[->, ultra thick, deepblue] (s1) -- (s2);
-\draw[->, ultra thick, deepblue] (s2) -- (s3);
-\draw[->, ultra thick, deepblue] (s3) -- (s4);
-\draw[->, ultra thick, deepblue] (s4) -- (s5);
-\draw[->, ultra thick, deepblue] (s5) -- (s6);
-\draw[->, ultra thick, deepgreen] (s6) -- (s7);
-\end{tikzpicture}
-\endgroup
-\end{center}
-
-\subsection{“先同步 P，再互斥 P”不是宇宙定律}
-
-在标准有界缓冲区中：
-\begin{codeblock}
-P(empty);
-P(mutex);
-... put item ...
-V(mutex);
-V(full);
-\end{codeblock}
-是正确经典模板。
-
-错误写法：
-\begin{codeblock}
-P(mutex);
-P(empty);   // 若 empty==0，则持有 mutex 睡眠
-\end{codeblock}
-可能死锁，因为只有消费者进入同一临界区才能制造新的 empty，但 mutex 已被生产者占有。
-
-\begin{warn}[P 操作顺序的判断原则]
-不要机械背“所有题都先同步后互斥”。应按以下规则判断：
-\begin{center}
-\bfseries 不要在持有某个资源/锁时，等待一个只能由需要该资源/锁的其他执行流才能制造的条件。
-\end{center}
-复杂题应画等待依赖，而不是套固定顺序。
-\end{warn}
-
-\subsection{V 的顺序也不要绝对化}
-
-标准生产者--消费者通常写：
-\[
-V(mutex)\to V(full)
-\]
-这样先释放临界区，再通知消费者，避免刚唤醒的消费者马上又阻塞在 mutex 上。某些简单模型里交换两个 V 不一定破坏 Safety，但会改变调度/性能，复杂协议里还可能影响语义。因此不要记成“V 顺序永远无所谓”。
+若问题已经从同步约束转为“当前状态是否安全、请求能否批准、是否已经死锁或怎样恢复”，转入 \texttt{死锁判断与Banker.md}；Canonical 继续拥有 Safety、Banker、Detection 与 Recovery 的机制语义。
 
 \section{模式一：生产者--消费者——容量计数 + 互斥更新}
 
@@ -1458,7 +1382,7 @@ Unsafe State 不等于此刻系统已经陷入死锁！Unsafe 的真实含义是
 安全算法每轮扫描 $n$ 个进程并比较 $m$ 类资源，朴素实现上界为 $O(n^2m)$；它需要进程声明 Max，且动态进程加入、Max 不可预知、资源类型变化都会削弱适用性。它按最坏需求做保证，可能保守拒绝实际不会死锁的请求，这正是 Avoidance 与事后 Detection 的资源利用率权衡。
 \end{method}
 
-\subsection{Avoidance vs Detection：考场核心辨析}
+\subsection{Avoidance 与 Detection：目标状态与输入语义不同}
 
 死锁规避 (Banker) 与 死锁检测 (Detection) 在算法结构上相似，但语义与触发时机有本质不同。考场上必须对比澄清：
 
@@ -1532,149 +1456,6 @@ $\boxed{\begin{gathered}\text{Detection: Who is}\\\text{already unable to finish
 检测可以在每次资源请求后做，发现快但成本高；也可以定时做，周期越长死锁占用资源和卷入进程越多；还可以在“利用率明显下降且就绪队列并不长”等征兆出现时按需做。利用率低本身不能证明死锁，I/O 密集型负载同样会造成低 CPU 使用，最终仍须运行图化简/矩阵检测。
 
 逐个终止死锁进程时，每终止一个都要重新检测，因为一次释放可能打破整个等待环；资源抢占则必须恢复被抢进程到一致状态。没有检查点时只能完全重做，存在检查点时可回滚到最近安全快照；检查点越密，恢复损失越小但正常保存成本越高。牺牲者选择还应记录已被选中过的次数，否则同一低优先级进程会反复被抢而形成恢复饥饿。
-
-\subsection{考场判题协议 (Exam Protocol)}
-
-\begin{exam}[\boxed{\text{先判问题类型，再选算法}}]
-在 408 考场上拿到死锁相关题目，按以下逻辑协议快速定位：
-\begin{itemize}
-\item 问“死锁形成的必要条件是什么？” $\implies$ \kw{Coffman 四条件（ME, HW, NP, CW）}
-\item 问“当前分配状态是否安全？” $\implies$ \kw{运行 Safety Algorithm（看 Need 矩阵）}
-\item 问“这个资源请求是否应被批准？” $\implies$ \kw{Resource-Request 三关 + Safety Algorithm}
-\item 问“系统现在是否已经陷入死锁？” $\implies$ \kw{运行 Deadlock Detection 消去法（看 Request 矩阵）}
-\item 问“资源分配图里有环就一定是死锁吗？” $\implies$ \kw{先看每类资源实例数（单实例 ⇔ 死锁，多实例 ≠ 充要）}
-\item 问“如何在设计/运行期保证死锁绝不发生？” $\implies$ \kw{Prevention（破坏 4 条件）/ Avoidance（Banker）}
-\item 问“死锁已经发生怎么处理？” $\implies$ \kw{Recovery（终止进程 / 抢占资源）}
-\end{itemize}
-\end{exam}
-
-\section{经典 PV 题不要背答案：把它们看成“并发结构模式库”}
-
-\begingroup
-\small
-\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{>{\bfseries}p{0.20\linewidth} p{0.32\linewidth} p{0.40\linewidth}}
-\toprule
-经典同步题型 & 共享对象与约束关系 & 解题第一反应与建模板块\\
-\midrule
-\endfirsthead
-\toprule
-经典同步题型 & 共享对象与约束关系 & 解题第一反应与建模板块\\
-\midrule
-\endhead
-生产者--消费者 & 容量计数 + 共享结构互斥 & 写 $0\le count\le N$，寻找 \code{empty / full / mutex}\\
-读者--写者 & 群体准入 + 元数据保护 + 公平策略 & 谁可并行？谁必须独占？谁记录群体状态？\\
-哲学家进餐 & 多资源同时需求 + 循环等待 & 画资源依赖图；考虑全序、准入限制或原子资格判断\\
-吸烟者问题 & 多路条件分派 / Selective Wakeup & 不同条件是否应有不同事件信号量？\\
-理发师问题 & 有限准入 + 服务/请求双向会合 & 分清等待容量、请求数量、服务准备三类状态\\
-前驱图 (DAG) & Happens-Before 显式前驱边 & 只为跨执行流依赖建立初值为 0 的事件信号量\\
-Barrier 屏障 & 阶段协同同步 & 所有人到齐之前无人能越过阶段边界\\
-Fork / Join & 一次性异步完成事件 & 完成者执行 V，等待者执行 P，初值设为 0\\
-\bottomrule
-\end{longtable}
-\endgroup
-
-\section{408 大题作答模板：从自然语言到 PV 伪代码}
-
-\subsection{第一遍：只翻译业务，不写 P/V}
-
-先写：
-\begin{codeblock}
-producer: produce -> put
-consumer: get -> consume
-\end{codeblock}
-或者：
-\begin{codeblock}
-reader: enter_read -> read -> leave_read
-writer: enter_write -> write -> leave_write
-\end{codeblock}
-避免一边读题一边随手插 P/V，导致局部正确、整体矛盾。
-
-\subsection{第二遍：建立状态表}
-
-建议草稿固定写：
-
-\begingroup
-\small
-\renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} X X}
-\toprule
-对象 / 资源 & 初始状态与许可数量 & 谁会改变/消费该许可？\\
-\midrule
-共享数据实体 & 例如 \code{buffer / count} & 生产者 / 消费者（通过临界区保护）\\
-互斥许可 & Initial = 1 & 进入/离开临界区的执行流成对 P/V\\
-资源许可 & Initial = $N$ 或 $0$ & 生产方 V 增加，消费方 P 减少\\
-事件许可 & Initial = 0 & 前驱动作完成者 V，后继等待者 P\\
-\bottomrule
-\end{tabularx}
-\endgroup
-
-\subsection{第三遍：在“等待点”和“制造条件点”成对放置 P/V}
-
-每一个 P 都应能回答：
-\begin{quote}
-我现在具体缺少哪一份事实/资源/许可？谁能够在未来执行 V 制造它？
-\end{quote}
-每一个 V 都应能回答：
-\begin{quote}
-我刚刚完成了什么状态变化，使哪类等待者现在可能继续？
-\end{quote}
-
-\subsection{第四遍：四类证明}
-
-\begin{enumerate}
-\item \kw{Safety}：临界区是否互斥？容量是否越界？前驱是否被违反？
-\item \kw{Deadlock}：有没有“持有 A 等 B，而制造 B 的人必须先拿 A”？有没有资源环？
-\item \kw{Liveness}：每个阻塞点未来是否存在可达的 V？
-\item \kw{Performance}：耗时业务是否被不必要地放进互斥区？是否人为串行化？
-\end{enumerate}
-
-\section{高频错因诊断表}
-
-\begingroup
-\small
-\renewcommand{\arraystretch}{1.25}
-\begin{longtable}{>{\bfseries}p{0.24\linewidth} p{0.35\linewidth} p{0.33\linewidth}}
-\toprule
-错误现象 & 根本认知缺口 & 修复与排查提问\\
-\midrule
-\endfirsthead
-\toprule
-错误现象 & 根本认知缺口 & 修复与排查提问\\
-\midrule
-\endhead
-\code{mutex} 初值乱设 & 没理解“一个互斥进入许可” & 系统初始能允许几人同时进入？\\
-\code{full/empty} 写反 & 没从初始物理状态推许可 & 一开始已有多少产品？多少空位？\\
-看到共享变量就全加锁 & 没区分共享状态与不变量 & 哪些多步更新真的不能交错？\\
-锁包住生产/计算耗时操作 & 不理解临界区粒度 & 哪部分只是私有计算？\\
-先拿 mutex 后等待容量死锁 & 没画等待依赖 & 制造我等待条件的人是否也需要我持有的锁？\\
-读者写者漏保护 count & 忽视元数据也是共享状态 & 谁在决定“第一个/最后一个”？\\
-V 了错误信号量 & 没把 V 当成“制造事实” & 我刚刚制造了哪一种可消费条件？\\
-前驱图边全设信号量 & 没区分线程内部程序顺序 & 这条依赖是否已经由同一线程顺序保证？\\
-哲学家只背左右筷顺序 & 没看到资源等待环 & 是否存在全序或原子获取策略？\\
-把唤醒当作立即运行 & 混淆 Blocked$\to$Ready 与 Ready$\to$Running & 谁还必须经过 scheduler？\\
-把 semaphore 当 mutex & 混淆许可与所有权 & 这里管理的是“谁拥有锁”还是“还有几份许可”？\\
-\bottomrule
-\end{longtable}
-\endgroup
-
-\section{考场速查：PV 十问}
-
-\begin{exam}[拿到 PV 大题，按顺序问]
-\begin{enumerate}
-\item 有几类执行流？
-\item 它们共享哪些状态/资源？
-\item 每个共享状态的初值是什么？
-\item 哪些状态更新必须互斥？
-\item 哪些动作必须等待某个条件/前驱？
-\item 每个等待条件在现实中对应什么“许可”？初值多少？
-\item 谁在什么动作完成后制造这个许可（V）？
-\item 是否持锁等待了只能由竞争者制造的条件？
-\item 是否存在循环等待、饥饿或无意义的大临界区？
-\item 最终伪代码是否保持所有不变量，并且每个阻塞点都有未来可达的唤醒路径？
-\end{enumerate}
-\end{exam}
 
 \section{专题总结：把 PV 从代码模板提升为状态约束与语义建模}
 
