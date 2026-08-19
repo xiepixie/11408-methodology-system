@@ -138,7 +138,7 @@ E(\bar X)=\mu,\qquad \operatorname{Var}(\bar X)=\frac{\sigma^2}{n},\qquad E(S^2)
 \]
 其中 $\mu_4=E[(X-\mu)^4]$。正态总体下 $\mu_4=3\sigma^4$，于是 $\operatorname{Var}(S^2)=2\sigma^4/(n-1)$；四阶矩条件不能省略。
 
-\section{第三层：顺序统计量与经验分布}
+\section{第三层：顺序统计量；经验分布作为拓展接口}
 
 将样本排列为 $X_{(1)}\le\cdots\le X_{(n)}$。最大值、最小值的 CDF 为
 \[
@@ -168,6 +168,10 @@ P(X_{(n)}=x)=F(x)^n-F(x^-)^n.
 \end{methodbox}
 连续 CDF 变换给出 $F(X_{(k)})\sim\operatorname{Beta}(k,n-k+1)$；均匀总体时 $X_{(k)}$ 本身即为该 Beta 分布。密度公式的机制是“左边 $k-1$ 个、邻域内一个、右边 $n-k$ 个”再乘排列数，不能误解为连续变量在单点有正概率。
 
+\begin{warnbox}{数学一范围边界：经验分布保留为拓展，不挤占主干}
+本套旧九章资料已明确把“经验分布函数”标为偏数三内容。这里保留它，是因为它能把“统计量仍然随机”“示性变量平均”“大数律”三件事接起来；但数学一复习主干应优先掌握样本均值/方差、$\chi^2,t,F$ 与正态总体抽样分布。除非真题、错题或后续学习需要，不把 Glivenko--Cantelli 等结果作为考场必背项。
+\end{warnbox}
+
 经验分布函数为
 \[
 F_n(x)=\frac1n\sum_{i=1}^nI_{\{X_i\le x\}}.
@@ -176,7 +180,7 @@ F_n(x)=\frac1n\sum_{i=1}^nI_{\{X_i\le x\}}.
 \[
 E[F_n(x)]=F(x),\qquad \operatorname{Var}[F_n(x)]=\frac{F(x)[1-F(x)]}{n}.
 \]
-逐点由强大数律 $F_n(x)\to F(x)$ 几乎必然；整体则有 Glivenko--Cantelli 一致收敛 $\sup_x|F_n(x)-F(x)|\to0$ 几乎必然。重复观测值出现 $m$ 次时 EDF 跳跃高度是 $m/n$，不是固定的 $1/n$。
+逐点由强大数律 $F_n(x)\to F(x)$ 几乎必然；整体则有 Glivenko--Cantelli 一致收敛 $\sup_x\lvert F_n(x)-F(x)\rvert\to0$ 几乎必然。重复观测值出现 $m$ 次时 EDF 跳跃高度是 $m/n$，不是固定的 $1/n$。
 
 \section{第四层：三大分布的生成、密度与分位点}
 
@@ -406,7 +410,7 @@ T=\bar X^2-\frac{S^2}{n}
 \begin{examplebox}{2013 Q八：平方变换要保留两个原像}
 若 $X\sim t(n)$、$Y\sim F(1,n)$，则 $Y\overset d=X^2$。当 $c>0$ 且 $P(X>c)=\alpha$ 时，$t$ 分布关于零对称，故
 \[
-P(Y>c^2)=P(|X|>c)=P(X>c)+P(X<-c)=2\alpha.
+P(Y>c^2)=P(\lvert X\rvert>c)=P(X>c)+P(X<-c)=2\alpha.
 \]
 这里的 $2$ 不是记忆常数，而是平方映射 $x\mapsto x^2$ 的两个原像 $c$ 与 $-c$；若忘记非单调变换的原像数量，就会把答案误写成 $\alpha$。
 \end{examplebox}

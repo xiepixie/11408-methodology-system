@@ -252,11 +252,11 @@ Canonical Exam Question
 
 ### 场景 H：专题/每周复盘
 
-1. 汇总 Inbox 和待验证 Rules；
+1. 汇总 Inbox、当前专题训练 Markdown 中待复核的局部控制，以及 Subject Rules 的待验证候选；
 2. 删除一次性、重复和无法复原的记录；
-3. 找重复机制和模型冲突；
+3. 找重复机制和模型冲突，并先判断规则作用域；
 4. 对候选规则做反例与成本检查；
-5. 人工决定晋升、修改、否定或继续观察；
+5. 人工决定局部保留、跨专题晋升、修改、否定或继续观察；
 6. 更新 `CURRENT.md` 的当前焦点与下一步；
 7. 重新生成 `PROGRESS.md` 并运行检查。
 
@@ -264,7 +264,8 @@ Canonical Exam Question
 
 输入应包含题序、用时、进入/退出/返回行为和最终得分。AI 先分析 Expected Score under Time Constraint，不把所有失分归为知识问题。
 
-- 单题操作问题进入 Subject Rules；
+- 单一问题族的识别、路径、执行与检查问题进入对应 Topic / Bridge / Integration 的训练 Markdown；
+- 只有同一控制跨多个训练专题反复出现并有证据支撑时，才进入 Subject Rules；
 - 时间、风险、注意力和返回策略进入 Exam Control；
 - 只有明确机制误解才挑战 Handbook。
 

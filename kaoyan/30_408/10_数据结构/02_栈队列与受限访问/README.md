@@ -21,10 +21,10 @@ DS01 的底层顺序/链接表示；DS-B01 的 traversal frontier 接口。
 递归、树遍历、图遍历本体；这些只通过 Bridge 调用栈/队列能力。
 
 ## Manual
-- Canonical：[DS02_栈队列与受限访问_方法论手册.tex](DS02_栈队列与受限访问_方法论手册.tex)
-- Published：[DS02_栈队列与受限访问_方法论手册.pdf](../../../90_publish/408/DS02_栈队列与受限访问_方法论手册.pdf)
-- 完整实现：[ds02_restricted_access.hpp](code/ds02_restricted_access.hpp)
-- 边界测试：[ds02_restricted_access_test.cpp](code/ds02_restricted_access_test.cpp)
+- Canonical：[栈队列与受限访问：方法论手册 (TeX)](DS02_栈队列与受限访问_方法论手册.tex)
+- Published：[栈队列与受限访问：方法论手册 (PDF)](../../../90_publish/408/DS02_栈队列与受限访问_方法论手册.pdf)
+- 完整实现：[`ds02_restricted_access.hpp`](code/ds02_restricted_access.hpp)
+- 边界测试：[`ds02_restricted_access_test.cpp`](code/ds02_restricted_access_test.cpp)
 
 ## Code Contract
 本册代码按 `Operation Contract -> State Fields -> Core Transition -> Invariant Repair -> Boundary Branches -> Complexity -> Executable Tests` 组织。正文中的代码块直接抽取上述实现文件；顺序栈、链栈、循环队列、链队列与循环双端队列共享一套受限访问语义，但分别维护自己的物理状态。

@@ -185,6 +185,8 @@ Canonical product：[NET-I01｜一个网络请求的一生](60_综合专题/NET-
 
 全局入口见 [408 Cross-Subject Bridge Atlas](../50_桥梁专题/README.md)。
 
+跨科母模型入口：[缓冲与有限中间态](../00_统一总图/跨科母模型_缓冲与有限中间态.md)。交换端口队列、可靠传输重传/失序缓存、TCP 发送接收缓冲、`rwnd`、路由器队列与拥塞反馈可在这里统一理解；具体协议状态机继续由 NET-02/03/04/06/07 拥有。
+
 ## Question Control Adapter：网络八问
 
 1. 当前作用域是一跳、端到端、一个 AS 还是全球 Internet？

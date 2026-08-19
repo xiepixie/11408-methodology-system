@@ -46,11 +46,11 @@ F'(x)=2x\sin(1/x^2)-\frac{2}{x}\cos(1/x^2),
 
 第三条可用阶跃/符号函数理解：它们有界且只有有限个间断点，因此 Riemann 可积；但若它们存在原函数，就必须作为导函数满足 Darboux 介值性，而跳跃直接违反这一必要条件。
 
-若 $f$ 在 $[a,b]$ Riemann 可积，则它有界，设 $|f|\le M$。于是
+若 $f$ 在 $[a,b]$ Riemann 可积，则它有界，设 $\lvert f\rvert\le M$。于是
 \[
-|G(y)-G(x)|
-=\left|\int_x^y f(t)\,dt\right|
-\le M|y-x|.
+\lvert G(y)-G(x)\rvert
+=\left\lvert\int_x^y f(t)\,dt\right\rvert
+\le M\lvert y-x\rvert.
 \]
 所以变上限积分不只是连续，而是\textbf{Lipschitz 连续}，从而一致连续。这里的正则化来自“累积把局部振荡先做平均”，并不意味着被积函数本身变得连续。
 

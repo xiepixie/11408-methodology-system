@@ -25,8 +25,8 @@ Stops：具体数组、树、图、Hash、堆和排序机制回到各自 Owner�
 
 ## Manual
 
-- Canonical：[DS-A03_动态规划与状态压缩_方法论手册.tex](DS-A03_动态规划与状态压缩_方法论手册.tex)
-- Published：[DS-A03_动态规划与状态压缩_方法论手册.pdf](../../../../90_publish/408/DS-A03_动态规划与状态压缩_方法论手册.pdf)
+- Canonical：[动态规划与状态压缩：方法论手册 (TeX)](DS-A03_动态规划与状态压缩_方法论手册.tex)
+- Published：[动态规划与状态压缩：方法论手册 (PDF)](../../../../90_publish/408/DS-A03_动态规划与状态压缩_方法论手册.pdf)
 
 ## Verification Target
 

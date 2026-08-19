@@ -4,10 +4,10 @@
 
 本目录只保存数学一**跨训练专题、跨 Topic**仍值得独立维护的学科级做题控制规则，并作为各专题训练入口的汇总导航。
 
-局部母题、变式、技巧和局部规则不再集中堆到这里，而是与对应 Topic / Bridge / Integration 共置在按内容命名的训练 Markdown 中；训练文件的头部、三元组、Owner 与导航格式遵循 [topic_practice_writing_spec.md](../../00_system/topic_practice_writing_spec.md)。规则不是知识摘要，必须能改变下一道题中的行为。职责边界详见 [handbook_contract.md](../../00_system/handbook_contract.md) §8。
+局部母题、变式、技巧和局部规则不再集中堆到这里，而是与对应 Topic / Bridge / Integration 共置在按内容命名的训练 Markdown 中；训练文件的头部、三元组、Owner 与导航格式遵循 [专题训练文档编写规范](../../00_system/topic_practice_writing_spec.md)。规则不是知识摘要，必须能改变下一道题中的行为。职责边界详见 [Handbook 与 Rule 契约](../../00_system/handbook_contract.md) §8。
 
 ## 当前规则
 
-- [线性代数做题规则](线性代数.md) — 本轮局部规则已全部下沉到 Topic/Bridge Practice；当前仅保留迁移导航与未来学科级晋升入口；
+- [线性代数做题规则](线性代数.md) — 局部规则已全部下沉到 Topic/Bridge Practice；当前无活跃学科级规则，只保留未来跨专题晋升入口，历史映射归 Evidence；
 - [概率统计做题规则](概率统计.md) — 只保留复合题交接、独立性证据层级等真正跨 P01--P08 的控制；其余局部规则已下沉；
 - [高等数学跨专题做题规则](高等数学.md) — 只保留跨多个训练专题/Topic 的控制动作；局部规则由各高数专题 README 导航到同目录训练 Markdown。

@@ -171,6 +171,8 @@ C 语言语义到 ISA 机器级语义的映射仍由 ISA Topic Own，不再把 `
 
 Cross-Subject Bridge 统一上移到 [408 Cross-Subject Bridge Atlas](../50_桥梁专题/README.md)：Privilege/Exception × OS、Hardware Address Translation × OS VM、Interrupt/DMA × OS I/O。
 
+跨科母模型入口：[缓冲与有限中间态](../00_统一总图/跨科母模型_缓冲与有限中间态.md)。MDR/MBR、流水寄存器、I/O FIFO、写缓冲和 DRAM 行缓冲都可借它建立“有限中间态”直觉，但各自的时序、状态与性能公式仍由 CO-03/04/05/06/08 拥有。
+
 ## 性能的归属
 
 性能不是第九个硬件子系统。IC、CPI、IPC、clock、critical path、latency、throughput、bandwidth、AMAT 与 speedup 进入[计组做题规则](90_做题规则/README.md)中的性能工具箱，各 Topic 只使用与自身机制直接相关的指标。

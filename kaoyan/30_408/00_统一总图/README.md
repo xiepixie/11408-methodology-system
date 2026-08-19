@@ -8,10 +8,13 @@
 
 ```text
 408 Course Atlas
--> 4 Subject Atlas
--> Topic / Internal Bridge / Internal Integration
--> Cross-Subject Bridge / Cross-Subject Integration
+├─ 4 Subject Atlas
+│  └─ Topic / Internal Bridge / Internal Integration
+├─ Cross-Subject Bridge / Cross-Subject Integration
+└─ Atlas-owned 跨科母模型补充
 ```
+
+这里最后一层是 **Course Atlas 的可展开关系层**，不是第五种 Handbook 类型。稳定 Handbook 仍只有 Atlas / Topic / Bridge / Integration；跨科母模型用独立 Markdown 承载长关系解释，是为了避免 Course Atlas README 被某一种设计模式淹没。
 
 四科共享系统地图与 Control Language，不共享一个万能世界模型。
 
@@ -22,7 +25,7 @@
 
 ### 1.1 逻辑架构与物理文件必须分开
 
-`Atlas / Topic / Bridge / Integration` 回答“这份知识承担什么认知职责”；文件格式由该职责决定，不再为了目录整齐强迫四类 Handbook 共用一种 package。
+Atlas、专题、桥梁、综合分别承担稳定 Handbook 职责；Course Atlas 还可以把高价值跨科关系展开为**母模型补充文档**。文件格式由认知职责决定，不再为了目录整齐强迫不同职责共用一种排版结构。
 
 Atlas 的正文就是地图、关系和路由，因此：
 
@@ -50,6 +53,7 @@ Topic / Bridge / Integration 需要长机制正文，因此：
 - Atlas README 可以直接拥有 Mother Question、Foundation、Topic/Bridge/Integration 地图、关系和 Routing；
 - Atlas 不因为缺少 `.tex` 而不成熟；可选海报只能视觉化 README 已有语义，不得产生第二份知识真相；
 - Topic / Bridge / Integration 的 README 仍然不能承载长推导和完整机制正文，深度内容必须进入 `.tex`；
+- **跨科母模型补充**由 Course Atlas Own，负责跨专题反复出现的设计模式、共同生成逻辑和“禁止错误类比”边界；它不是第五种 Handbook，也不要求存在 A→B 的稳定交接。当前采用 Markdown 长文，放在课程总图的 `00_统一总图/` 下；
 - PDF 只是派生阅读/视觉视图，不手工维护，也不拥有知识；
 - `00_system/*.md`、Rules、Inbox、架构设计文档继续使用 Markdown。
 
@@ -66,6 +70,36 @@ Topic / Bridge / Integration 需要长机制正文，因此：
 - 物理上可以存在 supplement 文件，但它仍由 Atlas Own，不与机制 Topic 平级。
 
 判据不是“有没有 State”，而是：它是否拥有一个需要独立解释的生成机制，还是后续 Topic 共同使用的观察/度量语言。
+
+## 2.1 跨科母模型不是桥梁，也不是第五种 Handbook
+
+当多个独立专题反复面对同一种系统矛盾、采用结构相似的解决手段时，Course Atlas 可以把这条关系展开成独立母模型补充文档。它回答：
+
+```text
+重复出现的问题形状
+→ 共同生成模型
+→ 相似机制
+→ 禁止错误类比的边界
+→ 路由回各自知识归属
+```
+
+晋升条件：
+
+1. 至少跨两个学科重复出现，且不是偶然术语重名；
+2. 能抽出稳定母问题、不变量或权衡，而不是只做“相似知识点列表”；
+3. 统一模型能生成新的判别/迁移能力；
+4. 必须同时写“禁止错误类比”，明确哪些局部机制不能强行同构；
+5. 具体状态机、公式、协议和题解仍由原专题拥有。
+
+因此五类认知职责分别是：
+
+- 专题：解释一个本地机制；
+- 桥梁：解释两个独立知识归属之间的稳定交接；
+- 综合：追踪一次完整过程如何跨多个知识归属跑完；
+- Atlas-owned 跨科母模型补充：解释为什么不同领域会反复采用同一种设计思想；
+- 规则：把成熟模型压成考场动作。
+
+当前第一份跨科母模型是[缓冲与有限中间态](跨科母模型_缓冲与有限中间态.md)。它统一“有限中间态、空满边界、所有权、反压、调度”的生成逻辑，但不把队列、缓存、窗口、直接存储器访问、假脱机等强行视为同一个状态机。
 
 ## 3. Topic 规划
 

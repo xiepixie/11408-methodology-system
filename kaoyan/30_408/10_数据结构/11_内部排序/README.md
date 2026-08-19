@@ -21,10 +21,10 @@ DS05 Heap 作为 heap sort 的底层机制；Atlas Foundation。
 外部排序的 block-I/O 模型；“看到什么选哪种排序”的考试动作进入 Rules。
 
 ## Manual
-- Canonical：[DS11_内部排序_方法论手册.tex](DS11_内部排序_方法论手册.tex)
-- Published：[DS11_内部排序_方法论手册.pdf](../../../90_publish/408/DS11_内部排序_方法论手册.pdf)
-- 完整实现：[ds11_internal_sort.hpp](code/ds11_internal_sort.hpp)
-- 边界测试：[ds11_internal_sort_test.cpp](code/ds11_internal_sort_test.cpp)
+- Canonical：[内部排序：方法论手册 (TeX)](DS11_内部排序_方法论手册.tex)
+- Published：[内部排序：方法论手册 (PDF)](../../../90_publish/408/DS11_内部排序_方法论手册.pdf)
+- 完整实现：[`ds11_internal_sort.hpp`](code/ds11_internal_sort.hpp)
+- 边界测试：[`ds11_internal_sort_test.cpp`](code/ds11_internal_sort_test.cpp)
 
 ## Code Contract
 本册代码覆盖插入、选择、归并、快速、堆和非负整数 LSD 基数排序；堆排序在本册实现排序过程，但 Heap 的优先队列机制仍由 DS05 Own。测试覆盖空、已排序、重复、逆序和基数排序负值拒绝。

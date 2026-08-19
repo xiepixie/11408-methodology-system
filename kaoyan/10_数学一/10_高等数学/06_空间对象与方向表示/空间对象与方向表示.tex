@@ -205,7 +205,7 @@ b_1&b_2&b_3
 [\mathbf a,\mathbf b,\mathbf c]
 =(\mathbf a\times\mathbf b)\cdot\mathbf c,
 \qquad
-V=\left|(\mathbf a\times\mathbf b)\cdot\mathbf c\right|.
+V=\left\lvert(\mathbf a\times\mathbf b)\cdot\mathbf c\right\rvert.
 \]
 三向量共面当且仅当混合积为零。后面两条异面直线的距离公式，本质就是“平行六面体体积除以底面积”。
 
@@ -246,6 +246,12 @@ A(x-x_0)+B(y-y_0)+C(z-z_0)=0,
 \qquad Ax+By+Cz+D=0.
 \]
 一般式的系数 $(A,B,C)$ 直接给出法向。
+
+若平面分别与三个坐标轴交于 $(a,0,0),(0,b,0),(0,0,c)$，且 $a,b,c\ne0$，则一般式可归一化为截距式
+\[
+\boxed{\frac{x}{a}+\frac{y}{b}+\frac{z}{c}=1}.
+\]
+它不是新的几何机制，只是把三个轴截距直接暴露出来的特殊表示。若平面经过原点、平行于某坐标轴，或某个截距不存在/为零，就不应强行使用截距式；此时回到“一点 + 法向”的点法式更稳。
 
 三个不共线点 $P_1,P_2,P_3$ 确定平面时，取
 \[
@@ -309,15 +315,15 @@ L_i:\ \mathbf r=\mathbf r_i+t_i\mathbf v_i,
 
 两直线夹角用方向向量：
 \[
-\cos\theta=\frac{|\mathbf v_1\cdot\mathbf v_2|}{\lVert\mathbf v_1\rVert\lVert\mathbf v_2\rVert}.
+\cos\theta=\frac{\lvert\mathbf v_1\cdot\mathbf v_2\rvert}{\lVert\mathbf v_1\rVert\lVert\mathbf v_2\rVert}.
 \]
 两平面夹角用法向量：
 \[
-\cos\theta=\frac{|\mathbf n_1\cdot\mathbf n_2|}{\lVert\mathbf n_1\rVert\lVert\mathbf n_2\rVert}.
+\cos\theta=\frac{\lvert\mathbf n_1\cdot\mathbf n_2\rvert}{\lVert\mathbf n_1\rVert\lVert\mathbf n_2\rVert}.
 \]
 直线与平面锐角 $\alpha$ 与方向—法向夹角互余：
 \[
-\sin\alpha=\frac{|\mathbf v\cdot\mathbf n|}{\lVert\mathbf v\rVert\lVert\mathbf n\rVert}.
+\sin\alpha=\frac{\lvert\mathbf v\cdot\mathbf n\rvert}{\lVert\mathbf v\rVert\lVert\mathbf n\rVert}.
 \]
 角度题的第一动作永远是先找“谁真正承担方向”，再使用点积。
 
@@ -327,7 +333,7 @@ d(P,Q)=\lVert\overrightarrow{PQ}\rVert.
 \]
 点 $P_0=(x_0,y_0,z_0)$ 到平面 $Ax+By+Cz+D=0$：
 \[
-d(P_0,\pi)=\frac{|Ax_0+By_0+Cz_0+D|}{\sqrt{A^2+B^2+C^2}}.
+d(P_0,\pi)=\frac{\lvert Ax_0+By_0+Cz_0+D\rvert}{\sqrt{A^2+B^2+C^2}}.
 \]
 点 $P_0$ 到经过 $P_1$、方向 $\mathbf v$ 的直线：
 \[
@@ -336,9 +342,17 @@ d(P_0,L)=\frac{\lVert\overrightarrow{P_1P_0}\times\mathbf v\rVert}{\lVert\mathbf
 它是平行四边形面积除以底边。两异面直线的距离：
 \[
 d(L_1,L_2)=
-\frac{|(\mathbf r_2-\mathbf r_1)\cdot(\mathbf v_1\times\mathbf v_2)|}{\lVert\mathbf v_1\times\mathbf v_2\rVert}.
+\frac{\lvert(\mathbf r_2-\mathbf r_1)\cdot(\mathbf v_1\times\mathbf v_2)\rvert}{\lVert\mathbf v_1\times\mathbf v_2\rVert}.
 \]
-它是平行六面体体积除以底面积。忘掉具体式时，回到“投影、面积除底、体积除底面积”即可重建。
+它是平行六面体体积除以底面积。两个平行平面若已经写成同一法向系数
+\[
+Ax+By+Cz+D_1=0,\qquad Ax+By+Cz+D_2=0,
+\]
+则任选一面上一点代入另一面，立即得到
+\[
+\boxed{d=\frac{\lvert D_2-D_1\rvert}{\sqrt{A^2+B^2+C^2}}}.
+\]
+若两式的法向系数只成比例，必须先缩放到同一组 $(A,B,C)$，不能直接相减常数项。忘掉具体式时，回到“投影、面积除底、体积除底面积”即可重建。
 
 \section{构造题：由最小数据反推对象}
 
@@ -384,17 +398,37 @@ z=f(x,y),\qquad F(x,y,z)=0,\qquad
   \item 球面 $x^2+y^2+z^2=R^2$：水平截面是半径 $\sqrt{R^2-c^2}$ 的圆；
   \item 椭球面 $x^2/a^2+y^2/b^2+z^2/c^2=1$：球面沿三轴非等比例伸缩；
   \item 方程缺少 $z$，如 $x^2+y^2=R^2$：二维曲线沿 $z$ 轴延伸成柱面；
-  \item 圆锥面 $x^2+y^2=z^2$：水平截面半径随 $|z|$ 线性增长；
+  \item 圆锥面 $x^2+y^2=z^2$：水平截面半径随 $\lvert z\rvert$ 线性增长；
   \item 椭圆抛物面 $z=x^2+y^2$：水平截面是随 $z$ 增大的圆；
   \item 双曲抛物面 $z=x^2-y^2$：两个主竖直截面开口相反，形成鞍形；
   \item 单叶/双叶双曲面：通过水平截面是否对所有 $z$ 存在，区分连通的一片或分离的两片。
 \end{itemize}
 
-截面是给对象加约束以降维；投影是丢掉一个坐标方向的信息；旋转则保留到旋转轴的距离和轴向位置。绕 $z$ 轴旋转时，核心不变量是
+若中心二次曲面可写为
 \[
-z=z_0,\qquad x^2+y^2=x_0^2+y_0^2.
+\mathbf x^{\mathsf T}A\mathbf x=1,\qquad A=A^{\mathsf T},
 \]
-先写不变量再消元，比背旋转公式更稳。
+则可以直接 \textbf{Use 线性代数 Topic06}：用正交变换 $\mathbf x=Q\mathbf u$ 把 $A$ 对角化。正交变换只旋转/反射坐标系，保持长度和角度，因此特征值的符号与零特征值能稳定读取椭球、单叶/双叶双曲面和柱面等中心型结构。这里必须区分两件事：\textbf{一般可逆合同保持惯性指数，但不保持欧氏长度与角度；“可逆换元”不能直接说成“图形形状不变”}。若原方程还有一次项，应先做平移/配方；抛物面一类也不能只看齐次二次部分就完成分类。
+
+截面是给对象加约束以降维；投影是沿指定方向丢掉一维位置信息；旋转则保留到旋转轴的距离和轴向位置。
+
+\begin{corebox}{投影：先得到“影子的坐标条件”，再把影子放回目标平面}
+若空间曲线由
+\[
+F(x,y,z)=0,\qquad G(x,y,z)=0
+\]
+给出，沿 $z$ 方向投影到 $xOy$ 平面时，消去 $z$ 得到 $H(x,y)=0$。这个等式在三维空间里单独表示的是\textbf{平行于 $z$ 轴的投影柱面}，不是已经落在 $xOy$ 平面上的投影曲线。真正的投影曲线应写成
+\[
+\boxed{H(x,y)=0,\qquad z=0}.
+\]
+因此“消元”负责删除被投影方向的信息，“目标平面约束”负责指定影子落在哪里。若把一条直线正交投影到任意平面，可先用“原直线 + 目标平面法向”张成辅助平面，再与目标平面求交；本质仍是先编码投影方向，再求目标平面中的公共点集。
+\end{corebox}
+
+绕 $z$ 轴旋转时，若原对象上的点记为 $P_0=(x_0,y_0,z_0)$、旋转后对应点为 $P=(x,y,z)$，核心不变量是
+\[
+\boxed{z=z_0,\qquad x^2+y^2=x_0^2+y_0^2}.
+\]
+先让 $P_0$ 满足原对象方程，再联立这两个不变量消去 $x_0,y_0,z_0$，就得到旋转曲面。它比背“把某个变量换成 $\pm\sqrt{\cdots}$”更一般，也能直接处理空间直线或参数曲线绕坐标轴旋转。
 
 \section{专题解题协议：空间几何题怎么执行？}
 

@@ -20,7 +20,7 @@
 \newcommand{\kw}[1]{\textbf{\color{deep}#1}}
 \begin{document}
 \begin{center}{\LARGE\textbf{B05｜线性方程与线性微分方程：一点 + Kernel}}\\[0.4em]
-{\large 同一个线性算子，为什么“一个解”能生成全部解？}\end{center}
+{\large 同一条线性结构，为什么“一个解”能生成全部解？}\end{center}
 \vspace{0.4em}
 \begin{quote}本 Bridge 不拥有线代方程组或 ODE 的完整求解技巧，只解释一条可反复调用的接口：先找一个满足目标的特解，再沿着齐次核的自由方向移动。\end{quote}
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
@@ -28,7 +28,7 @@
 线代 Topic04 Owns $Ax=b$ 的可达性、kernel 和仿射解集；高数 Topic12 Owns $L[y]=f$ 的解族、初值与特解。B05 只 Own 两侧之间的共享结构和调用边界。
 
 \section{Mother Interface：一点 + Kernel}
-设 $T:V\to W$ 是线性算子。若 $x_0$ 满足 $T(x_0)=b$，任意另一个解 $x$ 满足
+设 $T:V\to W$ 是线性映射。若 $x_0$ 满足 $T(x_0)=b$，任意另一个解 $x$ 满足
 \[
 T(x-x_0)=T(x)-T(x_0)=b-b=0,
 \]

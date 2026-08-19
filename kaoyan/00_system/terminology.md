@@ -159,10 +159,12 @@ Topic 拥有机制，Bridge 拥有接口，Integration 拥有协作过程。后�
 | 类型 | 含义 | 通常去向 |
 |---|---|---|
 | 模型问题 | 对概念、机制或边界理解错误；稳定更新时再区分 Topic mechanism / Bridge interface / Integration composition | Handbook |
-| 识别问题 | 知识存在，但没有识别题目结构 | Subject Rules |
-| 路径问题 | 识别正确，但起手或路径选择不合理 | Subject Rules |
-| 执行/检查/表达问题 | 方向合理，但状态维护、计算、校验或得分链失控 | Subject Rules |
+| 识别问题 | 知识存在，但没有识别题目结构 | 单一问题族进 Topic Practice；跨多个训练专题才进 Subject Rules |
+| 路径问题 | 识别正确，但起手或路径选择不合理 | 单一问题族进 Topic Practice；跨多个训练专题才进 Subject Rules |
+| 执行/检查/表达问题 | 方向合理，但状态维护、计算、校验或得分链失控 | 单一问题族进 Topic Practice；跨多个训练专题才进 Subject Rules |
 | 考试决策问题 | 时间、退出、返回、风险或注意力策略错误 | Exam Control |
+
+诊断类型与物理 Owner 是两步判断：前三类 Control 问题先确定作用域；局部控制与最相关训练 Markdown 共置，只有跨多个训练专题仍需统一维护的控制才进入 Subject Rules。
 
 “粗心”“基础差”“状态不好”不是这里的正式类型。需要继续追问发生在哪一步，以及是否存在可复现机制。
 

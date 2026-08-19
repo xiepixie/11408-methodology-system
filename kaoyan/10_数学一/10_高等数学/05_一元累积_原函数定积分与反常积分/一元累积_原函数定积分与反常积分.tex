@@ -142,7 +142,7 @@ S(P,\boldsymbol\xi)=\sum_i q(\xi_i)\Delta x_i,
 \[
 \int f(x)\,dx=F(x)+C.
 \]
-若 $F,G$ 在同一\textbf{区间}上都是原函数，则 $(F-G)'=0$，所以 $F-G=C$。区间若被断开，各连通分支可以有不同常数；这正是 $\int dx/x=\ln|x|+C$ 不能跨过 $0$ 统一成一个单常数表达的原因。
+若 $F,G$ 在同一\textbf{区间}上都是原函数，则 $(F-G)'=0$，所以 $F-G=C$。区间若被断开，各连通分支可以有不同常数；这正是 $\int dx/x=\ln\lvert x\rvert+C$ 不能跨过 $0$ 统一成一个单常数表达的原因。
 
 “存在原函数”与“能写出初等原函数”不是同一问题。例如 $e^{-x^2}$ 在连续区间上有原函数，即使该原函数通常不能用初等函数表达。计算题可以改用定积分定义该原函数，不能因此宣称积分不存在。
 
@@ -178,7 +178,7 @@ A(x)=\int_a^x f(t)\,dt.
 \[
 \int_a^b{f}\ge0\quad(f\ge0),
 \qquad
-\left|\int_a^b{f}\right|\le\int_a^b{|f|}.
+\left\lvert\int_a^b{f}\right\rvert\le\int_a^b{\lvert f\rvert}.
 \]
 若 $m\le f(x)\le M$，则
 \[
@@ -252,7 +252,7 @@ m(b-a)\le\int_a^b{f(x)}\,dx\le M(b-a).
 
 若被积式包含 $u'(x)\Phi(u(x))$，令 $u=u(x)$，把问题压缩为 $\int\Phi(u)\,du$。常见母式包括
 \[
-\int\frac{u'}u\,dx=\ln|u|+C,
+\int\frac{u'}u\,dx=\ln\lvert u\rvert+C,
 \qquad
 \int u^\mu u'\,dx=\frac{u^{\mu+1}}{\mu+1}+C\quad(\mu\ne-1).
 \]
@@ -269,6 +269,23 @@ m(b-a)\le\int_a^b{f(x)}\,dx\le M(b-a).
 \subsection{有理、根式与三角结构}
 
 有理函数先作多项式除法，再对真分式部分做部分分式；根式题先找能把根式变成有理函数的替换；三角幂次按奇偶性保留一个可凑微分因子或使用降幂。每次选择都由“变换后复杂度是否下降”决定，而不是按题型名称机械套用。
+
+二次根式还存在一条值得保留的特殊函数接口。对 $a>0$，
+\[
+\int\frac{dx}{\sqrt{x^2+a^2}}
+=\operatorname{arsinh}\frac xa+C
+=\ln\left(x+\sqrt{x^2+a^2}\right)+C,
+\]
+而在正分支 $x>a$，
+\[
+\int\frac{dx}{\sqrt{x^2-a^2}}
+=\operatorname{arcosh}\frac xa+C.
+\]
+前者对应 $x=a\sinh t$，因为 $\cosh^2t-\sinh^2t=1$；后者在正分支对应 $x=a\cosh t$。若要同时覆盖 $x>a$ 与 $x<-a$ 两个连通分支，应回到
+\[
+\ln\left\lvert x+\sqrt{x^2-a^2}\right\rvert+C
+\]
+并分别审计定义域。类似地，$1/(a^2-x^2)$ 在 $\lvert x\rvert<a$ 可识别为 $\operatorname{artanh}(x/a)$ 的导数。双曲函数对象与分支归 Topic01，导数归 Topic03；本册只拥有“这些导数怎样作为原函数被识别，以及何时用双曲参数化降低积分复杂度”。具体训练见《双曲型根式与特殊原函数》。
 
 \section{比较积分：从有向面积到平均高度}
 
@@ -294,55 +311,36 @@ I-J=\int_a^b(f-g)\,dx,
 \]
 它说明积分等于“某个平均高度 $\times$ 区间长度”，但只产生存在性点，不能把 $\xi$ 固定为中点。若 $f$ 凸，则梯形平均与中点值之间的方向由切线/割线决定；需要更强的权重不等式时再调用相应 Bridge，不把未验证的 Jensen 或 Chebyshev 结论当成通用规则。
 
-\section{微元建模：先定义贡献，再累加}
+\section{微元建模：局部贡献如何进入一元累积}
 
-几何/物理应用的稳定流程是：
-\[
-\begin{tikzpicture}[>=Stealth]
-  \tikzset{
-    flowstage/.style={draw=deep, fill=white, rounded corners=1.5mm, minimum height=0.72cm, align=center, font=\small\sffamily\bfseries\color{deep}, line width=0.6pt, inner xsep=6pt, inner ysep=3.5pt},
-    flowarr/.style={->, >=Stealth, line width=0.75pt, draw=accent}
-  }
-  \node[flowstage] (n1) at (0,0) {1. 对象与坐标};
-  \node[flowstage, right=0.4cm of n1] (n2) {2. 切片/微元};
-  \node[flowstage, right=0.4cm of n2] (n3) {3. 局部贡献};
-  \node[flowstage, below=0.6cm of n3] (n4) {4. 积分区间};
-  \node[flowstage, left=0.4cm of n4] (n5) {5. 单位与边界核验};
+微元建模的核心是一元累积机制的物理/几何实例化：把整体连续介质沿某一自变量切分成互不重叠的薄层，写出带微分因子的局部贡献 $dQ=q(x)\,dx$，并在合法区间上累加。面积、弧长、旋转体、功、压力、形心与相关变化率的完整跨模块 Composition 及防重复覆盖协议由 \kw{H-I01（微积分建模：从局部微元到整体量）} 唯一持有；本册仅提供一元累积机制的接入规范。
 
-  \draw[flowarr] (n1) -- (n2);
-  \draw[flowarr] (n2) -- (n3);
-  \draw[flowarr] (n3) -- (n4);
-  \draw[flowarr] (n4) -- (n5);
-\end{tikzpicture}
-\]
-
-\subsection{面积、弧长与旋转体}
+\subsection{面积、弧长与旋转体资格}
 
 竖直切片给 $dA=[\text{上函数}-\text{下函数}]dx$；水平切片则用 $dy$。弧长来自微小线段
 \[
 ds=\sqrt{dx^2+dy^2}=\sqrt{1+{(y')}^2}\,dx.
 \]
-绕坐标轴旋转时，圆盘/垫圈法累加截面积，圆柱壳法累加周长乘高：
+绕坐标轴旋转时，垂直于轴切片得到圆盘/垫圈（累加截面积），平行于轴切片得到圆柱壳（累加周长乘高）：
 \[
 V=\pi\int(R^2-r^2)\,dx,
 \qquad
 V=2\pi\int(\text{半径})(\text{高})\,dx.
 \]
-选择切片方向的标准是：让半径、高度和积分区间由同一个自变量直接表达，避免多余反函数分支。
 
-\subsection{功、压力与形心}
+\begin{warnbox}{圆柱壳法的资格限制与跨轴审计}
+普通壳层公式 $V=2\pi\int r(x)h(x)\,dx$ 仅在\textbf{积分区域完全位于旋转轴的一侧}时成立。若区域跨越旋转轴，轴两侧到旋转轴距离相同的点会旋转生成同一个圆柱壳；此时机械将两侧全部积分会造成\textbf{重复覆盖}。遇到跨轴区域，必须改按物理半径 $r\ge0$ 对高度做并集合并，或转交 \kw{H-I01} 执行完整的覆盖重数审计。
+\end{warnbox}
 
-变力做功是
-\[
-dW=F(x)\,dx,\qquad W=\int_a^b{F(x)}\,dx.
-\]
-抽水做功的微元是“微小重量 $\times$ 提升距离”；静水压力的微元是“压强 $\rho gh\times$ 条带面积”。形心/质心的统一思想是先累加质量与一阶矩，再取比值：
+\subsection{功、压力与形心接口}
+
+变力做功是 $dW=F(x)\,dx$；抽水做功的微元是“微小重量 $\times$ 提升距离”；静水压力的微元是“压强 $\rho gh\times$ 条带面积”。形心/质心的统一思想是先累加质量与一阶矩，再取比值：
 \[
 \bar x=\frac{\int x\,dm}{\int dm},
 \qquad
 \bar y=\frac{\int y\,dm}{\int dm}.
 \]
-任何应用题都应做单位检查：$dA$、$ds$、$dV$、$dW$ 的量纲必须与最终量一致；若单位不对，说明微元翻译或变量选择发生了第一偏离。
+任何应用建模都应做单位检查：$dA$、$ds$、$dV$、$dW$ 的量纲必须与目标物理量一致；若单位不对，说明微元翻译或变量选择发生了第一偏离。完整多对象组合与质心势能压缩模型见 \kw{H-I01}。
 
 \section{反常积分：先拆奇点，再谈无限对象}
 
@@ -394,7 +392,7 @@ dW=F(x)\,dx,\qquad W=\int_a^b{F(x)}\,dx.
 
 \subsection{振荡函数}
 
-绝对收敛先检查 $\int|f|$。若绝对收敛失败但振荡抵消持续存在，可用 Dirichlet/Abel 型结构。Dirichlet 的典型接口是：振荡因子拥有一致有界的原函数，权重单调趋于零；Abel 则用一个已收敛的反常积分配合有界单调权重。分部积分把尾部压成边界项与可控积分。振荡并不自动收敛，必须写出“谁提供抵消、谁提供衰减”。
+绝对收敛先检查 $\int\lvert f\rvert$。若绝对收敛失败但振荡抵消持续存在，可用 Dirichlet/Abel 型结构。Dirichlet 的典型接口是：振荡因子拥有一致有界的原函数，权重单调趋于零；Abel 则用一个已收敛的反常积分配合有界单调权重。分部积分把尾部压成边界项与可控积分。振荡并不自动收敛，必须写出“谁提供抵消、谁提供衰减”。
 
 \subsection{Cauchy 准则与尾部}
 

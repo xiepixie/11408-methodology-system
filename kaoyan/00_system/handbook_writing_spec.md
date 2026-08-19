@@ -76,6 +76,18 @@
 
 它们用于控制知识网络，而不是扩张目录。默认写在相关 Atlas / Topic / Bridge 的边界或扩展段落。
 
+### 1.6 跨科母模型补充：Atlas 的可展开关系层，不是第五种 Handbook
+
+如果同一种问题形状跨多个独立 Topic/Subject 反复出现，而它又**不是**一条稳定的 `A output -> translation -> B input` 接口，可以由上层 Atlas 建立独立 Markdown 补充文档，把这条关系连续讲清。它负责：
+
+- 共同母问题与生成逻辑；
+- 可迁移的不变量、状态维度和权衡；
+- 相似机制之间的 A≠B 边界；
+- 从统一模型路由回各自唯一 Owner；
+- 明确“停止类比”的位置。
+
+它必须同时满足：跨至少两个独立 Owner、能产生新的判别/迁移能力、不会复制局部完整机制。它**不改变稳定 Handbook 类型仍为 Atlas / Topic / Bridge / Integration**，也不因为篇幅很长就获得新的机制 Ownership；可以理解为 Atlas 把一条高价值跨模块关系从 README 中展开到单独的 Canonical Supplement，以避免 Atlas 本体膨胀。
+
 ---
 
 ## 2. 第一原则：先寻找学科真正的"对象"，不要先列章节

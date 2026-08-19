@@ -177,7 +177,7 @@ Integration 不按数量规划。只有完整问题确实能检验多个成熟�
 |---|---|---|
 | 高等数学 | [10_高等数学](10_高等数学/README.md) | Subject Atlas 已采用；Topic01–12、H-B01–H-B05、H-I01 均已建立 Canonical `.tex` 候选正文并按需发布 |
 | 线性代数 | [20_线性代数](20_线性代数/README.md) | Subject Atlas 为 Canonical Map；Topic01–06 已建立并发布 Canonical `.tex` 候选正文，当前待人工确认 |
-| 概率论与数理统计 | [30_概率论](30_概率论/README.md) | Subject Atlas 为 Canonical Map；Topic01–08 已建立 Canonical `.tex` 工作稿，Published View 依当前 TeX 环境逐步同步 |
+| 概率论与数理统计 | [30_概率论](30_概率论/README.md) | Subject Atlas 待人工确认；Topic01–08 已完成旧九章 Source Diff、跨册核销与真题路由交叉验证，Canonical `.tex` 均已同步 Published View；尚未标记“已采用”仅因等待使用者确认 |
 | Cross-Subject Bridge | [50_桥梁专题](50_桥梁专题/README.md) | B00–B08 已建立 Canonical 工作稿并按需发布 |
 | Integration | [60_综合专题](60_综合专题/README.md) | 作为跨模块组合层按成熟 Owner 逐步建立 |
 | Control Rules | [90_学科做题规则](90_学科做题规则/README.md) | Markdown Control Rules；候选规则必须经真题/陌生题验证后再升级 |
@@ -187,7 +187,7 @@ Integration 不按数量规划。只有完整问题确实能检验多个成熟�
 ## 9. 当前建设顺序
 
 1. 先完成本次数学一 Course Atlas、Core Bridge Atlas 与 Integration 骨架；
-2. 高数从 Source Corpus 做逐项 Diff，再把内容分别路由到 Topic、internal Bridge 与 Rules；
+2. 高数从 Source Corpus 做逐项 Diff：机制进入 Topic / internal Bridge / Integration，单一问题族的操作控制进入同目录训练 Markdown，只有跨多个训练专题稳定复用并经证据验证的控制才进入 Subject Rules；
 3. Cross-Subject Bridge 只在两侧 Topic 已有足够稳定模型后补正文；
 4. Integration 最后作为迁移验收层建设，不提前重讲基础理论；
 5. 使用陌生题攻击 Control Rules，并让真实错题决定系统下一次更新位置。

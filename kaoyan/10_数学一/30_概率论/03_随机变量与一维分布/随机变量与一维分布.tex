@@ -98,7 +98,11 @@ P(a<X\le b)=\int_a^bf_X(x)\,dx,\qquad P(X=c)=0.
 \]
 
 \begin{warnbox}{密度不是点概率}
-$f_X(x)$ 是单位长度上的概率强度，可以大于 $1$；概率是区间面积。CDF 连续只能说明没有点质量，不能单独证明存在通常意义下的密度；混合分布可同时含跳跃和连续部分。
+$f_X(x)$ 是单位长度上的概率强度，可以大于 $1$；概率是区间面积。若
+\[
+F_X(x)=\int_{-\infty}^{x}f_X(t)\,dt,
+\]
+则 $F_X$ 绝对连续且 $F_X'(x)=f_X(x)$ 几乎处处；特别地，若 $f_X$ 在 $x$ 处连续，则由微积分基本定理有 $F_X'(x)=f_X(x)$。反向不能只凭“$F_X$ 连续”就声称存在普通密度：CDF 连续只能排除点原子，仍可能存在奇异连续分布。混合分布则可同时含跳跃和连续部分。
 \end{warnbox}
 
 \begin{methodbox}{混合分布的统一拆层模板}
@@ -123,6 +127,24 @@ F_X(x)=\sum_{a_k\le x}p_k+\int_{-\infty}^{x}f_c(t)\,dt,
 \[
 P(\max\{X_1,X_2\}\le x)=P(X_1\le x,X_2\le x)=F_1(x)F_2(x).
 \]
+同一闭包思路还给出混合分布：若 $0\le a\le1$，则
+\[
+F(x)=aF_1(x)+(1-a)F_2(x)
+\]
+仍是 CDF，因为单调性、右连续性和两端极限都按凸组合保留；它对应“先以概率 $a$ 选择第一个总体，否则选择第二个总体”的生成机制。
+
+正尺度仿射复合也有直接生成解释：对 $c>0$，
+\[
+H(x)=F(cx+d)
+\]
+是随机变量 $Y=(X-d)/c$ 的 CDF。因此平移 $F(x+d)$ 总合法，而负尺度不能照抄同一式子，因为不等号会反向；这时必须重新从事件定义推导。
+
+负号变换则暴露了一个端点陷阱。若 $Y=-X$，一般应写
+\[
+F_Y(y)=P(-X\le y)=P(X\ge -y)=1-F_X((-y)^-).
+\]
+只有当 $X$ 在 $-y$ 处没有原子时，才可简化为 $1-F_X(-y)$。所以候选函数 $1-F(-x)$ 对含跳跃的 CDF 未必右连续；不能只凭“看起来像补概率”判断其合法性。
+
 反例也要按对象验收：$F_1+F_2$ 的右端极限为 $2$，$f_1+f_2$ 的总积分为 $2$，而 $f_1f_2$ 一般没有固定的归一化常数，因此不能必然是 CDF 或 PDF。
 
 \textbf{2010 Q七：}给定
@@ -136,65 +158,28 @@ P(X=1)=F(1)-F(1^-)=1-e^{-1}-\frac12=\frac12-e^{-1}.
 同理 $P(X=0)=F(0)-F(0^-)=1/2$。\kw{模型句：}CDF 是总账本；先检查它是不是合法账本，再用“右值减左值”提取原子。只有确认没有跳点的区间，才可以对 CDF 求导得到连续密度。
 \end{examplebox}
 
-\begin{methodbox}{变换后的质量账本：常值纤维、连续纤维、多原像}
-对分段函数 $Y=g(X)$，先把原支撑按 $g$ 的行为分成三类：
-\begin{itemize}
-  \item $g$ 在一段上为常数：该段的全部概率压到一个点，形成原子；
-  \item $g$ 在一段上单调且非恒定：该段贡献连续质量，按原像和 Jacobian 计算；
-  \item 同一 $y$ 有多个非恒定原像：各分支密度相加，但不能把不同分支的质量重复计入。
-\end{itemize}
-因此“输入连续”不保证输出没有原子，“变换分段”也不等于每段都产生原子。最后必须分别回检原子质量、连续密度积分和总质量。
-\end{methodbox}
-
-\begin{examplebox}{2013 真题：两个原子与一段连续质量必须同时交付}
-设 $f_X(x)=x^2/9$（$0<x<3$），并令
-\[
-Y=\begin{cases}
-2,&X\le1,\\
-X,&1<X<2,\\
-1,&X\ge2.
-\end{cases}
-\]
-先按变换纤维记账：
-\[
-P(Y=1)=P(X\ge2)=\frac{19}{27},\qquad
-P(Y=2)=P(X\le1)=\frac1{27},
-\]
-中段恒等映射保留连续密度 $f_{Y,c}(y)=y^2/9$（$1<y<2$），其质量为 $7/27$。因此完整 CDF 必须写成
-\[
-F_Y(y)=\begin{cases}
-0,&y<1,\\
-\displaystyle\frac{y^3+18}{27},&1\le y<2,\\
-1,&y\ge2,
-\end{cases}
-\]
-其中 $F_Y(1)=19/27$ 已包含 $Y=1$ 的原子，而在 $y=2$ 处从 $26/27$ 跳到 $1$，跳跃高度为 $1/27$。更稳妥的写法是同时标注“原子 + 连续密度”，避免把第一段的常值误看成连续 CDF。
-
-若只求 $P(X\le Y)$，不必再构造联合分布：在 $X\le1$ 层有 $Y=2$，在 $1<X<2$ 层有 $Y=X$，而 $X\ge2$ 层有 $Y=1<X$，所以
-\[
-P(X\le Y)=P(X<2)=\int_0^2\frac{x^2}{9}\,dx=\frac8{27}.
-\]
-这道题的停止条件是：完整 CDF 问题在“两个跳跃、连续段密度、总质量为 $1$”闭合后停止；第二问只需按变换分支判断事件，不倒回重求完整联合密度。
-\end{examplebox}
+\begin{warnbox}{变换机制的唯一 Owner}
+一维分布册只保留一个边界提醒：连续输入经过 $Y=g(X)$ 后也可能因常值区间产生点质量，因此不能由“$X$ 连续”直接推出“$Y$ 具有普通密度”。完整的常值纤维、多原像、CDF 原像法、Jacobian 与“原子 + 连续部分”账本统一转入 Topic 04《联合分布、条件分布与变换》及其训练文档，避免在两册维护两套变换算法。
+\end{warnbox}
 
 \begin{examplebox}{1993 真题：对称与零协方差都不能制造独立性}
 设
 \[
-f_X(x)=\frac12e^{-|x|},\qquad x\in\mathbb R,
+f_X(x)=\frac12e^{-\lvert x\rvert},\qquad x\in\mathbb R,
 \]
-求 $E(X)$、$D(X)$、$\operatorname{Cov}(X,|X|)$ 并判断 $X$ 与 $|X|$ 是否独立。
+求 $E(X)$、$D(X)$、$\operatorname{Cov}(X,\lvert X\rvert)$ 并判断 $X$ 与 $\lvert X\rvert$ 是否独立。
 对称性给出 $E(X)=0$，而
 \[
 E(X^2)=2\int_0^\infty x^2e^{-x}\,dx=2,
 \qquad D(X)=2.
 \]
-因为 $x|x|e^{-|x|}/2$ 是奇函数，
+因为 $x\lvert x\rvert e^{-\lvert x\rvert}/2$ 是奇函数，
 \[
-E[X|X|]=0,\qquad \operatorname{Cov}(X,|X|)=0.
+E[X\lvert X\rvert]=0,\qquad \operatorname{Cov}(X,\lvert X\rvert)=0.
 \]
-但 $Y=|X|$ 是 $X$ 的非恒定函数，故不能独立。取同一事件
+但 $Y=\lvert X\rvert$ 是 $X$ 的非恒定函数，故不能独立。取同一事件
 \[
-B=\{|X|\le1\}=\{Y\le1\},\qquad P(B)=1-e^{-1}\in(0,1),
+B=\{\lvert X\rvert\le1\}=\{Y\le1\},\qquad P(B)=1-e^{-1}\in(0,1),
 \]
 则 $P(B\cap B)=P(B)\ne P(B)^2$，直接否定独立。这里的得分链是：\emph{先查函数依赖，再算协方差；不相关只是二阶信息，不是联合结构。}
 \end{examplebox}
@@ -237,6 +222,30 @@ P_{\operatorname{Pois}}(X=k)=e^{-\lambda}\frac{\lambda^k}{k!},
 \[
 P_{\operatorname{Geom}}(X=k)=(1-p)^{k-1}p,\quad k\ge1.
 \]
+
+\begin{methodbox}{无记忆性有离散与连续两种版本}
+若 $X\sim\operatorname{Geom}(p)$ 采用“首次成功所在试验序号”的约定，则对非负整数 $m,n$，
+\[
+\boxed{P(X>m+n\mid X>n)=P(X>m)}.
+\]
+已知前 $n$ 次仍未成功，不会改变后续等待的几何结构。连续对应物是指数分布：若 $T\sim\operatorname{Exp}(\lambda)$，则对 $s,t\ge0$，
+\[
+\boxed{P(T>s+t\mid T>s)=P(T>t)}.
+\]
+两者都来自“过去没有发生”之后剩余过程与原过程同型，但一个按离散试验次数计时，一个按连续时间计时。不要把无记忆性推广到一般负二项、Gamma 或任意寿命分布。
+
+一个很好的反向识别是 Weibull 型生存函数
+\[
+S(t)=P(T>t)=\exp\!\left[-\left(\frac{t}{\theta}\right)^m\right],\qquad t\ge0.
+\]
+它的剩余寿命满足
+\[
+P(T>s+t\mid T>s)
+=\exp\!\left\{\left(\frac{s}{\theta}\right)^m-\left(\frac{s+t}{\theta}\right)^m\right\}.
+\]
+只有 $m=1$ 时，上式才化为只依赖 $t$ 的 $\exp(-t/\theta)$，也就是指数分布。于是“条件后是否仍与过去等待量 $s$ 无关”本身就是识别无记忆结构的检验。
+\end{methodbox}
+
 \begin{methodbox}{常见 PMF 从生成机制长出来}
 二项分布中，指定的 $k$ 次成功路径质量为 $p^k(1-p)^{n-k}$，再乘成功位置的选择数 $\binom nk$。几何分布要求前 $k-1$ 次失败且第 $k$ 次成功，所以直接得到 $(1-p)^{k-1}p$。Poisson 质量函数可由稀疏二项极限复原：令 $p_n=\lambda/n$，固定 $k$，则
 \[
@@ -245,6 +254,27 @@ P_{\operatorname{Geom}}(X=k)=(1-p)^{k-1}p,\quad k\ge1.
 \longrightarrow e^{-\lambda}\frac{\lambda^k}{k!}.
 \]
 因此分布公式必须和“固定次数成功数、首次成功、稀疏计数”三种生成条件绑定；条件变化后不能只保留同一个 PMF 外形。
+\end{methodbox}
+
+\begin{methodbox}{标准分布识别三闸门：公式核、支撑、归一}
+看到熟悉的函数外形时，不能只靠“长得像”认分布。至少同时检查三件事：
+\begin{enumerate}
+  \item \kw{公式核：}主体是否具有目标分布的概率质量/密度外形；
+  \item \kw{支撑：}允许取值是否和标准分布完全一致；
+  \item \kw{归一：}当前常数是否让全部合法取值的总质量恰好为 $1$。
+\end{enumerate}
+例如
+\[
+P(X=k)=c\frac{\lambda^k}{k!},\qquad k=1,2,\ldots
+\]
+虽然含有 Poisson 的 $\lambda^k/k!$ 核，但标准 Poisson 的支撑从 $k=0$ 开始；这里缺失 $k=0$，故不能直接写成 $\operatorname{Pois}(\lambda)$。必须重新归一：
+\[
+1=c\sum_{k=1}^{\infty}\frac{\lambda^k}{k!}
+=c(e^\lambda-1),
+\qquad
+c=\frac1{e^\lambda-1}.
+\]
+同理，指数核放在半轴、截断区间或全实轴上对应不同模型；正态核若尺度常数错误也不是合法正态密度。\kw{分布身份 = 生成机制 + 支撑 + 归一后的概率对象}，不能由某一段公式外形单独决定。
 \end{methodbox}
 
 \begin{methodbox}{计数机制三分流：二项、多项、超几何}
@@ -302,6 +332,8 @@ f_E(x)=\lambda e^{-\lambda x}I_{(0,\infty)}(x),
 \[
 f_N(x)=\frac1{\sqrt{2\pi}\sigma}\exp\left[-\frac{(x-\mu)^2}{2\sigma^2}\right].
 \]
+对连续均匀分布，端点是否写成开区间、闭区间或半开区间不改变分布，因为单点概率为 $0$；$U(a,b)$、把端点包含进去的写法在概率意义下描述同一个分布。只有当端点另带原子质量时，端点记号才真正改变模型。
+
 正态标准化 $Z=(X-\mu)/\sigma\sim N(0,1)$ 只改变位置与尺度，不由此推出原变量或其他变量正态；指数的无记忆性是生成机制，不是所有连续等待时间的默认性质。
 
 \section{最大最小：事件恒等式先于独立乘积}
@@ -385,28 +417,16 @@ P(g(X,Y)<c)=\sum_kp_k\int_{\{x:g(x,y_k)<c\}}f_{X\mid Y=y_k}(x)\,dx.
 
 若 $f,g$ 都是 PDF，则 $af+bg$ 在 $a,b\ge0,a+b=1$ 时是标准混合密度。仿射变换必须保留归一化因子：
 \[
-Y=aX+b\Longrightarrow f_Y(y)=\frac1{|a|}f_X\left(\frac{y-b}{a}\right).
+Y=aX+b\Longrightarrow f_Y(y)=\frac1{\lvert a\rvert}f_X\left(\frac{y-b}{a}\right).
 \]
-直接写 $f(ax+b)$ 的积分为 $1/|a|$，不自动是 PDF；$f(x)g(x)$ 通常也需除以总积分后才能归一化。
-
-\begin{examplebox}{早期真题：全局单调变换的支持与 Jacobian}
-1988 Q十一中 $f_X(x)=1/[\pi(1+x^2)]$、$Y=1-\sqrt[3]{X}$。由于 $x=(1-y)^3$ 在全实轴上单调，只有一个原像，故
-\[
-f_Y(y)=\frac{3(1-y)^2}{\pi\{1+(1-y)^6\}},\qquad y\in\mathbb R.
-\]
-1995 Q十一中 $X\sim\operatorname{Exp}(1)$、$Y=e^X$，原像 $x=\ln y$ 把支持搬到 $y\ge1$，从而
-\[
-f_Y(y)=e^{-\ln y}\frac1y=\frac1{y^2}I_{[1,\infty)}(y).
-\]
-两题共同说明：先判全局单调性和新支持，再乘 $|dx/dy|$；不能把支持边界留到最后。
-\end{examplebox}
+直接写 $f(ax+b)$ 的积分为 $1/\lvert a\rvert$，不自动是 PDF；$f(x)g(x)$ 通常也需除以总积分后才能归一化。
 
 \section{选择与检查协议}
 \begin{enumerate}
 \item 先写观察函数、支持集和目标表示（CDF、PMF、PDF、分位数或单个概率）。
 \item CDF 检查单调、右连续和两端极限；含原子时保留 $F(a^-)$。
 \item 分布识别依据生成机制，不依据单个关键词。
-\item 变换题先求值域和原像；非单调时枚举全部分支；常值纤维时检查点质量。
+\item 若目标变成 $Y=g(X)$ 的完整新分布，只在本册确认值域/端点与“可能产生原子”的类型边界，随后转 Topic 04 的变换路线。
 \item 使用 MGF、最大最小乘积或正态和公式前，明确存在性与独立性。
 \item 最后检查 PMF 总和、PDF 总积分、概率范围和 $N_n\le M_n$ 导出的 CDF 顺序。
 \end{enumerate}
@@ -417,8 +437,6 @@ f_Y(y)=e^{-\ln y}\frac1y=\frac1{y^2}I_{[1,\infty)}(y).
 \midrule
 把 CDF 当密度 & 当前对象是累计质量还是单位长度强度？ \\
 忽略 $F(a^-)$ & $X=a$ 是否可能有原子？ \\
-只取一个反函数分支 & $g(x)=y$ 在支持集内有几个原像？ \\
-连续输入必有连续输出 & 变换是否含常值区间？ \\
 最大最小公式无条件相乘 & 变量是否相互独立？ \\
 密度值当点概率 & 概率是否真正经过积分？ \\
 \bottomrule
@@ -486,7 +504,7 @@ f_Z(z)=zI_{(0,1)}(z)+(z-2)I_{(2,3)}(z).
 \end{examplebox}
 
 \begin{examplebox}{早期真题：CDF 的两侧积分与单调变换（1990/1988）}
-若 $f_X(x)=\tfrac12e^{-|x|}$，则
+若 $f_X(x)=\tfrac12e^{-\lvert x\rvert}$，则
 \[
 F_X(x)=\begin{cases}\tfrac12e^x,&x<0,\\1-\tfrac12e^{-x},&x\ge0.\end{cases}
 \]

@@ -710,6 +710,23 @@ ipara label
 2. **生成资产**：自动输出 `assets/<图名>.svg`（带自适应暗色）与 `assets/light/<图名>.svg`；
 3. **Markdown 引用**：正文统一采用标准相对链接语法：`!` + `[说明文本]` + `(./assets/图名.svg)`。
 
+##### 同一几何图同时服务手册正文与 SVG 时的共享规则：
+
+若某张图既要作为 Markdown 的暗/亮 SVG，又要直接嵌入规范手册 `.tex`，**严禁把完整的 `standalone` 图源直接 `\input` 到手册正文**。完整图源含 `\documentclass`、`\usepackage`、`\begin{document}`，嵌入正文会造成导言区命令越界；若正文外层还包了 `tikzpicture`，再输入一个自带 `tikzpicture` 的 body 还会形成嵌套 TikZ，可能触发字体选择递归或输入栈爆炸。
+
+统一采用“正式图源包装器 + 单一几何 body”模式：
+
+```text
+assets/src/<中文语义图名>.tex          # 正式 standalone 图源，供 SVG 编译链调用
+assets/src/<ascii_name>_body.tikz     # 唯一几何正文，只保存 tikzpicture 本体
+```
+
+- `<中文语义图名>.tex` 仍是对外唯一图源入口，负责主题色、CJK 环境与独立文档包装；
+- `<ascii_name>_body.tikz` 只负责几何与标注，不另立知识/图形 Owner；正式图源与手册正文都引用这一份 body，禁止复制两套坐标；
+- **内部 body 文件名必须使用 ASCII**。SVG 管线使用传统 `latex → dvisvgm`，其 `\input{中文文件名}` 在部分 TeX 环境下会解析失败；中文语义命名保留在正式 `.tex` 与派生 SVG stem 上即可；
+- 若 body 已经包含 `\begin{tikzpicture}...\end{tikzpicture}`，手册正文应直接 `\input`，不得再额外套一层 `tikzpicture`；若选择只共享 picture 内部语句，则包装器与正文必须各自只包一层，二者择一并保持全仓一致；
+- 修改图形时只改共享 body，再同时重编 SVG 与手册 PDF，确认两种视图没有发生语义漂移。
+
 #### 10. 视图呈现与多媒体排版控制契约（Presentation & Sizing Contract）
 在 Markdown / Obsidian / Web 视图与打印介质中，图表呈现严格遵循以下自适应与居中契约：
 1. **全景居中（Universal Centering）**：所有多媒体图表默认采用 `display: block; margin-left: auto; margin-right: auto;` 保证在段落与版心中轴线上居中呈现；

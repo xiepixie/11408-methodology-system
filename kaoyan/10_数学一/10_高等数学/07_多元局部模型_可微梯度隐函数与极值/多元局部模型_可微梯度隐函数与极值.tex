@@ -139,7 +139,7 @@ f(\mathbf a+\mathbf h)=f(\mathbf a)+L(\mathbf h)+o(\lVert\mathbf h\rVert)
 
 原点附近用极坐标时，真正的证明是取得角度无关的包络：
 \[
-|f(r\cos\theta,r\sin\theta)|\le\varphi(r),
+\lvert f(r\cos\theta,r\sin\theta)\rvert\le\varphi(r),
 \qquad \varphi(r)\to0.
 \]
 极坐标只是表示，统一估计才是证据。
@@ -151,6 +151,10 @@ f(\mathbf a+\mathbf h)=f(\mathbf a)+L(\mathbf h)+o(\lVert\mathbf h\rVert)
 f_x(x_0,y_0)=\lim_{h\to0}\frac{f(x_0+h,y_0)-f(x_0,y_0)}h.
 \]
 另一个变量被固定，因此偏导只读取坐标切片，不能控制斜线和曲线路径。
+
+\begin{warnbox}{偏导记号不是可以任意约分的普通分数}
+$\partial f/\partial x$ 是“在其余独立变量按当前坐标约定保持不变时，对 $x$ 做局部变化率”的算子记号。若 $x,y,z$ 受同一约束 $F(x,y,z)=0$ 联系，写 $\partial x/\partial y$ 时还必须说明哪个变量保持不变；不同固定条件对应不同导数。链式法则、隐式求导和 Jacobian 可以产生形式上像分式乘法的恒等式，但合法性来自复合映射与局部可解性，不能靠约分符号自行证明。
+\end{warnbox}
 
 \begin{warnbox}{偏导存在不推出连续}
 令
@@ -165,15 +169,39 @@ f(x,y)=
 
 混合偏导存在也不自动相等；最常用的安全资格是 $f\in C^2$ 于邻域。
 
-\subsection{方向导数只看一条射线}
+\subsection{方向导数只看一条方向；先审定义约定}
+
+本册默认采用“向量参数的双侧定义”
 \[
 D_{\mathbf v}f(\mathbf a)
-=\lim_{t\to0}\frac{f(\mathbf a+t\mathbf v)-f(\mathbf a)}t.
+=\lim_{t\to0}\frac{f(\mathbf a+t\mathbf v)-f(\mathbf a)}t,
+\qquad \mathbf v\ne\mathbf0.
 \]
-有的教材只允许单位方向，计算前须确认约定。所有方向导数存在仍不推出可微，因为 $\mathbf v\mapsto D_{\mathbf v}f$ 可能不线性，或余项不对方向一致。只有可微时才保证
+在这个约定下，取 $\mathbf v=\mathbf e_i$ 就得到相应偏导，因此\textbf{若所有非零方向的双侧方向导数都存在，则各偏导必然存在}；但仍不推出可微，因为 $\mathbf v\mapsto D_{\mathbf v}f$ 可能不线性，或余项不对方向一致。
+
+部分教材把“沿射线的方向导数”定义为
 \[
-D_{\mathbf v}f(\mathbf a)=\nabla f(\mathbf a)\cdot\mathbf v.
+D_{\mathbf u}^{+}f(\mathbf a)
+=\lim_{t\to0^+}\frac{f(\mathbf a+t\mathbf u)-f(\mathbf a)}t,
+\qquad \lVert\mathbf u\rVert=1.
 \]
+这是\textbf{单侧射线导数}。此时它与偏导的逻辑关系发生变化：$D_{\mathbf e_i}^{+}$ 只对应坐标正向的单侧偏导，而普通偏导仍要求双侧极限。例如
+\[
+f(x,y)=\sqrt{x^2+y^2}
+\]
+在原点沿任意单位射线都有 $D_{\mathbf u}^{+}f(0,0)=1$，但 $f_x(0,0)$ 不存在；若改用本册的双侧向量定义，则
+\[
+\frac{f(t\mathbf u)-f(0)}t=\frac{\lvert t\rvert}{t}
+\]
+反而没有极限。
+
+因此看到“方向导数存在”时，第一问不是背结论，而是确认：\textbf{方向是有向直线还是单侧射线？参数是 $t\to0$ 还是 $t\to0^+$？方向向量是否要求单位化？} 不同定义之间不能无条件搬运反例和蕴含关系。
+
+只有可微时，不论采用单位方向的双侧版本还是其合法单侧限制，都由同一个线性主部给出
+\[
+D_{\mathbf v}f(\mathbf a)=\nabla f(\mathbf a)\cdot\mathbf v
+\]
+（若约定只允许单位向量，则取 $\lVert\mathbf v\rVert=1$）。
 
 \subsection{可微要求统一线性主部}
 \[
@@ -327,7 +355,21 @@ D\boldsymbol\varphi
 \[
 \nabla F(P_0)\times\nabla G(P_0),
 \]
-前提是两个梯度不平行。第一动作始终是先验证点属于对象，再验证正则性。
+前提是两个梯度不平行。
+
+一旦“切向/法向载体”确定，切对象与法对象应成对生成，而不是再背一组孤立公式：
+\begin{itemize}
+  \item 隐式曲面 $F=0$ 的法线以 $\nabla F(P_0)$ 为方向，
+  \[
+  \mathbf r=\mathbf r_0+s\nabla F(P_0);
+  \]
+  \item 参数曲线 $\mathbf r(t)$ 在 $t_0$ 处的法平面，以切向量 $\mathbf r'(t_0)$ 为法向，
+  \[
+  \mathbf r'(t_0)\cdot(\mathbf r-\mathbf r_0)=0;
+  \]
+  \item 两曲面交线的法平面，同样以 $\nabla F(P_0)\times\nabla G(P_0)$ 为法向。
+\end{itemize}
+因此“切平面/法线”和“切线/法平面”只是同一个方向载体的两种几何输出。第一动作始终是先验证点属于对象，再验证正则性；若梯度为零或参数切向量为零，公式失去资格，不能把退化点硬套成普通切对象。
 
 \section{二阶模型：Hessian 读取驻点附近形状}
 
@@ -397,7 +439,7 @@ A=f_{xx},\quad B=f_{xy},\quad C=f_{yy},\quad \Delta=AC-B^2.
 归一化后候选点为 $\pm(1,2,3)/\sqrt{14}$，对应最大值 $\sqrt{14}$、最小值 $-\sqrt{14}$。代回约束与目标值完成独立验证。
 
 这题从允许集合开始：球面是紧集，故全局最值存在；约束梯度 $2(x,y,z)$ 在球面上不为零，Lagrange 资格成立；梯度平行只生成候选，最后再用 Cauchy--Schwarz 的界
-$|x+2y+3z|\le\sqrt{14}$ 独立确认全局性。若误把“无约束驻点 $\nabla f=0$”当作第一动作，将得到空候选集并漏掉全部约束极值。
+$\lvert x+2y+3z\rvert\le\sqrt{14}$ 独立确认全局性。若误把“无约束驻点 $\nabla f=0$”当作第一动作，将得到空候选集并漏掉全部约束极值。
 \end{examplebox}
 
 II-03.1 的二次型条件极值可进一步转化为广义特征值，但其正定资格、Rayleigh 商和线代机制归 B03/线性代数，不在本册复制。

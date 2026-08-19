@@ -17,7 +17,7 @@
 
 - 高数 12 Topic、5 个高数内部 Bridge、H-I01 及数学一跨科 B00--B08 已建立 Canonical 候选正文并发布；高价值 Source 已完成首轮路由，Rules 仍待真题/陌生题攻击。
 - 线性代数 Topic01--06 已完成两轮 Source / Model Diff 并重新发布；1987--2025 可用数学一真题已完成按 L01--L06 的全量分类与模型对抗审计，其中 2020 真题补出“两个实对称表示经公共谱坐标合成正交变换”的 Topic06 接口并收窄 R-LA18。Atlas 已补充“任务契约先行”的考场路由；线性代数 Rules 继续保持待验证，下一步是每个 Topic 选陌生题做无提示盲测，已否定的绝对化规则继续保留最小反例。
-- 概率统计已完成归档 Source Pack 的反向结构审阅和 Topic01--08 修正；正文与 Rules 尚未因缺少陌生题证据升级为成熟状态，Published View 仍有环境同步债务。
+- 概率统计已完成旧九章 Source Pack 的细节级全量核销、Topic01--08 修正与八册 Published View 重发；正文与 Rules 尚未因缺少陌生题证据升级为成熟状态，下一步债务已从“Source 遗漏/发布同步”收缩为陌生题规则验证。
 
 ### 408
 
@@ -63,11 +63,11 @@
 ## 当前阻塞
 
 - **无硬阻塞**：仓库检查与 Bridge 发布入口可用。
-- **维护债务**：概率统计仍受 `STHeiti` 字体环境影响；共享编译机制已切到 `infra/scripts/compile_tex.py`，Kaoyan publish preflight 与 `90_publish/` 路由继续由 `cognitive_system.py` 显式拥有；网络八册与 NET-I01 的 Published View 已同步。当前无由 Infra Cutover 引入的新硬阻塞。
+- **维护债务**：概率统计 Topic01--08 已在当前环境重新发布成功，原 `STHeiti` Published View 同步债务本轮已消除；共享编译机制继续由 `infra/scripts/compile_tex.py` 承担，Kaoyan publish preflight 与 `90_publish/` 路由由 `cognitive_system.py` 显式拥有。当前无由 Infra Cutover 引入的新硬阻塞。
 - **证据债务**：大多数 Rules 只有 Source / 机制重建支持，尚缺使用者在陌生题中的重复验证；因此当前状态应读作“Canonical 候选 + Candidate Rules”，不是“全部成熟”。
 
 ## 复盘入口
 
-- 当前日志索引：[review_log/README.md](80_evidence/review_log/README.md)
-- 已完成审阅归档：[archive/review_log/README.md](80_evidence/archive/review_log/README.md)
-- Bridge 审阅台账（归档）：[2026-08-12_Bridge逐册审阅台账_v1.md](80_evidence/archive/review_log/2026-08-12/2026-08-12_Bridge逐册审阅台账_v1.md)
+- 当前日志索引：[审阅日志索引](80_evidence/review_log/README.md)
+- 已完成审阅归档：[审阅日志归档索引](80_evidence/archive/review_log/README.md)
+- Bridge 审阅台账（归档）：[Bridge 逐册审阅台账 v1](80_evidence/archive/review_log/2026-08-12/2026-08-12_Bridge逐册审阅台账_v1.md)

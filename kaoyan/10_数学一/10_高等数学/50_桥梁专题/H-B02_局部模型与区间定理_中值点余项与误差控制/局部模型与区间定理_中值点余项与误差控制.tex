@@ -24,9 +24,9 @@ $\longrightarrow$ Rolle 链 $\longrightarrow$ 中值点余项/导数估计。
 f(x)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k+
 \frac{f^{(n+1)}(\xi)}{(n+1)!}(x-a)^{n+1}.
 \]
-因此若 $|f^{(n+1)}(t)|\le M$，立即得到
+因此若 $\lvert f^{(n+1)}(t)\rvert\le M$，立即得到
 \[
-|R_n(x)|\le \frac{M}{(n+1)!}|x-a|^{n+1}.
+\lvert R_n(x)\rvert\le \frac{M}{(n+1)!}\lvert x-a\rvert^{n+1}.
 \]
 这里的停止条件是：学生能说明“$\xi$ 只保证存在，$M$ 来自整个区间上界”，即可进入数值估计。
 \subsection*{2.\ 多中值点：先制造插点，再分割区间}
@@ -44,27 +44,27 @@ f(a+h)-f(a)=h f'(a+\theta_h h).
 \]
 定理本身不保证 $\theta_h$ 唯一，也不保证它有极限；要定位它，必须把\textbf{区间平均变化率}和\textbf{局部导数模型}放到同一阶比较。
 
-若 $f''(a)\ne0$ 且二阶正则性足够，则
+若 $f$ 在点 $a$ 处二阶可导（即存在有限的 $f''(a)\ne0$），则 $f$ 与 $f'$ 分别享有带 Peano 余项的一阶/二阶展开：
 \[
 \frac{f(a+h)-f(a)}h=f'(a)+\frac12f''(a)h+o(h),
 \]
-而
+而由 $f'$ 在 $a$ 处的局部展开，
 \[
 f'(a+\theta_hh)=f'(a)+f''(a)\theta_hh+o(h),
 \]
-故
+两式作差消除 $f'(a)$ 并除以非零的 $f''(a)h$，即得
 \[
 \boxed{\theta_h\to\frac12}.
 \]
-更一般地，若第一个非零高阶导数是 $f^{(m)}(a)$（$m\ge2$），即
+更一般地，若 $f$ 在点 $a$ 处 $m$ 阶可导（$m\ge2$），且第一个非零高阶导数是 $f^{(m)}(a)$，即
 \[
 f''(a)=\cdots=f^{(m-1)}(a)=0,\qquad f^{(m)}(a)\ne0,
 \]
-则比较 $h^{m-1}$ 主部得到
+则分别利用 $f$ 的 $m$ 阶 Peano 展开与 $f'$ 的 $m-1$ 阶 Peano 展开，比较 $h^{m-1}$ 主部系数得到
 \[
 \boxed{\theta_h\to m^{-1/(m-1)}}.
 \]
-若 $f$ 在附近仿射，中值等式对任意 $\theta_h\in(0,1)$ 都成立，说明没有非退化高阶信息时，中值点位置可能根本不被确定。
+这里的\textbf{接口资格}是点 $a$ 处对应的局部高阶导数存在性；若 $f$ 在附近退化为仿射线性，中值等式对任意 $\theta_h\in(0,1)$ 均成立，说明缺乏非退化高阶导数信息时中值点渐近位置无法被确定。
 
 \subsection*{4.\ 插值余项：零点与重零点怎样编码约束？}
 取互异节点 $x_0,\ldots,x_n$，令 $\Pi(x)=\prod_{i=0}^{n}(x-x_i)$。若目标点 $x$ 恰好等于某个节点，则 $f(x)-P(x)=0$，余项结论平凡成立，\textbf{不要再为了构造 $K$ 去除以 $\Pi(x)=0$}。以下只讨论目标点不是节点的情形。对
@@ -85,25 +85,25 @@ f(x)-P(x)=\frac{f^{(n+1)}(\xi)}{(n+1)!}\Pi(x).
 \subsection*{5.\ 从点态余项到积分误差与导数估计}
 若已有统一点态误差
 \[
-|f(x)-P(x)|\le E(x),
+\lvert f(x)-P(x)\rvert\le E(x),
 \]
 则在合法区间上可直接累积为
 \[
-\left|\int_a^b(f-P)\right|\le\int_a^b E(x)\,dx.
+\left\lvert\int_a^b(f-P)\right\rvert\le\int_a^b E(x)\,dx.
 \]
 所以“先造余项，再积分”往往比直接攻击复杂积分更稳定。
 
-端点零值还可以与 Rolle/Taylor 共同产生全区间界。例如若 $f(0)=f(1)=0$ 且 $|f''|\le M$，则对每个 $x\in[0,1]$ 可构造二次插值余项得到
+端点零值还可以与 Rolle/Taylor 共同产生全区间界。例如若 $f(0)=f(1)=0$ 且 $\lvert f''\rvert\le M$，则对每个 $x\in[0,1]$ 可构造二次插值余项得到
 \[
-|f(x)|\le\frac M2x(1-x),
+\lvert f(x)\rvert\le\frac M2x(1-x),
 \qquad
-\left|\int_0^1f(x)\,dx\right|\le\frac M{12}.
+\left\lvert\int_0^1f(x)\,dx\right\rvert\le\frac M{12}.
 \]
 这里 $x(1-x)$ 不是要背的模板，而是两个端点零约束生成的二次零点因子。
 
-反向地，局部 Taylor 也能把函数值界与高阶导数界运输成中间导数界。若 $|f|\le M_0$、$|f''|\le M_2$，且 $[x-h,x+h]$ 都在合法区间内，则中央差分与 Taylor 给出一种典型估计
+反向地，局部 Taylor 也能把函数值界与高阶导数界运输成中间导数界。若 $\lvert f\rvert\le M_0$、$\lvert f''\rvert\le M_2$，且 $[x-h,x+h]$ 都在合法区间内，则中央差分与 Taylor 给出一种典型估计
 \[
-|f'(x)|\le \frac{M_0}{h}+\frac{M_2h}{2}.
+\lvert f'(x)\rvert\le \frac{M_0}{h}+\frac{M_2h}{2}.
 \]
 选择合适的 $h$ 是在“函数值振幅”与“曲率误差”之间做平衡；完整 Landau--Kolmogorov 不等式只作 Extension。
 
@@ -123,10 +123,10 @@ f'(x)=\frac{f(x+h)-f(x)}h-\frac h2f''(\xi_x)\to0.
 这条机制说明“低阶函数本身趋稳 + 更高阶变化率趋零”可以通过一个\textbf{随 $x$ 滑动但长度固定的区间}控制中间导数。高阶版本仍是同一思想：用足够阶 Taylor 把目标导数夹在端点差与更高阶余项之间。
 
 \subsection*{7.\ 最小例子与调用}
-对 $f(x)=e^x$ 在 $a=0$ 作一阶 Taylor，若 $|x|\le1$，存在 $\xi$ 介于 $0,x$ 之间使
+对 $f(x)=e^x$ 在 $a=0$ 作一阶 Taylor，若 $\lvert x\rvert\le1$，存在 $\xi$ 介于 $0,x$ 之间使
 \[
 e^x=1+x+\frac{e^\xi}{2}x^2,\qquad
-|e^x-1-x|\le\frac e2x^2.
+\lvert e^x-1-x\rvert\le\frac e2x^2.
 \]
 局部系数来自 Topic03，区间导数上界和中值点余项由本 Bridge 接通。题面要求误差界或“存在 $\xi$”时调用。
 

@@ -61,6 +61,8 @@ OS 的五项上位职责是 Control、Virtualization、Coordination、Protection
 
 优先综合过程：Blocking `read()`；`fork()` + COW + Resource Reference。
 
+跨科母模型入口：[缓冲与有限中间态](../00_统一总图/跨科母模型_缓冲与有限中间态.md)。管道/消息通道、有界生产者—消费者、驻留页、I/O 缓冲、缓冲池、页缓存、假脱机与设备请求队列都在这里建立共同直觉；IPC、同步、虚存和 I/O 的精确状态机仍分别回 OS-01/02、OS-03、OS-04、OS-05。
+
 ## 做题入口
 
 [OS 做题规则](90_做题规则/README.md)

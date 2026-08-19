@@ -29,7 +29,7 @@ $$
 
 ## Boundary / Anti-Bridge
 
-- “特解 + 齐次解”依赖线性算子结构，不能推广到一般非线性 ODE；
+- “特解 + 齐次解”依赖线性映射/线性微分算子的叠加结构，不能推广到一般非线性 ODE；
 - scalar differential operator 与普通有限维矩阵不是同一对象。
 
 ## Extension
@@ -44,6 +44,10 @@ I-13 与线代 Topic04 的解空间正文已完成 Owner 复核；正文只保�
 
 - Canonical Source：[线性方程与线性微分方程_一点加Kernel.tex](线性方程与线性微分方程_一点加Kernel.tex)
 - Published View：[线性方程与线性微分方程_一点加Kernel.pdf](../../../90_publish/math1/线性方程与线性微分方程_一点加Kernel.pdf)
+
+## Practice
+
+- [一点 + Kernel 调用训练](一点加Kernel调用训练.md) —— 先审计线性，再用“特解命中目标 + kernel 保留自由度”生成全部解；显式阻断向一般非线性 ODE 的错误推广。
 
 ## Review v1
 已核对非齐次解集是特解加齐次核的仿射平移，并区分有限维矩阵与微分算子。下一轮用非线性 ODE 反例、初值唯一性和解空间维数题验证。

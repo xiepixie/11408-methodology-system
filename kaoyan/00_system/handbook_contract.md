@@ -2,7 +2,7 @@
 
 本契约规定稳定资产需要说清什么，但不规定固定章节数、篇幅、YAML 或表单。自然中文能说清，就不增加结构。
 
-> 写作原则与验收标准见 [handbook_writing_spec.md](handbook_writing_spec.md)。本文件只定义最低完成清单。
+> 写作原则与验收标准见 [Handbook 写作规范与验收标准](handbook_writing_spec.md)。本文件只定义最低完成清单。
 
 ## 1. 所有 Handbook 的共同要求
 
@@ -102,6 +102,8 @@ Canonical Atlas README 至少说清：
 Atlas 可以有层级：Course / Exam Atlas 负责多个 Subject Atlas 之间的地图、共享控制语言和跨学科接口；Subject Atlas 负责本学科自己的世界模型。上层 Atlas 不为了“统一”而抹平下层学科差异。
 
 Atlas 可以使用 Markdown 表格、文本树、公式和 Mermaid。内容必须保持“地图粒度”：允许给一个足以解释路由的最小例子或边界，但不展开长证明、完整机制推导、整套题型或复杂计算。需要这些内容时，直接链接 Topic / Bridge / Integration Owner。
+
+若某条跨模块关系本身值得连续展开、但既不构成 Topic 机制，也不通过 Bridge 的稳定交接 Gate，上层 Atlas 可以拥有一份独立 Markdown **母模型补充文档**。它只 Own 共同问题形状、迁移模型、差异边界和路由，不 Own 各 Topic 的具体公式/协议/状态机；因此它是 Atlas 的可展开关系层，而不是第五种 Handbook。主 Atlas README 只保留压缩结论与入口，避免同一长解释复制两份。
 
 Atlas 的可选 LaTeX 海报只服务全景视觉，不影响 Canonical 状态。海报缺失不表示 Atlas 未完成。
 

@@ -1,9 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Kaoyan Knowledge & Reading Portal | 11408 方法论阅读门户</title>
+  <script>
+    (function() {
+      var theme = localStorage.getItem('kaoyan_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <!-- KaTeX & Marked.js Libraries -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <link rel="stylesheet" href="portal.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>">
 </head>
@@ -87,6 +95,7 @@
             <button class="pill-btn active" data-type="all">全部类型</button>
             <button class="pill-btn" data-type="Atlas">🗺️ 总图</button>
             <button class="pill-btn" data-type="Topic">📘 专题</button>
+            <button class="pill-btn" data-type="Drill">🛠️ 训练</button>
             <button class="pill-btn" data-type="Bridge">🌉 桥梁</button>
             <button class="pill-btn" data-type="Integration">🧩 综合</button>
             <button class="pill-btn" data-type="Control">📋 规则</button>
@@ -151,6 +160,18 @@
 
         <!-- Right Actions -->
         <div class="nav-right" id="nav-actions">
+          <!-- Drill Mode Controls (Visible when reading Markdown) -->
+          <button class="action-btn twin-model-btn" id="twin-model-btn" title="联动跳转至心智模型手册 PDF" style="display:none;">
+            <span class="action-icon">📘</span>
+            <span class="btn-text">心智模型</span>
+            <span style="font-size:11px; opacity:0.8;">↗</span>
+          </button>
+          <button class="action-btn mastery-btn" id="mastery-status-btn" title="点击切换训练掌握状态 (快捷键 M)" style="display:none;">
+            <span class="action-icon" id="mastery-icon">⚪</span>
+            <span class="btn-text" id="mastery-text">未练</span>
+          </button>
+
+          <!-- PDF Controls -->
           <button class="action-btn" id="pdf-invert-btn" title="夜间护眼暗色阅读模式 (Shift+D)" disabled>
             <span class="action-icon">🌙</span>
             <span class="btn-text">护眼暗色</span>
@@ -170,7 +191,7 @@
             <div class="copy-menu" id="copy-menu" style="display:none;">
               <button class="copy-menu-item" data-copy-type="rel-path">
                 <span>相对文件路径</span>
-                <kbd>kaoyan/90_publish/...</kbd>
+                <kbd>kaoyan/...</kbd>
               </button>
               <button class="copy-menu-item" data-copy-type="obsidian">
                 <span>Obsidian 双链</span>
@@ -183,7 +204,7 @@
             </div>
           </div>
 
-          <button class="action-btn" id="open-external-btn" title="在系统新窗口打开 PDF" disabled>
+          <button class="action-btn" id="open-external-btn" title="在系统新窗口打开" disabled>
             <span class="action-icon">↗</span>
             <span class="btn-text">新窗口</span>
           </button>
@@ -201,19 +222,19 @@
         <div class="welcome-screen" id="welcome-screen">
           <div class="welcome-card">
             <div class="welcome-badge">11408 METHODOLOGY SYSTEM</div>
-            <h2 class="welcome-title">考研领域知识与交付手册门户</h2>
+            <h2 class="welcome-title">考研领域知识与研练交付门户</h2>
             <p class="welcome-desc">
-              收敛数学一、408 计算机、英语一与解题控制系统的全套 Canonical Handbook 与心智模型图谱。
+              收敛数学一、408 计算机、英语一与解题控制系统的全套 Canonical Handbook、心智模型图谱与实战训练手册。
             </p>
 
             <div class="stats-grid">
               <div class="stat-box" data-subject="math1">
-                <div class="stat-num" id="hero-math-count">47</div>
+                <div class="stat-num" id="hero-math-count">171</div>
                 <div class="stat-label">📐 数学一手册</div>
-                <div class="stat-sub">高数 / 线代 / 概率论</div>
+                <div class="stat-sub">心智模型 + 实战训练</div>
               </div>
               <div class="stat-box" data-subject="408">
-                <div class="stat-num" id="hero-408-count">67</div>
+                <div class="stat-num" id="hero-408-count">88</div>
                 <div class="stat-label">💻 408 计算机手册</div>
                 <div class="stat-sub">DS / CO / OS / NET</div>
               </div>
@@ -223,7 +244,7 @@
                 <div class="stat-sub">写作 / 阅读 / 翻译</div>
               </div>
               <div class="stat-box" data-subject="system">
-                <div class="stat-num" id="hero-sys-count">2</div>
+                <div class="stat-num" id="hero-sys-count">3</div>
                 <div class="stat-label">⚙️ 控制与规范</div>
                 <div class="stat-sub">做题控制 / 模板</div>
               </div>
@@ -247,6 +268,7 @@
               <div class="shortcuts-grid">
                 <div class="shortcut-item"><kbd>⌘</kbd> + <kbd>K</kbd> <span>呼出 Spotlight 全局秒级模糊搜索</span></div>
                 <div class="shortcut-item"><kbd>J</kbd> / <kbd>K</kbd> <span>上下切换当前列表手册</span></div>
+                <div class="shortcut-item"><kbd>M</kbd> <span>循环切换训练手册掌握度打卡状态</span></div>
                 <div class="shortcut-item"><kbd>[</kbd> <span>展开 / 折叠侧边栏</span></div>
                 <div class="shortcut-item"><kbd>F</kbd> <span>一键进入/退出全屏专注模式</span></div>
                 <div class="shortcut-item"><kbd>T</kbd> <span>切换深色 (Dark) / 浅色主题</span></div>
@@ -266,6 +288,27 @@
           <iframe id="pdf-viewer" class="pdf-iframe" src="" title="PDF Viewer"></iframe>
         </div>
 
+        <!-- Markdown Drill Reader Viewport -->
+        <div class="markdown-viewer-wrapper" id="markdown-viewer-wrapper" style="display:none;">
+          <div class="drill-stage">
+            <div class="drill-meta-banner" id="drill-meta-banner">
+              <div class="drill-scope-box" id="drill-scope-box" style="display:none;">
+                <span class="drill-scope-label">🎯 训练定位</span>
+                <span class="drill-scope-text" id="drill-scope-text"></span>
+              </div>
+              <div class="drill-owner-box" id="drill-owner-box" style="display:none;">
+                <span class="drill-owner-label">📘 模型归属</span>
+                <a class="drill-owner-link" id="drill-owner-link" href="#" title="点击直接打开对应的心智模型手册"></a>
+              </div>
+            </div>
+            <article class="markdown-body" id="markdown-body"></article>
+          </div>
+          <aside class="drill-toc-sidebar" id="drill-toc-sidebar">
+            <div class="drill-toc-header">📑 本篇大纲</div>
+            <nav class="drill-toc-nav" id="drill-toc-nav"></nav>
+          </aside>
+        </div>
+
       </div>
     </main>
 
@@ -278,7 +321,7 @@
       <!-- Modal Search Header -->
       <div class="modal-search-header">
         <span class="modal-search-icon">🔍</span>
-        <input type="text" id="cmd-input" class="cmd-input" placeholder="输入关键词、代号(如 CO-B02)、学科、知识点..." autocomplete="off" spellcheck="false">
+        <input type="text" id="cmd-input" class="cmd-input" placeholder="输入关键词、代号(如 H01-Drill、CO-B02)、学科、知识点..." autocomplete="off" spellcheck="false">
         <button class="modal-clear-btn" id="cmd-clear-btn" style="display:none;" title="清空输入">✕</button>
         <kbd class="modal-esc-badge" id="cmd-close-btn">ESC</kbd>
       </div>
@@ -290,6 +333,7 @@
           <button class="cmd-scope-btn" data-cmd-scope="math1">📐 数学一</button>
           <button class="cmd-scope-btn" data-cmd-scope="408">💻 408</button>
           <button class="cmd-scope-btn" data-cmd-scope="english1">📖 英语一</button>
+          <button class="cmd-scope-btn" data-cmd-scope="Drill">🛠️ 训练</button>
           <button class="cmd-scope-btn" data-cmd-scope="Atlas">🗺️ 总图</button>
           <button class="cmd-scope-btn" data-cmd-scope="star">⭐ 收藏</button>
         </div>
@@ -314,10 +358,25 @@
       </div>
 
     </div>
+  <!-- Image Lightbox Modal (Click-to-Zoom) -->
+  <div class="image-lightbox-overlay" id="image-lightbox-overlay" style="display: none;">
+    <div class="image-lightbox-backdrop" id="image-lightbox-backdrop"></div>
+    <div class="image-lightbox-container">
+      <button class="image-lightbox-close" id="image-lightbox-close" title="关闭 (ESC)">×</button>
+      <div class="image-lightbox-content">
+        <img class="image-lightbox-img" id="image-lightbox-img" src="" alt="放大图示" />
+        <div class="image-lightbox-caption" id="image-lightbox-caption"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Toast Notification -->
   <div class="toast" id="toast"></div>
+
+  <!-- Third-party CDN Scripts with offline graceful fallback handled in portal.js -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@13.0.2/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 
   <!-- Scripts: Load manifest.js directly for zero-CORS file:// protocol, fallback handled in portal.js -->
   <script src="data/manifest.js"></script>

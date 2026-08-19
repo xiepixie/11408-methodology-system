@@ -33,8 +33,9 @@
     starOnly: false,
     selectedDocId: null,
     starredIds: new Set(JSON.parse(localStorage.getItem('kaoyan_stars') || '[]')),
+    drillMastery: JSON.parse(localStorage.getItem('kaoyan_drill_mastery') || '{}'),
     recentIds: JSON.parse(localStorage.getItem('kaoyan_recents') || '[]'),
-    theme: localStorage.getItem('kaoyan_theme') || 'light',
+    theme: localStorage.getItem('kaoyan_theme') || 'dark',
     pdfInvert: localStorage.getItem('kaoyan_pdf_invert') === 'true',
     zenMode: false,
     sidebarCollapsed: window.innerWidth <= 768,
@@ -77,6 +78,10 @@
     docStepperPos: document.getElementById('doc-stepper-pos'),
 
     // Action Buttons
+    twinModelBtn: document.getElementById('twin-model-btn'),
+    masteryStatusBtn: document.getElementById('mastery-status-btn'),
+    masteryIcon: document.getElementById('mastery-icon'),
+    masteryText: document.getElementById('mastery-text'),
     pdfInvertBtn: document.getElementById('pdf-invert-btn'),
     starBtn: document.getElementById('star-btn'),
     copyBtn: document.getElementById('copy-btn'),
@@ -88,6 +93,15 @@
     welcomeScreen: document.getElementById('welcome-screen'),
     pdfViewerWrapper: document.getElementById('pdf-viewer-wrapper'),
     pdfViewer: document.getElementById('pdf-viewer'),
+    markdownViewerWrapper: document.getElementById('markdown-viewer-wrapper'),
+    drillMetaBanner: document.getElementById('drill-meta-banner'),
+    drillScopeBox: document.getElementById('drill-scope-box'),
+    drillScopeText: document.getElementById('drill-scope-text'),
+    drillOwnerBox: document.getElementById('drill-owner-box'),
+    drillOwnerLink: document.getElementById('drill-owner-link'),
+    markdownBody: document.getElementById('markdown-body'),
+    drillTocSidebar: document.getElementById('drill-toc-sidebar'),
+    drillTocNav: document.getElementById('drill-toc-nav'),
     heroMathCount: document.getElementById('hero-math-count'),
     hero408Count: document.getElementById('hero-408-count'),
     heroEngCount: document.getElementById('hero-eng-count'),
@@ -104,6 +118,13 @@
     cmdResultsCount: document.getElementById('cmd-results-count'),
     cmdCloseBtn: document.getElementById('cmd-close-btn'),
     toast: document.getElementById('toast'),
+
+    // Image Lightbox Modal
+    imageLightboxOverlay: document.getElementById('image-lightbox-overlay'),
+    imageLightboxBackdrop: document.getElementById('image-lightbox-backdrop'),
+    imageLightboxClose: document.getElementById('image-lightbox-close'),
+    imageLightboxImg: document.getElementById('image-lightbox-img'),
+    imageLightboxCaption: document.getElementById('image-lightbox-caption'),
   };
 
   // --------------------------------------------------------------------------
@@ -284,6 +305,15 @@
     const html = docs.map(doc => {
       const isSelected = doc.id === state.selectedDocId;
       const isStarred = state.starredIds.has(doc.id);
+      const isDrill = doc.type === 'Drill' || doc.format === 'markdown';
+      
+      let masteryBadge = '';
+      if (isDrill) {
+        const m = state.drillMastery[doc.id] || 'unstarted';
+        const icon = m === 'mastered' ? '🟢' : (m === 'review' ? '🟡' : '⚪');
+        masteryBadge = `<span class="card-mastery-badge" title="掌握状态: ${m}">${icon}</span>`;
+      }
+
       const codeHtml = doc.code ? `<span class="badge-code">${escapeHtml(doc.code)}</span>` : '';
 
       return `
@@ -293,7 +323,7 @@
             ${codeHtml}
             <span class="badge-sub">${escapeHtml(doc.sub_subject)}</span>
           </div>
-          <div class="doc-card-title">${escapeHtml(doc.title)}</div>
+          <div class="doc-card-title">${masteryBadge}${escapeHtml(doc.title)}</div>
           <div class="doc-card-bottom">
             <span>${escapeHtml(doc.size_human)} · ${escapeHtml(doc.modified_date)}</span>
             <button class="card-star-toggle ${isStarred ? 'starred' : ''}" data-star-id="${escapeHtml(doc.id)}" title="${isStarred ? '取消收藏' : '收藏'}">
@@ -309,7 +339,7 @@
   }
 
   // --------------------------------------------------------------------------
-  // Document Selection & PDF View
+  // Document Selection & Dual-Engine View
   // --------------------------------------------------------------------------
   function selectDocument(docId) {
     const extCourse = EXTERNAL_COURSES.find(c => c.id === docId);
@@ -345,7 +375,6 @@
     el.crumbTitle.textContent = (doc.code ? `[${doc.code}] ` : '') + doc.title;
 
     // Update Action Buttons
-    el.pdfInvertBtn.disabled = false;
     el.starBtn.disabled = false;
     el.copyBtn.disabled = false;
     el.openExternalBtn.disabled = false;
@@ -356,14 +385,11 @@
     el.starBtn.querySelector('.action-icon').textContent = isStarred ? '★' : '☆';
     el.starBtn.querySelector('.btn-text').textContent = isStarred ? '已收藏' : '收藏';
 
-    // Switch View to PDF Viewer
-    el.welcomeScreen.style.display = 'none';
-    el.pdfViewerWrapper.style.display = 'block';
-    
-    // Set PDF src with standard Open Parameters (Fit Width + Auto Bookmarks)
-    const pdfUrlWithParams = `${doc.url}#view=FitH&pagemode=bookmarks`;
-    if (el.pdfViewer.src !== pdfUrlWithParams) {
-      el.pdfViewer.src = pdfUrlWithParams;
+    // Route between Markdown Drill Engine and PDF Viewer Engine
+    if (doc.format === 'markdown') {
+      renderMarkdownDoc(doc);
+    } else {
+      renderPdfDoc(doc);
     }
 
     updateStepperUI();
@@ -372,6 +398,394 @@
     if (window.innerWidth <= 768) {
       toggleSidebar(true);
     }
+  }
+
+  function renderPdfDoc(doc) {
+    el.welcomeScreen.style.display = 'none';
+    if (el.markdownViewerWrapper) el.markdownViewerWrapper.style.display = 'none';
+    el.pdfViewerWrapper.style.display = 'block';
+
+    if (el.twinModelBtn) el.twinModelBtn.style.display = 'none';
+    if (el.masteryStatusBtn) el.masteryStatusBtn.style.display = 'none';
+    el.pdfInvertBtn.disabled = false;
+    
+    // Set PDF src with standard Open Parameters (Fit Width + Auto Bookmarks)
+    const pdfUrlWithParams = `${doc.url}#view=FitH&pagemode=bookmarks`;
+    if (el.pdfViewer.src !== pdfUrlWithParams) {
+      el.pdfViewer.src = pdfUrlWithParams;
+    }
+  }
+
+  // Helper to render inline markdown links and KaTeX formulas in banner & callouts
+  function renderInlineContentWithKaTeX(text) {
+    if (!text) return '';
+    let res = text;
+
+    // 1. Format markdown links [title](url) -> <span class="doc-inline-chip">title</span>
+    res = res.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<span class="doc-inline-chip">$1</span>');
+
+    // 2. Render LaTeX inline math $...$ or \(...\)
+    res = res.replace(/\$([^\$\n\r]+?)\$/g, (match, formula) => {
+      if (window.katex) {
+        try {
+          return katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false });
+        } catch (e) {
+          return match;
+        }
+      }
+      return match;
+    });
+
+    res = res.replace(/\\\(([\s\S]*?)\\\)/g, (match, formula) => {
+      if (window.katex) {
+        try {
+          return katex.renderToString(formula.trim(), { displayMode: false, throwOnError: false });
+        } catch (e) {
+          return match;
+        }
+      }
+      return match;
+    });
+
+    return res;
+  }
+
+  // Image Lightbox Controls
+  function openImageLightbox(src, caption) {
+    if (!el.imageLightboxOverlay || !el.imageLightboxImg) return;
+    el.imageLightboxImg.src = src;
+    if (el.imageLightboxCaption) {
+      el.imageLightboxCaption.innerHTML = caption ? `<span class="caption-icon">📐</span> ${renderInlineContentWithKaTeX(caption)}` : '';
+      el.imageLightboxCaption.style.display = caption ? 'block' : 'none';
+    }
+    el.imageLightboxOverlay.style.display = 'flex';
+    requestAnimationFrame(() => {
+      el.imageLightboxOverlay.classList.add('active');
+    });
+  }
+
+  function closeImageLightbox() {
+    if (!el.imageLightboxOverlay) return;
+    el.imageLightboxOverlay.classList.remove('active');
+    setTimeout(() => {
+      el.imageLightboxOverlay.style.display = 'none';
+      if (el.imageLightboxImg) el.imageLightboxImg.src = '';
+    }, 200);
+  }
+
+  // Preprocess Markdown & Custom Callouts
+  function preprocessMarkdown(content) {
+    if (!content) return '';
+    let text = content;
+
+    // Convert Obsidian Wikilink images ![[assets/xxx.svg]] or ![[assets/xxx.svg|400]]
+    text = text.replace(/!\[\[([^\]\|]+)(?:\|([^\]]+))?\]\]/g, (match, path, altOrWidth) => {
+      const alt = altOrWidth ? altOrWidth : '';
+      return `![${alt}](${path})`;
+    });
+
+    const formatInlineLinks = (str) => {
+      return str.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, title, url) => {
+        return `<a href="${url}" class="doc-inline-link">${title}</a>`;
+      });
+    };
+
+    // Convert custom semantic callouts
+    text = text.replace(/^>\s*(?:\[!TRAIN\]|\*?\*?训练定位\*?\*?)[：:]\s*(.+)$/gm, 
+      (m, p1) => `<div class="callout callout-train"><div class="callout-title">🎯 训练定位</div>${formatInlineLinks(p1)}</div>`);
+    
+    text = text.replace(/^>\s*(?:\[!MODEL\]|\*?\*?模型归属\*?\*?)[：:]\s*(.+)$/gm, 
+      (m, p1) => `<div class="callout callout-model"><div class="callout-title">📘 模型归属</div>${formatInlineLinks(p1)}</div>`);
+
+    text = text.replace(/^>\s*(?:\[!TRAP\]|\[!WARNING\]|\*?\*?易错警示\*?\*?|\*?\*?风险警示\*?\*?)[：:]\s*(.+)$/gm, 
+      (m, p1) => `<div class="callout callout-trap"><div class="callout-title">⚠️ 易错警示 / 不可逆变形债务</div>${formatInlineLinks(p1)}</div>`);
+
+    text = text.replace(/^>\s*(?:\[!RULE\]|\[!TIP\]|\*?\*?解题规则\*?\*?|\*?\*?动作规则\*?\*?)[：:]\s*(.+)$/gm, 
+      (m, p1) => `<div class="callout callout-rule"><div class="callout-title">💡 解题动作规则</div>${formatInlineLinks(p1)}</div>`);
+
+    return text;
+  }
+
+  function renderMarkdownDoc(doc) {
+    el.welcomeScreen.style.display = 'none';
+    el.pdfViewerWrapper.style.display = 'none';
+    if (el.markdownViewerWrapper) el.markdownViewerWrapper.style.display = 'flex';
+
+    el.pdfInvertBtn.disabled = true;
+    if (el.masteryStatusBtn) {
+      el.masteryStatusBtn.style.display = 'inline-flex';
+      updateMasteryButtonUI(doc.id);
+    }
+
+    // Training Scope with KaTeX
+    if (el.drillScopeBox) {
+      if (doc.training_scope) {
+        el.drillScopeBox.style.display = 'flex';
+        el.drillScopeText.innerHTML = renderInlineContentWithKaTeX(doc.training_scope);
+      } else {
+        el.drillScopeBox.style.display = 'none';
+      }
+    }
+
+    // Model Owner & Twin Model Link with KaTeX
+    if (el.drillOwnerBox && el.twinModelBtn) {
+      if (doc.model_owner) {
+        el.drillOwnerBox.style.display = 'flex';
+        el.drillOwnerLink.innerHTML = renderInlineContentWithKaTeX(doc.model_owner);
+        el.drillOwnerLink.onclick = (e) => {
+          e.preventDefault();
+          if (doc.model_owner_id) selectDocument(doc.model_owner_id);
+          else showToast('关联模型: ' + doc.model_owner);
+        };
+
+        el.twinModelBtn.style.display = 'inline-flex';
+        el.twinModelBtn.onclick = () => {
+          if (doc.model_owner_id) selectDocument(doc.model_owner_id);
+          else showToast('关联模型: ' + doc.model_owner);
+        };
+      } else {
+        el.drillOwnerBox.style.display = 'none';
+        el.twinModelBtn.style.display = 'none';
+      }
+    }
+
+    // =========================================================================
+    // Markdown + KaTeX Mathematical Isolation Pipeline
+    // =========================================================================
+    let raw = doc.content || '';
+    const mathStore = [];
+    const codeStore = [];
+
+    // Step 1: Protect fenced code blocks and inline code
+    raw = raw.replace(/```[\s\S]*?```/g, (match) => {
+      const id = `%%%CODE_BLOCK_${codeStore.length}%%%`;
+      codeStore.push(match);
+      return id;
+    });
+
+    raw = raw.replace(/`[^`\n\r]+`/g, (match) => {
+      const id = `%%%CODE_INLINE_${codeStore.length}%%%`;
+      codeStore.push(match);
+      return id;
+    });
+
+    // Step 2: Extract Display Math: $$...$$ or \[...\]
+    raw = raw.replace(/\$\$([\s\S]*?)\$\$/g, (match, formula) => {
+      const id = `\n\n%%%MATH_DISPLAY_${mathStore.length}%%%\n\n`;
+      mathStore.push({ type: 'display', formula: formula.trim() });
+      return id;
+    });
+
+    raw = raw.replace(/\\\[([\s\S]*?)\\\]/g, (match, formula) => {
+      const id = `\n\n%%%MATH_DISPLAY_${mathStore.length}%%%\n\n`;
+      mathStore.push({ type: 'display', formula: formula.trim() });
+      return id;
+    });
+
+    // Step 3: Extract Inline Math: $...$ or \(...\)
+    raw = raw.replace(/\$([^\$\n\r]+?)\$/g, (match, formula) => {
+      if (!formula.trim()) return match;
+      const id = `%%%MATH_INLINE_${mathStore.length}%%%`;
+      mathStore.push({ type: 'inline', formula: formula.trim() });
+      return id;
+    });
+
+    raw = raw.replace(/\\\(([\s\S]*?)\\\)/g, (match, formula) => {
+      const id = `%%%MATH_INLINE_${mathStore.length}%%%`;
+      mathStore.push({ type: 'inline', formula: formula.trim() });
+      return id;
+    });
+
+    // Step 4: Restore code blocks before parsing Markdown
+    raw = raw.replace(/%%%CODE_BLOCK_(\d+)%%%/g, (m, idx) => codeStore[parseInt(idx, 10)]);
+    raw = raw.replace(/%%%CODE_INLINE_(\d+)%%%/g, (m, idx) => codeStore[parseInt(idx, 10)]);
+
+    // Step 5: Process semantic callouts (Train, Model, Trap, Rule)
+    raw = preprocessMarkdown(raw);
+
+    // Step 6: Parse Markdown cleanly with Marked (No LaTeX symbols to corrupt)
+    let html = '';
+    if (window.marked && typeof window.marked.parse === 'function') {
+      html = window.marked.parse(raw);
+    } else {
+      html = raw
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/\n\n/gim, '<p></p>');
+    }
+
+    // Step 7: Restore & Render KaTeX Math directly to HTML
+    html = html.replace(/<p>\s*%%%MATH_DISPLAY_(\d+)%%%\s*<\/p>/g, (m, idx) => {
+      const item = mathStore[parseInt(idx, 10)];
+      if (!item) return m;
+      if (window.katex) {
+        try {
+          return katex.renderToString(item.formula, { displayMode: true, throwOnError: false });
+        } catch (e) {
+          return `<div class="katex-error">${escapeHtml(item.formula)}</div>`;
+        }
+      }
+      return `<div class="katex-display">$$${escapeHtml(item.formula)}$$</div>`;
+    });
+
+    html = html.replace(/%%%MATH_DISPLAY_(\d+)%%%/g, (m, idx) => {
+      const item = mathStore[parseInt(idx, 10)];
+      if (!item) return m;
+      if (window.katex) {
+        try {
+          return katex.renderToString(item.formula, { displayMode: true, throwOnError: false });
+        } catch (e) {
+          return `<div class="katex-error">${escapeHtml(item.formula)}</div>`;
+        }
+      }
+      return `<div class="katex-display">$$${escapeHtml(item.formula)}$$</div>`;
+    });
+
+    html = html.replace(/%%%MATH_INLINE_(\d+)%%%/g, (m, idx) => {
+      const item = mathStore[parseInt(idx, 10)];
+      if (!item) return m;
+      if (window.katex) {
+        try {
+          return katex.renderToString(item.formula, { displayMode: false, throwOnError: false });
+        } catch (e) {
+          return `<span class="katex-error">${escapeHtml(item.formula)}</span>`;
+        }
+      }
+      return `<span class="katex-inline">$${escapeHtml(item.formula)}$</span>`;
+    });
+
+    el.markdownBody.innerHTML = html;
+
+    // =========================================================================
+    // Image & Diagram Card Polish Pipeline (Size, Centering, Caption & Lightbox)
+    // =========================================================================
+    const lastSlash = doc.url ? doc.url.lastIndexOf('/') : -1;
+    const baseDir = lastSlash !== -1 ? doc.url.substring(0, lastSlash + 1) : '';
+
+    el.markdownBody.querySelectorAll('img').forEach(img => {
+      const src = img.getAttribute('src');
+      if (src && !src.startsWith('http://') && !src.startsWith('https://') && !src.startsWith('/') && !src.startsWith('data:')) {
+        const cleanSrc = src.replace(/^\.\//, '');
+        img.src = baseDir + cleanSrc;
+      }
+
+      img.classList.add('diagram-asset');
+
+      // Parse custom width and caption from alt (e.g. "alt text|495" or "500")
+      let alt = img.getAttribute('alt') || '';
+      let customWidth = null;
+      let cleanCaption = alt;
+
+      const widthMatch = alt.match(/\|\s*(\d+)(?:x\d+)?\s*$/);
+      if (widthMatch) {
+        customWidth = widthMatch[1] + 'px';
+        cleanCaption = alt.replace(/\|\s*(\d+)(?:x\d+)?\s*$/, '').trim();
+      } else if (/^\d+$/.test(alt.trim())) {
+        customWidth = alt.trim() + 'px';
+        cleanCaption = '';
+      }
+
+      if (customWidth) {
+        img.style.maxWidth = `min(100%, ${customWidth})`;
+      }
+
+      // Add Lightbox Click Event
+      img.title = '点击放大查看高清图示';
+      img.addEventListener('click', () => openImageLightbox(img.src, cleanCaption || '图示查看'));
+
+      // Wrap image into elegant figure card with caption
+      const parent = img.parentElement;
+      const figure = document.createElement('figure');
+      figure.className = 'diagram-figure-card';
+
+      // Insert figure before image or replace parent p if single
+      if (parent && parent.tagName === 'P' && parent.children.length === 1 && parent.textContent.trim() === '') {
+        parent.parentNode.insertBefore(figure, parent);
+        figure.appendChild(img);
+        parent.remove();
+      } else {
+        img.parentNode.insertBefore(figure, img);
+        figure.appendChild(img);
+      }
+
+      if (cleanCaption && cleanCaption !== '题目图示' && cleanCaption !== '图示') {
+        const figcaption = document.createElement('figcaption');
+        figcaption.className = 'diagram-caption';
+        figcaption.innerHTML = `<span class="caption-icon">📐</span> ${renderInlineContentWithKaTeX(cleanCaption)}`;
+        figure.appendChild(figcaption);
+      }
+    });
+
+    // Generate TOC
+    generateDrillTOC();
+
+    // Scroll stage to top
+    const stage = document.querySelector('.drill-stage');
+    if (stage) stage.scrollTop = 0;
+  }
+
+  function generateDrillTOC() {
+    if (!el.drillTocNav || !el.markdownBody) return;
+    const headings = el.markdownBody.querySelectorAll('h2, h3');
+    if (headings.length === 0) {
+      el.drillTocNav.innerHTML = '<span style="font-size:12px;color:var(--text-muted);">暂无子标题</span>';
+      return;
+    }
+
+    let tocHtml = '';
+    headings.forEach((h, idx) => {
+      const id = 'drill-h-' + idx;
+      h.id = id;
+      const isH3 = h.tagName.toLowerCase() === 'h3';
+      const text = h.textContent.replace(/^#+\s*/, '').trim();
+      tocHtml += `<a href="#${id}" class="drill-toc-link ${isH3 ? 'h3' : ''}" title="${escapeHtml(text)}">${escapeHtml(text)}</a>`;
+    });
+    el.drillTocNav.innerHTML = tocHtml;
+
+    // Smooth scroll on TOC click
+    el.drillTocNav.querySelectorAll('.drill-toc-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').replace('#', '');
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  }
+
+  function updateMasteryButtonUI(docId) {
+    if (!el.masteryIcon || !el.masteryText) return;
+    const mastery = state.drillMastery[docId] || 'unstarted';
+    const masteryMeta = {
+      'unstarted': { icon: '⚪', text: '未练' },
+      'review': { icon: '🟡', text: '存疑二刷' },
+      'mastered': { icon: '🟢', text: '已掌握' }
+    };
+    const meta = masteryMeta[mastery] || masteryMeta.unstarted;
+    el.masteryIcon.textContent = meta.icon;
+    el.masteryText.textContent = meta.text;
+  }
+
+  function cycleMastery(docId) {
+    if (!docId) return;
+    const levels = ['unstarted', 'review', 'mastered'];
+    const current = state.drillMastery[docId] || 'unstarted';
+    const nextLevel = levels[(levels.indexOf(current) + 1) % levels.length];
+    state.drillMastery[docId] = nextLevel;
+    localStorage.setItem('kaoyan_drill_mastery', JSON.stringify(state.drillMastery));
+    
+    updateMasteryButtonUI(docId);
+    
+    const msgs = {
+      'unstarted': '⚪ 标记为: 未练',
+      'review': '🟡 标记为: 存疑需二刷',
+      'mastered': '🟢 标记为: 已完全掌握！'
+    };
+    showToast(msgs[nextLevel]);
+    renderDocumentList();
   }
 
   function updateStepperUI() {
@@ -798,6 +1212,12 @@
         if (state.selectedDocId) toggleStar(state.selectedDocId);
       });
     }
+
+    if (el.masteryStatusBtn) {
+      el.masteryStatusBtn.addEventListener('click', () => {
+        if (state.selectedDocId) cycleMastery(state.selectedDocId);
+      });
+    }
     
     // Copy dropdown
     if (el.copyBtn) {
@@ -822,6 +1242,10 @@
     if (el.openExternalBtn) el.openExternalBtn.addEventListener('click', openExternal);
     if (el.zenBtn) el.zenBtn.addEventListener('click', () => toggleZenMode());
 
+    // Image Lightbox Close bindings
+    if (el.imageLightboxClose) el.imageLightboxClose.addEventListener('click', closeImageLightbox);
+    if (el.imageLightboxBackdrop) el.imageLightboxBackdrop.addEventListener('click', closeImageLightbox);
+
     // Command palette click
     if (el.cmdResults) {
       el.cmdResults.addEventListener('click', (e) => {
@@ -836,6 +1260,15 @@
 
     // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
+      // Image Lightbox Close (ESC)
+      if (el.imageLightboxOverlay && el.imageLightboxOverlay.classList.contains('active')) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeImageLightbox();
+          return;
+        }
+      }
+
       // Command palette open (Cmd+K / Ctrl+K)
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
@@ -894,6 +1327,9 @@
       } else if (e.key.toLowerCase() === 'k') {
         e.preventDefault();
         navigateList(-1);
+      } else if (e.key.toLowerCase() === 'm') {
+        e.preventDefault();
+        if (state.selectedDocId) cycleMastery(state.selectedDocId);
       } else if (e.key === 'Escape' && state.zenMode) {
         e.preventDefault();
         toggleZenMode(false);

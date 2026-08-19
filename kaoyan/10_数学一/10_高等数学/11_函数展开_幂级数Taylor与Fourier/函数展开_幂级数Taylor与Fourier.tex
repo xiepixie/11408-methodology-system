@@ -101,25 +101,25 @@
 \[
 \sum_{n=0}^{\infty}a_n(x-x_0)^n.
 \]
-存在 $R\in[0,+\infty]$，使 $|x-x_0|<R$ 时绝对收敛，$|x-x_0|>R$ 时发散；端点 $|x-x_0|=R$ 不由半径定理自动决定。
+存在 $R\in[0,+\infty]$，使 $\lvert x-x_0\rvert<R$ 时绝对收敛，$\lvert x-x_0\rvert>R$ 时发散；端点 $\lvert x-x_0\rvert=R$ 不由半径定理自动决定。
 
 \begin{methodbox}{半径的两种主算法}
 对标准型 $\sum a_n(x-x_0)^n$，若系数比值极限存在，
 \[
-R=\lim_{n\to\infty}\left|\frac{a_n}{a_{n+1}}\right|.
+R=\lim_{n\to\infty}\left\lvert\frac{a_n}{a_{n+1}}\right\rvert.
 \]
 更一般地，
 \[
-\frac1R=\limsup_{n\to\infty}\sqrt[n]{|a_n|}.
+\frac1R=\limsup_{n\to\infty}\sqrt[n]{\lvert a_n\rvert}.
 \]
-缺项或复合型应对完整通项 $U_n(x)$ 使用比值/根值，再反解 $|x-x_0|$；不要只对系数做比值而漏掉 $x^{kn}$。
+缺项或复合型应对完整通项 $U_n(x)$ 使用比值/根值，再反解 $\lvert x-x_0\rvert$；不要只对系数做比值而漏掉 $x^{kn}$。
 \end{methodbox}
 
 \subsection{端点审计}
 求出 $R$ 后必须将 $x=x_0-R$ 与 $x=x_0+R$ 分别代回原级数，转化为 Topic10 的数项级数。端点可能一端收敛、一端发散；逐项积分/微分保持 $R$，但端点性质可能改变。
 
 \begin{examplebox}{贯穿母例：系数、半径、端点与恢复}
-对 $\sum_{n\ge1}(-1)^{n-1}x^n/n$，系数来自 $\ln(1+x)$ 的 Taylor 模型，比值给 $R=1$；$x=1$ 为交错调和级数收敛，$x=-1$ 变为 $-\sum1/n$ 发散，故收敛域为 $(-1,1]$。在 $|x|<1$ 内逐项求导得到几何级数
+对 $\sum_{n\ge1}(-1)^{n-1}x^n/n$，系数来自 $\ln(1+x)$ 的 Taylor 模型，比值给 $R=1$；$x=1$ 为交错调和级数收敛，$x=-1$ 变为 $-\sum1/n$ 发散，故收敛域为 $(-1,1]$。在 $\lvert x\rvert<1$ 内逐项求导得到几何级数
 \[
 \sum_{n\ge1}(-1)^{n-1}x^{n-1}=\frac1{1+x},
 \]
@@ -137,7 +137,7 @@ e^x=\sum_{n=0}^{\infty}\frac{x^n}{n!},
 \sin x=\sum_{n=0}^{\infty}\frac{(-1)^nx^{2n+1}}{(2n+1)!},\qquad
 \cos x=\sum_{n=0}^{\infty}\frac{(-1)^nx^{2n}}{(2n)!}.
 \]
-使用代数变形时先把函数凑成母函数，再记录代换条件；使用逐项微分/积分时先在 $|x-x_0|<R$ 内操作，再另查端点。
+使用代数变形时先把函数凑成母函数，再记录代换条件；使用逐项微分/积分时先在 $\lvert x-x_0\rvert<R$ 内操作，再另查端点。
 
 \begin{methodbox}{逐项运算与下标}
 若 $F(x)=\sum_{n=0}^{\infty}a_n(x-x_0)^n$，则在开区间内
@@ -160,7 +160,7 @@ T_N(x)=\sum_{n=0}^{N}a_n(x-x_0)^n.
 有限 $T_N$ 是 Topic03 的局部误差模型；只有当余项 $R_N(x)\to0$ 且存在共同邻域时，才可晋升为 Taylor 级数 $f(x)=\sum_{n=0}^{\infty}a_n(x-x_0)^n$。光有各阶导数存在不自动保证等式。
 
 \begin{warnbox}{展开、收敛与定义域不是同一件事}
-母级数的收敛域决定展开式的有效区间，而不是原函数的最大定义域。逐项运算可能保留半径却改变端点；代换 $t=g(x)$ 时要解完整条件 $|g(x)|<R_t$，并检查回代分支。
+母级数的收敛域决定展开式的有效区间，而不是原函数的最大定义域。逐项运算可能保留半径却改变端点；代换 $t=g(x)$ 时要解完整条件 $\lvert g(x)\rvert<R_t$，并检查回代分支。
 \end{warnbox}
 
 \section{Fourier：延拓、正交与跳跃点恢复}
@@ -217,14 +217,14 @@ a_n=\int_I f_n(x)\,dx,
 \]
 真正的难点不是求和，而是\textbf{交换资格}。在常见闭区间 Riemann 场景中，先确认每个 $f_n$ 可积，再寻找一致控制，例如存在收敛正项级数 $\sum M_n$ 使
 \[
-|f_n(x)|\le M_n\qquad(x\in I).
+\lvert f_n(x)\rvert\le M_n\qquad(x\in I).
 \]
 Weierstrass M-test 给出一致收敛；配合各项可积，统一极限定理允许把极限/求和与积分交换。若还想进一步断言和函数连续，则还需要各 $f_n$ 连续。非负项的 Tonelli 思想、Lebesgue 支配收敛等属于更高层分析 Extension；在考研语境中不能只写“把求和号移进去”而省略理由。
 
 常见生成模板是
 \[
 f_n(x)=g(x)q(x)^n,
-\qquad |q(x)|\le r<1,
+\qquad \lvert q(x)\rvert\le r<1,
 \]
 此时几何级数给出统一 $M_n$，交换后内部和可直接化为 $q/(1-q)$。因此这类题的母链是
 \[

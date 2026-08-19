@@ -88,6 +88,99 @@ Ax=b
 \]
 \end{corebox}
 
+\section{母模型深化：方程组真正研究的是一个 Fiber}
+
+对固定线性映射 $A:\mathbb R^n\to\mathbb R^m$，定义目标 $b$ 的\kw{纤维（fiber）}
+\[
+\mathcal F_A(b):=\{x\in\mathbb R^n:Ax=b\}.
+\]
+线性方程组的全部结构可以压成一个分段模型：
+\[
+\boxed{
+\mathcal F_A(b)=
+\begin{cases}
+\varnothing, & b\notin\operatorname{Im}A,\\[0.2em]
+ x_0+\ker A, & b\in\operatorname{Im}A,\ Ax_0=b.
+\end{cases}}
+\]
+这不是为了增加一个术语，而是把第四章的三类任务放进同一对象：
+\begin{enumerate}
+  \item \kw{存在性：}fiber 是空还是非空？这由 $b\in\operatorname{Im}A$ 决定；
+  \item \kw{内部结构：}若非空，它有多少自由方向？这由 $\ker A$ 决定；
+  \item \kw{集合关系：}两个方程组的公共解、包含、同解，就是比较两个 fiber 的交、包含与相等。
+\end{enumerate}
+
+因此“解方程”只是把 fiber 写出一份坐标表示；真正稳定的数学对象是 fiber 本身。消元、参数表示、基础解系、特解都是观察或编码这个对象的工具。
+
+\begin{corebox}{两个互补镜头：列空间负责可达，行空间负责约束}
+同一个 $Ax=b$ 可以从两端观察：
+\[
+\boxed{\text{Column/Image view: }b\text{ 能否由 }A\text{ 的列生成？}}
+\]
+它回答\kw{目标能不能到达}。
+
+另一方面，矩阵的行记录对 $x$ 的线性约束；齐次时
+\[
+\ker A=\operatorname{Row}(A)^\perp.
+\]
+所以
+\[
+\boxed{\text{Row/Kernel view: 哪些方向完全不改变输出？}}
+\]
+它回答\kw{解集还允许怎样移动}，也直接支撑同解与包含问题。
+
+列空间和行空间不是两套理论：前者检查 fiber 是否存在，后者描述 fiber 的方向与约束。
+\end{corebox}
+
+\section{再深一层：Fiber 就是 Kernel 的陪集，也是“同输出”等价类}
+
+在定义域中规定
+\[
+x\sim y
+\quad\Longleftrightarrow\quad
+Ax=Ay.
+\]
+由于
+\[
+Ax=Ay
+\quad\Longleftrightarrow\quad
+A(x-y)=0
+\quad\Longleftrightarrow\quad
+x-y\in\ker A,
+\]
+所以“被 $A$ 看成同一个输出”的输入，恰好相差一个 kernel 向量。
+
+因此只要 $b$ 可达，任取 $x_0\in\mathcal F_A(b)$，就有
+\[
+\boxed{\mathcal F_A(b)=x_0+\ker A.}
+\]
+也就是说，每个非空 fiber 都是 $\ker A$ 的一个陪集；不同可达输出对应不同陪集。
+
+\begin{corebox}{定义域被 Kernel 分层，Image 只记录“每一层叫什么输出”}
+$A$ 把 $\mathbb R^n$ 按照“相差 kernel 向量”的关系分成许多平行层。每一层内部的点全部得到同一个输出，而不同层得到不同输出。
+
+抽象地，这正是
+\[
+\mathbb R^n/\ker A\cong\operatorname{Im}A.
+\]
+所以 rank--nullity
+\[
+n=\dim\ker A+r(A)
+\]
+可以读成一份信息账本：\kw{输入空间的维数 = fiber 内部看不见的自由度 + 真正能被输出区分的自由度。}
+\end{corebox}
+
+这个模型立刻生成三个无需重新消元的结论：
+\begin{itemize}
+  \item 固定 $A$ 时，所有非空 fiber 都平行，方向空间始终是同一个 $\ker A$；
+  \item 若 $b_1\neq b_2$，则 $\mathcal F_A(b_1)$ 与 $\mathcal F_A(b_2)$ 不可能有公共点；
+  \item 若 $Au=b_2-b_1$，则
+  \[
+  \mathcal F_A(b_2)=u+\mathcal F_A(b_1),
+  \]
+  即右端变化只是在可达层之间搬运整个 fiber。
+\end{itemize}
+
 \section{本册负责什么}
 
 \begin{itemize}
@@ -127,6 +220,47 @@ $r(A\mid b)>r(A)$ 并不是“增广矩阵比较大所以 rank 可能大”。�
 
 所以 $r(A)=r(A\mid b)$ 只是“$b\in\operatorname{Im}A$”的消元版本。
 \end{corebox}
+
+\subsection{对偶判据：左零空间给出“无解证书”}
+
+还可以从方程之间的线性依赖来判断相容性。若
+\[
+y\in\ker A^T,
+\]
+则
+\[
+y^TA=0.
+\]
+如果 $Ax=b$ 有解，那么必有
+\[
+0=y^TAx=y^Tb.
+\]
+因此
+\[
+\boxed{
+Ax=b\text{ 有解}
+\iff
+y^Tb=0\quad\text{对所有 }y\in\ker A^T.
+}
+\]
+
+这说明左零空间中的每个 $y$ 都编码了一条“方程之间的线性关系”；右端 $b$ 必须满足完全相同的关系。只要找到一个
+\[
+y^TA=0,
+\qquad
+y^Tb\neq0,
+\]
+就得到了一个明确的\kw{无解证书}。
+
+\begin{examplebox}{为什么消元会出现 $0=c\neq0$ 的矛盾行？}
+若某些原方程按系数 $y_1,\dots,y_m$ 线性组合后左端完全抵消，即 $y^TA=0$，但右端组合得到 $y^Tb=c\neq0$，那么组合后的等式就是
+\[
+0=c,
+\]
+这正是消元中矛盾行的结构来源。
+
+所以“增广 rank 增加”和“存在左零空间证书”是同一个不可达事实的两种表示。
+\end{examplebox}
 
 \section{齐次方程：目标是零，所以逆像就是 Kernel}
 
@@ -230,7 +364,7 @@ x_i-x_0.
 
 对 $A\in\mathbb R^{m\times n}$：
 
-\begin{longtable}{L{4.0cm}L{4.0cm}L{\dimexpr\linewidth-8.5cm\relax}}
+\noindent\begin{tabularx}{\linewidth}{L{3.8cm}L{3.8cm}Y}
 \toprule
 \textbf{可达性} & \textbf{Kernel 自由度} & \textbf{结论}\\
 \midrule
@@ -238,7 +372,7 @@ $r(A)\neq r(A\mid b)$ & 无需再看 & 无解\\
 $r(A)=r(A\mid b)$ & $n-r(A)=0$ & 唯一解\\
 $r(A)=r(A\mid b)$ & $n-r(A)>0$ & 无穷多解\\
 \bottomrule
-\end{longtable}
+\end{tabularx}
 
 因此
 \[
@@ -406,6 +540,28 @@ x_1+x_2=c.
 \end{itemize}
 
 参数题真正发生的是“独立约束与目标相容性在特殊参数点发生跳变”，不是未知数突然出现新的求法。
+
+\begin{corebox}{参数题的状态机：fiber 在临界参数处改变类型}
+若 $A=A(t)$、$b=b(t)$ 随参数变化，真正需要追踪的不是某个 $x_i$ 的公式，而是
+\[
+\mathcal F_{A(t)}(b(t))
+\]
+处于哪一种状态：
+\[
+\boxed{\varnothing\quad\longleftrightarrow\quad\text{一个点}\quad\longleftrightarrow\quad\text{正维仿射集}.}
+\]
+状态改变只能发生在 rank / 主元结构发生变化，或右端项在新的 image 中失去相容性的参数点。因此稳定路线是：
+\[
+\text{找结构跳变点}
+\to
+\text{判可达性}
+\to
+\text{读 nullity}
+\to
+\text{必要时再求坐标通解}.
+\]
+这里箭头表示\kw{做题检查顺序}，不是数学蕴含。
+\end{corebox}
 
 \section{Cramer 法则：可逆方阵情形的一套显式坐标公式}
 
@@ -665,11 +821,11 @@ Kronecker、谱分离和 Lyapunov 稳定性属于线性代数 Extension；这里
 
 \section{概念边界：方程组最容易把哪两层混在一起}
 
-\begin{longtable}{L{2.4cm}L{3.0cm}L{3.8cm}L{3.2cm}L{\dimexpr\linewidth-13.0cm\relax}}
+\noindent\begin{tabularx}{\linewidth}{L{2.2cm}L{2.5cm}Y L{2.4cm}Y}
 \toprule
 \textbf{A $\neq$ B} & \textbf{为什么容易混} & \textbf{真正判据} & \textbf{题面信号} & \textbf{混淆后果}\\
 \midrule
-有解 $\neq$ 唯一解 & 可逆时二者同时成立 & 先判 $b$ 可达，再看 kernel 是否为零 & $r(A)$ 与 $r(A|b)$ & 跳过自由度判断\\
+有解 $\neq$ 唯一解 & 可逆时二者同时成立 & 先判 $b$ 可达，再看 kernel 是否为零 & $r(A)$ 与 $r(A\mid b)$ & 跳过自由度判断\\
 非齐次解集 $\neq$ 子空间 & 都是一组向量集合 & 非齐次通常是 $x_0+\ker A$，不含原点 & “通解”“特解” & 对任意线性组合误判封闭\\
 特解 $\neq$ 通解 & 一个具体解最显眼 & 通解还必须加上整个 kernel & “求全部解” & 漏掉自由变量\\
 基础解系 $\neq$ 任意几组齐次解 & 都满足 $Ax=0$ & 必须无关且生成 kernel，个数为 $n-r$ & “基础解系” & 解向量冗余或不完整\\
@@ -678,7 +834,7 @@ Kronecker、谱分离和 Lyapunov 稳定性属于线性代数 Extension；这里
 行变换 $\neq$ 列变换 & 都能化简矩阵 & 行变换可逆重写约束；列变换改变变量坐标 & 增广矩阵 & 丢失原未知量含义\\
 $A$ 奇异 $\neq$ $Ax=b$ 无解 & 奇异意味着不可逆 & 特定 $b$ 仍可能属于 image & “det=0”且给定 $b$ & 把全局非双射误成局部不可达\\
 \bottomrule
-\end{longtable}
+\end{tabularx}
 
 \section{看到什么信号时调用本册模型}
 
@@ -687,10 +843,20 @@ $A$ 奇异 $\neq$ $Ax=b$ 无解 & 奇异意味着不可逆 & 特定 $b$ 仍可�
   \item 看到齐次系统：直接把“全部解”翻译成 kernel，把“基础解系”翻译成 kernel 的基；
   \item 看到多个非齐次解：先相减制造齐次方向，再判断这些差是否足够张成 kernel；
   \item 看到“无解/唯一/无穷多”：只检查可达性与 nullity 两个开关；
-  \item 看到参数：先定位 $r(A)$ 或 $r(A|b)$ 的结构跳变点，再分类；
+  \item 看到参数：先定位 $r(A)$ 或 $r(A\mid b)$ 的结构跳变点，再分类；
   \item 看到矩阵方程 $AX=B$：按列拆成多个 $Ax_j=b_j$；
   \item 看到同解/包含：齐次比较 kernel，非齐次比较“kernel + 基点”；
   \item 看到 Cramer：先确认方阵且 determinant 非零，再把它当唯一解的显式公式，而不是通用求解框架。
+\end{itemize}
+
+\subsection{独立验证：不要沿原计算路线重算一遍}
+
+得到答案以后按交付类型选择独立检查：
+\begin{itemize}
+  \item \kw{分类题：}检查结论是否同时满足 $r(A)\le n$、$r(A)\le r(A\mid b)\le r(A)+1$，并确认“唯一/无穷多”只在系统已相容后讨论；
+  \item \kw{通解题：}分别验证 $Ax_0=b$、$A\xi_i=0$，并检查 kernel 方向数是否为 $n-r(A)$；
+  \item \kw{基础解系：}检查“是解 + 无关 + 数量正确”，不要只验证前两项；
+  \item \kw{同解/包含：}齐次时回到 kernel 或 row space；非齐次时回到“共同基点 + 共同方向空间”，避免只比较 rank。
 \end{itemize}
 
 \section{一页压缩：所有线性方程组只剩“可达 + 平移”}
@@ -716,7 +882,7 @@ $A$ 奇异 $\neq$ $Ax=b$ 无解 & 奇异意味着不可逆 & 特定 $b$ 仍可�
 \boxed{Ax=b\text{ 是求点 }b\text{ 的逆像}.}
 \]
 \[
-\boxed{Ax=b\text{ 有解}\iff b\in\operatorname{Im}A\iff r(A)=r(A|b).}
+\boxed{Ax=b\text{ 有解}\iff b\in\operatorname{Im}A\iff r(A)=r(A\mid b).}
 \]
 \[
 \boxed{\text{若 }Ax_0=b,\quad\mathcal S_b=x_0+\ker A.}

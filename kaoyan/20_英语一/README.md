@@ -58,4 +58,4 @@ Atlas 只回答 `Why + Where + Relationship`；Topic 回答 `How + State + Mecha
 
 两份旧版总图的共同核心、真正冲突、重复机制与下沉裁决见：
 
-- [00_学科总图/SOURCE_DIFF.md](00_学科总图/SOURCE_DIFF.md)
+- [英语一总图 Source Diff 对照](00_学科总图/SOURCE_DIFF.md)

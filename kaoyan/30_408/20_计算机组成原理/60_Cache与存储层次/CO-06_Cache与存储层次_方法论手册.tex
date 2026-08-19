@@ -79,6 +79,17 @@ compulsory 是第一次访问；capacity 是理想全相联同容量也装不下
 \section{写策略是两条独立轴}
 Hit 时：write-through 同时更新下一级，流量大但一致关系直接；write-back 只更新 Cache 并设 dirty，逐出时才写回，流量较小但状态复杂。Miss 时：write-allocate 先取块再写入；no-write-allocate 绕过 Cache 写下一级。write-back 不自动推出 write-allocate。
 
+\begin{methodbox}{写缓冲：用有限队列吸收写直达的短时突发}
+写直达若每次都要求 CPU 等下一级真正完成，前端速度会被慢一级直接拖住。经典写缓冲器把\textbf{待写请求}先放入一个小型 FIFO，让 CPU/Cache 在缓冲尚未满时继续执行，再由下一级异步排空。
+
+但它只把``逐次等待''改成``队列化等待''，没有创造下一级带宽。若平均写入速率持续高于排空速率，写缓冲最终仍会填满并反压 CPU。因而必须区分：
+\[
+\boxed{\text{短时 burst 可由 buffer 吸收}\quad\neq\quad\text{长期服务率瓶颈被消除}}.
+\]
+
+写回策略下被替换出来的 dirty line 也可能暂存在写回缓冲中；它与写直达常见的 write buffer 都体现``先排队、后慢速提交''，但保存对象和触发事件不同，不能只凭名字互换。
+\end{methodbox}
+
 \section{替换与状态成本}
 直接映射没有选择；组相联/全相联需在候选中选 victim，可用 FIFO、Random、近似/精确 LRU。精确 LRU 的元数据和更新逻辑随相联度增长，不能笼统断言“每行只需 $\log_2E$ 位”。增大相联度降低冲突，可能增加 hit time、功耗和比较器数量。
 

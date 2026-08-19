@@ -293,7 +293,7 @@ P(A\cup B)=P(A)+P(B)-P(A\cap B),
 \section{古典概型、几何概型的共同本质：先确定“等可能”的基本单位}
 古典概型不是“排列组合公式”，而是样本空间有限且基本结果等可能时：
 \[
-P(A)=\frac{|A|}{|\Omega|}.
+P(A)=\frac{\lvert A\rvert}{\lvert\Omega\rvert}.
 \]
 真正难点往往是\key{你选的基本结果是否等可能}。例如抽球问题里，“抽到的颜色序列”通常不一定等可能，而“具体球的组合”可能等可能。
 
@@ -552,7 +552,7 @@ F_Y(y)=P(Y\le y)=P(g(X)\le y)
 \section{单调连续变换：密度中的 Jacobian 是“局部拉伸补偿”}
 若 $Y=g(X)$ 单调可逆，$x=g^{-1}(y)$，密度满足
 \[
-f_Y(y)=f_X(g^{-1}(y))\left|\frac{d}{dy}g^{-1}(y)\right|.
+f_Y(y)=f_X(g^{-1}(y))\left\lvert\frac{d}{dy}g^{-1}(y)\right\rvert.
 \]
 绝对值导数不是凭空出现的公式，它补偿坐标变换造成的局部长度伸缩，保证概率质量守恒。
 
@@ -735,7 +735,7 @@ Var(X+Y)=VarX+VarY+2Cov(X,Y).
 \[
 \rho_{XY}=\frac{Cov(X,Y)}{\sigma_X\sigma_Y}
 \]
-把尺度归一化到 $[-1,1]$，便于比较线性关系强弱。$|\rho|=1$ 表示几乎处处线性关系，而 $\rho=0$ 只表示没有线性相关。
+把尺度归一化到 $[-1,1]$，便于比较线性关系强弱。$\lvert\rho\rvert=1$ 表示几乎处处线性关系，而 $\rho=0$ 只表示没有线性相关。
 
 \section{矩：用不同次幂查看分布的不同侧面}
 原点矩 $E(X^k)$、中心矩 $E[(X-EX)^k]$ 是对分布的不同摘要。数学一主要掌握一阶、二阶及协方差等常用量。学习时不要把“矩”当额外公式，它只是“对 $g(X)=X^k$ 求期望”。
@@ -743,7 +743,7 @@ Var(X+Y)=VarX+VarY+2Cov(X,Y).
 \section{Chebyshev 不等式：只知道均值方差，也能控制尾部}
 若 $EX=\mu$、$VarX=\sigma^2$，则
 \[
-P(|X-\mu|\ge\varepsilon)\le\frac{\sigma^2}{\varepsilon^2}.
+P(\lvert X-\mu\rvert\ge\varepsilon)\le\frac{\sigma^2}{\varepsilon^2}.
 \]
 它的意义在于：即使不知道完整分布，仅靠均值和方差，也能给偏离均值的概率一个通用上界。这个思想直接通向大数定律：平均以后方差缩小，于是远离真实均值的概率被压低。
 
@@ -786,7 +786,7 @@ Var(\bar X_n)=\frac{\sigma^2}{n}.
 \]
 于是 Chebyshev 给出
 \[
-P(|\bar X_n-\mu|\ge\varepsilon)\le\frac{\sigma^2}{n\varepsilon^2}\to0.
+P(\lvert\bar X_n-\mu\rvert\ge\varepsilon)\le\frac{\sigma^2}{n\varepsilon^2}\to0.
 \]
 这展示了一个非常重要的机制：\key{独立平均把随机波动尺度从 $\sigma$ 压到 $\sigma/\sqrt n$。}
 
@@ -1067,7 +1067,7 @@ P_\theta\{L(X)\le\theta\le U(X)\}=1-\alpha.
 \[
 Z=\frac{\bar X-\mu_0}{\sigma/\sqrt n}\sim N(0,1).
 \]
-观测到的 $z$ 值越远离 0，说明样本均值和 $H_0$ 预期越不相容。双侧检验就是看 $|z|$ 是否进入两端低概率区。
+观测到的 $z$ 值越远离 0，说明样本均值和 $H_0$ 预期越不相容。双侧检验就是看 $\lvert z\rvert$ 是否进入两端低概率区。
 \end{examplebox}
 
 \section{“不拒绝”绝不等于“证明原假设正确”}
@@ -1268,7 +1268,7 @@ t = \frac{Z}{\sqrt{\frac{(n-1)S^2/\sigma^2}{n-1}}} = \frac{\frac{\bar X - \mu}{\
 \]
 
 \subsection{Stage 5：假设检验反证决策推演}
-假设 $H_0: \mu = \mu_0$（$\sigma$ 未知）。在 $H_0$ 为真世界里，检验统计量 $T = \frac{\bar X - \mu_0}{S/\sqrt n} \sim t(n-1)$。显著性水平 $\alpha$ 下拒绝域为 $W = \{ |T| \ge t_{\alpha/2}(n-1) \}$。若观测值 $t_{obs}$ 进入拒绝域，说明看到了小概率发生的极端数据，故拒绝 $H_0$！
+假设 $H_0: \mu = \mu_0$（$\sigma$ 未知）。在 $H_0$ 为真世界里，检验统计量 $T = \frac{\bar X - \mu_0}{S/\sqrt n} \sim t(n-1)$。显著性水平 $\alpha$ 下拒绝域为 $W = \{ \lvert T\rvert \ge t_{\alpha/2}(n-1) \}$。若观测值 $t_{obs}$ 进入拒绝域，说明看到了小概率发生的极端数据，故拒绝 $H_0$！
 
 \begin{corebox}{两个母例分别承担什么}
 Bernoulli 母例负责展示\key{事件如何被数值化、独立重复如何产生计数、频率为何稳定、CLT 如何近似、样本比例如何估计参数}；正态母例负责展示\key{统计量为什么有抽样分布、为什么会出现 $\chi^2,t,F$、区间估计与检验为什么共享同一套标尺}。两者合起来基本覆盖整门概率统计的骨架。

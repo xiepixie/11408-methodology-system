@@ -21,10 +21,10 @@ DS-B01 Frontier Traversal；Atlas Foundation。
 最短路、最小生成树、拓扑排序等图上目标算法。
 
 ## Manual
-- Canonical：[DS07_图的表示与遍历_方法论手册.tex](DS07_图的表示与遍历_方法论手册.tex)
-- Published：[DS07_图的表示与遍历_方法论手册.pdf](../../../90_publish/408/DS07_图的表示与遍历_方法论手册.pdf)
-- 完整实现：[ds07_graph_traversal.hpp](code/ds07_graph_traversal.hpp)
-- 边界测试：[ds07_graph_traversal_test.cpp](code/ds07_graph_traversal_test.cpp)
+- Canonical：[图的表示与遍历：方法论手册 (TeX)](DS07_图的表示与遍历_方法论手册.tex)
+- Published：[图的表示与遍历：方法论手册 (PDF)](../../../90_publish/408/DS07_图的表示与遍历_方法论手册.pdf)
+- 完整实现：[`ds07_graph_traversal.hpp`](code/ds07_graph_traversal.hpp)
+- 边界测试：[`ds07_graph_traversal_test.cpp`](code/ds07_graph_traversal_test.cpp)
 
 ## Code Contract
 本册代码按 `Operation Contract -> Representation -> Frontier -> Visit State -> Expansion -> Coverage` 组织。实现同时保留邻接表（遍历）与邻接矩阵（判边）以对照表示成本；DFS/BFS 在发现时标记 `visited`，不连通图通过遍历森林补齐组件。DS08 只调用图表示和遍历接口，不复制底层实现。

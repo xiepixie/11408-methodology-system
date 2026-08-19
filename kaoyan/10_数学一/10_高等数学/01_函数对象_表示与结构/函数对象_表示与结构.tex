@@ -596,6 +596,36 @@ D：把局部分支误当全局对象}\label{ux5931ux771f-dux628aux5c40ux90e8ux5
 \end{tabularx}
 \end{center}
 
+\subsubsection{扩展原型：双曲函数从指数的偶部与奇部长出来}
+
+双曲函数不应另背成一套与指数无关的公式。定义
+\[
+\cosh x=\frac{e^x+e^{-x}}2,
+\qquad
+\sinh x=\frac{e^x-e^{-x}}2,
+\qquad
+\tanh x=\frac{\sinh x}{\cosh x}.
+\]
+于是
+\[
+\boxed{e^x=\cosh x+\sinh x,\qquad e^{-x}=\cosh x-\sinh x}
+\]
+直接给出：$\cosh$ 为偶函数，$\sinh$ 与 $\tanh$ 为奇函数，并且
+\[
+\boxed{\cosh^2x-\sinh^2x=1}.
+\]
+从函数对象看，$\sinh:\mathbb R\to\mathbb R$ 严格递增并全局可逆；$\cosh:\mathbb R\to[1,+\infty)$ 因偶性而全局非单射，标准反函数必须先限制到 $[0,+\infty)$；$\tanh:\mathbb R\to(-1,1)$ 严格递增并全局可逆。对应的标准逆函数为
+\[
+\operatorname{arsinh}x=\ln\left(x+\sqrt{1+x^2}\right),
+\]
+\[
+\operatorname{arcosh}x=\ln\left(x+\sqrt{x^2-1}\right)\quad(x\ge1),
+\]
+\[
+\operatorname{artanh}x=\frac12\ln\frac{1+x}{1-x}\quad(\lvert x\rvert<1).
+\]
+这些闭式都应由“设 $t=e^y>0$ 后解二次方程，再用值域/分支筛根”重建，而不是当成独立公式记忆。完整推导与边界训练由同目录《双曲函数与反双曲函数》承担；导数、有限 Taylor 和根式积分分别转交 Topic03 与 Topic05。
+
 这里最值得形成的不是七条孤立曲线，而是三类原像结构：
 
 \begin{itemize}
@@ -1955,7 +1985,7 @@ f(x_1)=f(x_2)\Longrightarrow x_1=x_2.
 前者与 \(y=f(x)\) 描述同一组点 \((x,y)\)；后者是把变量角色重命名后得到的反函数图像 & 题目问“哪些式子同义、哪些图像关于 \(y=x\) 对称”时先分关系表示与函数图像 &
 把同一关系和镜像图像混成一件事 \\
 \(\sec,\csc,\cot\) vs 反三角函数 & 倒数关系和“反”字在中文里容易靠得很近 &
-\(\sec=1/\cos\)、\(\csc=1/\sin\)、\(\cot=1/\tan\) 是倒数；\(\arctan,\operatorname{arccot}\) 才是选定分支的映射逆 & 看到上标 \(-1\)、arc、sec/csc 时先判断是在取倒数还是求映射逆 &
+\(\sec=1/\cos\)、\(\csc=1/\sin\)、\(\cot=\cos/\sin\)（共同定义域上等于 \(1/\tan\)）是三角函数（倒数/商关系）；\(\arctan,\operatorname{arccot}\) 才是选定分支的映射逆 & 看到上标 \(-1\)、arc、sec/csc 时先判断是在取倒数还是求映射逆 &
 把正割/余割或余切误当成反函数 \\
 单调不减/不增 vs 严格单调 & 中文资料有时笼统写“单调函数有反函数” &
 严格单调可保证区间上单射；非严格单调可以有平台区间 & 遇到“单调函数有反函数”先确认教材术语是否把单调定义成严格意义 &

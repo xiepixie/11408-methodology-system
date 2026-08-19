@@ -18,5 +18,5 @@ Data Structure Atlas Foundation、DS01–DS12、DS-B01–DS-B03。重点调用 D
 检查是否遗漏主要操作、失败语义、边界条件、平均/最坏/均摊口径、跨索引同步、空间/I-O 代价与数据倾斜，以及选择理由是否随 workload 改变而改变。优化方案应与小规模正确基线做差分验证。
 
 ## Manual
-- Canonical：[DS-I01_从Workload到数据结构选择_方法论手册.tex](DS-I01_从Workload到数据结构选择_方法论手册.tex)
-- Published：[DS-I01_从Workload到数据结构选择_方法论手册.pdf](../../../../90_publish/408/DS-I01_从Workload到数据结构选择_方法论手册.pdf)
+- Canonical：[从 Workload 到数据结构选择：方法论手册 (TeX)](DS-I01_从Workload到数据结构选择_方法论手册.tex)
+- Published：[从 Workload 到数据结构选择：方法论手册 (PDF)](../../../../90_publish/408/DS-I01_从Workload到数据结构选择_方法论手册.pdf)

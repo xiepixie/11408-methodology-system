@@ -384,7 +384,7 @@ A=(a_1,\dots,a_n).
 这套定义同时拥有两个视角：
 \begin{itemize}
   \item \kw{代数视角：}det 是交替多线性函数；
-  \item \kw{几何视角：}$|\det A|$ 是标准有向单位体积经过 $A$ 后的体积倍数，符号记录定向是否翻转。
+  \item \kw{几何视角：}$\lvert\det A\rvert$ 是标准有向单位体积经过 $A$ 后的体积倍数，符号记录定向是否翻转。
 \end{itemize}
 
 \begin{methodbox}{为什么 $\det A=0$ 正好表示“满维塌缩”？}
@@ -596,7 +596,15 @@ Laplace 展开的价值是：某行/列有大量零时，只剩极少数低阶 d
 
 当需要按 $k$ 行同时展开（例如处理复杂的零分块矩阵）时，可以使用\kw{广义 Laplace 展开定理}。它允许从 $n$ 阶方阵中一次性选定 $k$ 行，提取所有可能的 $k$ 阶子式与其代数余子式的乘积之和。
 
-而对于非方阵的乘积 $AB$（其中 $A \in \mathbb R^{m\times n}, B \in \mathbb R^{n\times m}$，且 $m \le n$），$\det(AB)$ 的计算无法直接拆为 $\det A \det B$。此时需要调用\kw{Binet--Cauchy 公式}：它等于从 $A$ 中选取所有 $m$ 阶主子式与 $B$ 中对应主子式乘积的总和。这是普通行列式乘法法则的非方阵泛化，也是向量外积和多维体积在坐标系下计算的代数基础。
+而对于非方阵的乘积 $AB$（其中 $A \in \mathbb R^{m\times n}, B \in \mathbb R^{n\times m}$，且 $m \le n$），$\det(AB)$ 的计算无法直接拆为 $\det A \det B$。此时需要调用\kw{Binet--Cauchy 公式}。对每个满足 $\lvert S\rvert=m$ 的指标子集 $S\subseteq\{1,\dots,n\}$，记 $A_{:,S}$ 为从 $A$ 中取列指标 $S$ 得到的 $m\times m$ 子矩阵，$B_{S,:}$ 为从 $B$ 中取同一组行指标 $S$ 得到的 $m\times m$ 子矩阵，则
+\[
+\boxed{
+\det(AB)
+=\sum_{\substack{S\subseteq\{1,\dots,n\}\\ \lvert S\rvert=m}}
+\det(A_{:,S})\det(B_{S,:}).
+}
+\]
+这里求和的是由\kw{同一指标集配对的 $m$ 阶子式（极大阶子式）}，并不是一般意义上的“主子式”。这是普通行列式乘法法则的非方阵泛化，也是多维体积在中间坐标空间中按可选 $m$ 维方向分解再汇总的代数表达。
 
 \section{伴随矩阵：把全部 cofactor 组织成一个矩阵恒等式}
 

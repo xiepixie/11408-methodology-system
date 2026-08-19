@@ -4,7 +4,7 @@
 >
 > **全局 Canonical Owner**：[`../../infra/latex/README.md`](../../infra/latex/README.md)
 >
-> **开源项目源码调研**：[`latex_reference_pool.md`](latex_reference_pool.md)
+> **开源项目源码调研**：[`../../infra/latex/reference_pool.md`](../../infra/latex/reference_pool.md)
 >
 > **考研 Handbook 具体视觉与几何参数**：[`latex_layout_spec.md`](latex_layout_spec.md)
 >

@@ -34,6 +34,7 @@ SUB_SUBJECT_ORDER = {
         "高等数学",
         "线性代数",
         "概率论与数理统计",
+        "数学一桥梁专题",
         "数学一做题规则",
     ],
     "408": [
@@ -63,6 +64,7 @@ TYPE_ORDER = {
     "Bridge": 2,       # 🌉 跨科跨章桥梁与机制接口
     "Integration": 3,  # 🧩 端到端大综合手册
     "Control": 4,      # 📋 做题规则与考场控制
+    "Drill": 5,        # 🛠️ 实战训练手册与母题
 }
 
 SUBJECT_COLORS = {
@@ -71,6 +73,27 @@ SUBJECT_COLORS = {
     "english1": "#d97706",
     "system": "#7c3aed",
     "interview": "#e11d48",
+}
+
+MATH1_BRIDGE_MAP = {
+    # Math 1 Cross-Subject Bridges (kaoyan/10_数学一/50_桥梁专题)
+    "内积正交与投影": ("MATH-B00", "内积、正交与投影 · 高数空间几何 ↔ 线代向量空间", "数学一桥梁专题"),
+    "局部线性化_微分与线性映射": ("MATH-B01", "局部线性化 · 高数微分 ↔ 线代线性映射", "数学一桥梁专题"),
+    "Jacobian与行列式_坐标变换与局部体积缩放": ("MATH-B02", "Jacobian与行列式 · 多元微积分 ↔ 线代行列式", "数学一桥梁专题"),
+    "Hessian与二次型_二阶局部形状与正定性": ("MATH-B03", "Hessian与二次型 · 多元二阶模型 ↔ 线代二次型", "数学一桥梁专题"),
+    "梯度正交与Lagrange_约束极值与子空间几何": ("MATH-B04", "梯度正交与Lagrange · 约束极值 ↔ 子空间几何", "数学一桥梁专题"),
+    "线性方程与线性微分方程_一点加Kernel": ("MATH-B05", "线性方程与线性微分方程 · 线代方程 ↔ 高数线性ODE", "数学一桥梁专题"),
+    "PDF与CDF_局部概率密度与累积": ("MATH-B06A", "PDF与CDF · 高数FTC ↔ 概率分布", "数学一桥梁专题"),
+    "期望联合概率与边缘化_概率的积分语言": ("MATH-B06B", "期望联合概率与边缘化 · 高数积分 ↔ 概率质量汇总", "数学一桥梁专题"),
+    "随机变量变换与Jacobian_概率质量守恒": ("MATH-B07", "随机变量变换与Jacobian · 概率质量守恒", "数学一桥梁专题"),
+    "Fourier与正交基_函数表示与正交投影": ("MATH-B08", "Fourier与正交基 · 函数展开 ↔ 正交坐标", "数学一桥梁专题"),
+    
+    # Higher Math Intra-Subject Bridges (kaoyan/10_数学一/10_高等数学/50_桥梁专题)
+    "函数结构在运算中的传播": ("H-B01", "函数结构在运算中的传播 · 周期奇偶对称", "高等数学"),
+    "局部模型与区间定理_中值点余项与误差控制": ("H-B02", "局部模型与区间定理 · 中值点余项与误差控制", "高等数学"),
+    "微分与累积_基本定理及正则性边界": ("H-B03", "微分与累积 · 基本定理及正则性边界", "高等数学"),
+    "连续无限累积与离散无限累积": ("H-B04", "连续无限累积与离散无限累积 · 积分判别法与Euler求和", "高等数学"),
+    "有限Taylor模型与无限Taylor表示": ("H-B05", "有限Taylor模型与无限Taylor表示", "高等数学"),
 }
 
 MATH1_TOPICS = {
@@ -109,6 +132,12 @@ def infer_type_and_code(filename: str) -> tuple[str, str, str]:
     stem = Path(filename).stem
     code = ""
     clean_title = stem
+
+    # 0. Check Math 1 Bridge map first
+    if stem in MATH1_BRIDGE_MAP:
+        code, clean_title, _ = MATH1_BRIDGE_MAP[stem]
+        doc_type = "Bridge"
+        return doc_type, code, clean_title
 
     # 1. Multi-code like OS-01_OS-02_... or OS-06_OS-07_...
     multi_code = re.match(r"^([A-Z0-9]+-\d{2})_([A-Z0-9]+-\d{2})_(.*)$", stem)
@@ -167,7 +196,7 @@ def infer_type_and_code(filename: str) -> tuple[str, str, str]:
         or code.endswith("Core")
     ):
         doc_type = "Atlas"
-    elif "桥梁" in stem or "-B" in code or code.startswith("X-B") or "Bridge" in code:
+    elif "桥梁" in stem or "-B" in code or code.startswith("X-B") or "Bridge" in code or code.startswith("MATH-B"):
         doc_type = "Bridge"
     elif "综合" in stem or "-I" in code:
         doc_type = "Integration"
@@ -203,11 +232,15 @@ def infer_sub_subject(subject: str, filename: str, code: str) -> str:
         return "408 综合与跨科"
 
     elif subject == "math1":
-        if "线性代数" in stem or code.startswith("LA"):
+        if stem in MATH1_BRIDGE_MAP:
+            return MATH1_BRIDGE_MAP[stem][2]
+        elif "50_桥梁专题" in stem or (code and code.startswith("MATH-B")):
+            return "数学一桥梁专题"
+        elif "线性代数" in stem or code.startswith("LA"):
             return "线性代数"
-        elif "概率" in stem or "统计" in stem:
+        elif "概率" in stem or "统计" in stem or code.startswith("PROB"):
             return "概率论与数理统计"
-        elif "高等数学" in stem or "微积分" in stem:
+        elif "高等数学" in stem or "微积分" in stem or code.startswith("H"):
             return "高等数学"
         
         # Keyword matching
@@ -251,8 +284,174 @@ def extract_tags(subject: str, sub_subject: str, doc_type: str, code: str, title
     return tags[:8]
 
 
+def scan_markdown_drills(pdf_items: list[dict]) -> list[dict]:
+    drill_items = []
+    
+    # Map for resolving model_owner to existing PDF item ID
+    pdf_lookup = {}
+    for item in pdf_items:
+        clean_key = re.sub(r"[_\s·\(\)（）v\d\-]+", "", item["title"]).lower()
+        pdf_lookup[clean_key] = item["id"]
+        pdf_lookup[item["full_name"].lower()] = item["id"]
+        pdf_lookup[item["filename"].lower()] = item["id"]
+        if item.get("code"):
+            pdf_lookup[item["code"].lower()] = item["id"]
+
+    search_dirs = [
+        (KAOYAN_DIR / "10_数学一", "math1"),
+        (KAOYAN_DIR / "20_英语一", "english1"),
+        (KAOYAN_DIR / "30_408", "408"),
+        (KAOYAN_DIR / "01_control", "system"),
+    ]
+
+    for base_dir, subject_key in search_dirs:
+        if not base_dir.exists():
+            continue
+        for md_path in sorted(base_dir.rglob("*.md")):
+            # Ignore non-training files and system directories
+            path_str = md_path.as_posix()
+            if any(skip in path_str for skip in [
+                "/assets/", "/code/", "/tests/", "/tools/", "/skills/",
+                "/00_system/", "/.venv/", "/tmp/", "README.md", "SOURCE_DIFF.md",
+                "00_迁移与重构规划.md"
+            ]):
+                continue
+
+            try:
+                content = md_path.read_text(encoding="utf-8")
+            except Exception:
+                continue
+
+            # Extract title from H1 or filename
+            h1_match = re.search(r"^#\s+(.+)$", content, re.MULTILINE)
+            title = h1_match.group(1).strip() if h1_match else md_path.stem
+
+            # Extract Training Scope (> 训练定位: ...)
+            scope_match = re.search(r">\s*(?:\[!TRAIN\]|\*?\*?训练定位\*?\*?)[：:]\s*([^\n\r]+)", content)
+            training_scope = scope_match.group(1).strip() if scope_match else ""
+
+            # Extract Model Owner (> 模型归属: ...)
+            owner_match = re.search(r">\s*(?:\[!MODEL\]|\*?\*?模型归属\*?\*?)[：:]\s*([^\n\r]+)", content)
+            model_owner = owner_match.group(1).strip() if owner_match else ""
+
+            # Try to resolve model_owner to a PDF ID
+            model_owner_id = None
+            if model_owner:
+                owner_clean = re.sub(r"[\[\]《》\(\)\.tex\.pdf_\s·\-]+", "", model_owner).lower()
+                for k, v in pdf_lookup.items():
+                    if k and (k in owner_clean or owner_clean in k):
+                        model_owner_id = v
+                        break
+
+            # Infer sub_subject from relative directory hierarchy
+            rel_to_kaoyan = md_path.relative_to(KAOYAN_DIR)
+            parts = rel_to_kaoyan.parts
+            sub_subject = "其他"
+            if subject_key == "math1":
+                if "50_桥梁专题" in path_str and "10_高等数学" not in path_str:
+                    sub_subject = "数学一桥梁专题"
+                elif "10_高等数学" in path_str:
+                    sub_subject = "高等数学"
+                elif "20_线性代数" in path_str:
+                    sub_subject = "线性代数"
+                elif "30_概率" in path_str:
+                    sub_subject = "概率论与数理统计"
+                elif "90_学科做题规则" in path_str:
+                    sub_subject = "数学一做题规则"
+            elif subject_key == "408":
+                if "10_数据结构" in path_str:
+                    sub_subject = "数据结构"
+                elif "20_计算机组成原理" in path_str:
+                    sub_subject = "计算机组成原理"
+                elif "30_操作系统" in path_str:
+                    sub_subject = "操作系统"
+                elif "40_计算机网络" in path_str:
+                    sub_subject = "计算机网络"
+                elif "00_统一总图" in path_str or "跨科" in path_str:
+                    sub_subject = "408 综合与跨科"
+            elif subject_key == "english1":
+                if "10_阅读" in path_str:
+                    sub_subject = "阅读理解"
+                elif "20_完形" in path_str:
+                    sub_subject = "完形与新题型"
+                elif "30_翻译" in path_str:
+                    sub_subject = "英汉翻译"
+                elif "40_写作" in path_str:
+                    sub_subject = "英语写作"
+                else:
+                    sub_subject = "英语统一方法论"
+            elif subject_key == "system":
+                sub_subject = "解题控制核"
+
+            # Derive clean code from immediate parent directory
+            code = "DRILL"
+            parent_name = md_path.parent.name
+            b_match = re.match(r"^(B\d{2}[A-Z]?)_", parent_name)
+            hb_match = re.match(r"^(H-B\d{2})_", parent_name)
+            num_match = re.match(r"^(\d{2})_", parent_name)
+            if b_match:
+                code = f"MATH-{b_match.group(1)}-Drill"
+            elif hb_match:
+                code = f"{hb_match.group(1)}-Drill"
+            elif num_match:
+                prefix = "H" if "高等数学" in sub_subject else ("LA" if "线性代数" in sub_subject else ("DS" if "数据结构" in sub_subject else "TR"))
+                code = f"{prefix}{num_match.group(1)}-Drill"
+
+            if not model_owner_id:
+                # Fallback: try matching twin PDF by parent directory name
+                clean_parent = re.sub(r"[_\s·\(\)（）v\d\-]+", "", parent_name).lower()
+                for k, v in pdf_lookup.items():
+                    if k and (k in clean_parent or clean_parent in k):
+                        model_owner_id = v
+                        break
+
+            stat = md_path.stat()
+            mtime_dt = datetime.fromtimestamp(stat.st_mtime, tz=timezone.utc)
+            mtime_iso = mtime_dt.isoformat()
+            mtime_formatted = mtime_dt.strftime("%Y-%m-%d")
+
+            tags = extract_tags(subject_key, sub_subject, "训练", code, title)
+            if "50_桥梁专题" in path_str or "科内桥梁" in path_str or "Bridge" in code or sub_subject == "数学一桥梁专题":
+                if "桥梁" not in tags:
+                    tags.append("桥梁")
+                if "跨科桥梁" not in tags and "50_桥梁专题" in path_str:
+                    tags.append("跨科桥梁")
+            if "训练手册" not in tags:
+                tags.append("训练手册")
+
+            rel_web_url = f"../{rel_to_kaoyan.as_posix()}"
+            local_rel_path = f"kaoyan/{rel_to_kaoyan.as_posix()}"
+
+            drill_item = {
+                "id": f"drill_{subject_key}_{md_path.stem}",
+                "subject": subject_key,
+                "subject_name": SUBJECT_NAMES.get(subject_key, subject_key),
+                "sub_subject": sub_subject,
+                "type": "Drill",
+                "format": "markdown",
+                "code": code,
+                "title": title,
+                "full_name": md_path.stem,
+                "filename": md_path.name,
+                "training_scope": training_scope,
+                "model_owner": model_owner,
+                "model_owner_id": model_owner_id,
+                "url": rel_web_url,
+                "local_path": local_rel_path,
+                "size_bytes": stat.st_size,
+                "size_human": format_size(stat.st_size),
+                "modified_at": mtime_iso,
+                "modified_date": mtime_formatted,
+                "tags": tags[:8],
+                "content": content,
+            }
+            drill_items.append(drill_item)
+
+    return drill_items
+
+
 def build_manifest() -> dict:
-    items = []
+    pdf_items = []
     subject_counts: dict[str, int] = {k: 0 for k in SUBJECT_NAMES}
     type_counts: dict[str, int] = {
         "Atlas": 0,
@@ -260,6 +459,11 @@ def build_manifest() -> dict:
         "Bridge": 0,
         "Integration": 0,
         "Control": 0,
+        "Drill": 0,
+    }
+    format_counts: dict[str, int] = {
+        "pdf": 0,
+        "markdown": 0,
     }
 
     if not PUBLISH_DIR.exists():
@@ -309,6 +513,7 @@ def build_manifest() -> dict:
 
         subject_counts[subject_key] = subject_counts.get(subject_key, 0) + 1
         type_counts[doc_type] = type_counts.get(doc_type, 0) + 1
+        format_counts["pdf"] += 1
 
         rel_web_url = f"../90_publish/{rel_to_pub.as_posix()}"
         local_rel_path = f"kaoyan/90_publish/{rel_to_pub.as_posix()}"
@@ -319,6 +524,7 @@ def build_manifest() -> dict:
             "subject_name": SUBJECT_NAMES.get(subject_key, subject_key),
             "sub_subject": sub_subject,
             "type": doc_type,
+            "format": "pdf",
             "code": code,
             "title": clean_title,
             "full_name": pdf_path.stem,
@@ -331,7 +537,17 @@ def build_manifest() -> dict:
             "modified_date": mtime_formatted,
             "tags": tags,
         }
-        items.append(item)
+        pdf_items.append(item)
+
+    # Scan Markdown Drills
+    drill_items = scan_markdown_drills(pdf_items)
+    for d in drill_items:
+        sub_k = d["subject"]
+        subject_counts[sub_k] = subject_counts.get(sub_k, 0) + 1
+        type_counts["Drill"] = type_counts.get("Drill", 0) + 1
+        format_counts["markdown"] += 1
+
+    all_items = pdf_items + drill_items
 
     # Canonical Multi-tier Deterministic Sorting
     def get_sort_tuple(item: dict) -> tuple:
@@ -344,19 +560,20 @@ def build_manifest() -> dict:
         type_idx = TYPE_ORDER.get(item["type"], 99)
         
         # Natural alphanumeric sorting for code / title
-        code_key = natural_sort_key(item["code"]) if item["code"] else natural_sort_key(item["title"])
+        code_key = natural_sort_key(item["code"]) if item.get("code") else natural_sort_key(item["title"])
         title_key = item["title"]
 
         return (sub_idx, sub_sub_idx, type_idx, code_key, title_key)
 
-    items.sort(key=get_sort_tuple)
+    all_items.sort(key=get_sort_tuple)
 
     manifest = {
         "meta": {
             "generated_at": datetime.now(timezone.utc).isoformat(),
-            "total_documents": len(items),
+            "total_documents": len(all_items),
             "subject_counts": subject_counts,
             "type_counts": type_counts,
+            "format_counts": format_counts,
         },
         "subjects": [
             {
@@ -368,7 +585,7 @@ def build_manifest() -> dict:
             for k, name in SUBJECT_NAMES.items()
             if subject_counts.get(k, 0) > 0
         ],
-        "documents": items,
+        "documents": all_items,
     }
 
     return manifest

@@ -1,7 +1,7 @@
 # 全国硕士研究生招生考试 数学（一）真题库 (Math 1 Exam Archive)
 
 > **知识库说明**：本题库完整收录 **1987 年 ～ 2026 年（跨度 40 年，共 896 篇独立分题 Markdown）** 全国硕士研究生招生考试数学（一）全部统考真题。
-> 严格遵循 [exam_source_conversion_spec.md](../../00_system/exam_source_conversion_spec.md) 架构标准与 [AGENTS.md](../../AGENTS.md) 规范。
+> 严格遵循 [真题源码转译标准](../../00_system/exam_source_conversion_spec.md) 架构标准与 [AGENTS.md](../../AGENTS.md) 规范。
 
 ---
 

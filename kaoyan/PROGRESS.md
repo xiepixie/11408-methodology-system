@@ -21,7 +21,7 @@
 
 - 高数 12 Topic、5 个高数内部 Bridge、H-I01 及数学一跨科 B00--B08 已建立 Canonical 候选正文并发布；高价值 Source 已完成首轮路由，Rules 仍待真题/陌生题攻击。
 - 线性代数 Topic01--06 已完成两轮 Source / Model Diff 并重新发布；1987--2025 可用数学一真题已完成按 L01--L06 的全量分类与模型对抗审计，其中 2020 真题补出“两个实对称表示经公共谱坐标合成正交变换”的 Topic06 接口并收窄 R-LA18。Atlas 已补充“任务契约先行”的考场路由；线性代数 Rules 继续保持待验证，下一步是每个 Topic 选陌生题做无提示盲测，已否定的绝对化规则继续保留最小反例。
-- 概率统计已完成归档 Source Pack 的反向结构审阅和 Topic01--08 修正；正文与 Rules 尚未因缺少陌生题证据升级为成熟状态，Published View 仍有环境同步债务。
+- 概率统计已完成旧九章 Source Pack 的细节级全量核销、Topic01--08 修正与八册 Published View 重发；正文与 Rules 尚未因缺少陌生题证据升级为成熟状态，下一步债务已从“Source 遗漏/发布同步”收缩为陌生题规则验证。
 
 ### 408
 
@@ -67,14 +67,14 @@
 ## 当前阻塞
 
 - **无硬阻塞**：仓库检查与 Bridge 发布入口可用。
-- **维护债务**：概率统计仍受 `STHeiti` 字体环境影响；共享编译机制已切到 `infra/scripts/compile_tex.py`，Kaoyan publish preflight 与 `90_publish/` 路由继续由 `cognitive_system.py` 显式拥有；网络八册与 NET-I01 的 Published View 已同步。当前无由 Infra Cutover 引入的新硬阻塞。
+- **维护债务**：概率统计 Topic01--08 已在当前环境重新发布成功，原 `STHeiti` Published View 同步债务本轮已消除；共享编译机制继续由 `infra/scripts/compile_tex.py` 承担，Kaoyan publish preflight 与 `90_publish/` 路由由 `cognitive_system.py` 显式拥有。当前无由 Infra Cutover 引入的新硬阻塞。
 - **证据债务**：大多数 Rules 只有 Source / 机制重建支持，尚缺使用者在陌生题中的重复验证；因此当前状态应读作“Canonical 候选 + Candidate Rules”，不是“全部成熟”。
 
 ## 复盘入口
 
-- 当前日志索引：[review_log/README.md](80_evidence/review_log/README.md)
-- 已完成审阅归档：[archive/review_log/README.md](80_evidence/archive/review_log/README.md)
-- Bridge 审阅台账（归档）：[2026-08-12_Bridge逐册审阅台账_v1.md](80_evidence/archive/review_log/2026-08-12/2026-08-12_Bridge逐册审阅台账_v1.md)
+- 当前日志索引：[审阅日志索引](80_evidence/review_log/README.md)
+- 已完成审阅归档：[审阅日志归档索引](80_evidence/archive/review_log/README.md)
+- Bridge 审阅台账（归档）：[Bridge 逐册审阅台账 v1](80_evidence/archive/review_log/2026-08-12/2026-08-12_Bridge逐册审阅台账_v1.md)
 
 ## 状态汇总
 
@@ -82,12 +82,12 @@
 |---|---:|
 | Candidate | 3 |
 | Handbook Source 待迁移 | 8 |
-| 其他 | 21 |
-| 工作稿 | 5 |
+| 其他 | 20 |
+| 工作稿 | 6 |
 | 已发布 | 32 |
-| 已采用 | 55 |
-| 待人工确认 | 46 |
-| 待验证 | 1 |
+| 已采用 | 54 |
+| 待人工确认 | 54 |
+| 待验证 | 2 |
 | 旧发布物待纳管 | 1 |
 | 框架/目录已建立 | 12 |
 
@@ -96,7 +96,7 @@
 | 范围 | 资产 | 状态 |
 |---|---|---|
 | 系统 | [考研考试控制与认知系统](00_system/README.md) | 已采用；本目录持有认知系统调度内核、自动化校验工具、真题转换规范与考试控制方法论手册 |
-| 数学一 / 旧发布总图 | [数学一学科总图：高等数学、线性代数与概率统计心智模型手册](10_%E6%95%B0%E5%AD%A6%E4%B8%80/00_%E5%AD%A6%E7%A7%91%E6%80%BB%E5%9B%BE/README.md) | 已采用；本目录收敛考研数学一三大支柱（高等数学、线性代数、概率论与数理统计）的核心心智模型手册 |
+| 数学一 / 旧发布总图 | [数学一历史学科总图索引](10_%E6%95%B0%E5%AD%A6%E4%B8%80/00_%E5%AD%A6%E7%A7%91%E6%80%BB%E5%9B%BE/README.md) | 已归档 / 溯源参考层；本目录保留历史 v2 总图手稿作为演进源料与对比对照，不再作为当前 Canonical Course/Subject Atlas 参与日常知识路由 |
 | 数学一 / 高等数学 | [高等数学旧库迁移与重构规划](10_%E6%95%B0%E5%AD%A6%E4%B8%80/10_%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/00_%E8%BF%81%E7%A7%BB%E4%B8%8E%E9%87%8D%E6%9E%84%E8%A7%84%E5%88%92.md) | 架构与 Source Routing 已确认；12 Topic、5 个内部 Bridge、H-I01 与 B00--B08 Cross-Subject Bridge 已建立 Canonical 工作稿，待人工确认和陌生题验证 |
 | 数学一 / 高等数学 | [函数对象、表示与结构](10_%E6%95%B0%E5%AD%A6%E4%B8%80/10_%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/01_%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1_%E8%A1%A8%E7%A4%BA%E4%B8%8E%E7%BB%93%E6%9E%84/README.md) | 待人工确认；已建立唯一规范 LaTeX 工作稿，尚未完成使用者审阅 |
 | 数学一 / 高等数学 | [极限与连续：邻域、尺度与存在性](10_%E6%95%B0%E5%AD%A6%E4%B8%80/10_%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/02_%E6%9E%81%E9%99%90%E4%B8%8E%E8%BF%9E%E7%BB%AD_%E9%82%BB%E5%9F%9F%E5%B0%BA%E5%BA%A6%E4%B8%8E%E5%AD%98%E5%9C%A8%E6%80%A7/README.md) | 待人工确认；已建立唯一规范 LaTeX 工作稿，尚未完成使用者审阅 |
@@ -119,27 +119,28 @@
 | 数学一 / 高等数学 | [H-I01｜微积分建模：从局部微元到整体量](10_%E6%95%B0%E5%AD%A6%E4%B8%80/10_%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/H-I01_%E5%BE%AE%E7%A7%AF%E5%88%86%E5%BB%BA%E6%A8%A1_%E4%BB%8E%E5%B1%80%E9%83%A8%E5%BE%AE%E5%85%83%E5%88%B0%E6%95%B4%E4%BD%93%E9%87%8F/README.md) | 待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅 |
 | 数学一 / 高等数学 | [高等数学 Integration Layer](10_%E6%95%B0%E5%AD%A6%E4%B8%80/10_%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/README.md) | 框架已采用；Canonical 正文由下级 H-I01 目录唯一维护，尚未完成使用者审阅 |
 | 数学一 / 高等数学 | [高等数学 Subject Atlas](10_%E6%95%B0%E5%AD%A6%E4%B8%80/10_%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6/README.md) | 已采用；README 是 Canonical Subject Atlas，Topic / Bridge / Integration 按当前路由逐册重构 |
-| 数学一 / 线性代数 | [向量空间：生成、基与坐标](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/01_%E5%90%91%E9%87%8F%E7%A9%BA%E9%97%B4_%E7%94%9F%E6%88%90%E5%9F%BA%E4%B8%8E%E5%9D%90%E6%A0%87/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
+| 数学一 / 线性代数 | [向量空间：生成、基与坐标](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/01_%E5%90%91%E9%87%8F%E7%A9%BA%E9%97%B4_%E7%94%9F%E6%88%90%E5%9F%BA%E4%B8%8E%E5%9D%90%E6%A0%87/README.md) | 整体逻辑重构已通过结构验收（2026-08-19）：Canonical 已改为“对象底座 → 三分支 → Basis 汇合 → Dimension/Coordinates 分叉 + 可选内积升级”，训练层已拆分 Core / Cross-topic Integration。现有 Published PDF 尚未同步本轮重构，发布前需用当前 LaTeX 重建 |
 | 数学一 / 线性代数 | [线性映射、矩阵与行列式](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/02_%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84_%E7%9F%A9%E9%98%B5%E4%B8%8E%E8%A1%8C%E5%88%97%E5%BC%8F/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
 | 数学一 / 线性代数 | [线性映射、矩阵与行列式](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/02_%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84_%E7%9F%A9%E9%98%B5%E4%B8%8E%E8%A1%8C%E5%88%97%E5%BC%8F/%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84%E3%80%81%E7%9F%A9%E9%98%B5%E4%B8%8E%E8%A1%8C%E5%88%97%E5%BC%8F.md) | Source；第一轮 Markdown 工作稿已迁入 Canonical LaTeX，仅保留作 Source Diff 记录，不再作为正文 Owner |
 | 数学一 / 线性代数 | [秩、基本子空间与等价](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/03_%E7%A7%A9_%E5%9F%BA%E6%9C%AC%E5%AD%90%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%AD%89%E4%BB%B7/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
 | 数学一 / 线性代数 | [秩、基本子空间与等价](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/03_%E7%A7%A9_%E5%9F%BA%E6%9C%AC%E5%AD%90%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%AD%89%E4%BB%B7/%E7%A7%A9%E3%80%81%E5%9F%BA%E6%9C%AC%E5%AD%90%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%AD%89%E4%BB%B7.md) | Source；原 README 工作稿，保留作 Topic03 Source Diff 记录，不再作为 Canonical 正文 |
 | 数学一 / 线性代数 | [线性方程组：可达性与解空间](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/04_%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B%E7%BB%84_%E5%8F%AF%E8%BE%BE%E6%80%A7%E4%B8%8E%E8%A7%A3%E7%A9%BA%E9%97%B4/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
 | 数学一 / 线性代数 | [线性方程组：可达性与解空间](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/04_%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B%E7%BB%84_%E5%8F%AF%E8%BE%BE%E6%80%A7%E4%B8%8E%E8%A7%A3%E7%A9%BA%E9%97%B4/%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B%E7%BB%84%EF%BC%9A%E5%8F%AF%E8%BE%BE%E6%80%A7%E4%B8%8E%E8%A7%A3%E7%A9%BA%E9%97%B4.md) | Source；原 README 工作稿，保留作 Topic04 Source Diff 记录，不再作为 Canonical 正文 |
-| 数学一 / 线性代数 | [特征结构：相似与对角化](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/05_%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%84_%E7%9B%B8%E4%BC%BC%E4%B8%8E%E5%AF%B9%E8%A7%92%E5%8C%96/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
+| 数学一 / 线性代数 | [特征结构：相似与对角化](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/05_%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%84_%E7%9B%B8%E4%BC%BC%E4%B8%8E%E5%AF%B9%E8%A7%92%E5%8C%96/README.md) | 本轮审阅与训练闭环补全完成；已发布。Canonical LaTeX、Active Practice 与 Published PDF 已同步，等待最终人工确认 |
 | 数学一 / 线性代数 | [特征结构：相似与对角化](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/05_%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%84_%E7%9B%B8%E4%BC%BC%E4%B8%8E%E5%AF%B9%E8%A7%92%E5%8C%96/%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%84%EF%BC%9A%E7%9B%B8%E4%BC%BC%E4%B8%8E%E5%AF%B9%E8%A7%92%E5%8C%96.md) | Source；原 README 工作稿，保留作 Topic05 Source Diff 记录，不再作为 Canonical 正文 |
-| 数学一 / 线性代数 | [二次型：合同、惯性与正定](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/06_%E4%BA%8C%E6%AC%A1%E5%9E%8B_%E5%90%88%E5%90%8C%E6%83%AF%E6%80%A7%E4%B8%8E%E6%AD%A3%E5%AE%9A/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
+| 数学一 / 线性代数 | [二次型：合同、惯性与正定](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/06_%E4%BA%8C%E6%AC%A1%E5%9E%8B_%E5%90%88%E5%90%8C%E6%83%AF%E6%80%A7%E4%B8%8E%E6%AD%A3%E5%AE%9A/README.md) | 本轮审阅与训练闭环补全完成；已发布。Canonical LaTeX、Active Practice 与 Published PDF 已同步，等待最终人工确认 |
 | 数学一 / 线性代数 | [二次型：合同、惯性与正定](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/06_%E4%BA%8C%E6%AC%A1%E5%9E%8B_%E5%90%88%E5%90%8C%E6%83%AF%E6%80%A7%E4%B8%8E%E6%AD%A3%E5%AE%9A/%E4%BA%8C%E6%AC%A1%E5%9E%8B%EF%BC%9A%E5%90%88%E5%90%8C%E3%80%81%E6%83%AF%E6%80%A7%E4%B8%8E%E6%AD%A3%E5%AE%9A.md) | Source；原 README 工作稿，保留作 Topic06 Source Diff 记录，不再作为 Canonical 正文 |
 | 数学一 / 线性代数 | [线性代数 Subject Atlas：空间、映射、表示与不变量](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/README.md) | 已采用；README 是 Canonical Subject Atlas |
-| 数学一 / 概率统计 | [随机世界：事件与概率](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/01_%E9%9A%8F%E6%9C%BA%E4%B8%96%E7%95%8C_%E4%BA%8B%E4%BB%B6%E4%B8%8E%E6%A6%82%E7%8E%87/README.md) | Canonical LaTeX 工作稿；P01-A/P01-B 已按 Source Diff 重构并进入逐项核销，尚未完成跨册与人工确认，不视为成熟手册 |
-| 数学一 / 概率统计 | [条件概率、独立性与 Bayes：信息怎样重分配概率](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/02_%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87_%E7%8B%AC%E7%AB%8B%E6%80%A7%E4%B8%8EBayes/README.md) | Canonical LaTeX 工作稿；P02-A/P02-B/P02-C 已按 Source Diff 重构并进入逐项核销，尚未完成跨册与人工确认，不视为成熟手册 |
-| 数学一 / 概率统计 | [随机变量与一维分布：把随机世界映射到数轴](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/03_%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F%E4%B8%8E%E4%B8%80%E7%BB%B4%E5%88%86%E5%B8%83/README.md) | Canonical LaTeX 工作稿；P03-A/P03-B 已按 Source Diff 重构并进入逐项核销，尚未完成跨册与人工确认，不视为成熟手册 |
-| 数学一 / 概率统计 | [联合分布、条件分布与变换：概率质量怎样重组](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/04_%E8%81%94%E5%90%88%E5%88%86%E5%B8%83_%E6%9D%A1%E4%BB%B6%E5%88%86%E5%B8%83%E4%B8%8E%E5%8F%98%E6%8D%A2/README.md) | Canonical LaTeX 工作稿；P04-A/P04-B 已按 Source Diff 重构并进入逐项核销，尚未完成跨册与人工确认，不视为成熟手册 |
-| 数学一 / 概率统计 | [数字特征与依赖摘要：怎样压缩分布而不忘记损失](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/05_%E6%95%B0%E5%AD%97%E7%89%B9%E5%BE%81%E4%B8%8E%E4%BE%9D%E8%B5%96%E6%91%98%E8%A6%81/README.md) | Canonical LaTeX 工作稿；P05-A 已按 Source Diff 重构并进入逐项核销，尚未完成跨册与人工确认，不视为成熟手册 |
-| 数学一 / 概率统计 | [大数定律与中心极限定理：稳定位置与剩余波动](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/06_%E5%A4%A7%E6%95%B0%E5%AE%9A%E5%BE%8B%E4%B8%8E%E4%B8%AD%E5%BF%83%E6%9E%81%E9%99%90%E5%AE%9A%E7%90%86/README.md) | Canonical LaTeX 工作稿；P06-A 已按 Source Diff 重构并进入逐项核销，尚未完成跨册与人工确认，不视为成熟手册 |
-| 数学一 / 概率统计 | [总体、样本与抽样分布：统计量为什么仍然随机](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/07_%E6%80%BB%E4%BD%93%E6%A0%B7%E6%9C%AC%E4%B8%8E%E6%8A%BD%E6%A0%B7%E5%88%86%E5%B8%83/README.md) | Canonical LaTeX 工作稿；P07-A/P07-B/P07-C 已按 Source Diff 重构并进入逐项核销，尚未完成跨册与人工确认，不视为成熟手册 |
-| 数学一 / 概率统计 | [参数估计与假设检验：用抽样分布校准逆向推断](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/08_%E5%8F%82%E6%95%B0%E4%BC%B0%E8%AE%A1%E4%B8%8E%E5%81%87%E8%AE%BE%E6%A3%80%E9%AA%8C/README.md) | Canonical LaTeX 工作稿；P08-A/P08-B/P08-C/P08-D 已按 Source Diff 重构并进入逐项核销，尚未完成跨册与人工确认，不视为成熟手册 |
-| 数学一 / 概率统计 | [概率论与数理统计统一总图](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/README.md) | 待人工确认；README 是 Canonical Subject Atlas 候选，八个 Topic 已完成首轮迁移与本轮整体结构审阅，仍需真题/陌生题验证跨册 Owner、术语、参数化与跨专题规则。单一问题族的考试动作优先进入各 Topic 同目录训练 Markdown；跨多个训练专题稳定复用并经证据验证的控制另见概率统计做题规则 |
+| 数学一 / 概率统计 | [随机世界：事件与概率](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/01_%E9%9A%8F%E6%9C%BA%E4%B8%96%E7%95%8C_%E4%BA%8B%E4%BB%B6%E4%B8%8E%E6%A6%82%E7%8E%87/README.md) | 待人工确认；P01-A/P01-B 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审，当前 Canonical 已补齐源稿中的独立方法细节并通过发布验证。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏 |
+| 数学一 / 概率统计 | [条件概率、独立性与 Bayes：信息怎样重分配概率](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/02_%E6%9D%A1%E4%BB%B6%E6%A6%82%E7%8E%87_%E7%8B%AC%E7%AB%8B%E6%80%A7%E4%B8%8EBayes/README.md) | 待人工确认；P02-A/P02-B/P02-C 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审，当前 Canonical 已补齐源稿中的独立方法细节并通过发布验证。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏 |
+| 数学一 / 概率统计 | [随机变量与一维分布：把随机世界映射到数轴](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/03_%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F%E4%B8%8E%E4%B8%80%E7%BB%B4%E5%88%86%E5%B8%83/README.md) | 待人工确认；P03-A/P03-B 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审，当前 Canonical 已补齐源稿中的独立方法细节并通过发布验证。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏 |
+| 数学一 / 概率统计 | [联合分布、条件分布与变换：概率质量怎样重组](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/04_%E8%81%94%E5%90%88%E5%88%86%E5%B8%83_%E6%9D%A1%E4%BB%B6%E5%88%86%E5%B8%83%E4%B8%8E%E5%8F%98%E6%8D%A2/README.md) | 待人工确认；P04-A/P04-B 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审；变换与卷积训练入口已拆分并保留兼容路由，当前 Canonical 与训练文档已通过发布/导航核验。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏 |
+| 数学一 / 概率统计 | [数字特征与依赖摘要：怎样压缩分布而不忘记损失](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/05_%E6%95%B0%E5%AD%97%E7%89%B9%E5%BE%81%E4%B8%8E%E4%BE%9D%E8%B5%96%E6%91%98%E8%A6%81/README.md) | 待人工确认；P05-A 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审，数字特征、依赖摘要与分层混合的恢复线索已补齐并通过发布验证。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏 |
+| 数学一 / 概率统计 | [大数定律与中心极限定理：稳定位置与剩余波动](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/06_%E5%A4%A7%E6%95%B0%E5%AE%9A%E5%BE%8B%E4%B8%8E%E4%B8%AD%E5%BF%83%E6%9E%81%E9%99%90%E5%AE%9A%E7%90%86/README.md) | 待人工确认；P06-A 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审，LLN/CLT 的并列母模型及近似边界已校正并通过发布验证。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏 |
+| 数学一 / 概率统计 | [总体、样本与抽样分布：统计量为什么仍然随机](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/07_%E6%80%BB%E4%BD%93%E6%A0%B7%E6%9C%AC%E4%B8%8E%E6%8A%BD%E6%A0%B7%E5%88%86%E5%B8%83/README.md) | 待人工确认；P07-A/P07-B/P07-C 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审，统计量、自由度、精确抽样分布与顺序统计接口已补齐并通过发布验证。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏 |
+| 数学一 / 概率统计 | [参数估计与假设检验：用抽样分布校准逆向推断](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/08_%E5%8F%82%E6%95%B0%E4%BC%B0%E8%AE%A1%E4%B8%8E%E5%81%87%E8%AE%BE%E6%A3%80%E9%AA%8C/README.md) | 待人工确认；P08-A/P08-B/P08-C/P08-D 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审；估计、区间、检验与任务分流已拆成独立训练入口并通过发布/导航核验。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏 |
+| 数学一 / 概率统计 | [概率论与数理统计统一总图](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/README.md) | 待人工确认；README 是 Canonical Subject Atlas 候选。八个 Topic 已完成旧九章原子级 Source Diff、跨册 Owner/术语/参数化复审，并与现有数学一真题全量分类底账交叉核验；当前可读取真题的 P01--P08 路由与代表题计算证据已闭合。尚未升级为“已采用”的原因只剩使用者确认与陌生题表现证据；1994 原卷缺失、2022 末段题源损坏等来源缺口继续按 Evidence 边界保留。单一问题族的考试动作优先进入各 Topic 同目录训练 Markdown；跨多个训练专题稳定复用并经证据验证的控制另见概率统计做题规则 |
+| 数学一 / 概率统计 | [概率统计训练手册：从识别对象到独立验算](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E7%BB%9F%E8%AE%A1%E8%AE%AD%E7%BB%83%E6%89%8B%E5%86%8C.md) | 首版；基于本目录 P01--P08 Canonical 心智模型、同目录训练 Markdown 与上传《概率论与数理统计专题手稿（上册第 1--3 章）》重构 |
 | 数学一 / 跨科 Bridge | [B00｜内积、正交与投影](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/B00_%E5%86%85%E7%A7%AF%E6%AD%A3%E4%BA%A4%E4%B8%8E%E6%8A%95%E5%BD%B1/README.md) | 待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅 |
 | 数学一 / 跨科 Bridge | [B01｜局部线性化：微分 × 线性映射](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/B01_%E5%B1%80%E9%83%A8%E7%BA%BF%E6%80%A7%E5%8C%96_%E5%BE%AE%E5%88%86%E4%B8%8E%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84/README.md) | 待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅 |
 | 数学一 / 跨科 Bridge | [B02｜Jacobian 与行列式：坐标变换 × 局部体积缩放](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/B02_Jacobian%E4%B8%8E%E8%A1%8C%E5%88%97%E5%BC%8F_%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2%E4%B8%8E%E5%B1%80%E9%83%A8%E4%BD%93%E7%A7%AF%E7%BC%A9%E6%94%BE/README.md) | 待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅 |
@@ -156,9 +157,9 @@
 | 数学一 / 跨科 Integration | [I03｜线性常微分方程组](10_%E6%95%B0%E5%AD%A6%E4%B8%80/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/I03_%E7%BA%BF%E6%80%A7%E5%B8%B8%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B%E7%BB%84/README.md) | 目录已建立，正文未建；部分内容属于 Extension 验收 |
 | 数学一 / 跨科 Integration | [数学一 Integration Layer](10_%E6%95%B0%E5%AD%A6%E4%B8%80/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/README.md) | 框架已采用，Integration 正文未建 |
 | 数学一 / 数学 Rules | [数学一 学科做题规则](10_%E6%95%B0%E5%AD%A6%E4%B8%80/90_%E5%AD%A6%E7%A7%91%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/README.md) | 已按项目契约完成本轮职责收缩；Subject Rules 只保留跨训练专题控制 |
-| 数学一 / 数学 Rules | [概率统计做题规则](10_%E6%95%B0%E5%AD%A6%E4%B8%80/90_%E5%AD%A6%E7%A7%91%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/%E6%A6%82%E7%8E%87%E7%BB%9F%E8%AE%A1.md) | 已完成本轮职责收缩；本文件只保留跨多个概率统计训练专题仍需共同维护的交接与证据层级控制 |
-| 数学一 / 数学 Rules | [线性代数做题规则](10_%E6%95%B0%E5%AD%A6%E4%B8%80/90_%E5%AD%A6%E7%A7%91%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0.md) | 已完成本轮职责收缩；当前没有仍需由 Subject Rules 单独拥有的线性代数学科级规则 |
-| 数学一 / 数学 Rules | [高等数学做题规则](10_%E6%95%B0%E5%AD%A6%E4%B8%80/90_%E5%AD%A6%E7%A7%91%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6.md) | 待验证；本文件已按项目契约收缩为跨多个训练专题的高数学科级控制入口 |
+| 数学一 / 数学 Rules | [概率统计做题规则](10_%E6%95%B0%E5%AD%A6%E4%B8%80/90_%E5%AD%A6%E7%A7%91%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/%E6%A6%82%E7%8E%87%E7%BB%9F%E8%AE%A1.md) | 待验证；本文件只保留跨多个概率统计训练专题仍需共同维护的交接与证据层级控制 |
+| 数学一 / 数学 Rules | [线性代数做题规则](10_%E6%95%B0%E5%AD%A6%E4%B8%80/90_%E5%AD%A6%E7%A7%91%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0.md) | 已完成职责收缩；当前没有仍需由 Subject Rules 单独拥有的线性代数学科级规则 |
+| 数学一 / 数学 Rules | [高等数学做题规则](10_%E6%95%B0%E5%AD%A6%E4%B8%80/90_%E5%AD%A6%E7%A7%91%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6.md) | 待验证；本文件只拥有跨多个训练专题仍需统一维护的高数学科级控制 |
 | 数学一 | [数学一认知体系总架构](10_%E6%95%B0%E5%AD%A6%E4%B8%80/README.md) | 已采用；README 是 Canonical Course / Exam Atlas，Subject Topic / Bridge / Integration 正文分阶段建设中 |
 | 英语一 | [英语一 Subject Atlas](20_%E8%8B%B1%E8%AF%AD%E4%B8%80/00_%E5%AD%A6%E7%A7%91%E6%80%BB%E5%9B%BE/README.md) | 已采用；本目录只持有英语一的学科坐标、专题位置与 Canonical Ownership，不再拥有各题型完整机制或考场执行协议 |
 | 英语一 | [英语 Atlas Source Diff 与 Canonical Ownership 裁决](20_%E8%8B%B1%E8%AF%AD%E4%B8%80/00_%E5%AD%A6%E7%A7%91%E6%80%BB%E5%9B%BE/SOURCE_DIFF.md) | 已裁决 |
@@ -168,6 +169,7 @@
 | 英语一 | [英语一写作总方法论：从任务到语言的生成系统](20_%E8%8B%B1%E8%AF%AD%E4%B8%80/40_%E5%86%99%E4%BD%9C/README.md) | 已采用；持有小作文（应用文书信/告示）与大作文（图画阐释/论述文）写作生成方法论 |
 | 英语一 | [英语一 学科做题控制](20_%E8%8B%B1%E8%AF%AD%E4%B8%80/90_%E5%AD%A6%E7%A7%91%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/README.md) | 已采用；本目录拥有跨题型的考场决策、第一动作、Route、执行协调与 Verify，不拥有各 Topic 的内部机制 |
 | 408 / 总图 | [408 学科架构：Canonical Topology 设计依据](30_408/00_%E7%BB%9F%E4%B8%80%E6%80%BB%E5%9B%BE/README.md) | 框架已采用；本文件记录为什么这样切，不承担日常导航。日常入口见 408 Course Atlas |
+| 408 / 总图 | [跨科母模型：缓冲与有限中间态](30_408/00_%E7%BB%9F%E4%B8%80%E6%80%BB%E5%9B%BE/%E8%B7%A8%E7%A7%91%E6%AF%8D%E6%A8%A1%E5%9E%8B_%E7%BC%93%E5%86%B2%E4%B8%8E%E6%9C%89%E9%99%90%E4%B8%AD%E9%97%B4%E6%80%81.md) | 工作稿；母模型、概念边界与四科路由已建立，待代表性真题/陌生题验证后晋升 |
 | 408 / 数据结构 | [数据结构学科总图](30_408/10_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/00_%E5%AD%A6%E7%A7%91%E6%80%BB%E5%9B%BE/README.md) | Source；非 Handbook Owner；Atlas Foundation / Deep Map 旧工作稿，待与 Canonical Data Structure Subject Atlas README 做 Source Diff；不再迁成第二份 Atlas LaTeX |
 | 408 / 数据结构 | [DS01｜线性关系与存储表示](30_408/10_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/01_%E7%BA%BF%E6%80%A7%E5%85%B3%E7%B3%BB%E4%B8%8E%E5%AD%98%E5%82%A8%E8%A1%A8%E7%A4%BA/README.md) | LaTeX 工作稿，待人工确认；已建立并发布 Canonical 深度正文 |
 | 408 / 数据结构 | [DS02｜栈、队列与受限访问](30_408/10_%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/02_%E6%A0%88%E9%98%9F%E5%88%97%E4%B8%8E%E5%8F%97%E9%99%90%E8%AE%BF%E9%97%AE/README.md) | Canonical 正文、C++17 伴随实现与边界测试已建立；Published PDF 见下方链接 |
@@ -278,7 +280,13 @@
 | 系统 | 2026-08-15 计组全量 Source Diff（v1） | **Partial -> 增量扩充**。现有 CO-01 已有有限位宽、补码、移位、Booth、除法、浮点和舍入主干；本轮补回进制转换、机器数四种编码、C 类型转换、对齐/大小端、ALU 进位链、校验码/海明码、恢复/不恢复除法的逐拍不变量与边界 |
 | 系统 | 操作系统全量 Source Diff | 已完成 76 篇逐篇语义 Diff、Canonical 回写与双向完成审计 |
 | 系统 | [数学一真题：按心智模型主题分类总索引](80_evidence/review_log/2026-08-12_%E6%95%B0%E5%AD%A6%E4%B8%80%E7%9C%9F%E9%A2%98_%E5%BF%83%E6%99%BA%E6%A8%A1%E5%9E%8B%E4%B8%BB%E9%A2%98%E5%88%86%E7%B1%BB.md) | 分类底账已建立；残损题保留“待回图复核”。本文件是外部真题的证据索引，不是三科 Handbook 的知识 Owner |
+| 系统 | [408 缓冲母模型跨科核验](80_evidence/review_log/2026-08-18_408_%E7%BC%93%E5%86%B2%E6%AF%8D%E6%A8%A1%E5%9E%8B%E8%B7%A8%E7%A7%91%E6%A0%B8%E9%AA%8C.md) | Course Atlas-owned 跨科母模型补充已建立；课程总图已改为导航；计组缺口已补；通用做题规则进入候选验证 |
+| 系统 | [数一专项集训来源差异审阅与心智模型补强](80_evidence/review_log/2026-08-18_%E6%95%B0%E4%B8%80%E4%B8%93%E9%A1%B9%E9%9B%86%E8%AE%AD_Source_Diff%E4%B8%8E%E5%BF%83%E6%99%BA%E6%A8%A1%E5%9E%8B%E8%A1%A5%E5%BC%BA.md) | 正式知识源补强已落地；待使用者审阅与后续陌生题验证 |
 | 系统 | [旧 408 汇总笔记 × 当前 OS 心智模型复审](80_evidence/review_log/2026-08-18_%E6%97%A7408%E7%AC%94%E8%AE%B0_OS%E5%BF%83%E6%99%BA%E6%A8%A1%E5%9E%8B%E5%A4%8D%E5%AE%A1.md) | 本轮 Source Diff 已完成；Canonical 一致性修正与训练入口已写入，待使用者审阅后归档 |
+| 系统 | [《考研数学经典例子与反例精讲》Source Diff / Owner Diff](80_evidence/review_log/2026-08-18_%E8%80%83%E7%A0%94%E6%95%B0%E5%AD%A6%E7%BB%8F%E5%85%B8%E4%BE%8B%E5%AD%90%E4%B8%8E%E5%8F%8D%E4%BE%8B%E7%B2%BE%E8%AE%B2_Source_Diff.md) | **48 个专题已完成第一轮 Owner / Correctness / Training 复审；高数与线代均已完成对应缺口更新，综合练习 23 题完成跨 Topic 回归路由。** |
+| 系统 | [高数基础生成层完整性复审](80_evidence/review_log/2026-08-18_%E9%AB%98%E6%95%B0_%E5%9F%BA%E7%A1%80%E7%94%9F%E6%88%90%E5%B1%82%E5%AE%8C%E6%95%B4%E6%80%A7%E5%A4%8D%E5%AE%A1.md) | **全 Topic 重新进入“基础生成层 + Reference + Counterexample”复审；Topic01/03/05/10 已完成当前轮定向补强** |
+| 系统 | [《高数上册进阶》Source Diff / Owner Diff](80_evidence/review_log/2026-08-18_%E9%AB%98%E6%95%B0%E4%B8%8A%E5%86%8C%E8%BF%9B%E9%98%B6_Source_Diff.md) | **13 个专题的训练原子已逐项路由；缺失 Practice 已补齐，Source 中过强经验已条件化；待人工审阅与陌生题验证** |
+| 系统 | [《高数下册进阶》Source Diff / Owner Diff](80_evidence/review_log/2026-08-18_%E9%AB%98%E6%95%B0%E4%B8%8B%E5%86%8C%E8%BF%9B%E9%98%B6_Source_Diff.md) | **Source 原子已逐项路由；Canonical / Practice 已修正，待人工审阅与陌生题验证** |
 
 ## 怎样更新
 

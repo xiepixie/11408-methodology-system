@@ -691,6 +691,7 @@ mark.search-hl {
 
 .badge-type.Atlas { color: var(--type-atlas); background: var(--type-atlas-bg); border-color: rgba(99, 102, 241, 0.25); }
 .badge-type.Topic { color: var(--type-topic); background: var(--type-topic-bg); border-color: rgba(2, 132, 199, 0.25); }
+.badge-type.Drill { color: #059669; background: rgba(5, 150, 105, 0.12); border-color: rgba(5, 150, 105, 0.25); }
 .badge-type.Bridge { color: var(--type-bridge); background: var(--type-bridge-bg); border-color: rgba(217, 119, 6, 0.25); }
 .badge-type.Integration { color: var(--type-integration); background: var(--type-integration-bg); border-color: rgba(5, 150, 105, 0.25); }
 .badge-type.Control { color: var(--type-control); background: var(--type-control-bg); border-color: rgba(220, 38, 38, 0.25); }
@@ -1633,32 +1634,713 @@ body.zen-mode .content-viewport {
 }
 
 /* ==========================================================================
-   Image & SVG Diagram Intelligent Layout (Center & Bounded Scaling)
+   Markdown Drill Reader Viewport & Advanced Typography
    ========================================================================== */
 
-img, svg.diagram-asset {
+.markdown-viewer-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-surface);
+  position: relative;
+}
+
+.drill-stage {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  padding: 36px 48px 100px;
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+}
+
+.drill-meta-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 16px 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.drill-scope-box, .drill-owner-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.drill-scope-label, .drill-owner-label {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.drill-scope-text {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.drill-owner-link {
+  color: #7c3aed;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all var(--transition-fast);
+}
+
+.drill-owner-link:hover {
+  text-decoration: underline;
+  color: #6d28d9;
+}
+
+.doc-inline-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xs);
+  padding: 1px 7px;
+  font-family: ui-monospace, "SF Mono", monospace;
+  font-size: 12px;
+  color: #7c3aed;
+  font-weight: 600;
+  margin-right: 6px;
+}
+
+[data-theme="dark"] .doc-inline-chip {
+  background: rgba(124, 58, 237, 0.18);
+  border-color: rgba(192, 132, 252, 0.35);
+  color: #c084fc;
+}
+
+/* Mastery Buttons & Badges */
+.card-mastery-badge {
+  font-size: 11px;
+  margin-right: 4px;
+}
+
+.mastery-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.twin-model-btn {
+  background: #f5f3ff !important;
+  color: #7c3aed !important;
+  border-color: rgba(124, 58, 237, 0.3) !important;
+}
+
+.twin-model-btn:hover {
+  background: #ede9fe !important;
+  border-color: #7c3aed !important;
+}
+
+/* Markdown Typography */
+.markdown-body {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-primary);
+  word-break: break-word;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.markdown-body h1 {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.markdown-body h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 36px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.markdown-body h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 28px 0 12px;
+}
+
+.markdown-body p {
+  margin: 0 0 16px;
+}
+
+.markdown-body blockquote {
+  margin: 16px 0;
+  padding: 12px 18px;
+  background: var(--bg-secondary);
+  border-left: 4px solid var(--accent-math);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.markdown-body blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Semantic Admonitions / Callout Cards */
+.callout {
+  margin: 18px 0;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  border-left-width: 4px;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.callout-train {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  border-left-color: #2563eb;
+  color: #1e3a8a;
+}
+
+.callout-model {
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+  border-left-color: #7c3aed;
+  color: #4c1d95;
+}
+
+.callout-trap {
+  background: #fef2f2;
+  border-color: #fecaca;
+  border-left-color: #ef4444;
+  color: #991b1b;
+}
+
+.callout-rule {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  border-left-color: #10b981;
+  color: #065f46;
+}
+
+.callout-title {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+/* Active Recall / Accordion details */
+.markdown-body details {
+  margin: 18px 0;
+  padding: 14px 18px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.markdown-body details[open] {
+  background: var(--bg-surface);
+  border-color: var(--accent-math);
+  box-shadow: var(--shadow-sm);
+}
+
+.markdown-body summary {
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--accent-math);
+  user-select: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.markdown-body summary:hover {
+  text-decoration: underline;
+}
+
+.markdown-body details[open] summary {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+/* Tables */
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 13.5px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.markdown-body th {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.markdown-body td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.markdown-body tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-body tr:nth-child(even) td {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+/* Code & KaTeX Formulas */
+.markdown-body code {
+  font-family: ui-monospace, "SF Mono", monospace;
+  font-size: 13px;
+  background: var(--bg-secondary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  color: #e11d48;
+}
+
+.markdown-body pre {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  overflow-x: auto;
+  margin: 18px 0;
+}
+
+.markdown-body pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  color: inherit;
+}
+
+.katex-display {
+  margin: 1.4em 0 !important;
+  padding: 6px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Right TOC Sidebar */
+.drill-toc-sidebar {
+  width: 240px;
+  height: 100%;
+  border-left: 1px solid var(--border-color);
+  padding: 32px 18px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  background: var(--bg-surface);
+  box-sizing: border-box;
+}
+
+.drill-toc-header {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.drill-toc-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drill-toc-link {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 5px 8px;
+  border-radius: var(--radius-xs);
+  transition: all var(--transition-fast);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drill-toc-link.h3 {
+  padding-left: 18px;
+  font-size: 11.5px;
+}
+
+.drill-toc-link:hover {
+  color: var(--accent-math);
+  background: var(--bg-secondary);
+}
+
+@media (max-width: 1100px) {
+  .drill-toc-sidebar {
+    display: none;
+  }
+  .drill-stage {
+    padding: 24px 20px 80px;
+  }
+}
+
+/* ==========================================================================
+   Dark Theme Adaptations for Markdown Drill Reader & Callouts
+   ========================================================================== */
+
+.markdown-body a, .callout a, .doc-inline-link {
+  color: var(--accent-math);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast);
+}
+
+.markdown-body a:hover, .callout a:hover, .doc-inline-link:hover {
+  color: #60a5fa;
+}
+
+[data-theme="dark"] .callout-train {
+  background: rgba(37, 99, 235, 0.12);
+  border-color: rgba(56, 189, 248, 0.3);
+  border-left-color: #38bdf8;
+  color: #e0f2fe;
+}
+[data-theme="dark"] .callout-train .callout-title {
+  color: #38bdf8;
+}
+
+[data-theme="dark"] .callout-model {
+  background: rgba(124, 58, 237, 0.12);
+  border-color: rgba(192, 132, 252, 0.3);
+  border-left-color: #c084fc;
+  color: #f3e8ff;
+}
+[data-theme="dark"] .callout-model .callout-title {
+  color: #c084fc;
+}
+[data-theme="dark"] .callout-model a,
+[data-theme="dark"] .callout-model .doc-inline-link {
+  color: #c084fc;
+}
+[data-theme="dark"] .callout-model a:hover,
+[data-theme="dark"] .callout-model .doc-inline-link:hover {
+  color: #e9d5ff;
+}
+
+[data-theme="dark"] .callout-trap {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(248, 113, 113, 0.3);
+  border-left-color: #f87171;
+  color: #fee2e2;
+}
+[data-theme="dark"] .callout-trap .callout-title {
+  color: #f87171;
+}
+
+[data-theme="dark"] .callout-rule {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(52, 211, 153, 0.3);
+  border-left-color: #34d399;
+  color: #d1fae5;
+}
+[data-theme="dark"] .callout-rule .callout-title {
+  color: #34d399;
+}
+
+/* Dark Mode Meta Banner */
+[data-theme="dark"] .drill-meta-banner {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+[data-theme="dark"] .drill-scope-label,
+[data-theme="dark"] .drill-owner-label {
+  background: var(--bg-surface);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+[data-theme="dark"] .drill-owner-link {
+  color: #c084fc;
+}
+[data-theme="dark"] .drill-owner-link:hover {
+  color: #d8b4fe;
+}
+
+/* Dark Mode Action Buttons */
+[data-theme="dark"] .twin-model-btn {
+  background: rgba(124, 58, 237, 0.2) !important;
+  color: #c084fc !important;
+  border-color: rgba(192, 132, 252, 0.35) !important;
+}
+[data-theme="dark"] .twin-model-btn:hover {
+  background: rgba(124, 58, 237, 0.35) !important;
+  border-color: #c084fc !important;
+}
+
+[data-theme="dark"] .mastery-btn {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+/* Dark Mode Typography & Elements */
+[data-theme="dark"] .markdown-body code {
+  background: #1e293b;
+  color: #fb7185;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .markdown-body pre {
+  background: #090d16;
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .markdown-body blockquote {
+  background: var(--bg-secondary);
+  border-left-color: var(--accent-math);
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .markdown-body details {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+[data-theme="dark"] .markdown-body details[open] {
+  background: var(--bg-surface);
+  border-color: var(--accent-math);
+}
+
+[data-theme="dark"] .markdown-body table {
+  border-color: var(--border-color);
+}
+[data-theme="dark"] .markdown-body th {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+[data-theme="dark"] .markdown-body td {
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+}
+[data-theme="dark"] .markdown-body tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+[data-theme="dark"] .drill-toc-sidebar {
+  background: var(--bg-surface);
+  border-color: var(--border-color);
+}
+[data-theme="dark"] .drill-toc-link:hover {
+  color: var(--accent-math);
+  background: var(--bg-secondary);
+}
+
+/* ==========================================================================
+   Figure & Diagram Card System (Optimized Styling, Size & Position)
+   ========================================================================== */
+
+.diagram-figure-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 32px auto;
+  padding: 20px 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  max-width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  transition: all var(--transition-normal);
+}
+
+.diagram-figure-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: var(--shadow-md);
+}
+
+.diagram-asset {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 1.6rem;
-  margin-bottom: 1.6rem;
-  width: 96%;
-  max-width: 96%;
-  max-height: min(540px, 68vh);
+  margin: 0 auto;
+  max-width: min(100%, 680px);
+  max-height: 480px;
+  width: auto;
   height: auto;
   object-fit: contain;
   border-radius: var(--radius-sm);
+  cursor: zoom-in;
+  background: #ffffff;
+  padding: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-@media print {
-  img, svg.diagram-asset {
-    display: block !important;
-    margin: 1.2cm auto !important;
-    max-width: 92% !important;
-    max-height: 13cm !important;
-    width: auto !important;
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-  }
+.diagram-asset:hover {
+  transform: scale(1.015);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
+
+.diagram-caption {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 500;
+  max-width: 90%;
+}
+
+.diagram-caption .caption-icon {
+  font-size: 14px;
+  color: var(--accent-math);
+  flex-shrink: 0;
+}
+
+/* Dark Mode Diagram Card & Asset */
+[data-theme="dark"] .diagram-figure-card {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+[data-theme="dark"] .diagram-figure-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .diagram-asset {
+  background: #ffffff;
+  border-color: #334155;
+  filter: brightness(0.96) contrast(1.02);
+}
+
+[data-theme="dark"] .diagram-caption {
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   Image Lightbox Modal (Click to Zoom)
+   ========================================================================== */
+
+.image-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-normal);
+}
+
+.image-lightbox-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.image-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.image-lightbox-container {
+  position: relative;
+  z-index: 10001;
+  max-width: 92vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.image-lightbox-close {
+  position: absolute;
+  top: -42px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.image-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.image-lightbox-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.image-lightbox-img {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.image-lightbox-caption {
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  max-width: 80vw;
+  line-height: 1.5;
+}
+
+
 

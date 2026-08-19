@@ -54,6 +54,8 @@
 {\Huge\bfseries\color{deep} 线性代数\par}
 \vspace{0.3cm}
 {\LARGE 心智模型手册 v2\par}
+\vspace{0.18cm}
+{\small\bfseries\color{warn}历史快照 / Source Only：不再作为当前 Canonical Owner；现行入口为 \texttt{20\_线性代数/README.md}。\par}
 \vspace{0.4cm}
 {\large 空间 · 映射 · 坐标 · 变换 · 不变量 · 标准化\par}
 \vspace{0.8cm}
@@ -412,7 +414,7 @@ v=\mathcal B[v]_{\mathcal B}=\mathcal B'[v]_{\mathcal B'}=\mathcal BP[v]_{\mathc
 \[
 \|Qx\|=\|x\|,\qquad \langle Qx,Qy\rangle=\langle x,y\rangle.
 \]
-所以正交变换不改变长度和夹角。其列向量（也等价地行向量）构成规范正交组，且 $|\det Q|=1$。
+所以正交变换不改变长度和夹角。其列向量（也等价地行向量）构成规范正交组，且 $\lvert\det Q\rvert=1$。
 
 \begin{boundarybox}{线性无关 $\neq$ 正交 $\neq$ 规范正交}
 线性无关只要求“没有冗余”；正交进一步要求两两内积为 0；规范正交还要求每个向量长度为 1。题目给“正交矩阵”时可以立刻用 $Q^{-1}=Q^T$，但普通可逆矩阵不能这样做。
@@ -565,10 +567,10 @@ r(A^*)=
  0,&r(A)\le n-2.
 \end{cases}
 \]
-原因是：若满秩，$A^*=|A|A^{-1}$ 当然满秩；若 rank 恰为 $n-1$，至少一个 $(n-1)$ 阶子式非零而 $AA^*=0$，故 $A^*$ 非零且其列都落在一维 kernel 中；若 rank 更低，所有 $(n-1)$ 阶子式都为 0，所以 $A^*=0$。
+原因是：若满秩，$A^*=\lvert A\rvert A^{-1}$ 当然满秩；若 rank 恰为 $n-1$，至少一个 $(n-1)$ 阶子式非零而 $AA^*=0$，故 $A^*$ 非零且其列都落在一维 kernel 中；若 rank 更低，所有 $(n-1)$ 阶子式都为 0，所以 $A^*=0$。
 
 \begin{examBox}{伴随矩阵题不要只背 rank 三段式}
-先看 $AA^*=|A|I$。若 $|A|\neq0$，直接化成逆矩阵问题；若 $|A|=0$，再看 $A^*$ 的元素本质上是 $(n-1)$ 阶余子式。这样 rank 结论是从结构推出，而不是孤立口诀。
+先看 $AA^*=\lvert A\rvert I$。若 $\lvert A\rvert\neq0$，直接化成逆矩阵问题；若 $\lvert A\rvert=0$，再看 $A^*$ 的元素本质上是 $(n-1)$ 阶余子式。这样 rank 结论是从结构推出，而不是孤立口诀。
 \end{examBox}
 
 \section{分块矩阵：利用结构，而不是把大矩阵拆着玩}
@@ -726,7 +728,7 @@ b\in\operatorname{Col}(A).
 \]
 计算上等价于
 \[
-\boxed{r(A)=r(A|b)}.
+\boxed{r(A)=r(A\mid b)}.
 \]
 若增广列带来了新主元，说明 $b$ 不在原列空间中，于是无解。
 
@@ -742,7 +744,7 @@ A(x_0+x_h)=b.
 几何上它是一个与 kernel 平行的仿射集合。
 
 \begin{boundarybox}{“有无穷多解”不是因为方程多或未知数多}
-真正条件是：先相容，即 $r(A)=r(A|b)$；再看 $r(A)<n$，是否存在自由变量。只有“相容 + kernel 非零”才产生无穷多解。
+真正条件是：先相容，即 $r(A)=r(A\mid b)$；再看 $r(A)<n$，是否存在自由变量。只有“相容 + kernel 非零”才产生无穷多解。
 \end{boundarybox}
 
 \section{基础解系怎样构造：自由变量就是 kernel 的坐标}
@@ -751,7 +753,7 @@ A(x_0+x_h)=b.
 \section{含参数方程组：先分类 rank，再谈具体解}
 参数方程题的真正对象不是“把未知数解出来”，而是研究
 \[
-r(A),\qquad r(A|b),\qquad n-r(A)
+r(A),\qquad r(A\mid b),\qquad n-r(A)
 \]
 怎样随参数变化。
 
@@ -759,7 +761,7 @@ r(A),\qquad r(A|b),\qquad n-r(A)
 \begin{enumerate}
   \item 先把参数视为符号，做安全消元；
   \item 找 rank 可能下降的参数点；
-  \item 对每个参数区间/特殊点比较 $r(A)$ 与 $r(A|b)$；
+  \item 对每个参数区间/特殊点比较 $r(A)$ 与 $r(A\mid b)$；
   \item 只有确定“无解/唯一/无穷多”以后，再在需要的分支求具体通解。
 \end{enumerate}
 这比一开始追着 $x_1,x_2,x_3$ 解稳定得多。
@@ -1288,7 +1290,7 @@ Q^TAQ=\Lambda.
 行变换 & $\neq$ & 列变换 & 左乘可逆矩阵 vs 右乘可逆矩阵 & 解方程/求 rank & 求原变量解时误改未知量含义\\
 rank & $\neq$ & det & 独立维数 vs 方阵体积缩放标量 & 非方阵、自由度 vs 满秩 & 对非方阵谈 determinant\\
 列空间 & $\neq$ & kernel & 可达到的输出 vs 被压成 0 的输入 & $Ax=b$ / $Ax=0$ & 把 $b$ 放到错误空间\\
-有解 & $\neq$ & 唯一解 & 相容性 vs kernel 是否为零 & $r(A)=r(A|b)$ 与 $r(A)=n$ & 只判相容就说唯一\\
+有解 & $\neq$ & 唯一解 & 相容性 vs kernel 是否为零 & $r(A)=r(A\mid b)$ 与 $r(A)=n$ & 只判相容就说唯一\\
 齐次解空间 & $\neq$ & 非齐次解集 & 子空间 vs 子空间平移 & “基础解系”“特解+齐次解” & 给非齐次解集谈基\\
 可逆 & $\neq$ & 元素都非零 & 整体 rank 满 vs 元素级性质 & determinant/rank & 用元素符号判断可逆\\
 等价/相似 & $\neq$ & 合同 & 研究对象和允许换基方式不同 & rank/eigen/quadratic form & 不变量乱套\\
@@ -1332,15 +1334,15 @@ rank & $\neq$ & det & 独立维数 vs 方阵体积缩放标量 & 非方阵、自
 不要一看到“相关”就机械算 determinant；非方阵或向量数量不等于空间维数时，rank 更通用。
 
 \section{矩阵可逆/伴随题：先走可逆等价链}
-先问 $|A|$、rank、kernel、0 特征值之间有什么直接信息。若出现 $A^*$，优先使用
+先问 $\lvert A\rvert$、rank、kernel、0 特征值之间有什么直接信息。若出现 $A^*$，优先使用
 \[
-AA^*=|A|I
+AA^*=\lvert A\rvert I
 \]
 和余子式阶数，不要把 $A^*$ 当普通矩阵重新从头算。
 
 \section{含参数方程组：先分类，不要一上来求未知数}
 \[
-\boxed{\text{safe elimination}\to\text{rank breakpoints}\to r(A)\text{ vs }r(A|b)\to\text{solution type}\to\text{specific solution}}.
+\boxed{\text{safe elimination}\to\text{rank breakpoints}\to r(A)\text{ vs }r(A\mid b)\to\text{solution type}\to\text{specific solution}}.
 \]
 这是最值得长期固化成操作习惯的一类题。
 

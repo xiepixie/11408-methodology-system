@@ -128,13 +128,17 @@
 \section{定理阶梯：连续、水平、割线与双函数运输}
 % ============================================================
 
-\subsection{闭区间连续先产生“全局可控范围”}
+\subsection{闭区间连续：紧致性控制范围，连通性填补空隙}
 
-点态连续只承诺：在\emph{每一个固定点}附近，输出可以被局部控制。把定义域进一步限制为闭区间 $[a,b]$ 后，输入既不能向无穷逃逸，也不会遗漏端点；在实数上，这个“闭且有界”的区间具有紧致性。于是局部连续控制可以升级成几条全局结论。
-
-若 $f\in C[a,b]$，则首先有：
+点态连续只承诺：在\emph{每一个固定点}附近，输出可以被局部控制。当把定义域置于实数区间时，连续性会沿着两条不同的生成机制升级为全局结论：
 \begin{enumerate}
-  \item \kw{有界性}：存在 $M>0$，使所有 $x\in[a,b]$ 都满足 $|f(x)|\le M$；
+  \item \kw{紧致性机制（闭且有界）}：输入既不能向无穷逃逸，也不会遗漏端点，使各点各自的局部控制能被升级为\textbf{全局统一控制}；
+  \item \kw{连通性机制（区间无断裂）}：定义域是一整块没有缺口的连通集，连续映射把连通集映为连通集，从而\textbf{阻止输出产生跳跃或中空}。
+\end{enumerate}
+
+若 $f\in C[a,b]$，紧致性直接给出：
+\begin{enumerate}
+  \item \kw{有界性}：存在 $M>0$，使所有 $x\in[a,b]$ 都满足 $\lvert f(x)\rvert\le M$；
   \item \kw{最值存在}：存在 $x_m,x_M\in[a,b]$，使
   \[
   f(x_m)=\min_{[a,b]}f,
@@ -143,13 +147,16 @@
   \]
 \end{enumerate}
 
-这两条不是“连续函数天然不会很大”，而是\kw{连续性 + 闭区间}共同作用的结果。证明骨架可以用 Topic02 的数列观点复原：若 $f$ 无界，就能选出 $x_n\in[a,b]$ 使 $|f(x_n)|>n$；闭区间中的数列存在收敛子列 $x_{n_k}\to x_*$，而连续性又迫使 $f(x_{n_k})\to f(x_*)$ 为有限值，矛盾。最值定理类似：先取函数值逼近上确界/下确界的点列，再用闭区间中的收敛子列和连续性把“逼近”升级成“真正取到”。
+这两条不是“连续函数天然不会很大”，而是\kw{连续性 + 闭区间紧致性}共同作用的结果。证明骨架可以用 Topic02 的数列观点复原：若 $f$ 无界，就能选出 $x_n\in[a,b]$ 使 $\lvert f(x_n)\rvert>n$；闭区间中的数列存在收敛子列 $x_{n_k}\to x_*$，而连续性又迫使 $f(x_{n_k})\to f(x_*)$ 为有限值，矛盾。最值定理类似：先取函数值逼近上确界/下确界的点列，再用闭区间中的收敛子列和连续性把“逼近”升级成“真正取到”。
 
-\begin{corebox}{闭区间连续的母模型}
+\begin{corebox}{闭区间连续的两大生成母模型}
 \[
-\boxed{\text{局部连续控制}+\text{输入不能逃逸/漏边界}\Longrightarrow\text{全局范围与存在性}}
+\begin{aligned}
+\text{\bf 紧致性支链：}\quad &\text{局部控制}+\text{闭且有界（防逃逸/漏边界）}\Longrightarrow\text{有界、最值可达、一致连续} \\
+\text{\bf 连通性支链：}\quad &\text{连续映射}+\text{区间连通（防跳跃断裂）}\Longrightarrow\text{介值定理、零点存在}
+\end{aligned}
 \]
-所以“有界、取到最值、介值、一致连续”不应背成四个互不相关的定理；它们都是局部控制在闭区间上被统一化后的不同输出。
+介值性本质依赖区间的连通结构（在开区间、无穷区间上同样成立，不依赖紧致性）；而在闭区间上，紧致性给出确界点 $m,M$ 可达，连通性保证中间值被全覆盖，二者合力将像集锁定为紧闭区间 $[m,M]$。
 \end{corebox}
 
 \subsection{开区间有界：真正要封住的是两端逃逸}
@@ -186,14 +193,14 @@ m=\min_{[a,b]}f,\qquad M=\max_{[a,b]}f,
 一致连续则要求对给定 $\varepsilon$，存在一个与位置无关的统一尺度：
 \[
 \forall\varepsilon>0,\ \exists\delta>0,\ \forall x,y\in[a,b],
-\quad |x-y|<\delta\Longrightarrow |f(x)-f(y)|<\varepsilon.
+\quad \lvert x-y\rvert<\delta\Longrightarrow \lvert f(x)-f(y)\rvert<\varepsilon.
 \]
 
 若 $f\in C[a,b]$，则 $f$ 必一致连续（Heine--Cantor）。最能暴露机制的反证骨架是：若不能统一，就存在某个 $\varepsilon_0>0$ 和两列 $x_n,y_n\in[a,b]$，满足
 \[
-|x_n-y_n|\to0,
+\lvert x_n-y_n\rvert\to0,
 \qquad
-|f(x_n)-f(y_n)|\ge\varepsilon_0.
+\lvert f(x_n)-f(y_n)\rvert\ge\varepsilon_0.
 \]
 由闭区间可从 $x_n$ 取收敛子列 $x_{n_k}\to x_*$；因为两列距离趋零，同时有 $y_{n_k}\to x_*$。连续性便推出两列函数值都趋于 $f(x_*)$，与它们始终至少相差 $\varepsilon_0$ 矛盾。
 
@@ -234,18 +241,18 @@ Lagrange 的机制不是“端点斜率等于某点斜率”，而是先减掉�
 \subsubsection{有界导数在有限区间上给出利普希茨控制}
 若 $I$ 是有限区间，且
 \[
-|f'(x)|\le K
+\lvert f'(x)\rvert\le K
 \]
 在区间内部成立，则对任意 $x,x_0\in I$，在连接两点的闭子区间上应用 Lagrange 得
 \[
-|f(x)-f(x_0)|\le K|x-x_0|.
+\lvert f(x)-f(x_0)\rvert\le K\lvert x-x_0\rvert.
 \]
 因此输出变化被输入距离线性控制；由于 $I$ 的长度有限，固定一个 $x_0$ 就得到 $f$ 的全区间有界性。这条结论真正使用的是
 \[
 \boxed{\text{导数有界}\Rightarrow\text{利普希茨控制},\qquad \text{有限输入跨度}\Rightarrow\text{输出有界}.}
 \]
 
-“有限区间”不能删除：$f(x)=x$ 在 $\mathbb R$ 上满足 $|f'|=1$，但函数本身无界。
+“有限区间”不能删除：$f(x)=x$ 在 $\mathbb R$ 上满足 $\lvert f'\rvert=1$，但函数本身无界。
 
 \subsection{Cauchy：共同参数下的比值运输}
 
@@ -351,7 +358,7 @@ F'(x)=m(x)\Phi(x)
 $f'(x)=K$ & $f(x)-Kx$ 或减去割线 & 端点等值、区间连续/可导\\
 $A'B+AB'$ & $AB$ & 因子在区间内有定义\\
 $A'B-AB'$ & $A/B$ & $B$ 在区间内不为零\\
-$A'/A\pm B'/B$ & $\ln|A|\pm\ln|B|$ & $A,B$ 不为零且符号区间固定\\
+$A'/A\pm B'/B$ & $\ln\lvert A\rvert\pm\ln\lvert B\rvert$ & $A,B$ 不为零且符号区间固定\\
 $y'+py=q$ & 积分因子乘积减变限积分 & $p,q$ 连续，指数与积分合法\\
 $F^{(n)}(x)=K$ & 减去满足插值条件的低次多项式 & 足够多个零点/重零点\\
 \bottomrule
@@ -500,7 +507,7 @@ L_x=\lim x(t),\qquad L_y=\lim y(t).
 \begin{enumerate}
   \item $L_x=\pm\infty$、$L_y=B\in\mathbb R$：水平渐近线 $y=B$；
   \item $L_x=A\in\mathbb R$、$L_y=\pm\infty$：垂直渐近线 $x=A$；
-  \item $|x(t)|\to\infty$ 且 $|y(t)|\to\infty$：尝试求
+  \item $\lvert x(t)\rvert\to\infty$ 且 $\lvert y(t)\rvert\to\infty$：尝试求
   \[
   k=\lim\frac{y(t)}{x(t)},\qquad
   b=\lim\bigl(y(t)-kx(t)\bigr).
@@ -513,7 +520,7 @@ L_x=\lim x(t),\qquad L_y=\lim y(t).
 \[
 \boxed{\text{参数临界事件全集}\to(L_x,L_y)\to\text{逃逸方向}\to\text{水平/垂直/仿射渐近线}}
 \]
-关键不变量是\textbf{每个合法单侧事件都必须核销}。同一个有限参数断点的左右两侧可能生成不同渐近行为；只检查 $t\to\pm\infty$ 会系统性漏解。
+关键不变量是\textbf{每个合法单侧事件都必须核销}。同一个有限参数断点的左右两侧可能生成不同渐近行为；只检查 $t\to\pm\infty$ 会系统性漏解。这里本册负责“参数事件枚举与平面几何组装”，单侧/无穷极限计算直接调用 \kw{Topic02} 极限发动机。
 \end{corebox}
 
 % ============================================================

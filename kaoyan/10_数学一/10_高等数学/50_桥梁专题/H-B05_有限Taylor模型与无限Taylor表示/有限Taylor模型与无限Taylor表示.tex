@@ -13,8 +13,11 @@ P_n(x)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k
 \[
 f(x)=\sum_{k=0}^{\infty}\frac{f^{(k)}(a)}{k!}(x-a)^k.
 \]
-\begin{tcolorbox}[title=升级资格]
-余项趋零 + 收敛半径覆盖目标点 + 端点单独判定 + 和函数确为原函数。
+\begin{tcolorbox}[title=升级资格：两条独立证明路线]
+\begin{itemize}
+  \item \kw{路线 1（直接余项法）}：若在目标区间或点上直接证明余项 $R_n(x)\to0$（如由 Lagrange 余项界），则级数收敛且和函数自然恒等于 $f(x)$（一步闭合）；
+  \item \kw{路线 2（间接展开法）}：若通过已知标准展开式代换、逐项求导或逐项积分得到幂级数，则先求出收敛半径 $R$（内部必然等于 $f(x)$），再在端点单独判定收敛性并用 Abel 定理与端点连续性延拓。
+\end{itemize}
 \end{tcolorbox}
 \subsection*{2.\ 典型路由}
 \begin{tabularx}{\linewidth}{@{}lX@{}}
@@ -30,7 +33,7 @@ f(x)=\sum_{k=0}^{\infty}\frac{f^{(k)}(a)}{k!}(x-a)^k.
 \[
 \frac1{1-x}=1+x+\cdots+x^n+\frac{x^{n+1}}{1-x}.
 \]
-固定 $|x|<1$ 时余项趋零，才升级为 $\sum_{k\ge0}x^k$；在 $x=1$ 公式无定义，在 $x=-1$ 余项不趋零。题面从有限近似跳到函数表示时调用这条升级资格。
+固定 $\lvert x\rvert<1$ 时余项趋零，才升级为 $\sum_{k\ge0}x^k$；在 $x=1$ 公式无定义，在 $x=-1$ 余项不趋零。题面从有限近似跳到函数表示时调用这条升级资格。
 
 \subsection*{4.\ 失败边界}
 任意阶可导不保证 Taylor 级数等于原函数；形式级数只说明系数，不自动说明和函数；在收敛区间端点必须重新判定。

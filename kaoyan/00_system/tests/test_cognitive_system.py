@@ -240,11 +240,21 @@ class AtlasFormatTests(unittest.TestCase):
 
     def test_root_level_atlas_tex_is_audit_debt(self):
         messages = {finding.message for finding in MODULE.audit_atlas_duplicate_tex()}
-        self.assertTrue(any("10_数学一/00_学科总图/README.md" in message for message in messages))
+        self.assertTrue(any("20_英语一/00_学科总图/README.md" in message for message in messages))
 
 
 class PublishPreflightTests(unittest.TestCase):
     def test_old_course_atlas_tex_is_rejected_as_second_truth(self):
+        target = (
+            MODULE.PROJECT_ROOT
+            / "20_英语一"
+            / "00_学科总图"
+            / "英语一_学科总图_任务调用语言能力空间_v2.tex"
+        )
+        codes = {finding.code for finding in MODULE.publish_preflight(target)}
+        self.assertIn("P-ATLAS-VIEW", codes)
+
+    def test_source_index_tex_is_rejected_as_not_canonical(self):
         target = (
             MODULE.PROJECT_ROOT
             / "10_数学一"
@@ -252,7 +262,7 @@ class PublishPreflightTests(unittest.TestCase):
             / "数学一_高等数学_心智模型手册_v2.tex"
         )
         codes = {finding.code for finding in MODULE.publish_preflight(target)}
-        self.assertIn("P-ATLAS-VIEW", codes)
+        self.assertIn("P-NOT-CANONICAL", codes)
 
     def test_atlas_visual_must_live_under_assets(self):
         target = MODULE.PROJECT_ROOT / "30_408" / "assets" / "408_Course_Atlas_Poster.tex"

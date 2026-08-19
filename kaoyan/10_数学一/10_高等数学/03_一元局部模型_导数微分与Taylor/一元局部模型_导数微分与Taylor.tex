@@ -183,7 +183,7 @@ f'(a)=\lim_{x\to a}\frac{f(x)-f(a)}{x-a}.
 左右导数分别限制 $h\to0^-$ 与 $h\to0^+$。双侧可导当且仅当左右导数都存在、有限且相等。定义域端点只讨论合法一侧；这与 Topic02 的 Allowed Set 原则完全一致。
 
 \begin{warnbox}{对称差商存在，不推出可导}
-对 $f(x)=|x|$，
+对 $f(x)=\lvert x\rvert$，
 \[
 \frac{f(h)-f(-h)}{2h}=0,
 \]
@@ -223,7 +223,7 @@ dy=f'(a)\,dx
 \[
 f(a+h)-f(a)=f'(a)h+o(h)\to0.
 \]
-所以可导必连续。连续只要求增量趋于 $0$；可导还要求它能被同一个线性系数解释。反向不成立，$|x|$ 就是最小反例。
+所以可导必连续。连续只要求增量趋于 $0$；可导还要求它能被同一个线性系数解释。反向不成立，$\lvert x\rvert$ 就是最小反例。
 
 \subsection{点导数与导函数极限是两层信息}
 
@@ -237,7 +237,7 @@ $f'(a)$ 只研究基点 $a$ 的差商；
 \[
 G_p(x)=
 \begin{cases}
-|x|^p\sin\dfrac1x,&x\ne0,\\
+\lvert x\rvert^p\sin\dfrac1x,&x\ne0,\\
 0,&x=0.
 \end{cases}
 \]
@@ -245,7 +245,7 @@ G_p(x)=
 
 特别地，$G_2$ 在 $0$ 处可导，但对 $x\ne0$，
 \[
-G_2'(x)=2|x|\operatorname{sgn}(x)\sin\frac1x-\cos\frac1x,
+G_2'(x)=2\lvert x\rvert\operatorname{sgn}(x)\sin\frac1x-\cos\frac1x,
 \]
 其邻域导数仍振荡。它阻断了“点上可导 $\Rightarrow$ 导函数连续”的伪桥。
 
@@ -262,6 +262,47 @@ f(a+h)=f(a)+Ah+o(h),
 g(a+h)=g(a)+Bh+o(h).
 \]
 求导法则本质上是对这两份一阶模型做合法代数，并重新收集 $h$ 的系数。
+
+\subsection{统一记忆模型：把导数看成局部增益}
+
+若
+\[
+y(x+h)=y(x)+G(x)h+o(h),
+\]
+则 $G(x)=y'(x)$ 可以理解为当前点的\kw{局部增益}：输入的一阶小变化经过这个局部模块后，被放大、缩小或反向成怎样的一阶输出变化。这个解释不是新的定义，而是导数一阶模型的操作化读法。
+
+于是常见求导法则不需要各背一套口诀，而可以压缩成七种“局部增益怎样组合”：
+
+\begin{center}
+\begin{tabularx}{\linewidth}{L{2.55cm}L{4.55cm}Y}
+\toprule
+\textbf{结构} & \textbf{局部增益怎样生成} & \textbf{记忆句}\\
+\midrule
+$u\pm v$ & $u'\pm v'$ & 两条并行变化直接相加/相减\\
+$uv$ & $u'v+uv'$ & 一阶变化只保留“一边变、另一边先冻结”的两条贡献\\
+$u/v$ & 先求 $1/v$ 的局部增益，再与 $u$ 做乘积 & 商法则不是新物种，而是“乘积 + 倒数”\\
+$f(g(x))$ & $f'(g(x))\,g'(x)$ & 一阶增益沿信息流逐层相乘\\
+$f^{-1}$ & $1/f'$ & 逆映射把同一小变化的输入/输出角色交换，局部增益取倒数\\
+$F(x,y)=0$ & $F_x\,dx+F_y\,dy=0$ & 约束要求所有一阶变化彼此补偿，再解目标变化率\\
+$x=x(t),y=y(t)$ & $(dy/dt)/(dx/dt)$ & 两个量共用同一时钟 $t$，先比较各自对时钟的变化率\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+这张表里的箭头不是时间顺序，而是\textbf{一阶信息怎样在表示之间传递}。真正需要记住的不是七条最终公式，而是三条生成原则：
+\begin{enumerate}
+  \item \kw{并联就相加}：和差把同一个输入变化同时送入两条分支，输出增量相加；
+  \item \kw{串联就相乘}：复合函数把内层输出增量继续送给外层，因此局部增益逐层相乘；
+  \item \kw{换表示要换速率单位}：反函数、隐式关系、参数式都不是新的“求导宇宙”，而是在交换输入输出、加入约束或改用共同参数后重新读取同一条局部变化。
+\end{enumerate}
+
+\begin{corebox}{忘记公式时的重建起点}
+先写当前对象的一阶模型
+\[
+\Delta y=G\,\Delta x+o(\Delta x).
+\]
+再问：当前结构是在并联、串联、取逆、受约束，还是改用另一个参数描述同一条轨迹？只要表示和资格没有丢，常见求导法则都能从这一步重建。
+\end{corebox}
 
 \subsection{和、积与商}
 
@@ -287,6 +328,35 @@ f(a+h)g(a+h)
 
 商法则是在 $g(a)\ne0$ 的资格下对倒数局部模型求积。分母非零不是格式注记，而是局部可逆性的合法性门。
 
+先看倒数。把
+\[
+g(a+h)=g_0+Bh+o(h),\qquad g_0=g(a)\ne0
+\]
+写成
+\[
+\frac1{g(a+h)}
+=\frac1{g_0}\frac1{1+\dfrac{B}{g_0}h+o(h)}.
+\]
+利用
+\[
+\frac1{1+u}=1-u+o(u)\qquad(u\to0),
+\]
+得到
+\[
+\frac1{g(a+h)}
+=\frac1{g_0}-\frac{B}{g_0^2}h+o(h),
+\]
+所以
+\[
+\left(\frac1g\right)'(a)=-\frac{g'(a)}{g(a)^2}.
+\]
+再与 $f$ 做乘积：
+\[
+\boxed{\left(\frac fg\right)'(a)
+=\frac{f'(a)g(a)-f(a)g'(a)}{g(a)^2}}.
+\]
+因此分母平方和交叉相减并不是需要单独死记的图案；它来自“\textbf{倒数的一阶变化是负的相对变化} + \textbf{乘积的两条一阶贡献}”。
+
 \begin{methodbox}{乘积在求导点含零因子时先看零点阶数}
 若 $f=uv$ 且 $u(a)=0$，则
 \[
@@ -299,10 +369,10 @@ f'(a)=u'(a)v(a),
 
 绝对值出现在不同层级时，差商结构完全不同，不能统一成“拆左右”一句话。
 
-\paragraph{乘积型 $g(x)=f(x)|x-a|$.}
+\paragraph{乘积型 $g(x)=f(x)\lvert x-a\rvert$.}
 若 $f$ 在 $a$ 连续，则 $g(a)=0$，并且
 \[
-\frac{g(a+h)-g(a)}h=f(a+h)\frac{|h|}{h}.
+\frac{g(a+h)-g(a)}h=f(a+h)\frac{\lvert h\rvert}{h}.
 \]
 右极限趋于 $f(a)$，左极限趋于 $-f(a)$，因此
 \[
@@ -310,31 +380,31 @@ f'(a)=u'(a)v(a),
 \]
 成立时 $g'(a)=0$。这里绝对值提供一个一阶角点，只有另一个因子的零点把它压掉才会恢复可导。
 
-\paragraph{外复合型 $g(x)=|f(x)|$.}
+\paragraph{外复合型 $g(x)=\lvert f(x)\rvert$.}
 若 $f$ 在 $a$ 可导且 $f(a)=0$，则
 \[
 f(a+h)=f'(a)h+o(h).
 \]
-故右、左差商的主部是 $|f'(a)|$ 与 $-|f'(a)|$，于是
+故右、左差商的主部是 $\lvert f'(a)\rvert$ 与 $-\lvert f'(a)\rvert$，于是
 \[
-\boxed{|f|\text{ 在 }a\text{ 可导}\iff f'(a)=0}.
+\boxed{\lvert f\rvert\text{ 在 }a\text{ 可导}\iff f'(a)=0}.
 \]
 这说明“内函数在零点”只是候选；真正决定外层尖角是否被压平的是内函数的一阶零点是否也消失。
 
-\paragraph{内复合型 $g(x)=f(|x|)$.}
+\paragraph{内复合型 $g(x)=f(\lvert x\rvert)$.}
 若 $f$ 在 $0$ 右侧可导，则
 \[
 g'_+(0)=f'_+(0),\qquad g'_-(0)=-f'_+(0),
 \]
 所以
 \[
-\boxed{f(|x|)\text{ 在 }0\text{ 可导}\iff f'_+(0)=0}.
+\boxed{f(\lvert x\rvert)\text{ 在 }0\text{ 可导}\iff f'_+(0)=0}.
 \]
-其本质是 $|x|$ 把同一条右侧分支反射到左侧，要求反射后的两条一阶斜率能够接缝。
+其本质是 $\lvert x\rvert$ 把同一条右侧分支反射到左侧，要求反射后的两条一阶斜率能够接缝。
 
 \begin{corebox}{绝对值三分法}
 \[
-\boxed{\text{乘积中的 }|x-a|\;\neq\;|f(x)|\;\neq\;f(|x|)}
+\boxed{\text{乘积中的 }\lvert x-a\rvert\;\neq\;\lvert f(x)\rvert\;\neq\;f(\lvert x\rvert)}
 \]
 第一类看\textbf{另一因子的点值}，第二类看\textbf{内函数在零点的一阶系数}，第三类看\textbf{被反射分支的单侧导数}。先判断绝对值位于哪一层，再构造差商，比机械拆四种符号情况更稳定。
 \end{corebox}
@@ -358,6 +428,7 @@ f(g(a)+k)=f(g(a))+f'(g(a))k+o(k).
 
 \subsection{反函数、隐式关系与参数表示的资格门}
 
+\paragraph{反函数：交换输入输出以后，局部增益取倒数。}
 若 $y=f(x)$ 在 $a$ 附近确实可逆，$b=f(a)$ 且 $f'(a)\ne0$，由
 \[
 dy=f'(a)\,dx+o(dx)
@@ -368,22 +439,101 @@ dy=f'(a)\,dx+o(dx)
 \]
 $f'(a)=0$ 时，不能把倒数写成“无穷大导数”继续代数运算；此时可能出现垂直切线，也可能局部逆根本不存在，须回到 Topic01 的单射/分支条件。
 
-若方程 $F(x,y)=0$ 已知在目标点附近确实定义出可微函数 $y=y(x)$，对关系求导得
+\begin{examplebox}{反三角导数不是一张新公式表：从主值反函数重建}
+令
+\[
+y=\arcsin x,
+\qquad y\in\left[-\frac\pi2,\frac\pi2\right].
+\]
+主值区间保证 $\sin y=x$ 在当前分支一一对应。对内部点 $\lvert x\rvert<1$，
+\[
+\cos y\,y'=1.
+\]
+由于主值区间上 $\cos y\ge0$，并且
+\[
+\cos y=\sqrt{1-\sin^2y}=\sqrt{1-x^2},
+\]
+所以
+\[
+\boxed{(\arcsin x)'=\frac1{\sqrt{1-x^2}}},\qquad \lvert x\rvert<1.
+\]
+根号取正不是“公式规定”，而是 Topic01 的主值区间决定的分支符号。同理，$\arccos$ 来自余弦的递减主支，因此导数带负号；$\arctan$ 则由 $\tan y=x$ 得
+\[
+\boxed{(\arctan x)'=\frac1{1+x^2}}.
+\]
+\end{examplebox}
+
+最小边界例是 $f(x)=x^3$。它在全实轴严格递增，反函数 $x^{1/3}$ 确实存在，但 $f'(0)=0$，所以倒数公式在 $0$ 失去有限斜率资格；反函数在该点出现垂直切线。这说明“反函数存在”和“反函数在该点可导且导数有限”是两层条件。
+
+\paragraph{隐函数：约束把两个一阶变化绑在同一个线性方程里。}
+若方程 $F(x,y)=0$ 已知在目标点附近确实定义出可微函数 $y=y(x)$，沿该分支的一阶变化必须继续满足约束，因此
+\[
+dF=F_x\,dx+F_y\,dy=0.
+\]
+除以 $dx$ 得
 \[
 F_x+F_y y'=0,
 \qquad
 y'=-\frac{F_x}{F_y}\quad(F_y\ne0).
 \]
-这个公式只计算已存在局部分支的斜率；它本身不证明分支存在。$F_x=F_y=0$ 是奇异警报，必须停止机械相除。
+这个公式只计算已存在局部分支的斜率；它本身不证明分支存在。
 
+\begin{examplebox}{隐式求导：先微分整个约束，再解目标速率}
+曲线
+\[
+x^2+xy+y^2=3
+\]
+经过 $(1,1)$。沿曲线求导：
+\[
+2x+y+xy'+2yy'=0.
+\]
+把含 $y'$ 的项收集起来：
+\[
+y'=-\frac{2x+y}{x+2y}.
+\]
+在 $(1,1)$ 得 $y'=-1$。这里没有“把 $y$ 当常数”，因为 $y$ 本身就是随 $x$ 变化的分支；链式法则正是在记录这种联动。
+\end{examplebox}
+
+若 $F_y=0$，首先得到的是“当前不能把曲线稳定地写成 $y=y(x)$ 并用这个公式求有限斜率”，不是“曲线不存在”。例如单位圆在 $(1,0)$ 处有 $F_y=0$，此时 $y$ 关于 $x$ 的单值可微表示失效，但可以改成局部 $x=x(y)$，几何上对应竖直切线。若 $F_x=F_y=0$，则是更强的奇异警报，必须停止机械相除并重新分析局部分支。
+
+\paragraph{参数方程：先用共同参数计时，再把速率单位换回 $x$。}
 参数曲线 $x=x(t),y=y(t)$ 在 $x'(t_0)\ne0$ 时满足
 \[
-\frac{dy}{dx}=\frac{y'(t)}{x'(t)},
-\qquad
+\frac{dy}{dx}=\frac{y'(t)}{x'(t)}.
+\]
+这不是把两个“微分符号”当分数约掉，而是同一参数增量 $dt$ 下
+\[
+dx=x'(t)dt+o(dt),\qquad dy=y'(t)dt+o(dt)
+\]
+的局部比值。若再求一阶对 $x$ 的导数，必须再次执行算子变换
+\[
+\frac d{dx}=\frac1{x'(t)}\frac d{dt},
+\]
+所以
+\[
 \frac{d^2y}{dx^2}
 =\frac{\dfrac{d}{dt}\left(\dfrac{dy}{dx}\right)}{x'(t)}.
 \]
-每求一次对 $x$ 的导数，都要执行算子 $d/dx=(1/x'(t))d/dt$；不能只对分子再求一次 $t$ 导数。
+
+\begin{examplebox}{参数曲线二阶导：每求一次 $x$ 导数都要再除一个 $x'(t)$}
+若
+\[
+x=t^2+1,\qquad y=t^3-t,
+\]
+则 $t\ne0$ 时
+\[
+\frac{dy}{dx}=\frac{3t^2-1}{2t}
+=\frac32t-\frac1{2t}.
+\]
+于是
+\[
+\frac{d^2y}{dx^2}
+=\frac{\dfrac32+\dfrac1{2t^2}}{2t}.
+\]
+在 $t=1$ 处，一阶斜率为 $1$，二阶导数也为 $1$。若只把 $dy/dx$ 对 $t$ 再求导而忘记除以 $x'(t)$，得到的量仍是“斜率对参数的变化率”，还不是“斜率对 $x$ 的变化率”。
+\end{examplebox}
+
+$x'(t_0)=0$ 时不能机械写有限商；若 $y'(t_0)\ne0$，常对应竖直切向，若二者都为零则还可能存在尖点、停驻或可重参数化情形，需要回到参数轨迹本身分析。
 
 % ============================================================
 \section{有限阶 Taylor：主部相消以后怎样继续提取信息？}
@@ -545,7 +695,7 @@ f^{(n)}(0)={(n-1)}^2f^{(n-2)}(0),
 
 典型模型
 \[
-q_k(x)={(x-a)}^k|x-a|,
+q_k(x)={(x-a)}^k\lvert x-a\rvert,
 \qquad k=0,1,2,\ldots
 \]
 在 $a$ 处具有连续到第 $k$ 阶的导数，但第 $k+1$ 阶导数不存在。每乘一个 $(x-a)$，尖点被多压制一阶，却不会凭空变得无限光滑。
@@ -575,11 +725,11 @@ y-f(a)=f'(a)(x-a).
 
 若曲线足够光滑且正则，曲率定义为
 \[
-\kappa=\left|\frac{d\phi}{ds}\right|,
+\kappa=\left\lvert\frac{d\phi}{ds}\right\rvert,
 \]
 其中 $\phi$ 是切线方向角，$s$ 是弧长。对 $y=f(x)$，
 \[
-\boxed{\kappa=\frac{|f''(x)|}{{\bigl(1+{f'(x)}^2\bigr)}^{3/2}}}.
+\boxed{\kappa=\frac{\lvert f''(x)\rvert}{{\bigl(1+{f'(x)}^2\bigr)}^{3/2}}}.
 \]
 分子记录斜率变化，分母把“每单位 $x$ 的变化”换成“每单位弧长的变化”。曲率半径为 $\rho=1/\kappa$；$\kappa=0$ 时没有有限曲率圆。
 
@@ -592,7 +742,7 @@ y-f(a)=f'(a)(x-a).
 对参数曲线 $\bm r(t)=(x(t),y(t))$，在 $(x',y')\ne(0,0)$ 时，
 \[
 \kappa=
-\frac{|x'y''-x''y'|}{{\bigl({x'}^2+{y'}^2\bigr)}^{3/2}}.
+\frac{\lvert x'y''-x''y'\rvert}{{\bigl({x'}^2+{y'}^2\bigr)}^{3/2}}.
 \]
 正则性条件保证参数确实提供了局部运动方向；若速度向量为零，公式分母失效，必须重新参数化或单独分析。
 
@@ -604,13 +754,13 @@ $f'(a)$、$f''(a)$ 给出点附近的局部系数；“整个区间递增”“�
 \section{概念边界：真正判据、题目信号与错误后果}
 % ============================================================
 
-\begin{longtable}{L{1.95cm}@{}>{\centering\arraybackslash}p{0.35cm}@{}L{1.95cm}L{5.55cm}L{\dimexpr\linewidth-10.15cm\relax}}
+\begin{longtable}{L{1.95cm}@{}>{\centering\arraybackslash}p{0.35cm}@{}L{1.95cm}L{5.55cm}L{\dimexpr\linewidth-10.45cm\relax}}
 \toprule
 \textbf{概念 A} & & \textbf{概念 B} & \textbf{为什么容易混 / 真正判据与题目信号} & \textbf{混淆后果}\\
 \midrule
 连续 & $\neq$ & 可导 & 连续只要求 $\Delta f\to0$；可导要求 $\Delta f=Ah+o(h)$。尖点、振荡差商是信号。 & 看到连续便直接套求导法则\\
 点导数 & $\neq$ & 导函数极限 & $f'(a)$ 固定基点取差商；$\lim_{x\to a}f'(x)$ 研究邻域斜率。$G_2$ 阻断逆推。 & 由点上可导推出 $f'$ 连续\\
-导数 & $\neq$ & 对称导数 & 导数的一端固定在 $a$；对称差商两端同时移动，可能消去左右冲突。 & 把 $|x|$ 在 $0$ 误判为可导\\
+导数 & $\neq$ & 对称导数 & 导数的一端固定在 $a$；对称差商两端同时移动，可能消去左右冲突。 & 把 $\lvert x\rvert$ 在 $0$ 误判为可导\\
 真实增量 & $\neq$ & 微分 & $\Delta y=f(a+h)-f(a)$；$dy=f'(a)h$ 是线性主部，二者相差 $o(h)$。 & 把近似当恒等式参与高阶相消\\
 有限 Taylor & $\neq$ & Taylor series & 前者固定阶数并审计局部余项；后者令阶数趋于无穷并问是否恢复函数。 & 由任意阶可导直接宣布等于级数\\
 Peano 余项 & $\neq$ & Lagrange 余项 & 前者给基点渐近阶；后者依赖区间中值点与额外正则性，归 H-B02。 & 用 $o(h^n)$ 无条件给全区间数值上界\\
@@ -690,7 +840,7 @@ Peano 余项 & $\neq$ & Lagrange 余项 & 前者给基点渐近阶；后者依�
 \section{传统章节与 Source Corpus 映射}
 % ============================================================
 
-\begin{longtable}{L{2.25cm}L{5.45cm}L{\dimexpr\linewidth-7.70cm\relax}}
+\begin{longtable}{L{2.25cm}L{5.45cm}L{\dimexpr\linewidth-8.35cm\relax}}
 \toprule
 \textbf{Source / 传统内容} & \textbf{进入本册} & \textbf{分流与拒绝复制}\\
 \midrule
@@ -748,41 +898,124 @@ a
 
 本附录只保存可由母模型调用的常用锚点，不替代定义域、目标阶数和余项检查。以下有限展开均指 $h\to0$。
 
-\subsection{常用有限局部模型}
+\subsection{常用有限局部模型：记“母式 + 生成路线”，不是只记结果}
+
+下面所有式子均指 $h\to0$。它们是\textbf{有限阶局部模型}，不是自动声明的无限级数恒等式。
 
 \[
 \begin{aligned}
-e^h&=1+h+\frac{h^2}{2}+\frac{h^3}{6}+o(h^3),\\
-\sin h&=h-\frac{h^3}{6}+\frac{h^5}{120}+o(h^5),\\
-\cos h&=1-\frac{h^2}{2}+\frac{h^4}{24}+o(h^4),\\
-\ln(1+h)&=h-\frac{h^2}{2}+\frac{h^3}{3}+o(h^3),\\
-{(1+h)}^\alpha&=1+\alpha h+\frac{\alpha(\alpha-1)}{2}h^2+o(h^2),\\
-\tan h&=h+\frac{h^3}{3}+\frac{2h^5}{15}+o(h^5),\\
-\arcsin h&=h+\frac{h^3}{6}+o(h^3),\\
-\arctan h&=h-\frac{h^3}{3}+o(h^3).
+\frac1{1-h}&=1+h+h^2+h^3+O(h^4),\\
+\frac1{1+h}&=1-h+h^2-h^3+O(h^4),\\
+e^h&=1+h+\frac{h^2}{2}+\frac{h^3}{6}+\frac{h^4}{24}+O(h^5),\\
+\sin h&=h-\frac{h^3}{6}+\frac{h^5}{120}+O(h^7),\\
+\cos h&=1-\frac{h^2}{2}+\frac{h^4}{24}+O(h^6),\\
+\ln(1+h)&=h-\frac{h^2}{2}+\frac{h^3}{3}-\frac{h^4}{4}+O(h^5),\\
+(1+h)^\alpha
+&=1+\alpha h+\frac{\alpha(\alpha-1)}{2}h^2
++\frac{\alpha(\alpha-1)(\alpha-2)}{6}h^3+O(h^4),\\
+\tan h&=h+\frac{h^3}{3}+\frac{2h^5}{15}+O(h^7),\\
+\arcsin h&=h+\frac{h^3}{6}+\frac{3h^5}{40}+O(h^7),\\
+\arctan h&=h-\frac{h^3}{3}+\frac{h^5}{5}+O(h^7),\\
+\sinh h&=h+\frac{h^3}{6}+\frac{h^5}{120}+O(h^7),\\
+\cosh h&=1+\frac{h^2}{2}+\frac{h^4}{24}+O(h^6),\\
+\tanh h&=h-\frac{h^3}{3}+\frac{2h^5}{15}+O(h^7),\\
+\operatorname{arsinh}h&=h-\frac{h^3}{6}+\frac{3h^5}{40}+O(h^7),\\
+\operatorname{artanh}h&=h+\frac{h^3}{3}+\frac{h^5}{5}+O(h^7).
 \end{aligned}
 \]
 
-这些式子都是指定阶数的局部模型。只有 Topic11/H-B05 证明了相应无限过程和恢复条件后，才能把它们升级为 Taylor series 陈述。
+\begin{center}
+\begin{tabularx}{\linewidth}{L{3.0cm}L{4.4cm}Y}
+\toprule
+\textbf{模型族} & \textbf{忘记后怎样重建} & \textbf{最值得记的结构}\\
+\midrule
+$e^h$ & 各阶导数都等于自身，基点 $0$ 的导数值全为 $1$ & 系数是 $1/n!$\\
+$\sin h,\cos h$ & 求导在 $\sin/\cos$ 二维空间里四步循环 & 奇偶阶自动筛掉一半系数\\
+$(1+h)^\alpha$ & 在 $0$ 处逐阶求导得到下降乘积 $\alpha(\alpha-1)\cdots$ & 所有代数根式都可看成这个母族的参数特例\\
+$(1\pm h)^{-1}$ & 直接乘回 $1\pm h$ 检查低阶系数 & 倒数是商法则、对数和反三角重建的重要母尺度\\
+$\ln(1+h)$ & 导数为 $(1+h)^{-1}$，再由 $f(0)=0$ 锁常数 & 系数交替且分母为阶数\\
+$\tan h$ & 用 $\tan=\sin/\cos$ 做有限阶除法，或由 $y'=1+y^2$ 递推 & 不是独立背表，可由三角母式生成\\
+$\arcsin h$ & 先由反函数得到 $y'=(1-h^2)^{-1/2}$，再读取局部系数 & 只有奇次项，系数由二项式母族控制\\
+$\arctan h$ & 先由反函数得到 $y'=(1+h^2)^{-1}$ & 只有奇次项，交替结构来自几何型倒数\\
+$\sinh h,\cosh h$ & 直接把 $e^h$ 与 $e^{-h}$ 相减/相加 & 指数母式的奇部/偶部；导数在二者之间交换\\
+$\tanh h$ & 用 $\sinh h/\cosh h$ 做有限阶除法 & 与 $\tan h$ 前两非零系数符号相反，来源不是三角恒等式\\
+$\operatorname{arsinh}h,\operatorname{artanh}h$ & 先求逆函数导数，再接 $(1\pm h^2)^{-1/2}$ 或 $(1-h^2)^{-1}$ & 反双曲不是独立展开表，可由反函数与二项式/倒数母族生成\\
+\bottomrule
+\end{tabularx}
+\end{center}
 
-\subsection{基本导数与结构法则}
+如果只需要某个较低阶主部，应在该阶信息足够时停止。例如 $\arcsin h=h+O(h^3)$ 已足以处理绝大多数一阶等价问题；只有前三阶相消时才需要继续保留 $h^5$ 项。只有 Topic11/H-B05 证明相应无限过程与恢复条件后，才能把这些有限模型升级成 Taylor series。
 
+\subsection{基本导数族：公式必须能回到一个生成源}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{L{3.35cm}L{4.15cm}Y}
+\toprule
+\textbf{函数} & \textbf{导数} & \textbf{生成来源 / 资格}\\
+\midrule
+$c$ & $0$ & 常值没有一阶增量\\
+$x^n$ & $nx^{n-1}$ & 二项式增量；$n\in\mathbb Z_{>0}$\\
+$x^\alpha$ & $\alpha x^{\alpha-1}$ & 一般实指数先在 $x>0$ 的实幂分支理解；更宽定义域按具体指数另审\\
+$e^x$ & $e^x$ & 指数函数自己的局部增益等于函数值\\
+$a^x$ & $a^x\ln a$ & $a^x=e^{x\ln a}$，$a>0,a\ne1$\\
+$\ln x$ & $1/x$ & $e^y=x$ 的反函数局部增益，$x>0$\\
+$\log_a x$ & $1/(x\ln a)$ & $\ln x/\ln a$，$a>0,a\ne1$\\
+$\sin x$ & $\cos x$ & 加法公式 + 基本三角极限\\
+$\cos x$ & $-\sin x$ & 加法公式 + 基本三角极限\\
+$\tan x$ & $\sec^2x$ & $\sin x/\cos x$ 的商法则，$\cos x\ne0$\\
+$\cot x$ & $-\csc^2x$ & $\cos x/\sin x$ 的商法则，$\sin x\ne0$\\
+$\sec x$ & $\sec x\tan x$ & $1/\cos x$ 的倒数法则\\
+$\csc x$ & $-\csc x\cot x$ & $1/\sin x$ 的倒数法则\\
+$\arcsin x$ & $1/\sqrt{1-x^2}$ & 正弦主值分支的反函数，$\lvert x\rvert<1$\\
+$\arccos x$ & $-1/\sqrt{1-x^2}$ & 余弦递减主值分支的反函数，$\lvert x\rvert<1$\\
+$\arctan x$ & $1/(1+x^2)$ & 正切主值分支的反函数\\
+$\operatorname{arccot}x$ & $-1/(1+x^2)$ & 按 Topic01 的 $(0,\pi)$ 主值约定，余切分支递减\\
+$\sinh x$ & $\cosh x$ & $(e^x-e^{-x})/2$ 的指数奇部\\
+$\cosh x$ & $\sinh x$ & $(e^x+e^{-x})/2$ 的指数偶部\\
+$\tanh x$ & $1/\cosh^2x=1-\tanh^2x$ & $\sinh/\cosh$ 的商法则 + $\cosh^2-\sinh^2=1$\\
+$\operatorname{arsinh}x$ & $1/\sqrt{1+x^2}$ & $\sinh$ 的全局反函数，$x\in\mathbb R$\\
+$\operatorname{arcosh}x$ & $1/\sqrt{x^2-1}$ & $\cosh\vert_{[0,\infty)}$ 的反函数；有限导数只在 $x>1$\\
+$\operatorname{artanh}x$ & $1/(1-x^2)$ & $\tanh:\mathbb R\to(-1,1)$ 的反函数，$\lvert x\rvert<1$\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+结构法则统一写成
 \[
 \begin{gathered}
-(x^\alpha)'=\alpha x^{\alpha-1},\qquad
-(e^x)'=e^x,\qquad
-(\ln x)'=\frac1x,\\
-(\sin x)'=\cos x,\qquad
-(\cos x)'=-\sin x,\qquad
-(\tan x)'=\sec^2x,\\
 (u\pm v)'=u'\pm v',\qquad
 (uv)'=u'v+uv',\\
-\left(\frac uv\right)'=\frac{u'v-uv'}{v^2}\ (v\ne0),\qquad
-(f\circ g)'=(f'\circ g)g'.
+\left(\frac uv\right)'=\frac{u'v-uv'}{v^2}\quad(v\ne0),\\
+(f\circ g)'=(f'\circ g)g',\\
+(f^{-1})'(y_0)=\frac1{f'(x_0)},\quad y_0=f(x_0),\\
+F(x,y)=0\Longrightarrow y'=-\frac{F_x}{F_y}\quad(F_y\ne0),\\
+x=x(t),\ y=y(t)\Longrightarrow
+\frac{dy}{dx}=\frac{y'}{x'},\quad
+\frac{d^2y}{dx^2}=\frac1{x'}\frac d{dt}\left(\frac{y'}{x'}\right)
+\quad(x'\ne0).
 \end{gathered}
 \]
 
-幂函数和对数函数必须保留各自实定义域；反三角、双曲函数等完整公式表可由这些局部机制和标准定义按需补齐，不把手册退化成公式字典。
+这张表只负责\textbf{反查}，正文负责\textbf{生成}。若忘了 $\sec,\csc,\tan,\cot$，回到倒数/商；若忘了反三角导数，回到“主值反函数 + 局部增益取倒数”；若遇到双曲函数，先回到 $e^x,e^{-x}$ 的偶/奇分解，反双曲再调用同一个逆函数机制；若忘了隐式/参数公式，回到总微分或共同参数的一阶模型。特别地，$\operatorname{arcosh}(1+h)\sim\sqrt{2h}$（$h\to0^+$），所以其定义域端点不是普通有限导数/Taylor 基点。
+
+\subsection{反例锚点：每个错误逆推至少保留一个最小反例}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{L{4.0cm}L{4.0cm}Y}
+\toprule
+\textbf{错误逆推} & \textbf{反例 / 边界对象} & \textbf{真正缺失的条件}\\
+\midrule
+连续 $\Rightarrow$ 可导 & $f(x)=\lvert x\rvert$ 在 $0$ & 左右一阶主部一致\\
+点上可导 $\Rightarrow f'$ 连续 & $x^2\sin(1/x)$ 型振荡导数 & 邻域导数还需统一稳定\\
+对称差商存在 $\Rightarrow$ 可导 & $f(x)=\lvert x\rvert$ & 固定基点的左右差商\\
+反函数存在 $\Rightarrow$ 逆导数有限 & $f(x)=x^3$ 在 $0$ & 原导数非零\\
+$F_y=0\Rightarrow$ 曲线不存在 & $x^2+y^2=1$ 在 $(1,0)$ & 只是 $y=y(x)$ 这一表示失去正规性\\
+$x'(t)=0\Rightarrow$ 参数曲线坏掉 & $x=t^2,y=t$ 在 $0$ & 只是有限 $dy/dx$ 商式失效，可能为竖直切向\\
+各阶导数存在 $\Rightarrow$ 等于 Taylor series & $e^{-1/x^2}$ 在 $0$ 的平坦延拓 & 无限余项必须真正趋零并恢复函数\\
+$f'(a)=0\Rightarrow a$ 为极值 & $f(x)=x^3$ 在 $0$ & 需要邻域符号/区间形状信息，归 Topic04\\
+\bottomrule
+\end{tabularx}
+\end{center}
 
 \subsection{考纲查漏}
 

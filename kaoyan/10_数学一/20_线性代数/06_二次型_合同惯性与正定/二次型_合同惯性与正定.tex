@@ -88,7 +88,7 @@ q(x)=x^TAx
 \section{本册负责什么}
 
 \begin{itemize}
-  \item \kw{Owns：}二次型的对称矩阵表示、变量代换与合同、配方法与正交主轴、标准形/规范形、Sylvester 惯性定理、正负惯性指数、正定/负定/半正定/不定、Sylvester 正定判据。
+  \item \kw{Owns：}二次型的对称矩阵表示、变量代换与合同、配方法与正交主轴、标准形/规范形、Sylvester 惯性定理、正负惯性指数、合同变换的显式构造、正定型归一后的同时合同对角化、正定/负定/半正定/不定、Sylvester 正定判据。
   \item \kw{Uses：}Topic 01 的正交语言；Topic 02 的 determinant；Topic 03 的 rank；Topic 05 的实对称谱定理。
   \item \kw{Does not own：}一般算子相似分类、多元函数极值全过程、Hessian 的微积分本体。
 \end{itemize}
@@ -265,6 +265,30 @@ q=\lambda_1y_1^2+\cdots+\lambda_ny_n^2.
 \]
 
 因为 $Q$ 正交，这条路径不仅去掉耦合，还保持欧氏长度与角度；新轴就是矩阵的标准正交特征方向。因此正交标准形的系数恰好是特征值。
+
+\begin{examplebox}{源资料母题：正交标准形把后续最值一起准备好}
+源第六章专题 30 取
+\[
+q=x_1^2+5x_2^2+5x_3^2+2x_1x_2-4x_1x_3,
+\]
+对应
+\[
+A=\begin{pmatrix}1&1&-2\\1&5&0\\-2&0&5\end{pmatrix}.
+\]
+其特征值为 $0,5,6$，可取彼此正交的特征方向
+\[
+(5,-1,2)^T,\qquad(0,2,1)^T,\qquad(-1,-1,2)^T.
+\]
+单位化后组成 $Q$，便有
+\[
+Q^TAQ=\operatorname{diag}(0,5,6),
+\]
+所以正交标准形可写为 $5y_2^2+6y_3^2$。同一源题在专题 32 又加入 $x^Tx=2$ 求最大值；因为正交变换保持长度，立即得到
+\[
+\max q=2\lambda_{\max}=12.
+\]
+一套标准正交特征基同时服务“标准形、主轴、球面最值”，这正是正交路线比任意配方多保留下来的结构。
+\end{examplebox}
 
 \begin{warnbox}{配方法得到的对角系数一般不是特征值}
 上面的
@@ -485,6 +509,36 @@ d_k>0,
 
 这才是 Sylvester 判据的生成结构：\kw{每一次消去交叉项以后留下的新二次枢轴都必须为正。}
 
+\begin{examplebox}{源资料母题：参数正定题就是逐层收紧允许区间}
+源第六章专题 35 考察
+\[
+q=x_1^2+4x_2^2+4x_3^2+2t x_1x_2-2x_1x_3+4x_2x_3,
+\]
+对应
+\[
+A=\begin{pmatrix}1&t&-1\\t&4&2\\-1&2&4\end{pmatrix}.
+\]
+顺序主子式依次为
+\[
+\Delta_1=1,
+\qquad
+\Delta_2=4-t^2,
+\qquad
+\Delta_3=-4t^2+4t+8.
+\]
+所以正定要求
+\[
+|t|<2,
+\qquad
+-4t^2+4t+8>0,
+\]
+合并得
+\[
+\boxed{-2<t<1}.
+\]
+边界 $t=-2,1$ 都使 determinant 为 $0$，正好检查了严格不等号不能丢。
+\end{examplebox}
+
 \subsection{负定怎样判断}
 
 $A$ 负定等价于 $-A$ 正定，所以
@@ -676,6 +730,182 @@ P^TBP=I_2=A.
 不要从公式长得像不像判断关系；先问当前研究对象是谁。
 \end{corebox}
 
+\section{合同构造：知道“存在”以后，怎样真的求出变换矩阵}
+
+Sylvester 惯性定理给出了实对称矩阵合同的完整分类：若 $A,B$ 同阶且惯性相同，就知道存在可逆矩阵 $C$ 使
+\[
+C^TAC=B.
+\]
+但构造题还要求把这个 $C$ 真正写出来。
+
+设分别找到可逆矩阵 $P,Q$，把两者送到同一个规范形
+\[
+P^TAP=J,
+\qquad
+Q^TBQ=J,
+\qquad
+J=\operatorname{diag}(I_p,-I_q,0).
+\]
+由第二式
+\[
+B=Q^{-T}JQ^{-1},
+\]
+再代入 $J=P^TAP$，得到
+\[
+B=Q^{-T}P^TAPQ^{-1}.
+\]
+因此令
+\[
+\boxed{C=PQ^{-1}}
+\]
+就有
+\[
+\boxed{C^TAC=B.}
+\]
+
+这个公式最好不要孤立背诵。它来自两条变量链的合成：$P$ 把 $A$ 的原坐标送到公共规范坐标，$Q^{-1}$ 再把公共规范坐标送到 $B$ 的原坐标。真正稳定的动作是\kw{两边先化到同一个中间表示，再组合两套坐标变换}。
+
+\begin{methodbox}{指定目标矩阵与“任意标准形”不是同一任务}
+只要求把 $A$ 化为某个对角形时，找到任意 $P$ 使 $P^TAP=D$ 已经完成；若题目指定目标 $B$，就必须继续处理 $B$，直到两边落到同一个 $J$，再把两条变换链合起来。
+\end{methodbox}
+
+\section{两个二次型同时合同对角化：正定型先归一为 $I$}
+
+现在考虑两张实对称矩阵 $A,B$，要求找\kw{同一个}可逆矩阵 $P$，使
+\[
+P^TAP,
+\qquad
+P^TBP
+\]
+同时成为对角矩阵。
+
+若 $A\succ0$，存在可逆矩阵 $C$ 使
+\[
+C^TAC=I.
+\]
+把第二个二次型同步搬到这套新坐标：
+\[
+\widetilde B=C^TBC.
+\]
+因为 $B=B^T$，所以 $\widetilde B$ 仍实对称。由 Topic 05 的实对称谱定理，存在正交矩阵 $Q$ 使
+\[
+Q^T\widetilde BQ=\Lambda.
+\]
+令
+\[
+\boxed{P=CQ},
+\]
+则
+\[
+P^TAP=Q^T(C^TAC)Q=Q^TIQ=I,
+\]
+并且
+\[
+P^TBP=Q^T(C^TBC)Q=\Lambda.
+\]
+因此
+\[
+\boxed{A\succ0,\ B=B^T
+\Longrightarrow
+\exists P\text{ 可逆，使 }P^TAP=I,\ P^TBP=\Lambda.}
+\]
+
+这里的生成逻辑是：先用正定型建立一套“单位度量”坐标，再在这套坐标中对另一个实对称二次型寻找正交主轴。
+
+\begin{examplebox}{源资料母题：先把第一张正定矩阵化成 $I$}
+源第六章专题 33 取
+\[
+A=\begin{pmatrix}1&1\\1&2\end{pmatrix},
+\qquad
+B=\begin{pmatrix}1&-1\\-1&1\end{pmatrix}.
+\]
+先用
+\[
+P_1=\begin{pmatrix}1&-1\\0&1\end{pmatrix}
+\]
+得到
+\[
+P_1^TAP_1=I,
+\qquad
+P_1^TBP_1=\begin{pmatrix}1&-2\\-2&4\end{pmatrix}.
+\]
+第二张矩阵此时仍实对称，取
+\[
+Q=\frac1{\sqrt5}\begin{pmatrix}2&1\\1&-2\end{pmatrix}
+\]
+可使它变为 $\operatorname{diag}(0,5)$。于是同一个最终变换
+\[
+\boxed{P=P_1Q=\frac1{\sqrt5}\begin{pmatrix}1&3\\1&-2\end{pmatrix}}
+\]
+满足
+\[
+P^TAP=I,
+\qquad
+P^TBP=\operatorname{diag}(0,5).
+\]
+这道题把抽象协议完整跑了一遍：\kw{先归一度量，再找第二个型的正交主轴，最后组合两次变量变换。}
+\end{examplebox}
+
+\begin{warnbox}{不要把这件事偷换成 Topic 05 的同时相似对角化}
+Topic 05 研究
+\[
+P^{-1}AP,\qquad P^{-1}BP
+\]
+同时对角，核心是共同特征基与可交换性。这里研究
+\[
+P^TAP,\qquad P^TBP
+\]
+同时对角，核心是同一次变量代换作用到两个二次型。公式与对象都不同。
+\end{warnbox}
+
+\subsection{正定矩阵怎样归一为 $I$}
+
+若
+\[
+A=Q\Lambda Q^T,
+\qquad
+\Lambda=\operatorname{diag}(\lambda_1,\dots,\lambda_n),
+\qquad \lambda_i>0,
+\]
+令
+\[
+D=\operatorname{diag}(\lambda_1^{-1/2},\dots,\lambda_n^{-1/2}),
+\qquad
+C=QD,
+\]
+则
+\[
+C^TAC=D\Lambda D=I.
+\]
+若前面已经通过配方法或 $LDL^T$ 得到正对角形，也可以直接在那套坐标中继续缩放到 $I$，不必重新求谱。
+
+\section{$S=P^TP$：正定性的一个显式因子接口}
+
+正定的等价条件之一是：存在可逆矩阵 $P$ 使
+\[
+S=P^TP.
+\]
+当题目真的要求构造一个这样的 $P$ 时，可以直接调用实对称谱分解。若
+\[
+S=Q\Lambda Q^T,
+\qquad \lambda_i>0,
+\]
+令
+\[
+\Lambda^{1/2}=\operatorname{diag}(\sqrt{\lambda_1},\dots,\sqrt{\lambda_n}),
+\qquad
+\boxed{P=\Lambda^{1/2}Q^T},
+\]
+则
+\[
+P^TP
+=Q\Lambda Q^T
+=S.
+\]
+这只需要构造\kw{一个}因子，不需要讨论主平方根的唯一性。
+
+若 $S\succeq0$ 但奇异，仍然存在某个 $P$ 使 $P^TP=S$，但任何这样的方阵因子都不可能可逆；因此“存在可逆 $P$ 使 $S=P^TP$”与 $S\succ0$ 完全一致。
+
 \section{Rayleigh quotient：一个方向上的二次强度（结构接口）}
 
 对实对称矩阵，定义
@@ -753,7 +983,9 @@ $\det A>0$ $\neq$ 正定 & determinant 是特征值乘积 & 正定要求每个�
   \item 看到变量代换：直接写 $x=Py\Rightarrow P^TAP$，不要套相似；
   \item 只问任意标准形/惯性：优先考虑配方法或合同，不必自动求特征值；
   \item 明确要求正交变换/主轴：调用 Topic 05 的标准正交特征基；
-  \item 看到合同分类：直接比较 $(p,q,n-p-q)$，而不是比较特征值；
+  \item 看到合同分类：直接比较 $(p,q,n-p-q)$，而不是比较特征值；若进一步要求 $C^TAC=B$，两边化到同一规范形后再合成变换；
+  \item 看到两个二次型要求同一次变换同时对角：若其中一个正定，先把它归一为 $I$，再对另一个变换后的实对称矩阵做正交对角化；
+  \item 看到 $S=P^TP$ 且要求构造 $P$：先审计 $S$ 是否正定（若 $P$ 要可逆），再沿正交谱分解对正特征值开平方；
   \item 看到正定：先切成“所有非零方向是否为正”，再选特征值或 Sylvester；
   \item 看到顺序主子式：正定用 $\Delta_k>0$；半正定不要机械改成 $\ge0$；
   \item 看到 Hessian / 曲率：这里只输出二次型符号结构，跨科解释交给 B03。

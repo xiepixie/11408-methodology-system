@@ -15,8 +15,8 @@ DS02 栈/队列 ↔ DS04 Tree ↔ DS07 Graph。
 不重新定义 Tree/Graph 结构，也不重新定义 Stack/Queue 本体。
 
 ## Manual
-- Canonical：[DS-B01_FrontierTraversal_方法论手册.tex](DS-B01_FrontierTraversal_方法论手册.tex)
-- Published：[DS-B01_FrontierTraversal_方法论手册.pdf](../../../../90_publish/408/DS-B01_FrontierTraversal_方法论手册.pdf)
+- Canonical：[Frontier Traversal：方法论手册 (TeX)](DS-B01_FrontierTraversal_方法论手册.tex)
+- Published：[Frontier Traversal：方法论手册 (PDF)](../../../../90_publish/408/DS-B01_FrontierTraversal_方法论手册.pdf)
 
 ## Review v1
 已核对 frontier、visited、发现时机和 DFS/BFS 顺序；明确容器实现不拥有图算法全局正确性。下一轮用重复边、断开图和发现/访问时机变化题验证。

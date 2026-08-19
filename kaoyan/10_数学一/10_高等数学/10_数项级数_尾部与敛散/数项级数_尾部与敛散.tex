@@ -86,7 +86,7 @@
   \item \kw{Partial Sums}：$S_N=\sum_{n=1}^{N}u_n$ 是否趋于有限值；
   \item \kw{Necessary Decay}：若级数收敛，必须有 $u_n\to0$；
   \item \kw{Compare Scale}：先识别 $p$ 级数、几何级数、对数修正和阶乘指数尺度；
-  \item \kw{Absolute / Cancellation}：先查 $\sum|u_n|$，失败后才研究符号抵消；
+  \item \kw{Absolute / Cancellation}：先查 $\sum\lvert u_n\rvert$，失败后才研究符号抵消；
   \item \kw{Tail Control}：把余项 $R_N=S-S_N$ 变成积分界或首个遗漏项界；
   \item \kw{Operation Audit}：任何拆项、分组、重排和乘积都要检查资格。
 \end{enumerate}
@@ -100,7 +100,7 @@
 \node[box] (a) {部分和\\$S_N$};
 \node[box,right=of a] (b) {通项极限\\$u_n\to0$};
 \node[box,right=of b] (c) {基准尺度\\$p$/几何/阶乘};
-\node[box,below=of c] (d) {绝对收敛\\$\sum|u_n|$};
+\node[box,below=of c] (d) {绝对收敛\\$\sum\lvert u_n\rvert$};
 \node[box,left=of d] (e) {抵消机制\\Leibniz / D / A};
 \node[box,left=of e] (f) {尾项与运算\\误差 / 重排};
 \draw[arr] (a)--(b); \draw[arr] (b)--(c); \draw[arr] (c)--(d);
@@ -111,7 +111,7 @@
 \section{第一关：部分和、必要条件与层级}
 数项级数 $\sum_{n=1}^{\infty}u_n$ 的定义是部分和序列 $S_N$ 的极限。等价地，任意 $\varepsilon>0$ 都存在 $N_0$，使 $m>n\ge N_0$ 时
 \[
-\left|\sum_{k=n+1}^{m}u_k\right|<\varepsilon.
+\left\lvert\sum_{k=n+1}^{m}u_k\right\rvert<\varepsilon.
 \]
 这就是 Cauchy 尾部准则：远处任意一段的和都必须小，而不只是单个项小。
 
@@ -124,14 +124,14 @@
 
 \[
 \text{绝对收敛}\Rightarrow\text{收敛},\qquad
-\text{条件收敛}=\text{收敛但 }\sum|u_n|\text{ 发散}.
+\text{条件收敛}=\text{收敛但 }\sum\lvert u_n\rvert\text{ 发散}.
 \]
 绝对收敛保留重排、分组和通常的乘积运算；条件收敛依赖抵消，重排甚至可能改变和或破坏收敛。
 
 \section{第二关：正项尺度与失效边界}
 \subsection{基准级数}
 \[
-\sum q^n\text{ 收敛}\iff |q|<1,\qquad
+\sum q^n\text{ 收敛}\iff \lvert q\rvert<1,\qquad
 \sum\frac1{n^p}\text{ 收敛}\iff p>1,
 \]
 \[
@@ -142,9 +142,9 @@
 \begin{methodbox}{比值与根值：只在边界外给结论}
 令
 \[
-\rho=\lim_{n\to\infty}\left|\frac{u_{n+1}}{u_n}\right|,
+\rho=\lim_{n\to\infty}\left\lvert\frac{u_{n+1}}{u_n}\right\rvert,
 \qquad
-\rho=\limsup_{n\to\infty}\sqrt[n]{|u_n|}.
+\rho=\limsup_{n\to\infty}\sqrt[n]{\lvert u_n\rvert}.
 \]
 若 $\rho<1$，级数绝对收敛；若 $\rho>1$，通项不趋零因而发散；$\rho=1$ 时判别法失效，必须换尺度（比较、积分、交错或 Abel 变换）。比值法尤其适合阶乘/指数竞争，根值法适合 $n$ 次幂整体。
 \end{methodbox}
@@ -156,7 +156,7 @@
 \subsection{Leibniz 交错判别}
 若 $u_n=(-1)^{n-1}a_n$，且 $a_n\ge0$、最终单调递减、$a_n\to0$，则级数收敛，并且
 \[
-|R_N|=|S-S_N|\le a_{N+1}.
+\lvert R_N\rvert=\lvert S-S_N\rvert\le a_{N+1}.
 \]
 有限项不影响敛散性，但“最终单调”不能省略。绝对值级数发散只说明不是绝对收敛，不能直接断言原级数发散。
 
@@ -178,7 +178,7 @@
 \]
 通项趋于零，只通过必要条件；绝对值级数 $\sum n^{-1/2}$ 是 $p=1/2$ 的发散级数，所以绝对收敛失败，但不能据此宣布原级数发散。由于 $n^{-1/2}\searrow0$，Leibniz 判别给出条件收敛，并有
 \[
-|R_N|\le\frac1{\sqrt{N+1}}.
+\lvert R_N\rvert\le\frac1{\sqrt{N+1}}.
 \]
 这条链完整经过“必要衰减 $\to$ 绝对值尺度 $\to$ 抵消资格 $\to$ 尾项控制”。最典型的误路是把“绝对值级数发散”误译为“原级数发散”；只有在绝对收敛失败后，才调用交错、Dirichlet 或 Abel 的抵消机制。
 \end{examplebox}
@@ -188,14 +188,14 @@
 \[
 \int_{N+1}^{\infty}f(x)\,dx\le R_N\le\int_N^{\infty}f(x)\,dx.
 \]
-这同时给出收敛判别与数值误差。交错级数则优先使用 $|R_N|\le a_{N+1}$，并注意余项符号与首个遗漏项相同。
+这同时给出收敛判别与数值误差。交错级数则优先使用 $\lvert R_N\rvert\le a_{N+1}$，并注意余项符号与首个遗漏项相同。
 
 \begin{methodbox}{运算资格审计}
 \begin{itemize}
   \item 两个收敛级数的有限线性组合仍收敛；收敛加发散必发散，发散加发散不确定；
   \item 不改变顺序的分组：原级数收敛时可保持和；逆命题不成立；
   \item 绝对收敛允许重排、交换求和次序和 Cauchy 乘积；条件收敛下这些操作必须另证；
-  \item 若 $\sum|u_n|<\infty$ 且 $|v_n|\le M$，则 $\sum u_nv_n$ 绝对收敛。仅有界而无绝对收敛时，结论不自动成立。
+  \item 若 $\sum\lvert u_n\rvert<\infty$ 且 $\lvert v_n\rvert\le M$，则 $\sum u_nv_n$ 绝对收敛。仅有界而无绝对收敛时，结论不自动成立。
 \end{itemize}
 \end{methodbox}
 
@@ -203,7 +203,7 @@
 \begin{enumerate}
   \item $u_n\to0$ 被误当成充分条件；
   \item 比值/根值算到 $1$ 仍强行下结论；
-  \item $\sum|u_n|$ 发散被误写成原级数发散；
+  \item $\sum\lvert u_n\rvert$ 发散被误写成原级数发散；
   \item 未检查单调性、闭合性或奇点就套 Leibniz、Dirichlet/Abel 或积分判别。
 \end{enumerate}
 \end{warnbox}
@@ -248,7 +248,7 @@ II-09 §6、附录 C & 转 Topic11：幂级数收敛域、展开、和函数与�
 对任意新级数，按以下顺序写在草稿第一行：
 \begin{enumerate}
   \item 写 $u_n$ 与 $S_N$，先算 $\lim u_n$；
-  \item 若归零，先问 $\sum|u_n|$ 是否能与基准级数比较；
+  \item 若归零，先问 $\sum\lvert u_n\rvert$ 是否能与基准级数比较；
   \item 比值/根值只在 $\rho\ne1$ 时结案；
   \item 绝对发散时明确写出抵消条件（交错单调、部分和有界或 Abel 单调有界）；
   \item 若题目要近似值，补上 $R_N$ 的积分界或 Leibniz 界；

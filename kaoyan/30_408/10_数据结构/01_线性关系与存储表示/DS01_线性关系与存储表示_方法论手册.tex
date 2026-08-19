@@ -17,14 +17,14 @@
   {408 · 数据结构 Topic DS-01}
 
 \begin{corebox}{母问题：逻辑线性关系怎样被有限存储兑现？}
-线性表不是“数组或链表的名字”，而是一组对元素顺序和操作结果的契约。手册的生成链是：
+线性表不是“数组或链表的名字”，而是一组对元素顺序和操作结果的契约。同一个逻辑表及其操作契约可以由不同物理表示实现：
 \[
-\begin{aligned}
-\text{Linear Relation}&\to\text{Operation Contract}\to\text{Representation}\\
-&\to\text{Local Update}\to\text{Invariant}\to\text{Cost Vector}
-\end{aligned}
+\boxed{
+\text{同一 }(\text{Linear Relation},\text{Operation Contract})
+\quad\text{允许选择不同 Representation}
+}
 \]
-箭头先表示建模顺序，再表示一次操作中信息和状态如何流动：先固定逻辑对象，才知道某种物理布局是否值得维护。不同表示必须给出相同的抽象结果，但不必承担相同的移动、寻址和额外空间成本。
+分析时先固定逻辑对象与操作语义，再检查某种表示需要维护哪些字段和不变量，最后比较定位、移动、指针跳转、额外空间与局部性的成本。不同表示必须给出相同的抽象结果，但不必承担相同的实现代价。
 \end{corebox}
 
 \begin{methodbox}{本册定位与 Owner 边界}
@@ -51,6 +51,23 @@
 成本模型 & 计数对象是比较、移动、指针跳转还是 I/O？ & 一个 $O(\cdot)$ 覆盖所有场景\\
 \bottomrule
 \end{tabularx}\end{center}
+
+\subsection{三层词典：逻辑对象、存储方法与具体表示不要混名}
+408 里最容易发生的概念滑移，是把“线性表、数组、顺序表、链表”放在同一层比较。更稳的分层是：
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.2cm}YY}
+\toprule
+层次 & 核心问题 & 典型名称\\
+\midrule
+逻辑关系与操作契约 & 元素之间是什么关系？允许怎样访问、插入和删除？ & 线性表、有序表、栈、队列\\
+存储方法 & 元素及其关系靠什么机制编码？ & 顺序存储、链式存储、索引、散列\\
+具体表示 & 真实维护哪些字段、边界和不变量？ & 顺序表、单链表、双链表、循环链表\\
+\bottomrule
+\end{tabularx}\end{center}
+
+因此“数组就是物理结构、树图就是逻辑结构”只能作非常粗的入门类比，不能作为稳定术语。数组在程序语言里本身也是一种具体容器/数据结构；在线性表语境中，它通常承担连续、可下标寻址的存储载体。链表则是用链接域显式保存邻接关系的一类具体表示。真正属于存储方法层的词，是\kw{顺序存储、链式存储、索引和散列}。
+
+这也解释了“数据运算到底算不算数据结构的一部分”的表面冲突：408 教材通常把\kw{逻辑结构、存储结构、基本运算}作为课程研究的三块核心内容；ADT 视角则把抽象状态和操作语义作为公开契约，把具体存储字段与实现算法隐藏在表示内部。两种口径是在不同抽象层说同一件事，不应写成彼此否定。
 
 \begin{examplebox}{最小反例：同一个“插入第 $k$ 个”}
 对逻辑表 $[a,b,c,d]$ 在位置 $3$ 插入 $x$，抽象结果只有一个：$[a,b,x,c,d]$。顺序表需要把 $c,d$ 向后移动；链表只需让 $x$ 接入正确的指针链，但前提是已经拿到插入点的前驱。若题目只给关键字而不给位置，寻找前驱的成本又回来了。
@@ -141,6 +158,26 @@ x.next\leftarrow p.next,\qquad p.next\leftarrow x.
 \]
 若 $p$ 原来是尾节点，还要更新 $tail$；若向空表插入，还要同时更新 $head$。删除节点 $x$ 时，必须先拿到前驱 $p$，令 $p.next\leftarrow x.next$，再处理尾指针、长度和资源回收。\kw{“指针修改 $O(1)$”只描述已定位节点后的局部动作，不包括按关键字寻找节点。}
 
+\subsection{单链表逆置：真正的不变量是“未处理后缀不能失联”}
+原地逆置最危险的不是写错新方向，而是在覆盖 $current.next$ 时丢掉它原来指向的后缀。稳定状态应同时维护三个角色：
+\[
+\boxed{
+previous=\text{已经逆置完成的前缀入口},\qquad
+current=\text{当前节点},\qquad
+next=\text{尚未处理后缀入口}
+}
+\]
+每轮必须先保存旧后继，再改边：
+\[
+next\leftarrow current.next,\qquad
+current.next\leftarrow previous,\qquad
+previous\leftarrow current,\qquad
+current\leftarrow next.
+\]
+循环不变量是：\kw{$previous$ 所指前缀已经完全反向，$current$ 所指后缀仍保持原方向，而且后缀始终有入口。} 当 $current=null$ 时，$previous$ 成为新表头；若维护 $tail$，旧表头成为新表尾并满足 $tail.next=null$。
+
+这个模型比“背四行代码”更可迁移：删除、链表重排、局部反转和双链表换边都遵守同一条安全原则——\kw{覆盖一条仍承担唯一可达性的旧边以前，先保存后续仍需访问的对象。}
+
 \subsection{线性表 ADT 的四条逻辑约束}
 外部资料把线性表的定义拆成四条容易被题面隐藏的约束。设非空表为
 $L=(a_1,a_2,\ldots,a_n)$，则：
@@ -152,12 +189,14 @@ $L=(a_1,a_2,\ldots,a_n)$，则：
 \end{enumerate}
 “线性”描述的是关系，不是内存布局。顺序表、带头结点的链表和静态链表都可以实现同一个 ADT；它们的差异来自怎样兑现位置、后继、空闲和更新契约。
 
-\subsection{带头结点、首元结点与空表}
-链表题经常把三个对象混用：$head$ 是指向头结点的指针，头结点是一个不存放有效数据的哨兵节点，首元结点才是第一个数据节点。若采用带头结点表示：
+\subsection{头指针、头结点、首元结点与空表}
+链表题必须先声明是否采用头结点。\kw{头指针}是保存链表入口的指针变量：带头结点时通常指向头结点；不带头结点时通常直接指向首元结点。\kw{头结点}是位于首元结点之前的可选哨兵，不计入线性表的数据元素个数；它的数据域可以不用，也可以承载长度等辅助信息，但不能把它当成第一个有效数据元素。\kw{首元结点}才是真正保存 $a_1$ 的节点。
+
+若采用带头结点表示：
 \[
 head\neq null,\qquad first=head.next,
 \]
-空表的判据是 $head.next=null$，而不是 $head=null$。这样做的价值不是增加一个“没用节点”，而是把“在首元结点前插入”和“在普通前驱后插入”统一成同一种边操作。若题目没有头结点，头插、删除第一个数据节点和空表恢复必须单独分支；不能把带头结点代码的下标或指针起点直接套过去。
+空表的判据是 $head.next=null$，而不是 $head=null$。这样做的价值不是增加一个“没用节点”，而是把“在首元结点前插入”和“在普通前驱后插入”统一成同一种边操作。若题目没有头结点，头插、删除第一个数据节点和空表恢复必须单独分支；不能把带头结点代码的指针起点直接套过去。
 
 \subsection{四种链式表示：同一关系，不同边界责任}
 \begin{center}\small
@@ -268,11 +307,12 @@ space[j].cursor\leftarrow space[k].cursor,\qquad space[k].cursor\leftarrow j;
 \toprule
 操作 & 顺序表 & 单链表 & 成本解释 & 关键前提\\
 \midrule
-按位访问 $i$ & $\Theta(1)$ & $\Theta(n)$ & 地址映射 vs 指针跳转 & $i$ 合法\\
+按位访问 $i$ & $\Theta(1)$ & $\Theta(i)$，最坏 $\Theta(n)$ & 地址计算 vs 从入口逐边跳转 & $i$ 合法\\
 按值查找 & $\Theta(n)$ & $\Theta(n)$ & 逐项比较 & 无额外索引\\
-已知位置插入 & $\Theta(n)$ & $\Theta(1)$ & 区间移动 vs 改两条边 & 链表已知前驱\\
-头部插入/删除 & $\Theta(n)$ / $\Theta(n)$ & $\Theta(1)$ / $\Theta(1)$ & 顺序表整体移动；链表改头指针 & 正确维护 head\\
-尾部追加 & $\Theta(1)$ 摊还 & $\Theta(1)$ & 容量复制 vs tail 指针 & 无扩容/已维护 tail\\
+已知插入位序 $k$ & $\Theta(n)$ & $\Theta(n)$ & 顺序表移动后缀；单链表先定位前驱再改边 & 只给整数位序\\
+已知前驱后插入 & $\Theta(n)$ & $\Theta(1)$ & 顺序表仍需移动；单链表只改局部边 & 前驱指针已经给出\\
+头部插入/删除 & $\Theta(n)$ / $\Theta(n)$ & $\Theta(1)$ / $\Theta(1)$ & 顺序表整体移动；链表改入口边 & 正确维护 head\\
+尾部追加 & $\Theta(1)$ 摊还 & $\Theta(1)$ & 几何扩容摊还 vs tail 局部接边 & 顺序表按固定倍数扩容；链表维护 tail\\
 \bottomrule
 \end{tabularx}\end{center}
 空间也要分开：顺序表可能有未使用容量，链表每个节点额外保存指针；两者的逻辑元素空间都是 $\Theta(n)$，但常数、局部性和内存管理成本不同。
@@ -338,10 +378,22 @@ space[j].cursor\leftarrow space[k].cursor,\qquad space[k].cursor\leftarrow j;
 
 循环负责 Locate，最坏访问全部 $n$ 个节点；找到后才进入头节点分支或复用 \code{erase\_after}。删除唯一节点时必须同时把 \code{head\_} 和 \code{tail\_} 置空，这正是“边界属于合法状态集合”的代码证据。
 
+\subsection{单链表逆置：代码必须先保存旧后继}
+\lstinputlisting[
+  language=C++,
+  firstline=194,
+  lastline=206,
+  firstnumber=1,
+  numbers=left,
+  caption={单链表原地逆置：保存后缀入口后再覆盖当前边}
+]{30_408/10_数据结构/01_线性关系与存储表示/code/ds01_linear_list.hpp}
+
+\code{next} 的存在不是为了“写法好看”，而是保存即将被覆盖的唯一后缀入口。逆置完成以后同时交换表头/表尾角色；测试还必须验证新尾节点的 \code{next} 为空，防止得到一个看似顺序正确、实际仍带旧边或环的结构。
+
 \subsection{不变量检查与测试不是生产操作的成本}
 伴随实现提供 \code{invariant()}：检查空表字段一致性、环、可达节点数、尾节点身份及“尾节点的 \code{next} 为空”。它用于教学验证和测试，不意味着每次生产操作都必须额外遍历全表。
 
-最小断言测试位于 \codepath{code/ds01_linear_list_test.cpp}，覆盖顺序表扩容与非法位置、链表空表、已知前驱插入、首尾删除和删除至空表。测试的关键部分直接验证抽象结果和结构不变量：
+最小断言测试位于 \codepath{code/ds01_linear_list_test.cpp}，覆盖顺序表扩容与非法位置、链表空表、已知前驱插入、首尾删除、两次逆置恢复和删除至空表。测试的关键部分直接验证抽象结果和结构不变量：
 \lstinputlisting[
   language=C++,
   firstline=35,
@@ -358,8 +410,8 @@ clang++ -std=c++17 -Wall -Wextra -Werror -pedantic \
 /tmp/ds01_test
 \end{lstlisting}
 
-\begin{methodbox}{做题时的第一判断}
-题目给“第 $k$ 个位置/下标”时，先判断表示能否直接映射位置；题目给“某个关键字”时，先把查找成本单列；题目给“节点指针/前驱指针”时，才可以把链式局部修改写成 $O(1)$。不要让操作名称替代输入契约。
+\begin{methodbox}{最小调用接口}
+题面若给位序/下标，先区分“位置到地址能否直接计算”；若只给关键字，定位成本必须单列；只有题目已经给出目标节点或合法前驱时，才进入链式局部改边模型。完整的复杂度辨析、头结点/首元结点、逆置防丢链和插入前提训练见同目录 \codepath{线性表、顺序表与链表.md}。
 \end{methodbox}
 
 \section{空、首、尾与重复值不是补丁}
@@ -395,20 +447,10 @@ clang++ -std=c++17 -Wall -Wextra -Werror -pedantic \
 \bottomrule
 \end{tabularx}\end{center}
 
-\section{做题控制协议与压缩复原}
-遇到线性表题，按以下顺序写草稿：
-\begin{enumerate}
-\item 写清逻辑操作的输入契约：位置、关键字、节点还是前驱；
-\item 画表示：连续下标或节点/指针，并标出 length、capacity、head、tail；
-\item 写操作前不变量；
-\item 只执行最小状态更新，再补边界分支；
-\item 用一次遍历或边界地址验证逻辑次序、可达性和长度；
-\item 最后分别报告定位、局部更新、移动/跳转、额外空间的成本。
-\end{enumerate}
-
+\section{压缩复原}
 \begin{corebox}{一页压缩}
 忘掉具体代码后，只需复原五个问题：\kw{对象是什么？输入契约是什么？数据在哪里？操作后必须保持什么？哪一项成本被表示换走了？}
-连续表示用地址映射换按位访问；链式表示用指针关系换局部插删。所有“快/慢”判断都必须回到操作输入和不变量。
+连续表示用地址映射换按位访问；链式表示用显式链接换局部插删。所有“快/慢”判断都必须回到操作输入和不变量；完整训练协议由同目录训练 Markdown 拥有。
 \end{corebox}
 
 \section{全科坐标与跨册交接}
@@ -419,4 +461,12 @@ DS01 把 Atlas 的统一语言落到线性关系：输出“逻辑位置—物�
 
 \section{来源处理}
 本册吸收归档《数据结构 MOC》和《算法时间复杂度：统一分析框架》的对象—表示—操作—成本语言，并将算法笔记中的列表/队列/字典 API 仅作为实现例子，不把 Python 容器行为提升为 408 数据结构定义。扩容摊还、缓存局部性和泛型容器保留为 Extension；栈、队列、串、树、图、Hash 与排序分别由其他 Topic Own。
+
+本轮基础概念复审另外核对了以下公开教学材料：MIT 6.005 的 ADT / Representation Independence 用于确认“抽象操作契约与具体表示分离”的边界；OpenDSA 的 List ADT、array-based list、linked list 与 implementation comparison 用于核对按位访问、插删和“已知位置”前提；CMU linked-list 教学材料用于核对链表入口、指针可达性与逆置时的丢链风险。这些材料只用于验证共同机制，不替代 408 的术语口径。
+\begin{itemize}
+  \item MIT 6.005, \emph{Abstract Data Types}: \url{https://ocw.mit.edu/ans7870/6/6.005/s16/classes/12-abstract-data-types/index.html}
+  \item OpenDSA, \emph{Comparison of List Implementations}: \url{https://opendsa-server.cs.vt.edu/ODSA/Books/winthrop/csci271/fall-2023/TRF_930am/html/ListAnalysis.html}
+  \item OpenDSA, \emph{Linked Lists}: \url{https://opendsa-server.cs.vt.edu/ODSA/Books/Everything/html/ListLinked.html}
+  \item Carnegie Mellon University, \emph{Linked Lists -- Introduction / Advanced Operations}: \url{https://www.cs.cmu.edu/~clo/www/CMU/DataStructures/Lessons/lesson1_2.htm}
+\end{itemize}
 \end{document}

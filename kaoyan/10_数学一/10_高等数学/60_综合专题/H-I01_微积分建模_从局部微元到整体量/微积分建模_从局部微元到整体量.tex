@@ -25,7 +25,24 @@ $\longrightarrow$ 单位/边界/方向复核。
 dM=\rho(x,y)\,dA,\qquad M=\iint_{\Omega}\rho(x,y)\,dA.
 \]
 若 $\Omega$ 关于 $y$ 轴对称且 $\rho$ 为奇函数 $x$，则带符号积分发生抵消；物理质量仍要求 $\rho\ge0$，必须先检查题设是否允许该密度。
-\subsection*{2.\ 体积、弧长与功的切换}
+\subsection*{2.\ 质量、质心与转动惯量：先统一成质量微元}
+线、面、体上的公式表面不同，真正共同的对象只有质量微元
+\[
+\boxed{dm=\rho\,d\mu},
+\]
+其中 $d\mu$ 按载体分别取 $ds,dA,dS,dV$。于是
+\[
+M=\int dm,
+\qquad
+\bar{\mathbf r}=\frac1M\int \mathbf r\,dm,
+\qquad
+I_L=\int d(P,L)^2\,dm.
+\]
+质心是位置向量的质量加权平均；绕轴 $L$ 的转动惯量则是“到轴距离平方”的质量加权总和。不同几何载体只改变 $d\mu$，不改变这两个生成机制。
+
+这也给出两个高价值检查：若载体与密度共同关于某个平面/轴对称，质心必须落在相应对称集合上；转动惯量的量纲应为 $[\text{质量}][\text{长度}]^2$。如果题目只给形心，等价于取常密度；密度不均匀时不能继续把几何中心当成质心。
+
+\subsection*{3.\ 体积、弧长与功的切换}
 \begin{tabularx}{\linewidth}{@{}lX@{}}
 \toprule
 目标 & 典型微元与资格\\ \midrule
@@ -35,11 +52,11 @@ dM=\rho(x,y)\,dA,\qquad M=\iint_{\Omega}\rho(x,y)\,dA.
 曲面通量 & $d\Phi=\mathbf F\cdot\mathbf n\,dS$；必须先定向\\
 \bottomrule
 \end{tabularx}
-\subsection*{3.\ 旋转体：选择的是切片方向，不是背公式}
+\subsection*{4.\ 旋转体：选择的是切片方向，不是背公式}
 同一平面区域绕轴旋转时有两种局部化：垂直于轴切片得到圆盘/垫圈，平行于轴切片得到圆柱壳。
 若已知 $y=f(x)$ 且绕 $y$ 轴，比较两条路线：反解 $x=g(y)$ 后用圆盘，或保留 $x$ 用壳元
 \[
-dV=2\pi\,\underbrace{|x-x_{\rm axis}|}_{\text{半径}}
+dV=2\pi\,\underbrace{\lvert x-x_{\rm axis}\rvert}_{\text{半径}}
 \underbrace{h(x)}_{\text{壳高}}\,dx.
 \]
 选择标准是区域描述、反解成本与\textbf{旋转后的覆盖次数}；无论哪条路线，都必须保证切片不重不漏。
@@ -47,7 +64,7 @@ dV=2\pi\,\underbrace{|x-x_{\rm axis}|}_{\text{半径}}
 \begin{warnbox}{壳层真正按“半径”编号，而不是按原坐标编号}
 若区域跨过旋转轴，轴两侧的 $x=x_{\rm axis}\pm r$ 会旋转成\textbf{同一个半径 $r$ 的圆柱壳}。因此不能机械把
 \[
-2\pi\int |x-x_{\rm axis}|h(x)\,dx
+2\pi\int \lvert x-x_{\rm axis}\rverth(x)\,dx
 \]
 在轴两侧全部相加，否则可能重复覆盖。应改用半径 $r\ge0$：先把同一 $r$ 在两侧产生的高度区间取并集，记其总长度为 $H(r)$，再积
 \[
@@ -66,7 +83,7 @@ L:ax+by+c=0
 \[
 dV=2\pi r(x,y)\,dA,
 \qquad
-r(x,y)=\frac{|ax+by+c|}{\sqrt{a^2+b^2}}.
+r(x,y)=\frac{\lvert ax+by+c\rvert}{\sqrt{a^2+b^2}}.
 \]
 于是
 \[
@@ -80,7 +97,7 @@ dS=2\pi\,\underbrace{r}_{\text{到旋转轴距离}}\,ds.
 \]
 它局部累加“周长 $\times$ 弧长”，不能把 $ds$ 静默替换为 $dx$。若生成曲线存在重复参数化、自交或跨轴回折，还要检查不同微段旋转后是否扫到同一块曲面；否则积分会按生成重数计面积。体积有限也不推出表面积有限，两者尾部模型不同。
 
-\subsection*{4.\ 相关变化率：保持动态对象直到求导完成}
+\subsection*{5.\ 相关变化率：保持动态对象直到求导完成}
 把几何关系写成时间的恒等式 $G(x(t),y(t),\ldots)=0$，先对 $t$ 求导：
 \[
 G_x\frac{dx}{dt}+G_y\frac{dy}{dt}+\cdots=0,
@@ -88,7 +105,7 @@ G_x\frac{dx}{dt}+G_y\frac{dy}{dt}+\cdots=0,
 再代入题目给定时刻的长度、半径或体积。若求导前就把瞬时值代成常数，对应变化率会被错误地消掉。
 单位是这里的接口语言：$\mathrm m/\mathrm s$、$\mathrm m^2/\mathrm s$、$\mathrm m^3/\mathrm s$ 分别提示长度、面积、体积的变化率对象。
 
-\subsection*{5.\ 压力与做功：强度必须乘对几何载体}
+\subsection*{6.\ 压力与做功：强度必须乘对几何载体}
 变力做功沿位移累积 $dW=F(x)\,dx$；抽水时局部贡献为
 \[
 dW=\underbrace{\rho g A(y)\,dy}_{\text{薄层重量}}
@@ -113,7 +130,23 @@ dF=\rho gh\,dA=\rho gh\,L(h)\,dh.
 \]
 “深度”不是任意坐标值，“移动距离”也不是切片位置；二者都要从物理对象重新定义。
 
-\subsection*{6.\ 最小组合例：变密度细杆}
+\subsection*{7.\ 引力：先写质量微元产生的向量贡献}
+设待研究质点质量为 $m_0$、位置为 $\mathbf r_0$，分布物体上的质量微元 $dm$ 位于 $\mathbf r$。微元对质点的万有引力方向指向 $\mathbf r$，因此
+\[
+\boxed{
+d\mathbf F
+=Gm_0\frac{\mathbf r-\mathbf r_0}
+{\lVert\mathbf r-\mathbf r_0\rVert^3}\,dm.}
+\]
+总引力不是把距离先平均再代平方反比，而是逐点累加向量：
+\[
+\mathbf F=\int d\mathbf F.
+\]
+若物体关于经过 $\mathbf r_0$ 的某个轴/平面对称，先用成对质量元消去横向分量，再只积分可能保留的轴向分量；这通常比一开始写三个坐标分量更稳定。
+
+引力题仍服从同一建模母流程：\textbf{对象与密度 $\to dm$ $\to$ 单个微元的方向和大小 $\to$ 对称降维 $\to$ 积分 $\to$ 方向/量纲复核}。必须额外审计奇点：若观察点位于连续质量分布内部或积分载体穿过 $\mathbf r_0$，核函数 $1/\lVert\mathbf r-\mathbf r_0\rVert^2$ 出现奇性，不能无条件按普通有界连续积分处理。
+
+\subsection*{8.\ 最小组合例：变密度细杆}
 细杆位于 $x\in[a,b]$，线密度 $\lambda(x)$，则
 \[
 dM=\lambda(x)\,dx,\quad M=\int_a^b\lambda(x)\,dx,\quad
@@ -124,6 +157,6 @@ dM=\lambda(x)\,dx,\quad M=\int_a^b\lambda(x)\,dx,\quad
 微元单位是否与目标量一致？区域/路径/曲面边界是否完整？
 对称性作用于完整 integrand 还是只作用于几何域？有向积分是否明确方向？
 \end{tcolorbox}
-\subsection*{7.\ Anti-Bridge}
+\subsection*{9.\ 反向边界}
 单位检查只能发现量纲冲突，不能证明切片、区域或方向正确；“写出了积分”也不等于完成建模。若局部元无法从对象和坐标唯一解释，应回退到 Topic01/05/08/09 Owner。
 \end{document}

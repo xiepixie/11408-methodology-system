@@ -191,6 +191,20 @@ class SinglyLinkedList {
     return erase_after(predecessor);
   }
 
+  void reverse() {
+    Node* old_head = head_;
+    Node* previous = nullptr;
+    Node* current = head_;
+    while (current != nullptr) {
+      Node* next = current->next;
+      current->next = previous;
+      previous = current;
+      current = next;
+    }
+    head_ = previous;
+    tail_ = old_head;
+  }
+
   bool invariant() const {
     if ((length_ == 0) != (head_ == nullptr && tail_ == nullptr)) {
       return false;

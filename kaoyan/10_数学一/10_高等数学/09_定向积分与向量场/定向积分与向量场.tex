@@ -152,7 +152,7 @@ dS=\lVert\mathbf r_u\times\mathbf r_v\rVert\,du\,dv,
 \[
 dS=\sqrt{1+z_x^2+z_y^2}\,dx\,dy.
 \]
-曲面方程上的恒等式可以化简 $f$，但不能把 $dS$ 改写成 $dx\,dy$ 而漏掉斜率因子。
+这条图形公式隐含一个表示资格：当前曲面片必须能在所选投影平面上写成单值图形。若投影退化成曲线（例如圆柱侧面投到与母线垂直的圆盘边界）或同一投影点对应多个曲面点，就应改投到其他坐标平面、分片，或直接参数化；不能对零面积/多重覆盖的投影硬套图形公式。曲面方程上的恒等式可以化简 $f$，但不能把 $dS$ 改写成 $dx\,dy$ 而漏掉斜率因子。
 
 \begin{examplebox}{先代曲面方程，再决定微元}
 球面 $x^2+y^2+z^2=R^2$ 上，
@@ -162,6 +162,28 @@ dS=\sqrt{1+z_x^2+z_y^2}\,dx\,dy.
 \]
 同一方程若出现在第二型积分中，系数仍可代入，但有向微元不能因此变成 $dS$。
 \end{examplebox}
+
+\begin{corebox}{为什么线/面上的等式能代入，而区域边界不能当等式代入？}
+积分载体若是曲线或曲面本身，例如
+\[
+L:\ g(x,y)=0,
+\qquad
+\Sigma:\ F(x,y,z)=0,
+\]
+那么载体上的\textbf{每一个积分点}都满足这个等式，所以可以用它化简被积函数；这只是利用载体上的点态恒等式。
+
+但二重/三重积分的区域通常写成
+\[
+D:\ g(x,y)\le0,
+\qquad
+\Omega:\ F(x,y,z)\le0.
+\]
+这里等号只描述边界，内部点一般不满足 $g=0$ 或 $F=0$，因此不能把边界等式强行代进体内被积函数。稳定判断不是“线面积分能代、重积分不能代”的口诀，而是：
+\[
+\boxed{\text{当前积分点是否逐点满足这个等式？}}
+\]
+如果答案为是，就可作为恒等约束化简；若它只负责圈定允许范围，就只能用于区域编码。
+\end{corebox}
 
 \section{第二型曲线：向量场乘有向位移}
 
@@ -176,6 +198,15 @@ dS=\sqrt{1+z_x^2+z_y^2}\,dx\,dy.
 =\int_\alpha^\beta\mathbf F(\mathbf r(t))\cdot\mathbf r'(t)\,dt.
 \]
 反向曲线整体变号。参数化时 $x,y,z$ 与 $dx,dy,dz$ 必须同步替换；只代坐标而漏微分，是第二型曲线的首个典型错误。
+
+若曲线按题设方向取单位切向量 $\boldsymbol\tau$，则
+\[
+d\mathbf r=\boldsymbol\tau\,ds,
+\qquad
+\boxed{\int_L\mathbf F\cdot d\mathbf r
+=\int_L(\mathbf F\cdot\boldsymbol\tau)\,ds.}
+\]
+这不是另一套曲线积分理论，而是把向量场先投影到运动方向再按弧长累积。它在题目只给某个抽象函数连续、无法合法调用需要一阶偏导的 Green/Stokes 时尤其有用：先利用切向量与曲线上的点态恒等式，看抽象项是否在切向投影中消掉，再决定是否参数化。不能为了套积分定理擅自把“连续”升级为 $C^1$。
 
 若 $\mathbf F=\nabla\phi$，则
 \[
@@ -193,7 +224,14 @@ dS=\sqrt{1+z_x^2+z_y^2}\,dx\,dy.
 \[
 d\mathbf S=(\mathbf r_u\times\mathbf r_v)\,du\,dv.
 \]
-交换参数次序会反转叉积与通量符号。
+若 $\mathbf n$ 是题设侧的单位法向量，则同一关系也可写成
+\[
+\boxed{d\mathbf S=\mathbf n\,dS,
+\qquad
+\iint_\Sigma\mathbf F\cdot d\mathbf S
+=\iint_\Sigma(\mathbf F\cdot\mathbf n)\,dS.}
+\]
+因此第二型曲面积分就是“先取向量场的法向分量，再按无向面积累积”；这与上一节 $d\mathbf r=\boldsymbol\tau ds$ 完全平行。所谓两类曲面积分的转换，不需要再背三组方向余弦口诀，核心就是有向面积向量等于单位法向量乘无向面积元。交换参数次序会反转叉积与通量符号。
 
 若 $z=z(x,y)$，上侧非单位法向量为 $(-z_x,-z_y,1)$，故
 \[
@@ -257,6 +295,15 @@ Gauss/Stokes 若需要 $C^1$，而题目只给连续，就不能为了使用漂�
 \]
 第一式是环流/二维旋度，第二式是平面通量/二维散度。非闭曲线可补线；有孔或奇点必须挖洞并保留内边界方向。
 
+Green 还可以反向把面积编码成边界积分。对正向边界 $L=\partial D$，取 $P=-y/2,Q=x/2$，因为 $Q_x-P_y=1$，故
+\[
+\boxed{
+\operatorname{Area}(D)
+=\iint_D1\,dA
+=\frac12\oint_L(x\,dy-y\,dx).}
+\]
+因此“区域内部面积难直接算、但边界易参数化”时，可以把面积问题改写为有向边界积分；若边界取负向，结果整体变号，所以几何面积最后必须保持非负并与方向协议一致。
+
 \subsection{Stokes：定向曲面与空间边界曲线}
 
 若 $L=\partial\Sigma$，曲线方向与曲面法向满足右手定则，且场在包含曲面的邻域内 $C^1$，则
@@ -274,6 +321,84 @@ Gauss/Stokes 若需要 $C^1$，而题目只给连续，就不能为了使用漂�
 =\iiint_\Omega\nabla\cdot\mathbf F\,dV.}
 \]
 开曲面可补面；内部奇点要挖去小球并计算补偿通量。$\nabla\cdot\mathbf F=0$ 只控制无奇点区域的封闭总通量，不代表任意开曲面通量为零。
+
+\section{散度与旋度的局部意义：把“小边界上的总量”还原成点密度}
+
+Gauss 与 Stokes 不只是计算公式；把区域缩到一点，它们还告诉我们散度与旋度为什么是\textbf{局部密度}。
+
+设 $\mathbf F\in C^1$，点 $P$ 周围取一族直径趋零的小体积 $\Omega_\varepsilon$。由 Gauss，
+\[
+\frac{1}{\lvert\Omega_\varepsilon\rvert}
+\iint_{\partial\Omega_\varepsilon}\mathbf F\cdot d\mathbf S
+=
+\frac{1}{\lvert\Omega_\varepsilon\rvert}
+\iiint_{\Omega_\varepsilon}\nabla\cdot\mathbf F\,dV
+\longrightarrow
+\boxed{\nabla\cdot\mathbf F(P)}.
+\]
+所以散度是“单位体积的净外流”在无限小尺度下的极限：正值表示局部源，负值表示局部汇，零表示一阶尺度上没有净源汇。它不等于“场本身向外”或“任意开曲面通量为零”。
+
+同理，取法向为单位向量 $\mathbf n$ 的小定向面片 $\Sigma_\varepsilon$，边界为 $L_\varepsilon=\partial\Sigma_\varepsilon$。由 Stokes，
+\[
+\frac{1}{\lvert\Sigma_\varepsilon\rvert}
+\oint_{L_\varepsilon}\mathbf F\cdot d\mathbf r
+=
+\frac{1}{\lvert\Sigma_\varepsilon\rvert}
+\iint_{\Sigma_\varepsilon}(\nabla\times\mathbf F)\cdot\mathbf n\,dS
+\longrightarrow
+\boxed{(\nabla\times\mathbf F(P))\cdot\mathbf n}.
+\]
+因此旋度沿 $\mathbf n$ 的分量，是“单位面积的局部环流密度”。改变 $\mathbf n$ 就是在探测旋度向量的不同分量；若所有方向上的小环流密度都为零，才得到 $\nabla\times\mathbf F(P)=\mathbf0$。
+
+\begin{corebox}{“任意闭边界恒为零”为什么能反推出局部方程？}
+若连续函数 $g$ 在区域 $U$ 中满足
+\[
+\iiint_\Omega g\,dV=0
+\]
+对 $U$ 内每个足够小的体区域 $\Omega$ 都成立，则必有 $g\equiv0$。否则若 $g(P)>0$（或 $<0$），连续性会保证 $P$ 附近一小块区域仍保持同号，积分不可能为零。
+
+因此当题目说“对半空间/区域内\textbf{任意}光滑闭曲面 $\Sigma$，通量恒为零”时，正确压缩链是
+\[
+\boxed{
+\text{任意闭曲面通量}=0
+\xRightarrow{\mathrm{Gauss}}
+\iiint_\Omega\nabla\cdot\mathbf F\,dV=0\ \text{对任意小 }\Omega
+\Longrightarrow
+\nabla\cdot\mathbf F=0.}
+\]
+若场中含未知一元函数，这一步往往把积分题直接压成 Topic12 可处理的常微分方程。一个固定闭曲面的积分为零绝对不足以推出散度处处为零；真正提供点态信息的是\textbf{区域的任意性 + 连续性}。
+\end{corebox}
+
+\section{算子复合：梯度、散度与旋度怎样接起来}
+
+梯度把标量场变成向量场，散度再把向量场压回标量场。因此对 $u\in C^2$，
+\[
+\boxed{
+\Delta u:=\nabla\cdot(\nabla u)
+=u_{xx}+u_{yy}+u_{zz},}
+\]
+称为标量场的 Laplace 算子（拉普拉斯算子）。这里保留的是数学一会直接计算和组合的算子接口；一般偏微分方程理论不进入本册。
+
+若 $u(\mathbf x)=f(\rho)$ 是三维径向函数，$\rho=\sqrt{x^2+y^2+z^2}>0$，则链式法则合并三项二阶偏导后得到
+\[
+\boxed{
+\Delta f(\rho)=f''(\rho)+\frac{2}{\rho}f'(\rho)
+=\frac1{\rho^2}\bigl(\rho^2f'(\rho)\bigr)'.}
+\]
+所以题面若给 $\nabla\cdot\nabla f(\rho)=0$，三元偏微分表达式会因径向对称性降成一元 ODE：
+\[
+(\rho^2f'(\rho))'=0
+\quad\Longrightarrow\quad
+f(\rho)=C_2-\frac{C_1}{\rho}
+\qquad(\rho>0).
+\]
+这一步只负责“向量算子条件 $\to$ 一元 ODE”的翻译；一元方程求解机制由 Topic12 接收。\textbf{$\rho=0$ 必须单独审计：}$1/\rho$ 在原点奇异；若题目还要求函数在包含原点的区域内具有足够正则性，则通常会进一步排除该奇异支，不能把穿孔区域上的通解无条件延拓到原点。
+
+另一方面，若 $u\in C^2$，混合偏导可交换，故
+\[
+\boxed{\nabla\times(\nabla u)=\mathbf0.}
+\]
+它说明光滑势函数生成的梯度场必然无旋；反向“无旋 $\Rightarrow$ 全局梯度场”仍需定义域拓扑资格，不能跳过前面的穿孔反例。
 
 \begin{methodbox}{定理选择不是固定排名，而是“资格门 + 成本比较”}
 边界是平面闭曲线，可把 Green 列为候选；空间闭曲线可列 Stokes；封闭曲面可列 Gauss。先过“定向、光滑性、定义域奇点、边界完整性”四道资格门，再比较转换后的区域、integrand、分段数和补偿项。\textbf{定理可用不等于定理一定更快}；若换过去更复杂，就保留直接参数化/投影。

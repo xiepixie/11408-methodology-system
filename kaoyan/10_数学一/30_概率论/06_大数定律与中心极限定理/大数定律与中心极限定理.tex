@@ -57,23 +57,32 @@
 \begin{document}
 \maketitle
 
-\begin{corebox}{母问题：随机性为什么能在大量重复中呈现确定性规律与正态渐近？}
-当独立随机变量数量 $n \to \infty$ 时，随机算术平均 $\bar X_n$ 表现出两种根本现象：
-1. \kw{稳定位置：} 随机波动被均化，样本均值依概率收敛到确定常数 $\mu$（大数定律）；
-2. \kw{剩余波动：} 放大 $\sqrt{n}$ 倍后的剩余波动趋近于标准正态分布（中心极限定理）。
+\begin{corebox}{母问题：随机性为什么能在大量重复中呈现稳定位置与可描述的剩余波动？}
+在经典的 i.i.d.、$E(X_i)=\mu$、$0<\operatorname{Var}(X_i)=\sigma^2<\infty$ 这一共同条件包下，同一组随机平均会出现两种\textbf{彼此相关但互不推出}的现象：
+1. \kw{稳定位置：} $\bar X_n$ 靠近确定常数 $\mu$；大数定律回答“最终稳定到哪里”；
+2. \kw{剩余波动：} 把误差按 $\sqrt n$ 的尺度放大后出现非退化极限；经典中心极限定理回答“稳定中心附近怎样波动”。
 
-主线推演逻辑：
+因此正确的结构不是“先 LLN，再由 LLN 推出 CLT”，而是从同一生成条件分别进入两条结论：
 \[
 \boxed{
-\text{独立样本 } X_1,\dots,X_n \xrightarrow{\text{切比雪夫不等式}} \bar X_n \xrightarrow{P} \mu \quad (\text{LLN}) \xrightarrow{\text{放大剩余波动 } \frac{\sqrt{n}(\bar X_n - \mu)}{\sigma}} N(0,1) \quad (\text{CLT})
-}
+\begin{array}{c}
+X_1,\ldots,X_n\ \text{i.i.d.},\quad E(X_i)=\mu,\quad \operatorname{Var}(X_i)=\sigma^2\in(0,\infty)\\[0.5em]
+\begin{array}{ccc}
+\text{稳定问题} & & \text{波动问题}\\[-0.1em]
+\bar X_n\xrightarrow{P}\mu & \qquad &
+\dfrac{\sqrt n(\bar X_n-\mu)}{\sigma}\xrightarrow{d}N(0,1)\\
+\text{大数定律} && \text{中心极限定理}
+\end{array}
+\end{array}}
 \]
+某些大数定律可以放宽有限方差条件，某些中心极限定理也允许非同分布；这些条件变化必须分别核对，不能把一条定理的资格借给另一条。
 \end{corebox}
 
 \section{本册定位与职责划分}
 
 \begin{itemize}
-  \item \kw{本册拥有（Owns）：}随机变量序列的收敛语言、Borel--Cantelli 路径接口、大数定律、中心极限定理、Slutsky/Delta 渐近变换与精确--渐近边界。
+  \item \kw{本册主干拥有（Owns）：}依概率/依分布等收敛语言、大数定律、中心极限定理、二项正态近似以及精确--渐近边界。
+  \item \kw{拓展层：}几乎必然与 $L^p$ 收敛的更完整关系、Borel--Cantelli、Lyapunov/Lindeberg/Berry--Esseen、Slutsky、Delta 与 $o_P/O_P$ 用来解释机制和连接后续统计推断；它们不得伪装成数学一每道题都必须调用的主干清单。
   \item \kw{本册使用（Uses）：}Topic 05 的期望、方差与 Chebyshev 不等式；Topic 07 的样本统计量对象。
   \item \kw{本册不拥有（Does not own）：}小样本下精确抽样分布（Topic 07 负责）、统计量渐近估计性质（Topic 08 负责）。
   \item \kw{输出目标（Output）：}大样本下的概率近似计算与极限定理判断框架。
@@ -84,8 +93,8 @@
 设 $X_n,X$ 定义在同一概率空间上。四种常用收敛回答的问题不同：
 \begin{itemize}
   \item 几乎必然收敛：$P(\{\omega:X_n(\omega)\to X(\omega)\})=1$，是样本路径层面的结论；
-  \item 依概率收敛：对所有 $\varepsilon>0$，$P(|X_n-X|>\varepsilon)\to0$，是偏离概率层面的结论；
-  \item $L^p$ 收敛：$E|X_n-X|^p\to0$，其中 $p=2$ 是均方收敛；
+  \item 依概率收敛：对所有 $\varepsilon>0$，$P(\lvert X_n-X\rvert>\varepsilon)\to0$，是偏离概率层面的结论；
+  \item $L^p$ 收敛：$E\lvert X_n-X\rvert^p\to0$，其中 $p=2$ 是均方收敛；
   \item 依分布收敛：分布函数在极限分布的连续点收敛，不要求定义在同一概率空间。
 \end{itemize}
 基本蕴含链为
@@ -124,7 +133,7 @@ Chebyshev 立刻给出
 \frac1n\sum_{i=1}^n(X_i-EX_i)\xrightarrow{P}0.
 \]
 \begin{methodbox}{弱大数律的证明骨架}
-这里的关键不是“样本量大”，而是方差按 $1/n$ 衰减：先由独立性消掉和式中的协方差项，再用 Chebyshev 把方差上界转换成偏离概率上界。若只知道 $E|X_1|<\infty$ 而没有有限方差，则不能沿这条 Chebyshev 路径，而要调用 Khinchin 弱大数律，并明确它的前提更换了。
+这里的关键不是“样本量大”，而是方差按 $1/n$ 衰减：先由独立性消掉和式中的协方差项，再用 Chebyshev 把方差上界转换成偏离概率上界。若只知道 $E\lvert X_1\rvert<\infty$ 而没有有限方差，则不能沿这条 Chebyshev 路径，而要调用 Khinchin 弱大数律，并明确它的前提更换了。
 \end{methodbox}
 
 \begin{examplebox}{真题对象映射：2022 Q九 的样本二阶矩}
@@ -137,12 +146,12 @@ T_n=\frac1n\sum_{i=1}^nX_i^2
 \[
 \operatorname{Var}(T_n)=\frac{\mu_4-\mu_2^2}{n},
 \qquad
-P(|T_n-\mu_2|\ge\varepsilon)\le
+P(\lvert T_n-\mu_2\rvert\ge\varepsilon)\le
 \frac{\mu_4-\mu_2^2}{n\varepsilon^2}.
 \]
 不能看到“样本均值”就把中心写成 $\mu_1$，也不能把该上界当成精确概率；核心动作是先识别极限对象是 $X^2$ 的总体均值。
 \end{examplebox}
-若 $X_i$ 独立同分布且 $E|X_1|<\infty$，Khinchin 弱大数律给出
+若 $X_i$ 独立同分布且 $E\lvert X_1\rvert<\infty$，Khinchin 弱大数律给出
 \[
 \bar X_n\xrightarrow{P}E(X_1).
 \]
@@ -154,7 +163,7 @@ Bernoulli 频率定律只是强大数律的示性变量特例：独立重复事�
 
 \subsection{大数律的统计推论}
 
-若 $E|X|^k<\infty$，则样本 $k$ 阶原点矩
+若 $E\lvert X\rvert^k<\infty$，则样本 $k$ 阶原点矩
 \[
 A_{k,n}=\frac1n\sum_{i=1}^nX_i^k\xrightarrow{a.s.}E(X^k).
 \]
@@ -166,7 +175,7 @@ A_{k,n}=\frac1n\sum_{i=1}^nX_i^k\xrightarrow{a.s.}E(X^k).
 \[
 F_n(x)=\frac1n\sum_{i=1}^nI_{\{X_i\le x\}}
 \]
-几乎必然趋于 $F(x)$；更强的 Glivenko--Cantelli 结论为 $\sup_x|F_n(x)-F(x)|\xrightarrow{a.s.}0$。样本对象的 Owner 见 Topic 07，本册只提供极限机制。
+几乎必然趋于 $F(x)$；更强的 Glivenko--Cantelli 结论为 $\sup_x\lvert F_n(x)-F(x)\rvert\xrightarrow{a.s.}0$。样本对象的 Owner 见 Topic 07，本册只提供极限机制。
 
 \section{第四层：中心极限定理的机制与扩展}
 
@@ -240,11 +249,11 @@ P(S_n\le1)\approx e^{-2}\left(1+2\right)=3e^{-2}.
 
 对独立非同分布变量，令 $s_n^2=\sum_i\operatorname{Var}(X_i)$。Lyapunov 条件
 \[
-\frac1{s_n^{2+\delta}}\sum_iE|X_i-EX_i|^{2+\delta}\to0
+\frac1{s_n^{2+\delta}}\sum_iE\lvert X_i-EX_i\rvert^{2+\delta}\to0
 \]
 推出标准化和依分布收敛到 $N(0,1)$；Lindeberg 条件则直接排除少数极端项主导总方差。i.i.d. 且三阶绝对中心矩有限时，Berry--Esseen 给出
 \[
-\sup_x|P((S_n-n\mu)/(\sigma\sqrt n)\le x)-\Phi(x)|=O(n^{-1/2}).
+\sup_x\lvert P((S_n-n\mu)/(\sigma\sqrt n)\le x)-\Phi(x)\rvert=O(n^{-1/2}).
 \]
 这些是机制与误差边界，不应伪装成所有题目的必需假设。
 

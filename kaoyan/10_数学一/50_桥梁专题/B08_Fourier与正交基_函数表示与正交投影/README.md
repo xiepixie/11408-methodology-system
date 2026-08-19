@@ -58,5 +58,9 @@ Hilbert space、完备性、Parseval 的一般函数空间理论属于真实 Ext
 - Canonical Source：[Fourier与正交基_函数表示与正交投影.tex](Fourier与正交基_函数表示与正交投影.tex)
 - Published View：[Fourier与正交基_函数表示与正交投影.pdf](../../../90_publish/math1/Fourier与正交基_函数表示与正交投影.pdf)
 
+## Practice
+
+- [Fourier 系数的投影解释](Fourier系数的投影解释.md) —— 从正交坐标公式重建系数归一化与奇偶消项，并在“系数已求出”处明确转回高数 Topic11 处理收敛、端点与逐项操作。
+
 ## Review v1
 已核对 Fourier 系数作为正交投影坐标的接口，并阻断有限维展开、无限级数收敛与逐点恢复的混同。下一轮用奇偶延拓、端点跳跃和收敛方式题验证。

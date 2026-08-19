@@ -63,25 +63,23 @@
 \begin{document}
 \maketitle
 
-\begin{corebox}{母问题：怎样用最少的独立方向覆盖一个空间，并让每个对象都有唯一坐标？}
-如果只要求“能表示”，可以不断往生成组里加向量；但向量一多就会出现冗余，同一个对象会有多套系数表示。
+\begin{corebox}{两个母问题：先建立无冗余方向系统，再决定是否增加几何结构}
+本 Topic 不是一条从左到右的知识链，而是围绕同一个对象——向量空间中的方向系统——解决两个相继出现的问题。
 
-本 Topic 解决的根矛盾是：
+\kw{母问题 A：}怎样既覆盖目标空间，又消除表示冗余，使每个对象都有唯一编码？
 \[
-\boxed{\text{覆盖全部对象}\quad +\quad \text{表示必须唯一}}
+\boxed{\text{Spanning}+\text{Independence}\Longrightarrow\text{Basis}}
 \]
-于是主线自然生成：
+基建立以后产生两个并行结果：所有基具有同一长度，得到\kw{维数}；有序基提供唯一系数，得到\kw{坐标}与换基语言。
+
+\kw{母问题 B：}已经有唯一坐标后，若还需要长度、角度、投影和方向解耦，怎样在不改变原 span 的前提下升级方向系统？
 \[
-\boxed{
-\text{线性组合}
-\to \text{生成空间}
-\to \text{去掉冗余}
-\to \text{基}
-\to \text{维数}
-\to \text{唯一坐标}
-}
+\boxed{\text{Inner Product}\Longrightarrow\text{Orthogonality}\Longrightarrow\text{Gram--Schmidt}}
 \]
+第二条分支增加了额外几何结构；它不是母问题 A 的逻辑必然结果。
 \end{corebox}
+
+本册所有流程箭头都必须按其真实含义阅读：有的表示\kw{定义生成}，有的表示\kw{条件汇合}，有的表示\kw{结构升级}；它们不是统一的时间或因果箭头。
 
 \section{本册负责什么}
 
@@ -93,13 +91,44 @@
 
 本册向后提供三类接口：\kw{方向骨架、坐标语言、正交语言}。Topic 02--06 都会调用它们，但不应重新定义。
 
-\section{第一步：线性组合回答“这些方向能到哪里”}
+\section{对象底座：先确认什么集合允许做线性组合}
+
+在本册中，标量取自 $\mathbb R$。一个\kw{实向量空间} $V$ 配有向量加法与数乘两种运算，并且对任意 $u,v,w\in V$、$a,b\in\mathbb R$ 满足：
+\begin{itemize}
+  \item $u+v=v+u$，且 $(u+v)+w=u+(v+w)$；
+  \item 存在零向量 $0\in V$，使 $u+0=u$；每个 $u$ 都存在 $-u$，使 $u+(-u)=0$；
+  \item $a(u+v)=au+av$，$(a+b)u=au+bu$；
+  \item $(ab)u=a(bu)$，且 $1u=u$。
+\end{itemize}
+
+这些公理保证任意有限线性组合仍可在同一套线性规则中运算。\kw{封闭性}是进入这套结构的必要入口，但不是向量空间定义的全部内容。
+
+若 $U\subseteq V$ 非空，并且
+\[
+\forall u,v\in U,\quad \forall\alpha,\beta\in\mathbb R,
+\qquad \alpha u+\beta v\in U,
+\]
+则 $U$ 是 $V$ 的\kw{线性子空间}。因为运算律已经从 $V$ 继承，子空间只需检查线性组合不会跑出 $U$。
+
+\begin{warnbox}{齐次解集与非齐次解集为什么性质不同？}
+$Ax=0$ 的解集对线性组合封闭，所以是子空间；若 $Ax=b$ 且 $b\neq0$，两个解的线性组合通常不再满足同一个右端项，因此解集一般不是子空间。
+
+非齐次解集更准确的结构是“一个特解 + 齐次解空间”，其完整机制由 Topic 04 负责。本 Topic 只用这个边界说明：\kw{子空间必须经过原点并对线性组合封闭。}
+\end{warnbox}
+
+\section{第一步：线性组合打开三条问题分支}
 
 给定向量 $v_1,\dots,v_k$，表达式
 \[
 a_1v_1+\cdots+a_kv_k
 \]
-叫作它们的\kw{线性组合}。系数 $a_i$ 可以自由改变，所以真正的问题不是某一次组合等于什么，而是：\kw{所有可能组合能够到达哪些向量？}
+叫作它们的\kw{线性组合}。一旦允许系数自由变化，就会立刻出现三类不同问题：
+\begin{itemize}
+  \item \kw{可达性：}所有组合能够到达哪些对象？这生成 span；
+  \item \kw{冗余性：}不同系数是否会生成同一个对象？把两种表示相减后进入线性相关/无关；
+  \item \kw{封闭性：}对某个子集做线性组合会不会跑出去？这进入子空间分支。
+\end{itemize}
+这三条是从“允许线性组合”分叉出的三个问题，不是先后因果链。
 
 所有可达向量构成
 \[
@@ -141,6 +170,66 @@ a_1v_1+\cdots+a_kv_k=0.
 例如 $(1,0)^T,(0,1)^T,(1,1)^T$ 任意两向量都不成比例，但第三个等于前两个之和，因此整体线性相关。
 \end{warnbox}
 
+\subsection{批量线性组合：新向量组的独立性由系数矩阵控制}
+把一组原向量按列排成
+\[
+A=(\alpha_1,\dots,\alpha_m),
+\]
+再用一个系数矩阵 $C\in\mathbb R^{m\times k}$ 生成新向量组
+\[
+B=(\beta_1,\dots,\beta_k)=AC.
+\]
+这里 $C$ 的第 $j$ 列就是 $\beta_j$ 在原向量组中的组合系数。若原向量组 $\alpha_1,\dots,\alpha_m$ 线性无关，则 $A$ 的 kernel 为零，于是
+\[
+Bx=0
+\iff
+A(Cx)=0
+\iff
+Cx=0.
+\]
+因此新向量组是否无关，可以完全转成系数矩阵的问题：
+\[
+Bx=0\iff Cx=0.
+\]
+所以新向量组线性无关，当且仅当齐次方程 $Cx=0$ 只有零解；若 $C$ 是方阵，还可进一步压成
+\[
+\boxed{\det C\ne0.}
+\]
+学到 Topic 03 的 kernel/rank 语言后，同一结论可以压缩写成
+\[
+\ker B=\ker C,\qquad r(B)=r(C).
+\]
+这里 Topic01 Own 的是“原无关组把向量关系无损地转成系数关系”；kernel/rank 只是后续提供的更短表示。
+
+\begin{examplebox}{循环相邻和为什么只看向量个数的奇偶？}
+设 $\alpha_1,\dots,\alpha_m$ 线性无关，并令
+\[
+\beta_i=\alpha_i+\alpha_{i+1},
+\qquad
+\alpha_{m+1}=\alpha_1.
+\]
+若
+\[
+k_1\beta_1+\cdots+k_m\beta_m=0,
+\]
+按原无关组 $\alpha_i$ 收集系数，得到循环方程
+\[
+k_{i-1}+k_i=0
+\qquad(i\ \text{按模 }m\text{ 计}).
+\]
+所以系数必须交替变号。若 $m$ 为奇数，绕一圈后同一个系数既等于自身又等于其相反数，只能全为零，新向量组无关；若 $m$ 为偶数，可以取非零交错系数
+\[
+1,-1,1,-1,\dots,-1,
+\]
+直接构造出零组合，因此新向量组必相关。
+
+这里真正起作用的不是一个要背的“奇偶结论”，而是系数矩阵的 kernel 是否为零。
+\end{examplebox}
+
+\begin{warnbox}{原向量组若本来相关，不能把新组相关性完全交给系数矩阵}
+如果原组已经存在非平凡零组合，那么即使 $Cx\neq0$，它对应的原向量线性组合仍可能等于零。因此“$B=AC$ 与 $C$ 有完全相同的相关性”必须带\kw{原列组无关}这一资格。学到 Topic 03 后，这一损失可再用 $\ker A$ 与乘积 rank 描述。
+\end{warnbox}
+
 \section{基为什么必然同时解决“覆盖”和“唯一”}
 
 一组向量 $\mathcal B=(b_1,\dots,b_n)$ 是空间 $V$ 的\kw{基（basis）}，当且仅当它同时满足：
@@ -170,66 +259,6 @@ a_1v_1+\cdots+a_kv_k=0.
 
 这个共同个数就是向量组真正包含的独立方向数；传统教材把它称为\kw{向量组的秩}。因此“求向量组的秩”与“求一个极大线性无关组”是同一个结构问题的数量版与构造版。矩阵/映射 rank 的统一解释由 Topic 03 负责；本 Topic Own 向量组层面的生成骨架，并把这个数量作为后续接口。
 
-\section{向量空间与子空间：哪些集合允许继续做线性组合？}
-
-\kw{向量空间}要求对线性组合封闭。对一个已经存在的空间 $V$，若子集 $U\subseteq V$ \kw{非空}，并且满足
-\[
-\forall u,v\in U,\quad \forall\alpha,\beta\in\mathbb R,
-\qquad \alpha u+\beta v\in U,
-\]
-则 $U$ 是 $V$ 的\kw{线性子空间}。
-
-“非空”不能省略；在此基础上，这个判据把“加法封闭”和“数乘封闭”合成一次检查。取 $\alpha=\beta=0$ 就得到 $0\in U$。
-
-\begin{warnbox}{齐次解集与非齐次解集为什么性质不同？}
-$Ax=0$ 的解集对线性组合封闭，所以是子空间；若 $Ax=b$ 且 $b\neq0$，两个解的线性组合通常不再满足同一个右端项，因此解集一般不是子空间。
-
-非齐次解集更准确的结构是“一个特解 + 齐次解空间”，其完整机制由 Topic 04 负责。本 Topic 只用这个边界说明：\kw{子空间必须经过原点并对线性组合封闭。}
-\end{warnbox}
-
-\subsection{两个子空间怎样相加、相交？}
-
-给定同一有限维空间中的子空间 $U,W$，它们的\kw{和空间}定义为
-\[
-U+W=\{u+w:u\in U,\ w\in W\}.
-\]
-它表示把两组方向放在一起以后总共能够生成多大的空间。交空间
-\[
-U\cap W
-\]
-则只保留两边共同拥有的方向。
-
-若先取 $U\cap W$ 的一组基，再分别补成 $U$ 与 $W$ 的基，可以得到维数公式
-\[
-\boxed{
-\dim(U+W)=\dim U+\dim W-\dim(U\cap W).
-}
-\]
-这里减掉交空间，是因为公共方向在 $\dim U+\dim W$ 中被重复计算了一次。
-
-\begin{methodbox}{两个 span 的公共方向怎样落回方程？}
-若
-\[
-U=\operatorname{span}(\alpha_1,\dots,\alpha_s),
-\qquad
-W=\operatorname{span}(\beta_1,\dots,\beta_t),
-\]
-要找 $U\cap W$ 中的向量，不是直接比较两组系数，而是令同一个向量同时有两种表示：
-\[
-\sum_{i=1}^{s}c_i\alpha_i
-=
-\sum_{j=1}^{t}d_j\beta_j.
-\]
-移项后得到齐次系统
-\[
-(\alpha_1\ \cdots\ \alpha_s\ -\beta_1\ \cdots\ -\beta_t)
-\begin{pmatrix}c\\d\end{pmatrix}=0.
-\]
-解出系数以后，还必须回代得到实际公共向量；若原生成组本身相关，非零系数解仍可能只对应零向量。
-\end{methodbox}
-
-这条“\kw{公共对象 = 两种表示相等}”的翻译以后还会出现在公共解、特征子空间和跨模块接口中；本册只拥有子空间层面的生成机制。
-
 \section{维数：为什么所有基的长度都一样？}
 
 有限维空间中，任何两组基所含向量数相同。这个共同数字叫空间的\kw{维数（dimension）}，记作 $\dim V$。
@@ -244,6 +273,51 @@ W=\operatorname{span}(\beta_1,\dots,\beta_t),
 \end{itemize}
 
 因为一旦已经有 $n$ 个独立方向，就不可能再缺少新的方向；一旦 $n$ 个方向已经覆盖整个 $n$ 维空间，也不可能还存在冗余而不降低独立方向数。
+
+\section{子空间的组合：和、交与维数账本}
+
+子空间分支来自另一个问题：\kw{一个集合在做线性组合时是否仍留在自身内部？}有了维数语言以后，才能进一步比较多个子空间怎样合并或重叠。
+
+给定同一有限维空间中的子空间 $U,W$，它们的\kw{和空间}定义为
+\[
+U+W=\{u+w:u\in U,\ w\in W\},
+\]
+表示把两边全部可用方向合在一起。交空间
+\[
+U\cap W
+\]
+只保留两边共同拥有的方向。
+
+若先取 $U\cap W$ 的一组基，再分别补成 $U$ 与 $W$ 的基，可以得到
+\[
+\boxed{
+\dim(U+W)=\dim U+\dim W-\dim(U\cap W).
+}
+\]
+减去交空间，是因为公共方向在 $\dim U+\dim W$ 中被重复计算了一次。
+
+\begin{methodbox}{两个 span 的公共方向怎样落回方程？}
+若
+\[
+U=\operatorname{span}(\alpha_1,\dots,\alpha_s),
+\qquad
+W=\operatorname{span}(\beta_1,\dots,\beta_t),
+\]
+要找 $U\cap W$ 中的向量，令同一个公共向量同时有两种表示：
+\[
+\sum_{i=1}^{s}c_i\alpha_i
+=
+\sum_{j=1}^{t}d_j\beta_j.
+\]
+移项得到齐次系统
+\[
+(\alpha_1\ \cdots\ \alpha_s\ -\beta_1\ \cdots\ -\beta_t)
+\begin{pmatrix}c\\d\end{pmatrix}=0.
+\]
+解出系数以后还必须回代得到实际公共向量；若原生成组本身相关，非零系数解仍可能只对应零向量。
+\end{methodbox}
+
+这条“\kw{公共对象 = 两种表示相等}”的翻译以后还会出现在公共解、特征子空间和跨模块接口中；本册只拥有子空间层面的生成机制。
 
 \section{坐标：基把抽象对象变成唯一数字编码}
 
@@ -329,6 +403,23 @@ P=\begin{pmatrix}1&1\\1&-1\end{pmatrix},
 \]
 两组数字不同，但重构出的向量相同。
 \end{examplebox}
+
+\section{第二母问题：唯一表示之后，怎样增加可计算的几何结构？}
+
+普通基已经完成母问题 A：每个对象都能唯一编码。因此接下来并不是“还缺一个更高级的基”，而是出现了新的需求：若题目还要比较长度、夹角、正交性或投影，仅靠向量加法和数乘并没有这些概念。
+
+\begin{corebox}{从线性结构升级到内积结构}
+\[
+\boxed{
+\text{Vector Space}
+\xrightarrow{\text{增加内积}}
+\text{Inner-product Space}
+\xrightarrow{\text{获得}}
+\text{Length / Angle / Orthogonality / Projection}
+}
+\]
+第一支箭头表示\kw{增加额外结构}，不是从向量空间公理逻辑推出内积；第二支箭头表示这些几何概念由内积定义出来。
+\end{corebox}
 
 \section{内积：在线性结构上额外加入长度和角度}
 
@@ -498,7 +589,28 @@ Q^TQ=I,
   \item 原向量组的独立方向数没变。
 \end{itemize}
 
-这四个“不变”分别为后面的 Topic 提供接口，但本 Topic 不提前展开矩阵 rank、kernel 或方程解结构。
+如果题目只需要表示，到这里已经结束；若还要长度、投影或方向解耦，同一母例可以继续进入母问题 B。取
+\[
+u_1=\alpha_1,
+\qquad
+u_2=\alpha_2-
+\frac{\langle\alpha_2,\alpha_1\rangle}{\langle\alpha_1,\alpha_1\rangle}\alpha_1
+=\alpha_2-2\alpha_1=(-1,0,1)^T.
+\]
+于是
+\[
+\langle u_1,u_2\rangle=0,
+\qquad
+\operatorname{span}\{u_1,u_2\}
+=\operatorname{span}\{\alpha_1,\alpha_2\}.
+\]
+单位化后可取
+\[
+q_1=\frac1{\sqrt3}(1,1,1)^T,
+\qquad
+q_2=\frac1{\sqrt2}(-1,0,1)^T.
+\]
+同一个二维方向系统因此完整跑过“去冗余 → 基 → 坐标 → 可选正交化”。这里真正保持的是对象、span 与维数；变化的是选择的表示骨架及其坐标。
 
 \section{概念边界：每次分流看真正判据}
 
@@ -518,6 +630,22 @@ Q^TQ=I,
 \bottomrule
 \end{longtable}
 \normalsize
+
+\section{表示选择的代价：结构越强，计算义务越多}
+
+本 Topic 中的表示并不是越“高级”越好，而应由目标决定是否值得继续增加结构。
+
+\begin{itemize}
+  \item 若只问“能否生成”或“是否相关”，span、齐次关系与 rank 接口已经足够；继续求一组具体基或全部坐标只会增加计算。
+  \item 一组普通基已经保证唯一坐标。只有当题目进一步需要长度、夹角、投影或后续正交对角化接口时，才有必要把它升级为正交/规范正交基。
+  \item Gram--Schmidt 换来的是方向解耦和直接投影坐标；代价是逐步计算投影，且单位化可能引入额外根式。若题目只要求正交基，可以停在单位化之前。
+  \item 换基能让某些结构更简单，但也必须承担过渡矩阵方向与坐标重构的检查成本；若原表示已经让目标关系显然，就没有必要为了“换基”而换基。
+\end{itemize}
+
+因此本册的选择原则是：
+\[
+\boxed{\text{先用满足目标所需的最弱结构；只有当它买来新的可操作能力时，才升级表示。}}
+\]
 
 \section{与其他 Owner 的接口}
 
@@ -565,25 +693,41 @@ Q^TQ=I,
 \end{corebox}
 
 \begin{center}
-\begin{tikzpicture}[node distance=0.8cm]
-\node[nodebox] (lc) {\textbf{线性组合}\\\scriptsize 能到哪里？};
-\node[nodebox,right=of lc] (sp) {\textbf{Span}\\\scriptsize 覆盖范围};
-\node[nodebox,right=of sp] (ind) {\textbf{Independence}\\\scriptsize 去掉冗余};
-\node[nodebox,below=1.0cm of ind] (basis) {\textbf{Basis}\\\scriptsize 覆盖 + 唯一};
-\node[nodebox,left=of basis] (dim) {\textbf{Dimension}\\\scriptsize 独立方向数};
-\node[nodebox,left=of dim] (coord) {\textbf{Coordinates}\\\scriptsize 唯一数字编码};
+\begin{tikzpicture}[node distance=0.8cm and 0.9cm]
+\node[nodebox] (vs) {\textbf{Vector Space}\\\scriptsize 允许线性组合};
+\node[nodebox,below=of vs] (lc) {\textbf{Linear Combination}\\\scriptsize 三类问题入口};
+\node[nodebox,below left=0.9cm and 3.0cm of lc] (sp) {\textbf{Span}\\\scriptsize 可达范围};
+\node[nodebox,below=0.9cm of lc] (ind) {\textbf{Independence}\\\scriptsize 冗余判定};
+\node[nodebox,below right=0.9cm and 3.0cm of lc] (sub) {\textbf{Subspace}\\\scriptsize 封闭性};
+\node[nodebox,below=1.0cm of ind] (basis) {\textbf{Basis}\\\scriptsize Spanning + Independence};
+\node[nodebox,below left=1.0cm and 1.7cm of basis] (dim) {\textbf{Dimension}\\\scriptsize 基长度不变量};
+\node[nodebox,below right=1.0cm and 1.7cm of basis] (coord) {\textbf{Coordinates}\\\scriptsize 有序基下唯一编码};
+\draw[flow] (vs) -- (lc);
 \draw[flow] (lc) -- (sp);
-\draw[flow] (sp) -- (ind);
+\draw[flow] (lc) -- (ind);
+\draw[flow] (lc) -- (sub);
+\draw[flow] (sp) -- (basis);
 \draw[flow] (ind) -- (basis);
 \draw[flow] (basis) -- (dim);
-\draw[flow] (dim) -- (coord);
+\draw[flow] (basis) -- (coord);
 \end{tikzpicture}
 \end{center}
 
-加入内积以后再多一条支线：
+图中 $\text{Span}\to\text{Basis}$ 与 $\text{Independence}\to\text{Basis}$ 表示\kw{条件汇合}，不是先后步骤；$\text{Basis}\to\text{Dimension}$ 与 $\text{Basis}\to\text{Coordinates}$ 是两个并行结果。
+
+若任务再要求欧氏几何能力，则另开第二母问题：
 \[
-\boxed{\text{Independent basis}\to\text{remove projections}\to\text{Orthogonal basis}\to\text{normalize}.}
+\begin{aligned}
+\text{Vector Space}
+&\xrightarrow{\text{add inner product}}
+\text{Orthogonality / Projection}\\
+&\xrightarrow{\text{Gram--Schmidt, preserve span}}
+\text{Orthogonal Basis}
+\xrightarrow{\text{normalize}}
+\text{Orthonormal Basis}.
+\end{aligned}
 \]
+这里第一支箭头表示增加结构，第二支箭头表示 Gram--Schmidt 的变换目标，第三支箭头表示单位化。
 
 忘掉公式时，依次问：
 \begin{enumerate}

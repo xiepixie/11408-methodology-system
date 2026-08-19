@@ -61,6 +61,17 @@ void test_singly_linked_list() {
   assert((list.values() == std::vector<int>{2, 9}));
   assert(list.tail()->value == 9);
 
+  list.reverse();
+  assert((list.values() == std::vector<int>{9, 2}));
+  assert(list.head()->value == 9);
+  assert(list.tail()->value == 2);
+  assert(list.tail()->next == nullptr);
+  assert(list.invariant());
+
+  list.reverse();
+  assert((list.values() == std::vector<int>{2, 9}));
+  assert(list.invariant());
+
   assert(list.erase_first(9));
   assert(list.erase_first(2));
   assert(list.empty());

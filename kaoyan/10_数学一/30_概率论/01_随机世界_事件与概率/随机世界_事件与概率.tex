@@ -262,7 +262,7 @@ P(H_1\cup H_2)=\frac12+\frac12-\frac14=\frac34.
 
 若 $\Omega$ 有限，且每个基本事件确实等可能，则
 \[
-\boxed{P(A)=\frac{|A|}{|\Omega|}.}
+\boxed{P(A)=\frac{\lvert A\rvert}{\lvert\Omega\rvert}.}
 \]
 “有限”和“等可能”缺一不可。非均匀骰子即使只有六个结果，也必须按各点概率加权，不能只数个数。计数时还要统一样本点粒度：分子、分母必须基于同一个记录协议。
 
@@ -395,10 +395,10 @@ P(A)=\frac{\text{$A$ 的基础测度}}{\text{$\Omega$ 的基础测度}}
 在有限总测度下的归一化。它们是概率测度的具体构造，不是新的概率公理。
 \end{corebox}
 
-\begin{examplebox}{几何测度先画补集：2007 Q十六}
-在单位正方形内独立均匀取 $(X,Y)$，事件 $|X-Y|<1/2$ 的概率等于面积比。补事件由两 个直角三角形组成，每个直角边长为 $1/2$，故
+\begin{examplebox}{几何概型：用测度比值替代计数比值}
+在单位正方形内独立均匀取 $(X,Y)$，事件 $\lvert X-Y\rvert<1/2$ 的概率等于面积比。补事件由两个直角三角形组成，每个直角边长为 $1/2$，故
 \[
-P(|X-Y|<1/2)=1-2\cdot\frac12\left(\frac12\right)^2=\frac34.
+P(\lvert X-Y\rvert<1/2)=1-2\cdot\frac12\left(\frac12\right)^2=\frac34.
 \]
 这里的分母是整个正方形面积；先画补集比直接对不等式分区更不易漏掉两侧对称区域。
 \end{examplebox}

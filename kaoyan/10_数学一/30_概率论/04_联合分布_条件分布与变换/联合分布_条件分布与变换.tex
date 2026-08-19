@@ -60,18 +60,28 @@
 \begin{corebox}{母问题：多维概率质量怎样分布、重组与随函数变换？}
 当一次试验同时观察多个维度 $(X,Y)$ 时，新增的核心不是更多的字母，而是\kw{维间的关联与联合几何结构}。单看边缘分布无法恢复联合依赖；条件分布是在截面上重新归一化；变量变换则是概率质量在函数映射下的守恒搬运。
 
-主线推演逻辑：
+主线不是一条“联合 $\to$ 边缘 $\to$ 条件 $\to$ 变换”的流水线，而是对同一联合模型选择不同的信息操作：
 \[
 \boxed{
-\text{联合分布 } f(x,y) \xrightarrow{\text{沿纤维积分}} \text{边缘分布 } f_X(x) \xrightarrow{\text{截面归一化}} \text{条件分布 } f_{Y|X}(y|x) \xrightarrow{\text{原像拉回}} \text{函数变换 } Z=g(X,Y)
-}
+\begin{array}{c}
+\text{联合分布：保留维间全部概率结构}\\[0.6em]
+\begin{array}{ccc}
+\text{边缘化：忘掉一个变量} & \text{条件化：加入一个变量的信息} & \text{变换：更换观察函数}\\[-0.1em]
+\displaystyle f_X(x)=\int f(x,y)\,dy
+&
+\displaystyle f_{Y\mid X}(y\mid x)=\frac{f(x,y)}{f_X(x)}
+&
+\displaystyle F_Z(z)=P\{g(X,Y)\le z\}
+\end{array}
+\end{array}}
 \]
+三种操作的目标和信息损失不同：边缘化会丢弃依赖信息；条件化保留给定截面的结构；变换则把原联合质量搬运到新的值域。
 \end{corebox}
 
 \section{本册定位与职责划分}
 
 \begin{itemize}
-  \item \kw{本册拥有（Owns）：}二维随机变量、联合 CDF/PMF/PDF、支撑集几何、边缘分布、条件分布与条件密度、二维随机变量函数的分布（和、积、商、极值 $\max/\min$）、卷积公式。
+  \item \kw{本册拥有（Owns）：}二维随机变量、联合 CDF/PMF/PDF、支撑集几何、边缘分布、条件分布与条件密度，以及一维/二维随机变量在函数映射下的概率质量变换（原像、分支、Jacobian、和/积/商/极值与卷积）。
   \item \kw{本册使用（Uses）：}一维分布及条件概率。
   \item \kw{本册不拥有（Does not own）：}数字特征（Topic 05 负责）、大数极限定理（Topic 06 负责）、统计量抽样分布（Topic 07 负责）。
   \item \kw{输出目标（Output）：}二维向量 $(X,Y)$ 的完整联合模型及其函数分布计算能力。
@@ -98,6 +108,14 @@ F(x,y) = P(X \le x, Y \le y).
 
 联合密度 $f(x,y)$ 仅在\kw{支撑集 $D \subseteq \mathbb{R}^2$} 上非零。计算积分时，最先也是最重要的步骤是画出 $D$ 的几何区域。忽略 $D$ 的边界会导致积分限错误。
 
+二维均匀分布是“几何概型”在联合密度层的直接实现。若可测区域 $D$ 的面积 $0<|D|<\infty$，且 $(X,Y)$ 在 $D$ 上均匀，则
+\[
+f_{X,Y}(x,y)=\frac1{|D|}I_D(x,y),
+\qquad
+P((X,Y)\in A)=\frac{|A\cap D|}{|D|}.
+\]
+所以均匀题的面积比不是另一套公式，而是常数联合密度积分后的结果；事件区域仍必须先与真实支撑 $D$ 取交。
+
 \section{第二层：边缘分布、条件分布与独立性}
 
 \subsection{Marginalize：沿纤维积分加总}
@@ -106,6 +124,18 @@ F(x,y) = P(X \le x, Y \le y).
 \[
 f_X(x) = \int_{-\infty}^\infty f(x,y) \, dy,\qquad f_Y(y) = \int_{-\infty}^\infty f(x,y) \, dx.
 \]
+
+\begin{methodbox}{边缘化是有损投影：只能向下压缩，不能无条件反演}
+从联合分布求边缘，本质上是把另一个坐标的信息沿纤维求和/积分掉：
+\[
+f_{X,Y}\longmapsto f_X,\ f_Y.
+\]
+这个映射一般不是一一的。许多完全不同的依赖结构可以拥有同一对边缘分布，因此只知道 $f_X,f_Y$ 时，不能唯一恢复 $f_{X,Y}$，更不能默认
+\[
+f_{X,Y}=f_Xf_Y.
+\]
+只有额外给出独立性，或给出足以确定依赖结构的条件分布、联合事件概率、Copula/生成机制等信息，才可能完成反向重建。旧稿所谓“联合已知可以推出边缘，边缘已知通常推不回联合”，应理解为\kw{信息压缩不可逆}，而不是少背了一个反公式。
+\end{methodbox}
 
 \subsection{Condition：在截面上重新归一化}
 
@@ -117,10 +147,74 @@ f_{Y\mid X}(y\mid x) = \frac{f(x,y)}{f_X(x)}
 \]
 它是在直线 $X=x$ 这个截面上将联合密度做重新归一化，使其关于 $y$ 的积分为 1。
 
+\begin{methodbox}{零概率条件的薄片极限直觉：不是把 $0/0$ 当普通分数}
+连续模型中通常 $P(Y=y)=0$，所以初等公式
+\[
+P(A\mid Y=y)=\frac{P(A\cap\{Y=y\})}{P(Y=y)}
+\]
+不能直接使用。若联合密度在相关位置足够正则且 $f_Y(y)>0$，可把“知道 $Y=y$”理解成先知道 $Y$ 落在越来越薄的邻域：
+\[
+P(X\le x\mid y-\varepsilon<Y\le y+\varepsilon)
+=\frac{\displaystyle\int_{-\infty}^{x}\int_{y-\varepsilon}^{y+\varepsilon}f(u,v)\,dv\,du}
+{\displaystyle\int_{y-\varepsilon}^{y+\varepsilon}f_Y(v)\,dv}.
+\]
+令 $\varepsilon\downarrow0$ 时，分子分母都按薄片宽度缩小，其公共尺度消掉，得到
+\[
+F_{X\mid Y}(x\mid y)=\frac{\displaystyle\int_{-\infty}^{x}f(u,y)\,du}{f_Y(y)},
+\qquad
+f_{X\mid Y}(x\mid y)=\frac{f(x,y)}{f_Y(y)}.
+\]
+这解释了“截面后重新归一化”的来源。严格概率论中零概率条件由正则条件分布处理；在 $f_Y(y)=0$ 或缺少必要正则性时，不能把上述邻域极限当成自动存在且唯一的定义。
+\end{methodbox}
+
+\begin{methodbox}{双向条件密度反推边缘：先相除，再验一致性}
+若题目同时给出相容的 $f_{X\mid Y}(x\mid y)$ 与 $f_{Y\mid X}(y\mid x)$，在联合密度为正的区域有
+\[
+\frac{f_{X\mid Y}(x\mid y)}{f_{Y\mid X}(y\mid x)}
+=\frac{f_X(x)}{f_Y(y)}.
+\]
+因此若左边能够分离成 $a(x)/b(y)$，就得到
+\[
+\frac{f_X(x)}{a(x)}=\frac{f_Y(y)}{b(y)}=C,
+\]
+再分别用边缘归一化确定常数，并由 $f_{X,Y}=f_Yf_{X\mid Y}=f_Xf_{Y\mid X}$ 重建联合密度。这个技巧的本质是消去未知联合密度，而不是把两个条件密度当成独立对象随意相除。
+
+\textbf{一致性闸门：}任意两组条件密度并不一定来自同一个联合分布；重建后必须同时满足两种乘法表达、支撑一致和总积分为 $1$。若比例不能分离，也不能据此硬猜边缘族。
+\end{methodbox}
+
+\begin{methodbox}{交换对称：联合对称先推出边缘相同，再反向条件化}
+若联合密度满足
+\[
+f(x,y)=f(y,x)
+\]
+且支撑也关于直线 $y=x$ 对称，则积分变量交换立即给出 $f_X=f_Y$。于是
+\[
+f_{Y\mid X}(y\mid x)
+=\frac{f(x,y)}{f_X(x)}
+=\frac{f(y,x)}{f_Y(x)}
+=f_{X\mid Y}(y\mid x).
+\]
+所以若题目给出一侧条件密度并额外给出联合交换对称，另一侧条件密度可通过“交换变量角色”直接恢复，再结合条件密度归一化与边缘归一化求联合结构。
+
+\textbf{边界：}仅有 $f_X=f_Y$ 并不能推出联合交换对称，更不能推出独立；对称性必须是联合对象本身的结构。
+\end{methodbox}
+
 \subsection{独立性判据}
 
 $X$ 与 $Y$ 独立 $\iff$ 联合 CDF 分解 $F(x,y) = F_X(x) F_Y(y)$ $\iff$ 联合密度分解 $f(x,y) = f_X(x) f_Y(y)$ 几乎处处成立。
 在常见正密度模型中，明显的三角形或圆形支撑可快速排除独立；但矩形支撑本身不能推出独立，严格判据始终是联合分布能否分解为边缘乘积。若独立，则任意可测函数 $g(X)$ 与 $h(Y)$ 仍独立。
+
+对有限离散取值，联合概率表 $P=(p_{ij})$ 还有一个非常有用的线性代数读法：独立时
+\[
+p_{ij}=p_iq_j,
+\qquad
+P=\boldsymbol p\,\boldsymbol q^{\mathsf T},
+\]
+所以联合表是一个非负、总质量为 $1$ 的\kw{秩一矩阵}；等价地，任意 $2\times2$ 子式满足
+\[
+p_{ij}p_{k\ell}=p_{i\ell}p_{kj}.
+\]
+反过来，对合法的非零概率表，秩一意味着可分解成行边缘与列边缘的外积，因此给出独立。考场上通常仍以 $p_{ij}=p_iq_j$ 为主，秩一视角用于快速看清“每一行只是同一个列分布的缩放”。
 
 \begin{examplebox}{2020 真题：边缘分布相同不等于联合独立}
 设 $X_1,X_2$ 独立且均服从 $N(0,1)$，$G$ 独立于二者且 $P(G=0)=P(G=1)=1/2$，并令
@@ -355,13 +449,23 @@ P(M=m)
 \Sigma=\begin{pmatrix}
 \sigma_X^2&\rho\sigma_X\sigma_Y\\
 \rho\sigma_X\sigma_Y&\sigma_Y^2
-\end{pmatrix},\qquad |\rho|<1
+\end{pmatrix},\qquad \lvert\rho\rvert<1
 \]
 确定。任意线性组合仍为正态：
 \[
 aX+bY\sim N\left(a\mu_X+b\mu_Y,
 a^2\sigma_X^2+b^2\sigma_Y^2+2ab\rho\sigma_X\sigma_Y\right).
 \]
+更完整地说，联合正态向量在线性映射下仍为联合正态。若
+\[
+\begin{pmatrix}U\\V\end{pmatrix}
+=A\begin{pmatrix}X\\Y\end{pmatrix}+\boldsymbol c,
+\]
+则 $(U,V)$ 仍联合正态，均值变为 $A\boldsymbol\mu+\boldsymbol c$，协方差矩阵变为
+\[
+A\Sigma A^{\mathsf T}.
+\]
+$\det A\ne0$ 时保留非退化二维结构；$\det A=0$ 时也仍是联合正态，但概率质量退化到某条低维仿射子空间上，通常不再有普通二维密度。这个矩阵版本比逐个背 $aX+bY$ 更能解释线性组合、正交变换和后续抽样分布。
 条件分布为
 \[
 Y\mid X=x\sim N\left(
@@ -385,6 +489,59 @@ P(g(X,Y)\in A)=\sum_xP(X=x)\int_{\{y:g(x,y)\in A\}}f_{Y\mid X}(y\mid x)\,dy.
 \]
 不能把混合分布强行写成二维普通密度，也不能在离散变量上使用连续 Jacobian。先按离散层条件化，再在每个连续截面计算，是混合题的稳定表示。
 
+\begin{methodbox}{离散 + 连续之和：密度是平移后的加权叠加}
+若 $X$ 离散，$P(X=x_i)=p_i$，且在 $X=x_i$ 条件下 $Y$ 有密度 $f_{Y\mid X}(y\mid x_i)$，令 $Z=X+Y$，则
+\[
+f_Z(z)=\sum_i p_i f_{Y\mid X}(z-x_i\mid x_i).
+\]
+若 $X,Y$ 独立，进一步简化为
+\[
+\boxed{f_Z(z)=\sum_i p_i f_Y(z-x_i)}.
+\]
+因此离散变量不是给连续密度“再乘一个密度”，而是选择不同的平移层，再把各层按概率权重叠加。旧稿中 $X\in\{-1,0,1\}$ 等概率时，就直接得到三个平移密度的平均，无需先把完整 CDF 分段算完。
+
+\textbf{检查：}每一层的支撑也要随 $x_i$ 平移；最终密度积分为 $\sum_i p_i=1$。若 $Y\mid X=x_i$ 的分布随层改变，不能误用独立版 $f_Y$。
+\end{methodbox}
+
+\begin{methodbox}{条件标准化：若变换后每一层都同分布，可直接消去隐藏层}
+若离散/分层变量 $G$ 决定连续变量 $Y$ 的尺度，而目标为 $Z=g(G,Y)$，先求条件分布 $Z\mid G=g$，不要先混合 $Y$ 的边缘。若对所有有正概率的 $g$ 都有同一个条件分布
+\[
+P(Z\in A\mid G=g)=Q(A),
+\]
+且右侧与 $g$ 无关，则全概率立即给出 $P(Z\in A)=Q(A)$；更强地，
+\[
+P(Z\in A,G\in B)=Q(A)P(G\in B),
+\]
+因此 $Z\perp G$。这是一条“变换把条件层参数标准化掉”的独立性生成机制。
+
+旧稿的代表结构是 $P(G=k)=2^{-k}$ 且 $Y\mid G=k\sim\operatorname{Exp}(k)$。令 $Z=GY$，则对 $z>0$，
+\[
+P(Z>z\mid G=k)=P(Y>z/k\mid G=k)=e^{-k(z/k)}=e^{-z},
+\]
+所以 $Z\mid G=k\sim\operatorname{Exp}(1)$ 对每一层都相同，故 $Z\sim\operatorname{Exp}(1)$ 且事实上 $Z\perp G$。关键不是把无穷混合逐项硬加，而是先检查条件标准化后是否已经消去层参数。
+
+\textbf{边界：}“各层边缘看起来相似”不够，必须是完整条件分布对所有有正概率的层都相同；若只是一两个矩与层无关，只能推出相应矩信息，不能推出独立。
+\end{methodbox}
+
+\begin{methodbox}{随机符号乘法：反射混合先于分段硬算}
+设 $S\in\{-1,1\}$ 与连续型 $X$ 独立，且
+\[
+P(S=-1)=q,\qquad P(S=1)=1-q,
+\]
+令 $Z=SX$。条件在随机符号后，$S=1$ 层保留原分布，$S=-1$ 层把原分布关于原点反射，因此
+\[
+F_Z(z)=q\,P(-X\le z)+(1-q)F_X(z)
+      =q\,[1-F_X((-z)^-)]+(1-q)F_X(z).
+\]
+若 $X$ 有密度，则
+\[
+\boxed{f_Z(z)=qf_X(-z)+(1-q)f_X(z)}.
+\]
+当 $X\overset d=-X$（例如关于 $0$ 对称）时，任意 $q$ 都有 $Z\overset d=X$。但“同分布”只说明两个边缘相同，不能推出 $X\perp Z$；实际上 $Z$ 仍由同一个 $X$ 与符号层共同生成，独立性必须另查联合事件或条件分布。旧稿中“指数变量乘随机正负号”与“正态变量乘随机正负号”都只是这条反射混合公式的两个特例。
+
+\textbf{检查：}若原分布有原子，CDF 版必须保留 $(-z)^-$；若只因 $X$ 对称而得到 $Z\overset d=X$，到此只能结束边缘分布问题，不能顺手宣布独立。
+\end{methodbox}
+
 \begin{methodbox}{输出对象闸门：先判类型，再选算子}
 面对“求概率分布/密度”的题，先回答三个问题：
 \begin{enumerate}
@@ -396,7 +553,7 @@ P(g(X,Y)\in A)=\sum_xP(X=x)\int_{\{y:g(x,y)\in A\}}f_{Y\mid X}(y\mid x)\,dy.
 \[
 \boxed{\text{类型} \longrightarrow \text{支撑/原像} \longrightarrow \text{积分或求和} \longrightarrow \text{归一化与边界检查}.}
 \]
-例如 $Z=|X|$ 的每个 $z>0$ 有两个原像 $x=\pm z$，密度必须相加；若 $X$ 先离散再令 $Y\mid X$ 连续，则 $Z$ 的密度是各条件密度按层权重的混合，而不是一个未经分层的 Jacobian。
+例如 $Z=\lvert X\rvert$ 的每个 $z>0$ 有两个原像 $x=\pm z$，密度必须相加；若 $X$ 先离散再令 $Y\mid X$ 连续，则 $Z$ 的密度是各条件密度按层权重的混合，而不是一个未经分层的 Jacobian。
 \end{methodbox}
 
 \begin{methodbox}{变换输出的测度账本：四种原像结构}
@@ -408,7 +565,7 @@ P(g(X,Y)\in A)=\sum_xP(X=x)\int_{\{y:g(x,y)\in A\}}f_{Y\mid X}(y\mid x)\,dy.
 原像结构 & 输出形态与首选算子 & 必做回检 \\
 \midrule
 常值纤维（整段输入映到一点） & 产生原子 $q\,\delta_a$；先算纤维概率 & CDF 在 $a$ 的跳跃为 $q$ \\
-单调非恒定纤维 & 连续密度 $f_X(x(y))|dx/dy|$ & 支撑端点、密度积分 \\
+单调非恒定纤维 & 连续密度 $f_X(x(y))\lvert dx/dy\rvert$ & 支撑端点、密度积分 \\
 多原像非恒定纤维 & 各原像分支的密度贡献相加 & 每个分支不重不漏，合计质量守恒 \\
 二维/高维原像 & 在原像曲线或曲面上积分，必要时用 Jacobian & 新支撑、Jacobian、总积分为 $1$ \\
 \bottomrule
@@ -463,7 +620,7 @@ X=\min(U,2-U)\in(0,1),\qquad Y=2-X.
 \]
 对每个 $x\in(0,1)$，原像 $U=x$ 与 $U=2-x$ 各贡献密度 $1/2$，所以 $f_X(x)=1$。随后在这一段上 $Z=Y/X=2/x-1$ 单调递减，值域为 $z>1$，反解 $x=2/(z+1)$，得
 \[
-f_Z(z)=f_X\!\left(\frac{2}{z+1}\right)\left|\frac{dx}{dz}\right|
+f_Z(z)=f_X\!\left(\frac{2}{z+1}\right)\left\lvert\frac{dx}{dz}\right\rvert
 =\frac{2}{(z+1)^2},\qquad z>1.
 \]
 归一化检查为 $\int_1^\infty2(z+1)^{-2}dz=1$。最后若只求数字特征，可在得到 $X/Y=1/Z$ 后直接积分：
@@ -497,10 +654,10 @@ f_Z(z)=\begin{cases}z(2-z),&0<z<1,\\(2-z)^2,&1<z<2,\\0,&\text{其他}.\end{cases
 \begin{methodbox}{截面积分的尺度检查：参数化长度不等于几何长度}
 沿 $ax+by=z$ 积分时，若用 $x$ 作为参数，必须把 $y=(z-ax)/b$ 代回并带上
 \[
-\left|\frac{\partial(x,y)}{\partial(x,z)}\right|=\frac1{|b|}
+\left\lvert\frac{\partial(x,y)}{\partial(x,z)}\right\rvert=\frac1{\lvert b\rvert}
 \quad(b\ne0).
 \]
-若直接把截面写成几何弧长参数，则弧长因子与参数化 Jacobian 的职责不同，不能重复或遗漏。2005 Q二十二中 $y=2x-z$ 的 $|b|=1$，所以因子恰为 $1$；1991 Q十一中 $y=(z-x)/2$，因子为 $1/2$。2007 Q二十三的 $x+y=z$ 也不能只写“截面长度”，必须说明所用参数是 $x$，此时 $dy=-dx$，尺度已经包含在参数化中。最后用总积分为 $1$ 检查尺度是否正确。
+若直接把截面写成几何弧长参数，则弧长因子与参数化 Jacobian 的职责不同，不能重复或遗漏。2005 Q二十二中 $y=2x-z$ 的 $\lvert b\rvert=1$，所以因子恰为 $1$；1991 Q十一中 $y=(z-x)/2$，因子为 $1/2$。2007 Q二十三的 $x+y=z$ 也不能只写“截面长度”，必须说明所用参数是 $x$，此时 $dy=-dx$，尺度已经包含在参数化中。最后用总积分为 $1$ 检查尺度是否正确。
 \end{methodbox}
 
 \begin{examplebox}{早期真题：截面卷积的两种支撑形状}
@@ -530,14 +687,14 @@ Z=g_1(X,Y),\qquad U=g_2(X,Y),
 \[
 \boxed{
 f_{Z,U}(z,u)=f_{X,Y}(h_1(z,u),h_2(z,u))
-\left|\det\frac{\partial(x,y)}{\partial(z,u)}\right|}.
+\left\lvert\det\frac{\partial(x,y)}{\partial(z,u)}\right\rvert}.
 \]
 再对 $u$ 积分得到 $f_Z$。变换非一一时必须对所有逆像分支求和；新的支撑集必须由原支撑集在变换下得到，不能只算行列式。
 
 \begin{methodbox}{Jacobian 公式的证据骨架}
 在可微且局部一一的区域内，小矩形经过逆变换后面积约放大
 \[
-\left|\det\frac{\partial(x,y)}{\partial(z,u)}\right|\,dz\,du.
+\left\lvert\det\frac{\partial(x,y)}{\partial(z,u)}\right\rvert\,dz\,du.
 \]
 同一小区域的概率既可用原密度表示为 $f_{X,Y}(x,y)\,dx\,dy$，也可用新密度表示为 $f_{Z,U}(z,u)\,dz\,du$；令两者相等并代入逆变换，就得到上式。非一一时对每个可行逆像相加，行列式为零或支撑跨越分支点时必须分段处理。
 \end{methodbox}
@@ -570,8 +727,8 @@ f_Z(z)=\int_0^{2\pi}\frac2\pi z\frac12\,d\theta
 \begin{align*}
 f_{X-Y}(z)&=\int f_{X,Y}(x,x-z)\,dx,\\
 f_{aX+bY}(z)&=\frac1{|b|}\int f_{X,Y}\left(x,\frac{z-ax}{b}\right)\,dx,\\
-f_{XY}(z)&=\int\frac1{|x|}f_{X,Y}\left(x,\frac zx\right)\,dx,\\
-f_{X/Y}(z)&=\int |y|f_{X,Y}(zy,y)\,dy.
+f_{XY}(z)&=\int\frac1{\lvert x\rvert}f_{X,Y}\left(x,\frac zx\right)\,dx,\\
+f_{X/Y}(z)&=\int \lvert y\rvert f_{X,Y}(zy,y)\,dy.
 \end{align*}
 
 \section{可加性：卷积后分布族是否保持形状}
@@ -602,11 +759,11 @@ Poisson 计数与 Gamma 等待是同一速率过程的两个观察方向：若�
 
 证明工具按信息选择：显式 PMF/PDF 用离散或连续卷积；MGF 在 $0$ 邻域存在时用乘积；非负整数变量可用 PGF；MGF 不存在时可用总存在的特征函数。Cauchy 分布的稳定性必须通过特征函数理解，因为其期望和方差不存在。
 
-对整数值非负变量，概率生成函数 $G_X(s)=E(s^X)$ 在 $|s|\le1$ 上存在，独立和满足
+对整数值非负变量，概率生成函数 $G_X(s)=E(s^X)$ 在 $\lvert s\rvert\le1$ 上存在，独立和满足
 \[
 G_{X+Y}(s)=G_X(s)G_Y(s).
 \]
-对任意变量，特征函数 $\varphi_X(t)=E(e^{itX})$ 总存在，独立和满足 $\varphi_{X+Y}=\varphi_X\varphi_Y$；它因此可处理 MGF 不存在的重尾分布。Cauchy$(x_0,\gamma)$ 的特征函数为 $\exp(ix_0t-\gamma|t|)$，独立同尺度 Cauchy 的和仍为 Cauchy，位置和尺度参数相加，但均值、方差仍不存在。正态变量之比的 Cauchy 结构也说明“可加稳定性”不等于“数字特征可加”。
+对任意变量，特征函数 $\varphi_X(t)=E(e^{itX})$ 总存在，独立和满足 $\varphi_{X+Y}=\varphi_X\varphi_Y$；它因此可处理 MGF 不存在的重尾分布。Cauchy$(x_0,\gamma)$ 的特征函数为 $\exp(ix_0t-\gamma\lvert t\rvert)$，独立同尺度 Cauchy 的和仍为 Cauchy，位置和尺度参数相加，但均值、方差仍不存在。正态变量之比的 Cauchy 结构也说明“可加稳定性”不等于“数字特征可加”。
 
 \subsection{极值分布 $\max(X,Y)$ 与 $\min(X,Y)$}
 
@@ -615,6 +772,35 @@ G_{X+Y}(s)=G_X(s)G_Y(s).
 F_{\max}(z) &= P(X \le z, Y \le z) = F_X(z) F_Y(z), \\
 F_{\min}(z) &= 1 - P(X > z, Y > z) = 1 - [1 - F_X(z)][1 - F_Y(z)].
 \end{align*}
+
+\begin{methodbox}{指数竞争：先发生概率等于速率占比}
+若 $X\sim\operatorname{Exp}(\lambda_1)$、$Y\sim\operatorname{Exp}(\lambda_2)$ 独立，则
+\[
+P(X<Y)
+=\int_0^\infty P(Y>x)f_X(x)\,dx
+=\int_0^\infty e^{-\lambda_2x}\lambda_1e^{-\lambda_1x}\,dx
+=\boxed{\frac{\lambda_1}{\lambda_1+\lambda_2}}.
+\]
+同时
+\[
+\min(X,Y)\sim\operatorname{Exp}(\lambda_1+\lambda_2).
+\]
+这两式来自同一个“独立时钟竞争”机制：总风险率相加，而某个时钟最先响的概率等于它的风险率占总风险率的比例。推广到 $m$ 个独立指数时钟，最小值速率为 $\sum_i\lambda_i$，第 $j$ 个最先发生的概率为 $\lambda_j/\sum_i\lambda_i$。
+
+同一机制还能恢复“两个同率指数的间隔仍是指数”。若 $\lambda_1=\lambda_2=\lambda$，先发生哪个时钟的概率各为 $1/2$；由无记忆性，较慢时钟在第一个时钟响起后的剩余等待仍为 $\operatorname{Exp}(\lambda)$，因此
+\[
+\boxed{\lvert X-Y\rvert\sim\operatorname{Exp}(\lambda)}.
+\]
+不同速率时则不能写成单一指数：对 $t\ge0$，
+\[
+P(\lvert X-Y\rvert>t)
+=\frac{\lambda_1}{\lambda_1+\lambda_2}e^{-\lambda_2t}
++\frac{\lambda_2}{\lambda_1+\lambda_2}e^{-\lambda_1t},
+\]
+是按“谁先发生”分层后的两指数混合。
+
+\textbf{边界：}这个速率占比与间隔结构都依赖指数分布的恒定风险率/无记忆性；一般寿命分布不能只比较一个参数就直接得到先后概率。
+\end{methodbox}
 
 \section{统一计算工作流与边界}
 

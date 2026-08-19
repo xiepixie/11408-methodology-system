@@ -21,10 +21,10 @@ Atlas Foundation；DS-B03 与图算法交接。
 一般树结构、排序全过程、Prim/Dijkstra 本体。
 
 ## Manual
-- Canonical：[DS05_Heap与优先队列_方法论手册.tex](DS05_Heap与优先队列_方法论手册.tex)
-- Published：[DS05_Heap与优先队列_方法论手册.pdf](../../../90_publish/408/DS05_Heap与优先队列_方法论手册.pdf)
-- 完整实现：[ds05_heap.hpp](code/ds05_heap.hpp)
-- 边界测试：[ds05_heap_test.cpp](code/ds05_heap_test.cpp)
+- Canonical：[Heap与优先队列：方法论手册 (TeX)](DS05_Heap与优先队列_方法论手册.tex)
+- Published：[Heap与优先队列：方法论手册 (PDF)](../../../90_publish/408/DS05_Heap与优先队列_方法论手册.pdf)
+- 完整实现：[`ds05_heap.hpp`](code/ds05_heap.hpp)
+- 边界测试：[`ds05_heap_test.cpp`](code/ds05_heap_test.cpp)
 
 ## Code Contract
 本册代码按 `Operation Contract -> State Fields -> Core Transition -> Invariant Repair -> Boundary Branches -> Complexity -> Executable Tests` 组织。实现固定为最小堆：根保存当前极小值，完全二叉树下标映射保证紧凑形状，`push/pop` 通过上滤/下滤恢复父子偏序，`build_heap` 使用底向上调整。DS04 的 Huffman、DS08 的图算法与 DS11 的堆排序只调用相应优先队列接口。

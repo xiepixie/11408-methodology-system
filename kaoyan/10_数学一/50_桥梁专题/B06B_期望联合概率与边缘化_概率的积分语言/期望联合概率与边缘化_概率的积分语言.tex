@@ -15,11 +15,11 @@ f_X(x)=\int f_{X,Y}(x,y)\,dy.
 \]
 \end{tcolorbox}
 \subsection*{1.\ 期望是加权汇总}
-对离散变量用 $\sum g(x_i)p_i$，连续变量用 $\int g(x)f_X(x)\,dx$。线性性允许先拆函数再计算，但存在性要求 $E|g(X)|<\infty$。期望不是几何平均，也不要求 $g$ 保持正值。
+对离散变量用 $\sum g(x_i)p_i$，连续变量用 $\int g(x)f_X(x)\,dx$。线性性允许先拆函数再计算，但存在性要求 $E\lvert g(X)\rvert<\infty$。期望不是几何平均，也不要求 $g$ 保持正值。
 \subsection*{2.\ 联合、边缘与条件}
 联合密度在支持域 $D$ 上归一化；边缘化是沿“被忽略坐标”积分，条件密度则还要除以边缘概率。顺序不能交换对象：
 \[
-f_{X|Y}(x|y)=\frac{f_{X,Y}(x,y)}{f_Y(y)}.
+f_{X\mid Y}(x\mid y)=\frac{f_{X,Y}(x,y)}{f_Y(y)}.
 \]
 全期望把层级重新接回整体：
 \[

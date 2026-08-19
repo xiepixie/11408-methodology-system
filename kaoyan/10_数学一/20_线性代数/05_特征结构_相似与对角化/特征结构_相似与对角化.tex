@@ -87,7 +87,7 @@ Av=\lambda v,
 \section{本册负责什么}
 
 \begin{itemize}
-  \item \kw{Owns：}线性算子、相似、特征值/特征向量/特征子空间、特征多项式、代数/几何重数、可对角化判据、矩阵多项式与幂、实对称矩阵的正交谱结构、实对称半正定矩阵的谱平方根接口、可交换矩阵保持特征子空间的机制。
+  \item \kw{Owns：}线性算子、相似、特征值/特征向量/特征子空间、特征多项式、代数/几何重数、可对角化判据、矩阵多项式与幂、实对称矩阵的正交谱结构、实对称半正定矩阵的谱平方根接口、$AB$ 与 $BA$ 的谱关系、可交换矩阵保持特征子空间的机制。
   \item \kw{Uses：}Topic 01 的基、坐标、正交与 Schmidt；Topic 02 的一般换基、determinant、逆矩阵；Topic 03 的 kernel、rank；Topic 04 的齐次方程求 kernel。
   \item \kw{Does not own：}一般矩阵等价、Jordan 标准形计算、二次型合同/惯性/正定。
 \end{itemize}
@@ -404,6 +404,28 @@ P_2^{-1}BP_2=\Lambda,
 \]
 也就是说，$B$ 的特征向量 $\beta$ 会通过 $P_1$ 被送回 $A$ 的特征向量 $P_1\beta$。这比记“抽象题该乘 $P_1P_2$ 还是 $P_1P_2^{-1}$”更稳定。
 
+\begin{examplebox}{源资料母题：先在给定基上读出小矩阵}
+源第五章专题 25 给出
+\[
+A\alpha_1=\alpha_2,
+\qquad
+A\alpha_2=-2\alpha_1+3\alpha_2,
+\]
+其中 $\alpha_1,\alpha_2$ 线性无关。上面的机制立刻给
+\[
+B=\begin{pmatrix}0&-2\\1&3\end{pmatrix},
+\qquad
+P_1^{-1}AP_1=B.
+\]
+$B$ 的特征值为 $1,2$，相应可取方向 $(-2,1)^T,(-1,1)^T$。因此原算子的自然方向不是重新解一遍未知矩阵 $A$，而是直接送回
+\[
+-2\alpha_1+\alpha_2,
+\qquad
+-\alpha_1+\alpha_2.
+\]
+这道母题具体展示了“表示先行”：题面已经给了作用关系时，未知的并不是算子结构，而只是它在标准坐标中的数表。
+\end{examplebox}
+
 \section{同特征值为什么不够证明相似}
 
 相似必然同谱，但同谱一般不够。
@@ -616,6 +638,27 @@ Q^TAQ=\begin{pmatrix}3&0\\0&1\end{pmatrix}.
 在线性算子视角，这表示找到了两条互不混合的自然方向；同一数值公式在 Topic 06 还会被重新解释为二次型的正交主轴变换。
 \end{examplebox}
 
+\begin{examplebox}{源资料母题：行和与重根足以反构一个实对称矩阵}
+源第五章专题 27 给出一个三阶实对称矩阵 $A$：各行元素之和均为 $3$，且 $1$ 是二重特征值。行和先给
+\[
+A\mathbf1=3\mathbf1,
+\]
+所以 $E_3=\operatorname{span}\{\mathbf1\}$。实对称性再给
+\[
+E_1=\mathbf1^\perp.
+\]
+令 $q=\mathbf1/\sqrt3$，则空间被分成 $\operatorname{span}\{q\}\oplus q^\perp$，因此
+\[
+A=3qq^T+1(I-qq^T)
+=\boxed{I+\frac23J},
+\]
+其中 $J$ 是三阶全 $1$ 矩阵。于是同一分解立即给
+\[
+\boxed{A^n=I+\frac{3^n-1}{3}J}.
+\]
+这道母题把“反求矩阵”和“矩阵幂”统一成同一件事：先确定各自然子空间上的标量作用，再用正交投影拼回原坐标。
+\end{examplebox}
+
 \begin{warnbox}{正交相似与合同数值相同，不等于对象相同}
 对正交矩阵 $Q$，$Q^{-1}=Q^T$，所以
 \[
@@ -624,7 +667,7 @@ Q^{-1}AQ=Q^TAQ.
 但 Topic 05 研究的是\kw{同一算子换到正交特征基}；Topic 06 研究的是\kw{二次型变量代换}。公式重合不能抹掉对象边界。
 \end{warnbox}
 
-\subsection{实对称半正定矩阵的主平方根：在自然方向上逐项开方}
+\subsection{Extension：实对称半正定矩阵的主平方根——在自然方向上逐项开方}
 
 谱定理还有一个直接的计算后果。设实对称矩阵 $S\succeq0$，写成
 \[
@@ -705,6 +748,53 @@ A^TA=AA^T,
 
 因此本册主线只使用实对称谱定理；正规矩阵只作为未来复线性代数的 Extension，不反向扩大数学一当前结论。
 
+\section{$AB$ 与 $BA$：同一段复合从不同空间开始读取}
+
+设
+\[
+A\in\mathbb F^{m\times n},\qquad B\in\mathbb F^{n\times m}.
+\]
+虽然 $AB$ 与 $BA$ 可能阶数不同，但它们的非零谱来自同一段“先后复合”结构。若
+\[
+ABx=\lambda x,\qquad \lambda\neq0,
+\]
+则 $Bx\neq0$，并且
+\[
+BA(Bx)=B(ABx)=\lambda Bx.
+\]
+所以每个非零特征值都可以从 $AB$ 搬到 $BA$，反向同理。这一步直接解释“为什么同一个非零缩放会在两个复合里出现”；若要进一步得到\kw{代数重数也相同}，需要 determinant 层的证据。对任意标量 $t$，Sylvester determinant identity 给出
+\[
+\boxed{\det(I_m+tAB)=\det(I_n+tBA).}
+\]
+因此对 $\lambda\neq0$，两边特征多项式只可能因维数不同而多出零点 $\lambda=0$ 的幂；非零根及其代数重数完全一致。于是
+\[
+\boxed{AB\text{ 与 }BA\text{ 的非零特征值及其代数重数相同}.}
+\]
+若 $A,B$ 都是同阶方阵，则 $AB,BA$ 同阶，因而零特征值的代数重数也匹配，二者有相同的特征多项式。
+
+迹给出另一个稳定摘要：尺寸相容时
+\[
+\boxed{\operatorname{tr}(AB)=\operatorname{tr}(BA).}
+\]
+但 rank 一般不由这组谱摘要决定，所以不能推出
+\[
+r(AB)=r(BA).
+\]
+
+相似性还需要额外结构。若 $A$ 可逆，则
+\[
+A^{-1}(AB)A=BA,
+\]
+因此
+\[
+\boxed{A\text{ 可逆}\Longrightarrow AB\sim BA.}
+\]
+若 $B$ 可逆同理。没有可逆性或其他充分结构时，即使同阶 $AB,BA$ 同谱，也不能只凭“同特征值”推出相似。
+
+\begin{warnbox}{“比较 $AB,BA$”与“已知 $AB=BA$”不是同一个题型}
+前者研究两个复合算子的谱、trace、rank 与相似边界；后者研究两个算子可交换后怎样保持彼此的不变子空间。只有真正给出 $AB=BA$ 时，才进入下一节的“保持特征子空间”机制。
+\end{warnbox}
+
 \section{可交换矩阵：先得到“保持特征子空间”，再谈同时对角化}
 
 若
@@ -760,6 +850,30 @@ A=\operatorname{diag}(\lambda_1,\dots,\lambda_n),
   \item 若 $A,B$ 在同一数域上都可对角化且 $AB=BA$，则可以在每个 $A$ 的特征子空间内部继续选择 $B$ 的特征基，从而得到共同特征基，即二者可同时对角化。
 \end{itemize}
 
+\begin{examplebox}{源资料母题：$AB=2A-B$ 怎样生成共同特征基}
+源第五章专题 29 设 $A,B$ 为三阶方阵，满足
+\[
+AB=2A-B,
+\]
+并已知 $A$ 有三个互不相同的特征值。先整理为
+\[
+(A+I)(B-2I)=-2I.
+\]
+右端可逆，因此 $A+I$ 可逆，并且
+\[
+B-2I=-2(A+I)^{-1}.
+\]
+所以 $B$ 是 $A$ 的有理函数，立刻有 $AB=BA$。此时还不能停在“可交换”：因为 $A$ 的三个 eigenspace 都是一维，$B$ 保持每一个 eigenspace 就等价于保持每一条特征方向，因此 $A,B$ 存在共同特征基，可以同时对角化。
+
+这道母题把源手稿中的速记结论拆成可靠链条：
+\[
+AB=2A-B
+\Longrightarrow AB=BA
+\Longrightarrow B(E_\lambda(A))\subseteq E_\lambda(A)
+\Longrightarrow \text{简单谱时得到共同特征基}.
+\]
+\end{examplebox}
+
 但只知道 $AB=BA$ 不够。取
 \[
 A=I_2,
@@ -805,6 +919,7 @@ B=\begin{pmatrix}1&1\\0&1\end{pmatrix},
   \item 看到“可对角化”：直接问全部 eigenspace 能否提供 $n$ 个独立方向；
   \item 构造 $P$：按列放特征向量，并用 $AP=P\Lambda$ 检查列顺序；
   \item 看到 $A^k$ 或矩阵多项式：若已可对角化，转到特征方向逐坐标计算；
+  \item 看到 $AB,BA$ 要比较：先看矩阵尺寸与是否有一个因子可逆；非零谱和 trace 可共享，但 rank 与相似性不能无条件共享；
   \item 看到实对称：立即切换到“存在标准正交特征基”，重根只需在对应 eigenspace 内正交化；
   \item 看到 $AB=BA$：先写 $B(E_\lambda(A))\subseteq E_\lambda(A)$，再判断是否有条件升级为共同特征基。
 \end{itemize}

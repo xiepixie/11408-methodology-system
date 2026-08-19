@@ -15,8 +15,8 @@ DS09 有序索引 ↔ DS10 Hash，并调用 Atlas Foundation 的 cost vector。
 不重新讲 BST、B+ Tree、Hash 的内部机制；具体选型口诀进入 Rules。
 
 ## Manual
-- Canonical：[DS-B02_IndexStrategy与Workload_方法论手册.tex](DS-B02_IndexStrategy与Workload_方法论手册.tex)
-- Published：[DS-B02_IndexStrategy与Workload_方法论手册.pdf](../../../../90_publish/408/DS-B02_IndexStrategy与Workload_方法论手册.pdf)
+- Canonical：[Index Strategy 与 Workload：方法论手册 (TeX)](DS-B02_IndexStrategy与Workload_方法论手册.tex)
+- Published：[Index Strategy 与 Workload：方法论手册 (PDF)](../../../../90_publish/408/DS-B02_IndexStrategy与Workload_方法论手册.pdf)
 
 ## Review v1
 已核对 workload、必需操作、维护冗余与查询/更新/空间/I-O 成本；明确选型不是固定“Hash 更快”。下一轮用范围查询、动态更新和外存 workload 验证。

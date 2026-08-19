@@ -186,7 +186,7 @@ python3 00_system/cognitive_system.py publish "<target.tex>"
 - [统一术语](00_system/terminology.md)
 - [手册写作规范（认知结构与验收标准）](00_system/handbook_writing_spec.md)
 - [I.P.A.R.A LaTeX Design System（全局 Canonical Owner）](../infra/latex/README.md)
-- [LaTeX 开源项目 Source Reference Pool（全局 Research Log）](00_system/latex_reference_pool.md)
+- [LaTeX 开源项目 Source Reference Pool（全局 Research Log）](../infra/latex/reference_pool.md)
 - [考研 LaTeX 路由 Stub](00_system/latex_design_system.md)
 - [LaTeX 视觉与布局规范](00_system/latex_layout_spec.md)
 - [Handbook 与 Rule 契约](00_system/handbook_contract.md)
