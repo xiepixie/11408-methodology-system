@@ -2,16 +2,24 @@
 
 状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
-## Position
+## 定位
 
 线性代数方程组 × 高数线性 ODE 的结构 Bridge，相对独立。
+
+## 为什么会想到这座桥
+
+- **表面现象**：线代非齐次方程组写“特解 + 齐次通解”，线性 ODE 也写“特解 + 齐次通解”。
+- **解释断点**：若只当成两个课程各自的口诀，就无法解释为什么这种分解对所有线性问题都反复出现，也不知道非线性问题为何不能照搬。
+- **抽象提升**：把矩阵和微分算子统一看成线性映射 $T$。一旦某个 $x_0$ 命中目标 $b$，所有其他解与 $x_0$ 的差必落入 $\ker T$，于是 $T^{-1}(b)=x_0+\ker T$。
+
+因此 B05 是从“两个学科出现同样通解格式”继续追问到**线性逆像的仿射结构**后才成立的，而不是公式类比。
 
 ## 两侧 Owner
 
 - 线代：线性映射、核、线性方程组与解空间；
 - 高数：线性常微分方程、齐次/非齐次解结构。
 
-## Mother Interface
+## 母接口
 
 线代：$Ax=b$；ODE：$L[y]=f$。共同结构：
 
@@ -19,35 +27,35 @@ $$
 \boxed{\text{Solution Set}=\text{Particular Solution}+\ker L}
 $$
 
-## Owns
+## 本桥拥有
 
 只拥有“非齐次解集为何是一个齐次核的仿射平移”这一共享结构，以及初始条件如何从解族中选定唯一轨迹的接口。
 
-## Uses
+## 调用的上游
 
 线代 kernel/image、ODE 线性叠加与初值机制。
 
-## Boundary / Anti-Bridge
+## 边界与反桥
 
 - “特解 + 齐次解”依赖线性映射/线性微分算子的叠加结构，不能推广到一般非线性 ODE；
 - scalar differential operator 与普通有限维矩阵不是同一对象。
 
-## Extension
+## 扩展
 
 常系数 ODE 特征根 ↔ companion matrix eigenvalue、matrix exponential 都是真连接，但不作为数学一主干展开。
 
-## Source Diff
+## 源资料核对
 
 I-13 与线代 Topic04 的解空间正文已完成 Owner 复核；正文只保留“一点 + Kernel”接口。
 
-## Manual
+## 手册
 
 - Canonical Source：[线性方程与线性微分方程_一点加Kernel.tex](线性方程与线性微分方程_一点加Kernel.tex)
 - Published View：[线性方程与线性微分方程_一点加Kernel.pdf](../../../90_publish/math1/线性方程与线性微分方程_一点加Kernel.pdf)
 
-## Practice
+## 训练
 
 - [一点 + Kernel 调用训练](一点加Kernel调用训练.md) —— 先审计线性，再用“特解命中目标 + kernel 保留自由度”生成全部解；显式阻断向一般非线性 ODE 的错误推广。
 
-## Review v1
+## 第一轮审阅
 已核对非齐次解集是特解加齐次核的仿射平移，并区分有限维矩阵与微分算子。下一轮用非线性 ODE 反例、初值唯一性和解空间维数题验证。

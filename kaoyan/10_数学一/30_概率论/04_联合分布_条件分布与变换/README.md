@@ -125,7 +125,7 @@ $$
 $$
 f_{U,V}(u,v)
 =f_{X,Y}(x(u,v),y(u,v))
-\left|\frac{\partial(x,y)}{\partial(u,v)}\right|.
+\left\lvert\frac{\partial(x,y)}{\partial(u,v)}\right\rvert.
 $$
 
 Jacobian 不是待背修正项，而是坐标变换造成的面积伸缩率。若映射多对一，必须分支求逆并加总所有原像贡献。

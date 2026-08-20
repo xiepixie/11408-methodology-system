@@ -393,7 +393,7 @@ v=\mathcal B[v]_{\mathcal B}=\mathcal B'[v]_{\mathcal B'}=\mathcal BP[v]_{\mathc
 \section{内积：给线性空间增加欧氏几何}
 仅有线性结构时，我们只能谈 span、独立、维数；引入内积后，才有长度、夹角、垂直、投影。
 \[
-\|x\|=\sqrt{\langle x,x\rangle},\qquad x\perp y\iff \langle x,y\rangle=0.
+\lVert x\rVert=\sqrt{\langle x,x\rangle},\qquad x\perp y\iff \langle x,y\rangle=0.
 \]
 正交向量组中的非零向量必然线性无关，因为不同方向之间没有“投影泄漏”。
 
@@ -412,7 +412,7 @@ v=\mathcal B[v]_{\mathcal B}=\mathcal B'[v]_{\mathcal B'}=\mathcal BP[v]_{\mathc
 \section{正交矩阵：保留几何的换坐标}
 若 $Q^TQ=I$，则 $Q^{-1}=Q^T$。更重要的是
 \[
-\|Qx\|=\|x\|,\qquad \langle Qx,Qy\rangle=\langle x,y\rangle.
+\lVert Qx\rVert=\lVert x\rVert,\qquad \langle Qx,Qy\rangle=\langle x,y\rangle.
 \]
 所以正交变换不改变长度和夹角。其列向量（也等价地行向量）构成规范正交组，且 $\lvert\det Q\rvert=1$。
 

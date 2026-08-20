@@ -2,16 +2,24 @@
 
 状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
-## Position
+## 定位
 
 高数 Fourier 级数 × 线代正交基/坐标 Bridge。依赖 B00。
+
+## 为什么会想到这座桥
+
+- **表面现象**：Fourier 系数总要把函数乘上某个正弦/余弦后积分，奇偶性还会让一半系数自动消失。
+- **解释断点**：为什么这种积分恰好能“抽出一个系数”？为什么不同频率不会互相污染？
+- **抽象提升**：把函数放进带积分内积的空间，正弦/余弦构成正交方向；与某个基函数取内积时，其他方向因正交全部消失，留下的就是投影坐标。
+
+B08 因而从“Fourier 系数公式为何如此设计”反推出**函数空间中的正交坐标提取机制**；收敛与恢复仍必须退回高数 Topic11，不能由有限维类比越级推出。
 
 ## 两侧 Owner
 
 - 高数：函数展开、Fourier 系数与收敛；
 - 线代：内积、正交基、坐标与投影。
 
-## Mother Interface
+## 母接口
 
 线代：
 
@@ -31,36 +39,36 @@ $$
 \boxed{\text{Coordinate}=\text{Projection onto an Orthogonal Basis}}
 $$
 
-## Owns
+## 本桥拥有
 
 只拥有“Fourier 系数为什么由内积/积分投影得到”的理解接口，不重新拥有 Fourier 收敛定理或 Gram–Schmidt。
 
-## Uses
+## 调用的上游
 
 B00、高数函数展开 Topic、线代向量空间 Topic。
 
-## Boundary / Anti-Bridge
+## 边界与反桥
 
 - 有限维正交基展开与无限函数级数不能无条件等同；
 - 写出 Fourier 系数不等于已经证明级数在每点恢复原函数；
 - 正交不意味着概率独立。
 
-## Extension
+## 扩展
 
 Hilbert space、完备性、Parseval 的一般函数空间理论属于真实 Extension，不进入主干证明体系。
 
-## Source Diff
+## 源资料核对
 
 高数 Topic11 与线代 Topic01/B00 的接口已完成 Owner 复核；Canonical 正文仍需陌生题验证。
 
-## Manual
+## 手册
 
 - Canonical Source：[Fourier与正交基_函数表示与正交投影.tex](Fourier与正交基_函数表示与正交投影.tex)
 - Published View：[Fourier与正交基_函数表示与正交投影.pdf](../../../90_publish/math1/Fourier与正交基_函数表示与正交投影.pdf)
 
-## Practice
+## 训练
 
 - [Fourier 系数的投影解释](Fourier系数的投影解释.md) —— 从正交坐标公式重建系数归一化与奇偶消项，并在“系数已求出”处明确转回高数 Topic11 处理收敛、端点与逐项操作。
 
-## Review v1
+## 第一轮审阅
 已核对 Fourier 系数作为正交投影坐标的接口，并阻断有限维展开、无限级数收敛与逐点恢复的混同。下一轮用奇偶延拓、端点跳跃和收敛方式题验证。

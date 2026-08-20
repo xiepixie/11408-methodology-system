@@ -200,7 +200,7 @@
 
 例如，面对“证明某算子连续”，不要先搜索套路，而应先问：连续采用哪种拓扑？若是赋范空间中的有界线性算子，则问题可能直接归结为寻找常数 $C$ 使
 \[
-\|Tx\|\le C\|x\|.
+\lVert Tx\rVert\le C\lVert x\rVert.
 \]
 
 \begin{checkbox}{定义检查四问}
@@ -407,7 +407,7 @@ Hilbert 结构 & \textbullet\ 内积、正交、最小二乘 & \textbullet\ 投�
 
 \subsubsection*{1. 线性化：先理解局部的一阶世界}
 \[
-f(x+h)=f(x)+Df(x)h+o(\|h\|).
+f(x+h)=f(x)+Df(x)h+o(\lVert h\rVert).
 \]
 导数、Jacobian、切空间、李代数、稳定性矩阵都可以理解为“复杂对象在局部的线性模型”。
 
@@ -435,7 +435,7 @@ f(x+h)=f(x)+Df(x)h+o(\|h\|).
 \subsubsection*{5. 估计：从精确计算切换到可控性}
 高等分析最常见的成功形式不是 $A=$ 某个漂亮闭式，而是
 \[
-\|A\|\le C\|B\|.
+\lVert A\rVert\le C\lVert B\rVert.
 \]
 估计真正控制的是存在性、唯一性、稳定性、误差、极限交换以及数值可行性。
 

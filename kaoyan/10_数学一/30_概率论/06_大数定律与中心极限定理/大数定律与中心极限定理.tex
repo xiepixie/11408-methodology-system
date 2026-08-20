@@ -58,6 +58,8 @@
 \maketitle
 
 \begin{corebox}{母问题：随机性为什么能在大量重复中呈现稳定位置与可描述的剩余波动？}
+先固定本册最小记号：i.i.d. 表示“相互独立且同分布”；$X_n\xrightarrow{P}X$ 表示对任意 $\varepsilon>0$ 都有 $P(\lvert X_n-X\rvert>\varepsilon)\to0$；$X_n\xrightarrow{d}X$ 表示分布函数在极限分布的连续点处收敛。下文把大数定律简称 LLN，把中心极限定理简称 CLT。后文的直觉解释都不得替代这些定义。
+
 在经典的 i.i.d.、$E(X_i)=\mu$、$0<\operatorname{Var}(X_i)=\sigma^2<\infty$ 这一共同条件包下，同一组随机平均会出现两种\textbf{彼此相关但互不推出}的现象：
 1. \kw{稳定位置：} $\bar X_n$ 靠近确定常数 $\mu$；大数定律回答“最终稳定到哪里”；
 2. \kw{剩余波动：} 把误差按 $\sqrt n$ 的尺度放大后出现非退化极限；经典中心极限定理回答“稳定中心附近怎样波动”。
@@ -92,10 +94,10 @@ X_1,\ldots,X_n\ \text{i.i.d.},\quad E(X_i)=\mu,\quad \operatorname{Var}(X_i)=\si
 
 设 $X_n,X$ 定义在同一概率空间上。四种常用收敛回答的问题不同：
 \begin{itemize}
-  \item 几乎必然收敛：$P(\{\omega:X_n(\omega)\to X(\omega)\})=1$，是样本路径层面的结论；
-  \item 依概率收敛：对所有 $\varepsilon>0$，$P(\lvert X_n-X\rvert>\varepsilon)\to0$，是偏离概率层面的结论；
-  \item $L^p$ 收敛：$E\lvert X_n-X\rvert^p\to0$，其中 $p=2$ 是均方收敛；
-  \item 依分布收敛：分布函数在极限分布的连续点收敛，不要求定义在同一概率空间。
+  \item 几乎必然收敛：$P(\{\omega:X_n(\omega)\to X(\omega)\})=1$，记作 $X_n\xrightarrow{a.s.}X$，是样本路径层面的结论；
+  \item 依概率收敛：对所有 $\varepsilon>0$，$P(\lvert X_n-X\rvert>\varepsilon)\to0$，记作 $X_n\xrightarrow{P}X$，是偏离概率层面的结论；
+  \item $L^p$ 收敛：$E\lvert X_n-X\rvert^p\to0$，记作 $X_n\xrightarrow{L^p}X$，其中 $p=2$ 是均方收敛；
+  \item 依分布收敛：分布函数在极限分布的连续点收敛，记作 $X_n\xrightarrow{d}X$，不要求定义在同一概率空间。
 \end{itemize}
 基本蕴含链为
 \[

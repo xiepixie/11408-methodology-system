@@ -660,7 +660,7 @@ f_x(x_0,y_0)=\lim_{h\to0}\frac{f(x_0+h,y_0)-f(x_0,y_0)}{h}
 \section{可微：存在一个同时适配所有小方向的统一线性模型}
 若
 \[
-\Delta f=\nabla f(\bm x_0)^T\Delta\bm x+o(\|\Delta\bm x\|),
+\Delta f=\nabla f(\bm x_0)^T\Delta\bm x+o(\lVert\Delta\bm x\rVert),
 \]
 则称 $f$ 在该点可微。核心不在于“偏导都存在”，而在于误差相对总位移长度是高阶小量，说明同一个线性平面可以统一近似所有方向。
 
@@ -731,7 +731,7 @@ D_{\bm u}f=\nabla f\cdot\bm u.
 因此：
 \begin{itemize}
   \item $\nabla f$ 方向是增长最快方向；
-  \item $\|\nabla f\|$ 是最大方向导数；
+  \item $\lVert\nabla f\rVert$ 是最大方向导数；
   \item 等值面 $f=c$ 的切向变化为 0，所以梯度垂直等值面。
 \end{itemize}
 梯度不是“偏导数组成的向量”这么简单：更准确地说，一阶微分本身是一个线性泛函，而在标准欧氏内积下可以用梯度向量表示它，所以 $df(\bm h)=\nabla f\cdot\bm h$。当 $\nabla f\neq0$ 时，梯度方向才给出最速上升方向；若 $\nabla f=0$，所有一阶方向导数都为 0，此时必须看更高阶结构。
@@ -854,7 +854,7 @@ f(x+h)\approx f(x)+f'(x)h+\frac12f''(x)h^2.
 \]
 $ds$ 是正的弧长微元，不依赖走向。因此反向遍历同一曲线，第一类曲线积分不变。参数化 $\bm r(t)$ 后
 \[
-ds=\|\bm r'(t)\|dt.
+ds=\lVert\bm r'(t)\rVert dt.
 \]
 
 \section{第二类曲线积分：向量场沿切向做功/环流}
@@ -873,7 +873,7 @@ dS=\sqrt{1+z_x^2+z_y^2}\,dxdy.
 \]
 更一般参数面 $\bm r(u,v)$ 有
 \[
-dS=\|\bm r_u\times\bm r_v\|dudv.
+dS=\lVert\bm r_u\times\bm r_v\rVert dudv.
 \]
 
 \section{第二类曲面积分：向量场穿过曲面的通量}

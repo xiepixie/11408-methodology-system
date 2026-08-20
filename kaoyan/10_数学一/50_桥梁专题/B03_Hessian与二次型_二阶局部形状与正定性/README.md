@@ -2,16 +2,24 @@
 
 状态：待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅。
 
-## Position
+## 定位
 
 高数多元二阶局部模型 × 线代二次型的核心 Bridge。依赖 B01。
+
+## 为什么会想到这座桥
+
+- **表面现象**：高数用 Hessian 行列式、二阶偏导判断极值；线代用二次型正定、负定、不定判断方向符号。
+- **解释断点**：为什么一张二阶偏导矩阵能够决定“所有方向”上的局部升降？为什么必须先检查一阶项消失？
+- **抽象提升**：在驻点，一阶项消失，Taylor 的首个主导项变成 $\frac12h^THh$；Hessian 因而不再只是偏导表，而是一个局部二次型的矩阵表示。
+
+B03 因此不是“高数判别式很像线代正定判据”，而是**二阶微分本身在驻点处生成了二次型对象**；线代随后接管其方向符号与惯性。
 
 ## 两侧 Owner
 
 - 高数：多元局部模型、Hessian、多元极值；
 - 线代：二次型、合同、惯性与正定。
 
-## Mother Interface
+## 母接口
 
 在驻点附近：
 
@@ -25,24 +33,24 @@ $$
 \boxed{\text{Local Second-Order Shape}\rightarrow\text{Quadratic Form}}
 $$
 
-## Owns
+## 本桥拥有
 
 只拥有 Hessian 作为二阶局部模型时，怎样翻译成二次型符号结构来判断局部形状。
 
-## Uses
+## 调用的上游
 
 B01、多元 Taylor、线代二次型与正定性。
 
-## Boundary / Anti-Bridge
+## 边界与反桥
 
 - Hessian 是点处二阶导数信息，二次型是其局部模型中的代数表示；两者不是同一对象；
 - Hessian 判别失效时不能把“半正定”直接解释成极小值。
 
-## Extension
+## 扩展
 
 Rayleigh quotient、广义特征值与更一般约束二次型只保留必要接口。
 
-## Source Diff
+## 源资料核对
 
 旧 `II-03.1` 和线代二次型 Topic 已完成 Owner 复核；正文只保留二阶局部模型到二次型符号结构的翻译。
 
@@ -50,10 +58,10 @@ Rayleigh quotient、广义特征值与更一般约束二次型只保留必要接
 
 - [Hessian 极值判别的资格门](Hessian极值判别的资格门.md) —— 驻点筛选、Hessian 二次型符号与退化分支的局部训练。
 
-## Manual
+## 手册
 
 - Canonical Source：[Hessian与二次型_二阶局部形状与正定性.tex](Hessian与二次型_二阶局部形状与正定性.tex)
 - Published View：[Hessian与二次型_二阶局部形状与正定性.pdf](../../../90_publish/math1/Hessian与二次型_二阶局部形状与正定性.pdf)
 
-## Review v1
+## 第一轮审阅
 已核对 Hessian 二阶局部模型到二次型符号判定的交接；明确半正定时判别可能失效。下一轮用退化驻点、方向限制和合同变换题验证。

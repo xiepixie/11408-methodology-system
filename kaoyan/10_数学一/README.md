@@ -121,10 +121,12 @@ Integration 不按数量规划。只有完整问题确实能检验多个成熟�
 典型 Extension：
 
 - 常系数 ODE 特征根 ↔ companion matrix eigenvalue；
-- covariance matrix ↔ quadratic form；
+- 协方差谱结构向 PCA / whitening / Gaussian 高维主轴的进一步推广；
 - Fourier ↔ Hilbert space；
 - generalized Stokes theorem；
 - matrix exponential for linear ODE systems。
+
+其中“协方差矩阵 ↔ 正半定二次型”已由 B09 晋升为数学一核心 Bridge，不再列作 Extension。
 
 ## 6. Control Plane
 

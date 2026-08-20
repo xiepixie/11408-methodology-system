@@ -48,6 +48,7 @@
 \newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
 
 \title{\vspace{-1.1cm}\textbf{数字特征与依赖摘要}\\[0.4em]
 \large 怎样高效压缩概率分布而不遗忘关键结构与信息损失？}
@@ -88,7 +89,7 @@ P_{X,Y}\ \longrightarrow\ \operatorname{Cov}(X,Y)\ \longrightarrow\ \rho_{XY}
 \[
 E(X)=\sum_kx_kp_k,\qquad E(X)=\int_{-\infty}^{\infty}xf_X(x)\,dx,
 \]
-并要求 $E\lvert X\rvert<\infty$，才能把期望作为有限实数使用。更一般的 LOTUS 公式是
+并要求 $E\lvert X\rvert<\infty$，才能把期望作为有限实数使用。更一般地，函数期望可以直接对原随机变量的分布求和/积分；本册把这条路线简称为 LOTUS（即“无需先求 $g(X)$ 的分布，直接计算 $E[g(X)]$”）：
 \[
 \boxed{E[g(X)]=\sum_kg(x_k)p_k\quad\text{或}\quad E[g(X)]=\int g(x)f_X(x)\,dx},
 \]
@@ -285,7 +286,7 @@ E(X)=\int_0^\infty P(X>t)\,dt-\int_0^\infty P(X<-t)\,dt.
 \[
 \operatorname{Var}(X)=E[(X-\mu)^2]=E(X^2)-\mu^2\geq0,\qquad \operatorname{SD}(X)=\sqrt{\operatorname{Var}(X)}.
 \]
-方差为零当且仅当 $X=\mu$ 几乎处处。平移不改变方差，缩放使方差乘以系数平方：
+这里先定义“几乎处处”：在概率语境下，性质对 $X$ 几乎处处成立，是指不满足该性质的样本点集合概率为 $0$；例如 $X=\mu$ 几乎处处等价于 $P(X=\mu)=1$。因此方差为零当且仅当 $X=\mu$ 几乎处处。平移不改变方差，缩放使方差乘以系数平方：
 \[
 \operatorname{Var}(aX+b)=a^2\operatorname{Var}(X).
 \]
@@ -295,7 +296,7 @@ E(X)=\int_0^\infty P(X>t)\,dt-\int_0^\infty P(X<-t)\,dt.
 =\sum_{i=1}^na_i^2\operatorname{Var}(X_i)
 +2\sum_{i<j}a_ia_j\operatorname{Cov}(X_i,X_j).
 \]
-只有在独立或至少两两不相关时，交叉项才能消失。
+只有在独立或至少两两不相关时，交叉项才能消失；这里“两两不相关”按定义指任意 $i\ne j$ 都有 $\operatorname{Cov}(X_i,X_j)=0$。
 
 \begin{methodbox}{方差恒等式的计算推导}
 令 $\mu=E(X)$，对任意常数 $a$ 展开平方：
@@ -476,6 +477,7 @@ $F(x)=0.3\Phi(x)+0.7\Phi((x-1)/2)$ 一类题，第一动作应识别为“以 $0
 \end{methodbox}
 
 \begin{examplebox}{真题对照：随机选择的混合 vs 取平均}
+这里沿用全册记号：$X\indep Y$ 表示随机变量概率独立；单符号 $\perp$ 只用于几何正交。
 2014 Q八 中，$Y_1$ 以概率 $1/2$ 选择 $X_1$ 或 $X_2$，而 $Y_2=(X_1+X_2)/2$。令 $G\sim\operatorname{Bernoulli}(1/2)$ 独立于 $(X_1,X_2)$，则 $Y_1=GX_1+(1-G)X_2$。条件分解给出
 \[
 \begin{aligned}
@@ -483,7 +485,7 @@ E(Y_1)&=\tfrac12(E X_1+E X_2),\\
 \operatorname{Var}(Y_1)&=\tfrac12(\operatorname{Var}X_1+\operatorname{Var}X_2)
  +\tfrac14(E X_1-E X_2)^2,\\
 \operatorname{Var}(Y_2)&=\tfrac14(\operatorname{Var}X_1+\operatorname{Var}X_2)
-\quad(X_1\perp X_2).
+\quad(X_1\indep X_2).
 \end{aligned}
 \]
 额外的层间均值差异使混合的方差通常大于平均值的方差；“均值相同”不意味着波动相同。

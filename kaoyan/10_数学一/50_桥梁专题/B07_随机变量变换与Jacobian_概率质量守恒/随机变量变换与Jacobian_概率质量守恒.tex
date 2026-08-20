@@ -36,14 +36,14 @@ f_{X,Y}(x,y)\,dxdy=f_{U,V}(u,v)\,dudv.}
 \[
 y=g(x)
 \]
-在当前区间上一一可微。若 $g$ 在某处把长度放大为原来的 $|g'(x)|$ 倍，那么同一小块概率质量会摊到更长的新区间上，因此新密度必须相应变小：
+在当前区间上一一可微。若 $g$ 在某处把长度放大为原来的 $\lvert g'(x)\rvert$ 倍，那么同一小块概率质量会摊到更长的新区间上，因此新密度必须相应变小：
 \[
-f_Y(y)\approx \frac{f_X(x)}{|g'(x)|}.
+f_Y(y)\approx \frac{f_X(x)}{\lvert g'(x)\rvert}.
 \]
 精确写成
 \[
 \boxed{
-f_Y(y)=f_X(g^{-1}(y))\left|\frac{d}{dy}g^{-1}(y)\right|.}
+f_Y(y)=f_X(g^{-1}(y))\left\lvert\frac{\mathrm{d}}{\mathrm{d}y}g^{-1}(y)\right\rvert.}
 \]
 
 所以“乘逆导数”不是概率专属口诀，而是\textbf{质量固定、坐标体积改变后密度必须反向补偿}。
@@ -59,15 +59,15 @@ f_Y(y)=f_X(g^{-1}(y))\left|\frac{d}{dy}g^{-1}(y)\right|.}
 \]
 则
 \[
-dxdy
-=\left|\frac{\partial(x,y)}{\partial(u,v)}\right|dudv.
+\mathrm{d}x\,\mathrm{d}y
+=\left\lvert\frac{\partial(x,y)}{\partial(u,v)}\right\rvert\mathrm{d}u\,\mathrm{d}v.
 \]
 同一小区域概率守恒给出
 \[
 \boxed{
 f_{U,V}(u,v)
 =f_{X,Y}(H(u,v))
-\left|\frac{\partial(x,y)}{\partial(u,v)}\right|.}
+\left\lvert\frac{\partial(x,y)}{\partial(u,v)}\right\rvert.}
 \]
 
 为什么概率公式看起来总爱用“逆 Jacobian”？因为目标是把原密度表达成\textbf{新坐标变量的函数}，自然先把旧坐标写成新坐标的函数。若坚持使用正变换 determinant，也可以，但必须在对应原像点取倒数；两种写法来自同一 B02 逆映射关系。
@@ -92,7 +92,7 @@ x_1(y),\dots,x_k(y),
 且各分支局部单调，则目标小区间附近的概率来自所有这些互不重叠的小原像区间，因此
 \[
 \boxed{
-f_Y(y)=\sum_{i=1}^k f_X(x_i(y))\left|\frac{dx_i}{dy}\right|.}
+f_Y(y)=\sum_{i=1}^k f_X(x_i(y))\left\lvert\frac{\mathrm{d}x_i}{\mathrm{d}y}\right\rvert.}
 \]
 
 这不是“多乘几项”，而是概率的可加性：多个不同原始结果被变换折叠到同一个输出值附近，质量必须全部汇总。
@@ -114,7 +114,7 @@ x_1=\sqrt y,
 \]
 原密度均为 $1/2$，且
 \[
-\left|\frac{dx_i}{dy}\right|=\frac1{2\sqrt y}.
+\left\lvert\frac{\mathrm{d}x_i}{\mathrm{d}y}\right\rvert=\frac1{2\sqrt y}.
 \]
 所以
 \[
@@ -139,13 +139,13 @@ f_Y(y)
 \]
 且
 \[
-\left|\frac{\partial(x,y)}{\partial(u,v)}\right|
-=|\det A^{-1}|=rac1{|\det A|}.
+\left\lvert\frac{\partial(x,y)}{\partial(u,v)}\right\rvert
+=\lvert\det A^{-1}\rvert=rac1{\lvert\det A\rvert}.
 \]
 于是
 \[
 \boxed{
-f_{U,V}(u,v)=f_{X,Y}(A^{-1}(u,v))\frac1{|\det A|}.}
+f_{U,V}(u,v)=f_{X,Y}(A^{-1}(u,v))\frac1{\lvert\det A\rvert}.}
 \]
 
 这条式子把线代 determinant 的“面积倍率”和概率的“密度反向补偿”完全对齐。

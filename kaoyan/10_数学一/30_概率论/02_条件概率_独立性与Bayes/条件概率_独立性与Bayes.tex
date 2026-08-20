@@ -26,6 +26,7 @@
 \newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
 
 \title{\vspace{-1.1cm}\textbf{条件概率、独立性与 Bayes}\\[0.4em]
 \large 信息怎样限制世界、合成路径并重分配权重}
@@ -159,9 +160,14 @@ P(B\mid A)=\frac{99}{5094}\approx1.94\%.
 \[
 \boxed{P(A\cap B)=P(A)P(B)}.
 \]
+本册从这里约定
+\[
+\boxed{A\indep B\;\Longleftrightarrow\;P(A\cap B)=P(A)P(B)}.
+\]
+符号 $\indep$ 只表示\textbf{概率独立}，不读作“垂直”；单符号 $\perp$ 留给内积意义下的几何正交。互斥则仍写 $A\cap B=\varnothing$，三种关系不得混用。
 若 $P(B)>0$，等价于 $P(A\mid B)=P(A)$；若 $0<P(B)<1$，还等价于 $P(A\mid B^c)=P(A)$。独立是概率关系，不是因果关系。
 
-独立事件的补事件仍独立：$A\perp B$ 蕴含 $A^c\perp B$、$A\perp B^c$、$A^c\perp B^c$。概率为 $0$ 或 $1$ 的事件与任意事件独立，但这属于退化独立，不能用条件概率反向解释，因为某些条件概率没有定义。
+独立事件的补事件仍独立：$A\indep B$ 蕴含 $A^c\indep B$、$A\indep B^c$、$A^c\indep B^c$。概率为 $0$ 或 $1$ 的事件与任意事件独立，但这属于退化独立，不能用条件概率反向解释，因为某些条件概率没有定义。
 
 更一般地，若有限事件组 $A_1,\ldots,A_s,B_1,\ldots,B_t$ \kw{整体相互独立}，那么只用 $A_1,\ldots,A_s$ 做补、有限并交等事件运算得到的事件，与只用 $B_1,\ldots,B_t$ 做相应运算得到的事件仍独立。等价地说，两组所生成的有限事件代数彼此独立。直观上，独立性属于“两组信息互不改变概率”的结构，而不只属于最初写下来的两个事件。这里不能把“所有跨组两两独立”偷换成整体相互独立；后者才足以保证任意组内事件运算后的独立封闭。
 
@@ -289,7 +295,7 @@ P(X<Y)=\int_0^\infty e^{-\lambda_Yx}\lambda_Xe^{-\lambda_Xx}\,dx
 \begin{examplebox}{2022 真题：条件正态先翻译成共享信号模型}
 若 $X\sim N(0,1)$，且给定 $X=x$ 时 $Y\mid X=x\sim N(x,1)$，不要把条件均值 $E(Y\mid X)=X$ 直接当成恒等式 $Y=X$。等价的生成表示是
 \[
-Y=X+\varepsilon,\qquad \varepsilon\sim N(0,1),\quad \varepsilon\perp X.
+Y=X+\varepsilon,\qquad \varepsilon\sim N(0,1),\quad \varepsilon\indep X.
 \]
 于是条件层给出的边缘方差为
 \[
@@ -306,7 +312,7 @@ E(Y)=E[X]=0,\qquad
 \end{examplebox}
 
 \begin{examplebox}{真题分工：2018 Q十四 的独立与互斥各管一段}
-题设 $A\perp B$、$A\perp C$、$B\cap C=\varnothing$、$P(A)=P(B)=1/2$，且
+题设 $A\indep B$、$A\indep C$、$B\cap C=\varnothing$、$P(A)=P(B)=1/2$，且
 \[
 P(AC\mid AB\cup C)=1/4.
 \]
@@ -314,7 +320,7 @@ P(AC\mid AB\cup C)=1/4.
 \[
 \frac{c/2}{1/4+c}=\frac14\Longrightarrow c=\frac14.
 \]
-不能把 $A\perp B$ 与 $A\perp C$ 合并成 $B\perp C$；本题正是用互斥而不是独立来处理分母。
+不能把 $A\indep B$ 与 $A\indep C$ 合并成 $B\indep C$；本题正是用互斥而不是独立来处理分母。
 \end{examplebox}
 
 \begin{examplebox}{事件指示变量先恢复四格表：2004 Q二十二}

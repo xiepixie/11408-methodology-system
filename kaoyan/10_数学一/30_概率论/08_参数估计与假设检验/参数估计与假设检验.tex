@@ -60,6 +60,8 @@
 \begin{corebox}{母问题：怎样用样本与抽样分布约束未知参数，而不把随机证据误当成参数真值？}
 概率模型给定参数时生成随机样本；统计推断观察有限样本后，只能在模型与抽样分布提供的标尺下对未知参数作受校准的判断。点估计、区间估计与假设检验不是前后依赖的三道流水工序，而是\textbf{从同一模型、样本和抽样分布分叉出的三类输出任务}。
 
+先固定后文会反复压缩的术语：估计量 $\widehat\theta=T(X_1,\ldots,X_n)$ 是专门用于估计未知参数的统计量，代入观测值后得到的具体数才叫估计值；最大似然估计（MLE）是在参数可行域内选择使似然达到全局最大值的估计方法；均方误差（MSE）定义为 $E[(\widehat\theta-\theta)^2]$；枢轴量是由样本与参数构成、但抽样分布不含待估未知参数的随机量；i.i.d. 表示“相互独立且同分布”；$\widehat\theta_n\xrightarrow{P}\theta$ 表示对任意 $\varepsilon>0$，$P(\lvert\widehat\theta_n-\theta\rvert>\varepsilon)\to0$。
+
 主线推演逻辑：
 \begin{center}
 \begin{tikzpicture}[>=Stealth]

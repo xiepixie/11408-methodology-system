@@ -48,6 +48,7 @@
 \newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
 
 \title{\vspace{-1.1cm}\textbf{总体、样本与抽样分布}\\[0.4em]
 \large 统计量为什么仍然随机？正态总体下的四大抽样标尺}
@@ -58,7 +59,7 @@
 \maketitle
 
 \begin{corebox}{母问题：统计量为什么仍然随机？正态总体下的四大抽样标尺}
-看到数据以后容易忘记它原本会变化。简单随机样本 $X_1,\dots,X_n$ 是总体分布的独立同分布副本；统计量是样本的函数。正态总体下，样本均值与样本方差拥有特殊的独立性与三大精确抽样分布（$\chi^2, t, F$）。
+看到数据以后容易忘记它原本会变化。简单随机样本 $X_1,\dots,X_n$ 是总体分布的独立同分布副本；统计量是样本的函数。正态总体下，样本均值与样本方差拥有特殊的独立性与三大精确抽样分布（$\chi^2, t, F$）。这里先约定：i.i.d. 表示“相互独立且同分布”，只压缩这两个条件。
 
 主线推演逻辑：
 \[
@@ -229,10 +230,10 @@ F_{1-\alpha}(\nu_1,\nu_2)=\frac1{F_\alpha(\nu_2,\nu_1)}.
 
 \section{第五层：正态总体的正交分解与精确抽样分布}
 
-若 $X_i\overset{\mathrm{i.i.d.}}\sim N(\mu,\sigma^2)$，则
+若 $X_i\overset{\mathrm{i.i.d.}}\sim N(\mu,\sigma^2)$，则有以下精确结论。这里沿用全册约定：$X\indep Y$ 表示随机变量概率独立；单符号 $\perp$ 只表示几何正交。
 \[
 \bar X\sim N\left(\mu,\frac{\sigma^2}{n}\right),\qquad
-\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1),\qquad \bar X\perp S^2.
+\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1),\qquad \bar X\indep S^2.
 \]
 几何上，样本向量分解为常数方向 $(1,\ldots,1)$ 的均值投影和其正交残差空间；正态向量的正交投影独立。于是
 \[
@@ -367,7 +368,7 @@ $t,\chi^2,F$ 的精确结论依赖正态总体；$\bar X$ 与 $S^2$ 的独立性
 \[
 \sqrt n\,\bar X\sim N(0,1),\qquad (n-1)S^2\sim\chi^2(n-1),
 \]
-且 $\bar X\perp S^2$，可得
+且 $\bar X\indep S^2$，可得
 \[
 \frac{\sqrt n\,\bar X}{S}
  =\frac{Z}{\sqrt{\chi^2(n-1)/(n-1)}}\sim t(n-1).
@@ -408,7 +409,7 @@ T=\bar X^2-\frac{S^2}{n}
 \end{examplebox}
 
 \begin{examplebox}{2013 Q八：平方变换要保留两个原像}
-若 $X\sim t(n)$、$Y\sim F(1,n)$，则 $Y\overset d=X^2$。当 $c>0$ 且 $P(X>c)=\alpha$ 时，$t$ 分布关于零对称，故
+若 $X\sim t(n)$、$Y\sim F(1,n)$，则 $Y$ 与 $X^2$ 同分布，即 $Y\overset{d}{=}X^2$。当 $c>0$ 且 $P(X>c)=\alpha$ 时，$t$ 分布关于零对称，故
 \[
 P(Y>c^2)=P(\lvert X\rvert>c)=P(X>c)+P(X<-c)=2\alpha.
 \]
@@ -494,7 +495,7 @@ a=\frac{10}{9}.
 \begin{examplebox}{母例：从样本到 $\chi^2$、$t$ 与区间入口}
 设 $X_1,\ldots,X_n\overset{\mathrm{i.i.d.}}\sim N(\mu,\sigma^2)$。抽样前先区分对象：$\bar X$ 和 $S^2$ 是统计量，观测到 $\bar x,s^2$ 后才是数值。平方和分解给出
 \[
-\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1),\qquad \bar X\perp S^2.
+\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1),\qquad \bar X\indep S^2.
 \]
 均值方向标准化为 $Z=(\bar X-\mu)/(\sigma/\sqrt n)$，与独立的残差标尺组合得到
 \[

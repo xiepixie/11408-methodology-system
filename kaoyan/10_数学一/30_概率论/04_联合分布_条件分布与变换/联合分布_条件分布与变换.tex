@@ -48,6 +48,7 @@
 \newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
 
 \title{\vspace{-1.1cm}\textbf{联合分布、条件分布与变换}\\[0.4em]
 \large 多维概率质量怎样分布、重组与随函数变换？}
@@ -108,11 +109,11 @@ F(x,y) = P(X \le x, Y \le y).
 
 联合密度 $f(x,y)$ 仅在\kw{支撑集 $D \subseteq \mathbb{R}^2$} 上非零。计算积分时，最先也是最重要的步骤是画出 $D$ 的几何区域。忽略 $D$ 的边界会导致积分限错误。
 
-二维均匀分布是“几何概型”在联合密度层的直接实现。若可测区域 $D$ 的面积 $0<|D|<\infty$，且 $(X,Y)$ 在 $D$ 上均匀，则
+二维均匀分布是“几何概型”在联合密度层的直接实现。若可测区域 $D$ 的面积 $0<\lvert D\rvert<\infty$，且 $(X,Y)$ 在 $D$ 上均匀，则
 \[
-f_{X,Y}(x,y)=\frac1{|D|}I_D(x,y),
+f_{X,Y}(x,y)=\frac1{\lvert D\rvert}I_D(x,y),
 \qquad
-P((X,Y)\in A)=\frac{|A\cap D|}{|D|}.
+P((X,Y)\in A)=\frac{\lvert A\cap D\rvert}{\lvert D\rvert}.
 \]
 所以均匀题的面积比不是另一套公式，而是常数联合密度积分后的结果；事件区域仍必须先与真实支撑 $D$ 取交。
 
@@ -504,6 +505,7 @@ f_Z(z)=\sum_i p_i f_{Y\mid X}(z-x_i\mid x_i).
 \end{methodbox}
 
 \begin{methodbox}{条件标准化：若变换后每一层都同分布，可直接消去隐藏层}
+这里沿用全册记号：$X\indep Y$ 表示随机变量概率独立；单符号 $\perp$ 只用于几何正交。
 若离散/分层变量 $G$ 决定连续变量 $Y$ 的尺度，而目标为 $Z=g(G,Y)$，先求条件分布 $Z\mid G=g$，不要先混合 $Y$ 的边缘。若对所有有正概率的 $g$ 都有同一个条件分布
 \[
 P(Z\in A\mid G=g)=Q(A),
@@ -512,19 +514,19 @@ P(Z\in A\mid G=g)=Q(A),
 \[
 P(Z\in A,G\in B)=Q(A)P(G\in B),
 \]
-因此 $Z\perp G$。这是一条“变换把条件层参数标准化掉”的独立性生成机制。
+因此 $Z\indep G$。这是一条“变换把条件层参数标准化掉”的独立性生成机制。
 
 旧稿的代表结构是 $P(G=k)=2^{-k}$ 且 $Y\mid G=k\sim\operatorname{Exp}(k)$。令 $Z=GY$，则对 $z>0$，
 \[
 P(Z>z\mid G=k)=P(Y>z/k\mid G=k)=e^{-k(z/k)}=e^{-z},
 \]
-所以 $Z\mid G=k\sim\operatorname{Exp}(1)$ 对每一层都相同，故 $Z\sim\operatorname{Exp}(1)$ 且事实上 $Z\perp G$。关键不是把无穷混合逐项硬加，而是先检查条件标准化后是否已经消去层参数。
+所以 $Z\mid G=k\sim\operatorname{Exp}(1)$ 对每一层都相同，故 $Z\sim\operatorname{Exp}(1)$ 且事实上 $Z\indep G$。关键不是把无穷混合逐项硬加，而是先检查条件标准化后是否已经消去层参数。
 
 \textbf{边界：}“各层边缘看起来相似”不够，必须是完整条件分布对所有有正概率的层都相同；若只是一两个矩与层无关，只能推出相应矩信息，不能推出独立。
 \end{methodbox}
 
 \begin{methodbox}{随机符号乘法：反射混合先于分段硬算}
-设 $S\in\{-1,1\}$ 与连续型 $X$ 独立，且
+先固定记号：$U\overset{d}{=}V$ 表示 $U,V$ **同分布**，即二者的分布函数相同；它不表示两个随机变量逐点相等，也不提供独立性。设 $S\in\{-1,1\}$ 与连续型 $X$ 独立，且
 \[
 P(S=-1)=q,\qquad P(S=1)=1-q,
 \]
@@ -537,9 +539,9 @@ F_Z(z)=q\,P(-X\le z)+(1-q)F_X(z)
 \[
 \boxed{f_Z(z)=qf_X(-z)+(1-q)f_X(z)}.
 \]
-当 $X\overset d=-X$（例如关于 $0$ 对称）时，任意 $q$ 都有 $Z\overset d=X$。但“同分布”只说明两个边缘相同，不能推出 $X\perp Z$；实际上 $Z$ 仍由同一个 $X$ 与符号层共同生成，独立性必须另查联合事件或条件分布。旧稿中“指数变量乘随机正负号”与“正态变量乘随机正负号”都只是这条反射混合公式的两个特例。
+当 $X\overset{d}{=}-X$（例如关于 $0$ 对称）时，任意 $q$ 都有 $Z\overset{d}{=}X$。但“同分布”只说明两个边缘相同，不能推出 $X\indep Z$；实际上 $Z$ 仍由同一个 $X$ 与符号层共同生成，独立性必须另查联合事件或条件分布。旧稿中“指数变量乘随机正负号”与“正态变量乘随机正负号”都只是这条反射混合公式的两个特例。
 
-\textbf{检查：}若原分布有原子，CDF 版必须保留 $(-z)^-$；若只因 $X$ 对称而得到 $Z\overset d=X$，到此只能结束边缘分布问题，不能顺手宣布独立。
+\textbf{检查：}若原分布有原子，CDF 版必须保留 $(-z)^-$；若只因 $X$ 对称而得到 $Z\overset{d}{=}X$，到此只能结束边缘分布问题，不能顺手宣布独立。
 \end{methodbox}
 
 \begin{methodbox}{输出对象闸门：先判类型，再选算子}
@@ -726,7 +728,7 @@ f_Z(z)=\int_0^{2\pi}\frac2\pi z\frac12\,d\theta
 常用公式（均先按支撑集解释积分）为
 \begin{align*}
 f_{X-Y}(z)&=\int f_{X,Y}(x,x-z)\,dx,\\
-f_{aX+bY}(z)&=\frac1{|b|}\int f_{X,Y}\left(x,\frac{z-ax}{b}\right)\,dx,\\
+f_{aX+bY}(z)&=\frac1{\lvert b\rvert}\int f_{X,Y}\left(x,\frac{z-ax}{b}\right)\,dx,\\
 f_{XY}(z)&=\int\frac1{\lvert x\rvert}f_{X,Y}\left(x,\frac zx\right)\,dx,\\
 f_{X/Y}(z)&=\int \lvert y\rvert f_{X,Y}(zy,y)\,dy.
 \end{align*}

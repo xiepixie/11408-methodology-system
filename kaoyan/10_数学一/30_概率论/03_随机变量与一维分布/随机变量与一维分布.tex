@@ -26,6 +26,7 @@
 \newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
 
 \title{\vspace{-1.1cm}\textbf{随机变量与一维分布}\\[0.4em]\large 把随机世界映射到数轴}
 \author{数学一 · 概率统计 Topic 03}\date{}
@@ -38,6 +39,14 @@
 \boxed{X:\Omega\to\mathbb R},\qquad P_X(B)=P(X\in B)=P\bigl(X^{-1}(B)\bigr).
 \]
 随机性来自未知的 $\omega$；$X$ 决定保留什么信息；分布描述概率质量在观察值空间如何落下。
+\end{corebox}
+
+\begin{corebox}{本册高频缩写先定义}
+累积分布函数（CDF）定义为 $F_X(x):=P(X\le x)$；离散型随机变量的概率质量函数（PMF）定义为 $p_X(x):=P(X=x)$；若存在非负函数 $f_X$ 使
+\[
+F_X(x)=\int_{-\infty}^{x}f_X(t)\,\mathrm{d}t,
+\]
+则称 $f_X$ 为概率密度函数（PDF）。CDF 是任意实随机变量都有的通用表示，PMF/PDF 只在相应分布类型下存在；PDF 值不是点概率。
 \end{corebox}
 
 \section{本册负责什么}
@@ -352,9 +361,9 @@ F_{N_n}(a)=1-\prod_i[1-F_{X_i}(a)].
 
 \section{MGF 与概率积分变换}
 
-若 $M_X(t)=E(e^{tX})$ 在 $0$ 的邻域存在，则
+这里沿用全册记号：$X\indep Y$ 表示随机变量概率独立；单符号 $\perp$ 只用于几何正交。若 $M_X(t)=E(e^{tX})$ 在 $0$ 的邻域存在，则
 \[
-M_X^{(n)}(0)=E(X^n),\qquad X\perp Y\Longrightarrow M_{X+Y}(t)=M_X(t)M_Y(t).
+M_X^{(n)}(0)=E(X^n),\qquad X\indep Y\Longrightarrow M_{X+Y}(t)=M_X(t)M_Y(t).
 \]
 正态、Bernoulli、二项、Poisson、指数的 MGF 分别为
 \[

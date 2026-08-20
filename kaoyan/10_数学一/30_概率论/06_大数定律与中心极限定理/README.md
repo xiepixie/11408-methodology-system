@@ -1,6 +1,6 @@
 # 大数定律与中心极限定理：稳定位置与剩余波动
 
-> 状态：待人工确认；P06-A 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审，LLN/CLT 的并列母模型及近似边界已校正并通过发布验证。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏。
+> 状态：待人工确认；P06-A 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审，大数定律/中心极限定理的并列母模型及近似边界已校正并通过发布验证。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏。
 
 ## 0. 本册定位
 
@@ -40,10 +40,12 @@ $$
 
 ## 2. 大数定律：随机平均稳定到哪里
 
+先固定记号：$X_n\xrightarrow{P}X$ 表示对任意 $\varepsilon>0$，都有 $P(\lvert X_n-X\rvert>\varepsilon)\to0$，称为依概率收敛。下文把“大数定律”简称 LLN。
+
 由切比雪夫不等式，任意 $\varepsilon>0$：
 
 $$
-P(|\bar X_n-\mu|\ge\varepsilon)
+P(\lvert \bar X_n-\mu\rvert\ge\varepsilon)
 \le\frac{\sigma^2}{n\varepsilon^2}\to0.
 $$
 
@@ -66,13 +68,15 @@ $$
 
 ## 3. 中心极限定理：剩余波动怎样缩放
 
+再固定另一记号：$X_n\xrightarrow{d}X$ 表示分布函数在极限分布的连续点处收敛，称为依分布收敛。下文把“中心极限定理”简称 CLT。
+
 若只写 $\bar X_n\to\mu$，所有波动在极限中都被压成零。为了看见仍存在的误差，需要放大 $\sqrt n$ 倍：
 
 $$
 \boxed{
 \frac{\sqrt n(\bar X_n-\mu)}{\sigma}
 =\frac{\sum_{i=1}^nX_i-n\mu}{\sigma\sqrt n}
-\xRightarrow{d}N(0,1).
+\xrightarrow{d}N(0,1).
 }
 $$
 
@@ -111,7 +115,7 @@ $$
 
 $$
 \frac{\bar X_n-p}{\sqrt{p(1-p)/n}}
-\xRightarrow{d}N(0,1),
+\xrightarrow{d}N(0,1),
 $$
 
 说明典型误差量级是 $1/\sqrt n$。若希望误差尺度减半，样本量通常需要约增至四倍；这是波动尺度而非精确保证。
