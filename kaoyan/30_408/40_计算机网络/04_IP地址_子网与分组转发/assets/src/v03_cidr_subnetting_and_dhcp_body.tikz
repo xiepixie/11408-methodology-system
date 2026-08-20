@@ -1,0 +1,331 @@
+% ── V03 CIDR定长子网划分与DHCP动态配置 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+% ══════════════════════════════════════════════════════════════
+% ── 1. 顶部：CIDR 二进制划分展开条 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=-0.5cm, yshift=10.2cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themecurve!40, line width=0.6pt, rounded corners=4pt]
+      (-0.2, -0.2) rectangle (19.4, 2.1);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 1.75) {
+      \textbf{\color{themecurve}学校申请 CIDR 地址块：\texttt{166.1.0.0/16}}\quad
+      \scriptsize \color{themegray}定长划分（借用 1 位主机号作为子网号，扩展为 \texttt{/17}，划分为 2 个等大子网）：
+    };
+
+    % 二进制比特条
+    % 前 16 位 (网络号: 166.1)
+    \draw[themecurve!80, fill=themecurve!20!themebg, line width=0.8pt] (0.0, 0.2) rectangle (6.6, 0.75);
+    \node[font=\tiny\bfseries, color=themecurve] at (3.3, 0.47) {网络前缀 (16 bit): 10100110.00000001 (166.1)};
+
+    % 第 17 位 (子网号)
+    \draw[themeamber!80, fill=themeamber!30!themebg, line width=0.8pt] (6.8, 0.2) rectangle (8.4, 0.75);
+    \node[font=\tiny\bfseries, color=themeamber] at (7.6, 0.47) {子网位: 0 / 1};
+
+    % 后 15 位 (主机号)
+    \draw[themegray!80, fill=themegray!15!themebg, line width=0.8pt] (8.6, 0.2) rectangle (15.4, 0.75);
+    \node[font=\tiny\bfseries, color=themegray] at (12.0, 0.47) {主机号 (15 bit): 0000000.00000000 ($2^{15}-2 = 32766$ 个可用 IP)};
+
+    % 右侧总结
+    \node[anchor=west, font=\tiny, align=left] at (15.6, 0.47) {
+      \color{themecurve}\textbf{子网 0}：166.1.0.0/17\\
+      \color{themeamber}\textbf{子网 1}：166.1.128.0/17
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 2. 底层连线与子网包络 ──
+% ══════════════════════════════════════════════════════════════
+\begin{pgfonlayer}{background}
+  % 子网 0 包络 (左侧)
+  \fill[fill=themecurve!6!themebg, draw=themecurve!40, dashed, line width=0.6pt, rounded corners=6pt]
+    (-0.5, 0.2) rectangle (8.4, 9.8);
+  \node[anchor=north west, font=\footnotesize\bfseries, color=themecurve] at (-0.3, 9.6) {子网 0 (166.1.0.0/17，掩码 255.255.128.0)};
+
+  % 子网 1 包络 (右侧)
+  \fill[fill=themeamber!6!themebg, draw=themeamber!40, dashed, line width=0.6pt, rounded corners=6pt]
+    (9.4, 0.2) rectangle (18.9, 9.8);
+  \node[anchor=north west, font=\footnotesize\bfseries, color=themeamber] at (9.6, 9.6) {子网 1 (166.1.128.0/17，掩码 255.255.128.0)};
+
+  % 子网 0 连线：DHCP, H1, H2 -> 交换机 0 -> 路由器 B3
+  \draw[themealert!70, line width=1.0pt] (1.5, 7.2) -- (4.2, 5.5);
+  \draw[themegray!80, line width=1.0pt] (1.5, 3.8) -- (4.2, 5.0);
+  \draw[themegray!80, line width=1.0pt] (1.5, 1.4) -- (4.2, 4.7);
+  \draw[themecurve!90, line width=1.2pt] (4.6, 5.0) -- (8.1, 7.2)
+    node[midway, above, sloped, font=\tiny\bfseries, color=themecurve] {B3: 166.1.0.5/17 (网关)};
+
+  % 子网 1 连线：路由器 B2 -> 交换机 1 -> H3, H4, Hub -> H5, H6
+  \draw[themeamber!90, line width=1.2pt] (9.7, 7.2) -- (13.0, 5.0)
+    node[midway, above, sloped, font=\tiny\bfseries, color=themeamber] {B2: 166.1.128.1/17 (网关)};
+  \draw[themegray!80, line width=1.0pt] (13.8, 5.0) -- (16.8, 7.2);
+  \draw[themegray!80, line width=1.0pt] (13.8, 4.6) -- (16.8, 4.6);
+  \draw[themegray!80, line width=1.0pt] (13.4, 4.4) -- (13.4, 3.1);
+  \draw[themegray!80, line width=1.0pt] (12.8, 2.3) -- (10.6, 1.4);
+  \draw[themegray!80, line width=1.0pt] (14.0, 2.3) -- (16.2, 1.4);
+
+  % 路由器 B0 -> 公司网络 (200.1.1.0/24)
+  \draw[themegray!80, line width=1.0pt] (8.9, 8.5) -- (6.5, 9.6)
+    node[midway, above, font=\tiny\bfseries, color=themegray] {B0: 200.1.1.0/24};
+
+  % 路由器 B1 -> 外部 ISP 默认路由
+  \draw[themealert!80, line width=1.2pt, ->] (8.9, 7.8) -- (8.9, 9.6)
+    node[anchor=south, font=\tiny\bfseries, color=themealert] {B1: 0.0.0.0/0 (去 ISP)};
+\end{pgfonlayer}
+
+% ══════════════════════════════════════════════════════════════
+% ── 3. 学校路由器与路由转发表 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=8.9cm, yshift=7.8cm]
+  \begin{pgfonlayer}{background}
+    \draw[themealert, fill=themealert!15!themebg, line width=1.0pt] (0, 0) circle (0.65cm);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \draw[themealert, line width=1.0pt, ->] (-0.4, 0.25) -- (0.4, -0.25);
+    \draw[themealert, line width=1.0pt, ->] (-0.4, -0.25) -- (0.4, 0.25);
+    \draw[themealert, line width=1.0pt, ->] (0.4, 0.25) -- (-0.4, -0.25);
+    \draw[themealert, line width=1.0pt, ->] (0.4, -0.25) -- (-0.4, 0.25);
+
+    \node[anchor=south, font=\bfseries\footnotesize] at (0, 0.8) {学校路由器};
+
+    % 接口标记
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (-0.8, -0.6) {B3};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0.8, -0.6) {B2};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (-0.8, 0.6) {B0};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0, 0.8) {B1};
+  \end{pgfonlayer}
+\end{scope}
+
+% 学校路由器转发表 (居中偏左下方，完美避开 B2 对角连线)
+\begin{scope}[xshift=5.3cm, yshift=2.3cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!3!themebg, draw=themecurve!40, line width=0.7pt, rounded corners=6pt]
+      (-0.3, -0.3) rectangle (6.2, 3.2);
+    \fill[themecurve!18!themebg] (0, 2.0) rectangle (5.8, 2.55);
+    \draw[themegray!40, line width=0.5pt] (0, 0) rectangle (5.8, 2.55);
+    \draw[themegray!40, line width=0.5pt] (0, 0.5) -- (5.8, 0.5);
+    \draw[themegray!40, line width=0.5pt] (0, 1.0) -- (5.8, 1.0);
+    \draw[themegray!40, line width=0.5pt] (0, 1.5) -- (5.8, 1.5);
+    \draw[themegray!60, line width=0.8pt] (0, 2.0) -- (5.8, 2.0);
+    \draw[themegray!40, line width=0.5pt] (2.9, 0) -- (2.9, 2.55);
+    \draw[themegray!40, line width=0.5pt] (4.4, 0) -- (4.4, 2.55);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north, font=\small\bfseries, color=themecurve] at (2.9, 2.95) {学校路由转发表};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (1.45, 2.27) {目的网络 / 掩码};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (3.65, 2.27) {下一跳};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (5.1, 2.27) {接口};
+
+    \node[font=\scriptsize, color=themefg] at (1.45, 1.75) {166.1.0.0/17};
+    \node[font=\scriptsize, color=themegray] at (3.65, 1.75) {直连};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (5.1, 1.75) {B3};
+
+    \node[font=\scriptsize, color=themefg] at (1.45, 1.25) {166.1.128.0/17};
+    \node[font=\scriptsize, color=themegray] at (3.65, 1.25) {直连};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (5.1, 1.25) {B2};
+
+    \node[font=\scriptsize, color=themefg] at (1.45, 0.75) {200.1.1.0/24};
+    \node[font=\scriptsize, color=themegray] at (3.65, 0.75) {直连};
+    \node[font=\scriptsize\bfseries, color=themegray] at (5.1, 0.75) {B0};
+
+    \node[font=\scriptsize\bfseries, color=themealert] at (1.45, 0.25) {0.0.0.0/0 (默认)};
+    \node[font=\scriptsize, color=themegray] at (3.65, 0.25) {ISP 路由};
+    \node[font=\scriptsize\bfseries, color=themealert] at (5.1, 0.25) {B1};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 4. 子网 0 设备群（含 DHCP 服务器） ──
+% ══════════════════════════════════════════════════════════════
+% DHCP 服务器 (机柜图标)
+\begin{scope}[xshift=1.5cm, yshift=6.8cm]
+  \begin{pgfonlayer}{background}
+    \draw[themealert, fill=themealert!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.5, 0) rectangle (0.5, 0.7);
+    \draw[themealert!60, line width=0.5pt] (-0.4, 0.45) -- (0.4, 0.45);
+    \draw[themealert!60, line width=0.5pt] (-0.4, 0.22) -- (0.4, 0.22);
+    \fill[themealert] (-0.3, 0.57) circle (1.2pt);
+    \fill[themegreen] (-0.15, 0.57) circle (1.2pt);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\tiny\bfseries, color=themealert] at (0.15, 0.57) {DHCP};
+    \node[anchor=south, font=\tiny, align=center] at (0, 0.75) {
+      \textbf{\color{themealert}DHCP 服务器 (UDP:67)}\\[0.1em]
+      \color{themefg}IP: 166.1.0.9/17\\
+      \color{themegray}MAC: AA:BB:CC:DD:EE:09\\
+      \color{themegreen}分配地址池: 166.1.0.0/17
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 主机 H1
+\begin{scope}[xshift=1.5cm, yshift=3.8cm]
+  \begin{pgfonlayer}{background}
+    \draw[themecurve, fill=themecurve!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.45, 0) rectangle (0.45, 0.6);
+    \draw[themecurve, line width=0.8pt] (0, 0) -- (0, -0.2);
+    \draw[themecurve, line width=0.8pt] (-0.25, -0.2) -- (0.25, -0.2);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\bfseries, color=themecurve] at (0, 0.3) {H1};
+    \node[anchor=north, font=\tiny, align=center] at (0, -0.25) {
+      \textbf{\color{themecurve}主机 H1}\\[0.1em]
+      \color{themefg}IP: 166.1.0.1/17\\
+      \color{themegray}默认网关: 166.1.0.5
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 主机 H2
+\begin{scope}[xshift=1.5cm, yshift=1.4cm]
+  \begin{pgfonlayer}{background}
+    \draw[themecurve, fill=themecurve!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.45, 0) rectangle (0.45, 0.6);
+    \draw[themecurve, line width=0.8pt] (0, 0) -- (0, -0.2);
+    \draw[themecurve, line width=0.8pt] (-0.25, -0.2) -- (0.25, -0.2);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\bfseries, color=themecurve] at (0, 0.3) {H2};
+    \node[anchor=north, font=\tiny, align=center] at (0, -0.25) {
+      \textbf{\color{themecurve}主机 H2}\\[0.1em]
+      \color{themefg}IP: 166.1.4.2/17\\
+      \color{themegray}默认网关: 166.1.0.5
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 子网 0 交换机
+\begin{scope}[xshift=4.2cm, yshift=5.0cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themecurve!12!themebg, draw=themecurve!80, line width=0.8pt, rounded corners=2pt]
+      (-0.4, -0.3) rectangle (0.4, 0.3);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \draw[color=themecurve, line width=1.0pt, <->] (-0.25, 0.08) -- (0.25, 0.08);
+    \draw[color=themecurve, line width=1.0pt, <->] (-0.25, -0.08) -- (0.25, -0.08);
+    \node[anchor=north, font=\tiny] at (0, -0.35) {交换机 0};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 5. 子网 1 设备群（交换机 + 集线器混部） ──
+% ══════════════════════════════════════════════════════════════
+% 子网 1 交换机
+\begin{scope}[xshift=13.4cm, yshift=5.0cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themeamber!12!themebg, draw=themeamber!80, line width=0.8pt, rounded corners=2pt]
+      (-0.4, -0.3) rectangle (0.4, 0.3);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \draw[color=themeamber, line width=1.0pt, <->] (-0.25, 0.08) -- (0.25, 0.08);
+    \draw[color=themeamber, line width=1.0pt, <->] (-0.25, -0.08) -- (0.25, -0.08);
+    \node[anchor=north, font=\tiny] at (0, -0.35) {交换机 1};
+  \end{pgfonlayer}
+\end{scope}
+
+% 主机 H3
+\begin{scope}[xshift=16.8cm, yshift=7.2cm]
+  \begin{pgfonlayer}{background}
+    \draw[themeamber, fill=themeamber!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.45, 0) rectangle (0.45, 0.6);
+    \draw[themeamber, line width=0.8pt] (0, 0) -- (0, -0.2);
+    \draw[themeamber, line width=0.8pt] (-0.25, -0.2) -- (0.25, -0.2);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\bfseries, color=themeamber] at (0, 0.3) {H3};
+    \node[anchor=south, font=\tiny, align=center] at (0, 0.65) {
+      \textbf{\color{themeamber}主机 H3}\\[0.1em]
+      \color{themefg}IP: 166.1.128.2/17\\
+      \color{themegray}默认网关: 166.1.128.1
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 主机 H4
+\begin{scope}[xshift=16.8cm, yshift=4.6cm]
+  \begin{pgfonlayer}{background}
+    \draw[themeamber, fill=themeamber!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.45, 0) rectangle (0.45, 0.6);
+    \draw[themeamber, line width=0.8pt] (0, 0) -- (0, -0.2);
+    \draw[themeamber, line width=0.8pt] (-0.25, -0.2) -- (0.25, -0.2);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\bfseries, color=themeamber] at (0, 0.3) {H4};
+    \node[anchor=north, font=\tiny, align=center] at (0, -0.25) {
+      \textbf{\color{themeamber}主机 H4}\\[0.1em]
+      \color{themefg}IP: 166.1.177.3/17\\
+      \color{themegray}默认网关: 166.1.128.1
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 集线器 (Hub)
+\begin{scope}[xshift=13.4cm, yshift=2.7cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themealert!10!themebg, draw=themealert!80, line width=0.8pt, rounded corners=2pt]
+      (-0.6, -0.35) rectangle (0.6, 0.35);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \draw[color=themealert, line width=1.2pt, ->] (-0.3, 0) -- (0.3, 0);
+    \node[anchor=south, font=\tiny\bfseries, color=themealert] at (0, 0.4) {集线器};
+  \end{pgfonlayer}
+\end{scope}
+
+% 主机 H5
+\begin{scope}[xshift=10.6cm, yshift=1.4cm]
+  \begin{pgfonlayer}{background}
+    \draw[themeamber, fill=themeamber!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.45, 0) rectangle (0.45, 0.6);
+    \draw[themeamber, line width=0.8pt] (0, 0) -- (0, -0.2);
+    \draw[themeamber, line width=0.8pt] (-0.25, -0.2) -- (0.25, -0.2);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\bfseries, color=themeamber] at (0, 0.3) {H5};
+    \node[anchor=north, font=\tiny, align=center] at (0, -0.25) {
+      \textbf{\color{themeamber}主机 H5}\\[0.1em]
+      \color{themefg}IP: 166.1.129.3/17\\
+      \color{themegray}网关: 166.1.128.1
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 主机 H6
+\begin{scope}[xshift=16.2cm, yshift=1.4cm]
+  \begin{pgfonlayer}{background}
+    \draw[themeamber, fill=themeamber!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.45, 0) rectangle (0.45, 0.6);
+    \draw[themeamber, line width=0.8pt] (0, 0) -- (0, -0.2);
+    \draw[themeamber, line width=0.8pt] (-0.25, -0.2) -- (0.25, -0.2);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\bfseries, color=themeamber] at (0, 0.3) {H6};
+    \node[anchor=north, font=\tiny, align=center] at (0, -0.25) {
+      \textbf{\color{themeamber}主机 H6}\\[0.1em]
+      \color{themefg}IP: 166.1.150.1/17\\
+      \color{themegray}网关: 166.1.128.1
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 6. 底部考点总结卡片（无框通栏，宽裕呼吸感） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=-0.5cm, yshift=-4.0cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=4pt]
+      (-0.3, -0.4) rectangle (19.4, 2.8);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=19.0cm] at (0.0, 2.45) {
+      \small \textbf{\color{themecurve}核心考点精要与机制辨析：}\\[0.4em]
+      \scriptsize $\bullet$ \textbf{CIDR 二进制子网划分}：借用主机号最高位作为子网号（/16 拆两个 /17，掩码均为 255.255.128.0）；每个子网拥有 $2^{15}=32768$ 个 IP，扣除全 0 网络地址与全 1 广播地址后，可用主机地址数均为 $2^{15}-2=32766$ 个。\\[0.3em]
+      \scriptsize $\bullet$ \textbf{DHCP 动态配置工作流 (DORA 4 步报文)}：① \textbf{Discover}（客户机 UDP:68 广播寻找 DHCP，源 0.0.0.0，目的 255.255.255.255）$\to$ ② \textbf{Offer}（服务器 UDP:67 提供预选 IP/掩码/网关）$\to$ ③ \textbf{Request}（客户机广播确认接受预选）$\to$ ④ \textbf{ACK}（服务器正式确认租约）。跨子网广播需配置 \textbf{DHCP 中继代理 (Relay Agent)}。\\[0.3em]
+      \scriptsize $\bullet$ \textbf{默认网关 (Default Gateway) 交付语义}：主机向跨网段 IP 发送分组时，先通过 ARP 广播查询默认网关（如 B3: 166.1.0.5）的 MAC 地址，将数据帧目的 MAC 封装为网关 MAC，由网关在网络层执行路由转发。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+\end{tikzpicture}

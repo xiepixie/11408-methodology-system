@@ -1,0 +1,370 @@
+% ── V02 NAT网络地址转换与多级路由最长前缀匹配 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+% ══════════════════════════════════════════════════════════════
+% ── 1. 底层连线与区域虚线背景 ──
+% ══════════════════════════════════════════════════════════════
+\begin{pgfonlayer}{background}
+  % 家庭内网背景淡色包络
+  \fill[fill=themecurve!6!themebg, draw=themecurve!30, dashed, line width=0.6pt, rounded corners=6pt]
+    (-0.5, 4.2) rectangle (5.6, 12.4);
+  \node[anchor=north west, font=\footnotesize\bfseries, color=themecurve] at (-0.3, 12.2) {家庭私有内网 (192.168.3.0/24)};
+
+  % 家庭内连线：电脑/电视 -> 交换机，手机 -> AP -> 交换机
+  \draw[themegray!80, line width=1.0pt] (1.2, 9.8) -- (2.8, 7.5);
+  \draw[themegray!80, line width=1.0pt] (1.2, 5.2) -- (2.8, 6.9);
+  \draw[themeamber!60, line width=0.8pt, dashed] (4.2, 9.8) -- (4.2, 7.9);
+  \draw[themegray!80, line width=1.0pt] (4.2, 7.2) -- (3.2, 7.2);
+
+  % 交换机 -> NAT 路由器 LAN
+  \draw[themegray!80, line width=1.0pt] (2.8, 6.7) -- (2.8, 3.2);
+
+  % NAT 路由器 WAN -> 咸鱼电信路由器 F3
+  \draw[themegray!80, line width=1.0pt] (3.45, 2.5) -- (8.8, 2.5)
+    node[midway, above, font=\tiny\bfseries, color=themeamber] {128.14.32.152/30 (F3: .154 $\leftrightarrow$ WAN: .153)};
+
+  % 咸鱼电信路由器 -> 旺财家 (F2)
+  \draw[themegray!80, line width=1.0pt] (9.5, 1.8) -- (9.5, 0.7)
+    node[midway, right, font=\tiny, color=themegray] {F2: 128.14.32.144/29};
+
+  % 咸鱼电信路由器 -> 铁柱网吧 (F1)
+  \draw[themegray!80, line width=1.0pt] (10.2, 2.5) -- (14.8, 2.5)
+    node[midway, above, font=\tiny\bfseries, color=themecurve] {F1: 128.14.32.128/28};
+
+  % 咸鱼电信路由器 (F0) -> 县里电信路由器 (G1)
+  \draw[themealert!80, line width=1.2pt] (9.5, 3.2) -- (9.5, 8.1)
+    node[midway, left, font=\tiny\bfseries, color=themealert] {0.0.0.0/0 (F0 $\to$ G1)};
+
+  % 县里路由器 -> Internet (G0)
+  \draw[themegray!80, line width=1.0pt, ->] (9.5, 9.5) -- (9.5, 11.2)
+    node[anchor=south, font=\tiny\bfseries, color=themegray] {G0: 0.0.0.0/0 (核心骨干网)};
+
+  % 县里路由器 G3 -> 铁柱网吧明细链路 (示范 LPM)
+  \draw[themeamber!80, line width=1.0pt, dashed] (10.2, 8.8) -- (16.9, 8.8) -- (16.9, 3.5);
+\end{pgfonlayer}
+
+% ══════════════════════════════════════════════════════════════
+% ── 2. 家庭内网设备群 ──
+% ══════════════════════════════════════════════════════════════
+% 家庭电脑
+\begin{scope}[xshift=1.2cm, yshift=9.8cm]
+  \begin{pgfonlayer}{background}
+    \draw[themecurve, fill=themecurve!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.45, 0) rectangle (0.45, 0.6);
+    \draw[themecurve, line width=0.8pt] (0, 0) -- (0, -0.2);
+    \draw[themecurve, line width=0.8pt] (-0.25, -0.2) -- (0.25, -0.2);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\bfseries, color=themecurve] at (0, 0.3) {PC};
+    \node[anchor=south, font=\tiny, align=center] at (0, 0.65) {
+      \textbf{\color{themecurve}家庭电脑}\\[0.1em]
+      \color{themefg}IP: 192.168.3.74/24\\
+      \color{themegray}网关: 192.168.3.1\\
+      \color{themeamber}浏览器: 2111
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 家庭手机
+\begin{scope}[xshift=4.2cm, yshift=9.8cm]
+  \begin{pgfonlayer}{background}
+    \draw[themeamber, fill=themeamber!15!themebg, line width=0.8pt, rounded corners=2pt] (-0.25, 0) rectangle (0.25, 0.65);
+    \draw[themeamber, line width=0.5pt] (-0.18, 0.08) rectangle (0.18, 0.55);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\bfseries\tiny, color=themeamber] at (0, 0.32) {Phone};
+    \node[anchor=south, font=\tiny, align=center] at (0, 0.7) {
+      \textbf{\color{themeamber}家庭手机}\\[0.1em]
+      \color{themefg}IP: 192.168.3.48/24\\
+      \color{themegray}网关: 192.168.3.1\\
+      \color{themeamber}微信: 9855
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 家庭电视
+\begin{scope}[xshift=1.2cm, yshift=5.0cm]
+  \begin{pgfonlayer}{background}
+    \draw[themegray, fill=themegray!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.5, 0) rectangle (0.5, 0.5);
+    \draw[themegray, line width=0.8pt] (-0.25, 0) -- (-0.35, -0.15);
+    \draw[themegray, line width=0.8pt] (0.25, 0) -- (0.35, -0.15);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\tiny\bfseries, color=themegray] at (0, 0.25) {TV};
+    \node[anchor=north, font=\tiny, align=center] at (0, -0.2) {
+      \textbf{\color{themefg}家庭电视}\\[0.1em]
+      \color{themegray}192.168.3.3/24
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 家庭交换机 & 无线 AP
+\begin{scope}[xshift=2.8cm, yshift=7.2cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themecurve!12!themebg, draw=themecurve!80, line width=0.8pt, rounded corners=2pt]
+      (-0.4, -0.3) rectangle (0.4, 0.3);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \draw[color=themecurve, line width=1.0pt, <->] (-0.25, 0.08) -- (0.25, 0.08);
+    \draw[color=themecurve, line width=1.0pt, <->] (-0.25, -0.08) -- (0.25, -0.08);
+    \node[anchor=north, font=\tiny] at (0, -0.35) {内网交换机};
+  \end{pgfonlayer}
+\end{scope}
+
+\begin{scope}[xshift=4.2cm, yshift=7.2cm]
+  \begin{pgfonlayer}{background}
+    \draw[themecurve, fill=themecurve!25!themebg, line width=0.8pt, rounded corners=2pt] (-0.35, 0) rectangle (0.35, 0.25);
+    \draw[themecurve, line width=0.8pt] (-0.2, 0.25) -- (-0.2, 0.45);
+    \draw[themecurve, line width=0.8pt] (0.2, 0.25) -- (0.2, 0.45);
+    \fill[themecurve] (-0.2, 0.45) circle (1.2pt);
+    \fill[themecurve] (0.2, 0.45) circle (1.2pt);
+    \draw[themecurve!70, line width=0.5pt] (-0.3, 0.52) arc (140:40:0.4);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north, font=\tiny] at (0, -0.05) {AP};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 3. NAT 路由器与 NAT 转换表 ──
+% ══════════════════════════════════════════════════════════════
+% NAT 路由器
+\begin{scope}[xshift=2.8cm, yshift=2.5cm]
+  \begin{pgfonlayer}{background}
+    \draw[themealert, fill=themealert!15!themebg, line width=1.0pt] (0, 0) circle (0.65cm);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \draw[themealert, line width=1.0pt, ->] (-0.35, 0.2) -- (0.35, -0.2);
+    \draw[themealert, line width=1.0pt, ->] (-0.35, -0.2) -- (0.35, 0.2);
+    \draw[themealert, line width=1.0pt, ->] (0.35, 0.2) -- (-0.35, -0.2);
+    \draw[themealert, line width=1.0pt, ->] (0.35, -0.2) -- (-0.35, 0.2);
+
+    \node[anchor=south, font=\bfseries\footnotesize, color=themealert] at (0, 0.75) {NAT 路由器};
+    \node[anchor=east, font=\tiny, align=right] at (-0.7, 0.0) {
+      \color{themegray}LAN 接口\\
+      \textbf{\color{themecurve}192.168.3.1/24}
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% NAT 转换表卡片 (位于 NAT 路由器正下方，加宽加高)
+\begin{scope}[xshift=-0.5cm, yshift=-0.6cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!3!themebg, draw=themealert!40, line width=0.7pt, rounded corners=6pt]
+      (-0.3, -0.3) rectangle (6.9, 2.9);
+    % 表头高亮
+    \fill[themealert!18!themebg] (0, 1.6) rectangle (6.6, 2.15);
+    \draw[themegray!40, line width=0.5pt] (0, 0) rectangle (6.6, 2.15);
+    \draw[themegray!40, line width=0.5pt] (0, 0.53) -- (6.6, 0.53);
+    \draw[themegray!40, line width=0.5pt] (0, 1.06) -- (6.6, 1.06);
+    \draw[themegray!60, line width=0.8pt] (0, 1.6) -- (6.6, 1.6);
+    % 竖线：外网IP (0->2.0), 外网Port (2.0->3.3), 内网IP (3.3->5.3), 内网Port (5.3->6.6)
+    \draw[themegray!40, line width=0.5pt] (2.0, 0) -- (2.0, 2.15);
+    \draw[themegray!40, line width=0.5pt] (3.3, 0) -- (3.3, 2.15);
+    \draw[themegray!40, line width=0.5pt] (5.3, 0) -- (5.3, 2.15);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north, font=\small\bfseries, color=themealert] at (3.3, 2.75) {NAT 转换表 (NAPT 端口映射)};
+    \node[font=\scriptsize\bfseries, color=themealert] at (1.0, 1.88) {外网 IP};
+    \node[font=\scriptsize\bfseries, color=themealert] at (2.65, 1.88) {外网 Port};
+    \node[font=\scriptsize\bfseries, color=themealert] at (4.3, 1.88) {内网 IP};
+    \node[font=\scriptsize\bfseries, color=themealert] at (5.95, 1.88) {内网 Port};
+
+    \node[font=\scriptsize, color=themefg] at (1.0, 1.33) {128.14.32.153};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (2.65, 1.33) {60001};
+    \node[font=\scriptsize, color=themefg] at (4.3, 1.33) {192.168.3.74};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (5.95, 1.33) {2111};
+
+    \node[font=\scriptsize, color=themefg] at (1.0, 0.8) {128.14.32.153};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (2.65, 0.8) {60002};
+    \node[font=\scriptsize, color=themefg] at (4.3, 0.8) {192.168.3.48};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (5.95, 0.8) {9855};
+
+    \node[font=\tiny, color=themegray!60] at (3.3, 0.26) {$\cdots$ 动态端口复用映射 $\cdots$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 4. 咸鱼电信路由器与路由转发表 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=9.5cm, yshift=2.5cm]
+  \begin{pgfonlayer}{background}
+    \draw[themeamber, fill=themeamber!15!themebg, line width=1.0pt] (0, 0) circle (0.65cm);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \draw[themeamber, line width=1.0pt, ->] (-0.4, 0.25) -- (0.4, -0.25);
+    \draw[themeamber, line width=1.0pt, ->] (-0.4, -0.25) -- (0.4, 0.25);
+    \draw[themeamber, line width=1.0pt, ->] (0.4, 0.25) -- (-0.4, -0.25);
+    \draw[themeamber, line width=1.0pt, ->] (0.4, -0.25) -- (-0.4, 0.25);
+
+    \node[anchor=south, font=\bfseries\footnotesize] at (0, 1.05) {咸鱼电信路由器};
+
+    % 接口标记
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0, 0.8) {F0};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0.8, 0) {F1};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0, -0.8) {F2};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (-0.8, 0) {F3};
+  \end{pgfonlayer}
+\end{scope}
+
+% 旺财家挂载
+\node[anchor=north, font=\tiny, align=center, draw=themegray!40, fill=themefg!3!themebg, rounded corners=2pt] at (9.5, 0.6) {
+  \textbf{\color{themegray}旺财家}\\[0.1em]
+  128.14.32.144/29
+};
+
+% 咸鱼电信路由器转发表卡片 (位于咸鱼路由器右上方)
+\begin{scope}[xshift=10.8cm, yshift=3.8cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!3!themebg, draw=themeamber!40, line width=0.7pt, rounded corners=6pt]
+      (-0.3, -0.3) rectangle (5.7, 3.5);
+    \fill[themeamber!18!themebg] (0, 2.4) rectangle (5.4, 2.95);
+    \draw[themegray!40, line width=0.5pt] (0, 0) rectangle (5.4, 2.95);
+    \draw[themegray!40, line width=0.5pt] (0, 0.48) -- (5.4, 0.48);
+    \draw[themegray!40, line width=0.5pt] (0, 0.96) -- (5.4, 0.96);
+    \draw[themegray!40, line width=0.5pt] (0, 1.44) -- (5.4, 1.44);
+    \draw[themegray!40, line width=0.5pt] (0, 1.92) -- (5.4, 1.92);
+    \draw[themegray!60, line width=0.8pt] (0, 2.4) -- (5.4, 2.4);
+    \draw[themegray!40, line width=0.5pt] (2.7, 0) -- (2.7, 2.95);
+    \draw[themegray!40, line width=0.5pt] (4.1, 0) -- (4.1, 2.95);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north, font=\small\bfseries, color=themeamber] at (2.7, 3.35) {咸鱼电信路由转发表};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (1.35, 2.68) {目的网络 / 掩码};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (3.4, 2.68) {下一跳};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (4.75, 2.68) {接口};
+
+    \node[font=\scriptsize, color=themefg] at (1.35, 2.16) {128.14.32.128/28};
+    \node[font=\scriptsize, color=themegray] at (3.4, 2.16) {直连};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (4.75, 2.16) {F1};
+
+    \node[font=\scriptsize, color=themefg] at (1.35, 1.68) {128.14.32.144/29};
+    \node[font=\scriptsize, color=themegray] at (3.4, 1.68) {直连};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (4.75, 1.68) {F2};
+
+    \node[font=\scriptsize, color=themefg] at (1.35, 1.2) {128.14.32.152/30};
+    \node[font=\scriptsize, color=themegray] at (3.4, 1.2) {直连};
+    \node[font=\scriptsize\bfseries, color=themealert] at (4.75, 1.2) {F3};
+
+    \node[font=\scriptsize, color=themefg] at (1.35, 0.72) {128.14.32.156/30};
+    \node[font=\scriptsize, color=themegray] at (3.4, 0.72) {直连};
+    \node[font=\scriptsize\bfseries, color=themegray] at (4.75, 0.72) {F4};
+
+    \node[font=\scriptsize\bfseries, color=themealert] at (1.35, 0.24) {0.0.0.0/0 (默认)};
+    \node[font=\scriptsize, color=themegray] at (3.4, 0.24) {县里路由};
+    \node[font=\scriptsize\bfseries, color=themealert] at (4.75, 0.24) {F0};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 5. 县里电信路由器与聚合前缀匹配 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=9.5cm, yshift=8.8cm]
+  \begin{pgfonlayer}{background}
+    \draw[themecurve, fill=themecurve!15!themebg, line width=1.0pt] (0, 0) circle (0.65cm);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \draw[themecurve, line width=1.0pt, ->] (-0.4, 0.25) -- (0.4, -0.25);
+    \draw[themecurve, line width=1.0pt, ->] (-0.4, -0.25) -- (0.4, 0.25);
+    \draw[themecurve, line width=1.0pt, ->] (0.4, 0.25) -- (-0.4, -0.25);
+    \draw[themecurve, line width=1.0pt, ->] (0.4, -0.25) -- (-0.4, 0.25);
+
+    \node[anchor=south, font=\bfseries\footnotesize] at (0, 0.95) {县里电信路由器};
+
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0, 0.8) {G0};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0, -0.8) {G1};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0.8, 0) {G3};
+  \end{pgfonlayer}
+\end{scope}
+
+% 县里电信路由转发表卡片 (右上)
+\begin{scope}[xshift=13.0cm, yshift=7.8cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!3!themebg, draw=themecurve!40, line width=0.7pt, rounded corners=6pt]
+      (-0.3, -0.3) rectangle (5.7, 3.0);
+    \fill[themecurve!18!themebg] (0, 1.8) rectangle (5.4, 2.35);
+    \draw[themegray!40, line width=0.5pt] (0, 0) rectangle (5.4, 2.35);
+    \draw[themegray!40, line width=0.5pt] (0, 0.6) -- (5.4, 0.6);
+    \draw[themegray!40, line width=0.5pt] (0, 1.2) -- (5.4, 1.2);
+    \draw[themegray!60, line width=0.8pt] (0, 1.8) -- (5.4, 1.8);
+    \draw[themegray!40, line width=0.5pt] (2.8, 0) -- (2.8, 2.35);
+    \draw[themegray!40, line width=0.5pt] (4.1, 0) -- (4.1, 2.35);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north, font=\small\bfseries, color=themecurve] at (2.7, 2.8) {县里电信转发表 (LPM 示例)};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (1.4, 2.08) {目的网络 / 掩码};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (3.45, 2.08) {下一跳};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (4.75, 2.08) {接口};
+
+    \node[font=\scriptsize, color=themefg] at (1.4, 1.5) {128.14.32.128/27};
+    \node[font=\scriptsize, color=themegray] at (3.45, 1.5) {咸鱼路由};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (4.75, 1.5) {G1};
+
+    \node[font=\scriptsize\bfseries, color=themeamber] at (1.4, 0.9) {128.14.32.128/28};
+    \node[font=\scriptsize, color=themegray] at (3.45, 0.9) {明细直达};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (4.75, 0.9) {G3};
+
+    \node[font=\scriptsize\bfseries, color=themealert] at (1.4, 0.3) {0.0.0.0/0 (默认)};
+    \node[font=\scriptsize, color=themegray] at (3.45, 0.3) {骨干网};
+    \node[font=\scriptsize\bfseries, color=themealert] at (4.75, 0.3) {G0};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 6. 铁柱网吧 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=14.8cm, yshift=0.0cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, dashed, line width=0.6pt, rounded corners=4pt]
+      (-0.2, -0.2) rectangle (4.2, 3.6);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north, font=\footnotesize\bfseries, color=themecurve] at (1.9, 3.3) {铁柱网吧 (128.14.32.128/28)};
+  \end{pgfonlayer}
+\end{scope}
+
+% 铁柱 1 主机
+\begin{scope}[xshift=16.7cm, yshift=1.6cm]
+  \begin{pgfonlayer}{background}
+    \draw[themecurve, fill=themecurve!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.45, 0) rectangle (0.45, 0.6);
+    \draw[themecurve, line width=0.8pt] (0, 0) -- (0, -0.2);
+    \draw[themecurve, line width=0.8pt] (-0.25, -0.2) -- (0.25, -0.2);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\bfseries, color=themecurve] at (0, 0.3) {铁柱1};
+    \node[anchor=north, font=\tiny, align=center] at (0, -0.25) {
+      \textbf{\color{themecurve}铁柱 1 主机}\\[0.1em]
+      \color{themefg}IP: 128.14.32.131/28\\
+      \color{themegray}网关: 128.14.32.130\\
+      \color{themeamber}微信端口: 6666
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 7. 底部考点总结卡片（无框通栏，宽裕呼吸感） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=-0.5cm, yshift=-4.2cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=4pt]
+      (-0.3, -0.4) rectangle (19.4, 2.8);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=19.0cm] at (0.0, 2.5) {
+      \small \textbf{\color{themecurve}核心考点精要与机制辨析：}\\[0.4em]
+      \scriptsize $\bullet$ \textbf{NAT 网络地址与端口转换 (NAPT)}：解决 IPv4 地址耗尽；NAT 路由器维护动态映射表，将内网私有地址（10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16）及源端口，转换为唯一的公网 IP 及分配的新端口，实现多主机共享单个公网 IP 访问外网。\\[0.3em]
+      \scriptsize $\bullet$ \textbf{最长前缀匹配准则 (Longest Prefix Match)}：当转发表中存在多个匹配目的 IP 的路由条目时（如 128.14.32.128/27 与 128.14.32.128/28 均匹配 128.14.32.131），路由器严格选取子网掩码最长（网络前缀最具体，此处为 /28 从 G3 接口）的路由转发。\\[0.3em]
+      \scriptsize $\bullet$ \textbf{端到端通信与逐跳封装}：应用层通信由五元组【源 IP, 源 Port, 目的 IP, 目的 Port, 传输协议】唯一标识；IP 数据报在跨路由器转发时，TTL 逐跳减 1 并重算校验和，源/目的 MAC 地址逐跳替换为当前跳链路两端的物理地址。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+\end{tikzpicture}

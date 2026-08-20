@@ -1,0 +1,86 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+
+% ── 几何坐标系与物理向量 ──
+\begin{scope}[shift={(-1.2,0)}]
+  % 旧基直角坐标轴
+  \draw[->, themegray, line width=1.0pt] (-1.0, 0) -- (3.3, 0) node[below, font=\small] {$x_1$};
+  \draw[->, themegray, line width=1.0pt] (0, -0.8) -- (0, 3.3) node[left, font=\small] {$x_2$};
+
+  % 旧基向量 b1, b2
+  \draw[->, themegray!80!themefg, line width=1.4pt] (0,0) -- (0.8,0) node[below=2pt, font=\small] {$\boldsymbol{b}_1$};
+  \draw[->, themegray!80!themefg, line width=1.4pt] (0,0) -- (0,0.8) node[left=2pt, font=\small] {$\boldsymbol{b}_2$};
+
+  % 新基斜坐标轴 (暖金虚线)
+  \draw[dashed, themeamber!60!themegray, line width=0.8pt] (-1.8*0.9, -0.6*0.9) -- (3.6*0.9, 1.2*0.9);
+  \draw[dashed, themeamber!60!themegray, line width=0.8pt] (-0.4*1.2, -1.0*1.2) -- (1.2*1.2, 2.8*1.2);
+
+  % 新基向量 b1', b2' (暖金粗实线)
+  \draw[->, themeamber, line width=1.8pt] (0,0) -- (1.2, 0.4) node[below right, font=\small] {$\boldsymbol{b}_1'$};
+  \draw[->, themeamber, line width=1.8pt] (0,0) -- (0.5, 1.5) node[above left, font=\small] {$\boldsymbol{b}_2'$};
+
+  % 同一物理向量 v (晶蓝高亮粗实线，指向空间同一点)
+  \coordinate (V) at (2.6, 2.2);
+  \draw[->, themecurve, line width=2.4pt] (0,0) -- (V);
+  \fill[themecurve] (V) circle (2.2pt);
+  \node[text=themecurve, fill=themebg, inner sep=1.5pt, font=\bfseries\small, above left] at (1.4, 1.9) {物理向量 $\boldsymbol{v}$};
+
+  % 在旧基下的投影坐标线
+  \draw[dotted, themegray, line width=0.8pt] (V) -- (2.6, 0) node[below, font=\scriptsize] {$x_1$};
+  \draw[dotted, themegray, line width=0.8pt] (V) -- (0, 2.2) node[left, font=\scriptsize] {$x_2$};
+
+  % 在新基下的平行四边形分解投影线
+  \draw[dashed, themeamber, line width=0.8pt] (V) -- (1.2*1.55, 0.4*1.55) node[below=1pt, font=\scriptsize, text=themeamber] {$x_1'\boldsymbol{b}_1'$};
+  \draw[dashed, themeamber, line width=0.8pt] (V) -- (0.5*1.75, 1.5*1.75) node[left=1pt, font=\scriptsize, text=themeamber] {$x_2'\boldsymbol{b}_2'$};
+\end{scope}
+
+% ── 右侧：闭环代数流程图与说明 ──
+\begin{scope}[shift={(5.4, 1.6)}]
+  \node[draw=themegray!60, fill=themebg, rounded corners=6pt, line width=0.8pt, inner sep=8pt, text width=6.6cm] (Box) {
+    \centering
+    {\bfseries\color{themecurve} 坐标转换闭环流程} \\[6pt]
+    \begin{tikzpicture}[>=Stealth, scale=0.9, every node/.style={transform shape}]
+      \node[draw=themeamber, rounded corners=3pt, text=themeamber, font=\small, inner sep=4pt] (NewCoord) at (0, 1.2) {新坐标 $[\boldsymbol{v}]_{\mathcal{B}'}$};
+      \node[draw=themegray, rounded corners=3pt, text=themefg, font=\small, inner sep=4pt] (OldCoord) at (0, -0.6) {旧坐标 $[\boldsymbol{v}]_{\mathcal{B}}$};
+      \node[draw=themecurve, rounded corners=3pt, text=themecurve, font=\small, inner sep=4pt] (Obj) at (2.6, 0.3) {物理对象 $\boldsymbol{v}$};
+
+      \draw[->, themeamber, line width=1.4pt] (NewCoord) -- node[right=2pt, font=\footnotesize, text=themeamber, fill=themebg, inner sep=1pt] {$\times \boldsymbol{P}$} (OldCoord);
+      \draw[->, dashed, themegray, line width=1.0pt] (OldCoord) -| node[near end, above=2pt, font=\scriptsize, fill=themebg, inner sep=1.2pt] {$\times \mathcal{B}$} (Obj);
+      \draw[->, dashed, themeamber, line width=1.0pt] (NewCoord) -| node[near end, above=2pt, font=\scriptsize, fill=themebg, inner sep=1.2pt] {$\times \mathcal{B}'$} (Obj);
+    \end{tikzpicture}
+    \\[4pt]
+    \raggedright\small
+    $\bullet$ \textbf{基变换}：$\mathcal{B}' = \mathcal{B}\boldsymbol{P}$（列由新基在旧基坐标组成）\\
+    $\bullet$ \textbf{坐标变换}：$[\boldsymbol{v}]_{\mathcal{B}} = \boldsymbol{P}[\boldsymbol{v}]_{\mathcal{B}'}$（方向相反）\\
+    $\bullet$ \textbf{恒等不变}：$\boldsymbol{v} = \mathcal{B}[\boldsymbol{v}]_{\mathcal{B}} = \mathcal{B}'[\boldsymbol{v}]_{\mathcal{B}'}$
+  };
+\end{scope}
+
+% ── 底部总结横条 ──
+\node[font=\bfseries\small, color=themecurve, anchor=north] at (4.5, -2.0) {
+  核心心智模型：变的是基与坐标数字编码，客观几何向量 $\boldsymbol{v}$ 空间位置绝无改变
+};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

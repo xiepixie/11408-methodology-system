@@ -1,0 +1,177 @@
+% ── V03 条件概率世界收缩（大空间呼吸感 2 行布局） ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 上半部第 1 行：左（先验世界） + 右（观察信息排除 B^c） ──
+% ══════════════════════════════════════════════════════════════
+
+% ── 1. 左卡片：先验世界 ──
+\begin{scope}[xshift=0cm, yshift=5.0cm]
+  % 卡片底色（单层，无内嵌框）
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themecurve}1. 先验世界 $(\Omega, P)$：以全集为基准}
+    };
+  \end{pgfonlayer}
+
+  % 图形区域（直接裸画在卡片底色上，零二级线框）
+  \begin{pgfonlayer}{background}
+    % 事件 B 区域（晶蓝）
+    \fill[fill=themecurve!22!themebg] (1.45, 2.3) ellipse (0.95cm and 0.85cm);
+    % 事件 A 区域（珊瑚红）
+    \fill[fill=themealert!22!themebg] (0.8, 2.3) ellipse (0.75cm and 0.7cm);
+
+    % 交集重叠区域 (A \cap B)
+    \begin{scope}
+      \clip (1.45, 2.3) ellipse (0.95cm and 0.85cm);
+      \fill[fill=themeamber!45!themebg] (0.8, 2.3) ellipse (0.75cm and 0.7cm);
+    \end{scope}
+
+    % 边框轮廓
+    \draw[color=themecurve, line width=1.0pt] (1.45, 2.3) ellipse (0.95cm and 0.85cm);
+    \draw[color=themealert, line width=1.0pt] (0.8, 2.3) ellipse (0.75cm and 0.7cm);
+  \end{pgfonlayer}
+
+  % 文字标注
+  \begin{pgfonlayer}{foreground}
+    \node[color=themealert] at (0.4, 2.3) {\scriptsize $A$};
+    \node[color=themeamber] at (1.12, 2.3) {\tiny $AB$};
+    \node[color=themecurve] at (1.95, 2.3) {\scriptsize $B$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=4.5cm] at (2.45, 4.3) {
+      \small \textbf{先验全集基准：}\\[0.25em]
+      \scriptsize $\bullet$ \textbf{基准标尺}：\\[0.1em]
+      \quad 全集总概率 $P(\Omega)=1$；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{无条件先验}：\\[0.1em]
+      \quad 面积对应概率 $P(A)$ 与 $P(AB)$；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{全局度量}：\\[0.1em]
+      \quad 所有事件概率均在全集 $\Omega$ 下度量。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 2. 右卡片：观察信息与世界收缩 ──
+\begin{scope}[xshift=7.7cm, yshift=5.0cm]
+  % 卡片底色（单层，无内嵌框）
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themeamber}2. 观察信息：排除 $B^c$ 与世界收缩}
+    };
+  \end{pgfonlayer}
+
+  % 图形区域（裸画）
+  \begin{pgfonlayer}{background}
+    % 有效世界 B 保留高亮
+    \fill[fill=themecurve!22!themebg] (1.45, 2.3) ellipse (0.95cm and 0.85cm);
+
+    % A 仅在 B 内部存活 (A \cap B)
+    \begin{scope}
+      \clip (1.45, 2.3) ellipse (0.95cm and 0.85cm);
+      \fill[fill=themeamber!50!themebg] (0.8, 2.3) ellipse (0.75cm and 0.7cm);
+    \end{scope}
+
+    \draw[color=themecurve, line width=1.1pt] (1.45, 2.3) ellipse (0.95cm and 0.85cm);
+    \draw[color=themealert, line width=0.8pt, dashed] (0.8, 2.3) ellipse (0.75cm and 0.7cm);
+  \end{pgfonlayer}
+
+  % 文字标注
+  \begin{pgfonlayer}{foreground}
+    \node[color=themegray] at (0.3, 2.3) {\tiny 淘汰};
+    \node[color=themeamber] at (1.12, 2.3) {\tiny $A\cap B$};
+    \node[color=themecurve] at (1.95, 2.3) {\scriptsize $B$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=4.5cm] at (2.45, 4.3) {
+      \small \textbf{物理空间收缩：}\\[0.25em]
+      \scriptsize $\bullet$ \textbf{有效世界收缩}：\\[0.1em]
+      \quad 信息注入 $\Omega \xrightarrow{\text{已知 } B} B$；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{非相容点清零}：\\[0.1em]
+      \quad 排除 $B^c$，仅相容交集 $A\cap B$ 存活；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{质量重整}：\\[0.1em]
+      \quad 存活事件以 $P(B)$ 为基准重新度量。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 下半部第 2 行：全宽卡片（新世界重新归一化与公理化测度） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0.3cm]
+  % 卡片底色（单层，无内层多重嵌套框）
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (14.8, 4.3);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.05) {
+      \large \textbf{\color{themealert}3. 新世界重新归一化与条件测度公理化}
+    };
+  \end{pgfonlayer}
+
+  % 左侧图解：新世界比例长条
+  \begin{pgfonlayer}{background}
+    % 新世界整体 B
+    \fill[fill=themecurve!20!themebg, draw=themecurve, line width=1.0pt, rounded corners=2pt]
+      (0.3, 1.2) rectangle (5.2, 2.8);
+
+    % 存活部分 A|B
+    \fill[fill=themeamber!45!themebg, draw=themeamber, line width=0.9pt, rounded corners=2pt]
+      (0.3, 1.2) rectangle (2.5, 2.8);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south west, color=themecurve] at (0.3, 2.85) {\scriptsize 新世界标尺：$P(B\mid B) = 1$};
+    \node[color=themefg] at (1.4, 2.0) {\small $P(A\mid B)$};
+    \node[color=themecurve] at (3.85, 2.0) {\small $P(A^c\mid B)$};
+    \node[anchor=north west, text width=5.0cm] at (0.2, 1.05) {
+      \tiny \color{themegray} 原交集质量 $P(AB)$ 除以 $P(B)$ 放大归一化为新测度。
+    };
+
+    % 中间竖向轻量分割线
+    \draw[color=themegray!30, line width=0.6pt] (5.7, 0.3) -- (5.7, 3.5);
+
+    % 右侧排印内容（极简无框，纯排印层级）
+    \node[anchor=north west, text width=8.7cm] at (6.1, 3.55) {
+      \small \textbf{核心公式：} ${\color{themeamber}P(A\mid B)} = \dfrac{{\color{themeamber}P(A\cap B)}}{{\color{themecurve}P(B)}}$ \quad \scriptsize (要求 $P(B) > 0$)\\[0.45em]
+      \scriptsize $\bullet$ \textbf{公理化继承}：$P(\cdot\mid B)$ 严格满足非负性、规范性与可列可加性；\\[0.35em]
+      \scriptsize $\bullet$ \textbf{解题真理}：普通概率的一切运算法则在条件测度下均完全成立；\\[0.35em]
+      \scriptsize $\bullet$ \textbf{乘法定理}：$P(AB) = P(B)P(A\mid B) = P(A)P(B\mid A)$。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 底部全图全局总结 (无框轻量排印) ──
+% ══════════════════════════════════════════════════════════════
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.3, -0.2) {
+    \footnotesize \textbf{条件概率几何本质：} 条件化不是机械公式套用，而是 \textbf{有效样本空间由 $\Omega$ 收缩为 $B$ 并按 $P(B)$ 放大归一化}；新测度 $P(\cdot\mid B)$ 赋予存活事件新的概率权重。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

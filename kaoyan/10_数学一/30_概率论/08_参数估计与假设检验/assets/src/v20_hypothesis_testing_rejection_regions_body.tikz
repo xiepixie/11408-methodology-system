@@ -1,0 +1,153 @@
+% ── V20 单双尾拒绝域 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 子图 1: 双侧检验 (H1: \theta != \theta_0) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0cm]
+  % 背景层：坐标轴与双尾阴影
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (-0.2, 0) -- (4.6, 0) node[right] {\footnotesize $z$};
+    \draw[->, color=themegray, line width=0.8pt] (2.2, 0) -- (2.2, 2.85) node[above=1pt] {\scriptsize $f(z)$};
+
+    % 左尾填充 (alpha/2): 0.2 到 1.1
+    \fill[fill=themecurve!35!themebg, domain=0.2:1.1, variable=\x]
+      (0.2, 0) -- plot(\x, {2.4/(1 + 2.2*(\x-2.2)^2)}) -- (1.1, 0) -- cycle;
+    % 右尾填充 (alpha/2): 3.3 到 4.2
+    \fill[fill=themecurve!35!themebg, domain=3.3:4.2, variable=\x]
+      (3.3, 0) -- plot(\x, {2.4/(1 + 2.2*(\x-2.2)^2)}) -- (4.2, 0) -- cycle;
+
+    % 临界点虚线
+    \draw[color=themecurve, dashed, line width=0.8pt] (1.1, 0) -- (1.1, {2.4/(1 + 2.2*(1.1-2.2)^2)});
+    \draw[color=themecurve, dashed, line width=0.8pt] (3.3, 0) -- (3.3, {2.4/(1 + 2.2*(3.3-2.2)^2)});
+  \end{pgfonlayer}
+
+  % 主体曲线 (main 层)
+  \draw[color=themecurve, line width=1.5pt, domain=0.2:4.2, samples=60, smooth]
+    plot(\x, {2.4/(1 + 2.2*(\x-2.2)^2)});
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themecurve] at (2.2, 3.45) {\textbf{\footnotesize 1. 双侧检验：$H_1: \theta \ne \theta_0$}};
+    
+    % 尾部与接受域标注
+    \node[anchor=south, text=themecurve] at (0.65, 0.45) {\scriptsize 拒绝域 $\frac{\alpha}{2}$};
+    \node[anchor=south, text=themecurve] at (3.75, 0.45) {\scriptsize 拒绝域 $\frac{\alpha}{2}$};
+    \node[anchor=south, fill=themebg, inner sep=1.2pt, text=themefg] at (2.2, 0.65) {\scriptsize 接受域 $1-\alpha$};
+
+    % 坐标轴刻度
+    \fill[color=themecurve] (1.1, 0) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $-z_{\alpha/2}$};
+    \fill[color=themecurve] (3.3, 0) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $z_{\alpha/2}$};
+    \node[anchor=north, text=themegray] at (2.2, -0.05) {\scriptsize $0$};
+
+    % 核心反演法则卡片
+    \node[anchor=north, fill=themefg!8!themebg, draw=themecurve, line width=0.8pt, rounded corners=2pt, text width=4.2cm, align=center] at (2.2, -0.65) {
+      \footnotesize \textbf{\color{themecurve}双侧对称切分}\\[0.15em]
+      \scriptsize 拒绝域：$|Z| > z_{\alpha/2}$\\[0.1em]
+      \scriptsize 左右尾各占 $\frac{\alpha}{2}$，临界门槛绝对值高
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 子图 2: 右侧检验 (H1: \theta > \theta_0) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=5.2cm, yshift=0cm]
+  % 背景层：坐标轴与右尾阴影
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (-0.2, 0) -- (4.6, 0) node[right] {\footnotesize $z$};
+    \draw[->, color=themegray, line width=0.8pt] (2.2, 0) -- (2.2, 2.85) node[above=1pt] {\scriptsize $f(z)$};
+
+    % 右尾集中填充 (alpha): 3.0 到 4.2
+    \fill[fill=themealert!35!themebg, domain=3.0:4.2, variable=\x]
+      (3.0, 0) -- plot(\x, {2.4/(1 + 2.2*(\x-2.2)^2)}) -- (4.2, 0) -- cycle;
+
+    % 临界点虚线
+    \draw[color=themealert, dashed, line width=0.8pt] (3.0, 0) -- (3.0, {2.4/(1 + 2.2*(3.0-2.2)^2)});
+  \end{pgfonlayer}
+
+  % 主体曲线 (main 层)
+  \draw[color=themealert, line width=1.5pt, domain=0.2:4.2, samples=60, smooth]
+    plot(\x, {2.4/(1 + 2.2*(\x-2.2)^2)});
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themealert] at (2.2, 3.45) {\textbf{\footnotesize 2. 右侧检验：$H_1: \theta > \theta_0$}};
+    
+    % 尾部与接受域标注
+    \node[anchor=south, text=themealert] at (3.65, 0.45) {\scriptsize 拒绝域 $\alpha$};
+    \node[anchor=south, fill=themebg, inner sep=1.2pt, text=themefg] at (1.6, 0.65) {\scriptsize 接受域 $1-\alpha$};
+
+    % 坐标轴刻度
+    \fill[color=themealert] (3.0, 0) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $z_\alpha$};
+    \node[anchor=north, text=themegray] at (2.2, -0.05) {\scriptsize $0$};
+
+    % 核心反演法则卡片
+    \node[anchor=north, fill=themefg!8!themebg, draw=themealert, line width=0.8pt, rounded corners=2pt, text width=4.2cm, align=center] at (2.2, -0.65) {
+      \footnotesize \textbf{\color{themealert}单侧右尾集中}\\[0.15em]
+      \scriptsize 拒绝域：$Z > z_\alpha$\\[0.1em]
+      \scriptsize 全部 $\alpha$ 集中右尾，门槛 $z_\alpha < z_{\alpha/2}$
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 子图 3: 左侧检验 (H1: \theta < \theta_0) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=10.4cm, yshift=0cm]
+  % 背景层：坐标轴与左尾阴影
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (-0.2, 0) -- (4.6, 0) node[right] {\footnotesize $z$};
+    \draw[->, color=themegray, line width=0.8pt] (2.2, 0) -- (2.2, 2.85) node[above=1pt] {\scriptsize $f(z)$};
+
+    % 左尾集中填充 (alpha): 0.2 到 1.4
+    \fill[fill=themeamber!35!themebg, domain=0.2:1.4, variable=\x]
+      (0.2, 0) -- plot(\x, {2.4/(1 + 2.2*(\x-2.2)^2)}) -- (1.4, 0) -- cycle;
+
+    % 临界点虚线
+    \draw[color=themeamber, dashed, line width=0.8pt] (1.4, 0) -- (1.4, {2.4/(1 + 2.2*(1.4-2.2)^2)});
+  \end{pgfonlayer}
+
+  % 主体曲线 (main 层)
+  \draw[color=themeamber, line width=1.5pt, domain=0.2:4.2, samples=60, smooth]
+    plot(\x, {2.4/(1 + 2.2*(\x-2.2)^2)});
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themeamber] at (2.2, 3.45) {\textbf{\footnotesize 3. 左侧检验：$H_1: \theta < \theta_0$}};
+    
+    % 尾部与接受域标注
+    \node[anchor=south, text=themeamber] at (0.75, 0.45) {\scriptsize 拒绝域 $\alpha$};
+    \node[anchor=south, fill=themebg, inner sep=1.2pt, text=themefg] at (2.8, 0.65) {\scriptsize 接受域 $1-\alpha$};
+
+    % 坐标轴刻度
+    \fill[color=themeamber] (1.4, 0) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $-z_\alpha$};
+    \node[anchor=north, text=themegray] at (2.2, -0.05) {\scriptsize $0$};
+
+    % 核心反演法则卡片
+    \node[anchor=north, fill=themefg!8!themebg, draw=themeamber, line width=0.8pt, rounded corners=2pt, text width=4.2cm, align=center] at (2.2, -0.65) {
+      \footnotesize \textbf{\color{themeamber}单侧左尾集中}\\[0.15em]
+      \scriptsize 拒绝域：$Z < -z_\alpha$\\[0.1em]
+      \scriptsize 全部 $\alpha$ 集中左尾，门槛 $-z_\alpha > -z_{\alpha/2}$
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 4. 底部全图全局总结 (无框轻量排印) ──
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.5, -2.25) {
+    \footnotesize \textbf{拒绝域分配准则：} 检验方向严格由备择假设 $H_1$ 决定。单侧检验把全部 $\alpha$ 集中单尾，临界门槛绝对值更低，对指定方向偏离具有更高检验功效。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

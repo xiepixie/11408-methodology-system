@@ -1,0 +1,117 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+
+% ── Panel 1: 单交点 (有公共解但非同解) ──
+\begin{scope}[shift={(0,0)}]
+  \draw[themegray!70, line width=0.8pt, rounded corners=4pt] (-2.5,-2.2) rectangle (2.5,2.2);
+  \node[font=\bfseries\small, text=themecurve, above] at (0, 2.3) {情形 A：有公共解 $\ne$ 同解};
+  
+  \coordinate (O1) at (-1.6,-1.5);
+  \coordinate (P) at (0, 0.2);
+
+  \begin{pgfonlayer}{background}
+    % 直线 L1: 晶蓝实线
+    \draw[themecurve, line width=1.8pt] ($(P)+(-1.8, -1.2)$) -- ($(P)+(1.8, 1.2)$);
+    % 直线 L2: 暖金实线 (不同斜率交叉)
+    \draw[themeamber, line width=1.8pt] ($(P)+(-1.6, 1.4)$) -- ($(P)+(1.6, -1.4)$);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{main}
+    \fill[themefg] (O1) circle (1.8pt) node[below left] {\footnotesize $\boldsymbol{0}$};
+    \fill[themealert] (P) circle (2.6pt);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[text=themecurve, font=\scriptsize, anchor=south east] at ($(P)+(-0.6, -0.6)$) {$\mathcal{S}_1: \boldsymbol{x}_0+\ker\boldsymbol{A}$};
+    \node[text=themeamber, font=\scriptsize, anchor=south east] at ($(P)+(-0.6, 0.8)$) {$\mathcal{S}_2: \boldsymbol{x}_0+\ker\boldsymbol{B}$};
+    \node[text=themealert, fill=themebg, inner sep=0.8pt, font=\bfseries\scriptsize, below] at ($(P)+(0, -0.15)$) {唯一公共解 $\boldsymbol{x}_0$};
+    
+    \node[font=\scriptsize, text=themealert, align=center] at (0, -1.7) {$\ker\boldsymbol{A} \ne \ker\boldsymbol{B}$\\有公共点但解集完全不同};
+  \end{pgfonlayer}
+\end{scope}
+
+% ── Panel 2: 平行不相交 (无公共解) ──
+\begin{scope}[shift={(5.6,0)}]
+  \draw[themegray!70, line width=0.8pt, rounded corners=4pt] (-2.5,-2.2) rectangle (2.5,2.2);
+  \node[font=\bfseries\small, text=themeamber, above] at (0, 2.3) {情形 B：同核但右端不相容};
+  
+  \coordinate (O2) at (-1.6,-1.5);
+
+  \begin{pgfonlayer}{background}
+    % 直线 L1: 上方
+    \draw[themecurve, line width=1.8pt] (-1.8, 0.8) -- (1.8, 1.8);
+    % 直线 L2: 下方平行
+    \draw[themeamber, line width=1.8pt] (-1.8, -0.4) -- (1.8, 0.6);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{main}
+    \fill[themefg] (O2) circle (1.8pt) node[below left] {\footnotesize $\boldsymbol{0}$};
+    \fill[themecurve] (0, 1.3) circle (2.2pt);
+    \fill[themeamber] (0, 0.1) circle (2.2pt);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[text=themecurve, font=\scriptsize, anchor=south west] at (0.2, 1.35) {$\boldsymbol{x}_1+\ker\boldsymbol{A}$};
+    \node[text=themeamber, font=\scriptsize, anchor=north west] at (0.2, 0.05) {$\boldsymbol{x}_2+\ker\boldsymbol{A}$};
+    
+    \node[font=\scriptsize, text=themegray, align=center] at (0, -1.7) {$\ker\boldsymbol{A} = \ker\boldsymbol{B}$ 但 $\boldsymbol{b}_1 \ne \boldsymbol{b}_2$\\平行不相交：$\mathcal{S}_1 \cap \mathcal{S}_2 = \emptyset$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ── Panel 3: 完全重合 (同解) ──
+\begin{scope}[shift={(11.2,0)}]
+  \draw[themegray!70, line width=0.8pt, rounded corners=4pt] (-2.5,-2.2) rectangle (2.5,2.2);
+  \node[font=\bfseries\small, text=themecurve, above] at (0, 2.3) {情形 C：完全同解（重合）};
+  
+  \coordinate (O3) at (-1.6,-1.5);
+  \coordinate (P3) at (0, 0);
+
+  \begin{pgfonlayer}{background}
+    % 重合粗线
+    \draw[themecurve, line width=2.8pt] (-1.8, -1.2) -- (1.8, 1.2);
+    \draw[dashed, themeamber, line width=1.4pt] (-1.8, -1.2) -- (1.8, 1.2);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{main}
+    \fill[themefg] (O3) circle (1.8pt) node[below left] {\footnotesize $\boldsymbol{0}$};
+    \fill[themealert] (P3) circle (2.6pt);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[text=themecurve, font=\scriptsize, anchor=south east] at ($(P3)+(-0.3, 0.5)$) {$\mathcal{S}_1 = \boldsymbol{x}_0+\ker\boldsymbol{A}$};
+    \node[text=themeamber, font=\scriptsize, anchor=north west] at ($(P3)+(0.3, -0.3)$) {$\mathcal{S}_2 = \boldsymbol{x}_0+\ker\boldsymbol{B}$};
+    
+    \node[font=\scriptsize, text=themecurve, align=center] at (0, -1.7) {$\ker\boldsymbol{A} = \ker\boldsymbol{B}$ 且基点兼容\\$\mathcal{S}_1 = \mathcal{S}_2$ 仿射流形完全重合};
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 底部总结横条 ──
+\node[draw=themegray!60, fill=themebg, rounded corners=4pt, line width=0.8pt, inner sep=6pt, text width=15.0cm, anchor=north] at (5.6, -2.6) {
+  \raggedright\small
+  $\bullet$ \textbf{公共解}：两个解集有交点 $\mathcal{S}_1 \cap \mathcal{S}_2 \ne \emptyset$（要求联立矩阵 $[A; B]$ 增广相容）。\\
+  $\bullet$ \textbf{同解}：两个解集完全相同 $\mathcal{S}_1 = \mathcal{S}_2$（必须满足 $\ker A = \ker B$ 且特解互相满足对方方程）。
+};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

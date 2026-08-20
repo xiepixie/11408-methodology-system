@@ -1,0 +1,103 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+
+% ── 空间 1：输入空间 R^p ──
+\begin{scope}[shift={(0,0)}]
+  \node[draw=themegray!60, fill=themebg, rounded corners=4pt, line width=0.8pt, inner sep=6pt, text width=2.2cm, align=center] (Sp1) at (0, 0) {
+    {\bfseries\color{themegray} 起始空间}\\[2pt]
+    $\mathbb{R}^p$\\[4pt]
+    \footnotesize 维数 $p$
+  };
+\end{scope}
+
+% ── 空间 2：中间空间 R^n (核像碰撞核心区) ──
+\begin{scope}[shift={(5.6,0)}]
+  \draw[themegray!70, line width=1.0pt, rounded corners=6pt] (-2.5,-2.3) rectangle (2.5,2.3);
+  \node[font=\bfseries\small, text=themecurve] at (0, 2.6) {中间空间 $\mathbb{R}^n$（损失发生地）};
+
+  % 像空间 Im(B) (晶蓝区域)
+  \fill[themecurve!20!themebg, opacity=0.6, rounded corners=4pt] (-2.2, -1.9) rectangle (1.1, 1.9);
+  \draw[themecurve, line width=1.2pt, rounded corners=4pt] (-2.2, -1.9) rectangle (1.1, 1.9);
+  \node[text=themecurve, font=\bfseries\footnotesize, anchor=north west] at (-2.1, 1.8) {$\operatorname{Im}(\boldsymbol{B})$};
+
+  % 核空间 ker(A) (暖金区域)
+  \fill[themeamber!20!themebg, opacity=0.6, rounded corners=4pt] (-1.1, -1.3) rectangle (2.2, 1.3);
+  \draw[themeamber, line width=1.2pt, rounded corners=4pt] (-1.1, -1.3) rectangle (2.2, 1.3);
+  \node[text=themeamber, font=\bfseries\footnotesize, anchor=south east] at (2.1, -1.2) {$\ker(\boldsymbol{A})$};
+
+  % 核像交集碰撞区 Im(B) ∩ ker(A) (珊瑚红高亮)
+  \fill[themealert!35!themebg, rounded corners=3pt] (-1.1, -1.3) rectangle (1.1, 1.3);
+  \draw[themealert, line width=1.5pt, rounded corners=3pt] (-1.1, -1.3) rectangle (1.1, 1.3);
+  \node[text=themealert, font=\bfseries\footnotesize, align=center] at (0, 0) {
+    核像碰撞区\\[2pt]
+    $\operatorname{Im}(\boldsymbol{B}) \cap \ker(\boldsymbol{A})$\\[2pt]
+    \scriptsize 被 $\boldsymbol{A}$ 杀掉
+  };
+\end{scope}
+
+% ── 空间 3：最终输出空间 R^m ──
+\begin{scope}[shift={(12.2,0)}]
+  \draw[themegray!70, line width=1.0pt, rounded corners=6pt] (-1.5,-2.3) rectangle (1.5,2.3);
+  \node[font=\bfseries\small, text=themecurve] at (0, 2.6) {输出空间 $\mathbb{R}^m$};
+
+  % 最终复合像空间 Im(AB)
+  \fill[themecurve!25!themebg, rounded corners=4pt] (-1.3, -0.6) rectangle (1.3, 1.9);
+  \draw[themecurve, line width=1.4pt, rounded corners=4pt] (-1.3, -0.6) rectangle (1.3, 1.9);
+  \node[text=themecurve, font=\bfseries\small, align=center] at (0, 0.6) {
+    复合像空间\\[2pt]
+    $\operatorname{Im}(\boldsymbol{A}\boldsymbol{B})$\\[2pt]
+    \footnotesize 维数 $r(\boldsymbol{A}\boldsymbol{B})$
+  };
+
+  % 零点
+  \fill[themealert] (0, -1.4) circle (3.0pt);
+  \node[text=themealert, font=\bfseries\footnotesize, below] at (0, -1.5) {$\boldsymbol{0} \in \mathbb{R}^m$};
+\end{scope}
+
+% ── 流程连接箭头 ──
+\begin{pgfonlayer}{main}
+  % R^p -> Im(B)
+  \draw[->, themegray, line width=1.6pt] (1.3, 0) -- 
+    node[above=2pt, font=\bfseries\small, fill=themebg, inner sep=1.5pt] {映射 $\boldsymbol{B}$} (2.9, 0);
+
+  % Im(B) 非核部分 -> Im(AB) 同构传递
+  \draw[->, themecurve, line width=2.2pt] (8.1, 0.6) -- 
+    node[above=2pt, font=\bfseries\small, text=themecurve, fill=themebg, inner sep=2pt] {$\boldsymbol{A}$ 同构传递} (10.6, 0.6);
+
+  % 碰撞部分 -> 0 坍缩
+  \draw[->, themealert, line width=1.6pt, dashed] (8.1, -0.3) -- 
+    node[above=2pt, font=\scriptsize, text=themealert, fill=themebg, inner sep=1.5pt] {全部塌陷为零} (10.6, -1.2);
+\end{pgfonlayer}
+
+% ── 底部秩边界定理汇总 ──
+\node[draw=themegray!60, fill=themebg, rounded corners=4pt, line width=0.8pt, inner sep=7pt, text width=14.8cm, anchor=north] at (6.1, -2.7) {
+  \raggedright\small
+  $\bullet$ \textbf{乘积秩根本公式}：$r(\boldsymbol{A}\boldsymbol{B}) = r(\boldsymbol{B}) - \dim\bigl(\operatorname{Im}(\boldsymbol{B}) \cap \ker(\boldsymbol{A})\bigr)$\\
+  $\bullet$ \textbf{零乘积本质}：$\boldsymbol{A}\boldsymbol{B} = \boldsymbol{O} \iff \operatorname{Im}(\boldsymbol{B}) \subseteq \ker(\boldsymbol{A}) \implies r(\boldsymbol{A}) + r(\boldsymbol{B}) \le n$\\
+  $\bullet$ \textbf{满列秩左消去}：$\boldsymbol{A}$ 满列秩 $\implies \ker(\boldsymbol{A}) = \{\boldsymbol{0}\} \implies$ 零核碰撞 $\implies r(\boldsymbol{A}\boldsymbol{B}) = r(\boldsymbol{B})$\\
+  $\bullet$ \textbf{满行秩右消去}：$\boldsymbol{B}$ 满行秩 $\implies \operatorname{Im}(\boldsymbol{B}) = \mathbb{R}^n \implies$ 覆盖全部输入 $\implies r(\boldsymbol{A}\boldsymbol{B}) = r(\boldsymbol{A})$
+};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

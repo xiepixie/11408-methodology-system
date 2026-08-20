@@ -1,231 +1,131 @@
 \documentclass[UTF8,fontset=fandol,11pt,a4paper]{ctexart}
 \usepackage[a4paper,margin=1.75cm,headheight=15pt]{geometry}
-\usepackage{amsmath,amssymb,mathtools}
-\usepackage{booktabs,tabularx,array}
-\usepackage{enumitem}
-\usepackage[most]{tcolorbox}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,matrix}
+\usepackage{amsmath,amssymb,mathtools,booktabs,tabularx,array,enumitem}
+\usepackage[most]{tcolorbox}\usepackage{tikz}\usetikzlibrary{arrows.meta,positioning,calc}
 \usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage}
-\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
-\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
-\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}
-\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
-\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
-\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
+\setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
 \definecolor{deep}{RGB}{38,58,72}\definecolor{soft}{RGB}{244,247,248}\definecolor{greenish}{RGB}{52,91,74}\definecolor{warnc}{RGB}{136,61,58}\definecolor{purple}{RGB}{84,72,112}\definecolor{rulegray}{RGB}{110,116,120}
 \hypersetup{colorlinks=true,linkcolor=deep,urlcolor=purple,pdftitle={CO-05 主存与存储硬件}}
-\pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{408 · 计算机组成原理 CO-05}}\rhead{\small\color{deep}Address · Array · Timing · Bandwidth}\cfoot{\small 第 \thepage\ 页 / 共 \pageref{LastPage} 页}\renewcommand{\headrulewidth}{0.4pt}
+\pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{408 · 计算机组成原理 CO-05}}\rhead{\small\color{deep}Address · Array · Transaction · Timing}\cfoot{\small 第 \thepage\ 页 / 共 \pageref{LastPage} 页}\renewcommand{\headrulewidth}{0.4pt}
 \newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
 \newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warnc,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newcommand{\kw}[1]{\textbf{\color{deep}#1}}\newcommand{\code}[1]{\texttt{#1}}
-\tikzset{co/.style={draw=deep,rounded corners=1.5mm,text width=2.6cm,minimum height=0.9cm,align=center,fill=soft,font=\small,inner sep=3pt},state/.style={co,double,double distance=1.2pt,fill=white},flow/.style={-{Latex[length=2mm]},thick,draw=deep},ref/.style={-{Latex[length=2mm]},dashed,draw=rulegray}}
-\title{\vspace{-1.1cm}\textbf{主存与存储硬件}\\[0.4em]\large 地址怎样落到阵列、介质与可计量的事务}
+\tikzset{co/.style={draw=deep,rounded corners=1.5mm,text width=2.35cm,minimum height=0.95cm,align=center,fill=soft,font=\small,inner sep=3pt},flow/.style={-{Latex[length=2mm]},thick,draw=deep},ref/.style={-{Latex[length=2mm]},dashed,draw=rulegray}}
+\title{\vspace{-1.1cm}\textbf{主存与存储硬件}\\[0.4em]\large 一个地址怎样落到芯片、阵列、介质与可计量的事务}
 \author{408 · 计算机组成原理 Topic CO-05}\date{}
+
 \begin{document}\maketitle
-\begin{corebox}{母问题：抽象地址怎样被有限硬件兑现？}
-主存/存储硬件把一个逻辑访问拆成可实现的选择、感测、传输和恢复过程：
+
+\begin{corebox}{母问题：抽象地址怎样被有限物理硬件兑现？}
+一个存储请求至少要回答四件事：\textbf{地址代表什么、由谁保存、一次怎样读写、多久能完成/再次服务}。本册用
 \[
-\boxed{\text{Address / Granularity}\to\text{Module / Chip Select}\to\text{Row / Column}\to\text{Sense / Program}\to\text{Transfer}\to\text{Latency / Bandwidth}}
+\boxed{
+\begin{aligned}
+\text{Address / Granularity}
+&\to\text{Module / Chip / Bank Selection}\\
+&\to\text{Array / Medium Operation}
+\to\text{Transfer Transaction}\\
+&\to\text{Latency / Cycle / Throughput / Bandwidth}
+\end{aligned}}
 \]
-它解释“地址落到哪里、一次搬多少、下一次何时能来”，而不是把所有存储名词排列成速度金字塔。
+组织知识。箭头表示\textbf{实现依赖与分析顺序}，不是说所有介质都具有相同内部时序。
 \end{corebox}
-\begin{methodbox}{本册学习范围}
+
+\begin{methodbox}{本册负责什么}
 \begin{itemize}
-\item 本册解释主存、固态存储和磁盘怎样组织地址、芯片、行列、Bank 与传输，并据此计算容量、延迟和带宽。
-\item 本册重点区分编址单位、存储字、总线传输宽度、Cache 块和虚存页；这些粒度不能因为名称相近就混为一谈。
-\item Cache 副本协议、地址翻译和操作系统调度只作为边界条件出现；本册先把介质本身的读写过程讲完整。
-\end{itemize}\end{methodbox}
-\section{术语先行：存储名词对应什么物理动作}
-\begin{methodbox}{本册的九个关键词}
-\begin{itemize}
-\item \kw{编址单位：}一个地址可以直接选中的最小信息单位；字节编址时一个地址通常对应 8 位。
-\item \kw{存储字：}阵列内部一次选中的固定宽度数据，不一定等于 CPU 字长或总线宽度。
-\item \kw{SRAM：}用双稳态电路保存位，读写快且不需要刷新，常用于容量较小的高速存储。
-\item \kw{DRAM：}用电容电荷保存位，密度高但电荷会泄漏，必须周期性刷新，常用于主存。
-\item \kw{Flash/SSD：}Flash 以电荷状态保存信息；SSD 把多个 Flash 芯片组织成主机可见的块设备。
-\item \kw{HDD：}用磁盘盘片和磁头保存信息；访问时间通常包含寻道、旋转等待和数据传输。
-\item \kw{Bank：}可以独立接收请求的一组存储阵列；多 Bank 允许请求重叠，但不保证每次都能并行。
-\item \kw{延迟/周期时间/带宽：}延迟是一次请求到数据可用的时间，周期时间是同一资源能接受下一次请求的最短间隔，带宽是稳定时间内的数据量。
-\item \kw{交叉编址：}把连续地址分散到多个模块或 Bank，以便一个模块恢复时另一个模块工作。
-\end{itemize}\end{methodbox}
-\tableofcontents\newpage
-
-\section{先分四种粒度}
-编址单位决定一个地址代表多少信息；存储字是阵列一次选中的组织；总线事务决定一次传输宽度；Cache line/page 是上层批量搬运粒度。它们可能相等，也可能完全不同。
-\[
-\text{capacity}=\text{number of addressable units}\times\text{bits per unit}.
-\]
-若按字节编址，$n$ 条地址线最多定位 $2^n$ 个字节；若按 $w$ 字编址，同样容量所需地址线会变化。地址线数量不能只由“总字节数”或 CPU 字长单独推出。
-
-\section{存储单元：SRAM 与 DRAM}
-SRAM 用双稳态反馈保持位，读通常非破坏、无需刷新，但单元面积大、成本高；DRAM 用电容电荷表示位，密度高、成本低，却有泄漏、感测/恢复和周期刷新成本。二者都通常易失；static 只表示无需刷新，不表示断电保存。
-
-\begin{center}\small
-\begin{tabularx}{\linewidth}{L{2.1cm}YY Y}
-\toprule
-维度 & SRAM & DRAM & 题目调用\\
-\midrule
-保存机制 & 双稳态反馈 & 电容电荷 & 问“为什么刷新/密度”\\
-读操作 & 通常非破坏 & 感测后恢复 & 问读后是否再生\\
-阵列代价 & 单元大、快 & 单元小、需控制时序 & 问 Cache/主存取舍\\
-并行组织 & 直接地址选择 & 行激活、列选择、row buffer & 问 RAS/CAS 或行命中\\
-\bottomrule
-\end{tabularx}\end{center}
-
-\subsection{DRAM 的生命周期}
-\[
-\text{row address}\to\text{activate / sense}\to\text{column select}\to\text{data transfer}\to\text{precharge / refresh}.
-\]
-行列复用减少引脚和译码线，但增加时序控制；刷新按行复用感测放大器，消耗可用周期。集中刷新、分散刷新只是在调度“刷新占用”这一成本，不能改变电容泄漏事实。
-
-\section{芯片扩展与地址译码}
-设单片组织为 $K\times W$，目标为 $K'\times W'$：
-\[
-N=\frac{K'}K\times\frac{W'}W.
-\]
-位扩展让多片并联贡献一个字的不同数据位；字扩展让高位地址选择不同芯片组；同时扩展需先组成目标字宽，再复制组数。低位地址接片内译码，高位地址产生片选，但具体分配服从题设。
-
-全译码检查所有高位，地址唯一；部分译码忽略高位，电路少但会产生地址重影；线选可能浪费地址空间。\kw{“能访问”不等于“地址唯一”。}
-
-\begin{examplebox}{芯片题的完整动作}
-先把容量统一成“字数 × 每字位数”，分别算位扩展和字扩展；再画片内地址、片选地址、数据线分工和读写控制；最后用最小/最大地址检查是否重影。
-\end{examplebox}
-
-\section{多模块与交叉编址}
-多个独立模块能并行或流水工作时，连续请求可以分散：
-\[
-module=(block)\bmod N,\qquad local=\left\lfloor\frac{block}{N}\right\rfloor.
-\]
-低位交叉适合连续流，提高稳态 bandwidth；高位编址更像分区。交叉不保证随机单次 latency 下降，热点落在同一模块时仍会冲突。
-
-\section{介质的共同坐标}
-用“访问粒度、可否原地更新、易失性、耐久、延迟、带宽、控制复杂度”比较介质：
-\begin{itemize}
-\item Flash/SSD 常以 page 读写、block 擦除，控制器需要映射、垃圾回收和磨损均衡，写放大造成延迟波动；
-\item HDD 访问由寻道、旋转、传输和控制器开销组成：
-\[
-T_{access}=T_{seek}+T_{rotation}+T_{transfer}+T_{controller}.
-\]
-平均随机旋转等待常近似半圈：$T_{rotation}=\frac12\frac{60}{RPM}$；
-\item LBA 是主机接口的线性编号，CHS 是教学几何/兼容视图；坏块重映射、分区密度和固件缓存使连续 LBA 不推出真实物理连续。
+\item \kw{Own：}编址单位、存储字、SRAM/DRAM/Flash/HDD 的硬件组织、芯片扩展、地址译码、Bank/交叉编址、刷新和介质访问事务；性能语言包括 latency、access time、cycle time、throughput 与 bandwidth。
+\item \kw{Use / Output：}向 CO-06 输出 Cache miss 所需的下一级服务成本，向 CO-08 输出存储端事务约束；磁盘调度、文件映射、OS Page Cache 与页面置换归 OS。
+\item \kw{Stop Boundary：}出现 Cache tag/valid/replacement 时转 CO-06；出现 VPN/PFN/TLB 时转 CO-07；出现文件/进程调度策略时转 OS Owner。
 \end{itemize}
-磁盘调度是 OS 策略；本册只拥有介质访问成本和硬件传输约束。
-
-\section{性能坐标}
-\begin{itemize}
-\item \kw{Access time：}一次请求从地址/命令到数据有效；
-\item \kw{Cycle time：}下一次独立访问允许启动的最小间隔，可能大于 access time；
-\item \kw{Bandwidth：}单位时间有效数据量；
-\item \kw{Burst：}一次地址阶段后连续传输，摊薄控制成本；
-\item \kw{Bank conflict：}并行请求争用同一不可并行资源。
-\end{itemize}
-“宽度 × 频率”只有在每周期传输次数、编码开销、利用率和重叠条件明确时才是有效带宽。
-
-\section{五列概念边界}
-\begin{center}\small
-\begin{tabularx}{\linewidth}{L{1.8cm}C{0.35cm}L{1.8cm}Y Y}\toprule
-概念 A & $\neq$ & 概念 B & 真正区别与题面信号 & 混淆后果\\\midrule
-编址单位 & $\neq$ & 存储字长 & 地址标识粒度 vs 一次组织的数据位数 & 地址线/容量计算错\\
-Access time & $\neq$ & Cycle time & 数据何时有效 vs 下一次何时可开始 & 把恢复/再生漏算\\
-SRAM & $\neq$ & DRAM & 双稳态保持 vs 电荷泄漏/刷新 & Cache/主存取舍倒置\\
-Cache line & $\neq$ & DRAM row & 上层副本搬运粒度 vs 介质阵列激活粒度 & 把命中/行命中混为一谈\\
-LBA & $\neq$ & 物理扇区位置 & 主机线性接口编号 vs 固件/介质内部布局 & 推出不存在的连续物理位置\\
-主存带宽 & $\neq$ & 单次延迟 & 稳态传输率 vs 一次请求等待 & 以带宽替代 latency\\
-\bottomrule\end{tabularx}\end{center}
-
-\section{贯穿母例：构造一个主存模块}
-给定目标容量、单片组织和 CPU 总线宽度：
-\begin{enumerate}
-\item 标明编址单位与目标“字数 × 字长”；
-\item 位扩展组成目标数据宽度，字扩展形成片选组；
-\item 划分片内地址、组选择地址和未用字段；
-\item 写读/写时序，若为 DRAM 再标行激活、列选择、恢复/刷新；
-\item 检查边界地址、地址重影、模块冲突和一次事务的有效数据量。
-\end{enumerate}
-
-\begin{warnbox}{典型错误路径}
-把 $64\text{K}\times8$ 中的 8 当成地址线数；把交叉编址的连续吞吐提升说成随机访问 latency 必然下降；把 LBA 连续说成盘面物理连续。这些都混淆了不同层级的粒度或时间。
-\end{warnbox}
-
-\section{做题控制协议}
-\begin{enumerate}
-\item 先列编址单位、总容量、单片组织、数据总线宽度；
-\item 分别计算 word-depth 与 word-width，不把两个预算合并；
-\item 画地址从 CPU 到模块、芯片、行列的路由；
-\item 对性能题分 latency、cycle time、bandwidth、并行模块和冲突；
-\item 用边界地址和连续地址序列验证映射，写清哪些结论只是题设模型。
-\end{enumerate}
-
-\begin{methodbox}{压缩成第一动作}
-看到存储器容量、芯片扩展或访问时间题，先问：\kw{一个地址代表什么，一个存储字有多少位，一次事务搬多少，下一次访问何时合法？}
 \end{methodbox}
 
-\section{本册与上层访问的接口}
-\begin{corebox}{从地址到存储服务}
-本册说明一个地址怎样落到编址单元、芯片、Bank、Row、Column 和介质，并给出容量、服务时间、并行度和有效带宽。Cache 或总线把它当作下一级存储或事务目标，但不会改变这里对介质读写的定义。
-\end{corebox}
-主存题必须同时列地址线、数据宽度、存储粒度、一次事务和可重叠模块；latency、cycle time、bandwidth 和容量是不同成本坐标，不能只用“位宽乘频率”替代完整模型。
+\tableofcontents\newpage
 
-\section{考纲映射与接口}
+\section{先建立坐标：同一个“存储器”可以按不同分类轴观察}
+同一个器件可以同时属于多个类别，分类前必须先声明问题轴：
 \begin{center}\small
-\begin{tabularx}{\linewidth}{L{3.2cm}YY}\toprule
-传统考点 & 本册位置 & 下游接口\\\midrule
-主存结构/芯片扩展 & 编址、位/字扩展、译码与重影 & CO-03/CO-08\\
-SRAM/DRAM/刷新 & 单元、行列、感测、恢复 & CO-06\\
-存储器层次/性能 & 粒度、latency、cycle、bandwidth & CO-06/07\\
-磁盘/SSD 介质 & 访问成本、LBA/CHS、写放大 & OS-05/06 Use\\
-\bottomrule\end{tabularx}\end{center}
-
-\begin{corebox}{一句话}
-主存与存储硬件的核心不是背介质名词，而是把地址和数据粒度逐层分配到模块、芯片、阵列和事务，再用 latency、cycle time、bandwidth 与冲突解释代价。
-\end{corebox}
-
-\section{边界说明：介质、缓存和操作系统不是同一个层次}
-Cache 的块搬运、页表的地址翻译、文件系统的逻辑块和操作系统的调度都可能调用本册提供的存储服务，但它们增加了自己的副本和状态。看到“块、页、行、字”时，先写清楚它属于哪一层，再计算地址和时间。
-\section{补充细节：存储器是多种粒度和时间尺度的组合}
-
-存储器的概述、SRAM/DRAM、芯片扩展、多模块、外存和 SSD 都可以统一接回本册的坐标：
-\[
-\text{Address Unit}
-\to\text{Array / Chip / Bank}
-\to\text{Access Transaction}
-\to\text{Latency / Cycle / Bandwidth}
-\to\text{Available Data}.
-\]
-“存储器”不是一个均匀黑盒；编址单位、存储字、芯片组织、阵列行列、总线事务和 Cache/page 批量粒度必须分开。
-
-\subsection{存储器分类：先声明分类轴}
-
-同一个器件可以在不同分类轴上同时出现：按存取方式可分随机、顺序、直接或相联；按介质可分半导体、磁、光或 Flash；按掉电后是否保持可分易失/非易失；按系统位置可分寄存器、Cache、主存、外存。分类题若不先声明轴，容易把互不排斥的类别误当成树状互斥答案。
-
-\begin{center}\small
-\begin{tabularx}{\linewidth}{L{2.5cm}L{3.0cm}L{3.2cm}Y}
+\begin{tabularx}{\linewidth}{L{2.5cm}L{3cm}YY}
 \toprule
-分类轴 & 典型类别 & 真正回答的问题 & 常见误判 \\
-\midrule
-存取方式 & random/sequential/direct/associative & 地址给出后怎样定位数据 & 把 random 理解成零延迟 \\
-介质 & SRAM/DRAM/磁/Flash/光 & 信息由什么物理状态保持 & 把非易失等同于可直接执行 \\
-易失性 & volatile/non-volatile & 断电后数据是否保持 & 把刷新与断电混为一谈 \\
-系统位置 & register/cache/main memory/storage & 在层次中承担什么容量/速度角色 & 同一器件只能有一个位置 \\
+分类轴 & 典型类别 & 真正回答的问题 & 易错点\\\midrule
+存取方式 & random / sequential / direct / associative & 地址给出后怎样定位数据 & 把 random 理解成零延迟\\
+物理介质 & SRAM / DRAM / Flash / 磁 / 光 & 信息由什么物理状态保持 & 把介质名当系统层次名\\
+易失性 & volatile / non-volatile & 断电后是否保持信息 & 把刷新与掉电保持混为一谈\\
+系统位置 & register / Cache / main memory / storage & 在容量、速度、成本中承担什么角色 & 认为同一介质只能承担一种角色\\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-\subsection{SRAM 与 DRAM：单元保持方式生成访问代价}
+\begin{methodbox}{核心术语}
+\begin{itemize}
+\item \kw{编址单位：}一个地址直接命名的最小信息单位；按字节编址时通常为 1B。
+\item \kw{存储字：}阵列内部一次组织/选择的数据宽度，不必等于 CPU 字长或总线宽度。
+\item \kw{Bank：}可与其他 Bank 部分独立工作的存储阵列/模块；并行能力仍受控制器、总线和冲突限制。
+\item \kw{Transaction：}接口层一次完整请求/响应过程，可能包含地址、命令、等待和一个或多个数据 beat。
+\end{itemize}
+\end{methodbox}
 
-SRAM 单元用双稳态结构保存状态，读写快、无需周期性刷新，但面积大、密度低，适合 Cache 等高速度层。DRAM 用电容电荷保存信息，电荷泄漏要求刷新，单元面积小、容量密度高，适合作为主存。DRAM 的一次访问可能包含行激活、列选择、读写、感测和恢复；访问时间、周期时间和连续行命中行为不能简化为同一个数字。
+\section{第一原则：先分粒度，再做容量与地址线}
+最容易被混为一谈的至少有：
+\begin{itemize}
+\item 编址单位：一个地址命名多少信息；
+\item 存储字：阵列一次组织多少位；
+\item 芯片数据宽度：单片一次贡献多少位；
+\item 总线/事务宽度：一次 beat 或一次事务搬多少；
+\item 上层批量粒度：Cache line、虚存 page 等。
+\end{itemize}
+这些量可以相等，但不能因为都写成 B/bit/word 就默认相等。
 
-地址复用常把行地址和列地址分两次送入，减少外部地址线；行缓冲让同一行的连续列访问更快，但不保证不同 Bank/Row 的请求也相同。刷新是保持信息的维护动作，不能被误写成 CPU 重新写回每个字；题目给出刷新周期和行数时，再计算每行刷新间隔或刷新开销。
+若共有 $N$ 个可寻址单元、每单元 $u$ bit，则
+\[
+Capacity=N\times u.
+\]
+$n$ 条地址线最多区分 $2^n$ 个\textbf{编址单元}。因此地址线由“有多少个地址”决定，而不是由 CPU 字长或总字节数单独决定。
 
-Flash 以电荷/阈值状态保存信息，写入通常以页为单位、擦除以块为单位，并存在写放大和有限擦写寿命。SSD 对主机提供类似块设备的 LBA 接口，内部映射、垃圾回收和磨损均衡属于控制器/介质实现；本册只在题目要求时计算硬件访问成本，不把文件系统策略混入。
+\section{信息怎样被物理单元保存：SRAM、DRAM 与非易失介质}
+\subsection{SRAM 与 DRAM：保持方式生成访问代价}
+SRAM 用双稳态反馈保存位，通常读不破坏、无需周期刷新，但单元面积大、密度低，适合高速小容量层。DRAM 用电容电荷保存位，密度高、成本低，却因电荷泄漏需要刷新，读出通常还涉及感测与恢复，适合作为大容量主存。二者通常都易失；\textit{static} 只表示无需周期刷新，不表示断电保存。
 
-\subsection{主存芯片扩展：容量是“字数 × 字长”两项预算}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.2cm}YYY}
+\toprule
+维度 & SRAM & DRAM & 做题信号\\\midrule
+保持机制 & 双稳态反馈 & 电容电荷 & 为什么刷新/为什么密度不同\\
+读操作 & 通常非破坏 & 感测后恢复 & 是否有恢复时间\\
+阵列组织 & 直接地址选择 & 行激活、列选择、row buffer & RAS/CAS、行命中\\
+典型角色 & Cache 等高速小容量存储 & 主存 & 速度/容量/成本权衡\\
+\bottomrule
+\end{tabularx}
+\end{center}
 
-若单片规格为 $D\times W$，目标主存规格为 $D_t\times W_t$，则位扩展数量和字扩展数量分别为
+\subsection{DRAM 一次访问的状态轨迹}
+典型依赖可写成
+\[
+\text{row address}
+\to\text{activate / sense}
+\to\text{column select}
+\to\text{data transfer}
+\to\text{restore / precharge}.
+\]
+DRAM 常复用同一组外部引脚分时传送行地址和列地址，减少引脚；行激活后整行进入行缓冲，同一已激活行的后续列访问可能更快。不同题设会抽象掉部分阶段，因此不能把所有 DRAM 题固定成同一拍数。
+
+若阵列有 $r$ 行、$c$ 列，行列地址复用时，地址引脚数至少满足
+\[
+A_{pin}=\max\!\left(\lceil\log_2r\rceil,\lceil\log_2c\rceil\right).
+\]
+只有对称阵列时才可把总地址位数简单平分。
+
+\subsection{刷新：保持数据的维护事务}
+刷新由存储系统/控制器组织，不是 CPU 把每个字重新写回。若有 $r$ 行、要求在 $T$ 内刷新全部行：集中刷新把刷新工作聚集成一段不可访问时间；分散刷新把刷新插入每个访问周期；异步刷新按约 $T/r$ 的间隔刷新一行。三者主要区别是停顿分布和调度方式，不改变“DRAM 必须周期恢复电荷”的事实。
+
+\subsection{Flash / SSD：写和擦除不是同一粒度}
+Flash 以电荷/阈值状态保存信息，通常页级读写、块级擦除，因此不能像 DRAM 一样任意原地改写。SSD 在 Flash 之上提供主机可见的块设备接口，并通过映射表、垃圾回收、磨损均衡等机制管理介质；这些机制可能产生写放大和延迟波动。
+
+\section{芯片扩展与地址译码：容量是“深度 × 宽度”两项预算}
+若单片为 $D\times W$，目标为 $D_t\times W_t$，则常用预算为
 \[
 n_{width}=\left\lceil\frac{W_t}{W}\right\rceil,
 \qquad
@@ -233,61 +133,140 @@ n_{depth}=\left\lceil\frac{D_t}{D}\right\rceil,
 \qquad
 n=n_{width}n_{depth}.
 \]
-先将多个芯片并联补足数据宽度，再按高位地址译码选择不同的字深组；片内低位地址连接到所有并联芯片。地址线、数据线、片选、读写控制和未用地址组合要分别画出。$64\mathrm K\times8$ 的“8”是数据宽度，不是地址线数；$64\mathrm K$ 是可寻址字数，不自动等于字节数。
+位扩展让多个芯片并联贡献同一地址的数据位；字扩展用高位地址/片选选择不同芯片组。一般先补足目标数据宽度，再复制足够多的地址深度组。
 
-\subsection{多模块与交叉编址：延迟和稳态吞吐分离}
+全译码使用所有需要的高位地址，地址唯一；部分译码忽略部分高位，电路更省但可能产生地址重影；线选可能浪费地址空间。\kw{“这个地址能读到数据”不等于“它只对应这一个物理单元”。}
 
-多模块存储把连续地址分散到多个 Bank，以便在一个 Bank 服务当前请求时，其他 Bank 接收后续请求。低位交叉通常让连续地址快速轮转模块号，高位交叉则把大块连续地址放在同一模块，适合不同区域的并行。题目必须给出模块号函数和模块内地址，例如
+\begin{center}
+\begin{tikzpicture}[node distance=0.62cm]
+\node[co] (cpu) {CPU / Controller\\Address + R/W};
+\node[co,right=of cpu] (sel) {Module / Chip\\Select};
+\node[co,right=of sel] (array) {Bank / Row / Column\\Array Operation};
+\node[co,right=of array] (tx) {Data Interface\\Transaction};
+\draw[flow] (cpu)--(sel);\draw[flow] (sel)--(array);\draw[flow] (array)--(tx);
+\end{tikzpicture}
+\end{center}
+图中的箭头表示\textbf{地址解释与服务依赖}：高低地址位怎样分工、行列是否复用、Bank 是否并行都服从具体器件和题设。
+
+\section{多模块与交叉编址：提高的是可重叠服务能力，不是让单体变快}
+低位交叉常把连续地址轮转到不同 Bank；若交叉粒度就是一个编址单元，常见抽象为
 \[
-bank(a)=a\bmod m
-\quad\text{或}\quad
-bank(a)=\left\lfloor a/B\right\rfloor\bmod m.
-\]
-一个请求的首次响应延迟不一定下降，但流水化连续请求的稳态吞吐可能提高。计算带宽前先写每次事务的有效数据量、启动/恢复周期、Bank 冲突和可否重叠，不能把“多模块”直接换成单次 latency 降低。
-
-\subsection{外存与磁盘：LBA、CHS 和真正物理位置分层}
-
-磁盘题可分为磁盘几何、接口地址和控制器调度三层。盘面/磁道/扇区是教学几何，LBA 是主机看到的线性编号；固件、坏块重映射、分区和缓存使连续 LBA 不保证连续物理位置。机械磁盘访问时间通常分为：
-\[
-T_{access}=T_{seek}+T_{rotation}+T_{transfer}+T_{controller},
-\]
-其中平均随机旋转等待常近似半圈，$T_{rotation}=\frac12\frac{60}{RPM}$。磁盘调度（FCFS、SSTF、SCAN 等）是 OS 策略；本册只提供机械运动和传输成本接口。
-
-SSD 没有机械寻道和旋转，但仍有页写、块擦除、垃圾回收、磨损均衡、映射表和写放大。题目若比较 HDD/SSD，应声明比较的是访问延迟、吞吐、随机/顺序工作负载还是寿命代价，不能用“SSD 一定所有场景更快”代替模型。
-
-\subsection{性能口径：Access、Cycle、Bandwidth 和 Burst}
-
-\begin{itemize}
-  \item access time：一次请求从地址/命令提出到数据有效；
-  \item cycle time：下一次独立请求可以重新启动的最小间隔，可能大于 access time；
-  \item bandwidth：单位时间能够传输的有效数据量；
-  \item burst：一次地址阶段后连续传输多份数据，摊薄命令和仲裁开销；
-  \item bank conflict：并行请求落在同一不可并行资源，降低有效吞吐。
-\end{itemize}
-峰值“数据宽度 × 频率”只有在每周期传输次数、协议效率、等待周期和重叠条件明确时才成立。主存容量、一次延迟和稳态带宽是三个独立坐标。
-
-\begin{methodbox}{CO-05 的存储题复原}
-先写“一个地址标识什么、一个存储字多少位、一次事务搬多少、下一个请求何时合法”，再画芯片/Bank/行列路由。最后用边界地址、连续地址和同 Bank 地址各验证一次，防止把容量、延迟和吞吐混成单一公式。
-\end{methodbox}
-
-\subsection{DRAM 刷新、随机存取与 Flash/ROM 家族}
-“随机存取”只表示给定位置的访问时间与位置无关，不表示零延迟；SRAM、DRAM、ROM 和 Flash 都可属于随机存取，带机械寻道的磁盘/光盘属于直接存取。SRAM 以双稳态单元保持信息，DRAM 以电容电荷保持信息；DRAM 漏电且读出通常具有破坏性，因此既需要周期性刷新，也需要在读操作后恢复。刷新由存储器控制器完成，不是 CPU 逐字执行的写回。
-
-刷新以行而不是单元为粒度。若阵列有 $r$ 行、单行存储周期为 $t_c$、要求每 $T$ 时间内刷新完全部行：集中刷新把 $r t_c$ 的不可访问时间集中在一段死区；分散刷新把每个存储周期分成正常访问与刷新两半，死区被摊开但有效周期可能变长；异步刷新以 $T/r$ 为间隔刷新一行，需定时器和刷新地址计数器，既打散死区又避免过度集中。三种方法的总刷新工作量相同，差异在停顿的分布。
-
-DRAM 常用同一组引脚分时传送行地址和列地址，由 RAS/CAS 区分时序；若行数为 $r$、列数为 $c$，地址引脚数约为 $\lceil\log_2\max(r,c)\rceil$。行激活后整行进入行缓冲，随后同一行内的列访问可复用已激活数据，是突发访问和“行命中更快”的硬件基础。Flash 以浮栅电荷保存信息，写通常以页为单位、擦除以块为单位，不能像 DRAM 一样任意原地改写；PROM/EPROM/EEPROM/Flash 的差别主要在可编程次数与擦除粒度，Flash 的块擦除换来密度和速度，但带来有限擦写寿命。
-
-\subsection{多模块流水访问的完整时间口径}
-低位交叉把体号放在地址低 $\log_2m$ 位，使连续地址轮转 $m$ 个体；高位交叉把体号放在高位，保持每个体内地址连续但不为顺序访问提供并行。设单体存储周期为 $T$、总线传送一个字的时间为 $\tau$，无冲突且 $T\le m\tau$ 时，连续读 $q$ 个字的首字到达时间和稳态时间分别为
-\[
-t_q=T+(q-1)\tau,
+bank(a)=a\bmod m,
 \qquad
-B_{steady}=\frac{W}{\tau}\quad\text{，临界 }T=m\tau\text{ 时等于 }\frac{mW}{T},
+local(a)=\left\lfloor\frac{a}{m}\right\rfloor.
 \]
-其中 $W$ 为每字字节数。单体本身没有变快，改变的是多个体的工作窗口重叠；若连续访问落入同一体或多个访问源发生 Bank conflict，流水会停顿。题目问“最大带宽”时使用稳态口径，问“读 q 个字平均带宽”时使用 $qW/t_q$，若另给送地址/响应周期则把它们加入完整事务时间。
+若按字、块或更大粒度交叉，应先把地址换成对应粒度编号再取模。高位交叉更像把大段连续地址分区到不同模块，不能自动获得顺序流的 Bank 并行。
 
-\begin{methodbox}{存储硬件的反向检查}
-若算出多体后单个请求 latency 也必然下降，检查是否把吞吐提升误写成延迟缩短；若算出 DRAM 刷新由 CPU 完成，检查是否越过存储控制器边界；若把 Flash 页写和块擦除当成同一粒度，检查是否丢失了介质状态机。
+两个请求落到同一 Bank 只是\textbf{潜在冲突条件}；是否真正冲突还取决于到达间隔和单体忙时间。
+
+设单体存储周期为 $T$，连续请求的传送/启动节拍为 $\tau$，有 $m$ 个体且无冲突；在经典流水模型满足 $T\le m\tau$ 时，连续读 $q$ 个字可写成
+\[
+t_q=T+(q-1)\tau.
+\]
+若每字为 $W$ B，稳态数据率在瓶颈允许时约为
+\[
+B_{steady}=\frac{W}{\tau},
+\]
+临界 $T=m\tau$ 时也可写为 $mW/T$。这说明单体首个访问延迟未必下降，改变的是多个体工作窗口的重叠和稳态服务能力。
+
+\section{性能语言：Latency、Access Time、Cycle、Throughput 与 Bandwidth}
+这些词都在说“快慢”，但对象不同：
+\begin{itemize}
+\item \kw{Latency：}一般意义上的请求到所需结果可用的等待；
+\item \kw{Access Time：}某存储器件/接口完成题设规定访问的时间，必须声明起止点；
+\item \kw{Cycle Time：}同一资源下一次独立操作可以合法启动的最小间隔；
+\item \kw{Throughput：}单位时间完成的请求/事务数；
+\item \kw{Bandwidth：}单位时间传输的有效数据量；
+\item \kw{Burst：}一次地址/命令阶段后连续传送多个数据 beat，以摊薄控制开销。
+\end{itemize}
+只有在每个事务有效数据量固定且统计口径一致时，才可近似写
+\[
+Bandwidth\approx Throughput\times BytesPerTransaction.
+\]
+“数据宽度 $\times$ 频率”也只有在每周期传输次数、协议效率、等待周期和利用率明确时，才是有效带宽。
+
+\begin{warnbox}{性能题最容易混淆的三件事}
+更高 throughput / bandwidth 不自动推出更低单请求 latency；更短 access time 不自动等于更短 cycle time；多个 Bank 也不能消除同 Bank 冲突。
+\end{warnbox}
+
+\section{HDD 与块设备：接口地址、物理几何和访问成本分层}
+机械磁盘访问时间在经典题中常分为
+\[
+T_{access}=T_{seek}+T_{rotation}+T_{transfer}+T_{controller}.
+\]
+若未给具体角位置，平均旋转等待常近似半圈：
+\[
+T_{rotation}\approx\frac12\frac{60}{RPM}.
+\]
+盘面/磁道/扇区是物理几何；LBA 是主机看到的线性块编号。固件、坏块重映射、分区和缓存等都意味着连续 LBA 不必对应连续真实物理位置。磁盘调度（FCFS、SSTF、SCAN 等）归 OS；CO-05 只提供介质本身的机械和传输成本。
+
+\section{贯穿母例：从芯片规格到一次连续访问}
+给定目标主存容量、单片规格、CPU 编址方式和总线宽度，完整推理顺序是：
+\begin{enumerate}
+\item 写清编址单位与目标“可寻址深度 $\times$ 每地址数据宽度”；
+\item 分别算 width expansion 与 depth expansion；
+\item 划分片内地址、片选地址、数据线和读写控制；
+\item 若为 DRAM，继续标 row/column、感测/恢复与刷新；
+\item 若为多 Bank，写 bank function 与请求间隔，判断是否真正冲突；
+\item 最后分别计算单次 latency/access time、下一请求合法间隔、throughput 与 bandwidth。
+\end{enumerate}
+这个母例把容量、地址路由、硬件状态和性能放在同一条链中，又不会把它们压成一个公式。
+
+\section{概念边界}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.2cm}L{2.7cm}YY}
+\toprule
+边界 & 为什么容易混淆 & 真正判据 / 题面信号 & 混淆后果\\\midrule
+编址单位 $\neq$ 存储字 & 都描述“一个单位” & 地址命名粒度 vs 阵列组织宽度 & 地址线/容量计算错\\
+存储字 $\neq$ 总线事务 & 宽度常相同 & 阵列组织 vs 接口传输 & 错算一次事务数量\\
+Access Time $\neq$ Cycle Time & 都用 ns & 结果何时可用 vs 下一操作何时可启动 & 漏恢复/重叠条件\\
+Latency $\neq$ Bandwidth & 都描述性能 & 单请求等待 vs 单位时间数据量 & 用带宽替代随机访问延迟\\
+Throughput $\neq$ Bandwidth & 都是稳态指标 & requests/s vs B/s & 单位与事务粒度错误\\
+Bank 同号 $\neq$ 必然冲突 & 都共享同一 Bank & 还要看时间上是否重叠 & 只按取模值判冲突\\
+Cache line $\neq$ DRAM row & 都是批量数据 & 上层副本粒度 vs 介质激活粒度 & 把 Cache hit 与 row hit 混写\\
+LBA $\neq$ 真实物理位置 & 都是“块号” & 主机接口编号 vs 介质内部布局 & 由连续 LBA 推出连续盘面\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{做题控制协议}
+\begin{enumerate}
+\item \kw{对象：}一个地址代表 byte、word 还是其他单位？一次请求要多少数据？
+\item \kw{组织：}芯片深度/宽度、Bank 数、row/column、总线宽度分别是什么？
+\item \kw{路由：}哪些地址位做片内地址、片选、Bank 号、行列选择？
+\item \kw{事务：}完成目标对象需要几次存储/总线事务？是否跨边界？
+\item \kw{时间：}分别给出 latency/access time、cycle time、throughput、bandwidth；检查可否重叠和冲突；
+\item \kw{验证：}用最小/最大地址、连续地址、同 Bank 地址和单位量纲做独立检查。
+\end{enumerate}
+
+\begin{methodbox}{第一动作}
+看到容量、芯片扩展、交叉编址或主存性能题，先写：\kw{“一个地址命名什么？一次阵列操作多少位？一次事务搬多少？下一次请求何时合法？”} 四个问题没分开之前，不开始套公式。
 \end{methodbox}
+
+\section{本册与其他 Owner 的接口}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{3cm}YY}
+\toprule
+相邻 Owner & CO-05 输出什么 & 何时转交\\\midrule
+CO-06 Cache & 下一级访问/传输服务成本、带宽上限 & 开始讨论 tag/valid/replacement/AMAT\\
+CO-08 总线与 I/O 硬件 & 存储端宽度、事务与可重叠条件 & 开始讨论仲裁、DMA、控制器协议\\
+CO-07 地址翻译 & 物理存储器的可访问接口 & 开始讨论 VPN/PFN/TLB/page walk\\
+OS 存储/I-O & 介质访问成本与设备接口约束 & 开始讨论调度、文件映射、Page Cache、换页策略\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{corebox}{一页压缩}
+\[
+\boxed{
+\begin{aligned}
+\text{Address / Granularity}
+&\to\text{Chip / Bank / Row-Column}\\
+&\to\text{Physical Operation / Transaction}\\
+&\to\text{Latency / Cycle / Throughput / Bandwidth}
+\end{aligned}}
+\]
+忘掉具体芯片公式时，从“地址命名粒度、深度/宽度预算、硬件路由、事务数量、时间/速率”即可重新生成主干答案。
+\end{corebox}
 
 \end{document}

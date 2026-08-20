@@ -1,0 +1,122 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 左图: 吸引不动点蛛网图 (收敛) ──
+\begin{axis}[
+    name=axL,
+    width=7.8cm,
+    height=7.8cm,
+    axis equal image,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-0.2, xmax=2.2,
+    ymin=-0.2, ymax=2.2,
+    xtick={0,0.5,1,1.5,2},
+    ytick={0,0.5,1,1.5,2},
+    clip=false,
+    xlabel={$x_n$},
+    ylabel={$x_{n+1}$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={正模型：吸引不动点 ($|\varphi'(L)|<1$ 阶梯收敛)},
+]
+\begin{pgfonlayer}{background}
+    % 对角线 y=x
+    \draw[themegray, dashed, line width=1pt] (axis cs:-0.1,-0.1) -- (axis cs:2.0,2.0);
+    \node[text=themegray, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north west] at (axis cs:1.8,1.75) {$y=x$};
+\end{pgfonlayer}
+
+\addplot[themecurve, line width=1.8pt, domain=0:2.0, samples=50] {0.4*x + 0.9};
+\node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:0.1,0.98) {$\varphi(x)=0.4x+0.9$};
+
+% 蛛网迭代轨迹
+\draw[themeamber, line width=1.2pt, -{Stealth[length=2mm]}] (axis cs:0.3,0) -- (axis cs:0.3,1.02);
+\draw[themeamber, line width=1.2pt, -{Stealth[length=2mm]}] (axis cs:0.3,1.02) -- (axis cs:1.02,1.02);
+\draw[themeamber, line width=1.2pt, -{Stealth[length=2mm]}] (axis cs:1.02,1.02) -- (axis cs:1.02,1.308);
+\draw[themeamber, line width=1.2pt, -{Stealth[length=2mm]}] (axis cs:1.02,1.308) -- (axis cs:1.308,1.308);
+\draw[themeamber, line width=1.2pt] (axis cs:1.308,1.308) -- (axis cs:1.308,1.423) -- (axis cs:1.423,1.423) -- (axis cs:1.423,1.469) -- (axis cs:1.5,1.5);
+
+\begin{pgfonlayer}{foreground}
+    % 不动点 (1.5, 1.5)
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(1.5,1.5)};
+    \node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:1.45,1.55) {吸引不动点 $L=1.5$};
+    \node[text=themeamber, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north] at (axis cs:0.3,-0.12) {$x_1$};
+\end{pgfonlayer}
+\end{axis}
+
+% ── 右图: 唯一不动点但二周期轨道 (不收敛) ──
+\begin{axis}[
+    name=axR,
+    at={($(axL.east)+(1.6cm,0)$)},
+    anchor=west,
+    width=7.8cm,
+    height=7.8cm,
+    axis equal image,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-0.2, xmax=1.3,
+    ymin=-0.2, ymax=1.3,
+    xtick={0,0.5,1.0},
+    ytick={0,0.5,1.0},
+    clip=false,
+    xlabel={$x_n$},
+    ylabel={$x_{n+1}$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={反例：唯一不动点仍可陷入二周期振荡},
+]
+\begin{pgfonlayer}{background}
+    % 对角线 y=x
+    \draw[themegray, dashed, line width=1pt] (axis cs:-0.1,-0.1) -- (axis cs:1.1,1.1);
+    \node[text=themegray, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north west] at (axis cs:1.0,0.95) {$y=x$};
+\end{pgfonlayer}
+
+% 迭代函数 phi(x) = 1 - x
+\addplot[themecurve, line width=1.8pt, domain=0:1.0, samples=50] {1 - x};
+\node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:0.05,0.98) {$\varphi(x)=1-x$};
+
+% 封闭二周期矩形 (x1=0.2, x2=0.8)
+\draw[themealert, line width=1.4pt, -{Stealth[length=2.2mm]}] (axis cs:0.2,0) -- (axis cs:0.2,0.8);
+\draw[themealert, line width=1.4pt, -{Stealth[length=2.2mm]}] (axis cs:0.2,0.8) -- (axis cs:0.8,0.8);
+\draw[themealert, line width=1.4pt, -{Stealth[length=2.2mm]}] (axis cs:0.8,0.8) -- (axis cs:0.8,0.2);
+\draw[themealert, line width=1.4pt, -{Stealth[length=2.2mm]}] (axis cs:0.8,0.2) -- (axis cs:0.2,0.2);
+\draw[themealert, line width=1.4pt, -{Stealth[length=2.2mm]}] (axis cs:0.2,0.2) -- (axis cs:0.2,0.78);
+
+\begin{pgfonlayer}{foreground}
+    % 唯一不动点 (0.5, 0.5)
+    \addplot[only marks, mark=x, mark size=3.5pt, line width=1.5pt, themeamber] coordinates {(0.5,0.5)};
+    \node[text=themeamber, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:0.53,0.53) {唯一不动点 $L=0.5$};
+
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north] at (axis cs:0.2,-0.08) {$x_1=0.2$};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north] at (axis cs:0.8,-0.08) {$x_2=0.8$};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:1.2,0.08) {封闭二周期环，永不收敛到 $L$};
+\end{pgfonlayer}
+\end{axis}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

@@ -1,0 +1,116 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+
+% ── 左侧：输入空间与仿射纤维 x0 + ker(A) ──
+\begin{scope}[shift={(0,0)}]
+  \draw[themegray!70, line width=1.0pt, rounded corners=6pt] (-2.5,-2.5) rectangle (3.5,2.6);
+  \node[font=\bfseries\small, text=themecurve] at (0.5, 2.9) {输入空间 $\mathbb{R}^n$：解纤维结构};
+
+  \coordinate (O_in) at (-1.3, -1.2);
+  \coordinate (X0) at (-0.2, 0.4);
+
+  \begin{pgfonlayer}{background}
+    % 过原点的齐次解空间 ker(A) (暖金虚线)
+    \draw[dashed, themeamber, line width=1.4pt] ($(O_in)+(-0.8, -0.6)$) -- ($(O_in)+(3.8, 2.85)$);
+    
+    % 非齐次仿射解集 Fiber: x0 + ker(A) (晶蓝粗实线，平移不穿原点)
+    \draw[themecurve, line width=2.4pt] ($(X0)+(-1.8, -1.35)$) -- ($(X0)+(2.4, 1.8)$);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{main}
+    % 原点与基点
+    \fill[themefg] (O_in) circle (2.0pt) node[below left] {\small 原点 $\boldsymbol{0}$};
+    
+    % 特解向量 x0 (珊瑚红实线箭头)
+    \draw[->, themealert, line width=2.0pt] (O_in) -- (X0);
+    \fill[themealert] (X0) circle (2.5pt);
+
+    % ker(A) 方向向量 xi
+    \draw[->, themeamber, line width=1.6pt] (O_in) -- ($(O_in)+(1.6, 1.2)$);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[text=themealert, fill=themebg, inner sep=1pt, above left] at ($(O_in)!0.5!(X0)$) {\bfseries 特解 $\boldsymbol{x}_0$};
+    \node[text=themeamber, fill=themebg, inner sep=1pt, below right] at ($(O_in)+(1.4, 0.9)$) {\bfseries 齐次解空间 $\ker(\boldsymbol{A})$};
+    \node[text=themecurve, fill=themebg, inner sep=1.2pt, anchor=south east] at ($(X0)+(1.2, 1.0)$) {
+      \bfseries 通解流形 $\mathcal{S}_{\boldsymbol{b}} = \boldsymbol{x}_0 + \ker(\boldsymbol{A})$
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 右侧：输出空间与可达性判断 ──
+\begin{scope}[shift={(8.8,0)}]
+  \draw[themegray!70, line width=1.0pt, rounded corners=6pt] (-2.2,-2.5) rectangle (2.6,2.6);
+  \node[font=\bfseries\small, text=themecurve] at (0.2, 2.9) {输出空间 $\mathbb{R}^m$：可达性开关};
+
+  \coordinate (O_out) at (-1.0, -1.0);
+  \coordinate (B_in) at (0.6, 0.6);
+  \coordinate (B_out) at (-1.2, 1.5);
+
+  \begin{pgfonlayer}{background}
+    % 像空间 Im(A) = Col(A) (晶蓝阴影带/平面)
+    \fill[themecurve!20!themebg, opacity=0.6, rounded corners=3pt] (-2.0, -1.8) -- (1.5, -0.6) -- (2.4, 1.8) -- (-1.1, 0.6) -- cycle;
+    \draw[themecurve, line width=1.0pt] (-2.0, -1.8) -- (1.5, -0.6) -- (2.4, 1.8) -- (-1.1, 0.6) -- cycle;
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{main}
+    \fill[themefg] (O_out) circle (2.0pt) node[below left] {\small $\boldsymbol{0}$};
+    
+    % 可达目标点 b
+    \fill[themecurve] (B_in) circle (2.8pt);
+
+    % 不可达目标点 b'
+    \fill[themealert] (B_out) circle (2.8pt);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[text=themecurve, fill=themebg, inner sep=1pt, anchor=south west] at (B_in) {\bfseries 可达目标 $\boldsymbol{b} \in \operatorname{Im}(\boldsymbol{A})$ (有解)};
+    \node[text=themealert, fill=themebg, inner sep=1pt, anchor=south west] at (B_out) {\bfseries 不可达目标 $\boldsymbol{b}' \notin \operatorname{Im}(\boldsymbol{A})$ (无解)};
+    \node[text=themecurve!80!themefg, font=\footnotesize] at (0.2, -1.3) {像空间 $\operatorname{Im}(\boldsymbol{A}) = \operatorname{Col}(\boldsymbol{A})$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 中间：映射作用连接 ──
+\begin{pgfonlayer}{main}
+  % 整个 Fiber 映射为单个点 b
+  \draw[->, themecurve, line width=2.2pt] (3.6, 0.8) to[bend left=12] node[above, font=\bfseries\small] {$\boldsymbol{A}(\mathcal{S}_{\boldsymbol{b}}) = \{\boldsymbol{b}\}$} node[below, font=\scriptsize, text=themegray] {纤维整线收缩为单点} (6.5, 0.8);
+
+  % ker(A) 映射为 0
+  \draw[->, themeamber, line width=1.4pt, dashed] (2.4, -1.2) to[bend right=10] node[below, font=\scriptsize, text=themeamber] {$\boldsymbol{A}(\ker\boldsymbol{A})=\{\boldsymbol{0}\}$} (7.6, -1.0);
+\end{pgfonlayer}
+
+% ── 底部双开关决策卡片 ──
+\begin{scope}[shift={(0,-3.4)}]
+  \node[draw=themegray!60, fill=themebg, rounded corners=4pt, line width=0.8pt, inner sep=7pt, text width=14.2cm, anchor=north west] {
+    \centering
+    {\bfseries\color{themecurve} 线性方程组分类的双独立开关机制} \\[4pt]
+    \raggedright\small
+    $\bullet$ \textbf{开关 1（存在性开关）}：$r(\boldsymbol{A}) = r(\boldsymbol{A}\mid\boldsymbol{b}) \iff \boldsymbol{b}\in\operatorname{Im}(\boldsymbol{A})$（目标落入像空间 $\implies$ 存在逆像纤维）\\
+    $\bullet$ \textbf{开关 2（唯一性/自由度开关）}：$\dim\ker(\boldsymbol{A}) = n - r(\boldsymbol{A}) = 0 \iff$ 零空间退化为单点（$\implies$ 纤维为单点唯一解）\\
+    $\bullet$ \textbf{无解}：开关 1 不通；\textbf{唯一解}：开关 1 通且开关 2 为零；\textbf{无穷多解}：开关 1 通且开关 2 正维数。
+  };
+\end{scope}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

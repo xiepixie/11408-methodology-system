@@ -1,0 +1,91 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+\begin{axis}[
+    width=13.0cm,
+    height=8.5cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-2.8, xmax=3.2,
+    ymin=-3.5, ymax=3.5,
+    xtick={-1, 1},
+    xticklabels={$-1$, $1$},
+    ytick={-2, 2},
+    yticklabels={$-2$, $2$},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={方程根数与水平扫描线相交：极值点切触为根数突变的临界边界},
+]
+
+% 1. 三次多项式主曲线 y = x^3 - 3x
+\addplot[themecurve, line width=2.2pt, domain=-2.3:2.3, samples=80] {x^3 - 3*x};
+\node[text=themecurve, font=\scriptsize\bfseries, anchor=west] at (axis cs:1.8, 2.8) {$y=x^3-3x$};
+
+% 2. 极大值与极小值水平切线 (临界高度 k = 2 与 k = -2)
+\draw[themealert, dashed, line width=1.3pt] (axis cs:-2.6, 2) -- (axis cs:2.8, 2);
+\node[text=themealert, font=\scriptsize\bfseries, anchor=west] at (axis cs:2.8, 2) {$k=2$ (2 根: 1切1穿)};
+
+\draw[themealert, dashed, line width=1.3pt] (axis cs:-2.6, -2) -- (axis cs:2.8, -2);
+\node[text=themealert, font=\scriptsize\bfseries, anchor=west] at (axis cs:2.8, -2) {$k=-2$ (2 根: 1切1穿)};
+
+% 3. 3 根区间水平扫描线 (如 k = 0.5)
+\draw[themeamber, line width=1.4pt] (axis cs:-2.6, 0.5) -- (axis cs:2.8, 0.5);
+\node[text=themeamber, font=\scriptsize\bfseries, anchor=west] at (axis cs:2.8, 0.5) {$k \in (-2,2)$ (3 个不同实根)};
+
+% 4. 1 根区间水平扫描线 (如 k = 2.8)
+\draw[themegray, line width=1.2pt] (axis cs:-2.6, 2.8) -- (axis cs:2.8, 2.8);
+\node[text=themegray, font=\scriptsize\bfseries, anchor=west] at (axis cs:2.8, 2.8) {$k > 2$ (1 个实根)};
+
+% 5. 极值点与相交实根标记
+\begin{pgfonlayer}{foreground}
+    % 极大值点 (-1, 2)
+    \addplot[only marks, mark=*, mark size=3.0pt, fill=themealert, draw=themefg] coordinates {(-1, 2)};
+    \node[text=themealert, font=\scriptsize\bfseries, anchor=south east] at (axis cs:-1.05, 2.05) {极大值 $(-1, 2)$};
+
+    % 极小值点 (1, -2)
+    \addplot[only marks, mark=*, mark size=3.0pt, fill=themealert, draw=themefg] coordinates {(1, -2)};
+    \node[text=themealert, font=\scriptsize\bfseries, anchor=north west] at (axis cs:1.05, -2.05) {极小值 $(1, -2)$};
+
+    % k=0.5 处的 3 个交点 (暖金圆点)
+    \addplot[only marks, mark=*, mark size=2.5pt, themeamber] coordinates {(-1.64, 0.5) (-0.17, 0.5) (1.81, 0.5)};
+
+    % 结论框放置在左上空白区
+    \node[text=themefg, font=\scriptsize, anchor=north west] at (axis cs:-2.7, 3.4) {
+        \begin{tabular}{l}
+        \textbf{根数分类结论}：\\
+        1. $k > 2$ 或 $k < -2$：恰有 \textbf{1 个实根}\\
+        2. $k = 2$ 或 $k = -2$：恰有 \textbf{2 个实根} (含二重切根)\\
+        3. $-2 < k < 2$：恰有 \textbf{3 个不同实根}
+        \end{tabular}
+    };
+\end{pgfonlayer}
+
+\end{axis}
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

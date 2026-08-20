@@ -1,0 +1,174 @@
+% ── V06 混合型分布分段分解 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 子图 1（左）：混合型 CDF 几何形态（跳跃 + 光滑）──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0cm]
+  % 背景卡片
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!6!themebg, draw=themegray!40, line width=0.6pt, rounded corners=3pt]
+      (-0.2, -1.1) rectangle (4.6, 5.3);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 5.15) {
+      \textbf{\color{themecurve}1. 混合型 CDF 几何形态}
+    };
+  \end{pgfonlayer}
+
+  % 混合型 CDF 图形
+  \begin{pgfonlayer}{background}
+    \fill[fill=themebg, draw=themegray, line width=0.7pt, rounded corners=2pt]
+      (0.2, 1.8) rectangle (4.2, 4.6);
+
+    % 坐标轴
+    \draw[color=themegray, line width=0.8pt, ->] (0.5, 2.3) -- (3.9, 2.3) node[right] {\tiny $x$};
+    \draw[color=themegray, line width=0.8pt, ->] (1.6, 1.9) -- (1.6, 4.35) node[left] {\tiny $F$};
+    \draw[color=themegray, line width=0.5pt, dashed] (0.8, 4.1) -- (3.8, 4.1) node[right] {\tiny $1$};
+
+    % x < 0 为 0
+    \draw[color=themecurve, line width=1.2pt] (0.6, 2.3) -- (1.6, 2.3);
+    \draw[color=themecurve, line width=0.8pt] (1.6, 2.3) circle (1.5pt); % 空心
+
+    % x = 0 跳跃至 0.35 (y=3.0)
+    \fill[color=themecurve] (1.6, 3.0) circle (1.8pt);                  % 实心
+    \draw[color=themealert, line width=0.9pt, <->] (1.6, 2.35) -- (1.6, 2.95);
+
+    % x > 0 光滑上升曲线
+    \draw[color=themeamber, line width=1.3pt, domain=1.6:3.8, samples=30, smooth]
+      plot (\x, {4.1 - 1.1*exp(-1.2*(\x - 1.6))});
+  \end{pgfonlayer}
+
+  % 文字标注与说明
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north east, color=themefg] at (1.55, 2.25) {\tiny $0$};
+    \node[anchor=west, color=themealert] at (1.65, 2.65) {\tiny 跳跃 $p_0=0.35$};
+    \node[anchor=south west, color=themeamber] at (2.3, 3.5) {\scriptsize 连续上升段};
+
+    \node[anchor=north west, text width=4.3cm] at (0.0, 1.6) {
+      \scriptsize $\bullet$ \textbf{混合型本质特征}：\\[0.15em]
+      \quad 跳跃点 $x=0$ 处点质量 $p_0 > 0$；\\[0.15em]
+      \quad 开区间 $(0,+\infty)$ 具连续密度；\\[0.15em]
+      \quad 既非纯离散，亦非纯连续。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 子图 2（中）：Lebesgue 凸组合正交分解 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=5.1cm, yshift=0cm]
+  % 背景卡片
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!6!themebg, draw=themegray!40, line width=0.6pt, rounded corners=3pt]
+      (-0.2, -1.1) rectangle (4.6, 5.3);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 5.15) {
+      \textbf{\color{themeamber}2. 凸组合正交分解架构}
+    };
+  \end{pgfonlayer}
+
+  % 分解架构图
+  \begin{pgfonlayer}{background}
+    \fill[fill=themebg, draw=themegray, line width=0.7pt, rounded corners=2pt]
+      (0.2, 1.8) rectangle (4.2, 4.6);
+
+    % 混合总分布卡片
+    \fill[fill=themefg!12!themebg, rounded corners=2pt] (1.1, 4.0) rectangle (3.3, 4.45);
+    
+    % 分解箭头
+    \draw[color=themecurve, line width=1.0pt, ->] (1.7, 3.95) -- (1.1, 3.25);
+    \draw[color=themeamber, line width=1.0pt, ->] (2.7, 3.95) -- (3.3, 3.25);
+
+    % 离散分量与连续分量子卡片
+    \fill[fill=themecurve!20!themebg, draw=themecurve, line width=0.8pt, rounded corners=2pt]
+      (0.4, 2.5) rectangle (2.0, 3.2);
+    \fill[fill=themeamber!20!themebg, draw=themeamber, line width=0.8pt, rounded corners=2pt]
+      (2.4, 2.5) rectangle (4.0, 3.2);
+  \end{pgfonlayer}
+
+  % 文字标注与说明
+  \begin{pgfonlayer}{foreground}
+    \node[color=themefg] at (2.2, 4.22) {\footnotesize 混合分布 $F(x)$};
+    \node[anchor=east, color=themecurve] at (1.3, 3.6) {\tiny 权重 $\alpha$};
+    \node[anchor=west, color=themeamber] at (3.1, 3.6) {\tiny 权重 $1-\alpha$};
+
+    \node[color=themecurve, align=center] at (1.2, 2.85) {\scriptsize 离散分量\\[-0.1em]\tiny $F_d(x)$};
+    \node[color=themeamber, align=center] at (3.2, 2.85) {\scriptsize 连续分量\\[-0.1em]\tiny $F_c(x)$};
+
+    \node[anchor=north west, text width=4.3cm] at (0.0, 1.6) {
+      \scriptsize $\bullet$ \textbf{Lebesgue 正交分解定理}：\\[0.15em]
+      \quad $F(x) = \alpha F_d(x) + (1-\alpha) F_c(x)$\\[0.25em]
+      \scriptsize $\bullet$ \textbf{分量规范性}：\\[0.15em]
+      \quad $F_d, F_c$ 均为标准合法的分布函数。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 子图 3（右）：混合型期望与分段积分法 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=10.2cm, yshift=0cm]
+  % 背景卡片
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!6!themebg, draw=themegray!40, line width=0.6pt, rounded corners=3pt]
+      (-0.2, -1.1) rectangle (4.6, 5.3);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 5.15) {
+      \textbf{\color{themealert}3. 混合型期望分段算法}
+    };
+  \end{pgfonlayer}
+
+  % 计算公式卡片
+  \begin{pgfonlayer}{background}
+    \fill[fill=themebg, draw=themegray, line width=0.7pt, rounded corners=2pt]
+      (0.2, 1.8) rectangle (4.2, 4.6);
+
+    \fill[fill=themealert!15!themebg, rounded corners=2pt] (0.35, 3.85) rectangle (4.05, 4.45);
+    \fill[fill=themecurve!15!themebg, rounded corners=2pt] (0.35, 2.85) rectangle (4.05, 3.75);
+    \fill[fill=themeamber!15!themebg, rounded corners=2pt] (0.35, 1.95) rectangle (4.05, 2.75);
+  \end{pgfonlayer}
+
+  % 文字标注与说明
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=west] at (0.45, 4.15) {\scriptsize \textbf{\color{themealert}全局警示}：无全局密度 $f(x)$};
+    \node[anchor=west, align=left] at (0.45, 3.3) {\scriptsize \textbf{\color{themecurve}期望拆分}：\\[0.1em]\scriptsize $\sum g(x_k)p_k + \int g(x)F'_c(x)\,dx$};
+    \node[anchor=west, align=left] at (0.45, 2.35) {\scriptsize \textbf{\color{themeamber}非负尾概率积分}：\\[0.1em]\scriptsize $E[X] = \int_0^{+\infty} [1-F(x)]\,dx$};
+
+    \node[anchor=north west, text width=4.3cm] at (0.0, 1.6) {
+      \scriptsize $\bullet$ \textbf{考研标准解题路径}：\\[0.15em]
+      \quad 1. 提取全部跳跃点的离散质量；\\[0.15em]
+      \quad 2. 连续开区间求导得局部密度；\\[0.15em]
+      \quad 3. 期望按“点求和 + 段积分”汇总。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 底部全图全局总结 (无框轻量排印) ──
+% ══════════════════════════════════════════════════════════════
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.3, -1.25) {
+    \footnotesize \textbf{混合型分布计算心法：} 混合型随机变量 \textbf{不存在全局概率密度函数}；CDF 兼具跳跃阶梯与光滑斜率；期望与数字特征计算必须 \textbf{严格拆分为离散点质量和与连续段积分}。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

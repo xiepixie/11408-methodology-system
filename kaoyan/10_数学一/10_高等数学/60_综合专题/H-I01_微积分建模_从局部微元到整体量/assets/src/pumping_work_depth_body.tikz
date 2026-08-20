@@ -1,0 +1,48 @@
+\begin{tikzpicture}[color=themefg,text=themefg,>=Stealth,x=1.25cm,y=1.25cm]
+  \tikzset{
+    axis/.style={themegray,line width=0.8pt,-{Stealth[length=1.6mm]}},
+    vessel/.style={themecurve,line width=1.6pt},
+    water/.style={themecurve,fill=themecurve,fill opacity=0.10},
+    slice/.style={themeamber,fill=themeamber,fill opacity=0.35,line width=1.1pt},
+    dimarr/.style={themealert,line width=1.0pt,{Stealth[length=1.6mm]}-{Stealth[length=1.6mm]}},
+    workarr/.style={themeamber,line width=1.0pt,{Stealth[length=1.6mm]}-{Stealth[length=1.6mm]}},
+    guide/.style={themegray,densely dotted,line width=0.6pt},
+    tag/.style={fill=themebg,inner sep=1.5pt,font=\small}
+  }
+
+  % Coordinate Axis
+  \draw[axis] (-1.8,0) -- (2.0,0) node[below,font=\small] {$x$};
+  \draw[axis] (0,-0.3) -- (0,4.6) node[right,font=\small] {$y$};
+
+  % Vessel walls
+  \draw[vessel] plot[domain=0:4.0,samples=60] ({-0.45-0.32*\x},{\x}) -- plot[domain=4.0:0,samples=60] ({0.45+0.32*\x},{\x}) -- cycle;
+
+  % Liquid filled up to y=3.2
+  \draw[water] plot[domain=0:3.2,samples=60] ({-0.45-0.32*\x},{\x}) -- ({-0.45-0.32*3.2},3.2) -- ({0.45+0.32*3.2},3.2) -- plot[domain=3.2:0,samples=60] ({0.45+0.32*\x},{\x}) -- cycle;
+  \draw[themecurve,line width=1.0pt] ({-0.45-0.32*3.2},3.2) -- ({0.45+0.32*3.2},3.2) node[tag,above,text=themecurve,font=\footnotesize] at (0,3.22) {液面 $y_{\text{水}}$};
+
+  % Tank Top Outlet at y=4.0
+  \draw[themegray,densely dashed,line width=0.8pt] ({-0.45-0.32*4.0},4.0) -- ({0.45+0.32*4.0+1.2},4.0) node[tag,right,font=\footnotesize] {出口高度 $H$};
+
+  % Water thin slice at y=1.3, dy=0.25
+  \draw[slice] ({-0.45-0.32*1.3},1.3) rectangle ({0.45+0.32*1.3},1.55);
+  \node[tag,text=themeamber,font=\footnotesize,anchor=north] at (0,1.25) {薄层质量 $dm = \rho A(y)\,dy$};
+
+  % Left Dimension: Depth h for Pressure dF
+  \draw[guide] ({-0.45-0.32*3.2},3.2) -- (-2.4,3.2);
+  \draw[guide] ({-0.45-0.32*1.42},1.42) -- (-2.4,1.42);
+  \draw[dimarr] (-2.3,3.2) -- node[tag,left,text=themealert,align=right,font=\footnotesize]{深度 $h = y_{\text{水}}-y$\\[2pt]\color{themealert}$dF = \rho g h\,dA$} (-2.3,1.42);
+
+  % Right Dimension: Lift distance D(y) = H - y for Work dW
+  \draw[guide] ({0.45+0.32*1.42},1.42) -- (2.4,1.42);
+  \draw[workarr] (2.3,1.42) -- node[tag,right,text=themeamber,align=left,font=\footnotesize]{提升位移 $H-y$\\[2pt]\color{themeamber}$dW = g(H-y)\,dm$} (2.3,4.0);
+
+  % Centroid marker
+  \draw[themegreen,densely dashed,line width=0.9pt] (-0.9,2.1) -- (0.9,2.1);
+  \fill[themegreen] (0,2.1) circle (2.0pt);
+  \node[tag,text=themegreen,anchor=south,font=\footnotesize] at (0,2.15) {质心 $\bar{y}$ ($W = Mg(H-\bar{y})$)};
+
+  % Bottom summary
+  \node[font=\small,text=themegray,anchor=north] at (0,-0.65)
+  {物理分清：静水压力看从液面向下的【深度 $h$】；抽水做功看提至出口向上的【位移 $H-y$】。};
+\end{tikzpicture}

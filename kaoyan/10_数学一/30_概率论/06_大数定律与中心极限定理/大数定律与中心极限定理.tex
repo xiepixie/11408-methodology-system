@@ -29,6 +29,22 @@
 \definecolor{warn}{RGB}{136,68,63}
 \definecolor{purple}{RGB}{87,72,116}
 
+% ── 双主题图解语义色彩（LaTeX 打印高对比白底）──
+\definecolor{themebg}{HTML}{FFFFFF}
+\definecolor{themefg}{HTML}{111111}
+\definecolor{themegray}{HTML}{666666}
+\definecolor{themecurve}{HTML}{1D63B8}
+\definecolor{themealert}{HTML}{C53030}
+\definecolor{themeamber}{HTML}{B86E00}
+\definecolor{themeblue}{HTML}{1D63B8}
+
+\newenvironment{handbookdiagram}{\par\vspace{0.4em}\noindent\begin{center}}{\end{center}\vspace{0.4em}}
+\newcommand{\diagramcaption}[1]{\par\vspace{0.3em}{\small\textbf{#1}}}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
 \hypersetup{
   colorlinks=true,
  linkcolor=deep,
@@ -113,6 +129,12 @@ X_n\xrightarrow{d}X\Rightarrow g(X_n)\xrightarrow{d}g(X).
 \]
 不连续函数必须另行检查极限落在不连续点的概率。
 
+\begin{handbookdiagram}
+\resizebox{0.92\linewidth}{!}{%
+\input{assets/src/v14_four_convergences_topology_body.tikz}%
+}
+\end{handbookdiagram}
+
 \section{第二层：Borel--Cantelli 与路径事件}
 
 事件“无穷多次发生”记为
@@ -188,6 +210,12 @@ F_n(x)=\frac1n\sum_{i=1}^nI_{\{X_i\le x\}}
 \boxed{\frac{S_n-n\mu}{\sigma\sqrt n}=\frac{\sqrt n(\bar X_n-\mu)}\sigma\xrightarrow{d}N(0,1)}.
 \]
 因此 $\bar X_n$ 的误差尺度是 $n^{-1/2}$；这是“平方根规律”的来源。LLN 研究 $\bar X_n$ 是否靠近 $\mu$，CLT 研究把剩余误差放大 $\sqrt n$ 后呈现何种非退化形状。
+
+\begin{handbookdiagram}
+\resizebox{0.92\linewidth}{!}{%
+\input{assets/src/v13_lln_vs_clt_dual_scale_body.tikz}%
+}
+\end{handbookdiagram}
 
 \begin{methodbox}{CLT 的前提映射}
 题目中的样本均值必须先映射为 $S_n-n\mu$：中心化去掉确定位置，独立同分布与 $0<\sigma^2<\infty$ 提供经典 CLT 的适用条件，除以真实尺度 $\sigma\sqrt n$ 才得到标准正态极限。若方差未知，先由 Topic 05/06 证明 $S_n\xrightarrow{P}\sigma$，再用 Slutsky；这只产生渐近结论，不能把一般总体的 Student 化统计量改写成有限样本 $t$ 分布。

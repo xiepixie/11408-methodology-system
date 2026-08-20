@@ -1,7 +1,9 @@
 \documentclass[UTF8,a4paper,10pt]{ctexart}
 \usepackage{ipara-handbook}
 \usepackage{booktabs,tabularx,tikz}
-\usetikzlibrary{arrows.meta,positioning}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\colorlet{themebg}{white}\colorlet{themefg}{black}\colorlet{themegray}{gray!70}
+\colorlet{themecurve}{blue!70!black}\colorlet{themealert}{red!70!black}\colorlet{themeamber}{orange!80!black}
 \begin{document}
 \section*{H-B02\quad 局部模型与区间定理：中值点、余项与误差控制}
 \textbf{边界：}本桥只负责把局部近似升级为区间结论。Taylor 多项式与中值定理的完整机制仍由 Topic03、Topic04 持有。
@@ -36,6 +38,10 @@ f(x)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k+
 \longrightarrow \xi_1\in(a,c),\quad \xi_2\in(c,b).
 \]
 多个中值点的“不同”来自\textbf{区间分离}，不是来自“同一条定理用了两次”。若要三个见证点，就先设计两个插点并形成三个子区间。
+
+\begin{center}
+\input{assets/src/multiple_mean_values_body.tikz}
+\end{center}
 
 \subsection*{3.\ 中值点参数：存在性怎样升级为渐近位置？}
 对每个充分小的 $h\ne0$，Lagrange 给出某个 $\theta_h\in(0,1)$ 使
@@ -80,6 +86,10 @@ f(x)-P(x)=\frac{f^{(n+1)}(\xi)}{(n+1)!}\Pi(x).
 \boxed{\text{插值约束}\to\text{制造零点}\to\text{反复 Rolle}\to\text{高阶导数见证}}.
 \]
 
+\begin{center}
+\input{assets/src/rolle_zero_chain_body.tikz}
+\end{center}
+
 若节点还匹配导数，例如同时要求 $P(x_i)=f(x_i)$ 与 $P'(x_i)=f'(x_i)$，则 $f-P$ 在该节点具有重零点。Hermite 余项只是把“零点个数”升级为“按重数计数”；每增加一个独立导数约束，就为 Rolle 链多提供一层消失条件。完整高阶插值理论不进入主干，但这个\textbf{约束数 $\leftrightarrow$ 零点重数 $\leftrightarrow$ 余项阶数}接口必须保留。
 
 \subsection*{5.\ 从点态余项到积分误差与导数估计}
@@ -99,6 +109,11 @@ f(x)-P(x)=\frac{f^{(n+1)}(\xi)}{(n+1)!}\Pi(x).
 \qquad
 \left\lvert\int_0^1f(x)\,dx\right\rvert\le\frac M{12}.
 \]
+
+\begin{center}
+\input{assets/src/parabolic_envelope_body.tikz}
+\end{center}
+
 这里 $x(1-x)$ 不是要背的模板，而是两个端点零约束生成的二次零点因子。
 
 反向地，局部 Taylor 也能把函数值界与高阶导数界运输成中间导数界。若 $\lvert f\rvert\le M_0$、$\lvert f''\rvert\le M_2$，且 $[x-h,x+h]$ 都在合法区间内，则中央差分与 Taylor 给出一种典型估计

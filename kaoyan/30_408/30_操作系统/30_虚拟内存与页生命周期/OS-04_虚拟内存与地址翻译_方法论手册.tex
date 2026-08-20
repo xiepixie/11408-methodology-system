@@ -2,6 +2,7 @@
 \usepackage[a4paper,margin=1.75cm,headheight=14pt]{geometry}
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage{booktabs,tabularx,longtable,array,multirow}
+\usepackage{graphicx}
 \usepackage{enumitem}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
@@ -98,13 +99,13 @@
   \item \kw{页表项 (PTE)}：记录一个虚拟页如何翻译及其权限、有效位、脏位等状态的表项。
   \item \kw{TLB}：Translation Lookaside Buffer，缓存近期的 VA 页号到 PA 页框号及权限，减少每次访问都遍历页表的成本。
   \item \kw{VMA}：Virtual Memory Area，描述一段连续虚拟地址范围的归属、权限和后备对象；它不等于已经分配的物理页。
-  \item \kw{缺页异常 (Page Fault)}：访问的页没有可直接使用的有效映射，或权限不满足，CPU 因而转入内核处理；它不等于“文件不存在”。
+  \item \kw{Page Fault（页故障异常）}：页式地址访问无法沿普通快路径完成时由硬件触发的同步异常入口；原因可包括页面不驻留、COW、权限/保护等。408 经典“缺页异常”通常特指页面当前不驻留这一原因。
   \item \kw{驻留 (Residency)}：某页当前是否有物理页框承载；\kw{后备对象 (Backing Object)}：页不在 RAM 时可从中恢复数据的文件、Swap 或零填充来源。
 \end{itemize}
 本册所有“分配、映射、驻留、翻译”判断都分别回答不同问题，不能用其中一个词替代另外三个。
 \end{method}
 
-\begin{eng}[系统的通用推理：缺页中断（Page Fault）中的按序约束]
+\begin{eng}[系统的通用推理：Page Fault 同步异常中的按序约束]
 在虚拟内存处理缺页异常时，同样遵循 OS 通用系统推理引擎（OS System Reasoning Engine）：
 \[
 \begin{aligned}
@@ -238,10 +239,14 @@ VPN_A\to PFN_{37},\qquad VPN_B\to PFN_{37}
 \section{从连续重定位到分页：为什么方案一步步升级}
 
 \subsection{静态重定位：在装入时一次性改地址}
-经典静态重定位在 load time 修改需要重定位的位置，使程序以后直接使用最终地址。优点是执行期硬件简单；缺点是运行后移动困难，灵活性和隔离能力有限。
+经典静态重定位在 load time 修改需要重定位的位置，使程序以后直接使用本次装入位置对应的地址。优点是执行期硬件简单；缺点是运行后移动困难，灵活性和隔离能力有限。
+
+\begin{warn}[这里的 relocation 与链接器 relocation 不是同一层]
+OS-00 中的\kw{link-time relocation}发生在目标文件/可执行映像形成阶段：链接器根据符号解析结果和程序整体布局修补引用；本节的\kw{load-time static relocation}发生在程序实际装入某个内存位置时。两者都可能“改地址相关字段”，但输入信息、执行者和绑定时机不同。做题先问：当前拿到的是 object/executable 文件，还是已经在讨论某次运行的装入位置？
+\end{warn}
 
 \subsection{动态重定位：把“地址意义”推迟到运行时}
-动态重定位把逻辑地址保留下来，直到每次访问时由 MMU 翻译。最简单实现是 Base/Limit。
+动态重定位把逻辑/虚拟地址保留下来，直到每次访问时由 MMU 根据当前映射状态翻译。最简单实现是 Base/Limit；分页系统则把映射粒度细化到页。这里的核心不是“程序每次都被重新链接”，而是\kw{运行时地址解释仍由硬件+OS 状态参与}。
 
 \begin{exam}[408 辨析：静态/动态“内存分配”与静态/动态“重定位”不是一对概念]
 语言层面的静态变量、栈变量、heap 动态分配，讨论的是\kw{对象何时取得存储空间}；静态/动态重定位讨论的是\kw{程序地址在什么时候变成物理地址}。两组术语不能混成同一维度。
@@ -288,15 +293,15 @@ VPN_A\to PFN_{37},\qquad VPN_B\to PFN_{37}
 \begingroup
 \small
 \renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} X X}
+\setlength{\tabcolsep}{3pt}
+\noindent\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} X X}
 \toprule
 对比维度 & 分页机制 (Paging) & 分段机制 (Segmentation)\\
 \midrule
 划分驱动因素 & 系统物理管理驱动（固定大小 Page/Frame） & 程序员/编译器逻辑驱动（可变大小 Segment）\\
 主要解决问题 & 消灭外部碎片，提高物理内存利用率 & 天然表达逻辑结构，方便段级共享与保护\\
 地址空间维度 & 一维（对程序员透明，线性虚拟地址） & 二维（显式指定 Segment No + Offset）\\
-碎片类型 & 存在页内**内部碎片 (Internal Fragmentation)** & 存在段间**外部碎片 (External Fragmentation)**\\
+碎片类型 & 存在页内\kw{内部碎片 (Internal Fragmentation)} & 存在段间\kw{外部碎片 (External Fragmentation)}\\
 段/页表结构 & PTE 包含 PFN + Permission & 段表包含 Segment Base + Limit + Access Rights\\
 \bottomrule
 \end{tabularx}
@@ -305,7 +310,11 @@ VPN_A\to PFN_{37},\qquad VPN_B\to PFN_{37}
 \paragraph{段表字段结构与地址翻译}
 段表是将逻辑段号映射到实际物理地址的入口，每个段表项包含：
 \[
-\boxed{\text{Segment Table Entry} = \text{Segment Base} \mid \text{Segment Limit} \mid \text{Present} \mid \text{Access Rights} \mid \text{Dirty} \mid \text{Swap Addr}}
+\boxed{
+\begin{aligned}
+\text{Segment Table Entry}={}&\text{Base}\mid\text{Limit}\mid\text{Present}\\
+&\mid\text{Access Rights}\mid\text{Dirty}\mid\text{Backing/Swap Info}
+\end{aligned}}
 \]
 翻译三步走：
 \begin{enumerate}
@@ -319,12 +328,11 @@ VPN_A\to PFN_{37},\qquad VPN_B\to PFN_{37}
 段页式内存管理融合了分段与分页的优势：
 \[
 \boxed{
-\text{Logical Segment (User View)}
-\xrightarrow{\text{Segment Table}}
-\text{Page Table (Logical Pages)}
-\xrightarrow{\text{Page Table}}
-\text{Physical Frames (MMU View)}
-}
+\begin{aligned}
+\text{Logical Segment}
+&\xrightarrow{\text{Segment Table}}\text{Segment Page-Table Base}\\
+&\xrightarrow{\text{Page Table}}\text{Physical Frame}
+\end{aligned}}
 \]
 逻辑地址格式为：$\code{Segment No} \mid \code{Page No} \mid \code{Page Offset}$。
 \begin{itemize}
@@ -460,12 +468,12 @@ VPN\to PFN/permission.
 \endgroup
 \end{center}
 
-\subsection{三种 miss/fault 必须彻底分开}
+\subsection{TLB miss、Page Fault 与 Cache miss 必须彻底分开}
 \begingroup
 \small
 \renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
+\setlength{\tabcolsep}{3pt}
+\noindent\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
 \toprule
 现象 & 缺失的核心内容 & 是否必然进入 OS 内核？\\
 \midrule
@@ -480,12 +488,12 @@ Cache Miss & 目标数据 Cache line 不在 L1/L2/L3 Cache & \kw{不进入}；�
 \kw{TLB Miss 不等于 Page Fault；Page Fault 也不等于“页面一定在磁盘上”。}COW、lazy allocation、权限错误都可以触发 page fault，而数据可能从未存在于磁盘。
 \end{warn}
 
-\subsection{有效访问时间 EAT 的模型意识}
-408 常用理想化模型：
+\subsection{有效访问时间 EAT：只提供 VM 路径，不重复拥有性能公式}
+408 常把 TLB、页表与缺页慢路径组合后的期望时间记作 EAT（Effective Access Time，有效访问时间）。它的数学底座仍是路径期望：
 \[
-EAT=h\cdot T_{hit}+(1-h)\cdot T_{miss}.
+EAT=\sum_i P(\text{path}_i)\,T(\text{path}_i).
 \]
-关键不是背固定式子，而是\kw{明确每条路径到底发生几次 TLB 查询、页表内存访问和最终数据访问}。题目改变“TLB 与 Cache 是否并行、页表几级、TLB miss 是否硬件 walk”等假设时，公式必须重新从事件路径推导。
+OS-04 只负责给出 normal / fault 路径中的映射、驻留、修复和 retry 事件；hit time、miss total、extra penalty、Cache AMAT 与多级时间口径统一由 CO-06《存储层次与 AMAT》解释。这里做题的关键仍是\kw{明确每条路径到底发生几次 TLB 查询、页表内存访问、最终数据访问，以及 fault 后是否需要 I/O 和 retry}。
 
 \begin{eng}[工程边界：ASID / PCID]
 地址空间切换后必须确保旧 TLB 项不会被错误用于新地址空间，但这并不意味着现代 CPU 每次 context switch 都必须“完全清空 TLB”。ASID/PCID 一类标签允许不同地址空间的翻译共存，从而降低切换成本。408 先掌握“一致性必须维护”，再把标签机制作为现代扩展。
@@ -516,6 +524,7 @@ MMU 在正常 快路径 不能完成访问时触发 page-fault exception。内�
 
 \begingroup
 \small
+\resizebox{0.96\linewidth}{!}{%
 \begin{tikzpicture}[>=Stealth, node distance=1.8cm and 3.2cm]
 \tikzset{
   startnode/.style={draw=mainblue, ultra thick, fill=softblue, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
@@ -541,7 +550,8 @@ MMU 在正常 快路径 不能完成访问时触发 page-fault exception。内�
 \draw[->, ultra thick, deepgreen] (d) -- node[right=4pt, font=\small\bfseries] {Valid VMA} (fix);
 \draw[->, ultra thick, deepgreen] (fix) -- node[above=3pt, font=\small\bfseries] {修复完成} (retry);
 \draw[->, ultra thick, deepblue] (retry.west) -- ++(-5.8cm,0) |- node[pos=0.75, left=4pt, font=\small\bfseries] {重试指令} (a.west);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \endgroup
 \end{center}
 
@@ -651,8 +661,8 @@ Lazy allocation 并没有消灭成本，而是把：
 \begingroup
 \small
 \renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
+\setlength{\tabcolsep}{3pt}
+\noindent\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
 \toprule
 置换算法 & 核心假设与选择规则 & 算法关键性质与工程评价\\
 \midrule
@@ -718,9 +728,10 @@ W(t,\Delta)=\{\text{在窗口 }(t-\Delta,t]\text{ 内被访问的页面}\}.
 Page-Fault Frequency (PFF) 不直接猜页面集合，而是观察结果并调整配额：
 \[
 \boxed{
-\text{fault rate too high}\Rightarrow\text{try more frames/admission control},\qquad
-\text{fault rate very low}\Rightarrow\text{frames may be reclaimable}.
-}
+\begin{aligned}
+\text{fault rate too high}&\Rightarrow\text{try more frames / admission control},\\
+\text{fault rate very low}&\Rightarrow\text{frames may be reclaimable}.
+\end{aligned}}
 \]
 
 \paragraph{局部性假设与颠簸的正反馈链}
@@ -856,8 +867,8 @@ VA\arr PageFault\arr File/PageCache\arr PhysicalFrame\arr PTE.
 \begingroup
 \small
 \renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
+\setlength{\tabcolsep}{3pt}
+\noindent\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
 \toprule
 维度 / 特性 & 标准 \code{read(fd, buf, n)} 系统调用 & 文件映射 file-backed \code{mmap()}\\
 \midrule
@@ -879,6 +890,7 @@ VA\arr PageFault\arr File/PageCache\arr PhysicalFrame\arr PTE.
 
 \begingroup
 \small
+\resizebox{0.96\linewidth}{!}{%
 \begin{tikzpicture}[>=Stealth, node distance=1.8cm and 3.2cm]
 \tikzset{
   vanode/.style={draw=mainblue, ultra thick, fill=softblue, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
@@ -900,7 +912,8 @@ VA\arr PageFault\arr File/PageCache\arr PhysicalFrame\arr PTE.
 \draw[->, ultra thick, deepgreen] (pt.north east) -- node[above, sloped, font=\small\bfseries] {PTE 有效} (pa.south west);
 \draw[->, ultra thick, deepred] (pt) -- node[above=3pt, font=\small\bfseries] {PTE 无效} (pf);
 \draw[->, ultra thick, deepgreen] (pf.south) -- ++(0,-0.8cm) -| node[pos=0.25, below=3pt, font=\small\bfseries] {修复完并重试指令} (va.south);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \endgroup
 \end{center}
 
@@ -919,6 +932,7 @@ VA\arr PageFault\arr File/PageCache\arr PhysicalFrame\arr PTE.
 
 \begingroup
 \small
+\resizebox{0.96\linewidth}{!}{%
 \begin{tikzpicture}[>=Stealth, node distance=2.0cm and 3.2cm]
 \tikzset{
   st1/.style={draw=mainblue, ultra thick, fill=softblue, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
@@ -941,7 +955,8 @@ VA\arr PageFault\arr File/PageCache\arr PhysicalFrame\arr PTE.
 \draw[->, ultra thick, deeporange] (dirty) -- node[above=3pt, font=\small\bfseries] {Memory Pressure} (victim);
 \draw[->, ultra thick, deepred] (victim) -- node[above=3pt, font=\small\bfseries] {Writeback} (out);
 \draw[->, ultra thick, deepgreen] (out.west) -- ++(-1.3cm,0) |- ++(0,3.7cm) -| node[pos=0.7, above=3pt, font=\small\bfseries] {Later Touch Fault (Swap-in)} (clean.north);
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \endgroup
 \end{center}
 
@@ -965,10 +980,10 @@ VA\arr PageFault\arr File/PageCache\arr PhysicalFrame\arr PTE.
 
 \section{教材模型与现代工程：哪些细节要分层记忆}
 \begingroup
-\small
-\renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
+\footnotesize
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\noindent\begin{tabularx}{\linewidth}{>{\bfseries}p{0.18\linewidth} X X}
 \toprule
 机制主题 & 408 考研核心教学模型 & 现代 Linux 内核工程真实实现\\
 \midrule
@@ -986,10 +1001,10 @@ Page Fault 异常 & 请求分页缺页、访问越界 & 广泛依赖 Fault 实�
 \begin{bridge}[软硬件状态所有权]
 
 \begingroup
-\small
-\renewcommand{\arraystretch}{1.25}
-\setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} X X}
+\footnotesize
+\renewcommand{\arraystretch}{1.22}
+\setlength{\tabcolsep}{3pt}
+\noindent\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth} X X}
 \toprule
 访存对象 / 动作 & CPU / MMU 硬件职责 & OS Kernel 软件职责\\
 \midrule

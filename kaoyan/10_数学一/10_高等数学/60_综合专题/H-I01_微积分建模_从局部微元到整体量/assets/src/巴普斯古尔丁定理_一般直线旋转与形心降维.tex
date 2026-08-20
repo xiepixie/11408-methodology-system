@@ -1,0 +1,115 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+\definecolor{themegreen}{HTML}{73c991}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ══════════════════════════════════════════════════════════════════════
+% 左图: 绕任意一般直线旋转 (General Line Rotation & Area Element Integral)
+% ══════════════════════════════════════════════════════════════════════
+\begin{scope}[shift={(0,0)}]
+    \node[font=\footnotesize\bfseries, align=center] at (2.4, 4.2) {绕一般直线旋转：面积微元环面积分};
+
+    % 坐标轴
+    \draw[-{Stealth}, themefg, line width=1.1pt] (-0.3, 0) -- (5.2, 0) node[right, font=\scriptsize] {$x$};
+    \draw[-{Stealth}, themefg, line width=1.1pt] (0, -0.4) -- (0, 3.6) node[above, font=\scriptsize] {$y$};
+
+    % 一般旋转直线 L: ax+by+c=0 (倾斜实线，严格位于区域下方，不穿过区域)
+    \draw[themeamber, line width=1.6pt] (0.2, 0.1) -- (4.4, 1.25) node[right, font=\scriptsize\bfseries] {$L: ax+by+c=0$};
+
+    % 旋转平面区域 D (位于直线上方)
+    \begin{pgfonlayer}{background}
+        \fill[themecurve!20!themebg, draw=themecurve, line width=1.3pt] 
+            (1.0, 1.9) to[out=60, in=180] (2.2, 3.2) to[out=0, in=90] (3.6, 2.5) to[out=270, in=0] (2.6, 1.7) to[out=180, in=240] cycle;
+    \end{pgfonlayer}
+    \node[text=themecurve, font=\normalsize\bfseries] at (1.5, 2.7) {$D$};
+
+    % 面积微元 dA 位于 (2.4, 2.5)
+    \fill[themealert, draw=themefg, line width=0.6pt] (2.3, 2.4) rectangle (2.5, 2.6);
+    % 引线标注 dA(x,y) 到正上方纯净空白区
+    \draw[themealert, line width=0.8pt] (2.4, 2.6) -- (2.4, 3.4) node[above, font=\tiny\bfseries] {面积微元 $dA(x,y)$};
+
+    % 微元到直线 L 的垂线距离 r(x,y)
+    \draw[themealert, dashed, line width=1.2pt] (2.4, 2.5) -- (2.66, 0.77);
+    \fill[themealert] (2.66, 0.77) circle (1.8pt);
+    % 标注 r(x,y) 置于垂线右侧纯净空白区
+    \node[text=themealert, font=\tiny\bfseries, anchor=west] at (2.65, 1.6) {$r(x,y)$};
+
+    % 垂足直角标志
+    \draw[themegray, line width=0.7pt] (2.66, 0.77) -- ++(-0.08, 0.022) -- ++(-0.022, -0.08) -- ++(0.08, -0.022);
+
+    % 微元绕 L 旋转的环体轨迹提示 (置于微元周围)
+    \draw[-{Stealth}, themecurve, line width=1.1pt] (2.4, 2.5) arc (90:390:0.32cm and 0.12cm);
+    % 引线标注薄环体积 dV 到右侧外围纯净空白区
+    \draw[themecurve, line width=0.8pt] (2.75, 2.5) -- (3.9, 2.8) node[right, font=\tiny\bfseries] {薄环体积 $dV = 2\pi r(x,y)\,dA$};
+
+    % 底部公式
+    \node[font=\scriptsize, align=center] at (2.4, -1.6) {
+        点线距离：$r(x,y) = \dfrac{|ax+by+c|}{\sqrt{a^2+b^2}}$\\[4pt]
+        体积积分：$V = \displaystyle\iint_D 2\pi \frac{|ax+by+c|}{\sqrt{a^2+b^2}}\, dxdy$
+    };
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════════════
+% 右图: 巴普斯-古尔丁定理 (Pappus-Guldinus Theorem & Centroid Reduction)
+% ══════════════════════════════════════════════════════════════════════
+\begin{scope}[shift={(10.8,0)}]
+    \node[font=\footnotesize\bfseries, align=center] at (1.0, 4.2) {巴普斯-古尔丁定理：形心轨迹降维};
+
+    % 旋转轴 L (竖直直线)
+    \draw[themeamber, line width=1.8pt] (0, -0.4) -- (0, 3.4);
+    \node[text=themeamber, font=\scriptsize\bfseries, anchor=east] at (-0.1, 3.2) {旋转轴 $L$};
+
+    % 截面几何图形 D (置于 x=2.5 处, 半径 0.6)
+    \begin{pgfonlayer}{background}
+        \fill[themegreen!20!themebg, draw=themegreen, line width=1.4pt] (2.5, 1.5) circle (0.6cm);
+    \end{pgfonlayer}
+    \node[text=themegreen, font=\scriptsize\bfseries, anchor=south] at (2.5, 2.25) {截面面积 $A$};
+
+    % 形心 P_bar (置于截面中心)
+    \coordinate (Pbar) at (2.5, 1.5);
+    \fill[themealert] (Pbar) circle (2.5pt);
+    % 形心引线标注至右侧纯净空白区
+    \draw[themealert, line width=0.8pt] (Pbar) -- (3.5, 1.5) node[right, font=\scriptsize\bfseries] {形心 $\bar{P}(\bar{x},\bar{y})$};
+
+    % 形心到旋转轴的距离 r_bar (置于水平双向箭头上方纯净区)
+    \draw[themecurve, {Stealth}-{Stealth}, line width=1.3pt] (0, 1.5) -- (2.5, 1.5);
+    \node[text=themecurve, font=\scriptsize\bfseries, anchor=south, fill=themebg, inner sep=1pt] at (0.9, 1.58) {$\bar{r} = d(\bar{P}, L)$};
+
+    % 形心绕轴旋转一周扫出的圆轨迹 (透视椭圆, 扁平透视，增加高度以拉开间隙)
+    \draw[themecurve, dashed, line width=1.1pt] (0, 1.5) ellipse (2.5cm and 0.65cm);
+    \draw[-{Stealth}, themecurve, line width=1.4pt] (2.5, 1.5) arc (0:-180:2.5cm and 0.65cm);
+    % 形心周长标注在透视椭圆正下方纯净区
+    \node[text=themecurve, font=\tiny\bfseries, anchor=north, fill=themebg, inner sep=1.5pt] at (0, 0.75) {形心旋转周长 $2\pi \bar{r}$};
+
+    % 旋转轴不穿过区域前提警告 (置于下方独立区域)
+    \node[text=themeamber, font=\tiny\bfseries, align=center] at (1.25, 0.1) {前提：旋转轴 $L$ 严格不穿过截面内部};
+
+    % 底部公式
+    \node[font=\scriptsize, align=center] at (1.0, -1.6) {
+        \textbf{体积定理}：$V = 2\pi d(\bar{P}_{\text{面}}, L) \cdot \text{Area}(D) = \boxed{2\pi \bar{r} \cdot A}$\\[3pt]
+        \textbf{曲面定理}：$S = 2\pi d(\bar{P}_{\text{弧}}, L) \cdot \text{Length}(C) = \boxed{2\pi \bar{r}_{\text{弧}} \cdot L_{\text{弧}}}$
+    };
+\end{scope}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

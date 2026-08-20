@@ -1,6 +1,9 @@
 \documentclass[UTF8,a4paper,10pt]{ctexart}
 \usepackage{ipara-handbook}
-\usepackage{booktabs,tabularx}
+\usepackage{booktabs,tabularx,tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\colorlet{themebg}{white}\colorlet{themefg}{black}\colorlet{themegray}{gray!70}
+\colorlet{themecurve}{blue!70!black}\colorlet{themealert}{red!70!black}\colorlet{themeamber}{orange!80!black}
 \begin{document}
 \section*{H-B03\quad 微分与累积：基本定理及正则性边界}
 \textbf{边界：}本桥连接局部变化率与累积量，导数和积分的独立机制分别回到 Topic03、Topic05。
@@ -80,6 +83,10 @@ G'(x_0)=A
 \]
 （前提是这些局部积分有定义）。普通极限 $f(t)\to A$ 只是这个平均值极限成立的一条充分路径，不是必要条件；某些有界快速振荡函数即使点态极限不存在，正负面积仍可能在缩小区间内平均抵消，使 $G'(x_0)$ 存在。
 
+\begin{center}
+\input{assets/src/shrinking_average_body.tikz}
+\end{center}
+
 这也解释了为什么“单点修改”对两个世界的影响完全不同。Riemann 积分对有限个点的函数值修改不敏感，但导数关系 $F'(x)=f(x)$ 是逐点条件，改错一个点就可能让 $f$ 不再是导函数。Thomae 函数是一个极端示意：它在有理点 $p/q$（既约）取 $1/q$、无理点取 $0$，Riemann 可积且积分为 $0$；其变上限积分恒为 $0$，所以导数也恒为 $0$，并不等于原来的 Thomae 函数在有理点的值。更一般的“零测集修改不改变 Riemann 积分”属于 Lebesgue 判别的 Extension，本桥核心只需掌握有限点修改即可。
 
 \subsection*{3.\ 原函数存在性的反向约束：导函数不必连续，但必有介值性}
@@ -132,6 +139,10 @@ H'(x)
 }.
 \]
 前两项来自\textbf{积分区域边界移动}，最后一项来自\textbf{区域内部每个位置的密度自身变化}。若 $g$ 不显含 $x$，第三项才消失。旧式“上限项减下限项”不能被无条件推广到含参数被积函数。
+
+\begin{center}
+\input{assets/src/leibniz_three_contributions_body.tikz}
+\end{center}
 
 \subsection*{6.\ 重复累积：$n$ 次积分可以压成一个卷积核}
 从同一基点 $a$ 连续做 $n$ 次变上限积分，可压缩成

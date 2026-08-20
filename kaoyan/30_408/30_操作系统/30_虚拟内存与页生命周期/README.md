@@ -1,6 +1,6 @@
 # 虚拟内存与页生命周期
 
-状态：已发布；15 份 外部内存管理笔记已完成语义核销，Canonical LaTeX 已按地址翻译、页生命周期、置换与性能链条增量扩充。
+状态：Canonical LaTeX 已完成本轮术语与版面重审；15 份外部内存管理笔记已完成语义核销。现有 Published PDF 仍是上一版派生稿，待发布流程同步。
 
 > 每个进程怎样获得受保护、可扩展、按需兑现的地址空间？
 
@@ -16,7 +16,7 @@
 
 ## 训练导航
 
-- [地址翻译与缺页](地址翻译与缺页.md)：训练 VA/VPN/offset、多级页表、TLB/PTE、fault 分类、COW 与跨计组翻译链；承接旧 Canonical 的题型地图、固定十二问和错因控制。
+- [地址翻译与缺页](地址翻译与缺页.md)：训练 VA/VPN/offset、多级页表、TLB/PTE、Page Fault 原因分类、COW 与跨计组翻译链；408 经典“缺页”保持为页面当前不驻留这一分支，不再把 TLB miss、Cache miss 或所有 Page Fault 混称“缺页”。
 - [页面驻留与置换](页面驻留与置换.md)：训练 resident set、FIFO/LRU/CLOCK、dirty/writeback、local/global、Belady、working set/PFF 与 thrashing；承接旧训练阶梯。
 
 ## Read Next

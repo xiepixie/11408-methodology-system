@@ -161,7 +161,8 @@ python3 00_system/cognitive_system.py publish "<target.tex>"
 | `terminology.md` | 拥有核心术语定义 |
 | `handbook_writing_spec.md` | 拥有所有心智模型手册与专题手册的认知结构、写作原则与验收标准 |
 | `latex_design_system.md` | 考研子项目的 LaTeX 路由 Stub；全局 Family/Profile/Variant、依赖与 Semantic API Owner 位于 `../infra/latex/README.md` |
-| `latex_layout_spec.md` | 拥有 LaTeX 的具体字体、版心、表格、代码、图示与视觉迁移参数 |
+| `diagram_design_spec.md` | 拥有跨学科图前规划与图示语义：回读目标手册、确定插入位置、规划图中内容、关系编码、一般性攻击与语义验收 |
+| `latex_layout_spec.md` | 拥有 LaTeX/TikZ 的具体字体、版心、表格、代码、图形工程、主题与视觉迁移参数 |
 | `handbook_contract.md` | 拥有 Handbooks 与 Rules 的最低完成标准 |
 | `evidence_promotion.md` | 拥有 Inbox、诊断和候选规则验证流程 |
 | `exam_source_agent_prompt.md` | 拥有 408、数学一及其他真题转译场景的执行提示词；规定最小读取、批量纪律与 Logic Review |
@@ -188,6 +189,7 @@ python3 00_system/cognitive_system.py publish "<target.tex>"
 - [I.P.A.R.A LaTeX Design System（全局 Canonical Owner）](../infra/latex/README.md)
 - [LaTeX 开源项目 Source Reference Pool（全局 Research Log）](../infra/latex/reference_pool.md)
 - [考研 LaTeX 路由 Stub](00_system/latex_design_system.md)
+- [图示语义与视觉推理规范](00_system/diagram_design_spec.md)
 - [LaTeX 视觉与布局规范](00_system/latex_layout_spec.md)
 - [Handbook 与 Rule 契约](00_system/handbook_contract.md)
 - [Canonical Ownership 台账](00_system/ownership_matrix.md)

@@ -5,17 +5,23 @@
 <style>
   @media print, (prefers-color-scheme: light) {
     [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #fafaf7 !important; }
-    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }
     [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }
-    [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }
     [fill='#9ea897'], [fill='#9EA897'], [fill='#9ea897' i] { fill: #666666 !important; }
-    [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }
     [fill='#7eb6ff'], [fill='#7EB6FF'], [fill='#7eb6ff' i] { fill: #1d63b8 !important; }
-    [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }
     [fill='#ff7b7b'], [fill='#FF7B7B'], [fill='#ff7b7b' i] { fill: #c53030 !important; }
-    [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }
     [fill='#f5b942'], [fill='#F5B942'], [fill='#f5b942' i] { fill: #b86e00 !important; }
+    [fill='#c084fc'], [fill='#C084FC'], [fill='#c084fc' i] { fill: #7c3aed !important; }
+    [fill='#4ade80'], [fill='#4ADE80'], [fill='#4ade80' i] { fill: #15803d !important; }
+    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
+    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }
+    [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }
+    [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }
+    [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }
+    [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }
     [stroke='#f5b942'], [stroke='#F5B942'], [stroke='#f5b942' i] { stroke: #b86e00 !important; }
+    [stroke='#c084fc'], [stroke='#C084FC'], [stroke='#c084fc' i] { stroke: #7c3aed !important; }
+    [stroke='#4ade80'], [stroke='#4ADE80'], [stroke='#4ade80' i] { stroke: #15803d !important; }
+    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
   }
 </style>
 <defs>
@@ -221,14 +227,14 @@
 </g>
 </g>
 <g stroke-dasharray='3.0,3.0' stroke-dashoffset='0.0'>
-<g fill='#9ea897' stroke='#9ea897'>
+<g fill='#a4af9d' stroke='#a4af9d'>
 <g stroke-width='0.8'>
 <path d='M3.80615 117.30309H156.05225' fill='none'/>
 </g>
 </g>
 </g>
 <g stroke-dasharray='3.0,3.0' stroke-dashoffset='0.0'>
-<g fill='#9ea897' stroke='#9ea897'>
+<g fill='#a4af9d' stroke='#a4af9d'>
 <g stroke-width='0.8'>
 <path d='M3.80615 14.09949H156.05225' fill='none'/>
 </g>
@@ -240,15 +246,15 @@
 </g>
 <g transform='translate(128.44846,121.74265)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-34.628277,91.989102)scale(-1,-1)'>
-<g fill='#9ea897'>
+<g fill='#a4af9d'>
 <g stroke='none'>
-<g fill='#9ea897'>
+<g fill='#a4af9d'>
 <use x='-34.628277' y='91.989102' xlink:href='#g19-121'/>
 <use x='-27.804242' y='91.989102' xlink:href='#g21-61'/>
 <use x='-17.669898' y='88.73066' xlink:href='#g18-25'/>
 </g>
-<rect x='-17.669898' y='89.817238' height='.358656' width='4.558574' fill='#9ea897'/>
-<g fill='#9ea897'>
+<rect x='-17.669898' y='89.817238' height='.358656' width='4.558574' fill='#a4af9d'/>
+<g fill='#a4af9d'>
 <use x='-17.217067' y='95.114694' xlink:href='#g20-50'/>
 </g>
 </g>
@@ -262,16 +268,16 @@
 </g>
 <g transform='translate(121.83725,6.9433)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-34.628277,91.989102)scale(-1,-1)'>
-<g fill='#9ea897'>
+<g fill='#a4af9d'>
 <g stroke='none'>
-<g fill='#9ea897'>
+<g fill='#a4af9d'>
 <use x='-34.628277' y='91.989102' xlink:href='#g19-121'/>
 <use x='-27.804242' y='91.989102' xlink:href='#g21-61'/>
 <use x='-18.865412' y='91.989102' xlink:href='#g17-0'/>
 <use x='-11.083392' y='88.73066' xlink:href='#g18-25'/>
 </g>
-<rect x='-11.083392' y='89.817238' height='.358656' width='4.558574' fill='#9ea897'/>
-<g fill='#9ea897'>
+<rect x='-11.083392' y='89.817238' height='.358656' width='4.558574' fill='#a4af9d'/>
+<g fill='#a4af9d'>
 <use x='-10.630561' y='95.114694' xlink:href='#g20-50'/>
 </g>
 </g>
@@ -568,14 +574,14 @@
 </g>
 </g>
 <g stroke-dasharray='3.0,3.0' stroke-dashoffset='0.0'>
-<g fill='#9ea897' stroke='#9ea897'>
+<g fill='#a4af9d' stroke='#a4af9d'>
 <g stroke-width='0.8'>
 <path d='M3.80615 116.71135H156.05225' fill='none'/>
 </g>
 </g>
 </g>
 <g stroke-dasharray='3.0,3.0' stroke-dashoffset='0.0'>
-<g fill='#9ea897' stroke='#9ea897'>
+<g fill='#a4af9d' stroke='#a4af9d'>
 <g stroke-width='0.8'>
 <path d='M3.80615 16.02478H156.05225' fill='none'/>
 </g>
@@ -587,9 +593,9 @@
 </g>
 <g transform='translate(130.25601,119.85695)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-40.480644,91.989102)scale(-1,-1)'>
-<g fill='#9ea897'>
+<g fill='#a4af9d'>
 <g stroke='none'>
-<g fill='#9ea897'>
+<g fill='#a4af9d'>
 <use x='-40.480644' y='91.989102' xlink:href='#g19-121'/>
 <use x='-33.656609' y='91.989102' xlink:href='#g21-61'/>
 <use x='-24.717779' y='91.989102' xlink:href='#g19-25'/>
@@ -605,9 +611,9 @@
 </g>
 <g transform='translate(75.55591,7.35179)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-40.480644,91.989102)scale(-1,-1)'>
-<g fill='#9ea897'>
+<g fill='#a4af9d'>
 <g stroke='none'>
-<g fill='#9ea897'>
+<g fill='#a4af9d'>
 <use x='-40.480644' y='91.989102' xlink:href='#g19-121'/>
 <use x='-33.656609' y='91.989102' xlink:href='#g21-61'/>
 <use x='-24.717779' y='91.989102' xlink:href='#g21-48'/>

@@ -1,0 +1,29 @@
+\begin{tikzpicture}[color=themefg,text=themefg,>=Stealth,x=0.95cm,y=1.0cm]
+  \tikzset{axis/.style={themegray,line width=.7pt,-{Stealth[length=1.6mm]}}, curve/.style={themecurve,line width=2pt}, base/.style={themeamber,densely dashed,line width=1.1pt}, tag/.style={fill=themebg,inner sep=1pt,font=\small}}
+  % left: zero mean
+  \begin{scope}[shift={(0,0)}]
+    \draw[axis] (-.4,0)--(7.2,0) node[below] {$x$};
+    \draw[axis] (0,-2.0)--(0,2.25);
+    \draw[curve] plot[domain=0:6.7,samples=140] (\x,{1.05*sin(120*\x)});
+    \draw[themegray,densely dashed] (3, -1.75)--(3,1.75);
+    \draw[themegray,densely dashed] (6, -1.75)--(6,1.75);
+    \node[tag,anchor=north] at (3,0) {$T$}; \node[tag,anchor=north] at (6,0) {$2T$};
+    \node[tag,anchor=south west] at (.6,1.35) {$M_T=0$};
+    \node[font=\small,anchor=north] at (3.3,-2.28) {原函数只保留周期波动};
+  \end{scope}
+  % right: nonzero mean = drift + periodic
+  \begin{scope}[shift={(9.2,0)}]
+    \draw[axis] (-.4,0)--(7.2,0) node[below] {$x$};
+    \draw[axis] (0,-.8)--(0,5.2);
+    \draw[base] (0,.35)--(6.8,4.1);
+    \draw[curve] plot[domain=0:6.7,samples=140] (\x,{.35+.55*\x+.72*sin(120*\x)});
+    \draw[themegray,densely dashed] (3,0)--(3,4.2);
+    \draw[themegray,densely dashed] (6,0)--(6,4.8);
+    \node[tag,anchor=north] at (3,0) {$T$}; \node[tag,anchor=north] at (6,0) {$2T$};
+    \node[tag,anchor=south west] at (.55,4.5) {$M_T\ne0$};
+    \node[tag,anchor=south west,text=themeamber] at (4.1,3.15) {$\dfrac{M_T}{T}x$};
+    \node[font=\small,anchor=north] at (3.3,-1.08) {$F(x)=\dfrac{M_T}{T}x+P(x)$};
+  \end{scope}
+  \node[font=\small,text=themegray,anchor=north] at (7.9,-3.1)
+    {$F(x+T)-F(x)=M_T$：一周期平均值决定是否出现长期线性漂移。};
+\end{tikzpicture}

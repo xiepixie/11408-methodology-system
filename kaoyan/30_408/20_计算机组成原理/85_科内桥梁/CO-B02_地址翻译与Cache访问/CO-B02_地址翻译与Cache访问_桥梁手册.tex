@@ -29,7 +29,12 @@
 
 \begin{corebox}{Bridge Mother Interface}
 \[
-\boxed{\text{VA Access Request}\to\text{Translation Result Packet}\to\text{Cache Address / Attribute Packet}\to\text{Hit/Miss Path}}
+\boxed{
+\begin{aligned}
+\text{VA Access Request}
+&\to\text{Translation Result Packet}\\
+&\to\text{Cache Address / Attribute Packet}\to\text{Hit/Miss Path}
+\end{aligned}}
 \]
 翻译先证明“映射到哪里且允许怎样访问”，Cache 再证明“所需物理块副本是否在此”。两者都使用地址位，但缺失对象、处理者和重试点不同。
 \end{corebox}
@@ -68,13 +73,13 @@ CA=\{physical\ identity,index/tag/offset,cacheability,access\ type,size\}.
 
 页内 offset 在合法分页映射中保持不变，因此 block offset 可提前从 VA 低位取得；更高位能否提前用作 set index，取决于这些位是否仍完全落在 page offset 内。
 
-\section{三类“没找到”必须保持分离}
+\section{三类快路径失败必须保持分离}
 \begin{center}\small
 \begin{tabularx}{\linewidth}{L{2.2cm}YYY}\toprule
 事件 & 缺失对象 & 处理路径 & 重试点\\\midrule
-TLB miss & 翻译缓存副本 & hardware/software walk 与 refill & 重新形成 PA\\
-Page/permission fault & 有效映射、驻留或权限 & 精确异常交给 OS & 修复后重启指令或终止\\
-Cache miss & 数据块副本 & victim/writeback/fill & 重新执行 Cache access\\
+TLB miss & 翻译缓存副本 & page walk / software refill（按架构） & 重新形成 PA\\
+Translation fault & non-present / residency / permission 等翻译条件 & 精确异常交给 OS & 修复后 retry 或拒绝/终止\\
+Cache miss & 数据块副本 & victim / writeback / fill & refill 后 retry/complete\\
 \bottomrule
 \end{tabularx}
 \end{center}

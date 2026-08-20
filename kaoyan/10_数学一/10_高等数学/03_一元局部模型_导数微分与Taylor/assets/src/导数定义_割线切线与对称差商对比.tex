@@ -1,0 +1,130 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 左图: 固定基点割线逼近切线 ──
+\begin{axis}[
+    name=axL,
+    width=7.8cm,
+    height=7.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-0.3, xmax=3.2,
+    ymin=-0.3, ymax=3.4,
+    xtick={1,2,3},
+    ytick={1,2,3},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={点导数真模型：固定基点 $x_0$，割线旋转逼近切线},
+]
+% 函数曲线 f(x) = 0.3*x^2 + 0.4
+\addplot[themecurve, line width=2.0pt, domain=0:3.0, samples=80] {0.3*x^2 + 0.4};
+\node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:2.9,3.1) {$y=f(x)$};
+
+\begin{pgfonlayer}{background}
+    % 基点 x0 = 1, f(1) = 0.7
+    % 切线: 斜率 f'(1) = 0.6
+    \draw[themealert, line width=1.6pt] (axis cs:0.2,0.22) -- (axis cs:2.8,1.78);
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north west] at (axis cs:2.3,1.4) {切线 (斜率 $f'(x_0)$)};
+
+    % 割线 1
+    \draw[themeamber, dashed, line width=1.2pt] (axis cs:0.5,0.19) -- (axis cs:2.7,2.43);
+    
+    % 割线 2
+    \draw[themeamber!80!themebg, densely dashed, line width=1.1pt] (axis cs:0.6,0.36) -- (axis cs:2.4,1.88);
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{foreground}
+    % 基点 P0
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(1,0.7)};
+    \node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:0.95,0.75) {$P_0(x_0,f(x_0))$};
+
+    % 动点 P1, P2
+    \addplot[only marks, mark=*, mark size=2pt, fill=themeamber, draw=themefg] coordinates {(2.4,2.128) (1.8,1.372)};
+    \node[text=themeamber, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north west] at (axis cs:2.4,2.1) {$P(x_0+h)$};
+
+    % 逼近箭头
+    \draw[-{Stealth[length=2.5mm]}, themeamber, line width=1.4pt] (axis cs:2.3,1.9) to[bend left=12] (axis cs:1.3,0.9);
+    \node[text=themeamber, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:1.8,1.55) {$h\to 0$};
+\end{pgfonlayer}
+\end{axis}
+
+% ── 右图: 对称差商伪装绝对值尖点 ──
+\begin{axis}[
+    name=axR,
+    at={($(axL.east)+(1.6cm,0)$)},
+    anchor=west,
+    width=7.8cm,
+    height=7.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-2.2, xmax=2.2,
+    ymin=-0.6, ymax=2.4,
+    xtick={-2,-1,1,2},
+    ytick={1,2},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={反例陷阱：对称差商将 $f(x)=|x|$ 尖点伪装为斜率 $0$},
+]
+% 绝对值折线
+\addplot[themecurve, line width=2.0pt, domain=-2.0:2.0, samples=50] {abs(x)};
+\node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north west] at (axis cs:1.3,1.6) {$f(x)=|x|$};
+
+\begin{pgfonlayer}{background}
+    % 对称弦线 (水平连线)
+    \draw[themealert, line width=1.5pt] (axis cs:-1.6,1.2) -- (axis cs:1.6,1.2);
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south] at (axis cs:0,1.25) {对称割线斜率 $\equiv 0$};
+
+    % 引导虚线
+    \draw[themegray, densely dashed] (axis cs:-1.2,0) -- (axis cs:-1.2,1.2);
+    \draw[themegray, densely dashed] (axis cs:1.2,0) -- (axis cs:1.2,1.2);
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{foreground}
+    % 对称动点 (-h, h) 与 (h, h)
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themeamber, draw=themefg] coordinates {(-1.2,1.2) (1.2,1.2)};
+    \node[text=themeamber, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:-1.2,1.25) {$(-h, h)$};
+    \node[text=themeamber, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:1.2,1.25) {$(h, h)$};
+
+    % 原点不可导尖点
+    \addplot[only marks, mark=x, mark size=4pt, line width=1.8pt, themealert] coordinates {(0,0)};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north] at (axis cs:0,-0.18) {原点尖点不可导 ($f'_-\ne f'_+$)};
+
+    \node[text=themefg, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north] at (axis cs:0,0.6) {
+        $\lim_{h\to 0}\frac{f(h)-f(-h)}{2h} = 0 \quad\text{但}\quad f'(0)\text{ 不存在}$
+    };
+\end{pgfonlayer}
+\end{axis}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

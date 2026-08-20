@@ -1,0 +1,117 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+
+% ── 矩阵 1：原严格上三角 N (主对角线全 0，上三角为直角三角形非零带) ──
+\begin{scope}[shift={(0,0)}]
+  \node[font=\bfseries\small, text=themecurve] at (1.2, 1.8) {原矩阵 $\boldsymbol{N}$};
+
+  % 矩阵外括号
+  \draw[themegray, line width=1.2pt] (0.2, 1.4) -- (0, 1.4) -- (0, -1.4) -- (0.2, -1.4);
+  \draw[themegray, line width=1.2pt] (2.2, 1.4) -- (2.4, 1.4) -- (2.4, -1.4) -- (2.2, -1.4);
+
+  % 阴影带：标准直角三角形非零区域 (晶蓝)
+  \fill[themecurve!35!themebg, rounded corners=3pt] (0.35, 1.25) -- (2.25, 1.25) -- (2.25, -0.80) -- cycle;
+
+  % 矩阵元素
+  \node at (0.4, 0.9) {$0$}; \node[text=themecurve, font=\bfseries] at (0.9, 0.9) {$*$}; \node[text=themecurve, font=\bfseries] at (1.5, 0.9) {$*$}; \node[text=themecurve, font=\bfseries] at (2.0, 0.9) {$*$};
+  \node at (0.4, 0.3) {$0$}; \node at (0.9, 0.3) {$0$}; \node[text=themecurve, font=\bfseries] at (1.5, 0.3) {$*$}; \node[text=themecurve, font=\bfseries] at (2.0, 0.3) {$*$};
+  \node at (0.4, -0.3) {$0$}; \node at (0.9, -0.3) {$0$}; \node at (1.5, -0.3) {$0$}; \node[text=themecurve, font=\bfseries] at (2.0, -0.3) {$*$};
+  \node at (0.4, -0.9) {$0$}; \node at (0.9, -0.9) {$0$}; \node at (1.5, -0.9) {$0$}; \node at (2.0, -0.9) {$0$};
+
+  \node[font=\footnotesize, text=themecurve] at (1.2, -1.8) {非零带：指标~$j - i \ge 1$};
+\end{scope}
+
+% ── 步骤 1 箭头：乘 N ──
+\draw[->, themegray, line width=1.8pt] (2.6, 0) -- 
+  node[above=3pt, font=\bfseries\footnotesize, fill=themebg, inner sep=1.5pt] {$\times \boldsymbol{N}$} (3.8, 0);
+
+% ── 矩阵 2：N^2 (次对角线清零，直角三角形非零带向右上收缩) ──
+\begin{scope}[shift={(4.0,0)}]
+  \node[font=\bfseries\small, text=themeamber] at (1.2, 1.8) {$\boldsymbol{N}^2$};
+
+  \draw[themegray, line width=1.2pt] (0.2, 1.4) -- (0, 1.4) -- (0, -1.4) -- (0.2, -1.4);
+  \draw[themegray, line width=1.2pt] (2.2, 1.4) -- (2.4, 1.4) -- (2.4, -1.4) -- (2.2, -1.4);
+
+  % 阴影带：缩小版直角三角形 (暖金)
+  \fill[themeamber!35!themebg, rounded corners=3pt] (0.90, 1.25) -- (2.25, 1.25) -- (2.25, -0.25) -- cycle;
+
+  \node at (0.4, 0.9) {$0$}; \node at (0.9, 0.9) {$0$}; \node[text=themeamber, font=\bfseries] at (1.5, 0.9) {$*$}; \node[text=themeamber, font=\bfseries] at (2.0, 0.9) {$*$};
+  \node at (0.4, 0.3) {$0$}; \node at (0.9, 0.3) {$0$}; \node at (1.5, 0.3) {$0$}; \node[text=themeamber, font=\bfseries] at (2.0, 0.3) {$*$};
+  \node at (0.4, -0.3) {$0$}; \node at (0.9, -0.3) {$0$}; \node at (1.5, -0.3) {$0$}; \node at (2.0, -0.3) {$0$};
+  \node at (0.4, -0.9) {$0$}; \node at (0.9, -0.9) {$0$}; \node at (1.5, -0.9) {$0$}; \node at (2.0, -0.9) {$0$};
+
+  \node[font=\footnotesize, text=themeamber] at (1.2, -1.8) {非零带：指标~$j - i \ge 2$};
+\end{scope}
+
+% ── 步骤 2 箭头：乘 N ──
+\draw[->, themegray, line width=1.8pt] (6.6, 0) -- 
+  node[above=3pt, font=\bfseries\footnotesize, fill=themebg, inner sep=1.5pt] {$\times \boldsymbol{N}$} (7.8, 0);
+
+% ── 矩阵 3：N^3 (仅剩右上角单点直角三角) ──
+\begin{scope}[shift={(8.0,0)}]
+  \node[font=\bfseries\small, text=themealert] at (1.2, 1.8) {$\boldsymbol{N}^3$};
+
+  \draw[themegray, line width=1.2pt] (0.2, 1.4) -- (0, 1.4) -- (0, -1.4) -- (0.2, -1.4);
+  \draw[themegray, line width=1.2pt] (2.2, 1.4) -- (2.4, 1.4) -- (2.4, -1.4) -- (2.2, -1.4);
+
+  % 阴影带：微型直角三角形 (珊瑚红)
+  \fill[themealert!40!themebg, rounded corners=2pt] (1.45, 1.25) -- (2.25, 1.25) -- (2.25, 0.35) -- cycle;
+
+  \node at (0.4, 0.9) {$0$}; \node at (0.9, 0.9) {$0$}; \node at (1.5, 0.9) {$0$}; \node[text=themealert, font=\bfseries] at (2.0, 0.9) {$*$};
+  \node at (0.4, 0.3) {$0$}; \node at (0.9, 0.3) {$0$}; \node at (1.5, 0.3) {$0$}; \node at (2.0, 0.3) {$0$};
+  \node at (0.4, -0.3) {$0$}; \node at (0.9, -0.3) {$0$}; \node at (1.5, -0.3) {$0$}; \node at (2.0, -0.3) {$0$};
+  \node at (0.4, -0.9) {$0$}; \node at (0.9, -0.9) {$0$}; \node at (1.5, -0.9) {$0$}; \node at (2.0, -0.9) {$0$};
+
+  \node[font=\footnotesize, text=themealert] at (1.2, -1.8) {非零带：指标~$j - i = 3$};
+\end{scope}
+
+% ── 步骤 3 箭头：乘 N ──
+\draw[->, themegray, line width=1.8pt] (10.6, 0) -- 
+  node[above=3pt, font=\bfseries\footnotesize, fill=themebg, inner sep=1.5pt] {$\times \boldsymbol{N}$} (11.8, 0);
+
+% ── 矩阵 4：N^4 = O (全零矩阵) ──
+\begin{scope}[shift={(12.0,0)}]
+  \node[font=\bfseries\small, text=themefg] at (1.2, 1.8) {$\boldsymbol{N}^4 = \boldsymbol{O}$};
+
+  \draw[themegray, line width=1.2pt] (0.2, 1.4) -- (0, 1.4) -- (0, -1.4) -- (0.2, -1.4);
+  \draw[themegray, line width=1.2pt] (2.2, 1.4) -- (2.4, 1.4) -- (2.4, -1.4) -- (2.2, -1.4);
+
+  \node at (0.4, 0.9) {$0$}; \node at (0.9, 0.9) {$0$}; \node at (1.5, 0.9) {$0$}; \node at (2.0, 0.9) {$0$};
+  \node at (0.4, 0.3) {$0$}; \node at (0.9, 0.3) {$0$}; \node at (1.5, 0.3) {$0$}; \node at (2.0, 0.3) {$0$};
+  \node at (0.4, -0.3) {$0$}; \node at (0.9, -0.3) {$0$}; \node at (1.5, -0.3) {$0$}; \node at (2.0, -0.3) {$0$};
+  \node at (0.4, -0.9) {$0$}; \node at (0.9, -0.9) {$0$}; \node at (1.5, -0.9) {$0$}; \node at (2.0, -0.9) {$0$};
+
+  \node[font=\footnotesize, text=themecurve] at (1.2, -1.8) {全零矩阵（指数~$k \le 4$）};
+\end{scope}
+
+% ── 底部定理总结卡片 ──
+\node[draw=themegray!60, fill=themebg, rounded corners=4pt, line width=0.8pt, inner sep=8pt, text width=14.4cm, anchor=north] at (7.2, -2.5) {
+  \raggedright\small
+  $\bullet$ \textbf{幂零定理}：$n$ 阶严格上（下）三角矩阵必有 $\boldsymbol{N}^n = \boldsymbol{O}$，其特征值全为 $0$。\\
+  $\bullet$ \textbf{有限级数求逆}：$(\boldsymbol{I} - \boldsymbol{N})^{-1} = \boldsymbol{I} + \boldsymbol{N} + \boldsymbol{N}^2 + \cdots + \boldsymbol{N}^{n-1}$（截断至有限项，无需消元）。\\
+  $\bullet$ \textbf{分块上三角}：同理保持非零块逐次向右上推移消亡性质。
+};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

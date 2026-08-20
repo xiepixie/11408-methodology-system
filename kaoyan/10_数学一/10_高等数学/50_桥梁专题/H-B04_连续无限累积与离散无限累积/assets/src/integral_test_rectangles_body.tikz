@@ -1,0 +1,44 @@
+\begin{tikzpicture}[color=themefg,text=themefg,>=Stealth,x=1.1cm,y=3.0cm]
+  \tikzset{
+    axis/.style={themegray,line width=0.8pt,-{Stealth[length=1.7mm]}},
+    curve/.style={themecurve,line width=2.0pt},
+    rectup/.style={themeamber,line width=0.9pt},
+    rectlow/.style={themegreen,densely dashed,line width=0.9pt},
+    tag/.style={fill=themebg,inner sep=1.2pt,font=\footnotesize}
+  }
+
+  % Axes
+  \draw[axis] (-0.3,0) -- (8.6,0) node[below,font=\small] {$x$};
+  \draw[axis] (0,-0.05) -- (0,1.55) node[left,font=\small] {$y$};
+
+  % Function curve f(x)
+  \draw[curve] plot[domain=0.7:7.8,samples=120] (\x,{1/(0.55+0.55*\x)});
+  \node[text=themecurve,anchor=south west,font=\footnotesize] at (6.8,0.28) {$y=f(x)$};
+
+  % Upper rectangles: height f(n)
+  \foreach \n in {1,...,6}{
+    \pgfmathsetmacro{\h}{1/(0.55+0.55*\n)}
+    \fill[themeamber,opacity=0.10] (\n,0) rectangle (\n+1,\h);
+    \draw[rectup] (\n,0) rectangle (\n+1,\h);
+    % x-ticks and numbers
+    \draw[themegray,line width=0.6pt] (\n,0) -- (\n,-0.03);
+    \node[tag,anchor=north] at (\n,-0.03) {$\n$};
+  }
+  \draw[themegray,line width=0.6pt] (7,0) -- (7,-0.03);
+  \node[tag,anchor=north] at (7,-0.03) {$7$};
+
+  % Lower rectangles: height f(n+1)
+  \foreach \n in {1,...,6}{
+    \pgfmathsetmacro{\h}{1/(0.55+0.55*(\n+1))}
+    \draw[rectlow] (\n,\h) -- (\n+1,\h);
+    \draw[themegray,densely dotted,line width=0.5pt] (\n+1,0) -- (\n+1,\h);
+  }
+
+  % Legend / Callout badges
+  \node[fill=themebg,inner sep=2pt,text=themeamber,anchor=west,font=\footnotesize] at (4.8,1.15) {上和矩形 $f(n)$ (外包夹逼)};
+  \node[fill=themebg,inner sep=2pt,text=themegreen,anchor=west,font=\footnotesize] at (4.8,0.85) {下和矩形 $f(n+1)$ (内嵌夹逼)};
+
+  % Bottom summary
+  \node[font=\small,text=themegray,anchor=north] at (4.1,-0.25)
+  {单调递减使离散矩形稳定夹逼连续面积：$\displaystyle\sum_{n=2}^{N+1} f(n) \le \int_1^{N+1} f(x)\,dx \le \sum_{n=1}^N f(n)$。};
+\end{tikzpicture}

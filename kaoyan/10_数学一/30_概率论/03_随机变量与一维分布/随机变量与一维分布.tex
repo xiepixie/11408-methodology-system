@@ -4,6 +4,8 @@
 \usepackage{booktabs,longtable,tabularx,array}
 \usepackage{enumitem}
 \usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
 \usepackage{xcolor,fancyhdr,hyperref,microtype}
 
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
@@ -16,6 +18,17 @@
 \definecolor{deep}{RGB}{42,58,73}\definecolor{soft}{RGB}{245,247,249}
 \definecolor{accent}{RGB}{104,76,55}\definecolor{greenish}{RGB}{57,92,76}
 \definecolor{warn}{RGB}{136,68,63}\definecolor{purple}{RGB}{87,72,116}
+
+% ── 双主题图解语义色彩（LaTeX 打印高对比白底）──
+\definecolor{themebg}{HTML}{FFFFFF}
+\definecolor{themefg}{HTML}{111111}
+\definecolor{themegray}{HTML}{666666}
+\definecolor{themecurve}{HTML}{1D63B8}
+\definecolor{themealert}{HTML}{C53030}
+\definecolor{themeamber}{HTML}{B86E00}
+
+\newenvironment{handbookdiagram}{\par\vspace{0.4em}\noindent\begin{center}}{\end{center}\vspace{0.4em}}
+\newcommand{\diagramcaption}[1]{\par\vspace{0.3em}{\small\textbf{#1}}}
 
 \hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={随机变量与一维分布}}
 \pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{数学一 · 概率统计 Topic 03}}
@@ -91,6 +104,12 @@ P(a<X<b)&=F_X(b^-)-F_X(a).
 \end{aligned}
 \]
 
+\begin{handbookdiagram}
+\resizebox{0.92\linewidth}{!}{%
+\input{assets/src/v05_cdf_jump_and_interval_probability_body.tikz}%
+}
+\end{handbookdiagram}
+
 \subsection{PMF 与 PDF 是分层表示}
 离散型的概率质量函数满足
 \[
@@ -130,6 +149,12 @@ F_X(x)=\sum_{a_k\le x}p_k+\int_{-\infty}^{x}f_c(t)\,dt,
 \end{enumerate}
 例如离散指标 $Y\in\{0,1\}$ 与连续 $X$ 独立、$P(Y=0)=P(Y=1)=1/2$，而 $Z=XY$ 时，$Y=0$ 层在 $z=0$ 产生质量 $1/2$，$Y=1$ 层贡献 $X$ 的连续分布；不能只写连续层的密度而遗漏原子。
 \end{methodbox}
+
+\begin{handbookdiagram}
+\resizebox{0.92\linewidth}{!}{%
+\input{assets/src/v06_mixture_distribution_decomposition_body.tikz}%
+}
+\end{handbookdiagram}
 
 \begin{examplebox}{真题双闸门：先验收 CDF，再读取跳点}
 \textbf{2002 Q五：}若 $F_1,F_2$ 是任意两个分布函数，$F_1F_2$ 必为分布函数。证明不是“两个函数相乘看起来合理”，而是逐项验收：两者非负且单调不减，所以乘积单调不减；两者右连续，乘积仍右连续；两端极限分别为 $0$ 与 $1$。更有生成性解释：若 $X_1,X_2$ 独立，则

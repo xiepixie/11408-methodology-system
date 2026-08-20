@@ -33,6 +33,8 @@ TIKZ_STANDALONE_TEMPLATE = r"""\documentclass[dvisvgm,tikz,border=3pt]{standalon
 \definecolor{themecurve}{HTML}{__CURVE_HEX__}
 \definecolor{themealert}{HTML}{__ALERT_HEX__}
 \definecolor{themeamber}{HTML}{__AMBER_HEX__}
+\definecolor{themepurple}{HTML}{__PURPLE_HEX__}
+\definecolor{themegreen}{HTML}{__GREEN_HEX__}
 
 \begin{document}
 \begin{CJK*}{UTF8}{gbsn}
@@ -105,6 +107,27 @@ def default_outputs(tex_src_path: Path) -> tuple[Path, Path]:
     return asset_root / f"{tex_src_path.stem}.svg", asset_root / "light" / f"{tex_src_path.stem}.svg"
 
 
+UNSAFE_MIXING_RE = re.compile(
+    r"\b(themecurve|themealert|themeamber|themepurple|themegreen|blue|red|green|yellow|orange|cyan|magenta)!\d+(?![\w]*!)\b"
+)
+
+
+def lint_tikz_source(src_code: str, filename: str = "") -> list[str]:
+    """Check TikZ source for dark-mode anti-patterns and unsafe color mixing."""
+    errors = []
+    for idx, line in enumerate(src_code.splitlines(), 1):
+        stripped = line.strip()
+        if stripped.startswith("%"):
+            continue
+        for match in UNSAFE_MIXING_RE.finditer(line):
+            matched_str = match.group(0)
+            errors.append(
+                f"{filename}:{idx} [UNSAFE_COLOR_MIXING] '{matched_str}' mixes with pure white in xcolor, "
+                f"causing glaring white patches in dark mode. Use '{matched_str}!themebg' or 'fill opacity=...' instead."
+            )
+    return errors
+
+
 def compile_tikz_source(
     tex_src_path: str | Path,
     out_dark_svg: str | Path | None = None,
@@ -117,6 +140,13 @@ def compile_tikz_source(
         return False
 
     src_code = source.read_text(encoding="utf-8")
+    lint_errors = lint_tikz_source(src_code, source.name)
+    if lint_errors:
+        print(f"[tikz-lint] Found {len(lint_errors)} anti-pattern(s) in {source.name}:")
+        for err in lint_errors:
+            print(f"  [error] {err}")
+        return False
+
     is_full_doc = r"\documentclass" in src_code
     default_dark, default_light = default_outputs(source)
     dark_output = Path(out_dark_svg).resolve() if out_dark_svg else default_dark
@@ -124,17 +154,18 @@ def compile_tikz_source(
     latex_bin, dvisvgm_bin = get_tex_bin()
     env = build_environment(source.parent)
 
-    # (theme_name, bg, fg, gray, curve, alert, amber, destination)
+    # (theme_name, bg, fg, gray, curve, alert, amber, purple, green, destination)
     themes = [
-        ("dark", "30362d", "edf4e8", "9ea897", "7eb6ff", "ff7b7b", "f5b942", dark_output),
-        ("light", "fafaf7", "111111", "666666", "1d63b8", "c53030", "b86e00", light_output),
+        ("dark", "30362d", "edf4e8", "a4af9d", "7eb6ff", "ff7b7b", "f5b942", "c084fc", "4ade80", dark_output),
+        ("light", "fafaf7", "111111", "666666", "1d63b8", "c53030", "b86e00", "7c3aed", "15803d", light_output),
     ]
 
     print(f"[tikz] {source.name} -> dark/light SVG")
     with tempfile.TemporaryDirectory(prefix="ipara-tikz-") as tmp:
         build_dir = Path(tmp)
+        svg_files: dict[str, Path] = {}
 
-        for theme_name, bg_hex, fg_hex, gray_hex, curve_hex, alert_hex, amber_hex, destination in themes:
+        for theme_name, bg_hex, fg_hex, gray_hex, curve_hex, alert_hex, amber_hex, purple_hex, green_hex, _ in themes:
             prefix = f"{source.stem}_{theme_name}"
             build_tex = build_dir / f"{prefix}.tex"
 
@@ -169,6 +200,16 @@ def compile_tikz_source(
                     rf"\\definecolor{{themeamber}}{{HTML}}{{{amber_hex}}}",
                     content,
                 )
+                content = re.sub(
+                    r"\\definecolor\{themepurple\}\{HTML\}\{[0-9a-fA-F]+\}",
+                    rf"\\definecolor{{themepurple}}{{HTML}}{{{purple_hex}}}",
+                    content,
+                )
+                content = re.sub(
+                    r"\\definecolor\{themegreen\}\{HTML\}\{[0-9a-fA-F]+\}",
+                    rf"\\definecolor{{themegreen}}{{HTML}}{{{green_hex}}}",
+                    content,
+                )
             else:
                 content = (
                     TIKZ_STANDALONE_TEMPLATE
@@ -178,6 +219,8 @@ def compile_tikz_source(
                     .replace("__CURVE_HEX__", curve_hex)
                     .replace("__ALERT_HEX__", alert_hex)
                     .replace("__AMBER_HEX__", amber_hex)
+                    .replace("__PURPLE_HEX__", purple_hex)
+                    .replace("__GREEN_HEX__", green_hex)
                     .replace("__TIKZ_BODY__", src_code)
                 )
 
@@ -210,31 +253,77 @@ def compile_tikz_source(
                 print(f"[error] dvisvgm failed ({theme_name})\n{dvisvgm_result.stdout}\n{dvisvgm_result.stderr}")
                 return False
 
-            svg_file = build_dir / svg_name
-            if theme_name == "dark":
-                svg_text = svg_file.read_text(encoding="utf-8")
-                adaptive_style = (
-                    "\n<style>\n"
-                    "  @media print, (prefers-color-scheme: light) {\n"
-                    "    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #fafaf7 !important; }\n"
-                    "    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }\n"
-                    "    [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }\n"
-                    "    [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }\n"
-                    "    [fill='#9ea897'], [fill='#9EA897'], [fill='#9ea897' i] { fill: #666666 !important; }\n"
-                    "    [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }\n"
-                    "    [fill='#7eb6ff'], [fill='#7EB6FF'], [fill='#7eb6ff' i] { fill: #1d63b8 !important; }\n"
-                    "    [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }\n"
-                    "    [fill='#ff7b7b'], [fill='#FF7B7B'], [fill='#ff7b7b' i] { fill: #c53030 !important; }\n"
-                    "    [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }\n"
-                    "    [fill='#f5b942'], [fill='#F5B942'], [fill='#f5b942' i] { fill: #b86e00 !important; }\n"
-                    "    [stroke='#f5b942'], [stroke='#F5B942'], [stroke='#f5b942' i] { stroke: #b86e00 !important; }\n"
-                    "  }\n"
-                    "</style>\n"
-                )
-                if "<style>" not in svg_text:
-                    svg_text = re.sub(r"(<defs|<path|<g)", rf"{adaptive_style}\1", svg_text, count=1)
-                    svg_file.write_text(svg_text, encoding="utf-8")
+            svg_files[theme_name] = build_dir / svg_name
 
+        # Generate comprehensive adaptive style mapping for dark SVG
+        if "dark" in svg_files and "light" in svg_files:
+            dark_file = svg_files["dark"]
+            light_file = svg_files["light"]
+            dark_text = dark_file.read_text(encoding="utf-8")
+            light_text = light_file.read_text(encoding="utf-8")
+
+            base_pairs = [
+                ("30362d", "fafaf7"),
+                ("edf4e8", "111111"),
+                ("9ea897", "666666"),
+                ("7eb6ff", "1d63b8"),
+                ("ff7b7b", "c53030"),
+                ("f5b942", "b86e00"),
+                ("c084fc", "7c3aed"),
+                ("4ade80", "15803d"),
+            ]
+            fill_map: dict[str, str] = {f"#{d}": f"#{l}" for d, l in base_pairs}
+            stroke_map: dict[str, str] = {f"#{d}": f"#{l}" for d, l in base_pairs}
+
+            try:
+                import xml.etree.ElementTree as ET
+                dark_tree = ET.fromstring(dark_text)
+                light_tree = ET.fromstring(light_text)
+
+                tags = ('path', 'rect', 'g', 'circle', 'line', 'polygon', 'polyline', 'text', 'use')
+                d_elems = [e for e in dark_tree.iter() if any(e.tag.endswith(t) for t in tags)]
+                l_elems = [e for e in light_tree.iter() if any(e.tag.endswith(t) for t in tags)]
+
+                if len(d_elems) == len(l_elems):
+                    for d_el, l_el in zip(d_elems, l_elems):
+                        d_f = d_el.attrib.get("fill")
+                        l_f = l_el.attrib.get("fill")
+                        if d_f and l_f and d_f not in ("none", "transparent") and l_f not in ("none", "transparent") and d_f != l_f:
+                            d_norm = d_f.lower()
+                            l_norm = l_f.lower()
+                            if l_norm == "#111": l_norm = "#111111"
+                            if l_norm == "#666": l_norm = "#666666"
+                            if l_norm == "#fff": l_norm = "#ffffff"
+                            fill_map[d_norm] = l_norm
+
+                        d_s = d_el.attrib.get("stroke")
+                        l_s = l_el.attrib.get("stroke")
+                        if d_s and l_s and d_s not in ("none", "transparent") and l_s not in ("none", "transparent") and d_s != l_s:
+                            d_norm = d_s.lower()
+                            l_norm = l_s.lower()
+                            if l_norm == "#111": l_norm = "#111111"
+                            if l_norm == "#666": l_norm = "#666666"
+                            if l_norm == "#fff": l_norm = "#ffffff"
+                            stroke_map[d_norm] = l_norm
+            except Exception as e:
+                print(f"[warning] Element mapping failed ({e}), falling back to base palette")
+
+            rules = []
+            for d_col, l_col in fill_map.items():
+                rules.append(f"    [fill='{d_col}'], [fill='{d_col.upper()}'], [fill='{d_col}' i] {{ fill: {l_col} !important; }}")
+            for d_col, l_col in stroke_map.items():
+                rules.append(f"    [stroke='{d_col}'], [stroke='{d_col.upper()}'], [stroke='{d_col}' i] {{ stroke: {l_col} !important; }}")
+
+            adaptive_style = "\n<style>\n  @media print, (prefers-color-scheme: light) {\n" + "\n".join(rules) + "\n  }\n</style>\n"
+
+            if "<style>" not in dark_text:
+                dark_text = re.sub(r"(<defs|<path|<g)", rf"{adaptive_style}\1", dark_text, count=1)
+                dark_file.write_text(dark_text, encoding="utf-8")
+
+        for theme_tuple in themes:
+            theme_name = theme_tuple[0]
+            destination = theme_tuple[-1]
+            svg_file = svg_files[theme_name]
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(svg_file, destination)
             print(f"  [{theme_name}] {destination}")
@@ -286,9 +375,24 @@ def main() -> int:
     parser.add_argument("file", nargs="?", help="TikZ .tex source")
     parser.add_argument("--dir", help="explicit directory to compile recursively")
     parser.add_argument("--all", action="store_true", help="compile all TikZ sources in repository")
+    parser.add_argument("--lint", action="store_true", help="lint TikZ sources for color mixing issues without compiling")
     parser.add_argument("--dark-output", help="custom dark SVG output path (single-file mode)")
     parser.add_argument("--light-output", help="custom light SVG output path (single-file mode)")
     args = parser.parse_args()
+
+    if args.lint:
+        target_dir = Path(args.dir).resolve() if args.dir else REPO_ROOT / "kaoyan"
+        files = sorted(path for path in target_dir.rglob("*.tex") if is_tikz_source(path))
+        all_errors = []
+        for f in files:
+            all_errors.extend(lint_tikz_source(f.read_text(encoding="utf-8"), f.name))
+        if all_errors:
+            print(f"[tikz-lint] Found {len(all_errors)} anti-pattern(s):")
+            for err in all_errors:
+                print(f"  [error] {err}")
+            return 1
+        print(f"[tikz-lint] PASSED: All {len(files)} TikZ sources follow safe color mixing contracts.")
+        return 0
 
     if args.all:
         return 0 if compile_all_in_dir(REPO_ROOT / "kaoyan") else 1

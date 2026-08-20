@@ -1,0 +1,130 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 左图: 积分审敛法上下包络 ──
+\begin{axis}[
+    name=axL,
+    width=7.8cm,
+    height=7.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=0.5, xmax=4.8,
+    ymin=-0.2, ymax=2.2,
+    xtick={1,2,3,4},
+    ytick=\empty,
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={积分审敛法：矩形和与反常积分夹逼},
+]
+\begin{pgfonlayer}{background}
+    % 外包矩形 (左端点高度)，与背景色混合避免纯白发光
+    \fill[themecurve!35!themebg] (1,0) rectangle (2,1.0);
+    \fill[themecurve!35!themebg] (2,0) rectangle (3,0.5);
+    \fill[themecurve!35!themebg] (3,0) rectangle (4,0.333);
+
+    % 内包矩形 (右端点高度)
+    \fill[themeamber!35!themebg] (1,0) rectangle (2,0.5);
+    \fill[themeamber!35!themebg] (2,0) rectangle (3,0.333);
+    \fill[themeamber!35!themebg] (3,0) rectangle (4,0.25);
+\end{pgfonlayer}
+
+% 矩形边框
+\draw[themecurve, line width=1.2pt] (1,0) rectangle (2,1.0);
+\draw[themecurve, line width=1.2pt] (2,0) rectangle (3,0.5);
+\draw[themecurve, line width=1.2pt] (3,0) rectangle (4,0.333);
+
+\draw[themeamber, dashed, line width=1.1pt] (1,0.5) -- (2,0.5);
+\draw[themeamber, dashed, line width=1.1pt] (2,0.333) -- (3,0.333);
+\draw[themeamber, dashed, line width=1.1pt] (3,0.25) -- (4,0.25);
+
+% 单调减曲线 y = 1/x
+\addplot[themefg, line width=2.0pt, domain=1:4.5, samples=60] {1/x};
+\node[text=themefg, font=\scriptsize\bfseries, anchor=south west] at (axis cs:2.2,0.7) {$y=f(x)$};
+
+\begin{pgfonlayer}{foreground}
+    % 夹逼公式
+    \node[text=themefg, font=\scriptsize\bfseries, anchor=south] at (axis cs:2.8,1.45) {
+        $\sum\limits_{n=2}^\infty f(n) \le \int_1^\infty f(x)dx \le \sum\limits_{n=1}^\infty f(n)$
+    };
+    \node[text=themeamber, font=\tiny\bfseries] at (axis cs:1.5,0.25) {内包 $f(n+1)$};
+    \node[text=themecurve, font=\tiny\bfseries] at (axis cs:1.5,0.75) {外包 $f(n)$};
+\end{pgfonlayer}
+\end{axis}
+
+% ── 右图: Leibniz 交错级数部分和收缩 ──
+\begin{axis}[
+    name=axR,
+    at={($(axL.east)+(1.6cm,0)$)},
+    anchor=west,
+    width=7.8cm,
+    height=7.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=0.5, xmax=6.5,
+    ymin=0.4, ymax=1.25,
+    xtick={1,2,3,4,5,6},
+    xticklabels={$S_1$,$S_2$,$S_3$,$S_4$,$S_5$,$S_6$},
+    ytick=\empty,
+    clip=false,
+    xlabel={$n$ (项数)},
+    ylabel={$S_n$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={Leibniz 交错级数：部分和夹逼收敛},
+]
+% 极限水平虚线 S = ln 2 ≈ 0.693
+\draw[themealert, dashed, line width=1.5pt] (axis cs:0.8,0.693) -- (axis cs:6.2,0.693);
+\node[text=themealert, font=\scriptsize\bfseries, anchor=west] at (axis cs:6.2,0.693) {$S$};
+
+% 交错折线
+\addplot[themecurve, line width=1.8pt, mark=*, mark size=2.8pt, mark options={fill=themeamber, draw=themefg}] coordinates {
+    (1, 1.0)
+    (2, 0.5)
+    (3, 0.833)
+    (4, 0.583)
+    (5, 0.783)
+    (6, 0.617)
+};
+
+\begin{pgfonlayer}{foreground}
+    % 截断误差标注
+    \draw[{Stealth}-{Stealth}, themefg, line width=1.2pt] (axis cs:5,0.783) -- (axis cs:5,0.693);
+    \node[text=themefg, font=\tiny\bfseries, anchor=west] at (axis cs:5.1,0.74) {$|S_n - S| \le u_{n+1}$};
+
+    % 结论
+    \node[text=themefg, font=\scriptsize\bfseries, anchor=south] at (axis cs:3.5,1.06) {
+        奇数项递减下界 $S$ / 偶数项递增上界 $S$
+    };
+\end{pgfonlayer}
+\end{axis}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

@@ -1,0 +1,87 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+\begin{axis}[
+    width=13.8cm,
+    height=9.0cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-2.8, xmax=2.6,
+    ymin=-3.6, ymax=3.6,
+    xtick={-2,-1,1,2},
+    ytick=\empty,
+    clip=false,
+    xlabel={$x$},
+    xlabel style={at={(1.0,0.56)}, anchor=south},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={方程根数心智模型：参数 $m$ 驱动水平线 $y=m$ 扫描函数图像，越过极值高度根数发生突变},
+]
+
+% 原函数 f(x) = x^3 - 3x
+\addplot[themecurve, line width=2.2pt, domain=-2.15:2.15, samples=120] {x^3 - 3*x};
+\node[text=themecurve, font=\small\bfseries, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:2.1,2.5) {$y=f(x)$};
+
+\begin{pgfonlayer}{background}
+    % 1. m > 2: y = 3 (1 根)
+    \draw[themegray!80, dashed, line width=1pt] (axis cs:-2.4,3.0) -- (axis cs:2.7,3.0);
+    \node[text=themegray, font=\scriptsize, fill=themebg, inner sep=0.8pt, anchor=west] at (axis cs:2.75,3.0) {$m>M \implies 1\text{ 个实根}$};
+
+    % 2. m = 2 = M: 极大值临界切线 (2 根，含 1 个二重根)
+    \draw[themealert, line width=1.3pt] (axis cs:-2.4,2.0) -- (axis cs:2.7,2.0);
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=0.8pt, anchor=west] at (axis cs:2.75,2.0) {$m=M \implies 2\text{ 个实根 (1个二重)}$};
+
+    % 3. -2 < m < 2: y = 0 (3 个互异实根)
+    \draw[themeamber, dashed, line width=1.2pt] (axis cs:-2.4,0.0) -- (axis cs:2.7,0.0);
+    \node[text=themeamber, font=\scriptsize, fill=themebg, inner sep=0.8pt, anchor=west] at (axis cs:2.75,0.0) {$m\in(m_0,M) \implies 3\text{ 个互异实根}$};
+
+    % 4. m = -2 = m0: 极小值临界切线 (2 根，含 1 个二重根)
+    \draw[themealert, line width=1.3pt] (axis cs:-2.4,-2.0) -- (axis cs:2.7,-2.0);
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=0.8pt, anchor=west] at (axis cs:2.75,-2.0) {$m=m_0 \implies 2\text{ 个实根 (1个二重)}$};
+
+    % 5. m < -2: y = -3 (1 根)
+    \draw[themegray!80, dashed, line width=1pt] (axis cs:-2.4,-3.0) -- (axis cs:2.7,-3.0);
+    \node[text=themegray, font=\scriptsize, fill=themebg, inner sep=0.8pt, anchor=west] at (axis cs:2.75,-3.0) {$m<m_0 \implies 1\text{ 个实根}$};
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{foreground}
+    % 极值点
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themealert, draw=themefg] coordinates {(-1,2) (1,-2)};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south] at (axis cs:-1,2.15) {极大值 $M=2$};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north] at (axis cs:1,-2.15) {极小值 $m_0=-2$};
+
+    % m = 0 的 3 个交点
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themeamber, draw=themefg] coordinates {(-1.732,0) (0,0) (1.732,0)};
+
+    % 垂直扫描箭头
+    \draw[-{Stealth[length=3mm]}, themeamber, line width=1.5pt] (axis cs:-2.5,-3.2) -- (axis cs:-2.5,3.2);
+    \node[text=themeamber, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south] at (axis cs:-2.5,3.3) {水平扫描线上下平移};
+\end{pgfonlayer}
+
+\end{axis}
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

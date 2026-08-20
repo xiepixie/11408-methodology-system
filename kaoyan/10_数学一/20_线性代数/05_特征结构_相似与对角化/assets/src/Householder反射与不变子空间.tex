@@ -1,0 +1,109 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+
+% ── 几何镜面反射图 ──
+\begin{scope}[shift={(-1.2,0)}]
+  \coordinate (O) at (0,0);
+  
+  % 镜面方向 (倾斜超平面 u^\perp)
+  \coordinate (M_left) at (-2.4, -1.2);
+  \coordinate (M_right) at (2.4, 1.2);
+  
+  % 法向 u (垂直于镜面)
+  \coordinate (U) at (-0.9, 1.8);
+  \coordinate (negU) at (0.9, -1.8);
+
+  % 一般输入向量 x
+  \coordinate (X) at (0.7, 1.9);
+  \coordinate (HX) at (1.6, -0.6);
+
+  \begin{pgfonlayer}{background}
+    % 镜面超平面 u^\perp 阴影带 (晶蓝)
+    \fill[themecurve!15!themebg, opacity=0.6] ($(M_left)+(0, -0.3)$) -- ($(M_right)+(0, -0.3)$) -- ($(M_right)+(0, 0.3)$) -- ($(M_left)+(0, 0.3)$) -- cycle;
+    \draw[themecurve, line width=1.5pt] (M_left) -- (M_right);
+
+    % 法向轴线 (虚线)
+    \draw[dashed, themealert!70!themegray, line width=0.9pt] (-1.2, 2.4) -- (1.2, -2.4);
+
+    % 反射虚线
+    \draw[densely dashed, themegray, line width=0.9pt] (X) -- (HX);
+    
+    % 直角标记
+    \draw[themegray, line width=0.8pt] ($(O)+(-0.25, 0.5)$) -- ($(O)+(-0.1, 0.58)$) -- ($(O)+(0.15, 0.08)$);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{main}
+    % 法向单位向量 u (珊瑚红粗实线)
+    \draw[->, themealert, line width=2.2pt] (O) -- (U);
+    % 反射后法向 -u (珊瑚红粗实线)
+    \draw[->, themealert, line width=2.2pt] (O) -- (negU);
+
+    % 镜面上不变向量 v (晶蓝实线)
+    \draw[->, themecurve, line width=2.0pt] (O) -- (1.8, 0.9);
+
+    % 一般向量 x 与反射向量 Hx (暖金)
+    \draw[->, themegray, line width=1.8pt] (O) -- (X);
+    \draw[->, themeamber, line width=2.2pt] (O) -- (HX);
+    
+    \fill[themefg] (O) circle (2.0pt);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 镜面超平面标注
+    \node[text=themecurve, font=\bfseries\footnotesize, fill=themebg, inner sep=1pt, anchor=south east] at (-1.3, -0.5) {镜面 $\boldsymbol{u}^\perp$ ($\lambda = +1$)};
+    \node[text=themecurve, fill=themebg, inner sep=0.8pt, font=\scriptsize, above left] at (1.8, 0.9) {$\boldsymbol{H}\boldsymbol{v} = \boldsymbol{v}$};
+
+    % 法向标注
+    \node[text=themealert, fill=themebg, inner sep=0.8pt, font=\bfseries\small, above left] at (U) {单位法向 $\boldsymbol{u}$};
+    \node[text=themealert, fill=themebg, inner sep=0.8pt, font=\bfseries\small, below right] at (negU) {$\boldsymbol{H}\boldsymbol{u} = -\boldsymbol{u}$ ($\lambda = -1$)};
+
+    % 反射向量标注
+    \node[text=themegray, fill=themebg, inner sep=0.8pt, font=\small, above] at (X) {原向量 $\boldsymbol{x}$};
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, font=\bfseries\small, below right] at (HX) {反射向量 $\boldsymbol{H}\boldsymbol{x}$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 伴随代数性质卡片 ──
+\begin{scope}[shift={(6.2, 0.4)}]
+  \node[draw=themegray!60, fill=themebg, rounded corners=6pt, line width=0.8pt, inner sep=8pt, text width=6.6cm] {
+    \centering
+    {\bfseries\color{themecurve} Householder 反射矩阵代数性质} \\[6pt]
+    \raggedright\small
+    $\bullet$ \textbf{构造}：$\boldsymbol{H} = \boldsymbol{I} - 2\boldsymbol{u}\boldsymbol{u}^T$（$\|\boldsymbol{u}\|=1$）\\
+    $\bullet$ \textbf{对合性}：$\boldsymbol{H}^2 = \boldsymbol{I} \implies \boldsymbol{H}^{-1} = \boldsymbol{H}$\\
+    $\bullet$ \textbf{对称正交}：$\boldsymbol{H}^T = \boldsymbol{H} = \boldsymbol{H}^{-1}$\\
+    $\bullet$ \textbf{谱结构}：\\
+    \quad - 特征值 $-1$（几何重数 $1$，特征空间 $\operatorname{span}\{\boldsymbol{u}\}$）\\
+    \quad - 特征值 $+1$（几何重数 $n-1$，特征空间 $\boldsymbol{u}^\perp$）\\
+    $\bullet$ \textbf{行列式与迹}：$\det\boldsymbol{H} = -1,\ \operatorname{tr}\boldsymbol{H} = n - 2$
+  };
+\end{scope}
+
+% ── 底部总结横条 ──
+\node[font=\bfseries\small, color=themecurve, anchor=north] at (4.5, -3.2) {
+  核心心智模型：Householder 矩阵把空间拆为 1 维法向（反转）与 $n-1$ 维超平面（不动）；两次反射自动恢复恒等
+};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

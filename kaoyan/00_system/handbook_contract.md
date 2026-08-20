@@ -53,7 +53,7 @@ Atlas `README.md` 可以并且应该直接拥有：Mother Question、Scope、Fou
 └── assets/                # 可选
 ```
 
-训练文件按**内容主题**命名，不按“母题”“规则”这类资产类型命名。文件名也不需要重复上级专题名称，可以直接使用更贴近检索的问题名，如 `反函数.md`、`周期性.md`、`单调性.md`。一个训练文件可以同时组织该问题族的母题、变式轴、局部技巧、起手规则、检查动作、代表真题与错题索引；这些内容共同服务同一个训练对象，不必人为拆成两份文件。具体的头部契约、局部规则三元组、拆分信号、配图与 TikZ→SVG 工作流统一见 [`topic_practice_writing_spec.md`](topic_practice_writing_spec.md)。
+训练文件按**内容主题**命名，不按“母题”“规则”这类资产类型命名。文件名也不需要重复上级专题名称，可以直接使用更贴近检索的问题名，如 `反函数.md`、`周期性.md`、`单调性.md`。一个训练文件可以同时组织该问题族的母题、变式轴、局部技巧、起手规则、检查动作、代表真题与错题索引；这些内容共同服务同一个训练对象，不必人为拆成两份文件。具体的头部契约、局部规则三元组、拆分信号、图意图与图形生命周期见 [`topic_practice_writing_spec.md`](topic_practice_writing_spec.md)；跨学科图示语义见 [`diagram_design_spec.md`](diagram_design_spec.md)；TikZ→SVG 工程见 [`latex_layout_spec.md`](latex_layout_spec.md)。
 
 对 Topic / Bridge / Integration 目录，除 `README.md` 外，**长期保留的普通 Markdown 默认解释为专题训练文档**。历史 Source、迁移记录、审阅日志若必须暂留，应显式声明其临时身份，并优先放到 Source / Evidence 对应位置，不能混入 README 的正式训练导航。
 

@@ -10,6 +10,8 @@
 \renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
 \definecolor{deep}{RGB}{42,58,73}\definecolor{soft}{RGB}{245,247,249}
 \definecolor{warn}{RGB}{136,68,63}
+\colorlet{themebg}{white}\colorlet{themefg}{black}\colorlet{themegray}{gray!70}
+\colorlet{themecurve}{blue!70!black}\colorlet{themealert}{red!70!black}\colorlet{themeamber}{orange!80!black}
 \hypersetup{colorlinks=true,linkcolor=deep,pdftitle={H-B01 函数结构在运算中的传播}}
 \pagestyle{fancy}\fancyhf{}
 \lhead{\small\color{deep}\textbf{数学一 · H-B01}}
@@ -75,6 +77,10 @@ f(a+t)+f(a-t)=2b,
 \boxed{f'(a+t)=f'(a-t)},
 \]
 所以一般中心对称经过一次求导变成关于 $x=a$ 的轴对称。于是原点奇偶只是特殊情形：偶函数导数为奇函数，奇函数导数为偶函数。
+
+\begin{center}
+\input{assets/src/reflection_calculus_body.tikz}
+\end{center}
 
 连续求导会让反射符号逐次翻转，因此若相应高阶导数存在：
 \[
@@ -287,6 +293,10 @@ F(x+T)-F(x)=M_T.
 \boxed{F(x)=\frac{M_T}{T}x+P(x)},\qquad P(x+T)=P(x).
 \]
 所以周期函数的原函数一般是“\textbf{线性漂移 + 周期波动}”；只有平均值 $M_T/T=0$ 时，原函数才可能本身周期。
+
+\begin{center}
+\input{assets/src/periodic_antiderivative_body.tikz}
+\end{center}
 
 有两类常见结构会自动把周期平均值压成零：
 \begin{itemize}

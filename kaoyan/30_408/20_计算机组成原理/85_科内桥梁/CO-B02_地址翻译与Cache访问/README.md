@@ -1,11 +1,11 @@
 # CO-B02｜Address Translation × Cache Access
 
 > 类型：Bridge
-> 状态：LaTeX 工作稿待人工确认；Canonical Bridge 正文已建立并发布。
+> 状态：Canonical Bridge LaTeX 已完成本轮术语与接口重审；现有发布 PDF 仍是上一版派生稿，待发布流程同步。
 
 ## Hook
 
-翻译硬件输出 PA 与权限，Cache 需要 tag/index/offset 和访问属性。若交接口不明确，就会把 TLB miss、Page Fault 与 Cache miss 混成一次“没找到”，或在 VIPT 题中凭容量口诀猜并行条件。
+翻译硬件输出 PA、权限与访问属性，Cache 需要合法地址身份以及 tag/index/offset。若接口不明确，就会把 TLB miss、translation fault 与 Cache miss 混成同一种“未命中”，或在 VIPT 题中凭容量口诀猜并行条件。
 
 ## Mother Interface
 
@@ -22,6 +22,11 @@ VA Access Request
 - Right Owner：[CO-06 Cache 与存储层次](../../60_Cache与存储层次/README.md)；
 - 本 Bridge 只 Own 地址位、权限/属性与串并行时序的交接；
 - PTE/page walk 留在 CO-07，mapping/tag/replacement 留在 CO-06，Page Fault 修复留给 OS/X-B02。
+
+## 训练导航
+
+- [地址翻译与 Cache 综合训练](地址翻译与Cache综合训练.md)：训练 Page Offset 不变量、VA/PA 位交接、PIPT/VIPT/VIVT、TLB miss / translation fault / Cache miss 分流、命中组合、fault retry 与跨层 event count；局部机制仍回 CO-06/07。
+- [存储系统真题训练总索引](../../90_做题规则/存储系统真题训练总索引.md)：查看 2009—2026 真题证据与六类题型的 Owner 路由。
 
 ## 阅读
 

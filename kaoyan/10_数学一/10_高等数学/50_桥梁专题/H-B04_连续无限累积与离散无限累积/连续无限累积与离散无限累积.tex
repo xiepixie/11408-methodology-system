@@ -1,6 +1,9 @@
 \documentclass[UTF8,a4paper,10pt]{ctexart}
 \usepackage{ipara-handbook}
-\usepackage{booktabs,tabularx}
+\usepackage{booktabs,tabularx,tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\colorlet{themebg}{white}\colorlet{themefg}{black}\colorlet{themegray}{gray!70}
+\colorlet{themecurve}{blue!70!black}\colorlet{themealert}{red!70!black}\colorlet{themeamber}{orange!80!black}
 \begin{document}
 \section*{H-B04\quad 连续无限累积与离散无限累积}
 \textbf{边界：}本桥翻译共同的“有限截断到无限对象”构造，不把积分判别法和级数判别法混成一套公式。
@@ -36,6 +39,10 @@ a_n\to0,
 \]
 所以积分可收敛，但 $f(n)=1$ 对所有 $n$ 成立，故 $f(x)$ 不趋于 $0$。
 
+\begin{center}
+\input{assets/src/spike_antibridge_body.tikz}
+\end{center}
+
 \begin{tcolorbox}[title=核心 Anti-Bridge]
 \[
 \boxed{\sum a_n\text{ 收敛}\Rightarrow a_n\to0,
@@ -58,6 +65,11 @@ a_n\to0,
 \le
 \int_N^{\infty}f(x)\,dx.
 \]
+
+\begin{center}
+\input{assets/src/integral_test_rectangles_body.tikz}
+\end{center}
+
 这条 Bridge 的本质是“单调性让离散采样矩形稳定地包住连续面积”。条件缺一时，不能只因 $f(n)$ 与 $f(x)$ 长得相同就宣告同敛散；应回到各自 Topic 的比较或 Cauchy 判别。
 
 \subsection*{3.\ 绝对与条件}

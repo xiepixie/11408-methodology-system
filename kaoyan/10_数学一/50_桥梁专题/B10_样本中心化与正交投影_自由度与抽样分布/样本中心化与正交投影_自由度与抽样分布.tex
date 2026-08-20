@@ -21,13 +21,22 @@
 \]
 以及样本向量在这两个正交子空间中的分解如何翻译成“均值信息 + 残差信息”。
 
-\section{样本均值其实是沿 $\mathbf1$ 方向的投影坐标}
-令
+\section{先固定样本对象：均值、残差与样本方差}
+令样本向量
 \[
 X=(X_1,\dots,X_n)^T,
 \qquad
-\mathbf1=(1,\dots,1)^T.
+\mathbf1=(1,\dots,1)^T,
 \]
+并定义
+\[
+\bar X:=\frac1n\sum_{i=1}^nX_i,
+\qquad
+S^2:=\frac1{n-1}\sum_{i=1}^n(X_i-\bar X)^2.
+\]
+前半册的投影恒等式纯属线性代数，对 $X_i$ 的分布没有要求；只有在后面讨论“无偏”“独立”“$\chi^2$ 与 $t$”时，才逐步加入独立同分布、有限方差或正态性等概率条件。这样可以避免把几何恒等式与概率定理混成同一个前提包。
+
+\section{样本均值与均值方向的投影是什么关系}
 投影到 $\operatorname{span}\{\mathbf1\}$ 的矩阵为
 \[
 P=\frac{\mathbf1\mathbf1^T}{\mathbf1^T\mathbf1}
@@ -39,7 +48,15 @@ PX
 =\frac1n\mathbf1\mathbf1^TX
 =\bar X\mathbf1.
 \]
-所以样本均值不是突然出现的统计公式；它就是样本向量在“所有坐标共同移动”的均值方向上的投影系数。
+所以 $\bar X\mathbf1$ 是样本向量在“所有坐标共同移动”方向上的投影向量。若改用单位向量
+\[
+e_1:=\frac1{\sqrt n}\mathbf1,
+\]
+则真正的规范正交坐标为
+\[
+e_1^TX=\sqrt n\,\bar X.
+\]
+因此必须区分：$\bar X$ 是样本平均值，$\sqrt n\,\bar X$ 是单位均值方向上的坐标，$\bar X\mathbf1$ 才是投影向量。三者相关，但不是同一个对象。
 
 \section{中心化 = 删除均值方向}
 定义残差投影矩阵
@@ -50,6 +67,10 @@ R:=I-P.
 \[
 RX=X-\bar X\mathbf1
 =(X_1-\bar X,\dots,X_n-\bar X)^T.
+\]
+先定义均值方向的正交补
+\[
+\mathbf1^\perp:=\{r\in\mathbb R^n:\mathbf1^Tr=0\}.
 \]
 由于
 \[
@@ -87,14 +108,30 @@ RX=X-\bar X\mathbf1
 \boxed{\text{中心化投影删掉了一个均值方向，残差只剩 }n-1\text{ 个正交方向。}}
 \]
 
-这也解释为什么样本方差写成
+按上面的定义，样本方差写成
 \[
 S^2=\frac{1}{n-1}\lVert RX\rVert^2.
 \]
-分母 $n-1$ 与残差空间维数严格对应。
+几何上，分母 $n-1$ 与残差空间维数对应；概率上，若 $X_1,\dots,X_n$ 独立同分布且方差为 $\sigma^2<\infty$，还进一步有
+\[
+E\lVert RX\rVert^2=(n-1)\sigma^2,
+\qquad
+E[S^2]=\sigma^2.
+\]
+这条期望关系也能由 B09 的协方差矩阵接口一行生成。令 $Y:=X-\mu\mathbf1$，则 $\operatorname{Cov}(Y)=\sigma^2I$，而 $RY=RX$。记 $\operatorname{tr}(A)$ 为矩阵对角元之和，则
+\[
+\begin{aligned}
+E\lVert RX\rVert^2
+&=E(Y^TRY)\\
+&=\operatorname{tr}\!\left(R\,E[YY^T]\right)\\
+&=\sigma^2\operatorname{tr}(R)\\
+&=(n-1)\sigma^2,
+\end{aligned}
+\]
+因为正交投影 $R$ 的特征值只有 $0$ 与 $1$，且 $\operatorname{rank}(R)=\operatorname{tr}(R)=n-1$。所以“维数 $n-1$”解释自由度来源，而“除以 $n-1$ 得到无偏估计”还需要随机样本模型，不能只靠几何一句话包办。
 
 \section{正态样本为什么把几何分解升级成概率独立}
-设
+设样本相互独立且同分布，本册缩写为 i.i.d.，并且
 \[
 X_i\overset{\mathrm{i.i.d.}}\sim N(\mu,\sigma^2).
 \]
@@ -136,6 +173,12 @@ e_2^TZ,\dots,e_n^TZ
 这里必须强调：一般随机向量的几何正交\textbf{不推出}概率独立；正态结构是关键加强条件。
 
 \section{卡方自由度为什么就是残差空间维数}
+先固定分布定义：若 $Z_1,\dots,Z_\nu$ 相互独立且都服从 $N(0,1)$，则
+\[
+U:=\sum_{j=1}^{\nu}Z_j^2
+\]
+称为服从自由度 $\nu$ 的卡方分布，记作 $U\sim\chi^2(\nu)$。
+
 在上面的规范正交坐标中，残差向量对应 $n-1$ 个独立标准正态坐标：
 \[
 Z_2,\dots,Z_n\overset{\mathrm{i.i.d.}}\sim N(0,1).
@@ -154,7 +197,7 @@ Z_2,\dots,Z_n\overset{\mathrm{i.i.d.}}\sim N(0,1).
 }
 \]
 
-因此“自由度 $n-1$”在三个地方是同一个对象：
+因此在这个正态样本模型里，“自由度 $n-1$”在三个层面严格对齐：
 \begin{itemize}
 \item 残差子空间的维数；
 \item 投影矩阵 $R$ 的秩/迹；
@@ -162,6 +205,12 @@ Z_2,\dots,Z_n\overset{\mathrm{i.i.d.}}\sim N(0,1).
 \end{itemize}
 
 \section{$t$ 分布为什么自然从两块正交信息拼出来}
+先固定定义：若 $Z\sim N(0,1)$、$U\sim\chi^2(\nu)$ 且二者概率独立，则
+\[
+T:=\frac{Z}{\sqrt{U/\nu}}
+\]
+服从自由度 $\nu$ 的 $t$ 分布。
+
 正态样本下
 \[
 \frac{\sqrt n(\bar X-\mu)}{\sigma}\sim N(0,1),
@@ -202,6 +251,78 @@ X-\mu\mathbf1
 \]
 
 这条经典统计平方和分解，本质上就是 B00 的正交投影分解在样本空间中的实例。
+
+\section{母例一：三个观测怎样把“中心化”画成一个二维残差平面}
+先不谈概率，只看一次已经观察到的数据
+\[
+x=(1,2,6)^T.
+\]
+样本均值为
+\[
+\bar x=3,
+\]
+所以均值投影与残差分别是
+\[
+Px=(3,3,3)^T,
+\qquad
+Rx=(-2,-1,3)^T.
+\]
+检查
+\[
+\mathbf1^TRx=-2-1+3=0,
+\]
+说明残差确实落在 $\mathbf1^\perp$ 中。虽然残差写了三个坐标，但第三个已经被前两个通过“总和为零”决定，所以真正只剩二维自由度。
+
+残差平方和为
+\[
+\lVert Rx\rVert^2=4+1+9=14,
+\]
+因此按本册样本方差定义
+\[
+s^2=\frac{14}{3-1}=7.
+\]
+再用单位均值方向 $e_1=\mathbf1/\sqrt3$，其投影坐标为
+\[
+e_1^Tx=3\sqrt3,
+\]
+再次提醒：$3$ 是样本均值，$3\sqrt3$ 才是单位方向坐标，而 $(3,3,3)^T$ 是投影向量。
+
+\section{母例二：$n=2$ 时一眼看见“正交 $\to$ 独立 $\to\chi^2$”}
+设
+\[
+X_1,X_2\overset{\mathrm{i.i.d.}}\sim N(\mu,\sigma^2).
+\]
+对标准化样本做正交坐标变换：
+\[
+Z_+=\frac{X_1+X_2-2\mu}{\sigma\sqrt2}
+=\frac{\sqrt2(\bar X-\mu)}{\sigma},
+\]
+\[
+Z_- =\frac{X_1-X_2}{\sigma\sqrt2}.
+\]
+这两个方向分别是 $\mathbf1$ 方向和其正交补方向。因为原标准化样本是二维联合标准正态，而变换矩阵正交，所以
+\[
+Z_+,Z_-\overset{\mathrm{i.i.d.}}\sim N(0,1).
+\]
+特别地，它们概率独立。
+
+另一方面，$n=2$ 时
+\[
+\sum_{i=1}^2(X_i-\bar X)^2
+=\frac{(X_1-X_2)^2}{2},
+\]
+故
+\[
+\frac{S^2}{\sigma^2}
+=Z_-^2
+\sim\chi^2(1).
+\]
+而 $\bar X$ 只由 $Z_+$ 决定，$S^2$ 只由 $Z_-^2$ 决定，因此
+\[
+\bar X\perp\!\!\!\perp S^2.
+\]
+
+这个 $n=2$ 母例把抽象结论压到最小维数：一个均值方向 + 一个残差方向。自由度 $1$、卡方平方项个数 $1$、均值与残差独立三件事完全重合。
 
 \section{B10 串起哪些章节}
 \begin{tabular}{p{0.23\linewidth}p{0.30\linewidth}p{0.39\linewidth}}

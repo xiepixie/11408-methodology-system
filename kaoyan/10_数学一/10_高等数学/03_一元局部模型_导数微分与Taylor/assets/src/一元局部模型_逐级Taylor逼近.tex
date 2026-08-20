@@ -1,0 +1,83 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+\begin{axis}[
+    width=13.5cm,
+    height=8.2cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-2.2, xmax=2.2,
+    ymin=-0.5, ymax=4.2,
+    xtick={-2,-1,0,1,2},
+    ytick={1,2,3,4},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={一元局部模型母图：基点 $x=0$ 处的逐级 Taylor 多项式逼近与余项收敛},
+]
+
+% 1. 原真实函数 f(x) = e^x
+\addplot[themecurve, line width=2.4pt, domain=-2.1:1.4, samples=120] {exp(x)};
+\node[text=themecurve, font=\small\bfseries, fill=themebg, inner sep=1pt, anchor=west] at (axis cs:1.42,3.9) {$y=e^x$};
+
+% 2. 零阶模型 T0(x) = 1
+\addplot[themegray, dashed, line width=1.2pt, domain=-2.0:2.0] {1};
+\node[text=themegray, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:-1.2,1.05) {$T_0(x)=1$};
+
+% 3. 一阶模型 T1(x) = 1 + x
+\addplot[themeamber, line width=1.6pt, domain=-1.5:2.0] {1 + x};
+\node[text=themeamber, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north west] at (axis cs:1.8,2.7) {$T_1(x)=1+x$ (切线)};
+
+% 4. 二阶模型 T2(x) = 1 + x + x^2/2
+\addplot[themealert, dashdotted, line width=1.6pt, domain=-2.0:1.6, samples=100] {1 + x + 0.5*x^2};
+\node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:1.4,3.1) {$T_2(x)=1+x+\frac{x^2}{2}$ (密切抛物线)};
+
+% 5. 三阶模型 T3(x) = 1 + x + x^2/2 + x^3/6
+\addplot[themefg!90, densely dashed, line width=1.4pt, domain=-2.1:1.5, samples=100] {1 + x + 0.5*x^2 + (1/6)*x^3};
+\node[text=themefg!90, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north west] at (axis cs:-1.6,0.35) {$T_3(x)=1+x+\frac{x^2}{2}+\frac{x^3}{6}$};
+
+\begin{pgfonlayer}{foreground}
+    % 基点 (0,1)
+    \addplot[only marks, mark=*, mark size=3pt, fill=themecurve, draw=themefg] coordinates {(0,1)};
+    \node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:-0.08,1.15) {基点 $(0,1)$};
+
+    % 局部模型升级标注
+    \node[text=themefg, font=\scriptsize, fill=themebg, inner sep=1.2pt, anchor=north west] at (axis cs:-2.1,3.8) {
+        \begin{tabular}{l}
+        \textbf{局部误差阶逐级递减}：\\
+        $f(x) - T_0(x) = O(x)$\\
+        $f(x) - T_1(x) = o(x) = O(x^2)$\\
+        $f(x) - T_2(x) = o(x^2) = O(x^3)$\\
+        $f(x) - T_3(x) = o(x^3) = O(x^4)$
+        \end{tabular}
+    };
+\end{pgfonlayer}
+
+\end{axis}
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

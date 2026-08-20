@@ -32,10 +32,11 @@ Agent 不应为了显得全面而通读整个仓库。上下文加载分为 **Bo
 
 - 稳定资产写入、导入、状态/拓扑变化：`collaboration_workflow.md`；
 - Handbook/Rules 新建或重构：`handbook_contract.md`；
-- Topic / Bridge / Integration 同目录训练 Markdown 的新建、拆分、局部规则与配图：`topic_practice_writing_spec.md`；
+- Topic / Bridge / Integration 同目录训练 Markdown 的新建、拆分、局部规则、图意图与图形生命周期：`topic_practice_writing_spec.md`；
+- 跨学科图示语义、视觉解释契约、学术术语规范与语义验收：`diagram_design_spec.md`；
 - 大规模 Handbook 正文打磨：`handbook_writing_spec.md`；
 - LaTeX Family/Profile/依赖/Semantic API：`../../infra/latex/README.md`（全局 Owner；本仓库路由见 `latex_design_system.md`）；
-- LaTeX 字体/表格/图示/版心：`latex_layout_spec.md`；
+- LaTeX 字体/表格/TikZ工程/PGF Layer/版心/主题/高分辨率视觉自检与 SVG 渲染：`latex_layout_spec.md`；
 - Owner、重复定义和依赖：`ownership_matrix.md`；
 - 错题、规则晋升、周复盘：`evidence_promotion.md`；
 - 真题/PDF/扫描试卷转译为可编辑 Obsidian Source：先读 `exam_source_agent_prompt.md`，再读 `exam_source_conversion_spec.md` 与对应 Exam Profile；408、数学一共用这一套场景路由；
@@ -73,7 +74,7 @@ Boot Core 已经包含 `CURRENT.md`。如果本任务需要判断全局成熟度
 4. 用户提供的题目、原始过程和答案；
 5. 只有需要跨训练专题控制时，再补充 Subject Rules / Inbox / Source。
 
-训练 Markdown 可以同时拥有母题、变式、局部技巧与局部规则。新建或重构时必须遵守 [`topic_practice_writing_spec.md`](topic_practice_writing_spec.md) 的最小头部、局部规则三元组与图形 Source/Derived 约束。正文阶段遇到必要视觉解释时，先用规范 `待补图` / `候选配图` 记录图意图，不创建不存在的图片链接；专题语义稳定后再集中补图，必要图在父专题进入 `已采用` 前清零。不能为了方便继续把这些内容复制回 Subject Rules；Subject Rules 主要提供跨专题规则与导航。
+训练 Markdown 可以同时拥有母题、变式、局部技巧与局部规则。新建或重构时必须遵守 [`topic_practice_writing_spec.md`](topic_practice_writing_spec.md) 的最小头部、局部规则三元组与图形 Source/Derived 约束。正文阶段遇到必要视觉解释时，先在未来真实插入位置用规范 `待补图` / `候选配图` 记录图意图，不创建不存在的图片链接；专题语义稳定后再集中补图。真正进入画图阶段时，**必须重新读取目标文档的完整相关小节与对应 Canonical 机制，先确定“放在什么之后、什么之前”，再写清前文已知、后文用途、图中必须出现与不得出现的内容**；随后才按 [`diagram_design_spec.md`](diagram_design_spec.md) 建立视觉解释与语义编码，并按 [`latex_layout_spec.md`](latex_layout_spec.md) 结合当前版心和项目样式偏好落地 TikZ/SVG。必要图在父专题进入 `已采用` 前清零。不能为了方便继续把这些内容复制回 Subject Rules；Subject Rules 主要提供跨专题规则与导航。
 
 Topic / Bridge / Integration 如果没有 Canonical `.tex`，或者状态明确为“README 旧工作稿待迁移 / 正文未建”，Agent 必须说明当前没有成熟深度 Handbook。旧长 README 只能当 Source 使用，不能假装在调用仓库现有模型。
 

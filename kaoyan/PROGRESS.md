@@ -82,11 +82,11 @@
 |---|---:|
 | Candidate | 3 |
 | Handbook Source 待迁移 | 8 |
-| 其他 | 20 |
+| 其他 | 23 |
 | 工作稿 | 6 |
-| 已发布 | 31 |
-| 已采用 | 55 |
-| 待人工确认 | 56 |
+| 已发布 | 35 |
+| 已采用 | 54 |
+| 待人工确认 | 52 |
 | 待验证 | 2 |
 | 旧发布物待纳管 | 1 |
 | 框架/目录已建立 | 12 |
@@ -202,23 +202,24 @@
 | 408 / 计组 | [ISA 与机器级程序：软件意图怎样成为可执行契约](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/20_ISA%E4%B8%8E%E6%9C%BA%E5%99%A8%E7%BA%A7%E7%A8%8B%E5%BA%8F/README.md) | LaTeX 工作稿待人工确认；Canonical 深度正文已建立并发布 |
 | 408 / 计组 | [CPU 数据通路与控制：把指令契约落实为状态转移](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/30_CPU%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF%E4%B8%8E%E6%8E%A7%E5%88%B6/README.md) | 待人工确认；Canonical LaTeX 候选正文已建立并发布 |
 | 408 / 计组 | [流水线与指令级并行：重叠执行怎样保持顺序语义](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/40_%E6%B5%81%E6%B0%B4%E7%BA%BF%E4%B8%8E%E6%8C%87%E4%BB%A4%E7%BA%A7%E5%B9%B6%E8%A1%8C/README.md) | LaTeX 工作稿待人工确认；Canonical 深度正文已建立并发布 |
-| 408 / 计组 | [主存与存储硬件：地址怎样落到物理介质](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/50_%E4%B8%BB%E5%AD%98%E4%B8%8E%E5%AD%98%E5%82%A8%E7%A1%AC%E4%BB%B6/README.md) | LaTeX 工作稿待人工确认；Canonical 深度正文已建立并发布 |
-| 408 / 计组 | [Cache 与存储层次：怎样维护一个正确的高速副本](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/60_Cache%E4%B8%8E%E5%AD%98%E5%82%A8%E5%B1%82%E6%AC%A1/README.md) | LaTeX 工作稿待人工确认；Canonical 深度正文已建立并发布 |
-| 408 / 计组 | [地址翻译与虚拟存储硬件：VA 怎样成为可访问的 PA](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/70_%E5%9C%B0%E5%9D%80%E7%BF%BB%E8%AF%91%E4%B8%8E%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E7%A1%AC%E4%BB%B6/README.md) | LaTeX 工作稿待人工确认；Canonical 深度正文已建立并发布 |
+| 408 / 计组 | [主存与存储硬件：地址怎样落到物理介质](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/50_%E4%B8%BB%E5%AD%98%E4%B8%8E%E5%AD%98%E5%82%A8%E7%A1%AC%E4%BB%B6/README.md) | Canonical LaTeX 已完成本轮结构、术语与图示重审；现有 Published PDF 仍是上一版派生稿，待发布流程同步 |
+| 408 / 计组 | [Cache 与存储层次：怎样维护一个正确的高速副本](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/60_Cache%E4%B8%8E%E5%AD%98%E5%82%A8%E5%B1%82%E6%AC%A1/README.md) | Canonical LaTeX 已完成本轮结构、术语与图示重审；现有 Published PDF 仍是上一版派生稿，待发布流程同步 |
+| 408 / 计组 | [地址翻译与虚拟存储硬件：VA 怎样成为可访问的 PA](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/70_%E5%9C%B0%E5%9D%80%E7%BF%BB%E8%AF%91%E4%B8%8E%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E7%A1%AC%E4%BB%B6/README.md) | Canonical LaTeX 已完成本轮结构、术语与图示重审；现有 Published PDF 仍是上一版派生稿，待发布流程同步 |
 | 408 / 计组 | [总线与 I/O 硬件](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/80_%E6%80%BB%E7%BA%BF%E4%B8%8EIO%E7%A1%AC%E4%BB%B6/README.md) | LaTeX 工作稿待人工确认；Canonical 深度正文已建立并发布 |
 | 408 / 计组 | [CO-B01｜ISA Semantic × Datapath](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/85_%E7%A7%91%E5%86%85%E6%A1%A5%E6%A2%81/CO-B01_ISA%E8%AF%AD%E4%B9%89%E4%B8%8E%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF/README.md) | LaTeX 工作稿待人工确认；Canonical Bridge 正文已建立并发布 |
-| 408 / 计组 | [CO-B02｜Address Translation × Cache Access](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/85_%E7%A7%91%E5%86%85%E6%A1%A5%E6%A2%81/CO-B02_%E5%9C%B0%E5%9D%80%E7%BF%BB%E8%AF%91%E4%B8%8ECache%E8%AE%BF%E9%97%AE/README.md) | LaTeX 工作稿待人工确认；Canonical Bridge 正文已建立并发布 |
+| 408 / 计组 | [CO-B02｜Address Translation × Cache Access](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/85_%E7%A7%91%E5%86%85%E6%A1%A5%E6%A2%81/CO-B02_%E5%9C%B0%E5%9D%80%E7%BF%BB%E8%AF%91%E4%B8%8ECache%E8%AE%BF%E9%97%AE/README.md) | Canonical Bridge LaTeX 已完成本轮术语与接口重审；现有发布 PDF 仍是上一版派生稿，待发布流程同步 |
 | 408 / 计组 | [计算机组成原理 Internal Bridge Atlas](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/85_%E7%A7%91%E5%86%85%E6%A1%A5%E6%A2%81/README.md) | 已采用；README 是 Canonical Internal Bridge Atlas。CO-B01 与 CO-B02 的 Canonical 候选正文均已建立并发布，待真题攻击与人工确认 |
 | 408 / 计组 | [计组科内桥梁与综合：从 C 语句到一次精确提交](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/85_%E7%A7%91%E5%86%85%E6%A1%A5%E6%A2%81%E4%B8%8E%E7%BB%BC%E5%90%88/%E8%AE%A1%E7%BB%84%E7%A7%91%E5%86%85%E6%A1%A5%E6%A2%81%E4%B8%8E%E7%BB%BC%E5%90%88%EF%BC%9A%E4%BB%8E%20C%20%E8%AF%AD%E5%8F%A5%E5%88%B0%E4%B8%80%E6%AC%A1%E7%B2%BE%E7%A1%AE%E6%8F%90%E4%BA%A4.md) | legacy-unregistered Source；不再作为 Canonical Bridge / Integration Owner |
 | 408 / 计组 | [CO-I01｜一条指令的一生](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/86_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/CO-I01_%E4%B8%80%E6%9D%A1%E6%8C%87%E4%BB%A4%E7%9A%84%E4%B8%80%E7%94%9F/README.md) | LaTeX 工作稿待人工确认；Canonical Integration 正文已建立并发布 |
 | 408 / 计组 | [计算机组成原理 Integration Layer](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/86_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/README.md) | 框架已采用；CO-I01 Canonical Integration 候选正文已建立并发布，待真题攻击与人工确认 |
-| 408 / 计组 | [计组做题规则与性能工具箱](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/90_%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/README.md) | 工作稿，待验证规则已建立，尚无已采用规则 |
+| 408 / 计组 | [计组做题规则与性能工具箱](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/90_%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/README.md) | 工作稿。全科规则仍未整体晋升为“已采用”；其中存储系统 Practice Adapter 已完成 2009—2026 真题第一轮校准，并建立独立训练总索引 |
+| 408 / 计组 | [存储系统真题训练总索引](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/90_%E5%81%9A%E9%A2%98%E8%A7%84%E5%88%99/%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F%E7%9C%9F%E9%A2%98%E8%AE%AD%E7%BB%83%E6%80%BB%E7%B4%A2%E5%BC%95.md) | 基于现有 CO-05 / CO-06 / CO-07 / CO-B02 / X-B02 / OS-04 Canonical Owner，以及 2009—2026 真题归档和本轮上传强化课材料完成第一轮结构化攻击。本文件**不拥有新的存储理论**；它只回答：一道真题怎样识别对象、调用哪个 Owner、按什么顺序推进状态、统计哪些事件、怎样验证 |
 | 408 / 计组 | [计算机组成原理 Subject Atlas](30_408/20_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/README.md) | 已采用；README 是 Canonical Subject Atlas。52 份个人旧笔记已完成全科 Source Routing；CO-01 至 CO-08 均已建立并发布 Canonical LaTeX 候选正文，待统一真题攻击与人工确认 |
 | 408 / OS | [操作系统学科总图](30_408/30_%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/00_%E5%AD%A6%E7%A7%91%E6%80%BB%E5%9B%BE/README.md) | Derived Deep Map Supplement；不是第二个 Canonical Atlas Owner。当前地图已与 `../README.md` 的 Subject Atlas 拓扑同步 |
 | 408 / OS | [OS-00 操作系统基础与程序运行环境](30_408/30_%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/05_%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80%E4%B8%8E%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83/README.md) | Canonical LaTeX 已建立并有 Published PDF；外部操作系统概述笔记 9 篇已完成语义核销，其中 8 篇增量写入本册，interrupt/exception 由 OS-01/02 机制正文与 X-B01 接口覆盖 |
 | 408 / OS | [进程、线程、调度与控制权](30_408/30_%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/10_%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6%E4%B8%8E%E6%8E%A7%E5%88%B6%E6%9D%83/README.md) | 待人工确认；已发布。历史长笔记与主题卡的 Source Diff 已完成；2026-08-15 外部笔记全量审计中的进程/线程/调度/IPC 18 篇也已逐篇核销，Canonical LaTeX 已增量发布为 50 页 |
 | 408 / OS | [并发、同步与死锁](30_408/30_%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/20_%E5%B9%B6%E5%8F%91%E5%90%8C%E6%AD%A5%E4%B8%8E%E6%AD%BB%E9%94%81/README.md) | 待人工确认；已发布。历史 PV/死锁笔记与主题卡 Source Diff 已完成；2026-08-15 补充笔记中的同步/锁/PV/管程/死锁 11 篇已逐篇核销，Canonical LaTeX 已增量发布为 36 页；2026-08-18 旧 408 汇总笔记复审后新增 PV 同步题训练入口，理论正文无需重复扩写 |
-| 408 / OS | [虚拟内存与页生命周期](30_408/30_%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/30_%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E4%B8%8E%E9%A1%B5%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/README.md) | 已发布；15 份 外部内存管理笔记已完成语义核销，Canonical LaTeX 已按地址翻译、页生命周期、置换与性能链条增量扩充 |
+| 408 / OS | [虚拟内存与页生命周期](30_408/30_%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/30_%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E4%B8%8E%E9%A1%B5%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/README.md) | Canonical LaTeX 已完成本轮术语与版面重审；15 份外部内存管理笔记已完成语义核销。现有 Published PDF 仍是上一版派生稿，待发布流程同步 |
 | 408 / OS | [I/O 请求、等待与完成](30_408/30_%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/40_IO%E8%AF%B7%E6%B1%82%E7%AD%89%E5%BE%85%E4%B8%8E%E5%AE%8C%E6%88%90/README.md) | 已发布；11 份 外部 I/O 笔记已完成语义核销，Canonical LaTeX 已按请求、等待、搬运、完成与设备成本链条增量扩充 |
 | 408 / OS | [文件系统](30_408/30_%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/50_%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/README.md) | 待人工确认；已发布。历史文件系统笔记与主题卡 Source Diff 已完成，Canonical LaTeX 候选正文已纳管 |
 | 408 / OS | [OS-B01｜Wait / Block / Wakeup](30_408/30_%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/60_%E7%A7%91%E5%86%85%E6%A1%A5%E6%A2%81/OS-B01_WaitBlockWakeup/README.md) | 已采用；Canonical Bridge 正文已建立并发布 |
@@ -254,7 +255,7 @@
 | 408 / 网络 | [计算机网络 Subject Atlas](30_408/40_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/README.md) | 已采用；README 是 Canonical Subject Atlas。31 份个人旧笔记已完成全科 Source Routing；NET01--NET08 八个 Topic 均已建立并发布 Canonical LaTeX 候选正文，NET-I01 已建立并发布 Integration |
 | 408 / 跨科 Bridge | [408 Cross-Subject Bridge Atlas](30_408/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/README.md) | 已采用；README 是 Canonical Cross-Subject Bridge Atlas，3 个 Core Bridge 与 1 个 Candidate Core 按当前边界逐册建设 |
 | 408 / 跨科 Bridge | [X-B01｜Privilege / Exception / System Call × OS Control](30_408/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/X-B01_PrivilegeExceptionSystemCall%E4%B8%8EOSControl/README.md) | 已采用；Canonical Bridge 正文已建立并发布 |
-| 408 / 跨科 Bridge | [X-B02｜Hardware Address Translation × OS Virtual Memory](30_408/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/X-B02_HardwareAddressTranslation%E4%B8%8EOSVirtualMemory/README.md) | 已采用；Canonical Bridge 正文已建立并发布 |
+| 408 / 跨科 Bridge | [X-B02｜Hardware Address Translation × OS Virtual Memory](30_408/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/X-B02_HardwareAddressTranslation%E4%B8%8EOSVirtualMemory/README.md) | 已采用；Canonical Bridge LaTeX 已完成本轮术语重审。现有 Published PDF 仍是上一版派生稿，待发布流程同步 |
 | 408 / 跨科 Bridge | [X-B03｜中断、DMA 与操作系统 I/O](30_408/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/X-B03_InterruptDMA%E4%B8%8EOSIO/README.md) | 已采用；规范桥梁正文已建立并发布 |
 | 408 / 跨科 Bridge | [X-B04｜Process / Socket × Transport Endpoint](30_408/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/X-B04_ProcessSocket%E4%B8%8ETransportEndpoint/README.md) | Candidate Core；接口结构已确认，是否升级为 Core 待 408 考纲/真题覆盖证据与重复调用证据 |
 | 408 / 跨科 Integration | [408 Cross-Subject Integration Layer](30_408/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/README.md) | 框架已采用；2 个核心 Integration 已建立骨架，综合发布物待按新 Ownership 纳管 |
@@ -289,6 +290,7 @@
 | 系统 | [高数基础生成层完整性复审](80_evidence/review_log/2026-08-18_%E9%AB%98%E6%95%B0_%E5%9F%BA%E7%A1%80%E7%94%9F%E6%88%90%E5%B1%82%E5%AE%8C%E6%95%B4%E6%80%A7%E5%A4%8D%E5%AE%A1.md) | **全 Topic 重新进入“基础生成层 + Reference + Counterexample”复审；Topic01/03/05/10 已完成当前轮定向补强** |
 | 系统 | [《高数上册进阶》Source Diff / Owner Diff](80_evidence/review_log/2026-08-18_%E9%AB%98%E6%95%B0%E4%B8%8A%E5%86%8C%E8%BF%9B%E9%98%B6_Source_Diff.md) | **13 个专题的训练原子已逐项路由；缺失 Practice 已补齐，Source 中过强经验已条件化；待人工审阅与陌生题验证** |
 | 系统 | [《高数下册进阶》Source Diff / Owner Diff](80_evidence/review_log/2026-08-18_%E9%AB%98%E6%95%B0%E4%B8%8B%E5%86%8C%E8%BF%9B%E9%98%B6_Source_Diff.md) | **Source 原子已逐项路由；Canonical / Practice 已修正，待人工审阅与陌生题验证** |
+| 系统 | [CO-01 / CO-02 训练闭环与真题母例分层审阅](80_evidence/review_log/2026-08-20_CO01_CO02_%E8%AE%AD%E7%BB%83%E9%97%AD%E7%8E%AF%E4%B8%8E%E7%9C%9F%E9%A2%98%E6%AF%8D%E4%BE%8B%E5%88%86%E5%B1%82%E5%AE%A1%E9%98%85.md) | Canonical 补丁已编译发布，5 份训练文档与 README 导航已建立并闭环，真题与讲义母例完成分层 |
 
 ## 怎样更新
 

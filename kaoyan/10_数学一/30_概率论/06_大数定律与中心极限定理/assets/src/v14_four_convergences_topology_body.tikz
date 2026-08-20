@@ -1,0 +1,144 @@
+% ── V14 四大随机收敛拓扑结构（大空间呼吸感 2 行布局） ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 上半部第 1 行：左（拓扑结构主干） + 右（三大反例机制） ──
+% ══════════════════════════════════════════════════════════════
+
+% ── 1. 左卡片：四大收敛蕴含拓扑主干 ──
+\begin{scope}[xshift=0cm, yshift=5.0cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themecurve}1. 四大收敛蕴含拓扑主干}
+    };
+  \end{pgfonlayer}
+
+  % 拓扑有向图
+  \begin{pgfonlayer}{background}
+    % 连线箭头
+    \draw[color=themecurve, line width=1.1pt, ->] (0.7, 3.4) -- (1.2, 2.6);
+    \draw[color=themeamber, line width=1.1pt, ->] (2.1, 3.4) -- (1.6, 2.6);
+    \draw[color=themealert, line width=1.1pt, ->] (1.4, 2.0) -- (1.4, 1.2);
+
+    % 常数等价反向虚线
+    \draw[color=themeamber, line width=0.9pt, dashed, ->] (1.9, 0.9) to[bend right=45] (1.9, 2.3);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 四大节点
+    \node[color=themecurve, align=center] at (0.7, 3.7) {\textbf{几乎处处}\\[0.1em]\scriptsize a.s.};
+    \node[color=themeamber, align=center] at (2.1, 3.7) {\textbf{均方收敛}\\[0.1em]\scriptsize $L^2$};
+    \node[color=themeblue, align=center] at (1.4, 2.3) {\textbf{依概率收敛}\\[0.1em]\scriptsize $P$};
+    \node[color=themealert, align=center] at (1.4, 0.9) {\textbf{依分布收敛}\\[0.1em]\scriptsize $d$};
+    \node[color=themeamber] at (2.4, 1.6) {\tiny 常数 $c$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=4.0cm] at (2.9, 4.3) {
+      \small \textbf{单向强弱层级：}\\[0.25em]
+      \scriptsize $\bullet$ a.s. 强收敛与 $L^2$ 均方互不推出；\\[0.15em]
+      \scriptsize $\bullet$ 二者均可单向推出依概率收敛；\\[0.15em]
+      \scriptsize $\bullet$ 依概率收敛单向推出依分布收敛。\\[0.7em]
+      \small \textbf{常数等价特权：}\\[0.25em]
+      \scriptsize 若极限为确定常数 $c$，则\\[0.15em]
+      \color{themecurve}$X_n \xrightarrow{d} c \iff X_n \xrightarrow{P} c$。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 2. 右卡片：三大经典反例机制 ──
+\begin{scope}[xshift=7.7cm, yshift=5.0cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themeamber}2. 逆命题不成立：三大经典反例}
+    };
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 三大反例排印
+    \node[anchor=north west, text width=6.7cm] at (0.1, 4.3) {
+      \small $\bullet$ \textbf{\color{themecurve}$P \nRightarrow \text{a.s.}$ 滑动阶梯区间}：\\[0.15em]
+      \scriptsize 移动区间指示函数 $I_{A_n}$，区间宽度 $\to 0$ 使测度趋零，但点态无限振荡无法收敛；\\[0.45em]
+      \small $\bullet$ \textbf{\color{themeamber}$\text{a.s.} \nRightarrow L^2$ 极端逃逸尖峰}：\\[0.15em]
+      \scriptsize $P(X_n = n^2) = \frac{1}{n^2}$，以概率 1 收敛到 0，但二阶矩 $E[X_n^2]=n^2 \to \infty$ 发散；\\[0.45em]
+      \small $\bullet$ \textbf{\color{themealert}$d \nRightarrow P$ 对称相反同分布}：\\[0.15em]
+      \scriptsize $X \sim N(0,1)$，令 $X_n = -X$；边缘恒同分布，但差值 $|X_n - X| = 2|X| \ne 0$。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 下半部第 2 行：全宽卡片（连续映射 CMT 与 Slutsky 运算代数） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0.3cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (14.8, 4.3);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.05) {
+      \large \textbf{\color{themealert}3. 极限代数工具：连续映射（CMT）与~Slutsky~定理}
+    };
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 左栏：CMT 与 Slutsky 核心公式
+    \node[anchor=north west, text width=7.2cm] at (0.1, 3.55) {
+      \small $\bullet$ \textbf{\color{themecurve}连续映射定理 (CMT)}：\\[0.15em]
+      \quad 若 $g$ 连续：$X_n \xrightarrow{\ast} X \implies g(X_n) \xrightarrow{\ast} g(X)$ \quad ($\ast \in \{a.s., L^r, P, d\}$)；\\[0.35em]
+      \small $\bullet$ \textbf{\color{themeamber}Slutsky 代数定理（考场大杀器）}：\\[0.15em]
+      \quad 若 $X_n \xrightarrow{d} X$ 且 $Y_n \xrightarrow{P} c$，则：\\[0.2em]
+      \quad \scriptsize $X_n + Y_n \xrightarrow{d} X + c, \quad X_n Y_n \xrightarrow{d} cX, \quad X_n/Y_n \xrightarrow{d} X/c$。
+    };
+
+    % 中间分割线
+    \draw[color=themegray!30, line width=0.6pt] (7.4, 0.3) -- (7.4, 3.5);
+
+    % 右栏：考场判别清单与避坑准则
+    \node[anchor=north west, text width=7.0cm] at (7.7, 3.55) {
+      \small \textbf{考研判别清单与高频避坑：}\\[0.35em]
+      \scriptsize $\bullet$ \textbf{判别依概率收敛}：\\[0.15em]
+      \quad 若 $E[X_n]\to c$ 且 $\operatorname{Var}(X_n)\to 0$，则 $X_n \xrightarrow{P} c$；\\[0.3em]
+      \scriptsize $\bullet$ \textbf{Slutsky 适用边界警示}：\\[0.15em]
+      \quad 若 $Y_n \xrightarrow{d} Y$（非常数），则 $X_n+Y_n \nRightarrow X+Y$！\\[0.3em]
+      \scriptsize $\bullet$ \textbf{Riesz 子列定理}：依概率收敛必存在几乎处处收敛子列。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 底部全图全局总结 (无框轻量排印) ──
+% ══════════════════════════════════════════════════════════════
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.3, -0.2) {
+    \footnotesize \textbf{收敛拓扑真理：} 样本轨道点态约束（a.s.）与均方能量积分（$L^2$）汇流于依概率测度收敛（$P$），最后投影为宏观累积分布（$d$）；Slutsky 运算严格要求次要项依概率收敛到常数。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

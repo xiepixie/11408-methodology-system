@@ -5,17 +5,23 @@
 <style>
   @media print, (prefers-color-scheme: light) {
     [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #fafaf7 !important; }
-    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }
     [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }
-    [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }
     [fill='#9ea897'], [fill='#9EA897'], [fill='#9ea897' i] { fill: #666666 !important; }
-    [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }
     [fill='#7eb6ff'], [fill='#7EB6FF'], [fill='#7eb6ff' i] { fill: #1d63b8 !important; }
-    [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }
     [fill='#ff7b7b'], [fill='#FF7B7B'], [fill='#ff7b7b' i] { fill: #c53030 !important; }
-    [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }
     [fill='#f5b942'], [fill='#F5B942'], [fill='#f5b942' i] { fill: #b86e00 !important; }
+    [fill='#c084fc'], [fill='#C084FC'], [fill='#c084fc' i] { fill: #7c3aed !important; }
+    [fill='#4ade80'], [fill='#4ADE80'], [fill='#4ade80' i] { fill: #15803d !important; }
+    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
+    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }
+    [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }
+    [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }
+    [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }
+    [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }
     [stroke='#f5b942'], [stroke='#F5B942'], [stroke='#f5b942' i] { stroke: #b86e00 !important; }
+    [stroke='#c084fc'], [stroke='#C084FC'], [stroke='#c084fc' i] { stroke: #7c3aed !important; }
+    [stroke='#4ade80'], [stroke='#4ADE80'], [stroke='#4ade80' i] { stroke: #15803d !important; }
+    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
   }
 </style>
 <defs>
@@ -176,7 +182,7 @@
 </g>
 </g>
 <g stroke-dasharray='3.0,3.0' stroke-dashoffset='0.0'>
-<g fill='#9ea897' stroke='#9ea897'>
+<g fill='#a4af9d' stroke='#a4af9d'>
 <g stroke-width='1.1'>
 <path d='M79.24438 7.4353V144.9884' fill='none'/>
 </g>
@@ -188,9 +194,9 @@
 </g>
 <g transform='translate(54.50609,146.7957)'>
 <g stroke='none' transform='scale(-1.00375,1.00375)translate(-68.612713,125.435455)scale(-1,-1)'>
-<g fill='#9ea897'>
+<g fill='#a4af9d'>
 <g stroke='none'>
-<g fill='#9ea897'>
+<g fill='#a4af9d'>
 <use x='-68.612713' y='125.435455' xlink:href='#g28-249'/>
 <use x='-59.646337' y='125.435455' xlink:href='#g27-240'/>
 <use x='-50.679961' y='125.435455' xlink:href='#g26-116'/>
@@ -209,21 +215,21 @@
 </g>
 </g>
 <g stroke-dasharray='0.8,2.0' stroke-dashoffset='0.0'>
-<g fill='#9ea897' stroke='#9ea897'>
+<g fill='#a4af9d' stroke='#a4af9d'>
 <g stroke-width='0.8'>
 <path d='M39.6222 78.95576V18.58826' fill='none'/>
 </g>
 </g>
 </g>
 <g stroke-dasharray='0.8,2.0' stroke-dashoffset='0.0'>
-<g fill='#9ea897' stroke='#9ea897'>
+<g fill='#a4af9d' stroke='#a4af9d'>
 <g stroke-width='0.8'>
 <path d='M118.86658 78.95576V18.58826' fill='none'/>
 </g>
 </g>
 </g>
 <g stroke-dasharray='3.0,3.0' stroke-dashoffset='0.0'>
-<g fill='#9ea897' stroke='#9ea897'>
+<g fill='#a4af9d' stroke='#a4af9d'>
 <g stroke-width='0.8'>
 <path d='M39.6222 78.95576H118.86658' fill='none'/>
 </g>
@@ -531,14 +537,14 @@
 </g>
 </g>
 <g stroke-dasharray='0.8,2.0' stroke-dashoffset='0.0'>
-<g fill='#9ea897' stroke='#9ea897'>
+<g fill='#a4af9d' stroke='#a4af9d'>
 <g stroke-width='0.8'>
 <path d='M39.6222 58.55896V22.83691' fill='none'/>
 </g>
 </g>
 </g>
 <g stroke-dasharray='0.8,2.0' stroke-dashoffset='0.0'>
-<g fill='#9ea897' stroke='#9ea897'>
+<g fill='#a4af9d' stroke='#a4af9d'>
 <g stroke-width='0.8'>
 <path d='M118.86658 78.46251V22.83691' fill='none'/>
 </g>

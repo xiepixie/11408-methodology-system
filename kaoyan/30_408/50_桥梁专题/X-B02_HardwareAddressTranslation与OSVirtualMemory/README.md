@@ -1,6 +1,6 @@
 # X-B02｜Hardware Address Translation × OS Virtual Memory
 
-状态：已采用；Canonical Bridge 正文已建立并发布。
+状态：已采用；Canonical Bridge LaTeX 已完成本轮术语重审。现有 Published PDF 仍是上一版派生稿，待发布流程同步。
 
 ## Owners
 CO07 地址翻译硬件 ↔ OS-04 虚拟内存与页生命周期。
@@ -23,7 +23,7 @@ OS 怎样把地址空间策略编码成硬件可消费 mapping；硬件何时能
 
 ## 训练导航
 
-- [地址翻译软硬件交接](地址翻译软硬件交接.md)：把跨科题的完整落笔顺序、三种 miss 分流、旧翻译一致性与 retry 检查迁到训练层。
+- [地址翻译软硬件交接](地址翻译软硬件交接.md)：把跨科题的完整落笔顺序、TLB miss / Page Fault / Cache miss 分流、旧翻译一致性与 retry 检查迁到训练层。
 
 ## Manual
 

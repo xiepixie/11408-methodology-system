@@ -1,0 +1,117 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 上图: 被积函数 f(t) 含跳跃间断点 ──
+\begin{axis}[
+    name=axTop,
+    width=11.5cm,
+    height=4.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-0.5, xmax=4.5,
+    ymin=-0.3, ymax=2.4,
+    xtick={1, 2.5},
+    xticklabels={$a$, $c$ (跳跃点)},
+    ytick={1, 2},
+    yticklabels={$h_1$, $h_2$},
+    clip=false,
+    xlabel={$t$},
+    ylabel={$f(t)$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.08)}, anchor=south},
+    title={一阶累积的光滑性升阶机制：被积函数跳跃间断 $\implies$ 变限积分连续但出现折角},
+]
+
+% 积分阴影区域
+\begin{pgfonlayer}{background}
+    \fill[themecurve!25!themebg] (axis cs:1,0) rectangle (axis cs:2.5,1);
+    \fill[themecurve!35!themebg] (axis cs:2.5,0) rectangle (axis cs:3.5,2);
+\end{pgfonlayer}
+
+% 被积函数台阶波形
+\addplot[themecurve, line width=2.0pt, domain=1:2.5] {1};
+\addplot[themecurve, line width=2.0pt, domain=2.5:4] {2};
+
+% 断点空心与实心标记
+\addplot[only marks, mark=*, mark size=2.2pt, themecurve] coordinates {(2.5, 1)};
+\addplot[only marks, mark=o, mark size=2.2pt, line width=1.2pt, themecurve, fill=themebg] coordinates {(2.5, 2)};
+
+% 竖直虚线对齐到下方的折角点
+\draw[themegray, dashed, line width=1.0pt] (axis cs:2.5, 0) -- (axis cs:2.5, 2.2);
+
+\node[text=themecurve, font=\scriptsize\bfseries, anchor=west] at (axis cs:2.7, 1.0) {$f(t)$ 跳跃间断};
+\end{axis}
+
+% ── 下图: 变上限面积函数 F(x) = \int_a^x f(t)dt ──
+\begin{axis}[
+    name=axBot,
+    at={($(axTop.south)-(0, 1.2cm)$)},
+    anchor=north,
+    width=11.5cm,
+    height=4.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-0.5, xmax=4.5,
+    ymin=-0.3, ymax=3.6,
+    xtick={1, 2.5},
+    xticklabels={$a$, $c$ (连续不可导)},
+    ytick=\empty,
+    clip=false,
+    xlabel={$x$},
+    ylabel={$F(x)$},
+]
+
+% 连续折线 F(x): 在 [1, 2.5] 斜率为 1，在 [2.5, 4] 斜率为 2
+\addplot[themeamber, line width=2.2pt, domain=1:2.5] {x - 1};
+\addplot[themeamber, line width=2.2pt, domain=2.5:4] {1.5 + 2*(x - 2.5)};
+
+% 竖直对齐虚线
+\draw[themegray, dashed, line width=1.0pt] (axis cs:2.5, 0) -- (axis cs:2.5, 1.5);
+
+% 折角尖点标记
+\begin{pgfonlayer}{foreground}
+    \addplot[only marks, mark=*, mark size=2.8pt, fill=themealert, draw=themefg] coordinates {(2.5, 1.5)};
+    \node[text=themealert, font=\scriptsize\bfseries, anchor=south east] at (axis cs:2.45, 1.6) {折角点 $F'_-(c)=h_1 \ne F'_+(c)=h_2$};
+    \node[text=themeamber, font=\scriptsize\bfseries, anchor=west] at (axis cs:3.2, 2.2) {$F(x)=\int_a^x f(t)dt$};
+
+    % 光滑性升级结论框
+    \node[text=themefg, font=\scriptsize, anchor=north west] at (axis cs:-0.3, 3.4) {
+        \begin{tabular}{l}
+        \textbf{光滑性升阶规则}：\\
+        1. $f(t)$ 可积 $\implies F(x)$ 必\textbf{连续}\\
+        2. $f(t)$ 连续 $\implies F(x)$ 必\textbf{可导}且 $F'(x)=f(x)$\\
+        3. $f(t)$ $C^k$ 光滑 $\implies F(x)$ 为 $C^{k+1}$ 光滑
+        \end{tabular}
+    };
+\end{pgfonlayer}
+
+\end{axis}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

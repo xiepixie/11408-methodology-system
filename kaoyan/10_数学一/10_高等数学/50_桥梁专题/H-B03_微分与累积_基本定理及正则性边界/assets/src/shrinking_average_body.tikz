@@ -1,0 +1,60 @@
+\begin{tikzpicture}[color=themefg,text=themefg,>=Stealth,x=1.25cm,y=1.25cm]
+  \tikzset{
+    axis/.style={themegray,line width=0.8pt,-{Stealth[length=1.7mm]}},
+    curve/.style={themecurve,line width=2.0pt},
+    guide/.style={themegray,densely dashed,line width=0.7pt},
+    rect/.style={themeamber,line width=1.2pt,densely dashed},
+    avgline/.style={themeamber,line width=1.6pt},
+    tag/.style={fill=themebg,inner sep=1.5pt,font=\small}
+  }
+
+  % Axes
+  \draw[axis] (-0.4,0) -- (8.5,0) node[below,font=\small] {$t$};
+  \draw[axis] (0,-0.3) -- (0,4.2) node[left,font=\small] {$y$};
+
+  % Function curve f(t)
+  \draw[curve] plot[domain=0.3:7.8,samples=100] (\x,{1.05+0.32*\x+0.30*sin(45*\x)});
+  \node[tag,text=themecurve,anchor=south west] at (7.0,3.6) {$y=f(t)$};
+
+  % Coordinates: x0 = 2.4, x0+h = 6.0 (h = 3.6)
+  % f(2.4) = 1.05 + 0.32*2.4 + 0.30*sin(108) = 1.05 + 0.768 + 0.285 = 2.103
+  % f(6.0) = 1.05 + 0.32*6.0 + 0.30*sin(270) = 1.05 + 1.920 - 0.300 = 2.670
+  % Average height bar approx at y = 2.45
+
+  % 1. Shaded area Delta G under curve from x0 to x0+h
+  \fill[themecurve,opacity=0.12] (2.4,0) -- plot[domain=2.4:6.0,samples=60] (\x,{1.05+0.32*\x+0.30*sin(45*\x)}) -- (6.0,0) -- cycle;
+  \node[text=themecurve,anchor=center,font=\footnotesize] at (4.2,1.05) {面积 $\Delta G = \displaystyle\int_{x_0}^{x_0+h} f(t)\,dt$};
+
+  % 2. Equivalent Mean-Value Rectangle (Base = h, Height = \bar{f})
+  \draw[rect,fill=themeamber,fill opacity=0.06] (2.4,0) rectangle (6.0,2.45);
+  \draw[avgline] (2.4,2.45) -- (6.0,2.45);
+  \node[tag,text=themeamber,anchor=south,font=\footnotesize] at (4.2,2.50) {等效矩形平均高度 $\bar{f} = \dfrac{\Delta G}{h}$};
+
+  % Guides for endpoints x0 and x0+h
+  \draw[guide] (2.4,0) -- (2.4,2.45);
+  \draw[guide] (6.0,0) -- (6.0,2.67);
+
+  % Base points on axis
+  \node[tag,anchor=north,font=\footnotesize] at (2.4,-0.05) {$x_0$};
+  \node[tag,anchor=north,font=\footnotesize] at (6.0,-0.05) {$x_0+h$};
+
+  % Base point on curve (x0, f(x0))
+  \fill[themecurve] (2.4,2.10) circle (2.2pt);
+  \draw[themegray,densely dotted,line width=0.6pt] (0,2.10) -- (2.4,2.10);
+  \node[tag,left,text=themecurve,font=\footnotesize] at (0,2.10) {$f(x_0)$};
+
+  % Mean value point xi where f(xi) = \bar{f}
+  \fill[themeamber] (3.9,2.45) circle (1.8pt);
+  \draw[themegray,densely dotted] (3.9,0) -- (3.9,2.45);
+  \node[tag,text=themeamber,anchor=north,font=\footnotesize] at (3.9,-0.05) {$\xi$};
+
+  % Base interval bracket below axis
+  \draw[themeamber,line width=0.9pt,{Stealth[length=1.4mm]}-{Stealth[length=1.4mm]}] (2.4,-0.55) -- node[fill=themebg,inner sep=1.5pt,text=themeamber,font=\footnotesize]{底宽 $h$} (6.0,-0.55);
+
+  % Shrinking process arrow below bracket
+  \draw[themealert,line width=1.0pt,-{Stealth[length=1.8mm]}] (6.0,-1.05) -- node[fill=themebg,inner sep=1.5pt,text=themealert,font=\footnotesize]{宽度收缩 $h \to 0$} (3.2,-1.05);
+
+  % Bottom summary formula
+  \node[font=\small,text=themegray,anchor=north] at (4.0,-1.65)
+  {$\dfrac{G(x_0+h)-G(x_0)}{h} = \dfrac{\Delta G}{h} = \bar{f} = f(\xi)$：当 $h\to 0$ 时，平均高度 $\bar{f} \to f(x_0) = G'(x_0)$。};
+\end{tikzpicture}

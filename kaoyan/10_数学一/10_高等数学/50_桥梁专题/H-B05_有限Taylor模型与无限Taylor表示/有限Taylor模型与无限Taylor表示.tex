@@ -1,6 +1,9 @@
 \documentclass[UTF8,a4paper,10pt]{ctexart}
 \usepackage{ipara-handbook}
-\usepackage{booktabs,tabularx}
+\usepackage{booktabs,tabularx,tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\colorlet{themebg}{white}\colorlet{themefg}{black}\colorlet{themegray}{gray!70}
+\colorlet{themecurve}{blue!70!black}\colorlet{themealert}{red!70!black}\colorlet{themeamber}{orange!80!black}
 \begin{document}
 \section*{H-B05\quad 有限 Taylor 模型与无限 Taylor 表示}
 \textbf{边界：}有限阶近似服务于局部误差控制；无限级数表示还要证明收敛、余项消失以及定义域边界。
@@ -13,6 +16,11 @@ P_n(x)=\sum_{k=0}^{n}\frac{f^{(k)}(a)}{k!}(x-a)^k
 \[
 f(x)=\sum_{k=0}^{\infty}\frac{f^{(k)}(a)}{k!}(x-a)^k.
 \]
+
+\begin{center}
+\input{assets/src/finite_infinite_taylor_body.tikz}
+\end{center}
+
 \begin{tcolorbox}[title=升级资格：两条独立证明路线]
 \begin{itemize}
   \item \kw{路线 1（直接余项法）}：若在目标区间或点上直接证明余项 $R_n(x)\to0$（如由 Lagrange 余项界），则级数收敛且和函数自然恒等于 $f(x)$（一步闭合）；

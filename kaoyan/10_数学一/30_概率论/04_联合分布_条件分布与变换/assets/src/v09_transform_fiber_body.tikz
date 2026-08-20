@@ -1,0 +1,125 @@
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ==================== Subplot 1: Transformation Function g(x) ====================
+\begin{scope}[x=1.35cm,y=1.35cm]
+  \begin{pgfonlayer}{background}
+    % 区域 1：常值区间 [0.4, 1.6]，g(x) ≡ y_0 = 1.0
+    \fill[themealert, fill opacity=0.12] (0.40,0) rectangle (1.60,1.00);
+    \draw[themealert, line width=2.4pt] (0.40,1.00) -- (1.60,1.00);
+    \draw[themegray, densely dashed, line width=0.8pt] (0.40,0) -- (0.40,1.00);
+    \draw[themegray, densely dashed, line width=0.8pt] (1.60,0) -- (1.60,1.00);
+    \draw[themealert, densely dotted, line width=1.0pt] (0,1.00) -- (0.40,1.00);
+
+    % 区域 2：非单调二次抛物线分支 [1.6, 3.4]
+    \draw[themeamber, line width=2.0pt]
+      plot[domain=1.60:3.40, samples=100]
+        (\x, {2.80 - 2.0*(\x - 2.5)*(\x - 2.5)});
+
+    % 双实根水平线 y_1 = 2.0
+    \draw[themeamber, densely dashed, line width=1.1pt] (0,2.00) -- (3.13,2.00);
+    \draw[themegray, densely dotted, line width=0.8pt] (1.87,0) -- (1.87,2.00);
+    \draw[themegray, densely dotted, line width=0.8pt] (3.13,0) -- (3.13,2.00);
+
+    % 区域 3：严格单调单根分支 [3.4, 4.5]
+    \draw[themecurve, line width=2.0pt]
+      plot[domain=3.40:4.50, samples=80]
+        (\x, {1.18 + 1.4*(\x - 3.4)});
+
+    % 坐标轴
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (-0.20,0) -- (4.85,0) node[below left=1pt] {$x$};
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (0,-0.20) -- (0,3.45) node[below left=1pt] {$y$};
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 标题（居中置于子图上方）
+    \node[font=\bfseries\small, color=themefg, anchor=south] at (2.20, 3.45)
+      {（1）输入变换 $Y=g(X)$};
+
+    % 关键点
+    \filldraw[fill=themealert, draw=themebg, line width=0.8pt] (0,1.00) circle (2.2pt);
+    \filldraw[fill=themeamber, draw=themebg, line width=0.8pt] (0,2.00) circle (2.0pt);
+    \filldraw[fill=themeamber, draw=themebg, line width=0.8pt] (1.87,2.00) circle (2.0pt);
+    \filldraw[fill=themeamber, draw=themebg, line width=0.8pt] (3.13,2.00) circle (2.0pt);
+
+    % 曲线性质说明
+    \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=south] at (1.00, 1.10)
+      {\scriptsize 常值区间 $g(x)\equiv y_0$};
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, anchor=south] at (2.50, 2.88)
+      {\scriptsize 双实根分支 $x_1, x_2$};
+    \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south west] at (3.80, 2.15)
+      {\scriptsize 单调单根分支};
+
+    % 坐标轴刻度
+    \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=north] at (1.00, -0.06)
+      {\footnotesize $[a,b]$};
+    \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=east] at (-0.06, 1.00)
+      {\footnotesize $y_0$};
+
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, anchor=north] at (1.87, -0.06) {\footnotesize $x_1$};
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, anchor=north] at (3.13, -0.06) {\footnotesize $x_2$};
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, anchor=east] at (-0.06, 2.00) {\footnotesize $y_1$};
+
+    % 子图 1 专属注记（单行完整呈现，杜绝截断换行）
+    \node[text=themealert, anchor=north] at (2.20, -0.30)
+      {\footnotesize $\blacksquare$ 常值区间 $[a,b] \implies$ 离散点概率 $P(Y=y_0)$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ==================== Subplot 2: Output Distribution / CDF Jump ====================
+\begin{scope}[xshift=7.8cm,x=1.35cm,y=1.35cm]
+  \begin{pgfonlayer}{background}
+    % CDF 曲线：在 y_0 处发生跳跃间断点
+    \draw[themecurve, line width=1.6pt] (0,0.20) -- (1.00,0.20);
+    \draw[themealert, line width=2.4pt, -{Stealth[length=2.2mm]}] (1.00,0.20) -- (1.00,1.25);
+    \draw[themecurve, line width=1.8pt]
+      plot[domain=1.00:3.60, samples=100]
+        (\x, {1.25 + 0.65*sqrt(\x - 1.00)});
+
+    \draw[themegray, densely dashed, line width=0.8pt] (0,1.25) -- (1.00,1.25);
+
+    % 坐标轴
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (-0.20,0) -- (4.20,0) node[below left=1pt] {$y$};
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (0,-0.20) -- (0,3.45) node[below left=1pt] {$F_Y(y)$};
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 标题（居中置于子图上方）
+    \node[font=\bfseries\small, color=themefg, anchor=south] at (1.80, 3.45)
+      {（2）输出分布 $F_Y(y)$};
+
+    % 间断点与原子点
+    \draw[themefg, fill=themebg, line width=0.9pt] (1.00,0.20) circle (2.2pt);
+    \filldraw[fill=themealert, draw=themebg, line width=0.8pt] (1.00,1.25) circle (2.4pt);
+
+    % 跳跃注记
+    \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=west] at (1.10, 0.72)
+      {\scriptsize 跳跃度 $\Delta F_Y(y_0) = P(Y=y_0)$};
+
+    % 轴刻度
+    \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (1.00, -0.06) {\footnotesize $y_0$};
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, anchor=north] at (2.00, -0.06) {\footnotesize $y_1$};
+
+    % 子图 2 专属注记（单行完整呈现）
+    \node[text=themecurve, anchor=north] at (1.80, -0.30)
+      {\footnotesize $\blacksquare$ 双实根分支 $\implies$ 密度加总 $f_Y(y_1) = \sum\limits_{i=1}^2 f_X(x_i)\left|\frac{\mathrm{d}x_i}{\mathrm{d}y}\right|$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ==================== Bottom Global Takeaway ====================
+\begin{pgfonlayer}{foreground}
+  \node[
+    anchor=north,
+    text=themefg
+  ] at (6.8, -1.40)
+    {\footnotesize \textbf{变换法则：} 常值区间产生离散点概率（CDF 跳跃） $\;\big\vert\;$ 非单调函数按互斥反函数分支对概率密度求和};
+\end{pgfonlayer}
+
+\end{tikzpicture}

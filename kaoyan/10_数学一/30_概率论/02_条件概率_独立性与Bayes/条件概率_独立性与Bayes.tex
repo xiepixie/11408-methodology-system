@@ -16,6 +16,18 @@
 \definecolor{deep}{RGB}{42,58,73}\definecolor{soft}{RGB}{245,247,249}
 \definecolor{accent}{RGB}{104,76,55}\definecolor{greenish}{RGB}{57,92,76}
 \definecolor{warn}{RGB}{136,68,63}\definecolor{purple}{RGB}{87,72,116}
+
+% ── 双主题图解语义色彩（LaTeX 打印高对比白底）──
+\definecolor{themebg}{HTML}{FFFFFF}
+\definecolor{themefg}{HTML}{111111}
+\definecolor{themegray}{HTML}{666666}
+\definecolor{themecurve}{HTML}{1D63B8}
+\definecolor{themealert}{HTML}{C53030}
+\definecolor{themeamber}{HTML}{B86E00}
+
+\newenvironment{handbookdiagram}{\par\vspace{0.4em}\noindent\begin{center}}{\end{center}\vspace{0.4em}}
+\newcommand{\diagramcaption}[1]{\par\vspace{0.3em}{\small\textbf{#1}}}
+
 \hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={条件概率、独立性与 Bayes}}
 \pagestyle{fancy}\fancyhf{}
 \lhead{\small\color{deep}\textbf{数学一 · 概率统计 Topic 02}}
@@ -65,6 +77,12 @@ A_1\subseteq A_2&\Longrightarrow P(A_1\mid B)\le P(A_2\mid B),\\
 P(A_1\cup A_2\mid B)&=P(A_1\mid B)+P(A_2\mid B)-P(A_1\cap A_2\mid B).
 \end{align*}
 注意补集仍相对于原 $\Omega$，只是条件世界把 $B$ 外部质量视为零。一般 $P(A\mid B)\ne P(B\mid A)$，因为分母分别是 $P(B)$ 与 $P(A)$。
+
+\begin{handbookdiagram}
+\resizebox{0.92\linewidth}{!}{%
+\input{assets/src/v03_conditional_probability_world_shrink_body.tikz}%
+}
+\end{handbookdiagram}
 
 \begin{warnbox}{定义的存在条件}
 初等条件概率要求条件事件正概率。连续模型中的非空零概率事件不能直接代入分母；遇到此类问题必须使用更高级的正则条件概率理论，不能假装 $0/0$ 有意义。
@@ -130,6 +148,12 @@ P(B_j\mid A)\propto P(A\mid B_j)P(B_j),
 \boxed{\frac{P(B_j\mid A)}{P(B_k\mid A)}=\frac{P(A\mid B_j)}{P(A\mid B_k)}\frac{P(B_j)}{P(B_k)}}.
 \]
 后验排序由“似然乘先验”决定。贝叶斯公式只是概率更新，不自动建立因果关系。
+
+\begin{handbookdiagram}
+\resizebox{0.92\linewidth}{!}{%
+\input{assets/src/v04_total_prob_and_bayes_bidirectional_tree_body.tikz}%
+}
+\end{handbookdiagram}
 
 \subsection{二元 Bayes 与基础率}
 

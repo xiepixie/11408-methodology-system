@@ -26,11 +26,11 @@
 它们都使用积分，但对象、被积函数和信息损失完全不同。
 
 \section{区域概率：最原始的“质量求和”}
-若 $(X,Y)$ 有联合密度 $f_{X,Y}$，则
+若 $(X,Y)$ 有联合密度 $f_{X,Y}$，本册把“支撑” $S$ 理解为概率质量实际可能出现的取值区域；在普通连续题中，可先用 $f_{X,Y}(x,y)>0$ 的区域闭包来识别它。对目标事件区域 $D$，真正参与积分的是 $D\cap S$：
 \[
-P((X,Y)\in D)=\iint_D f_{X,Y}(x,y)dxdy.
+P((X,Y)\in D)=\iint_{D\cap S} f_{X,Y}(x,y)\,\mathrm{d}x\,\mathrm{d}y.
 \]
-这时积分区域 $D$ 就是事件本身在取值空间中的几何表示。
+这时积分区域就是事件在取值空间中的几何表示与真实支撑的交。
 
 所以概率积分第一原则不是“先定积分次序”，而是：
 \[
@@ -42,7 +42,7 @@ P((X,Y)\in D)=\iint_D f_{X,Y}(x,y)dxdy.
 \section{边缘化：积分在主动忘掉一个维度}
 只关心 $X$ 时，对每个固定 $x$ 把所有可能的 $y$ 质量汇总：
 \[
-\boxed{f_X(x)=\int f_{X,Y}(x,y)dy.}
+\boxed{f_X(x)=\int f_{X,Y}(x,y)\,\mathrm{d}y.}
 \]
 
 这不是“二维降成一维的计算技巧”，而是信息操作：
@@ -70,7 +70,7 @@ P((X,Y)\in D)=\iint_D f_{X,Y}(x,y)dxdy.
 \section{期望：积分在做“值 × 质量”的加权汇总}
 若目标不是完整分布，只问函数 $g(X,Y)$ 的平均值，则
 \[
-\boxed{E[g(X,Y)]=\iint g(x,y)f_{X,Y}(x,y)dxdy}
+\boxed{E[g(X,Y)]=\iint g(x,y)f_{X,Y}(x,y)\,\mathrm{d}x\,\mathrm{d}y}
 \]
 （在相应可积条件下）。
 
@@ -102,13 +102,13 @@ x+y=z
 
 若 $X,Y$ 独立且有密度，则
 \[
-\boxed{f_Z(z)=\int f_X(x)f_Y(z-x)dx.}
+\boxed{f_Z(z)=\int f_X(x)f_Y(z-x)\,\mathrm{d}x.}
 \]
 卷积并不是一个与重积分无关的新公式；它是在约束纤维 $x+y=z$ 上汇总概率质量后得到的一维表达。
 
 没有独立性时，正确起点仍是联合密度：
 \[
-f_Z(z)=\int f_{X,Y}(x,z-x)dx
+f_Z(z)=\int f_{X,Y}(x,z-x)\,\mathrm{d}x
 \]
 （结合真实支撑理解）。独立性只允许把联合密度分解成两个边缘密度的乘积。
 
@@ -122,15 +122,15 @@ f_{X,Y}(x,y)=2,
 \subsection{边缘化}
 固定 $x$，允许的 $y$ 是 $0<y<x$，所以
 \[
-f_X(x)=\int_0^x2dy=2x,
+f_X(x)=\int_0^x2\,\mathrm{d}y=2x,
 \qquad 0<x<1.
 \]
 
 \subsection{期望}
 若只问 $E[X]$，可直接对联合质量加权：
 \[
-E[X]=\int_0^1\int_0^x 2x\,dy\,dx
-=\int_0^12x^2dx=\frac23.
+E[X]=\int_0^1\int_0^x 2x\,\mathrm{d}y\,\mathrm{d}x
+=\int_0^1 2x^2\,\mathrm{d}x=\frac23.
 \]
 也可以先求 $f_X$ 再积分。两条路线结果相同，但信息路径不同。
 

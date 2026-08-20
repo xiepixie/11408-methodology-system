@@ -1,0 +1,281 @@
+% ── V04 ISP骨干网与Web服务全流程拓扑 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+% ══════════════════════════════════════════════════════════════
+% ── 1. 底层连线与区域虚线背景 ──
+% ══════════════════════════════════════════════════════════════
+\begin{pgfonlayer}{background}
+  % Internet / 骨干网区域淡色包络
+  \fill[fill=themecurve!6!themebg, draw=themecurve!30, dashed, line width=0.6pt, rounded corners=6pt]
+    (-0.5, 3.4) rectangle (7.0, 11.8);
+  \node[anchor=north west, font=\footnotesize\bfseries, color=themecurve] at (-0.3, 11.6) {ISP 骨干网络 (Internet WAN)};
+
+  % 公司网络区域淡色包络
+  \fill[fill=themeamber!6!themebg, draw=themeamber!30, dashed, line width=0.6pt, rounded corners=6pt]
+    (7.6, 3.4) rectangle (19.2, 11.8);
+  \node[anchor=north west, font=\footnotesize\bfseries, color=themeamber] at (7.8, 11.6) {某互联网公司网络 (200.1.1.0/24)};
+
+  % Internet 云连线 -> ISP 路由器 E3
+  \draw[themegray!80, line width=1.2pt] (1.5, 9.2) -- (3.0, 7.5)
+    node[midway, above, sloped, font=\tiny\bfseries, color=themegray] {E3: 全球骨干};
+
+  % ISP 路由器 E0 -> 学校网络
+  \draw[themegray!80, line width=1.0pt, ->] (3.6, 8.2) -- (3.6, 10.4)
+    node[anchor=south, font=\tiny\bfseries, color=themecurve] {E0: 166.1.0.0/16 (去学校)};
+
+  % ISP 路由器 E2 -> 县里网络
+  \draw[themegray!80, line width=1.0pt] (3.6, 6.8) -- (3.6, 4.4)
+    node[anchor=north, font=\tiny\bfseries, color=themegray] {E2: 128.14.32.0/24 (去县里)};
+
+  % ISP 路由器 E1 -> 公司路由器 C0
+  \draw[themealert!80, line width=1.2pt] (4.3, 7.5) -- (9.4, 7.5)
+    node[midway, above, font=\tiny\bfseries, color=themealert, fill=themebg, inner sep=1.5pt, rounded corners=1pt] {E1 $\leftrightarrow$ C0 (200.1.1.254/24)};
+
+  % 公司路由器 C2 -> 专线去学校 (示范跨网直达)
+  \draw[themegray!80, line width=1.0pt, dashed] (10.1, 8.2) -- (10.1, 10.0)
+    node[anchor=south, font=\tiny\bfseries, color=themegray] {C2: 专线去学校 (200.1.1.2)};
+
+  % 公司路由器 C1 -> 内网交换机
+  \draw[themeamber!90, line width=1.2pt] (10.8, 7.5) -- (13.4, 7.5)
+    node[midway, above, font=\tiny\bfseries, color=themeamber] {C1: 200.1.1.1 (网关)};
+
+  % 内网交换机 -> Web 服务器, H7, H8
+  \draw[themealert!80, line width=1.2pt] (14.2, 7.8) -- (16.7, 8.8);
+  \draw[themegray!80, line width=1.0pt] (14.2, 7.5) -- (16.7, 6.8);
+  \draw[themegray!80, line width=1.0pt] (14.2, 7.2) -- (16.7, 4.8);
+\end{pgfonlayer}
+
+% ══════════════════════════════════════════════════════════════
+% ── 2. Internet 云与 ISP 骨干路由器 ──
+% ══════════════════════════════════════════════════════════════
+% Internet 云图
+\begin{scope}[xshift=1.2cm, yshift=9.5cm]
+  \begin{pgfonlayer}{background}
+    \draw[themecurve!80, fill=themecurve!15!themebg, line width=0.8pt]
+      (0, 0) circle (0.45)
+      (0.4, 0.2) circle (0.4)
+      (0.8, 0) circle (0.45)
+      (0.4, -0.2) circle (0.35);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\tiny\bfseries, color=themecurve] at (0.4, 0) {Internet};
+  \end{pgfonlayer}
+\end{scope}
+
+% ISP 骨干路由器
+\begin{scope}[xshift=3.6cm, yshift=7.5cm]
+  \begin{pgfonlayer}{background}
+    \draw[themecurve, fill=themecurve!15!themebg, line width=1.0pt] (0, 0) circle (0.65cm);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \draw[themecurve, line width=1.0pt, ->] (-0.4, 0.25) -- (0.4, -0.25);
+    \draw[themecurve, line width=1.0pt, ->] (-0.4, -0.25) -- (0.4, 0.25);
+    \draw[themecurve, line width=1.0pt, ->] (0.4, 0.25) -- (-0.4, -0.25);
+    \draw[themecurve, line width=1.0pt, ->] (0.4, -0.25) -- (-0.4, 0.25);
+
+    \node[anchor=south, font=\bfseries\footnotesize] at (0, 0.95) {ISP 骨干路由器};
+
+    % 接口标记
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0, 0.75) {E0};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0.75, 0) {E1};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0, -0.75) {E2};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (-0.75, 0) {E3};
+  \end{pgfonlayer}
+\end{scope}
+
+% ISP 骨干路由转发表 (左下，加宽加高)
+\begin{scope}[xshift=-0.2cm, yshift=0.0cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!3!themebg, draw=themecurve!40, line width=0.7pt, rounded corners=6pt]
+      (-0.3, -0.3) rectangle (6.2, 3.2);
+    \fill[themecurve!18!themebg] (0, 2.0) rectangle (5.8, 2.55);
+    \draw[themegray!40, line width=0.5pt] (0, 0) rectangle (5.8, 2.55);
+    \draw[themegray!40, line width=0.5pt] (0, 0.5) -- (5.8, 0.5);
+    \draw[themegray!40, line width=0.5pt] (0, 1.0) -- (5.8, 1.0);
+    \draw[themegray!40, line width=0.5pt] (0, 1.5) -- (5.8, 1.5);
+    \draw[themegray!60, line width=0.8pt] (0, 2.0) -- (5.8, 2.0);
+    \draw[themegray!40, line width=0.5pt] (2.8, 0) -- (2.8, 2.55);
+    \draw[themegray!40, line width=0.5pt] (4.4, 0) -- (4.4, 2.55);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north, font=\small\bfseries, color=themecurve] at (2.9, 2.95) {ISP 骨干路由转发表};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (1.4, 2.27) {目的网络 / 掩码};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (3.6, 2.27) {下一跳};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (5.1, 2.27) {接口};
+
+    \node[font=\scriptsize, color=themefg] at (1.4, 1.75) {166.1.0.0/16};
+    \node[font=\scriptsize, color=themegray] at (3.6, 1.75) {学校路由};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (5.1, 1.75) {E0};
+
+    \node[font=\scriptsize, color=themefg] at (1.4, 1.25) {200.1.1.0/24};
+    \node[font=\scriptsize, color=themegray] at (3.6, 1.25) {公司路由};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (5.1, 1.25) {E1};
+
+    \node[font=\scriptsize, color=themefg] at (1.4, 0.75) {128.14.32.0/24};
+    \node[font=\scriptsize, color=themegray] at (3.6, 0.75) {县里路由};
+    \node[font=\scriptsize\bfseries, color=themegray] at (5.1, 0.75) {E2};
+
+    \node[font=\scriptsize\bfseries, color=themealert] at (1.4, 0.25) {0.0.0.0/0 (默认)};
+    \node[font=\scriptsize, color=themegray] at (3.6, 0.25) {骨干下一跳};
+    \node[font=\scriptsize\bfseries, color=themealert] at (5.1, 0.25) {E3};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 3. 公司路由器与公司转发表 ──
+% ══════════════════════════════════════════════════════════════
+% 公司路由器
+\begin{scope}[xshift=10.1cm, yshift=7.5cm]
+  \begin{pgfonlayer}{background}
+    \draw[themeamber, fill=themeamber!15!themebg, line width=1.0pt] (0, 0) circle (0.65cm);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \draw[themeamber, line width=1.0pt, ->] (-0.4, 0.25) -- (0.4, -0.25);
+    \draw[themeamber, line width=1.0pt, ->] (-0.4, -0.25) -- (0.4, 0.25);
+    \draw[themeamber, line width=1.0pt, ->] (0.4, 0.25) -- (-0.4, -0.25);
+    \draw[themeamber, line width=1.0pt, ->] (0.4, -0.25) -- (-0.4, 0.25);
+
+    \node[anchor=south, font=\bfseries\footnotesize] at (0, 0.95) {公司路由器};
+
+    % 接口标记
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (-0.75, 0) {C0};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0.75, 0) {C1};
+    \node[draw=themegray, fill=themebg, inner sep=1.2pt, font=\tiny\bfseries, rounded corners=1pt] at (0, 0.75) {C2};
+  \end{pgfonlayer}
+\end{scope}
+
+% 公司路由转发表 (居中下方，加宽加高)
+\begin{scope}[xshift=7.2cm, yshift=0.0cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!3!themebg, draw=themeamber!40, line width=0.7pt, rounded corners=6pt]
+      (-0.3, -0.3) rectangle (5.9, 2.9);
+    \fill[themeamber!18!themebg] (0, 1.8) rectangle (5.5, 2.35);
+    \draw[themegray!40, line width=0.5pt] (0, 0) rectangle (5.5, 2.35);
+    \draw[themegray!40, line width=0.5pt] (0, 0.6) -- (5.5, 0.6);
+    \draw[themegray!40, line width=0.5pt] (0, 1.2) -- (5.5, 1.2);
+    \draw[themegray!60, line width=0.8pt] (0, 1.8) -- (5.5, 1.8);
+    \draw[themegray!40, line width=0.5pt] (2.6, 0) -- (2.6, 2.35);
+    \draw[themegray!40, line width=0.5pt] (4.2, 0) -- (4.2, 2.35);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north, font=\small\bfseries, color=themeamber] at (2.75, 2.75) {公司路由转发表};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (1.3, 2.08) {目的网络 / 掩码};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (3.4, 2.08) {下一跳};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (4.85, 2.08) {接口};
+
+    \node[font=\scriptsize, color=themefg] at (1.3, 1.5) {200.1.1.0/24};
+    \node[font=\scriptsize, color=themegray] at (3.4, 1.5) {直连内网};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (4.85, 1.5) {C1};
+
+    \node[font=\scriptsize, color=themefg] at (1.3, 0.9) {166.1.0.0/16};
+    \node[font=\scriptsize, color=themegray] at (3.4, 0.9) {学校专线};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (4.85, 0.9) {C2};
+
+    \node[font=\scriptsize\bfseries, color=themealert] at (1.3, 0.3) {0.0.0.0/0 (默认)};
+    \node[font=\scriptsize, color=themegray] at (3.4, 0.3) {ISP 路由};
+    \node[font=\scriptsize\bfseries, color=themealert] at (4.85, 0.3) {C0};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 4. 公司内网交换机与 Web 服务器群 ──
+% ══════════════════════════════════════════════════════════════
+% 公司内网交换机
+\begin{scope}[xshift=13.8cm, yshift=7.5cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themeamber!12!themebg, draw=themeamber!80, line width=0.8pt, rounded corners=2pt]
+      (-0.4, -0.3) rectangle (0.4, 0.3);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \draw[color=themeamber, line width=1.0pt, <->] (-0.25, 0.08) -- (0.25, 0.08);
+    \draw[color=themeamber, line width=1.0pt, <->] (-0.25, -0.08) -- (0.25, -0.08);
+    \node[anchor=north, font=\tiny] at (0, -0.35) {内网交换机};
+  \end{pgfonlayer}
+\end{scope}
+
+% DiliDili Web 服务器 (核心服务器机柜)
+\begin{scope}[xshift=17.2cm, yshift=8.6cm]
+  \begin{pgfonlayer}{background}
+    \draw[themealert, fill=themealert!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.5, 0) rectangle (0.5, 0.75);
+    \draw[themealert!60, line width=0.5pt] (-0.4, 0.5) -- (0.4, 0.5);
+    \draw[themealert!60, line width=0.5pt] (-0.4, 0.25) -- (0.4, 0.25);
+    \fill[themealert] (-0.3, 0.62) circle (1.2pt);
+    \fill[themegreen] (-0.15, 0.62) circle (1.2pt);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\tiny\bfseries, color=themealert] at (0.15, 0.62) {Web};
+    \node[anchor=south, font=\tiny, align=center] at (0, 0.8) {
+      \textbf{\color{themealert}DiliDili Web 服务器 (HTTP:80)}\\[0.1em]
+      \color{themefg}IP: 200.1.1.10/24\\
+      \color{themegray}MAC: 33:44:55:66:77:88\\
+      \color{themeamber}域名: \texttt{www.dilidili.com}\\
+      \color{themegray}默认网关: 200.1.1.1
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 主机 H7
+\begin{scope}[xshift=17.2cm, yshift=6.6cm]
+  \begin{pgfonlayer}{background}
+    \draw[themeamber, fill=themeamber!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.45, 0) rectangle (0.45, 0.6);
+    \draw[themeamber, line width=0.8pt] (0, 0) -- (0, -0.2);
+    \draw[themeamber, line width=0.8pt] (-0.25, -0.2) -- (0.25, -0.2);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\bfseries, color=themeamber] at (0, 0.3) {H7};
+    \node[anchor=north, font=\tiny, align=center] at (0, -0.25) {
+      \textbf{\color{themeamber}主机 H7}\\[0.1em]
+      \color{themefg}IP: 200.1.1.20/24\\
+      \color{themegray}网关: 200.1.1.1
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 主机 H8
+\begin{scope}[xshift=17.2cm, yshift=4.6cm]
+  \begin{pgfonlayer}{background}
+    \draw[themeamber, fill=themeamber!20!themebg, line width=0.8pt, rounded corners=2pt] (-0.45, 0) rectangle (0.45, 0.6);
+    \draw[themeamber, line width=0.8pt] (0, 0) -- (0, -0.2);
+    \draw[themeamber, line width=0.8pt] (-0.25, -0.2) -- (0.25, -0.2);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\bfseries, color=themeamber] at (0, 0.3) {H8};
+    \node[anchor=north, font=\tiny, align=center] at (0, -0.25) {
+      \textbf{\color{themeamber}主机 H8}\\[0.1em]
+      \color{themefg}IP: 200.1.1.30/24\\
+      \color{themegray}网关: 200.1.1.1
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 5. 底部考点总结卡片（无框通栏，宽裕呼吸感） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=-0.5cm, yshift=-3.6cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=4pt]
+      (-0.3, -0.4) rectangle (19.4, 2.8);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=19.0cm] at (0.0, 2.45) {
+      \small \textbf{\color{themecurve}核心考点精要与机制辨析：}\\[0.4em]
+      \scriptsize $\bullet$ \textbf{全流程穿越：一个 Web 请求的一生}：① \textbf{配置接入}（DHCP 获取客户机 IP/掩码/网关/DNS）$\to$ ② \textbf{网关解析}（ARP 广播获取默认网关 MAC）$\to$ ③ \textbf{域名解析}（递归/迭代 DNS 查询获取目标 IP 200.1.1.10）$\to$ ④ \textbf{端点建联}（TCP 三次握手 SYN $\to$ SYN+ACK $\to$ ACK）$\to$ ⑤ \textbf{应用交互}（HTTP GET 请求报文与 200 OK 响应）$\to$ ⑥ \textbf{释放连接}（TCP 四次挥手 FIN/ACK）。\\[0.3em]
+      \scriptsize $\bullet$ \textbf{五层协议体系分工与协同全景}：
+      \textbf{应用层}（HTTP 报文交互、DNS 名字解析）；
+      \textbf{传输层}（TCP 提供端到端可靠字节流、端口多路复用与拥塞控制）；
+      \textbf{网络层}（IP 数据报路由转发、CIDR 最长前缀匹配、TTL 逐跳递减）；
+      \textbf{数据链路层}（以太网帧封装、MAC 物理寻址、交换机自学习透明转发）；
+      \textbf{物理层}（调制与透明比特流传输）。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+\end{tikzpicture}

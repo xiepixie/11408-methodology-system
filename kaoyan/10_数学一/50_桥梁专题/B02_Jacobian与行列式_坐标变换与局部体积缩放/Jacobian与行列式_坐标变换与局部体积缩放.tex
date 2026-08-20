@@ -28,17 +28,17 @@ J_T(u)
 如果没有这座桥，Jacobian 很容易退化成一个“换元时别忘了乘的东西”，学生也就无法自行判断变换方向、奇异点和多分支。
 
 \section{先分清两个对象：Jacobian matrix 与 determinant}
-对
+对可微映射
 \[
 T:\mathbb R^n\to\mathbb R^m,
 \]
-Jacobian matrix 是 $DT_u$ 在坐标下的表示，维度为 $m\times n$。它记录每个输入方向局部被送到哪里。
+Jacobian matrix $J_T(u)$ 是导数线性映射 $DT_u$ 在所选坐标基下的矩阵表示，维度为 $m\times n$。它记录每个输入方向局部被送到哪里。
 
-只有 $m=n$ 时，才可以继续取
+只有 $m=n$ 时，才可以继续取 Jacobian determinant
 \[
-\det J_T(u).
+J(u):=\det J_T(u).
 \]
-行列式把一张完整的线性映射压缩成一个标量：局部满维小平行体的\textbf{有向体积倍率}。
+这里先固定符号边界：本册写 $J_T$ 时指完整 Jacobian matrix，写 $\det J_T$ 或 $J(u)$ 时才指 determinant。行列式把一张完整的线性映射压缩成一个标量：局部满维小平行体的\textbf{有向体积倍率}；其绝对值才是普通无向面积/体积倍率。
 
 因此：
 \[
@@ -61,22 +61,22 @@ DT_u(e_1)\,du,\qquad DT_u(e_2)\,dv.
 \]
 倍。因此普通面积只取大小：
 \[
-\boxed{dA_x=\lvert\det J_T(u)\rvert\,dA_u.}
+\boxed{\mathrm{d}A_x=\lvert\det J_T(u)\rvert\,\mathrm{d}A_u.}
 \]
-三维完全同理：determinant 是局部体积倍率。
+三维完全同理：determinant 是局部体积倍率。这里的微元式是局部缩放的压缩写法；真正的换元定理还必须同时控制区域覆盖与映射正则性。
 
 \section{换元公式不是“公式搬家”，而是总累积量保持不变}
 若 $(x,y)=T(u,v)$，原积分为
 \[
-\iint_{D_{xy}} f(x,y)\,dx\,dy.
+\iint_{D_{xy}} f(x,y)\,\mathrm{d}x\,\mathrm{d}y.
 \]
 换坐标以后，同一块几何区域被另一套网格编码。若 $T$ 在所用分片上足够光滑且一一，则
 \[
 \boxed{
-\iint_{D_{xy}}f(x,y)\,dxdy
+\iint_{D_{xy}}f(x,y)\,\mathrm{d}x\,\mathrm{d}y
 =
 \iint_{D_{uv}}f(T(u,v))\,
-\lvert\det J_T(u,v)\rvert\,dudv.
+\lvert\det J_T(u,v)\rvert\,\mathrm{d}u\,\mathrm{d}v.
 }
 \]
 这里真正保持的是\textbf{累积的几何/物理总量}；变的是区域编码、函数表示和局部微元。
@@ -133,15 +133,16 @@ J_T=
 \]
 于是
 \[
-dA=r\,dr\,d\theta.
+\mathrm{d}A=r\,\mathrm{d}r\,\mathrm{d}\theta.
 \]
-这个 $r$ 不是人为补偿：角度变化 $d\theta$ 在半径 $r$ 处对应的切向长度本来就是约 $r\,d\theta$，与径向厚度 $dr$ 相乘自然形成面积 $r\,dr\,d\theta$。
+这个 $r$ 不是人为补偿：角度变化 $\mathrm{d}\theta$ 在半径 $r$ 处对应的切向长度本来就是约 $r\,\mathrm{d}\theta$，与径向厚度 $\mathrm{d}r$ 相乘自然形成面积 $r\,\mathrm{d}r\,\mathrm{d}\theta$。
 
-在 $r=0$ 处 determinant 为零，说明角度坐标失去区分能力：所有 $\theta$ 都描述同一个原点。这正是“坐标退化”的几何含义。
+在 $r=0$ 处 determinant 为零，说明角度坐标失去区分能力：所有 $\theta$ 都描述同一个原点。这正是“坐标退化”的几何含义。注意这里的零点本身并不让整个极坐标积分失效；它是一个需要由换元定理和区域结构共同处理的退化点。
 
 \section{局部资格不等于全局覆盖}
 \subsection{$\det J_T\neq0$ 只给局部可逆性线索}
-它说明局部没有把满维方向压扁；在合适正则条件下可调用逆函数定理得到局部可逆。但它\textbf{不能单独保证整个区域上一一}。
+这里 $C^1$ 指一阶导数连续，也就是一阶连续可微。
+若 $T$ 在点附近为 $C^1$，且该点满足 $\det J_T\neq0$，逆函数定理给出局部可逆。它说明局部没有把满维方向压扁，但\textbf{不能单独保证整个区域上一一}。
 
 例如极坐标若让 $\theta$ 横跨多个完整周期，绝大多数点会被重复覆盖，即使 $r>0$ 处 Jacobian 非零。
 

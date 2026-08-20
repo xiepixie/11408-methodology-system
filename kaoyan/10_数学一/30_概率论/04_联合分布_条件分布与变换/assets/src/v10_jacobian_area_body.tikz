@@ -1,0 +1,120 @@
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ==================== Subplot 1: Original Space (X,Y) ====================
+\begin{scope}[x=2.5cm,y=2.5cm]
+  \begin{pgfonlayer}{background}
+    % 背景微元网格线
+    \draw[themegray, dashed, line width=0.6pt] (0.50,0) -- (0.50,1.75);
+    \draw[themegray, dashed, line width=0.6pt] (1.30,0) -- (1.30,1.75);
+    \draw[themegray, dashed, line width=0.6pt] (0,0.60) -- (1.90,0.60);
+    \draw[themegray, dashed, line width=0.6pt] (0,1.40) -- (1.90,1.40);
+
+    % 矩形微元 dA = dx dy
+    \fill[themeamber, fill opacity=0.25] (0.50,0.60) rectangle (1.30,1.40);
+    \draw[themeamber, line width=2.0pt] (0.50,0.60) rectangle (1.30,1.40);
+
+    % 边长标注花括号
+    \draw[themegray, decorate, decoration={brace, amplitude=3pt, mirror}]
+      (0.50,0.52) -- (1.30,0.52);
+    \draw[themegray, decorate, decoration={brace, amplitude=3pt}]
+      (0.42,0.60) -- (0.42,1.40);
+
+    % 坐标轴
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (-0.15,0) -- (2.35,0) node[below left=1pt] {$x$};
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (0,-0.15) -- (0,2.05) node[below left=1pt] {$y$};
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 标题
+    \node[font=\bfseries\small, color=themefg, anchor=south] at (1.10, 2.05)
+      {（1）原空间 $(X,Y)$：正交面积微元 $\mathrm{d}x\mathrm{d}y$};
+
+    % 微元四角点
+    \filldraw[fill=themeamber, draw=themebg, line width=0.7pt] (0.50,0.60) circle (1.8pt);
+    \filldraw[fill=themeamber, draw=themebg, line width=0.7pt] (1.30,0.60) circle (1.8pt);
+    \filldraw[fill=themeamber, draw=themebg, line width=0.7pt] (1.30,1.40) circle (1.8pt);
+    \filldraw[fill=themeamber, draw=themebg, line width=0.7pt] (0.50,1.40) circle (1.8pt);
+
+    \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (0.90, 0.44) {\footnotesize $\mathrm{d}x$};
+    \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=east] at (0.34, 1.00) {\footnotesize $\mathrm{d}y$};
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, font=\bfseries] at (0.90, 1.00)
+      {\footnotesize $\mathrm{d}A = \mathrm{d}x\,\mathrm{d}y$};
+
+    % 子图 1 专属说明
+    \node[text=themeamber, anchor=north] at (1.10, -0.22)
+      {\footnotesize $\blacksquare$ 原空间微元：$\mathrm{d}A = \mathrm{d}x\,\mathrm{d}y$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ==================== Central Mapping Arrow ====================
+\begin{scope}[xshift=6.0cm,yshift=2.5cm]
+  \begin{pgfonlayer}{foreground}
+    \draw[themecurve, line width=1.6pt, -{Stealth[length=2.8mm]}]
+      (0, 0) -- (1.30, 0)
+      node[midway, above=2pt, text=themecurve, font=\bfseries\small] {$T:(X,Y)\mapsto(U,V)$}
+      node[midway, below=2pt, text=themegray, font=\footnotesize] {局部线性化};
+  \end{pgfonlayer}
+\end{scope}
+
+% ==================== Subplot 2: Transformed Space (U,V) ====================
+\begin{scope}[xshift=7.5cm,x=2.5cm,y=2.5cm]
+  \coordinate (P0) at (0.45, 0.40);
+  \coordinate (P1) at ($(P0) + (1.10, 0.22)$);
+  \coordinate (P2) at ($(P0) + (1.45, 1.17)$);
+  \coordinate (P3) at ($(P0) + (0.35, 0.95)$);
+
+  \begin{pgfonlayer}{background}
+    \fill[themecurve, fill opacity=0.25] (P0) -- (P1) -- (P2) -- (P3) -- cycle;
+    \draw[themecurve, line width=2.0pt] (P0) -- (P1) -- (P2) -- (P3) -- cycle;
+
+    \draw[themeamber, line width=1.1pt, -{Stealth[length=1.8mm]}] (P0) -- (P1);
+    \draw[themealert, line width=1.1pt, -{Stealth[length=1.8mm]}] (P0) -- (P3);
+
+    % 坐标轴
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (-0.15,0) -- (2.45,0) node[below left=1pt] {$u$};
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (0,-0.15) -- (0,2.05) node[below left=1pt] {$v$};
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 标题
+    \node[font=\bfseries\small, color=themefg, anchor=south] at (1.15, 2.05)
+      {（2）变换空间 $(U,V)$：伸缩微元 $\mathrm{d}u\mathrm{d}v$};
+
+    % 四角点
+    \filldraw[fill=themecurve, draw=themebg, line width=0.7pt] (P0) circle (1.8pt);
+    \filldraw[fill=themecurve, draw=themebg, line width=0.7pt] (P1) circle (1.8pt);
+    \filldraw[fill=themecurve, draw=themebg, line width=0.7pt] (P2) circle (1.8pt);
+    \filldraw[fill=themecurve, draw=themebg, line width=0.7pt] (P3) circle (1.8pt);
+
+    \node[text=themeamber, fill=themebg, inner sep=0.6pt, anchor=north west] at ($(P0)!0.5!(P1)$)
+      {\scriptsize $\partial T/\partial x\,\mathrm{d}x$};
+    \node[text=themealert, fill=themebg, inner sep=0.6pt, anchor=south east] at ($(P0)!0.5!(P3)$)
+      {\scriptsize $\partial T/\partial y\,\mathrm{d}y$};
+
+    \node[text=themecurve, fill=themebg, inner sep=0.8pt, font=\bfseries] at (1.15, 1.00)
+      {\footnotesize $\mathrm{d}u\mathrm{d}v = |J|\,\mathrm{d}x\mathrm{d}y$};
+
+    % 子图 2 专属说明
+    \node[text=themecurve, anchor=north] at (1.15, -0.22)
+      {\footnotesize $\blacksquare$ 面积伸缩率：$|J| = \left|\det\frac{\partial(u,v)}{\partial(x,y)}\right|$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ==================== Bottom Global Takeaway ====================
+\begin{pgfonlayer}{foreground}
+  \node[
+    anchor=north,
+    text=themefg
+  ] at (6.8, -1.30)
+    {\footnotesize \textbf{变量代换公式：} 微元概率守恒 $f_{U,V}\,\mathrm{d}u\mathrm{d}v = f_{X,Y}\,\mathrm{d}x\mathrm{d}y \implies f_{U,V}(u,v) = f_{X,Y}(x(u,v),y(u,v))\cdot |J^{-1}|$};
+\end{pgfonlayer}
+
+\end{tikzpicture}

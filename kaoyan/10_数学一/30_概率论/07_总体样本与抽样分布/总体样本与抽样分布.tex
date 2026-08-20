@@ -29,6 +29,17 @@
 \definecolor{warn}{RGB}{136,68,63}
 \definecolor{purple}{RGB}{87,72,116}
 
+% ── 双主题图解语义色彩（LaTeX 打印高对比白底）──
+\definecolor{themebg}{HTML}{FFFFFF}
+\definecolor{themefg}{HTML}{111111}
+\definecolor{themegray}{HTML}{666666}
+\definecolor{themecurve}{HTML}{1D63B8}
+\definecolor{themealert}{HTML}{C53030}
+\definecolor{themeamber}{HTML}{B86E00}
+
+\newenvironment{handbookdiagram}{\par\vspace{0.4em}\noindent\begin{center}}{\end{center}\vspace{0.4em}}
+\newcommand{\diagramcaption}[1]{\par\vspace{0.3em}{\small\textbf{#1}}}
+
 \hypersetup{
   colorlinks=true,
   linkcolor=deep,
@@ -64,7 +75,10 @@
 主线推演逻辑：
 \[
 \boxed{
-\text{总体 } X \xrightarrow{\text{i.i.d. 抽样}} \text{样本 } (X_1,\dots,X_n) \xrightarrow{\text{压缩}} \text{统计量 } \bar X, S^2 \xrightarrow{\text{正态精确推导}} \chi^2(n-1) \text{ 与 } t(n-1) \text{ 与 } F(m,n)
+\begin{gathered}
+\text{总体 } X \xrightarrow{\text{i.i.d. 抽样}} \text{样本 } (X_1,\dots,X_n) \xrightarrow{\text{信息压缩}} \text{统计量 } \bar X, S^2\\
+\xrightarrow{\text{正态精确推导}} \chi^2(n-1) \text{ 与 } t(n-1) \text{ 与 } F(m,n)
+\end{gathered}
 }
 \]
 \end{corebox}
@@ -119,6 +133,11 @@ E(\bar X)=\mu,\qquad \operatorname{Var}(\bar X)=\frac{\sigma^2}{n},\qquad E(S^2)
 \boxed{\sum_{i=1}^n(X_i-\mu)^2=\sum_{i=1}^n(X_i-\bar X)^2+n(\bar X-\mu)^2}.
 \]
 第二式的交叉项消失源于 $\sum_i(X_i-\bar X)=0$。离差向量因此落在一个 $n-1$ 维子空间，解释了 $S^2$ 的分母与卡方自由度。
+
+\begin{handbookdiagram}
+\input{assets/src/v15_sample_orthogonal_decomposition_body.tikz}
+\diagramcaption{图 7.1\quad 样本向量正交分解与自由度几何（V15）：均值方向与残差超平面的正交独立性}
+\end{handbookdiagram}
 
 \begin{methodbox}{中心化残差的几何约束与协方差}
 令 $Y_i=X_i-\bar X$。中心化不是逐个独立变换：恒等式
@@ -204,6 +223,11 @@ F=\frac{U/\nu_1}{V/\nu_2}\sim F(\nu_1,\nu_2),\qquad \frac1F\sim F(\nu_2,\nu_1).
 \]
 $F$ 的支持为正，分子、分母自由度不可交换；倒数关系决定分位点换序。
 
+\begin{handbookdiagram}
+\input{assets/src/v16_sampling_distributions_lineage_body.tikz}
+\diagramcaption{图 7.2\quad 三大抽样分布生成谱系架构（V16）：从标准正态到 $\chi^2, t, F$ 的代数生成关系}
+\end{handbookdiagram}
+
 三大分布的密度与矩存在边界也属于抽样分布接口。$t(\nu)$ 密度为
 \[
 f_T(t)=\frac{\Gamma((\nu+1)/2)}{\sqrt{\nu\pi}\,\Gamma(\nu/2)}
@@ -227,6 +251,11 @@ t_{1-\alpha}(\nu)=-t_\alpha(\nu),
 F_{1-\alpha}(\nu_1,\nu_2)=\frac1{F_\alpha(\nu_2,\nu_1)}.
 \]
 查表前先确认是上尾还是下尾，双侧问题要拆成 $\alpha/2$。
+
+\begin{handbookdiagram}
+\input{assets/src/v17_quantiles_and_symmetry_body.tikz}
+\diagramcaption{图 7.3\quad 抽样分布分位点与对称/倒数反演（V17）：$t$ 负号对称、$F$ 倒数换序与 $\chi^2$ 非对称单尾}
+\end{handbookdiagram}
 
 \section{第五层：正态总体的正交分解与精确抽样分布}
 
@@ -507,9 +536,8 @@ T=\frac{\bar X-\mu}{S/\sqrt n}\sim t(n-1).
 \section{一页压缩}
 
 \begin{corebox}{一句话总结}
-\[
-\boxed{\text{样本均值除以未知方差生成 } t \text{ 分布，样本方差除以总体方差生成 } \chi^2 \text{ 分布，正态样本均值与方差独立。}}
-\]
+\centering
+\textbf{样本均值除以未知方差生成 $t$ 分布，样本方差除以总体方差生成 $\chi^2$ 分布，正态样本均值与方差严格独立。}
 \end{corebox}
 
 \begin{examplebox}{完全相关的正态变量先校准斜率：2008 真题}

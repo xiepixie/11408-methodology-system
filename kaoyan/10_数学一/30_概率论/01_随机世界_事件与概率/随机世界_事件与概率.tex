@@ -19,6 +19,17 @@
 \definecolor{accent}{RGB}{104,76,55}\definecolor{greenish}{RGB}{57,92,76}
 \definecolor{warn}{RGB}{136,68,63}\definecolor{purple}{RGB}{87,72,116}
 
+% ── 双主题图解语义色彩（LaTeX 打印高对比白底）──
+\definecolor{themebg}{HTML}{FFFFFF}
+\definecolor{themefg}{HTML}{111111}
+\definecolor{themegray}{HTML}{666666}
+\definecolor{themecurve}{HTML}{1D63B8}
+\definecolor{themealert}{HTML}{C53030}
+\definecolor{themeamber}{HTML}{B86E00}
+
+\newenvironment{handbookdiagram}{\par\vspace{0.4em}\noindent\begin{center}}{\end{center}\vspace{0.4em}}
+\newcommand{\diagramcaption}[1]{\par\vspace{0.3em}{\small\textbf{#1}}}
+
 \hypersetup{colorlinks=true,linkcolor=deep,urlcolor=accent,pdftitle={随机世界：事件与概率}}
 \pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{数学一 · 概率统计 Topic 01}}
 \rhead{\small\color{deep}随机世界 · 事件 · 概率}\cfoot{\small\thepage}\renewcommand{\headrulewidth}{0.4pt}
@@ -155,6 +166,12 @@ $A$ 不发生 & $A^c=\Omega\setminus A$ & 补集依赖当前样本空间 \\
 \boxed{A=(A\cap B)\mathbin{\dot\cup}(A\cap B^c).}
 \]
 后一个恒等式是差事件、全概率和许多分类讨论的共同骨架。
+
+\begin{handbookdiagram}
+\resizebox{0.92\linewidth}{!}{%
+\input{assets/src/v01_set_venn_and_event_algebra_body.tikz}%
+}
+\end{handbookdiagram}
 
 \subsection{两个、三个与 $n$ 个事件的量词翻译}
 
@@ -386,6 +403,12 @@ P(\text{乙箱再抽到次品})
 \boxed{P(A)=\frac{\mu(A)}{\mu(\Omega)}}
 \]
 其中 $\mu$ 可以是长度、面积、体积等。它要求事件可测、$0<\mu(\Omega)<\infty$，并且“均匀”有明确含义。能画出区域不等于可以套几何概型；在整个无界直线上也不存在平移不变且总质量为一的均匀分布。
+
+\begin{handbookdiagram}
+\resizebox{0.92\linewidth}{!}{%
+\input{assets/src/v02_geometric_probability_measure_body.tikz}%
+}
+\end{handbookdiagram}
 
 \begin{corebox}{统一视角}
 古典概型用计数测度，几何概型用几何测度；二者都是

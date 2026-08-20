@@ -1,0 +1,91 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 左图: 三维曲面局部切平面与全微分几何贴合 ──
+\begin{scope}[shift={(0,-0.4)}]
+    \node[font=\footnotesize\bfseries, align=center] at (2.5, 4.8) {多元局部模型：切平面与全微分 $dz$};
+
+    % 曲面透视简图
+    \draw[themecurve, line width=1.5pt] (0.2, 0.8) to[out=20, in=200] (2.5, 2.4) to[out=20, in=160] (4.8, 1.4);
+    \draw[themecurve, line width=1.2pt] (0.2, 0.8) to[out=-40, in=140] (2.2, -0.2) to[out=-40, in=200] (4.8, 1.4);
+
+    % 切平面平行四边形 (使用 themeamber!25!themebg 避免白光)
+    \fill[themeamber!25!themebg] (0.8, 1.0) -- (3.6, 1.4) -- (4.2, 2.8) -- (1.4, 2.4) -- cycle;
+    \draw[themeamber, line width=1.4pt] (0.8, 1.0) -- (3.6, 1.4) -- (4.2, 2.8) -- (1.4, 2.4) -- cycle;
+    \node[text=themeamber, font=\scriptsize\bfseries] at (4.0, 3.0) {切平面};
+
+    % 切点 P0
+    \coordinate (P0) at (2.5, 1.9);
+    \fill[themefg] (P0) circle (2pt);
+    \node[font=\scriptsize\bfseries, anchor=north east] at (2.35, 1.75) {$P_0$};
+
+    % 偏导切线 fx 与 fy
+    \draw[-{Stealth[length=2.5mm]}, themealert, line width=1.6pt] (P0) -- ++(1.2, 0.15) node[anchor=west, font=\scriptsize\bfseries] {$f_x$};
+    \draw[-{Stealth[length=2.5mm]}, themealert, line width=1.6pt] (P0) -- ++(-0.7, 0.5) node[anchor=east, font=\scriptsize\bfseries] {$f_y$};
+
+    % 任意方向导数 fl
+    \draw[-{Stealth[length=2.5mm]}, themecurve, line width=1.8pt] (P0) -- ++(0.7, 0.7) node[anchor=south west, font=\scriptsize\bfseries] {$\frac{\partial f}{\partial \vec{l}}$};
+
+    % 法向量
+    \draw[-{Stealth[length=2.5mm]}, themefg, line width=1.6pt] (P0) -- ++(-0.4, 1.5) node[anchor=south, font=\scriptsize\bfseries] {$\vec{n}=(-f_x,-f_y,1)$};
+
+    \node[font=\scriptsize, align=center] at (2.5, -0.9) {
+        \textbf{可微定义}：$\Delta z = f_x\Delta x + f_y\Delta y + o(\rho)$\\[2pt]
+        切平面在全方位邻域内对曲面的最佳线性逼近
+    };
+\end{scope}
+
+% ── 右图: 逻辑蕴含与反例断裂关系网络 ──
+\begin{scope}[shift={(7.2,-0.4)}]
+    \node[font=\footnotesize\bfseries, align=center] at (2.8, 4.8) {多元微分核心概念逻辑关系链};
+
+    % 节点 1: 偏导连续 C^1
+    \node[draw=themecurve, rounded corners=3pt, fill=themecurve!15!themebg, line width=1.2pt, font=\scriptsize\bfseries, inner sep=4pt] (nC1) at (2.8, 3.5) {偏导数连续 ($f\in C^1$)};
+
+    % 节点 2: 全微分存在 (可微)
+    \node[draw=themeamber, rounded corners=3pt, fill=themeamber!15!themebg, line width=1.4pt, font=\scriptsize\bfseries, inner sep=4pt] (nDiff) at (2.8, 2.1) {可微 ($df$ 存在)};
+
+    % 节点 3: 连续
+    \node[draw=themegray, rounded corners=3pt, fill=themegray!15!themebg, line width=1pt, font=\scriptsize\bfseries, inner sep=4pt] (nCont) at (0.9, 0.7) {函数连续};
+
+    % 节点 4: 各方向导数存在
+    \node[draw=themegray, rounded corners=3pt, fill=themegray!15!themebg, line width=1pt, font=\scriptsize\bfseries, inner sep=4pt] (nDir) at (4.7, 0.7) {方向导数存在};
+
+    % 节点 5: 偏导数存在
+    \node[draw=themealert, rounded corners=3pt, fill=themealert!15!themebg, line width=1.2pt, font=\scriptsize\bfseries, inner sep=4pt] (nPart) at (2.8, -0.6) {偏导数存在 ($f_x, f_y$)};
+
+    % 蕴含箭头
+    \draw[-{Stealth[length=2.5mm]}, themecurve, line width=1.5pt] (nC1) -- (nDiff);
+    \draw[-{Stealth[length=2.5mm]}, themeamber, line width=1.4pt] (nDiff) -- (nCont);
+    \draw[-{Stealth[length=2.5mm]}, themeamber, line width=1.4pt] (nDiff) -- (nDir);
+    \draw[-{Stealth[length=2.5mm]}, themegray, line width=1.2pt] (nDir) -- (nPart);
+
+    % 反向不成立指示 (红色虚线)
+    \draw[themealert, dashed, line width=1.2pt, -{Stealth}] (nPart) to[out=160, in=-90] node[left, font=\tiny\bfseries, text=themealert] {$\not\implies$} (nCont);
+    \draw[themealert, dashed, line width=1.2pt, -{Stealth}] (nCont) to[out=55, in=-145] node[above, font=\tiny\bfseries, text=themealert] {$\not\implies$} (nDiff);
+    \draw[themealert, dashed, line width=1.2pt, -{Stealth}] (nDir) to[out=125, in=-35] node[above, font=\tiny\bfseries, text=themealert] {$\not\implies$} (nDiff);
+\end{scope}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

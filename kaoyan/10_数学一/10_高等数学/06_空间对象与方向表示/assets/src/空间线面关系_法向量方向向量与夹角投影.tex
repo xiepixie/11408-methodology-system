@@ -1,0 +1,100 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 左图: 平面法向量与点向式直线 ──
+\begin{scope}[shift={(0,0)}]
+    \node[font=\footnotesize\bfseries, align=center] at (2.4, 4.0) {点法式平面与点向式直线};
+
+    % 平面网格四边形
+    \fill[themecurve!15!themebg] (0,0) -- (3.6,0.5) -- (4.8,2.2) -- (1.2,1.7) -- cycle;
+    \draw[themecurve, line width=1.5pt] (0,0) -- (3.6,0.5) -- (4.8,2.2) -- (1.2,1.7) -- cycle;
+    \node[text=themecurve, font=\small\bfseries] at (4.3, 0.7) {平面 $\Pi$};
+
+    % 基点 P0
+    \coordinate (P0) at (2.0, 1.0);
+    \fill[themefg] (P0) circle (2pt);
+    \node[font=\scriptsize, fill=themebg, inner sep=0.8pt, anchor=north east] at (1.9, 0.9) {$P_0(x_0,y_0,z_0)$};
+
+    % 法向量 n (竖直向上)
+    \draw[-{Stealth[length=3mm]}, themealert, line width=2pt] (P0) -- ++(0, 2.3) node[anchor=south, font=\small\bfseries] {$\vec{n}=(A,B,C)$};
+
+    % 直角标记
+    \draw[themegray, line width=1pt] ($(P0)+(0,0.3)$) -- ++(0.3,0.04) -- ++(0,-0.3);
+
+    % 直线 L (穿过平面，朝右上方倾斜)
+    \draw[themeamber, dashed, line width=1.6pt] (0.8, -0.2) -- (P0);
+    \draw[-{Stealth[length=3mm]}, themeamber, line width=2pt] (P0) -- (3.8, 2.2) node[anchor=west, font=\small\bfseries] {$\vec{s}=(m,n,p)$};
+
+    % 公式说明
+    \node[font=\scriptsize, fill=themebg, inner sep=1pt, align=center] at (2.4, -0.9) {
+        $\Pi: A(x-x_0)+B(y-y_0)+C(z-z_0)=0$\\[3pt]
+        $L: \frac{x-x_0}{m}=\frac{y-y_0}{n}=\frac{z-z_0}{p}$
+    };
+\end{scope}
+
+% ── 右图: 线面角 vs 面面角 (直角互余几何本质) ──
+\begin{scope}[shift={(6.8,0)}]
+    \node[font=\footnotesize\bfseries, align=center] at (2.4, 4.0) {线面角 $\varphi$ 与法向夹角互余本质};
+
+    % 平面底面
+    \fill[themecurve!15!themebg] (0,0) -- (3.8,0.4) -- (4.8,2.0) -- (1.0,1.6) -- cycle;
+    \draw[themecurve, line width=1.5pt] (0,0) -- (3.8,0.4) -- (4.8,2.0) -- (1.0,1.6) -- cycle;
+    \node[text=themecurve, font=\scriptsize] at (0.8, 0.4) {平面 $\Pi$};
+
+    \coordinate (O) at (2.2, 0.85);
+    \fill[themefg] (O) circle (1.8pt);
+
+    % 法向量 n (垂直向上)
+    \coordinate (N) at (2.2, 3.2);
+    \draw[-{Stealth[length=3mm]}, themealert, line width=1.8pt] (O) -- (N) node[anchor=south, font=\scriptsize\bfseries] {$\vec{n}$};
+
+    % 直线向量 s
+    \coordinate (S) at (4.0, 2.4);
+    \draw[-{Stealth[length=3mm]}, themeamber, line width=1.8pt] (O) -- (S) node[anchor=west, font=\scriptsize\bfseries] {$\vec{s}$ (直线 $L$)};
+
+    % 直线在平面的投影 L'
+    \coordinate (Sp) at (3.8, 1.1);
+    \draw[themegray, dashed, line width=1.2pt] (O) -- (Sp) node[anchor=south west, font=\tiny] {$L'$ 投影};
+    \draw[themegray, dashed, line width=1pt] (S) -- (Sp);
+
+    % 直角标记 (投影与法线垂直)
+    \draw[themegray, line width=0.8pt] ($(O)+(0,0.3)$) -- ++(0.3,0.04) -- ++(0,-0.3);
+
+    % 角度弧线: 线面角 phi (直线与投影夹角)
+    \draw[themecurve, line width=1.3pt] ($(O)+(0.8,0.11)$) arc[start angle=8, end angle=38, radius=0.8];
+    \node[text=themecurve, font=\scriptsize\bfseries] at ($(O)+(1.05,0.28)$) {$\varphi$};
+
+    % 角度弧线: 向量夹角 (s 与 n 夹角)
+    \draw[themealert, line width=1.3pt] ($(O)+(0,0.8)$) arc[start angle=90, end angle=42, radius=0.8];
+    \node[text=themealert, font=\scriptsize] at ($(O)+(0.38,1.0)$) {$\frac{\pi}{2}-\varphi$};
+
+    % 公式说明
+    \node[font=\scriptsize, fill=themebg, inner sep=1pt, align=center] at (2.4, -0.9) {
+        \textbf{线面角 (互余取正弦)}：$\sin\varphi = \frac{|\vec{s}\cdot\vec{n}|}{|\vec{s}||\vec{n}|}$\\[3pt]
+        \textbf{面面角 (同向取余弦)}：$\cos\theta = \frac{|\vec{n}_1\cdot\vec{n}_2|}{|\vec{n}_1||\vec{n}_2|}$
+    };
+\end{scope}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

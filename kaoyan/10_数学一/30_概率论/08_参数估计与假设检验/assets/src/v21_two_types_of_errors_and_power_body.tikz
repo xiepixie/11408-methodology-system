@@ -1,0 +1,138 @@
+% ── V21 H0/H1 功效世界 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 1. 上层：H0 假设世界 (\mu = \mu_0) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0cm]
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themealert] at (4.8, 7.45) {
+      \textbf{\footnotesize 1. $H_0$ 假设世界（$\mu = \mu_0$）：校准第一类错误 $\alpha$}
+    };
+  \end{pgfonlayer}
+
+  % 背景层：坐标轴与拒绝域阴影
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (0.8, 4.6) -- (8.8, 4.6) node[right] {\footnotesize $\bar X$};
+    \draw[->, color=themegray, line width=0.8pt] (1.2, 4.6) -- (1.2, 7.0) node[above=1pt] {\scriptsize $f_0(\bar x)$};
+
+    % 弃真错误阴影 (\alpha): 4.6 到 6.2
+    \fill[fill=themealert!35!themebg, domain=4.6:6.2, variable=\x]
+      (4.6, 4.6) -- plot(\x, {4.6 + 2.2/(1 + 2.5*(\x-3.2)^2)}) -- (6.2, 4.6) -- cycle;
+
+    % 临界阈值垂线 c = 4.6 (贯穿上下两个世界)
+    \draw[color=themealert, dashed, line width=1.0pt] (4.6, 1.1) -- (4.6, 6.9);
+  \end{pgfonlayer}
+
+  % 主体曲线 (main 层)
+  \draw[color=themefg!80!themebg, line width=1.5pt, domain=1.0:6.0, samples=60, smooth]
+    plot(\x, {4.6 + 2.2/(1 + 2.5*(\x-3.2)^2)});
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    % 阈值标签
+    \node[anchor=south, fill=themebg, inner sep=1.2pt, text=themealert] at (4.6, 6.95) {\scriptsize 临界阈值 $c$};
+
+    % 错误标注
+    \node[anchor=south west, text=themealert] at (4.7, 5.1) {\scriptsize 第一类错误 $\alpha$};
+    \node[anchor=south, text=themegray] at (2.6, 5.1) {\scriptsize 正确接受 $1-\alpha$};
+
+    % 坐标轴刻度
+    \fill[color=themefg] (3.2, 4.6) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $\mu_0$};
+    \fill[color=themealert] (4.6, 4.6) circle (1.8pt) node[anchor=north, text=themealert] {\scriptsize $c$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 2. 下层：H1 真实世界 (\mu = \mu_1 > \mu_0) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0cm]
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themecurve] at (4.8, 3.95) {
+      \textbf{\footnotesize 2. $H_1$ 真实世界（$\mu = \mu_1 > \mu_0$）：计算取伪错误 $\beta$ 与功效}
+    };
+  \end{pgfonlayer}
+
+  % 背景层：坐标轴与双区域阴影
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (0.8, 1.2) -- (8.8, 1.2) node[right] {\footnotesize $\bar X$};
+    \draw[->, color=themegray, line width=0.8pt] (1.2, 1.2) -- (1.2, 3.6) node[above=1pt] {\scriptsize $f_1(\bar x)$};
+
+    % 取伪错误阴影 (\beta): 3.2 到 4.6
+    \fill[fill=themeamber!35!themebg, domain=3.2:4.6, variable=\x]
+      (3.2, 1.2) -- plot(\x, {1.2 + 2.2/(1 + 2.5*(\x-5.8)^2)}) -- (4.6, 1.2) -- cycle;
+
+    % 功效阴影 (1-\beta): 4.6 到 8.2
+    \fill[fill=themecurve!35!themebg, domain=4.6:8.2, variable=\x]
+      (4.6, 1.2) -- plot(\x, {1.2 + 2.2/(1 + 2.5*(\x-5.8)^2)}) -- (8.2, 1.2) -- cycle;
+  \end{pgfonlayer}
+
+  % 主体曲线 (main 层)
+  \draw[color=themecurve, line width=1.5pt, domain=3.0:8.6, samples=60, smooth]
+    plot(\x, {1.2 + 2.2/(1 + 2.5*(\x-5.8)^2)});
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    % 区域标注
+    \node[anchor=south east, text=themeamber] at (4.5, 1.5) {\scriptsize 第二类错误 $\beta$};
+    \node[anchor=south, text=themecurve] at (6.5, 1.7) {\scriptsize 检验功效 $1-\beta$};
+
+    % 坐标轴刻度
+    \fill[color=themealert] (4.6, 1.2) circle (1.8pt) node[anchor=north, text=themealert] {\scriptsize $c$};
+    \fill[color=themecurve] (5.8, 1.2) circle (1.8pt) node[anchor=north, text=themecurve] {\scriptsize $\mu_1$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 3. 右侧机制卡片栏 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=9.4cm, yshift=0cm]
+  % 卡片 1: 阈值权衡
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!8!themebg, draw=themeamber, line width=0.8pt, rounded corners=3pt]
+      (0, 4.3) rectangle (5.6, 7.3);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=5.2cm] at (0.2, 7.15) {
+      \footnotesize \textbf{\color{themeamber}机制一：阈值移动权衡}\\[0.3em]
+      \scriptsize 固定样本量 $n$ 时：\\[0.2em]
+      $\bullet$ 门槛 $c \uparrow \implies \alpha \downarrow,\ \beta \uparrow$（保守弃真，扩大取伪）\\[0.2em]
+      $\bullet$ 门槛 $c \downarrow \implies \alpha \uparrow,\ \beta \downarrow$（激进拒绝，压缩取伪）
+    };
+  \end{pgfonlayer}
+
+  % 卡片 2: 样本量双降
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!8!themebg, draw=themecurve, line width=0.8pt, rounded corners=3pt]
+      (0, 0.9) rectangle (5.6, 3.9);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=5.2cm] at (0.2, 3.75) {
+      \footnotesize \textbf{\color{themecurve}机制二：增大样本量 $n$ 双降}\\[0.3em]
+      \scriptsize 标准误 $\operatorname{SE}(\bar X) = \frac{\sigma}{\sqrt n}$ 随 $n$ 衰减：\\[0.2em]
+      $\bullet$ $H_0$ 与 $H_1$ 两峰迅速变窄、互不重叠\\[0.2em]
+      $\bullet$ 可同时降低 $\alpha$ 与 $\beta$，大幅提升检验功效 $1-\beta$
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 4. 底部全图全局总结 (无框轻量排印) ──
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.5, -0.65) {
+    \footnotesize \textbf{错误权衡法则：} $\alpha$ 在 $H_0$ 世界校准，$\beta$ 在 $H_1$ 真实世界计算。固定样本量移动阈值 $\alpha,\beta$ 此消彼长；唯有增大样本量 $n$ 压缩方差可实现两类错误同时降低。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

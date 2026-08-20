@@ -1,0 +1,105 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 左图: 单个微元闭环逆时针环流量 ──
+\begin{scope}[shift={(0,0)}]
+    \node[font=\footnotesize\bfseries, align=center] at (2.4, 4.4) {单微元环流与旋度 (2D 旋度)};
+
+    % 方块背景
+    \fill[themecurve!25!themebg] (0.8, 1.0) rectangle (3.8, 3.4);
+
+    % 四条边逆时针箭头
+    \draw[-{Stealth[length=2.5mm]}, themecurve, line width=1.8pt] (0.8, 1.0) -- (2.5, 1.0);
+    \draw[themecurve, line width=1.8pt] (2.5, 1.0) -- (3.8, 1.0);
+    \node[font=\tiny\bfseries, anchor=north] at (2.3, 0.95) {$P(x,y)\,dx$};
+
+    \draw[-{Stealth[length=2.5mm]}, themecurve, line width=1.8pt] (3.8, 1.0) -- (3.8, 2.4);
+    \draw[themecurve, line width=1.8pt] (3.8, 2.4) -- (3.8, 3.4);
+    \node[font=\tiny\bfseries, anchor=west] at (3.85, 2.2) {$Q(x+dx,y)\,dy$};
+
+    \draw[-{Stealth[length=2.5mm]}, themecurve, line width=1.8pt] (3.8, 3.4) -- (2.1, 3.4);
+    \draw[themecurve, line width=1.8pt] (2.1, 3.4) -- (0.8, 3.4);
+    \node[font=\tiny\bfseries, anchor=south] at (2.3, 3.45) {$-P(x,y+dy)\,dx$};
+
+    \draw[-{Stealth[length=2.5mm]}, themecurve, line width=1.8pt] (0.8, 3.4) -- (0.8, 2.0);
+    \draw[themecurve, line width=1.8pt] (0.8, 2.0) -- (0.8, 1.0);
+    \node[font=\tiny\bfseries, anchor=east] at (0.75, 2.2) {$-Q(x,y)\,dy$};
+
+    % 中心旋度
+    \node[text=themealert, font=\scriptsize\bfseries, align=center] at (2.3, 2.2) {微元环流\\$\left(\frac{\partial Q}{\partial x}-\frac{\partial P}{\partial y}\right)dxdy$};
+
+    % 底部说明
+    \node[font=\scriptsize, align=center] at (2.3, -0.4) {
+        四边线积分代数和 $= \left(\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}\right)dx\,dy$
+    };
+\end{scope}
+
+% ── 右图: 区域网格拼接内部抵消与边界累积 ──
+\begin{scope}[shift={(6.8,0)}]
+    \node[font=\footnotesize\bfseries, align=center] at (2.5, 4.4) {网格拼接：内边反向完全抵消，只余外边界};
+
+    % 区域平滑外轮廓底色
+    \fill[themeamber!20!themebg] (0.5, 0.7) rectangle (4.5, 3.7);
+
+    % 3x3 拼接小格子
+    \foreach \i in {0,1,2} {
+        \foreach \j in {0,1,2} {
+            \pgfmathsetmacro{\xlo}{0.6 + \i*1.3}
+            \pgfmathsetmacro{\xhi}{\xlo + 1.2}
+            \pgfmathsetmacro{\ylo}{0.8 + \j*0.95}
+            \pgfmathsetmacro{\yhi}{\ylo + 0.85}
+
+            % 小格逆时针箭头
+            \draw[-{Stealth[length=2mm]}, themegray, line width=1pt] (\xlo, \ylo) -- ($(\xlo, \ylo)!0.6!(\xhi, \ylo)$);
+            \draw[themegray, line width=1pt] ($(\xlo, \ylo)!0.6!(\xhi, \ylo)$) -- (\xhi, \ylo);
+
+            \draw[-{Stealth[length=2mm]}, themegray, line width=1pt] (\xhi, \ylo) -- ($(\xhi, \ylo)!0.6!(\xhi, \yhi)$);
+            \draw[themegray, line width=1pt] ($(\xhi, \ylo)!0.6!(\xhi, \yhi)$) -- (\xhi, \yhi);
+
+            \draw[-{Stealth[length=2mm]}, themegray, line width=1pt] (\xhi, \yhi) -- ($(\xhi, \yhi)!0.6!(\xlo, \yhi)$);
+            \draw[themegray, line width=1pt] ($(\xhi, \yhi)!0.6!(\xlo, \yhi)$) -- (\xlo, \yhi);
+
+            \draw[-{Stealth[length=2mm]}, themegray, line width=1pt] (\xlo, \yhi) -- ($(\xlo, \yhi)!0.6!(\xlo, \ylo)$);
+            \draw[themegray, line width=1pt] ($(\xlo, \yhi)!0.6!(\xlo, \ylo)$) -- (\xlo, \ylo);
+        }
+    }
+
+    % 外边界高亮粗实线
+    \draw[-{Stealth[length=3mm]}, themeamber, line width=2.2pt] (0.6, 0.8) -- (4.5, 0.8);
+    \draw[-{Stealth[length=3mm]}, themeamber, line width=2.2pt] (4.5, 0.8) -- (4.5, 3.65);
+    \draw[-{Stealth[length=3mm]}, themeamber, line width=2.2pt] (4.5, 3.65) -- (0.6, 3.65);
+    \draw[-{Stealth[length=3mm]}, themeamber, line width=2.2pt] (0.6, 3.65) -- (0.6, 0.8);
+
+    \node[text=themeamber, font=\small\bfseries] at (2.5, 3.9) {外边界 $\oint_{\partial D^+} Pdx+Qdy$};
+
+    \node[text=themealert, font=\scriptsize\bfseries] at (2.5, 2.2) {内边反向抵消 $\sum = 0$};
+
+    % 底部公式
+    \node[font=\scriptsize, align=center] at (2.5, -0.4) {
+        $\boxed{\iint_D \left(\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}\right)dx\,dy = \oint_{\partial D^+} Pdx + Qdy}$
+    };
+\end{scope}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

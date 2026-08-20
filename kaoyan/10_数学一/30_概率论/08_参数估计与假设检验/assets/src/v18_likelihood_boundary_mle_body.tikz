@@ -1,0 +1,102 @@
+% ── V18 似然截断边界 MLE ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 子图 1: 固定支撑（光滑对数似然与内部驻点） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0cm]
+  % 背景层：坐标轴与辅助线
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (-0.2, 0) -- (6.6, 0) node[right] {\footnotesize $\theta$};
+    \draw[->, color=themegray, line width=0.8pt] (0.3, 0) -- (0.3, 3.2) node[above=1pt] {\scriptsize $\ell(\theta)$};
+
+    % 驻点垂线与切线
+    \draw[color=themecurve, dashed, line width=0.8pt] (3.0, 0) -- (3.0, 2.5);
+    \draw[color=themeamber, line width=1.0pt] (1.8, 2.5) -- (4.2, 2.5)
+      node[midway, above=1pt, text=themeamber] {\scriptsize 水平切线 $\ell'(\theta)=0$};
+  \end{pgfonlayer}
+
+  % 主体曲线 (main 层)
+  \draw[color=themecurve, line width=1.5pt, domain=0.8:5.2, samples=50, smooth]
+    plot(\x, {2.5 - 0.5*(\x - 3.0)^2});
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themecurve] at (3.3, 3.45) {\textbf{\footnotesize 1. 固定支撑：内部求导驻点}};
+    
+    % 驻点标记
+    \fill[color=themecurve] (3.0, 2.5) circle (2.2pt);
+    \fill[color=themecurve] (3.0, 0) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $\widehat{\theta}_{\mathrm{MLE}}$};
+
+    % 核心反演法则卡片
+    \node[anchor=north, fill=themefg!8!themebg, draw=themecurve, line width=0.8pt, rounded corners=2pt, text width=6.2cm, align=center] at (3.3, -0.65) {
+      \footnotesize \textbf{\color{themecurve}得分方程内部驻点}\\[0.15em]
+      \scriptsize 支撑与参数无关，对数似然 $\ell(\theta)$ 处处光滑可导\\[0.1em]
+      \scriptsize 得分方程：$\ell'(\theta) = \frac{\partial}{\partial\theta} \ln L(\theta) = 0 \implies \widehat{\theta}_{\mathrm{MLE}}$
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 子图 2: 参数相关支撑（指示函数截断与边界极值） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=8.0cm, yshift=0cm]
+  % 背景层：坐标轴与可行域阴影
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (-0.2, 0) -- (6.6, 0) node[right] {\footnotesize $\theta$};
+    \draw[->, color=themegray, line width=0.8pt] (0.3, 0) -- (0.3, 3.2) node[above=1pt] {\scriptsize $L(\theta)$};
+
+    % 可行域高亮 [X_{(n)}, +\infty)
+    \fill[fill=themeamber!20!themebg] (2.4, 0) rectangle (6.2, 0.15);
+    \draw[color=themeamber, dashed, line width=0.8pt] (2.4, 0) -- (2.4, 2.6);
+  \end{pgfonlayer}
+
+  % 主体曲线 (main 层)
+  % 可行域外 L = 0
+  \draw[color=themegray, line width=1.2pt] (0.3, 0) -- (2.35, 0);
+  % 截断跳跃与可行域单调递减曲线 L(\theta) ~ \theta^{-n}
+  \draw[color=themeamber, line width=1.5pt, domain=2.4:5.8, samples=50, smooth]
+    plot(\x, {2.6 / (1 + 0.9*(\x - 2.4))});
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themeamber] at (3.3, 3.45) {\textbf{\footnotesize 2. 含参支撑：可行域边界截断}};
+    
+    % 截断跃升点与边界极值标记
+    \draw[color=themegray, fill=themebg, line width=1.0pt] (2.4, 0) circle (2.0pt);
+    \fill[color=themeamber] (2.4, 2.6) circle (2.4pt)
+      node[anchor=south west, text=themeamber] {\scriptsize 全局最大值};
+    \fill[color=themeamber] (2.4, 0) circle (1.8pt)
+      node[anchor=north, text=themefg] {\scriptsize $\widehat{\theta}_{\mathrm{MLE}} = X_{(n)}$};
+
+    % 可行域指示标签
+    \node[anchor=south, text=themeamber] at (4.5, 0.2) {\scriptsize 可行域 $\theta \ge X_{(n)}$（单调递减）};
+    \node[anchor=south, text=themegray] at (1.3, 0.2) {\scriptsize $L(\theta) \equiv 0$};
+
+    % 核心反演法则卡片
+    \node[anchor=north, fill=themefg!8!themebg, draw=themeamber, line width=0.8pt, rounded corners=2pt, text width=6.2cm, align=center] at (3.3, -0.65) {
+      \footnotesize \textbf{\color{themeamber}指示函数可行域边界}\\[0.15em]
+      \scriptsize 似然含指示条件：$L(\theta) = \theta^{-n} I\{\theta \ge X_{(n)}\}$\\[0.1em]
+      \scriptsize 可行域 $[\max X_i, +\infty)$ 单调递减，最大值锁定在左端点
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 3. 底部全图全局总结 (无框轻量排印) ──
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.3, -2.25) {
+    \footnotesize \textbf{似然优化法则：} 固定支撑走得分方程内部求导（$\ell'(\theta)=0$）；含参支撑先由全样本不等式确定可行域（$\theta \ge X_{(n)}$），在单调截断边界取极值。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

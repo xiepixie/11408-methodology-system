@@ -2,7 +2,7 @@
 
 本规范用于把 **真题 PDF、扫描件或高清题图** 转换为长期可维护的 Obsidian Source。**408、数学一以及后续其他考试共用这一份转换合同，不为不同学科复制第二套转译规则。** 学科/年份差异只通过 Exam Profile、年度 `exam.json` 和题面本身表达。
 
-执行提示词 Owner：[`exam_source_agent_prompt.md`](exam_source_agent_prompt.md)。本文件拥有规则与验收合同，Prompt 只负责把这些规则转成每次 Agent 的执行顺序，二者不得复制出两套定义。
+执行提示词 Owner：[`exam_source_agent_prompt.md`](exam_source_agent_prompt.md)。本文件拥有真题 Source 的忠实重建、题面完整性、semantic id、答案泄露防护与 Source 验收合同；跨学科通用的视觉解释、关系编码、度量/示意区分与额外结构攻击统一调用 [`diagram_design_spec.md`](diagram_design_spec.md)，TikZ/PGF 工程调用 [`latex_layout_spec.md`](latex_layout_spec.md)。Prompt 只负责把这些规则转成每次 Agent 的执行顺序，三者不得复制出多套定义。真题原图若与一般视觉偏好冲突，**题面忠实性优先**。
 
 本任务不是“PDF 换格式”，而是：
 

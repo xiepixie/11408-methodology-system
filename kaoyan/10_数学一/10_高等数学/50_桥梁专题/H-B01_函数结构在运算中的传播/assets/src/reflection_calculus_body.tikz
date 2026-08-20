@@ -1,0 +1,81 @@
+\begin{tikzpicture}[color=themefg,text=themefg,>=Stealth]
+  \tikzset{
+    axis/.style={themegray,line width=0.7pt,-{Stealth[length=1.6mm]}},
+    guide/.style={themegray,densely dashed,line width=0.7pt},
+    maincurve/.style={themecurve,line width=1.8pt},
+    shiftcurve/.style={themeamber,densely dashed,line width=1.2pt},
+    op/.style={themeamber,line width=1.1pt,-{Stealth[length=1.9mm]}},
+    backop/.style={themegray,line width=0.9pt,-{Stealth[length=1.7mm]}},
+    tag/.style={fill=themebg,inner sep=1.5pt,text=themefg,font=\small},
+    rowhead/.style={fill=themebg,inner sep=2pt,text=themefg,font=\small\bfseries}
+  }
+
+  % ═════════════════════════════════════════════════════════════════════════════
+  % Row 1: Axis symmetric -> Derivative is Central anti-symmetric (shift y = 6.4)
+  % ═════════════════════════════════════════════════════════════════════════════
+  \begin{scope}[shift={(0,6.4)}]
+    \node[rowhead,anchor=south] at (0,2.7) {原函数 $f$ 轴对称 $x=a$};
+    \draw[axis] (-2.5,0) -- (2.7,0) node[below,font=\small] {$x$};
+    \draw[axis] (0,-0.3) -- (0,2.6);
+    \draw[guide] (0,-0.2) -- (0,2.4);
+    \draw[maincurve] plot[domain=-2.15:2.15,samples=90] (\x,{0.35+0.32*\x*\x});
+    \draw[shiftcurve] plot[domain=-2.0:2.0,samples=90] (\x,{0.95+0.32*\x*\x});
+    \fill[themealert] (0,0.35) circle (1.6pt);
+    \fill[themeamber] (0,0.95) circle (1.6pt);
+    \node[tag,anchor=north] at (0,-0.05) {$x=a$};
+    \node[tag,text=themecurve,anchor=south west] at (1.2,1.35) {$f$};
+    \node[tag,text=themeamber,anchor=south west] at (0.9,2.05) {$f+C$};
+    \node[tag,text=themegray,anchor=north,font=\footnotesize] at (0,-0.55) {竖直平移仍保对称轴 $x=a$};
+  \end{scope}
+
+  \begin{scope}[shift={(9.2,6.4)}]
+    \node[rowhead,anchor=south] at (0,2.7) {导函数 $f'$ 中心反对称 $(a,0)$};
+    \draw[axis] (-2.5,0) -- (2.7,0) node[below,font=\small] {$x$};
+    \draw[axis] (0,-1.7) -- (0,1.85);
+    \draw[guide] (0,-1.5) -- (0,1.65);
+    \draw[maincurve] plot[domain=-2.0:2.0,samples=60] (\x,{0.72*\x});
+    \node[tag,anchor=north] at (0,-0.05) {$x=a$};
+    \node[tag,text=themecurve,anchor=south west] at (1.35,1.05) {$f'$};
+    \fill[themealert] (0,0) circle (1.8pt);
+    \node[tag,text=themegray,anchor=north,font=\footnotesize] at (0,-1.85) {中心固定在 $(a,0)$};
+  \end{scope}
+
+  \draw[op] (3.05,7.35) -- node[tag,above]{求导} (6.15,7.35);
+  \draw[backop] (6.15,6.75) -- node[tag,below]{从 $a$ 标准化积分} (3.05,6.75);
+
+  % ═════════════════════════════════════════════════════════════════════════════
+  % Row 2: Central anti-symmetric -> Derivative is Axis symmetric (shift y = 0)
+  % ═════════════════════════════════════════════════════════════════════════════
+  \begin{scope}[shift={(0,0)}]
+    \node[rowhead,anchor=south] at (0,2.5) {原函数 $f$ 中心反对称 $(a,0)$};
+    \draw[axis] (-2.5,0) -- (2.7,0) node[below,font=\small] {$x$};
+    \draw[axis] (0,-1.7) -- (0,2.35);
+    \draw[guide] (0,-1.5) -- (0,2.15);
+    \draw[maincurve] plot[domain=-1.9:1.9,samples=90] (\x,{0.14*\x*\x*\x+0.32*\x});
+    \draw[shiftcurve] plot[domain=-1.9:1.9,samples=90] (\x,{0.75+0.14*\x*\x*\x+0.32*\x});
+    \fill[themealert] (0,0) circle (1.8pt);
+    \fill[themeamber] (0,0.75) circle (1.8pt);
+    \node[tag,anchor=north] at (0,-0.05) {$x=a$};
+    \node[tag,text=themeamber,anchor=west,font=\footnotesize] at (0.12,0.75) {$(a,C)$};
+    \node[tag,text=themecurve,anchor=south west] at (1.1,0.95) {$f$};
+    \node[tag,text=themeamber,anchor=south west] at (1.0,1.95) {$f+C$};
+    \node[tag,text=themegray,anchor=north,font=\footnotesize] at (0,-1.85) {$+C$ 搬走中心至 $(a,C)$};
+  \end{scope}
+
+  \begin{scope}[shift={(9.2,0)}]
+    \node[rowhead,anchor=south] at (0,2.5) {导函数 $f'$ 轴对称 $x=a$};
+    \draw[axis] (-2.5,0) -- (2.7,0) node[below,font=\small] {$x$};
+    \draw[axis] (0,-0.3) -- (0,2.4);
+    \draw[guide] (0,-0.2) -- (0,2.2);
+    \draw[maincurve] plot[domain=-2.05:2.05,samples=90] (\x,{0.35+0.48*\x*\x});
+    \node[tag,anchor=north] at (0,-0.05) {$x=a$};
+    \node[tag,text=themecurve,anchor=south west] at (0.8,1.65) {$f'$};
+    \node[tag,text=themegray,anchor=north,font=\footnotesize] at (0,-0.55) {对称轴 $x=a$};
+  \end{scope}
+
+  \draw[op] (3.05,0.95) -- node[tag,above]{求导} (6.15,0.95);
+  \draw[backop] (6.15,0.35) -- node[tag,below]{从 $a$ 标准化积分} (3.05,0.35);
+
+  \node[font=\small,text=themegray,anchor=north] at (4.6,-2.45)
+    {核心机制：$+C$ 仅竖直平移，故保轴对称（$x=a$ 不变），但把中心对称点从 $(a,0)$ 搬移至 $(a,C)$。};
+\end{tikzpicture}

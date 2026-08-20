@@ -1,0 +1,127 @@
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ==================== Subplot 1: 2D Joint Space & Moving Slice ====================
+\begin{scope}[x=2.75cm,y=2.75cm]
+  \begin{pgfonlayer}{background}
+    % 单位正方形支撑集
+    \fill[themegray, fill opacity=0.08] (0,0) rectangle (1,1);
+    \draw[themegray, line width=1.1pt] (0,0) rectangle (1,1);
+
+    % 阶段 1 积分区域填充
+    \fill[themeamber, fill opacity=0.22] (0,0) -- (0.55,0) -- (0,0.55) -- cycle;
+    \draw[themeamber, line width=2.2pt] (0,0.55) -- (0.55,0);
+
+    % 临界切换线: z = 1.0 (对角线)
+    \draw[themegray, dashed, line width=1.1pt] (0,1) -- (1,0);
+
+    % 阶段 2 截线
+    \draw[themecurve, line width=2.2pt] (0.45,1) -- (1,0.45);
+
+    % 坐标轴
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (-0.15,0) -- (1.38,0) node[below left=1pt] {$x$};
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (0,-0.15) -- (0,1.38) node[below left=1pt] {$y$};
+
+    % 扫描推进方向箭头（置于左下角空旷处）
+    \draw[themealert, line width=1.1pt, -{Stealth[length=2.0mm]}]
+      (0.08, 0.08) -- (0.24, 0.24);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 标题
+    \node[font=\bfseries\small, color=themefg, anchor=south] at (0.50, 1.35)
+      {（1）联合支撑集与等值线 $x+y=z$};
+
+    % 坐标轴刻度
+    \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (1, -0.05) {\footnotesize $1$};
+    \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=east] at (-0.05, 1) {\footnotesize $1$};
+    \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north east] at (-0.02, -0.02) {\footnotesize $0$};
+
+    % 截线端点与标注（避开虚线）
+    \filldraw[fill=themeamber, draw=themebg, line width=0.7pt] (0,0.55) circle (1.8pt);
+    \filldraw[fill=themeamber, draw=themebg, line width=0.7pt] (0.55,0) circle (1.8pt);
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, anchor=south west] at (0.04, 0.38)
+      {\scriptsize $x+y=z_1$};
+
+    \node[text=themegray, fill=themebg, inner sep=0.8pt, anchor=south west] at (0.55, 0.52)
+      {\scriptsize $z=1\ (\text{分界线})$};
+
+    \filldraw[fill=themecurve, draw=themebg, line width=0.7pt] (0.45,1) circle (1.8pt);
+    \filldraw[fill=themecurve, draw=themebg, line width=0.7pt] (1,0.45) circle (1.8pt);
+    \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=south west] at (0.68, 0.78)
+      {\scriptsize $x+y=z_2$};
+
+    \node[text=themealert, fill=themebg, inner sep=0.6pt, anchor=south east] at (0.18, 0.18)
+      {\scriptsize 扫描 $z\uparrow$};
+
+    % 子图 1 专属注记
+    \node[text=themeamber, anchor=north] at (0.55, -0.22)
+      {\footnotesize $\blacksquare$ 卷积本质：和变量密度 $f_Z(z)$ 正比于等值线截长};
+  \end{pgfonlayer}
+\end{scope}
+
+% ==================== Subplot 2: 1D Output Density ====================
+\begin{scope}[xshift=7.6cm,x=2.25cm,y=2.75cm]
+  \begin{pgfonlayer}{background}
+    % 密度曲线下阴影
+    \fill[themecurve, fill opacity=0.10] (0,0) -- (1,1) -- (2,0) -- cycle;
+
+    % 分段密度折线
+    \draw[themeamber, line width=2.2pt] (0,0) -- (1,1);
+    \draw[themecurve, line width=2.2pt] (1,1) -- (2,0);
+
+    % 峰值与辅助虚线
+    \draw[themegray, densely dashed, line width=0.8pt] (1,0) -- (1,1) -- (0,1);
+    \draw[themeamber, densely dotted, line width=0.9pt] (0.55,0) -- (0.55,0.55) -- (0,0.55);
+    \draw[themecurve, densely dotted, line width=0.9pt] (1.45,0) -- (1.45,0.55) -- (0,0.55);
+
+    % 坐标轴
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (-0.15,0) -- (2.35,0) node[below left=1pt] {$z$};
+    \draw[themefg, line width=0.9pt, -{Stealth[length=2.2mm]}]
+      (0,-0.15) -- (0,1.38) node[below left=1pt] {$f_Z(z)$};
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 标题
+    \node[font=\bfseries\small, color=themefg, anchor=south] at (1.00, 1.35)
+      {（2）和变量概率密度 $f_Z(z)$（三角分布）};
+
+    % 关键点
+    \filldraw[fill=themealert, draw=themebg, line width=0.8pt] (1,1) circle (2.2pt);
+    \filldraw[fill=themeamber, draw=themebg, line width=0.7pt] (0.55,0.55) circle (1.9pt);
+    \filldraw[fill=themecurve, draw=themebg, line width=0.7pt] (1.45,0.55) circle (1.9pt);
+
+    % 轴刻度
+    \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (1, -0.05) {\footnotesize $1$};
+    \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north] at (2, -0.05) {\footnotesize $2$};
+    \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=north east] at (-0.02, -0.02) {\footnotesize $0$};
+    \node[text=themefg, fill=themebg, inner sep=0.8pt, anchor=east] at (-0.05, 1) {\footnotesize $1$};
+
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, anchor=north] at (0.55, -0.05) {\footnotesize $z_1$};
+    \node[text=themecurve, fill=themebg, inner sep=0.8pt, anchor=north] at (1.45, -0.05) {\footnotesize $z_2$};
+
+    \node[text=themealert, fill=themebg, inner sep=0.8pt, anchor=south] at (1, 1.06)
+      {\footnotesize 峰值 $(1,1)$（分段临界点）};
+
+    % 子图 2 专属注记
+    \node[text=themecurve, anchor=north] at (1.00, -0.22)
+      {\footnotesize $\blacksquare$ 支撑截线形状在 $z=1$ 处发生切换};
+  \end{pgfonlayer}
+\end{scope}
+
+% ==================== Bottom Global Takeaway ====================
+\begin{pgfonlayer}{foreground}
+  \node[
+    anchor=north,
+    text=themefg
+  ] at (5.7, -1.85)
+    {\footnotesize \textbf{分布卷积法则：} 概率密度 $f_Z(z) = \displaystyle\int_{-\infty}^{+\infty} f_{X,Y}(x, z-x)\,\mathrm{d}x$，几何上对应等值线 $x+y=z$ 的截线积分};
+\end{pgfonlayer}
+
+\end{tikzpicture}

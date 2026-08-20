@@ -1,0 +1,53 @@
+\begin{tikzpicture}[color=themefg,text=themefg,>=Stealth,x=1.3cm,y=1.3cm]
+  \tikzset{
+    axis/.style={themegray,line width=0.8pt,-{Stealth[length=1.6mm]}},
+    curve1/.style={themecurve,line width=1.6pt},
+    curve2/.style={themeamber,line width=1.6pt},
+    region1/.style={themecurve,fill=themecurve,fill opacity=0.12},
+    region2/.style={themeamber,fill=themeamber,fill opacity=0.12},
+    ray/.style={themealert,densely dashed,line width=1.0pt},
+    guide/.style={themegray,densely dotted,line width=0.7pt},
+    tag/.style={fill=themebg,inner sep=1pt,font=\small}
+  }
+
+  % Polar Axes
+  \draw[axis] (-0.2,0) -- (4.2,0) node[below] {$x$ (极轴 $\theta=0$)};
+  \draw[axis] (0,-0.2) -- (0,4.2) node[left] {$y$ ($\theta=\frac{\pi}{2}$)};
+  \node[tag,anchor=north east] at (0,0) {$O$};
+
+  % Two curves in first quadrant:
+  % Curve 1 (blue): r = 3.6*cos(theta), circle on x-axis
+  % Curve 2 (amber): r = 3.6*sin(theta), circle on y-axis
+  % Intersection at theta_0 = 45 deg, r = 3.6*sqrt(2)/2 = 2.545
+  % Intersection point (x,y) = (1.8, 1.8)
+
+  % Shaded region 1: 0 <= theta <= 45 deg, r bounded by curve 2 (amber, sin)
+  \draw[region2] (0,0) -- plot[domain=0:45,samples=60] ({3.6*sin(\x)*cos(\x)},{3.6*sin(\x)*sin(\x)}) -- cycle;
+
+  % Shaded region 2: 45 <= theta <= 90 deg, r bounded by curve 1 (blue, cos)
+  \draw[region1] (0,0) -- plot[domain=45:90,samples=60] ({3.6*cos(\x)*cos(\x)},{3.6*cos(\x)*sin(\x)}) -- cycle;
+
+  % Curves
+  \draw[curve1] plot[domain=0:90,samples=80] ({3.6*cos(\x)*cos(\x)},{3.6*cos(\x)*sin(\x)});
+  \draw[curve2] plot[domain=0:90,samples=80] ({3.6*sin(\x)*cos(\x)},{3.6*sin(\x)*sin(\x)});
+
+  % Intersection Ray theta_0 = 45 deg
+  \draw[ray] (0,0) -- (2.6,2.6) node[tag,above right,text=themealert] {临界射线 $\theta_0=\frac{\pi}{4}$};
+  \fill[themealert] (1.8,1.8) circle (2.2pt);
+
+  % Sample radial lines (sweeping rays)
+  \draw[themeamber,line width=1.1pt,-{Stealth[length=1.5mm]}] (0,0) -- ({3.6*sin(25)*cos(25)},{3.6*sin(25)*sin(25)});
+  \node[text=themeamber,font=\footnotesize,anchor=west] at (2.1,0.55) {第 1 段由 $r_2(\theta)$ 截断};
+  \draw[themegray,densely dotted] (2.1,0.55) -- ({3.6*sin(25)*cos(25)},{3.6*sin(25)*sin(25)});
+
+  \draw[themecurve,line width=1.1pt,-{Stealth[length=1.5mm]}] (0,0) -- ({3.6*cos(65)*cos(65)},{3.6*cos(65)*sin(65)});
+  \node[text=themecurve,font=\footnotesize,anchor=west] at (0.4,2.7) {第 2 段由 $r_1(\theta)$ 截断};
+  \draw[themegray,densely dotted] (0.4,2.7) -- ({3.6*cos(65)*cos(65)},{3.6*cos(65)*sin(65)});
+
+  % Curve labels
+  \node[tag,text=themecurve,anchor=west,font=\small] at (3.1,1.3) {$r=r_1(\theta)$};
+  \node[tag,text=themeamber,anchor=south,font=\small] at (1.6,3.4) {$r=r_2(\theta)$};
+
+  \node[font=\small,text=themegray,anchor=north] at (2.0,-0.65)
+  {极坐标公共面积必须分段：$A = \int_0^{\theta_0}\frac12 r_2^2(\theta)\,d\theta + \int_{\theta_0}^{\pi/2}\frac12 r_1^2(\theta)\,d\theta$（射线截长发生切换）。};
+\end{tikzpicture}

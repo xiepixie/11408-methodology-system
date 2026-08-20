@@ -1,0 +1,88 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+
+% ── 上半部：映射级联流水线 (加宽间距，彻底消除文字与框线重合) ──
+\begin{scope}[shift={(0,0)}]
+  % 节点 1：输入空间
+  \node[draw=themegray!70, fill=themebg, rounded corners=5pt, line width=1.0pt, inner sep=6pt, font=\bfseries\small] (In1) at (0, 0) {输入空间 $\mathbb{R}^n$};
+
+  % 节点 2：右乘 Q 输入重组
+  \node[draw=themeamber, fill=themeamber!15!themebg, text=themeamber, rounded corners=5pt, line width=1.2pt, inner sep=6pt, font=\bfseries\small] (In2) at (4.4, 0) {输入重组 $\mathbb{R}^n$};
+
+  % 节点 3：核心映射 A
+  \node[draw=themecurve, fill=themecurve!15!themebg, text=themecurve, rounded corners=5pt, line width=1.2pt, inner sep=6pt, font=\bfseries\small] (Out1) at (8.8, 0) {核心输出 $\mathbb{R}^m$};
+
+  % 节点 4：左乘 P 输出重组
+  \node[draw=themealert, fill=themealert!15!themebg, text=themealert, rounded corners=5pt, line width=1.2pt, inner sep=6pt, font=\bfseries\small] (Out2) at (13.2, 0) {输出重组 $\mathbb{R}^m$};
+
+  % 连接有向边与清晰注记 (带背景遮罩，防止穿线)
+  \draw[->, themeamber, line width=2.0pt] (In1) -- 
+    node[above=3pt, font=\bfseries\small, text=themeamber, fill=themebg, inner sep=1.5pt] {右乘 $\boldsymbol{Q}$} 
+    node[below=3pt, font=\scriptsize, text=themegray, fill=themebg, inner sep=1.5pt] {可逆列变换} (In2);
+  
+  \draw[->, themecurve, line width=2.4pt] (In2) -- 
+    node[above=3pt, font=\bfseries\small, text=themecurve, fill=themebg, inner sep=1.5pt] {映射 $\boldsymbol{A}$} 
+    node[below=3pt, font=\scriptsize, text=themegray, fill=themebg, inner sep=1.5pt] {尺寸 $m \times n$} (Out1);
+
+  \draw[->, themealert, line width=2.0pt] (Out1) -- 
+    node[above=3pt, font=\bfseries\small, text=themealert, fill=themebg, inner sep=1.5pt] {左乘 $\boldsymbol{P}$} 
+    node[below=3pt, font=\scriptsize, text=themegray, fill=themebg, inner sep=1.5pt] {可逆行变换} (Out2);
+
+  % 顶层跨越弧线：总复合 PAQ
+  \draw[->, dashed, themefg, line width=1.2pt] (In1.north) to[bend left=20] 
+    node[above=2pt, font=\bfseries\small, fill=themebg, inner sep=2pt] {总复合映射：$\boldsymbol{P}\boldsymbol{A}\boldsymbol{Q}$（保持 $\operatorname{rank}$ 等价）} (Out2.north);
+\end{scope}
+
+% ── 下半部：左右乘机理对比卡片 ──
+\begin{scope}[shift={(0,-2.4)}]
+  % 左侧卡片：左乘 P (行操作)
+  \node[draw=themealert!60!themebg, fill=themebg, rounded corners=6pt, line width=0.8pt, inner sep=8pt, text width=6.2cm, anchor=north] (CardL) at (3.1, 0) {
+    \centering
+    {\bfseries\color{themealert} 左乘 $\boldsymbol{P}$：行操作 / 组装输出} \\[5pt]
+    \raggedright\small
+    $\bullet$ \textbf{行视角}：$(\boldsymbol{P}\boldsymbol{A})_i = \sum_k p_{ik}\boldsymbol{\alpha}_k$（第 $i$ 行是 $\boldsymbol{A}$ 各行的线性组合）\\
+    $\bullet$ \textbf{几何含义}：对输出空间做基变换 / 坐标重组\\
+    $\bullet$ \textbf{初等行变换}：消元解方程、化行最简阶梯形\\
+    $\bullet$ \textbf{不变性}：保持行空间 $\operatorname{Row}(\boldsymbol{P}\boldsymbol{A}) = \operatorname{Row}(\boldsymbol{A})$（$\boldsymbol{P}$ 可逆）
+  };
+
+  % 右侧卡片：右乘 Q (列操作)
+  \node[draw=themeamber!60!themebg, fill=themebg, rounded corners=6pt, line width=0.8pt, inner sep=8pt, text width=6.2cm, anchor=north] (CardR) at (10.1, 0) {
+    \centering
+    {\bfseries\color{themeamber} 右乘 $\boldsymbol{Q}$：列操作 / 重组输入} \\[5pt]
+    \raggedright\small
+    $\bullet$ \textbf{列视角}：$(\boldsymbol{A}\boldsymbol{Q})_j = \sum_k q_{kj}\boldsymbol{a}_k$（第 $j$ 列是 $\boldsymbol{A}$ 各列的线性组合）\\
+    $\bullet$ \textbf{几何含义}：对输入空间做基变换 / 坐标重组\\
+    $\bullet$ \textbf{初等列变换}：简化列向量生成组、化相抵标准形\\
+    $\bullet$ \textbf{不变性}：保持列空间 $\operatorname{Col}(\boldsymbol{A}\boldsymbol{Q}) = \operatorname{Col}(\boldsymbol{A})$（$\boldsymbol{Q}$ 可逆）
+  };
+\end{scope}
+
+% ── 底部总结横条 ──
+\node[font=\bfseries\small, color=themecurve, anchor=north] at (6.6, -7.2) {
+  核心心智模型：左乘重组输出/行，右乘重组输入/列；初等变换本质是在两端独立进行可逆基变换
+};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

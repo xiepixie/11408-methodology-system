@@ -1,0 +1,32 @@
+\begin{tikzpicture}[color=themefg,text=themefg,>=Stealth,x=1.1cm,y=2.4cm]
+  \tikzset{
+    axis/.style={themegray,line width=0.8pt,-{Stealth[length=1.7mm]}},
+    spike/.style={themecurve,line width=1.8pt},
+    guide/.style={themegray,densely dashed,line width=0.7pt},
+    tag/.style={fill=themebg,inner sep=1.5pt,font=\footnotesize}
+  }
+
+  % Axes
+  \draw[axis] (-0.3,0) -- (10.5,0) node[below,font=\small] {$x$};
+  \draw[axis] (0,-0.1) -- (0,1.55) node[left,font=\small] {$y$};
+
+  % Peak height baseline at y = 1
+  \draw[guide] (0,1) -- (9.8,1);
+  \node[tag,left,text=themealert] at (0,1) {$y=1$};
+
+  % Spikes at n = 1..9 with decaying widths
+  \foreach \n/\w in {1/0.85,2/0.52,3/0.32,4/0.20,5/0.12,6/0.08,7/0.05,8/0.03,9/0.02}{
+    \fill[themecurve,opacity=0.20] (\n-\w/2,0) -- (\n,1) -- (\n+\w/2,0) -- cycle;
+    \draw[spike] (\n-\w/2,0) -- (\n,1) -- (\n+\w/2,0);
+    \fill[themealert] (\n,1) circle (1.8pt);
+    \draw[themegray,line width=0.5pt] (\n,0.03) -- (\n,-0.03) node[below,font=\tiny,text=themegray] {$\n$};
+  }
+
+  % Annotations placed strictly in upper open area
+  \node[tag,text=themealert,anchor=south] at (9.0,1.05) {$f(n)=1 \not\to 0$};
+  \node[tag,text=themecurve,anchor=south] at (4.5,1.15) {底宽快速衰减 $\implies$ 积分总面积收敛 $\displaystyle\int_1^\infty f(x)\,dx < \infty$};
+
+  % Bottom summary
+  \node[font=\small,text=themegray,anchor=north] at (5.0,-0.38)
+  {反桥警示：总面积收敛只要求“厚度/平均值快速衰减”，并不一般要求函数点值 $f(x)\to 0$。};
+\end{tikzpicture}

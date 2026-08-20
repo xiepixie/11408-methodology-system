@@ -25,24 +25,41 @@ python3 infra/scripts/compile_tex.py <source.tex> --publish-dir <target-dir>
 
 `compile_tikz_to_svg.py` 也不拥有“扫描哪些数学一/408 年份”的规则；它只处理显式文件或目录。编译时统一暴露 `source dir + infra/latex + repository root` 到 `TEXINPUTS`，因此可解析合法的 Source-local 与 root-logical 输入，但不会替 Domain 推断资产 Owner。考试归档批处理策略归 `kaoyan/00_system/tools/`。
 
-### `compile_tikz_to_svg.py` 核心用法与运行机制
+### `compile_tikz_to_svg.py` 绘图编译与自适应配色
 
-#### 1. 命令行调用入口
+#### 1. 常用命令
 ```bash
-# 编译单个 TikZ 源码文件 (自动输出到 assets/xxx.svg 和 assets/light/xxx.svg)
+# 编译单个 TikZ 源码文件（自动输出到 assets/xxx.svg 和 assets/light/xxx.svg）
 python3 infra/scripts/compile_tikz_to_svg.py path/to/assets/src/figure.tex
 
-# 递归多进程并行编译某一目录下的全部 TikZ 源码
+# 递归并行编译某个目录下的所有 TikZ 源码
 python3 infra/scripts/compile_tikz_to_svg.py --dir kaoyan/10_数学一/10_高等数学/01_函数对象_表示与结构
 
-# 全仓扫描并并行编译所有已存在的 TikZ 图形 (39+ 个文件)
+# 全仓扫描并并行编译所有 TikZ 源码（共 64 个文件）
 python3 infra/scripts/compile_tikz_to_svg.py --all
 ```
 
-#### 2. 双主题与自适应注入机制
-1. **暗色版（`assets/*.svg`）**：采用 `#30362D` 墨绿底色，并在 SVG 内部内嵌 `@media print, (prefers-color-scheme: light)` 媒体查询样式表。屏幕暗色模式下显示墨绿暗底，在导出 PDF 或浅色打印时，由渲染引擎自动无缝切换为官方米白底黑字；
-2. **亮色版（`assets/light/*.svg`）**：采用 `#FAFAF7` 官方米白底色，前景色为 `#111111` 炭黑，配合 `#666666` 铅笔中灰；
-3. **语义色彩注入**：编译时自动识别并映射 `themecurve`（晶蓝/皇家蓝）、`themealert`（珊瑚红/朱砂红）、`themeamber`（暖金/金褐），保障双模式下的极高对比度。
+#### 2. 输出文件说明
+每次编译会自动生成两份矢量图：
+1. **主图（`assets/*.svg`）**：在 Markdown 笔记中直接引用此图（`![alt](assets/xxx.svg)`）。在暗色模式下显示墨绿暗底；当 Obsidian 或系统切换为浅色主题、或者打印/导出时，SVG 会通过内置的 CSS 媒体查询自动切换为米白底黑字。
+2. **静态亮色图（`assets/light/*.svg`）**：纯静态的白底黑字版本，专供不支持 CSS 媒体查询的外部导出工具或特定打印场景使用。
+
+#### 3. 8 大绘图语义颜色定义
+编写 TikZ 源码时，建议统一使用以下语义颜色变量（支持通过 `!百分比` 混色，如 `themecurve!20!themebg` 做半透明填充），无需手动写具体的 Hex 颜色代码：
+
+| 语义变量名 | 暗色值 | 亮色值 | 适用场景（数学 / 408 / 深度学习） |
+| :--- | :--- | :--- | :--- |
+| `themebg` | `#30362D` | `#FAFAF7` | 画布底色、卡片挖空背景 |
+| `themefg` | `#EDF4E8` | `#111111` | 正文文字、坐标轴、主结构轮廓 |
+| `themegray` | `#9EA897` | `#666666` | 辅助网格、参考虚线、注释说明、非活跃模块 |
+| `themecurve` | `#7EB6FF` | `#1D63B8` | 函数曲线、向量空间、Query 寻址、数据总线、主路径 |
+| `themealert` | `#FF7B7B` | `#C53030` | 焦点标记、反例、缺页中断、数据冲突、反向梯度流 |
+| `themeamber` | `#F5B942` | `#B86E00` | 导数切线、中间算子、Key 索引、Cache/TLB 缓存、激活态 |
+| `themepurple` | `#C084FC` | `#7C3AED` | 隐空间（Latent）、页表地址映射、Value 向量、核映射 |
+| `themegreen` | `#4ADE80` | `#15803D` | Cache/TLB 命中、真实标签（Ground Truth）、收敛最优解 |
+
+#### 4. 自动混色映射机制
+脚本在编译时会先生成暗色和亮色两份 DOM 树，并逐节点比对颜色属性。所有通过 `!百分比` 产生的卡片半透明底色、阴影和混合区域都会被自动捕获，并生成对应的浅色替换规则注入到主 SVG 中。因此在笔记中切换主题时，不仅文字和主色会变，卡片背景和微元阴影也会同步平滑切换。
 
 
 ## Steady-State Gate
@@ -53,7 +70,7 @@ python3 infra/check_infra.py
 
 该命令使用临时目录完成 Standard/Margin Handbook strict-warning 编译和 TikZ dark/light SVG smoke test；不会在源码目录创建 PDF 或 aux。
 
-## Architecture Invariants
+## 架构约束
 
 1. **单向依赖**：`teaching/` 与 `kaoyan/` 均向下依赖 `infra/scripts/`，`infra/` 内部代码绝不反向引用 `teaching/` 或 `kaoyan/` 业务逻辑。
 2. **纯粹机制**：脚本只处理传入的显式路径与标准参数，不拥有任何学科或教学判定规则。

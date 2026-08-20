@@ -1,0 +1,91 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+
+% ── 左侧：定义域空间 R^n ──
+\begin{scope}[shift={(0,0)}]
+  \draw[themegray!70, line width=1.0pt, rounded corners=6pt] (-2.2,-2.6) rectangle (2.2,2.6);
+  \node[font=\bfseries\small, text=themecurve] at (0, 3.0) {输入空间 $\mathbb{R}^n = \operatorname{Row}(\boldsymbol{A}) \oplus \ker(\boldsymbol{A})$};
+
+  % 上半区：行空间 Row(A) (晶蓝)
+  \fill[themecurve!20!themebg, rounded corners=4pt] (-2.0, 0.2) rectangle (2.0, 2.4);
+  \draw[themecurve, line width=1.4pt, rounded corners=4pt] (-2.0, 0.2) rectangle (2.0, 2.4);
+  \node[text=themecurve, font=\bfseries\small] at (0, 1.6) {行空间 $\operatorname{Row}(\boldsymbol{A}) = \operatorname{Col}(\boldsymbol{A}^T)$};
+  \node[text=themecurve, font=\footnotesize] at (0, 0.9) {维数 $\dim = r$};
+
+  % 分割线与正交符号 ⊥
+  \draw[dashed, themegray, line width=1.0pt] (-2.2, 0) -- (2.2, 0);
+  \node[fill=themebg, inner sep=2pt, font=\bfseries\footnotesize, text=themeamber] at (0, 0) {$\perp$};
+
+  % 下半区：零空间 ker(A) (暖金)
+  \fill[themeamber!20!themebg, rounded corners=4pt] (-2.0, -0.2) rectangle (2.0, -2.4);
+  \draw[themeamber, line width=1.4pt, rounded corners=4pt] (-2.0, -0.2) rectangle (2.0, -2.4);
+  \node[text=themeamber, font=\bfseries\small] at (0, -1.0) {零空间 $\ker(\boldsymbol{A})$};
+  \node[text=themeamber, font=\footnotesize] at (0, -1.7) {维数 $\dim = n - r$};
+\end{scope}
+
+% ── 右侧：到达域空间 R^m (加大水平间距) ──
+\begin{scope}[shift={(8.4,0)}]
+  \draw[themegray!70, line width=1.0pt, rounded corners=6pt] (-2.2,-2.6) rectangle (2.2,2.6);
+  \node[font=\bfseries\small, text=themecurve] at (0, 3.0) {输出空间 $\mathbb{R}^m = \operatorname{Col}(\boldsymbol{A}) \oplus \ker(\boldsymbol{A}^T)$};
+
+  % 上半区：列空间 Col(A) = Im(A) (晶蓝)
+  \fill[themecurve!20!themebg, rounded corners=4pt] (-2.0, 0.2) rectangle (2.0, 2.4);
+  \draw[themecurve, line width=1.4pt, rounded corners=4pt] (-2.0, 0.2) rectangle (2.0, 2.4);
+  \node[text=themecurve, font=\bfseries\small] at (0, 1.6) {列空间 $\operatorname{Col}(\boldsymbol{A}) = \operatorname{Im}(\boldsymbol{A})$};
+  \node[text=themecurve, font=\footnotesize] at (0, 0.9) {维数 $\dim = r$};
+
+  % 分割线与正交符号 ⊥
+  \draw[dashed, themegray, line width=1.0pt] (-2.2, 0) -- (2.2, 0);
+  \node[fill=themebg, inner sep=2pt, font=\bfseries\footnotesize, text=themealert] at (0, 0) {$\perp$};
+
+  % 下半区：左零空间 ker(A^T) (珊瑚红)
+  \fill[themealert!20!themebg, rounded corners=4pt] (-2.0, -0.2) rectangle (2.0, -2.4);
+  \draw[themealert, line width=1.4pt, rounded corners=4pt] (-2.0, -0.2) rectangle (2.0, -2.4);
+  \node[text=themealert, font=\bfseries\small] at (0, -1.0) {左零空间 $\ker(\boldsymbol{A}^T)$};
+  \node[text=themealert, font=\footnotesize] at (0, -1.7) {维数 $\dim = m - r$};
+\end{scope}
+
+% ── 中间：算子映射与正交约束箭头 (加宽带背景遮罩，彻底消除文字穿线) ──
+\begin{pgfonlayer}{main}
+  % Row(A) -> Col(A) 同构映射 (晶蓝粗弧线)
+  \draw[->, themecurve, line width=2.4pt] (2.2, 1.3) to[bend left=16] 
+    node[above=3pt, font=\bfseries\small, text=themecurve, fill=themebg, inner sep=2pt] {$\boldsymbol{A}$：一对一同构映射} 
+    node[below=3pt, font=\scriptsize, text=themegray, fill=themebg, inner sep=1.5pt] {保持所有非零方向} (6.2, 1.3);
+
+  % Col(A) -> Row(A) 反向映射 (中性灰虚线)
+  \draw[<-, themegray, line width=1.4pt, dashed] (2.2, 0.6) to[bend right=16] 
+    node[below=3pt, font=\footnotesize, text=themegray, fill=themebg, inner sep=2pt] {$\boldsymbol{A}^T$：反向同构} (6.2, 0.6);
+
+  % ker(A) -> 0 塌陷 (暖金弧线)
+  \draw[->, themeamber, line width=1.8pt] (2.2, -1.2) to[bend right=16] 
+    node[below=3pt, font=\bfseries\small, text=themeamber, fill=themebg, inner sep=2pt] {$\boldsymbol{A}(\ker\boldsymbol{A}) = \{\boldsymbol{0}\}$} (6.2, 0.2);
+\end{pgfonlayer}
+
+% ── 底部总结横条 ──
+\node[font=\bfseries\small, color=themecurve, anchor=north] at (4.2, -3.2) {
+  核心心智模型：$\mathbb{R}^n$ 被核与行空间正交拆分；$\boldsymbol{A}$ 杀掉零空间，并将行空间100\% 无损同构搬运到列空间
+};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

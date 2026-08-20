@@ -1,0 +1,118 @@
+% ── V22 区间-检验对偶 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 1. 左列：假设检验视点 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!8!themebg, draw=themealert, line width=0.9pt, rounded corners=3pt]
+      (0.1, 1.8) rectangle (4.6, 6.8);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=4.2cm] at (0.25, 6.6) {
+      \textbf{\color{themealert}\normalsize 1. 假设检验视点}\\[0.4em]
+      \footnotesize \textbf{输入}：固定候选参数 $\theta_0$\\[0.2em]
+      \footnotesize \textbf{动作}：在样本空间划分\\[0.15em]
+      \quad 接受域与拒绝域：\\[0.2em]
+      \scriptsize $A(\theta_0) = \{X: \text{检验不拒绝 } H_0\}$\\[0.4em]
+      \footnotesize \textbf{尺寸校准契约}：\\[0.2em]
+      \scriptsize $P_{\theta_0}\bigl(X \in A(\theta_0)\bigr) = 1-\alpha$\\[0.15em]
+      \scriptsize $P_{\theta_0}\bigl(X \in W(\theta_0)\bigr) = \alpha$（弃真）
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 2. 中列：参数-样本空间对偶带几何 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=4.9cm, yshift=0cm]
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themeamber] at (2.6, 6.85) {
+      \textbf{\normalsize 2. 空间对偶同构带}
+    };
+  \end{pgfonlayer}
+
+  % 背景层：坐标轴与对偶带
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (0.3, 1.8) -- (5.0, 1.8) node[right] {\footnotesize $\theta$};
+    \draw[->, color=themefg, line width=0.8pt] (0.3, 1.8) -- (0.3, 6.8) node[above] {\footnotesize $X$};
+
+    % 对偶带填充 (斜条带 X in [\theta - 1.1, \theta + 1.1])
+    \fill[fill=themeamber!25!themebg]
+      (0.6, 1.8) -- (4.2, 5.4) -- (4.2, 6.6) -- (3.0, 6.6) -- (0.3, 3.9) -- (0.3, 2.1) -- cycle;
+    \draw[color=themeamber, dashed, line width=0.8pt] (0.6, 1.8) -- (4.2, 5.4);
+    \draw[color=themeamber, dashed, line width=0.8pt] (0.3, 3.9) -- (3.0, 6.6);
+
+    % 固定 \theta_0 的纵向接受域 A(\theta_0) (竖直红色线段)
+    \draw[color=themealert, line width=2.0pt] (2.4, 2.8) -- (2.4, 5.0);
+    \draw[color=themealert, dashed, line width=0.7pt] (2.4, 1.8) -- (2.4, 2.8);
+
+    % 固定 X_obs 的横向置信区间 C(X_obs) (水平蓝色线段)
+    \draw[color=themecurve, line width=2.0pt] (1.6, 4.2) -- (3.8, 4.2);
+    \draw[color=themecurve, dashed, line width=0.7pt] (0.3, 4.2) -- (1.6, 4.2);
+
+    % 交点 (\theta_0, X_obs)
+    \fill[color=themefg] (2.4, 4.2) circle (2.2pt);
+  \end{pgfonlayer}
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    % 竖向与横向标注（带背景微 halo 保护可读性）
+    \node[anchor=west, fill=themebg, inner sep=1.2pt, text=themealert] at (2.5, 3.3) {\scriptsize 接受域 $A(\theta_0)$};
+    \node[anchor=south, fill=themebg, inner sep=1.2pt, text=themecurve] at (2.7, 4.3) {\scriptsize 置信区间 $C(X)$};
+
+    % 轴刻度
+    \node[anchor=north, text=themealert] at (2.4, 1.75) {\scriptsize $\theta_0$};
+    \node[anchor=east, text=themecurve] at (0.25, 4.2) {\scriptsize $X_{\mathrm{obs}}$};
+
+    % 核心对偶等价徽标
+    \node[anchor=north, fill=themebg, inner sep=2.0pt, draw=themeamber, rounded corners=2pt] at (2.6, 1.4) {
+      \footnotesize \textbf{\color{themeamber}$X \in A(\theta_0) \iff \theta_0 \in C(X)$}
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 3. 右列：置信区间视点 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=10.4cm, yshift=0cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!8!themebg, draw=themecurve, line width=0.9pt, rounded corners=3pt]
+      (0.1, 1.8) rectangle (4.6, 6.8);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=4.2cm] at (0.25, 6.6) {
+      \textbf{\color{themecurve}\normalsize 3. 置信区间视点}\\[0.4em]
+      \footnotesize \textbf{输入}：固定观测样本 $X_{\mathrm{obs}}$\\[0.2em]
+      \footnotesize \textbf{动作}：收集所有不能被\\[0.15em]
+      \quad 双侧检验拒绝的参数值：\\[0.2em]
+      \scriptsize $C(X) = \{\theta_0: \text{不拒绝 } H_0(\theta_0)\}$\\[0.4em]
+      \footnotesize \textbf{覆盖率保证契约}：\\[0.2em]
+      \scriptsize $P_\theta\bigl(\theta \in C(X)\bigr) = 1-\alpha$\\[0.15em]
+      \scriptsize 反解不等式即得参数容许范围
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 4. 底部全图全局总结 (无框轻量排印) ──
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.5, 0.4) {
+    \footnotesize \textbf{对偶同构法则：} 置信区间是所有未被双侧检验拒绝的候选原假设 $\theta_0$ 之集合。二者由同一抽样分布枢轴连接，一体验证参数相容性。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

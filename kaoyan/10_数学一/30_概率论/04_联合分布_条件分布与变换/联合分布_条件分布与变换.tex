@@ -5,7 +5,7 @@
 \usepackage{enumitem}
 \usepackage[most]{tcolorbox}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,decorations.pathreplacing}
 \usepackage{xcolor}
 \usepackage{fancyhdr}
 \usepackage{hyperref}
@@ -28,6 +28,17 @@
 \definecolor{greenish}{RGB}{57,92,76}
 \definecolor{warn}{RGB}{136,68,63}
 \definecolor{purple}{RGB}{87,72,116}
+
+% ── 双主题图解语义色彩（LaTeX 打印高对比白底）──
+\definecolor{themebg}{HTML}{FFFFFF}
+\definecolor{themefg}{HTML}{111111}
+\definecolor{themegray}{HTML}{666666}
+\definecolor{themecurve}{HTML}{1D63B8}
+\definecolor{themealert}{HTML}{C53030}
+\definecolor{themeamber}{HTML}{B86E00}
+
+\newenvironment{handbookdiagram}{\par\vspace{0.4em}\noindent\begin{center}}{\end{center}\vspace{0.4em}}
+\newcommand{\diagramcaption}[1]{\par\vspace{0.3em}{\small\textbf{#1}}}
 
 \hypersetup{
   colorlinks=true,
@@ -116,6 +127,11 @@ f_{X,Y}(x,y)=\frac1{\lvert D\rvert}I_D(x,y),
 P((X,Y)\in A)=\frac{\lvert A\cap D\rvert}{\lvert D\rvert}.
 \]
 所以均匀题的面积比不是另一套公式，而是常数联合密度积分后的结果；事件区域仍必须先与真实支撑 $D$ 取交。
+
+\begin{handbookdiagram}
+\input{assets/src/v07_joint_support_body.tikz}
+\diagramcaption{图 4.1\quad 二维联合支撑万能母图（V07）：支撑截面锁定积分上下限}
+\end{handbookdiagram}
 
 \section{第二层：边缘分布、条件分布与独立性}
 
@@ -576,6 +592,11 @@ F_Z(z)=q\,P(-X\le z)+(1-q)F_X(z)
 “输入连续”只排除了原变量的点原子，并不排除常值纤维造成的输出原子；“有多个原像”也不表示重复计数，而是把互不重叠的原像质量相加。若目标只问一个数字特征，可在账本足以表达该目标后用 LOTUS 停止；若目标问完整 CDF/PDF，必须完成原子与连续部分的共同归一化。
 \end{methodbox}
 
+\begin{handbookdiagram}
+\input{assets/src/v09_transform_fiber_body.tikz}
+\diagramcaption{图 4.2\quad 非单调变换与原像纤维（V09）：常值纤维压缩为原子，多原像分支加总}
+\end{handbookdiagram}
+
 \subsection{分布函数法（原像拉回法）}
 
 求 $Z = g(X,Y)$ 的分布，最通用、最安全的方法是 CDF 法：
@@ -614,6 +635,11 @@ f_Z(z)=\int f_{X,Y}(z-y,y)\,dy.
 \]
 只有在 $X,Y$ 独立时才把联合密度替换为 $f_X(z-y)f_Y(y)$。积分范围仍须与原支撑集相交；漏掉支撑边界会比忘记“卷积”二字更早造成错误。
 \end{methodbox}
+
+\begin{handbookdiagram}
+\input{assets/src/v08_convolution_slice_body.tikz}
+\diagramcaption{图 4.3\quad 卷积截线与三角分布（V08）：等值线截长映射为和的概率密度}
+\end{handbookdiagram}
 
 \begin{examplebox}{先按几何分割分段，再做单调变换：2021 Q二十二}
 在 $(0,2)$ 上均匀取切点 $U$，令两段的较短、较长长度分别为 $X,Y$。原始映射在 $U=1$ 处换分支：
@@ -700,6 +726,11 @@ f_{Z,U}(z,u)=f_{X,Y}(h_1(z,u),h_2(z,u))
 \]
 同一小区域的概率既可用原密度表示为 $f_{X,Y}(x,y)\,dx\,dy$，也可用新密度表示为 $f_{Z,U}(z,u)\,dz\,du$；令两者相等并代入逆变换，就得到上式。非一一时对每个可行逆像相加，行列式为零或支撑跨越分支点时必须分段处理。
 \end{methodbox}
+
+\begin{handbookdiagram}
+\input{assets/src/v10_jacobian_area_body.tikz}
+\diagramcaption{图 4.4\quad Jacobian 面积元微元变换（V10）：局部面积伸缩率与微元概率守恒}
+\end{handbookdiagram}
 
 \begin{examplebox}{真题三出口：2023 Q二十二 的圆盘支撑与径向变换}
 题设联合密度为

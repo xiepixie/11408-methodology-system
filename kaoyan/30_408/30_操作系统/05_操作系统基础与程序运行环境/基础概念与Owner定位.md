@@ -21,15 +21,30 @@
 
 **检查与退出**：如果两个选项说的根本不是同一层对象，不要继续比较表面措辞；先回到 Canonical 的对象定义。
 
+## 局部规则：地址题固定做“地址四问”
+
+**触发信号**：题面同时出现目标文件、链接、重定位、逻辑地址/虚拟地址、装入地址、物理地址、页表或页框等词。
+
+**第一动作**：不要先算数值，先给当前地址补全四个限定词：
+
+1. **属于哪个地址空间/表示？** 文件偏移、节内偏移、程序级虚拟地址、进程 VA，还是 PA？
+2. **相对谁解释？** 相对本 section、本模块、PC、某个装入基址，还是页表映射？
+3. **谁拥有足够信息决定它？** 汇编器、链接器、Loader/OS，还是 MMU + 当前页表？
+4. **什么时候才确定？** 汇编时、链接时、装入时，还是每次真正访问时？
+
+**检查与退出**：只要两步地址变换的“地址空间、Owner 或确定时机”不同，就不能把它们合并成一个“地址换算”。一旦进入 VA→PA、页表、驻留/缺页，停止在 OS-00，转交 OS-04 / CO-07。
+
 ## 常用边界
 
 | 对象 A | ≠ | 对象 B | 第一判据 |
-|---|---|---|---|
+| ------------- | ------- | ------------------ | -------------------------------- |
 | Abstraction | ≠ | Virtualization | 接口简化 vs 逻辑化/复用物理资源 |
 | Concurrency | ≠ | Parallelism | 一段时间内共同推进 vs 同一时刻物理同时执行 |
 | Mechanism | ≠ | Policy | 如何做到 vs 选择谁/选择什么 |
 | Program | ≠ | Process | 静态描述 vs 某次动态执行实例 |
 | Executable | ≠ | Process Image | 文件表示 vs 某次执行形成的运行时表示 |
+| Section | ≠ | Program Segment | 链接/静态组织单位 vs 装入映射单位 |
+| Link-time Relocation | ≠ | Run-time Address Translation | 修补目标/映像中的地址相关引用 vs 每次访问时 VA→PA |
 | Loading | ≠ | All Pages Resident | 建立运行映像/映射 vs 所有内容已兑现到 RAM |
 | Task State | ≠ | CPU Mode | Ready/Blocked/Running vs User/Kernel privilege |
 | Monolithic | ≠ | Non-modular | 特权边界位置 vs 软件内部组织方式 |

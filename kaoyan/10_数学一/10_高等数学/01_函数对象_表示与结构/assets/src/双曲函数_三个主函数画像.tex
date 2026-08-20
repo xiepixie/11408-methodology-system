@@ -1,0 +1,130 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 子图 1: sinh x (奇函数，全局严格单调，双射) ──
+\begin{axis}[
+    name=ax1,
+    width=6.0cm,
+    height=6.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-2.6, xmax=2.6,
+    ymin=-3.8, ymax=3.8,
+    xtick={-2,-1,0,1,2},
+    ytick={-3,-2,-1,0,1,2,3},
+    clip=true,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize, align=center, yshift=6pt},
+    title={\textbf{$y=\sinh x=\frac{e^x-e^{-x}}{2}$}\\[2pt]\scriptsize 奇函数 / $\mathbb{R}\to\mathbb{R}$ 双射},
+]
+\begin{pgfonlayer}{background}
+    \draw[themegray!40, dashed] (axis cs:-2.6,0) -- (axis cs:2.6,0);
+    \draw[themegray!40, dashed] (axis cs:0,-3.8) -- (axis cs:0,3.8);
+\end{pgfonlayer}
+
+\addplot[themecurve, line width=2.0pt, domain=-2.0:2.0, samples=150] {0.5*(exp(x)-exp(-x))};
+
+\begin{pgfonlayer}{foreground}
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(0,0)};
+\end{pgfonlayer}
+\end{axis}
+
+% ── 子图 2: cosh x (偶函数，非单射，最小值 1) ──
+\begin{axis}[
+    name=ax2,
+    at={($(ax1.east)+(1.2cm,0)$)},
+    anchor=west,
+    width=6.0cm,
+    height=6.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-2.6, xmax=2.6,
+    ymin=-0.6, ymax=4.6,
+    xtick={-2,-1,0,1,2},
+    ytick={1,2,3,4},
+    clip=true,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize, align=center, yshift=6pt},
+    title={\textbf{$y=\cosh x=\frac{e^x+e^{-x}}{2}$}\\[2pt]\scriptsize 偶函数 / 需限制 $x\ge 0$},
+]
+\begin{pgfonlayer}{background}
+    \draw[themealert!70!themebg, dashed, line width=1pt] (axis cs:-2.6,1) -- (axis cs:2.6,1);
+\end{pgfonlayer}
+
+% 左支 (非单射来源) 浅色虚线，右支 (标准反函数分支) 主实线
+\addplot[themegray, dashed, line width=1.5pt, domain=-2.1:0, samples=100] {0.5*(exp(x)+exp(-x))};
+\addplot[themecurve, line width=2.0pt, domain=0:2.1, samples=100] {0.5*(exp(x)+exp(-x))};
+
+\begin{pgfonlayer}{foreground}
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themealert, draw=themefg] coordinates {(0,1)};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:0.1,1.15) {极小值 $1$};
+\end{pgfonlayer}
+\end{axis}
+
+% ── 子图 3: tanh x (奇函数，有界渐近线 y=±1) ──
+\begin{axis}[
+    name=ax3,
+    at={($(ax2.east)+(1.2cm,0)$)},
+    anchor=west,
+    width=6.0cm,
+    height=6.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-3.2, xmax=3.2,
+    ymin=-1.6, ymax=1.6,
+    xtick={-3,-2,-1,0,1,2,3},
+    ytick={-1,0,1},
+    clip=true,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize, align=center, yshift=6pt},
+    title={\textbf{$y=\tanh x=\frac{\sinh x}{\cosh x}$}\\[2pt]\scriptsize 奇函数 / 值域 $(-1,1)$},
+]
+\begin{pgfonlayer}{background}
+    \draw[themealert!70!themebg, dashed, line width=1pt] (axis cs:-3.2,1) -- (axis cs:3.2,1);
+    \draw[themealert!70!themebg, dashed, line width=1pt] (axis cs:-3.2,-1) -- (axis cs:3.2,-1);
+\end{pgfonlayer}
+
+\addplot[themecurve, line width=2.0pt, domain=-3.0:3.0, samples=150] {(exp(x)-exp(-x))/(exp(x)+exp(-x))};
+
+\begin{pgfonlayer}{foreground}
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(0,0)};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:3.0,1.08) {$y=1$};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north east] at (axis cs:3.0,-1.08) {$y=-1$};
+\end{pgfonlayer}
+\end{axis}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

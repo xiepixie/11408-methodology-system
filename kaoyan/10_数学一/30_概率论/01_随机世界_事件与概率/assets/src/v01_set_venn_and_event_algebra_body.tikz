@@ -1,0 +1,190 @@
+% ── V01 集合运算与事件代数（大空间呼吸感 2 行布局） ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 上半部第 1 行：左（互斥分解） + 右（对偶律 De Morgan） ──
+% ══════════════════════════════════════════════════════════════
+
+% ── 1. 左卡片：事件基本运算与互斥分解 ──
+\begin{scope}[xshift=0cm, yshift=5.0cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themecurve}1. 事件基本运算与互斥分解}
+    };
+  \end{pgfonlayer}
+
+  % Venn 图图形（直接裸画在卡片底色上，零二级线框）
+  \begin{pgfonlayer}{background}
+    % A 圆
+    \fill[fill=themecurve!22!themebg] (1.05, 2.3) circle (1.0cm);
+    % B 圆
+    \fill[fill=themealert!22!themebg] (2.05, 2.3) circle (1.0cm);
+    % 交集 AB
+    \begin{scope}
+      \clip (1.05, 2.3) circle (1.0cm);
+      \fill[fill=themeamber!40!themebg] (2.05, 2.3) circle (1.0cm);
+    \end{scope}
+    % 边框轮廓
+    \draw[color=themecurve, line width=1.0pt] (1.05, 2.3) circle (1.0cm);
+    \draw[color=themealert, line width=1.0pt] (2.05, 2.3) circle (1.0cm);
+  \end{pgfonlayer}
+
+  % 文字标注与说明
+  \begin{pgfonlayer}{foreground}
+    \node[color=themecurve] at (0.55, 2.3) {\scriptsize $A\setminus B$};
+    \node[color=themefg] at (1.55, 2.3) {\scriptsize $AB$};
+    \node[color=themealert] at (2.55, 2.3) {\scriptsize $B\setminus A$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=3.9cm] at (3.05, 4.3) {
+      \small \textbf{互斥分解骨架：}\\[0.25em]
+      \scriptsize $\bullet$ \textbf{区域正交划分}：\\[0.1em]
+      \quad ${\color{themecurve}A} = ({\color{themeamber}AB}) \mathbin{\dot\cup} ({\color{themecurve}AB^c})$；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{差事件减法公式}：\\[0.1em]
+      \quad $P(A\setminus B) = P(A) - P(AB)$；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{加法核心前提}：\\[0.1em]
+      \quad 仅当 $AB=\varnothing$ 互斥时可直接加。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 2. 右卡片：对偶律（De Morgan 律） ──
+\begin{scope}[xshift=7.7cm, yshift=5.0cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themeamber}2. 对偶律（De Morgan 律）}
+    };
+  \end{pgfonlayer}
+
+  % 对偶图（外部高亮阴影，内部集合透明）
+  \begin{pgfonlayer}{background}
+    % 局部阴影底色
+    \fill[fill=themeamber!18!themebg, rounded corners=4pt] (0.1, 0.9) rectangle (3.0, 3.7);
+    % 挖空集合 A 与 B
+    \fill[fill=themefg!4!themebg] (1.05, 2.3) circle (0.95cm);
+    \fill[fill=themefg!4!themebg] (2.05, 2.3) circle (0.95cm);
+    % 虚线轮廓
+    \draw[color=themecurve, line width=0.9pt, dashed] (1.05, 2.3) circle (0.95cm);
+    \draw[color=themealert, line width=0.9pt, dashed] (2.05, 2.3) circle (0.95cm);
+  \end{pgfonlayer}
+
+  % 文字标注与说明
+  \begin{pgfonlayer}{foreground}
+    \node[color=themecurve] at (0.9, 2.3) {\scriptsize $A$};
+    \node[color=themealert] at (2.2, 2.3) {\scriptsize $B$};
+    \node[color=themeamber, align=center] at (1.55, 1.15) {\tiny 外部阴影：$(A\cup B)^c$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=3.9cm] at (3.05, 4.3) {
+      \small \textbf{余集对偶法则：}\\[0.25em]
+      \scriptsize $\bullet$ \textbf{都不发生}（交补）：\\[0.1em]
+      \quad $(A\cup B)^c = A^c \cap B^c$；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{不都发生}（并补）：\\[0.1em]
+      \quad $(A\cap B)^c = A^c \cup B^c$；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{解题策略}：\\[0.1em]
+      \quad “至少一个”正难则反求“都不”。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 下半部第 2 行：全宽卡片（三事件容斥原理与精确计数记账） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0.3cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (14.8, 4.3);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.05) {
+      \large \textbf{\color{themealert}3. 容斥原理与阶数记账矩阵}
+    };
+  \end{pgfonlayer}
+
+  % 左栏：三事件 Venn 图与并集容斥公式
+  \begin{pgfonlayer}{background}
+    % 三圆填充
+    \fill[fill=themecurve!20!themebg] (0.6, 2.0) circle (0.65cm);
+    \fill[fill=themealert!20!themebg] (1.35, 2.0) circle (0.65cm);
+    \fill[fill=themeamber!20!themebg] (0.97, 1.35) circle (0.65cm);
+
+    % 三重交 ABC
+    \begin{scope}
+      \clip (0.6, 2.0) circle (0.65cm);
+      \clip (1.35, 2.0) circle (0.65cm);
+      \fill[fill=themefg!40!themebg] (0.97, 1.35) circle (0.65cm);
+    \end{scope}
+
+    \draw[color=themecurve, line width=0.8pt] (0.6, 2.0) circle (0.65cm);
+    \draw[color=themealert, line width=0.8pt] (1.35, 2.0) circle (0.65cm);
+    \draw[color=themeamber, line width=0.8pt] (0.97, 1.35) circle (0.65cm);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[color=themecurve] at (0.25, 2.25) {\tiny $A$};
+    \node[color=themealert] at (1.7, 2.25) {\tiny $B$};
+    \node[color=themeamber] at (0.97, 0.95) {\tiny $C$};
+    \node[color=themefg] at (0.97, 1.7) {\tiny $ABC$};
+
+    % 左栏文字
+    \node[anchor=north west, text width=5.0cm] at (2.2, 3.55) {
+      \small $\bullet$ \textbf{并集容斥（至少发生一个）}：\\[0.15em]
+      \quad \scriptsize $P(A\cup B\cup C) = \sum P(A)$\\[0.12em]
+      \qquad \scriptsize $- \sum P(AB) + P(ABC)$；\\[0.45em]
+      \small $\bullet$ \textbf{奇加偶减抵消准则}：\\[0.15em]
+      \quad \scriptsize 奇数阶相加，偶数阶相减，精准抵消。
+    };
+
+    % 中间分割线
+    \draw[color=themegray!30, line width=0.6pt] (7.4, 0.3) -- (7.4, 3.5);
+
+    % 右栏：高频精确计数事件代数
+    \node[anchor=north west, text width=7.0cm] at (7.7, 3.55) {
+      \small \textbf{考场高频：精确发生次数代数记账：}\\[0.3em]
+      \scriptsize $\bullet$ \textbf{恰好发生一个（$N=1$）}：\\[0.15em]
+      \quad $P(N=1) = \sum P(A) - 2\sum P(AB) + 3P(ABC)$；\\[0.35em]
+      \scriptsize $\bullet$ \textbf{恰好发生两个（$N=2$）}：\\[0.15em]
+      \quad $P(N=2) = \sum P(AB) - 3P(ABC)$；\\[0.35em]
+      \scriptsize $\bullet$ \textbf{至少发生两个（$N\ge 2$）}：\\[0.15em]
+      \quad $P(N\ge 2) = \sum P(AB) - 2P(ABC)$。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 底部全图全局总结 (无框轻量排印) ──
+% ══════════════════════════════════════════════════════════════
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.3, -0.2) {
+    \footnotesize \textbf{事件代数核心准则：} 概率测度具备有限可加性，直接相加的前提是互斥（$A\cap B=\varnothing$）；相交事件必须通过互斥划分或容斥阶数记账剔除重复测度。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

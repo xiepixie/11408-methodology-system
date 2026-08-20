@@ -1,0 +1,150 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+  \tikzset{
+    axis/.style={themegray, line width=0.9pt, -{Stealth[length=1.7mm]}},
+    curve/.style={themecurve, line width=2.0pt},
+    curvedash/.style={themegray, dashed, line width=0.9pt},
+    shellcurv/.style={themeamber, line width=2.0pt},
+    disk/.style={themecurve, line width=1.3pt},
+    shell/.style={themeamber, line width=1.3pt},
+    shelldash/.style={themeamber, dashed, line width=0.9pt}
+  }
+
+% ══════════════════════════════════════════════════════════════════════
+% 左图: 圆盘法 (Disk Method) ── 绕 x 轴旋转，微元截面垂直于旋转轴
+% ══════════════════════════════════════════════════════════════════════
+\begin{scope}[shift={(0,0)}]
+    \node[font=\small\bfseries, text=themecurve] at (1.8, 3.5) {圆盘法 (Disk Method)：横切截面自转};
+    \node[font=\footnotesize, text=themegray] at (1.8, 3.1) {微元截面垂直于旋转轴 ($x$ 轴)};
+
+    % 坐标轴
+    \draw[axis] (-0.4, 0) -- (4.4, 0) node[right, font=\small] {$x$};
+    \draw[axis] (0, -2.4) -- (0, 3.0) node[above, font=\small] {$y$};
+
+    % 旋转体外轮廓
+    \draw[curve] (0.8, 0.95) to[out=25, in=195] (3.8, 2.1) node[right, font=\footnotesize\bfseries] {$y=f(x)$};
+    \draw[curvedash] (0.8, -0.95) to[out=-25, in=-195] (3.8, -2.1);
+
+    % 底面与顶面椭圆透视封头
+    \draw[themegray, dashed, line width=0.7pt] (0.8, 0) ellipse (0.15cm and 0.95cm);
+    \draw[themegray, dashed, line width=0.7pt] (3.8, 0) ellipse (0.30cm and 2.1cm);
+
+    % ── 3D 圆盘微元 (位于 x=1.8 到 x=2.1, 半径 R=f(2.1)=1.45) ──
+    \begin{pgfonlayer}{background}
+        \fill[themecurve, opacity=0.22] (1.8, 1.32) -- (2.1, 1.45) arc (90:-90:0.22cm and 1.45cm) -- (1.8, -1.32) arc (-90:90:0.22cm and 1.32cm);
+    \end{pgfonlayer}
+
+    % 圆盘左侧背面椭圆 (虚线)
+    \draw[themecurve, dashed, line width=0.9pt] (1.8, 0) ellipse (0.22cm and 1.32cm);
+
+    % 圆盘柱体上下侧边
+    \draw[disk] (1.8, 1.32) -- (2.1, 1.45);
+    \draw[disk] (1.8, -1.32) -- (2.1, -1.45);
+
+    % 圆盘右侧正面椭圆
+    \draw[disk, fill=themecurve, fill opacity=0.35] (2.1, 0) ellipse (0.22cm and 1.45cm);
+
+    % 半径 R=f(x) 标注 (置于右侧开阔区)
+    \draw[themealert, -{Stealth[length=1.8mm]}, line width=1.3pt] (2.1, 0) -- (2.1, 1.45);
+    \node[text=themealert, font=\footnotesize\bfseries, anchor=west, fill=themebg, inner sep=1pt] at (2.25, 0.75) {$R=f(x)$};
+
+    % 厚度 dx 标注
+    \draw[themeamber, {Stealth[length=1.3mm]}-{Stealth[length=1.3mm]}, line width=0.9pt] (1.8, -1.75) -- (2.1, -1.75);
+    \node[text=themeamber, font=\tiny\bfseries, anchor=north] at (1.95, -1.8) {$dx$};
+    \draw[themegray, densely dotted] (1.8, -1.32) -- (1.8, -1.75);
+    \draw[themegray, densely dotted] (2.1, -1.45) -- (2.1, -1.75);
+
+    % 旋转轴提示
+    \draw[-{Stealth[length=1.6mm]}, themeamber, line width=1.1pt] (4.0, 0.45) arc (30:330:0.16cm and 0.32cm);
+    \node[text=themeamber, font=\tiny\bfseries, anchor=west] at (4.2, 0.45) {绕 $x$ 轴};
+
+    % 底部公式与微元本质
+    \node[font=\small, align=center] at (1.8, -2.85) {
+        \textbf{体积微元}：$dV = \underbrace{\pi [f(x)]^2}_{\text{圆截面面积 } A(x)} \cdot \underbrace{dx}_{\text{厚度}}$\\[4pt]
+        \footnotesize\color{themegray} 几何本质：宽 $dx$ 高 $f(x)$ 的平面条\textbf{贴 $x$ 轴自转}，叠成实心薄圆盘
+    };
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════════════
+% 右图: 柱壳法 (Shell Method) ── 绕 y 轴旋转，微元薄壳平行于旋转轴
+% ══════════════════════════════════════════════════════════════════════
+\begin{scope}[shift={(10.0,0)}]
+    \node[font=\small\bfseries, text=themeamber] at (0.0, 3.5) {柱壳法 (Shell Method)：纵切套筒公转};
+    \node[font=\footnotesize, text=themegray] at (0.0, 3.1) {微元薄壳平行于旋转轴 ($y$ 轴)};
+
+    % 坐标轴 (y 轴居中，作为旋转对称轴)
+    \draw[axis] (-2.8, 0) -- (3.8, 0) node[right, font=\small] {$x$};
+    \draw[axis] (0, -0.6) -- (0, 3.0) node[above, font=\small] {$y$};
+
+    % 母线 y=f(x)
+    \draw[shellcurv] (1.8, 1.50) to[out=25, in=195] (3.4, 2.1) node[right, font=\footnotesize\bfseries] {$y=f(x)$};
+
+    % ── 3D 圆柱薄壳微元 (半径 r=1.8, 高度 h=f(1.8)=1.50, 厚度 dx=0.25) ──
+    \begin{pgfonlayer}{background}
+        \fill[themeamber, opacity=0.20] (-1.8, 0) -- (-1.8, 1.50) arc (180:360:1.8cm and 0.35cm) -- (1.8, 0) arc (0:-180:1.8cm and 0.35cm);
+        % 高亮右侧 2D 平面微元条 dA = f(x) dx (高 1.50, 宽 0.25)
+        \fill[themealert, opacity=0.35] (1.8, 0) rectangle (2.05, 1.50);
+    \end{pgfonlayer}
+
+    % 柱壳底部椭圆 (前半实线，后半虚线)
+    \draw[shelldash] (-1.8, 0) arc (180:0:1.8cm and 0.35cm);
+    \draw[shell] (-1.8, 0) arc (180:360:1.8cm and 0.35cm);
+
+    % 柱壳左右母线
+    \draw[shell] (-1.8, 0) -- (-1.8, 1.50);
+    \draw[shell] (1.8, 0) -- (1.8, 1.50);
+
+    % 柱壳顶面环形椭圆
+    \draw[shell, fill=themeamber, fill opacity=0.30] (0, 1.50) ellipse (1.8cm and 0.35cm);
+
+    % 半径 r=x 标注 (放在顶面椭圆内部开阔区)
+    \draw[themecurve, -{Stealth[length=1.8mm]}, line width=1.3pt] (0, 1.50) -- (1.8, 1.50);
+    \node[text=themecurve, font=\footnotesize\bfseries, anchor=south, fill=themebg, inner sep=1pt] at (0.9, 1.55) {半径 $r=x$ (距轴)};
+
+    % 高度 h=f(x) 与 2D 面积微元条标注
+    \draw[themealert, -{Stealth[length=1.8mm]}, line width=1.3pt] (1.8, 0) -- (1.8, 1.50);
+    \node[text=themealert, font=\footnotesize\bfseries, anchor=west, fill=themebg, inner sep=1pt] at (2.15, 0.75) {高 $h=f(x)$};
+
+    % 平面面积微元引线提示
+    \draw[themealert, line width=0.8pt] (1.92, 0.3) -- (3.2, 0.3) node[right, font=\tiny\bfseries] {平面条 $dA = f(x)\,dx$};
+
+    % 厚度 dx 标注
+    \draw[themeamber, {Stealth[length=1.3mm]}-{Stealth[length=1.3mm]}, line width=0.9pt] (1.8, -0.40) -- (2.05, -0.40);
+    \node[text=themeamber, font=\tiny\bfseries, anchor=north] at (1.92, -0.43) {壁厚 $dx$};
+    \draw[themegray, densely dotted] (1.8, 0) -- (1.8, -0.40);
+    \draw[themegray, densely dotted] (2.05, 0) -- (2.05, -0.40);
+
+    % 旋转轴提示
+    \draw[-{Stealth[length=1.6mm]}, themecurve, line width=1.1pt] (0.28, 2.5) arc (0:270:0.28cm and 0.14cm);
+    \node[text=themecurve, font=\tiny\bfseries, anchor=west] at (0.42, 2.5) {绕 $y$ 轴};
+
+    % 底部公式与微元本质
+    \node[font=\small, align=center] at (0.0, -2.85) {
+        \textbf{体积微元}：$dV = \underbrace{2\pi x}_{\text{公转周长}} \cdot \underbrace{f(x)\,dx}_{\text{面积微元 } dA} = \underbrace{(2\pi x f(x))}_{\text{柱壳侧面积}} \cdot \underbrace{dx}_{\text{壁厚}}$\\[4pt]
+        \footnotesize\color{themegray} 几何本质：平面面积微元 $dA$ 距轴 $x$ 处\textbf{公转一周}，扫出薄圆柱套筒
+    };
+\end{scope}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

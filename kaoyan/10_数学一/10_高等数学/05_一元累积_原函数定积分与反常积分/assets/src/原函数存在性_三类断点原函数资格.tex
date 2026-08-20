@@ -1,0 +1,85 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 子图 1: 连续函数 (必有原函数) ──
+\begin{scope}[shift={(0,0)}]
+    \node[font=\footnotesize\bfseries, align=center] at (1.8, 3.4) {1. 连续函数\\(必有原函数)};
+
+    \draw[-{Stealth}, themefg, line width=1.1pt] (-0.3, 0) -- (3.8, 0) node[right, font=\scriptsize] {$x$};
+    \draw[-{Stealth}, themefg, line width=1.1pt] (0, -0.3) -- (0, 3.0) node[above, font=\scriptsize] {$y$};
+
+    \draw[themecurve, line width=2.0pt] (0.2, 0.4) to[out=40, in=200] (1.8, 1.8) to[out=20, in=190] (3.5, 2.5);
+
+    \node[text=themecurve, font=\scriptsize\bfseries, align=center] at (1.8, -0.7) {
+        $f \in C(I) \implies \exists F$\\
+        微积分基本定理直接保证
+    };
+\end{scope}
+
+% ── 子图 2: 跳跃间断点 (绝无原函数，违背介值性) ──
+\begin{scope}[shift={(5.0,0)}]
+    \node[font=\footnotesize\bfseries, align=center] at (1.8, 3.4) {2. 跳跃间断点\\(绝无原函数)};
+
+    \draw[-{Stealth}, themefg, line width=1.1pt] (-0.3, 0) -- (3.8, 0) node[right, font=\scriptsize] {$x$};
+    \draw[-{Stealth}, themefg, line width=1.1pt] (0, -0.3) -- (0, 3.0) node[above, font=\scriptsize] {$y$};
+
+    % 左侧分支
+    \draw[themealert, line width=2.0pt] (0.2, 0.8) -- (1.8, 0.8);
+    \fill[themealert] (1.8, 0.8) circle (2.2pt);
+
+    % 右侧分支
+    \draw[themealert, line width=2.0pt] (1.8, 2.2) -- (3.4, 2.2);
+    \draw[themealert, line width=1.2pt, fill=themebg] (1.8, 2.2) circle (2.2pt);
+
+    % 介值性缺失区域
+    \draw[{Stealth}-{Stealth}, themegray, dashed, line width=1.0pt] (1.8, 0.95) -- (1.8, 2.05);
+    \node[text=themealert, font=\tiny\bfseries, anchor=west] at (1.85, 1.5) {跳跃裂口 (无介值)};
+
+    \node[text=themealert, font=\scriptsize\bfseries, align=center] at (1.8, -0.7) {
+        Darboux 导数介值定理：\\
+        导函数值域无跳跃裂口
+    };
+\end{scope}
+
+% ── 子图 3: 震荡型间断点 (可能存在原函数) ──
+\begin{scope}[shift={(10.0,0)}]
+    \node[font=\footnotesize\bfseries, align=center] at (1.8, 3.4) {3. 震荡型间断点\\(可有原函数)};
+
+    \draw[-{Stealth}, themefg, line width=1.1pt] (-0.3, 0) -- (3.8, 0) node[right, font=\scriptsize] {$x$};
+    \draw[-{Stealth}, themefg, line width=1.1pt] (0, -0.3) -- (0, 3.0) node[above, font=\scriptsize] {$y$};
+
+    % 震荡曲线示意
+    \draw[themeamber, line width=1.4pt, domain=0.08:3.4, samples=80] plot (\x, {1.4 + 0.8*sin(6/\x r)});
+
+    % 原点定义点
+    \fill[themeamber] (0, 1.4) circle (2.2pt);
+
+    \node[text=themeamber, font=\scriptsize\bfseries, align=center] at (1.8, -0.7) {
+        经典原函数：\\
+        $F(x) = x^2\sin(1/x),\ F(0)=0$
+    };
+\end{scope}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

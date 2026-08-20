@@ -1,0 +1,95 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 左图: 直角坐标系矩形微元 ──
+\begin{scope}[shift={(0,0)}]
+    \node[font=\footnotesize\bfseries, align=center] at (2.4, 4.4) {直角坐标系：矩形平移不变微元};
+
+    % 坐标轴
+    \draw[-{Stealth}, themefg, line width=1.1pt] (-0.3, 0) -- (4.8, 0) node[right, font=\scriptsize] {$x$};
+    \draw[-{Stealth}, themefg, line width=1.1pt] (0, -0.3) -- (0, 4.2) node[above, font=\scriptsize] {$y$};
+
+    % 微元矩形
+    \fill[themecurve!30!themebg] (1.6, 1.4) rectangle (3.0, 2.6);
+    \draw[themecurve, line width=1.6pt] (1.6, 1.4) rectangle (3.0, 2.6);
+
+    % 尺寸标注
+    \draw[themeamber, -{Stealth}, line width=1pt] (1.6, 1.1) -- (3.0, 1.1);
+    \node[text=themeamber, font=\scriptsize\bfseries, anchor=north] at (2.3, 1.05) {$dx$};
+
+    \draw[themeamber, -{Stealth}, line width=1pt] (1.3, 1.4) -- (1.3, 2.6);
+    \node[text=themeamber, font=\scriptsize\bfseries, anchor=east] at (1.25, 2.0) {$dy$};
+
+    % 中心面积
+    \node[text=themecurve, font=\small\bfseries] at (2.3, 2.0) {$dA$};
+
+    % 公式
+    \node[font=\scriptsize, align=center] at (2.4, -0.6) {
+        $dA = dx\,dy$\\[2pt]
+        面积不依赖点所在的绝对位置
+    };
+\end{scope}
+
+% ── 右图: 极坐标系扇环微元 (为什么多出因子 r) ──
+\begin{scope}[shift={(6.8,0)}]
+    \node[font=\footnotesize\bfseries, align=center] at (2.5, 4.4) {极坐标系：扇环微元与放大因子 $r$};
+
+    % 坐标轴
+    \draw[-{Stealth}, themefg, line width=1.1pt] (-0.3, 0) -- (4.8, 0) node[right, font=\scriptsize] {$x$};
+    \draw[-{Stealth}, themefg, line width=1.1pt] (0, -0.3) -- (0, 4.2) node[above, font=\scriptsize] {$y$};
+
+    % 扇环
+    \fill[themeamber!30!themebg] (20:2.0) arc (20:55:2.0) -- (55:3.2) arc (55:20:3.2) -- cycle;
+    \draw[themeamber, line width=1.6pt] (20:2.0) arc (20:55:2.0) -- (55:3.2) arc (55:20:3.2) -- cycle;
+
+    % 射线
+    \draw[themegray, dashed, line width=1pt] (0,0) -- (20:3.8);
+    \draw[themegray, dashed, line width=1pt] (0,0) -- (55:3.8);
+
+    % 角度 d theta 标注
+    \draw[themecurve, line width=1.2pt] (0.8,0) arc (0:20:0.8);
+    \node[text=themecurve, font=\tiny\bfseries] at (10:1.05) {$\theta$};
+
+    \draw[themealert, line width=1.3pt] (20:1.4) arc (20:55:1.4);
+    \node[text=themealert, font=\scriptsize\bfseries] at (37.5:1.7) {$d\theta$};
+
+    % 径向厚度 dr 标注
+    \draw[themecurve, -{Stealth}, line width=1.3pt] (20:2.0) -- (20:3.2);
+    \node[text=themecurve, font=\scriptsize\bfseries, anchor=north west] at (20:2.6) {$dr$};
+
+    % 弧长 r d theta 标注
+    \node[text=themealert, font=\scriptsize\bfseries, anchor=south west] at (55:3.3) {弧长 $\approx r\,d\theta$};
+
+    % 中心微元
+    \node[text=themeamber, font=\small\bfseries] at (37.5:2.6) {$dA$};
+
+    % 公式说明
+    \node[font=\scriptsize, align=center] at (2.4, -0.6) {
+        $dA = (r\,d\theta)\cdot dr = \boxed{r\,dr\,d\theta}$\\[2pt]
+        Jacobian 行列式 $|J|=r$ 源自径向展开弧长放大
+    };
+\end{scope}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

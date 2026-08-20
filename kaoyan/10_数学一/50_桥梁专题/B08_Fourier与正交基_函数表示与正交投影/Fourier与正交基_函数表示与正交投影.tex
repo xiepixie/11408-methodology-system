@@ -42,13 +42,19 @@ v=\sum_{k=1}^n c_ke_k,
 这条公式是 B08 的母原型。核心不是“内积能算系数”，而是\textbf{正交性让其他方向的交叉项全部消失}。
 
 \section{把向量换成函数，点积自然变成积分内积}
-在 $[-L,L]$ 上定义
+先定义“平方可积”：若
 \[
-\langle f,g\rangle=\int_{-L}^{L}f(x)g(x)dx.
+\int_{-L}^{L}\lvert f(x)\rvert^2\,\mathrm{d}x<\infty,
 \]
-三角函数满足正交关系，例如对 $m\neq n$，
+就称 $f$ 在该区间平方可积。所有这类函数组成 $L^2([-L,L])$。在这个空间中定义
 \[
-\int_{-L}^{L}\cos\frac{m\pi x}{L}\cos\frac{n\pi x}{L}dx=0.
+\langle f,g\rangle:=\int_{-L}^{L}f(x)g(x)\,\mathrm{d}x,
+\qquad
+\lVert f\rVert_2:=\sqrt{\langle f,f\rangle}.
+\]
+这里 $\lVert f\rVert_2^2$ 表示全区间平方误差的总量。严格地说，$L^2$ 把“只在零长度集合上不同”的函数视为同一个元素；数学一计算中通常不需要显式处理这个技术层。三角函数满足正交关系，例如对 $m\neq n$，
+\[
+\int_{-L}^{L}\cos\frac{m\pi x}{L}\cos\frac{n\pi x}{L}\,\mathrm{d}x=0.
 \]
 
 于是当我们用
@@ -58,20 +64,21 @@ v=\sum_{k=1}^n c_ke_k,
 作为正交函数系时，系数必然由内积投影产生：
 \[
 \boxed{
-a_n=\frac1L\int_{-L}^{L}f(x)\cos\frac{n\pi x}{L}dx,
+a_n=\frac1L\int_{-L}^{L}f(x)\cos\frac{n\pi x}{L}\,\mathrm{d}x,
 }
 \]
 \[
 \boxed{
-b_n=\frac1L\int_{-L}^{L}f(x)\sin\frac{n\pi x}{L}dx.
+b_n=\frac1L\int_{-L}^{L}f(x)\sin\frac{n\pi x}{L}\,\mathrm{d}x.
 }
 \]
+此时只能先称它们为“正交函数系”；只有进一步确认完备性以后，才可以把它升级成完整意义上的正交基。
 常数项对应常数方向的投影。
 
 因此“乘一个三角函数再积分”不是傅里叶的神秘技巧，而是在函数空间里做坐标读取。
 
 \section{有限部分和：不仅是截断，更是最佳平方误差投影}
-令 $V_N$ 为前若干个三角基函数张成的有限维子空间，$S_Nf$ 为对应傅里叶部分和。由于
+令 $V_N$ 为前若干个三角函数张成的有限维子空间，$S_Nf$ 定义为把 $f$ 投影到这些方向后得到的有限部分和。由于
 \[
 f-S_Nf\perp V_N,
 \]
@@ -132,7 +139,7 @@ b_n=0.
 \]
 这就是 Bessel 型不等式的几何含义：投影到若干方向得到的平方坐标总量，不会超过原对象的平方范数。
 
-若正交系统完备并在相应 Hilbert 空间意义下展开完整，则进一步有 Parseval 等式
+若正交系统在相应 $L^2$ 内积空间中完备，也就是不存在遗漏的非零正交方向，则进一步有 Parseval 等式
 \[
 \lVert f\rVert_2^2=\sum_k\lvert c_k\rvert^2.
 \]
@@ -146,7 +153,7 @@ b_n=0.
 \]
 余弦系数为
 \[
-a_n=\frac2L\int_0^Lf(x)\cos\frac{n\pi x}{L}dx.
+a_n=\frac2L\int_0^L f(x)\cos\frac{n\pi x}{L}\,\mathrm{d}x.
 \]
 系数前的 $2/L$ 并不是需要死记的新常数，而来自：
 \begin{itemize}

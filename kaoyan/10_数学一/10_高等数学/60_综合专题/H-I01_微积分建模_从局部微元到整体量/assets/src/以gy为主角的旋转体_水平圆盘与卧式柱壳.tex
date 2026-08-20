@@ -1,0 +1,137 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+  \tikzset{
+    axis/.style={themegray, line width=0.9pt, -{Stealth[length=1.7mm]}},
+    curve/.style={themecurve, line width=2.0pt},
+    curvedash/.style={themegray, dashed, line width=0.9pt},
+    disk/.style={themecurve, line width=1.3pt},
+    shell/.style={themeamber, line width=1.3pt},
+    shelldash/.style={themeamber, dashed, line width=0.9pt}
+  }
+
+% ══════════════════════════════════════════════════════════════════════
+% 左图: x=g(y) 绕 y 轴旋转 ── 水平圆盘法 (微元条垂直于 y 轴自转)
+% ══════════════════════════════════════════════════════════════════════
+\begin{scope}[shift={(0,0)}]
+    \node[font=\small\bfseries, text=themecurve] at (0, 3.6) {$x=g(y)$ 绕 $y$ 轴：水平圆盘法};
+    \node[font=\footnotesize, text=themegray] at (0, 3.2) {水平微元条垂直于 $y$ 轴，贴轴自转};
+
+    % 坐标轴
+    \draw[axis] (-2.6, 0) -- (3.0, 0) node[right, font=\small] {$x$};
+    \draw[axis] (0, -0.4) -- (0, 3.1) node[above, font=\small] {$y$};
+
+    % 旋转体外轮廓 (绕 y 轴的碗状旋转体)
+    \draw[curve] (0, 0) to[out=20, in=250] (2.2, 2.5) node[right, font=\footnotesize\bfseries] {$x=g(y)$};
+    \draw[curvedash] (0, 0) to[out=160, in=290] (-2.2, 2.5);
+    \draw[themegray, dashed, line width=0.7pt] (0, 2.5) ellipse (2.2cm and 0.42cm);
+
+    % ── 水平薄圆盘微元 (位于 y=1.3 到 y=1.55, 半径 R=g(y)=1.50) ──
+    \begin{pgfonlayer}{background}
+        \fill[themecurve, opacity=0.25] (-1.50, 1.3) -- (-1.50, 1.55) arc (180:360:1.50cm and 0.30cm) -- (1.50, 1.3) arc (0:-180:1.50cm and 0.30cm);
+    \end{pgfonlayer}
+
+    % 圆盘上椭圆面
+    \draw[disk, fill=themecurve, fill opacity=0.35] (0, 1.55) ellipse (1.50cm and 0.30cm);
+    % 圆盘下半圆弧与侧边
+    \draw[disk] (-1.50, 1.3) arc (180:360:1.50cm and 0.30cm);
+    \draw[disk] (-1.50, 1.3) -- (-1.50, 1.55);
+    \draw[disk] (1.50, 1.3) -- (1.50, 1.55);
+
+    % 半径 R = g(y) 标注
+    \draw[themealert, -{Stealth[length=1.8mm]}, line width=1.3pt] (0, 1.55) -- (1.50, 1.55);
+    \node[text=themealert, font=\footnotesize\bfseries, anchor=south, fill=themebg, inner sep=1pt] at (0.75, 1.58) {$R=g(y)$};
+
+    % 厚度 dy 标注
+    \draw[themeamber, {Stealth[length=1.3mm]}-{Stealth[length=1.3mm]}, line width=0.9pt] (2.4, 1.3) -- (2.4, 1.55);
+    \node[text=themeamber, font=\tiny\bfseries, anchor=west] at (2.45, 1.42) {$dy$};
+    \draw[themegray, dotted] (1.50, 1.3) -- (2.4, 1.3);
+    \draw[themegray, dotted] (1.50, 1.55) -- (2.4, 1.55);
+
+    % 旋转轴提示
+    \draw[-{Stealth[length=1.6mm]}, themecurve, line width=1.1pt] (0.24, 2.7) arc (0:270:0.24cm and 0.12cm);
+    \node[text=themecurve, font=\tiny\bfseries, anchor=west] at (0.35, 2.7) {绕 $y$ 轴};
+
+    % 底部公式
+    \node[font=\small, align=center] at (0, -2.2) {
+        \textbf{水平圆盘微元}：$dV = \underbrace{\pi [g(y)]^2}_{\text{圆截面面积 } \pi R^2} \cdot \underbrace{dy}_{\text{厚度}}$\\[4pt]
+        \footnotesize\color{themegray} 几何图像：水平薄圆盘沿 $y$ 轴从下往上叠成实体
+    };
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════════════
+% 右图: x=g(y) 绕 x 轴旋转 ── 卧式柱壳法 (水平微元条平行于 x 轴公转)
+% ══════════════════════════════════════════════════════════════════════
+\begin{scope}[shift={(10.4,0)}]
+    \node[font=\small\bfseries, text=themeamber] at (1.8, 3.6) {$x=g(y)$ 绕 $x$ 轴：卧式柱壳法};
+    \node[font=\footnotesize, text=themegray] at (1.8, 3.2) {水平微元条平行于 $x$ 轴，距轴 $r=y$ 处公转};
+
+    % 坐标轴 (x 轴水平居中)
+    \draw[axis] (-0.5, 0) -- (4.4, 0) node[right, font=\small] {$x$};
+    \draw[axis] (0, -1.45) -- (0, 3.1) node[above, font=\small] {$y$};
+
+    % 母线 x=g(y) 位于第一象限
+    \draw[shell, line width=2.0pt] (0, 0) to[out=20, in=250] (2.2, 2.5) node[right, font=\footnotesize\bfseries] {$x=g(y)$};
+
+    % ── 3D 卧式圆柱薄壳微元 (半径 r=y=1.3, 筒长 h=g(y)=1.50, 壁厚 dy=0.22) ──
+    \begin{pgfonlayer}{background}
+        \fill[themeamber, opacity=0.22] (0, 1.3) -- (1.50, 1.3) arc (90:-90:0.25cm and 1.3cm) -- (0, -1.3) arc (-90:90:0.25cm and 1.3cm);
+        % 高亮 2D 水平平面条 (长 1.50, 厚 0.22)
+        \fill[themealert, opacity=0.35] (0, 1.3) rectangle (1.50, 1.52);
+    \end{pgfonlayer}
+
+    % 卧式柱壳左侧封头椭圆
+    \draw[shelldash] (0, 0) ellipse (0.25cm and 1.3cm);
+    % 卧式柱壳右侧封头椭圆
+    \draw[shell, fill=themeamber, fill opacity=0.35] (1.50, 0) ellipse (0.25cm and 1.3cm);
+    % 卧式柱壳上下母线
+    \draw[shell] (0, 1.3) -- (1.50, 1.3);
+    \draw[shell] (0, -1.3) -- (1.50, -1.3);
+
+    % 半径 r = y 标注 (竖直箭头)
+    \draw[themecurve, -{Stealth[length=1.8mm]}, line width=1.3pt] (0, 0) -- (0, 1.3);
+    \node[text=themecurve, font=\footnotesize\bfseries, anchor=east, fill=themebg, inner sep=1pt] at (-0.08, 0.65) {$r=y$ (距轴)};
+
+    % 筒长 h = g(y) 标注 (水平红箭头)
+    \draw[themealert, -{Stealth[length=1.8mm]}, line width=1.3pt] (0, 1.3) -- (1.50, 1.3);
+    \node[text=themealert, font=\footnotesize\bfseries, anchor=south, fill=themebg, inner sep=1pt] at (0.75, 1.33) {长 $h=g(y)$};
+
+    % 壁厚 dy 标注 (右侧竖直标尺)
+    \draw[themeamber, {Stealth[length=1.3mm]}-{Stealth[length=1.3mm]}, line width=0.9pt] (1.8, 1.3) -- (1.8, 1.52);
+    \node[text=themeamber, font=\tiny\bfseries, anchor=west] at (1.85, 1.41) {壁厚 $dy$};
+    \draw[themegray, dotted] (1.50, 1.3) -- (1.8, 1.3);
+    \draw[themegray, dotted] (1.50, 1.52) -- (1.8, 1.52);
+
+    % 旋转轴提示 (绕 x 轴)
+    \draw[-{Stealth[length=1.6mm]}, themeamber, line width=1.1pt] (3.8, 0.45) arc (30:330:0.16cm and 0.32cm);
+    \node[text=themeamber, font=\tiny\bfseries, anchor=west] at (4.0, 0.45) {绕 $x$ 轴};
+
+    % 底部公式
+    \node[font=\small, align=center] at (1.8, -2.2) {
+        \textbf{卧式柱壳微元}：$dV = \underbrace{2\pi y}_{\text{公转周长}} \cdot \underbrace{g(y)\, dy}_{\text{面积微元 } dA} = \boxed{2\pi y \cdot g(y)\, dy}$\\[4pt]
+        \footnotesize\color{themegray} 几何图像：横躺着的同心圆柱壳一层层向外包裹
+    };
+\end{scope}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

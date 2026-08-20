@@ -1,0 +1,137 @@
+% ── V19 枢轴量非对称反演 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 1. 顶层：卡方枢轴量抽样分布空间 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=5.2cm]
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themecurve] at (7.5, 3.15) {
+      \textbf{\normalsize 1. 枢轴抽样分布空间：$Q = \frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1)$}
+    };
+  \end{pgfonlayer}
+
+  % 背景层：坐标轴与双尾阴影
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (1.5, 0) -- (13.5, 0) node[right] {\footnotesize $q$};
+    \draw[->, color=themegray, line width=0.8pt] (2.2, 0) -- (2.2, 2.7) node[above=1pt] {\scriptsize $f(q)$};
+
+    % 左尾填充 (\alpha/2): 0.05 到 1.1
+    \fill[fill=themecurve!35!themebg, domain=0.05:1.1, variable=\x]
+      (2.2, 0) -- plot({\x*1.5 + 2.2}, {3.2*sqrt(\x)*exp(-1.1*\x)}) -- ({1.1*1.5 + 2.2}, 0) -- cycle;
+    % 右尾填充 (\alpha/2): 3.2 到 6.5
+    \fill[fill=themealert!35!themebg, domain=3.2:6.5, variable=\x]
+      ({3.2*1.5 + 2.2}, 0) -- plot({\x*1.5 + 2.2}, {3.2*sqrt(\x)*exp(-1.1*\x)}) -- ({6.5*1.5 + 2.2}, 0) -- cycle;
+
+    % 临界点虚线
+    \draw[color=themecurve, dashed, line width=0.8pt] ({1.1*1.5 + 2.2}, 0) -- ({1.1*1.5 + 2.2}, {3.2*sqrt(1.1)*exp(-1.1*1.1)});
+    \draw[color=themealert, dashed, line width=0.8pt] ({3.2*1.5 + 2.2}, 0) -- ({3.2*1.5 + 2.2}, {3.2*sqrt(3.2)*exp(-1.1*3.2)});
+  \end{pgfonlayer}
+
+  % 主体曲线 (main 层)
+  \draw[color=themeamber, line width=1.5pt, domain=0.05:6.8, samples=70, smooth]
+    plot({\x*1.5 + 2.2}, {3.2*sqrt(\x)*exp(-1.1*\x)});
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    % 中间置信区域（置于曲线右上方留白区）
+    \node[anchor=south west, fill=themebg, inner sep=1.5pt, text=themeamber] at (5.0, 1.25) {
+      \footnotesize \textbf{中间覆盖区域} $1-\alpha$
+    };
+
+    % 尾部面积标注
+    \node[anchor=south, text=themecurve] at (3.0, 0.35) {\scriptsize 左尾 $\frac{\alpha}{2}$};
+    \node[anchor=south, text=themealert] at (8.2, 0.3) {\scriptsize 右尾 $\frac{\alpha}{2}$};
+
+    % 坐标轴刻度
+    \fill[color=themecurve] ({1.1*1.5 + 2.2}, 0) circle (2.0pt)
+      node[anchor=north, text=themecurve] {\footnotesize $\chi^2_{1-\alpha/2}$};
+    \fill[color=themealert] ({3.2*1.5 + 2.2}, 0) circle (2.0pt)
+      node[anchor=north, text=themealert] {\footnotesize $\chi^2_{\alpha/2}$};
+    \node[anchor=north east, text=themegray] at (2.2, -0.05) {\scriptsize $0$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 2. 中层：反演核心三步推导（高可读性结构化排印） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=2.0cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!6!themebg, draw=themegray!60!themefg, line width=0.8pt, rounded corners=4pt]
+      (0.8, 0) rectangle (14.2, 2.7);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 步骤 1
+    \node[anchor=west] at (1.1, 2.25) {
+      \footnotesize \textbf{第一步（抽样空间概率覆盖）：}
+    };
+    \node[anchor=east] at (13.9, 2.25) {
+      \normalsize $P\left( {\color{themecurve}\chi^2_{1-\alpha/2}} \le \frac{(n-1)S^2}{\sigma^2} \le {\color{themealert}\chi^2_{\alpha/2}} \right) = 1-\alpha$
+    };
+
+    % 步骤 2（取倒数反向）
+    \node[anchor=west] at (1.1, 1.35) {
+      \footnotesize \textbf{第二步（代数取倒数，不等号反向）：}
+    };
+    \node[anchor=east] at (13.9, 1.35) {
+      \normalsize $\frac{1}{\color{themealert}\chi^2_{\alpha/2}} \le \frac{\sigma^2}{(n-1)S^2} \le \frac{1}{\color{themecurve}\chi^2_{1-\alpha/2}}$ \quad \footnotesize \textbf{\color{themeamber}（左右交叉换位）}
+    };
+
+    % 步骤 3（置信区间）
+    \node[anchor=west] at (1.1, 0.45) {
+      \footnotesize \textbf{第三步（同乘 $(n-1)S^2$ 解出参数）：}
+    };
+    \node[anchor=east] at (13.9, 0.45) {
+      \normalsize $P\left( \frac{(n-1)S^2}{\color{themealert}\chi^2_{\alpha/2}} \le \sigma^2 \le \frac{(n-1)S^2}{\color{themecurve}\chi^2_{1-\alpha/2}} \right) = 1-\alpha$
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 3. 下层：参数 $\sigma^2$ 置信区间空间 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0.3cm]
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (1.5, 0.5) -- (13.5, 0.5) node[right] {\footnotesize $\sigma^2$};
+
+    % 置信区间条 [Lower, Upper]
+    \fill[fill=themeamber!30!themebg, rounded corners=2pt] (4.0, 0.35) rectangle (11.0, 0.65);
+    \draw[color=themeamber, line width=1.5pt] (4.0, 0.5) -- (11.0, 0.5);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 下界标记（由右尾分位点反演而来）
+    \draw[color=themealert, line width=1.6pt] (4.0, 0.3) -- (4.0, 0.7);
+    \fill[color=themealert] (4.0, 0.5) circle (2.0pt)
+      node[anchor=north, text=themealert] {\footnotesize 下界 $\frac{(n-1)S^2}{\chi^2_{\alpha/2}}$};
+
+    % 上界标记（由左尾分位点反演而来）
+    \draw[color=themecurve, line width=1.6pt] (11.0, 0.3) -- (11.0, 0.7);
+    \fill[color=themecurve] (11.0, 0.5) circle (2.0pt)
+      node[anchor=north, text=themecurve] {\footnotesize 上界 $\frac{(n-1)S^2}{\chi^2_{1-\alpha/2}}$};
+
+    % 区间标签
+    \node[anchor=south, text=themeamber] at (7.5, 0.75) {\footnotesize \textbf{$\sigma^2$ 的 $1-\alpha$ 双侧置信区间}};
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 4. 底部全图全局总结 (无框轻量排印) ──
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.5, -0.65) {
+    \footnotesize \textbf{反演交叉法则：} 目标参数 $\sigma^2$ 位于枢轴分母，代数取倒数导致分位点交叉换位：卡方右尾分位点 $\chi^2_{\alpha/2}$ 反演为置信下界分母，左尾分位点 $\chi^2_{1-\alpha/2}$ 反演为置信上界分母。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

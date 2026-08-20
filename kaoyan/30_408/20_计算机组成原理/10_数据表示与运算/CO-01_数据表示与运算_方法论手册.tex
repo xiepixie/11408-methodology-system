@@ -214,7 +214,7 @@ IEEE 754 & 分类、对阶、规格化、GRS 舍入、特殊值 & ISA rounding/s
 有限硬件的核心不是“把数学算错”，而是按明确格式把无限或足宽结果投影回有限集合；正确答案必须同时给出保留结果、丢失信息和其软件可见解释。
 \end{corebox}
 
-本册覆盖定点与浮点表示、ALU 加法器、乘除迭代、校验码、类型转换、大小端和对齐。并行阵列只是“用更多硬件换更短时间”的一种实现；Booth 或不恢复除法的寄存器安排和拍数必须以题设为准。
+本册覆盖定点与浮点表示、ALU 加法器、乘除迭代、校验码和类型转换机制；大小端与对齐只保留表示层交接，完整地址语义由 CO-02 拥有。并行阵列只是“用更多硬件换更短时间”的一种实现；Booth 或不恢复除法的寄存器安排和拍数必须以题设为准。
 
 \section{补充细节：从进制到可验证的位串状态机}
 
@@ -290,6 +290,8 @@ N/S:\text{结果最高位或符号证据}.
 \]
 题目若要求判断“是否溢出”，必须先写目标解释；不能把 $C=1$ 当作 $V=1$，也不能用结果符号位单独代替完整判据。
 
+比较题进一步利用同一次减法的状态证据。令定长结果 $D=A-B$：$Z=1$ 可以判等；对补码有符号比较，若发生 overflow，结果最高位的表面符号需要被 $V$ 校正，因此常见 condition-code 模型用 $N\oplus V$（或 $SF\oplus OF$）表示“数学意义上的 $A<B$”。无符号大小关系则依赖 carry/borrow 的题设定义。若题目明确采用“减法时 $CF=1$ 表示借位”的口径，则 $A<B\Leftrightarrow CF=1$，$A>B\Leftrightarrow ZF=0\land CF=0$；有些 ISA 的 carry 位恰好采用“无借位”为 1，不能把这一口径跨题硬套。CO-01 只负责这些标志怎样从有限宽度结果产生，条件转移怎样消费它们由 CO-02/题设决定。
+
 \begin{warnbox}{ALU 题的三层检查}
 第一层在位串层检查每一位和最终进位；第二层按 unsigned 解释低位结果；第三层按 signed/补码解释并判断 $V$。例如两个正数相加得到最高位为 $1$，可能是 signed overflow，但这并不意味着 unsigned 结果非法。三层混成一步，最容易把 carry、borrow、overflow 写成同一个概念。
 \end{warnbox}
@@ -342,6 +344,20 @@ E & F & \text{含义}\\\hline
 \text{全一}&\ne0&\text{NaN}
 \end{array}
 \]
+
+408 中最常用的两种二进制格式要把“字段位数”和“有效精度”分开记：
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{1.8cm}C{1.1cm}C{1.1cm}C{1.1cm}C{1.4cm}Y}
+\toprule
+格式 & $S$ & $E$ & $F$ & Bias & 规格化有效精度 \\
+\midrule
+binary32 / float & 1 & 8 & 23 & 127 & $1+23=24$ 位 \\
+binary64 / double & 1 & 11 & 52 & 1023 & $1+52=53$ 位 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+对 binary32，规格化数的阶码字段只使用 $E=1\sim254$，所以真实指数为 $-126\sim127$；$E=0$ 与 $E=255$ 留给零、非规格化数、无穷与 NaN 等特殊类。这里“阶码”是字段角色，“偏置表示/移码思想”是编码方法，两者不能写成同一个概念。binary64 同理，只是字段宽度和 Bias 改变。
+
 subnormal 用固定的最小指数和 $0.f$ 提供渐进下溢；不能把它误套成隐藏位为 $1$ 的 normal。相邻浮点格点的绝对间距随指数增大，因而相对精度大致稳定而绝对间距变粗；“指数越大精度越高”与“有效位数固定”并不矛盾。
 
 \subsection{浮点加减：对阶、规格化和 GRS 是连续状态}
@@ -369,18 +385,37 @@ subnormal 用固定的最小指数和 $0.f$ 提供渐进下溢；不能把它误
 \]
 校验位放在位置 $1,2,4,8,\ldots$，其余位置放数据。第 $j$ 个校验位负责所有位置编号的二进制表示中第 $j$ 位为 $1$ 的位置；编码时按偶校验填入，接收时重新计算各组校验结果并拼成 syndrome。syndrome 为 $0$ 表示没有检测到单错，非零值直接给出出错位编号。SEC-DED 再增加总体奇偶位：可实现单错纠正和双错检测，但三位及以上错误不应超出题设能力范围。
 
-\subsection{C 类型转换、大小端与对齐：位串搬运也有语义边界}
+\subsection{C 类型转换：先保源值，再缩放位宽，最后按目标格式解释}
 
-C 类型转换题先区分“位模式是否改变”和“解释是否改变”：
+转换题最容易错在把 destination 的 signedness 提前用于 source。对 408 常见的二进制补码机器模型，可把整数内部转换压成三类：
 \begin{itemize}
-  \item 同宽 signed/unsigned 转换常保持位模式，只改变解释；
-  \item 变宽时，unsigned 补零，signed 补符号位；
-  \item 变窄时保留低位，可能丢失高位信息；
-  \item 整型转浮点或反向转换还要经过不同格式的精度/范围映射。
+  \item \kw{长 $\to$ 短：}保留目标宽度的低位，高位被截断；新最高位随后按目标类型承担新的数值/符号角色；
+  \item \kw{短 $\to$ 长：}先按\textbf{源类型}保值扩展。source unsigned 做零扩展，source signed 补码做符号扩展；
+  \item \kw{同宽 signed $\leftrightarrow$ unsigned：}位模式不变，只改变解释函数。
 \end{itemize}
-最稳的检查是“截后再扩”：把窄化结果按目标类型重新扩回，若不能恢复原值，则转换有信息损失。高位重复并不自动等于“安全”，必须相对于目标解释判断。
+因此 `signed short -> unsigned int` 不能看到 destination 是 unsigned 就立即补 0；应先把 signed short 的值符号扩展到目标位宽，再让同一目标宽度位串按 unsigned 重新解释。这个顺序可以压成
+\[
+\boxed{\text{Source Value}\to\text{Width Conversion}\to\text{Destination Interpretation}}.
+\]
 
-Endian 只规定多字节对象的字节在递增地址上的排列，不改变寄存器中对象的数学值。解题时先画地址—字节表，再读取指定宽度；字节序和位序不能互换。对齐是起始地址相对于对象大小的约束，常见条件为 $a\equiv0\pmod{k}$。未对齐访问可能被拆成多次事务、被硬件支持但变慢，或触发异常，具体由 ISA/题设决定；不能把某一平台的实现惩罚升级成统一语义。
+整型与浮点之间还要额外比较\textbf{范围}和\textbf{有效精度}。在常见 32 位 `int`、binary32 `float`、binary64 `double` 模型下：
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.4cm}YY}
+\toprule
+转换 & 稳定判断 & 主要风险 \\
+\midrule
+`int` $\to$ `float` & float 范围足够覆盖 32 位 int，但只有 24 位有效二进制精度 & 可能舍入，不是所有 int 都精确 \\
+`int` $\to$ `double` & 53 位有效精度足以容纳 32 位 int & 可精确表示 \\
+`float` $\to$ `double` & binary64 精度与范围都更大 & 有限 binary32 值可精确表示 \\
+`double` $\to$ `float` & 精度和范围同时缩小 & 可能舍入，也可能溢出 \\
+浮点 $\to$ 整数 & 目标格式没有小数部分 & 题设采用 C 常见口径且结果在目标范围内时向 0 截断；越界语义看语言/ISA/题设 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+最稳的整数窄化检查仍是“截后再扩”：把结果按目标解释扩回，不能恢复原值就说明转换丢失了信息。高位重复并不自动等于安全，必须相对于 source、destination 和目标位宽判断。
+
+\subsection{向 CO-02 交接：大小端与对齐不是第二套数值编码}
+Endian 只规定多字节对象的字节怎样映射到递增地址，不改变寄存器中的数学值，也不反转单字节内部 bit；对齐规定对象合法/高效起始地址的边界。CO-01 只输出“对象位模式、宽度、扩展结果”，完整的地址—字节布局、结构体成员顺序、EA 与未对齐访问语义由 CO-02 拥有。
 
 \subsection{补充细节到微架构骨架的回接表}
 

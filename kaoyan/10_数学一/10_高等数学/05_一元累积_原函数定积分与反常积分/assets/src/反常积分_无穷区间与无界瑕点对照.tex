@@ -1,0 +1,118 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 左图: 无穷区间反常积分 \int_1^\infty 1/x^p dx (要求 p > 1 衰减足够快) ──
+\begin{axis}[
+    name=axInf,
+    width=7.8cm,
+    height=7.2cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-0.2, xmax=5.2,
+    ymin=-0.2, ymax=2.2,
+    xtick={1},
+    xticklabels={$1$},
+    ytick={1},
+    yticklabels={$1$},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={无穷区间：$\int_1^{+\infty} \frac{1}{x^p} dx$},
+]
+
+% 积分尾部区域
+\begin{pgfonlayer}{background}
+    \addplot[fill=themecurve!30!themebg, domain=1:4.8, samples=50] {1/(x^1.5)} \closedcycle;
+\end{pgfonlayer}
+
+% 曲线对比
+\addplot[themecurve, line width=2.0pt, domain=0.7:5.0, samples=60] {1/(x^1.5)};
+\node[text=themecurve, font=\scriptsize\bfseries, anchor=south west] at (axis cs:2.2, 0.45) {$p>1$ (收敛, 衰减快)};
+
+\addplot[themealert, dashed, line width=1.5pt, domain=0.7:5.0, samples=60] {1/x};
+\node[text=themealert, font=\scriptsize\bfseries, anchor=south west] at (axis cs:2.8, 0.8) {$p=1$ (发散)};
+
+\begin{pgfonlayer}{foreground}
+    \node[text=themefg, font=\scriptsize, align=left, anchor=north west] at (axis cs:0.2, 2.05) {
+        \textbf{无穷区间判敛准则}：\\
+        $\boxed{\int_1^{+\infty}\frac{1}{x^p}dx\text{ 收敛} \iff p > 1}$\\
+        本质：尾部面积无限延伸，\\
+        要求被积函数衰减\textbf{足够快}
+    };
+\end{pgfonlayer}
+\end{axis}
+
+% ── 右图: 无界瑕点反常积分 \int_0^1 1/x^p dx (要求 p < 1 奇性足够弱) ──
+\begin{axis}[
+    name=axSing,
+    at={($(axInf.east)+(1.6cm,0)$)},
+    anchor=west,
+    width=7.8cm,
+    height=7.2cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-0.2, xmax=2.2,
+    ymin=-0.2, ymax=4.2,
+    xtick={1},
+    xticklabels={$1$},
+    ytick={1},
+    yticklabels={$1$},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={无界瑕点：$\int_0^1 \frac{1}{x^p} dx$},
+]
+
+% 瑕点积分区域
+\begin{pgfonlayer}{background}
+    \addplot[fill=themeamber!30!themebg, domain=0.06:1, samples=60] {1/sqrt(x)} \closedcycle;
+\end{pgfonlayer}
+
+% 曲线对比
+\addplot[themeamber, line width=2.0pt, domain=0.06:1.8, samples=70] {1/sqrt(x)};
+\node[text=themeamber, font=\scriptsize\bfseries, anchor=west] at (axis cs:0.4, 2.4) {$p<1$ (收敛, 奇性弱)};
+
+\addplot[themealert, dashed, line width=1.5pt, domain=0.25:1.8, samples=50] {1/x};
+\node[text=themealert, font=\scriptsize\bfseries, anchor=west] at (axis cs:0.85, 3.4) {$p=1$ (发散)};
+
+\begin{pgfonlayer}{foreground}
+    \node[text=themefg, font=\scriptsize, align=left, anchor=north east] at (axis cs:2.1, 4.1) {
+        \textbf{无界瑕点判敛准则}：\\
+        $\boxed{\int_0^1\frac{1}{x^p}dx\text{ 收敛} \iff p < 1}$\\
+        本质：原点垂向无限冲高，\\
+        要求被积函数奇性\textbf{足够弱}
+    };
+\end{pgfonlayer}
+\end{axis}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

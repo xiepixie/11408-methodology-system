@@ -1,0 +1,43 @@
+\begin{tikzpicture}[color=themefg,text=themefg,>=Stealth]
+  \tikzset{
+    leftcard/.style={draw=themecurve,fill=themecurve,fill opacity=0.08,text opacity=1,rounded corners=2.5mm,line width=1.1pt,minimum width=5.6cm,minimum height=3.4cm,align=center,font=\small},
+    rightcard/.style={draw=themeamber,fill=themeamber,fill opacity=0.08,text opacity=1,rounded corners=2.5mm,line width=1.1pt,minimum width=5.6cm,minimum height=3.4cm,align=center,font=\small},
+    gatebox/.style={draw=themealert,fill=themebg,rounded corners=1.5mm,line width=0.9pt,inner sep=4pt,align=left,font=\footnotesize},
+    arr/.style={line width=1.2pt,-{Stealth[length=2.0mm]}},
+    tag/.style={fill=themebg,inner sep=1.2pt,font=\small}
+  }
+
+  % Left Card: Finite Taylor (Local Model)
+  \node[leftcard] (left) at (-3.6,0) {
+    \textbf{\color{themecurve} 一元局部模型（有限阶）}\\[4pt]
+    $f(x) = P_n(x) + R_n(x)$\\[4pt]
+    \footnotesize\color{themecurve} $\boxed{\text{固定阶数 } n \quad \longrightarrow \quad \text{让 } x \to a}$\\[4pt]
+    \color{themefg} 目标：局部高阶拟合 / 极限与极值\\[2pt]
+    \footnotesize\color{themegray} 余项 $R_n(x) = o((x-a)^n)$ 或 Lagrange 型
+  };
+
+  % Right Card: Infinite Taylor (Function Representation)
+  \node[rightcard] (right) at (3.6,0) {
+    \textbf{\color{themeamber} 幂级数展开（无限项）}\\[4pt]
+    $f(x) \stackrel{?}{=} \sum_{k=0}^{\infty} a_k(x-a)^k$\\[4pt]
+    \footnotesize\color{themeamber} $\boxed{\text{固定目标点 } x \quad \longrightarrow \quad \text{让 } n \to \infty}$\\[4pt]
+    \color{themefg} 目标：全局函数表示 / 级数求和\\[2pt]
+    \footnotesize\color{themegray} 部分和序列 $S_n(x) = \sum_{k=0}^n a_k(x-a)^k$
+  };
+
+  % Top process indicators
+  \draw[arr,themecurve] (-3.6,2.6) -- node[tag,above,text=themecurve,font=\footnotesize]{邻域尺度收缩 $\delta \to 0$} (-3.6,1.8);
+  \draw[arr,themeamber] (3.6,2.6) -- node[tag,above,text=themeamber,font=\footnotesize]{项数无限累加 $n \to \infty$} (3.6,1.8);
+
+  % 3 Gates badge under right card
+  \node[gatebox,anchor=north] (gates) at (3.6,-1.9) {
+    \textbf{\color{themealert} 必须通过的三道收敛资格门：}\\[2pt]
+    ① 余项趋零：$\lim_{n\to\infty} R_n(x) = 0$\\[1pt]
+    ② 收敛半径：$|x-a| < R$\\[1pt]
+    ③ 端点检验：$x = a \pm R$ 处收敛性与和函数连续性
+  };
+
+  % Bottom summary placed safely below the gates
+  \node[font=\small,text=themegray,anchor=north] at (0,-3.9)
+  {反桥警示：有限 Taylor 是局部工具，不要求级数收敛；无限 Taylor 是级数表示，不验证收敛性不能画等号。};
+\end{tikzpicture}

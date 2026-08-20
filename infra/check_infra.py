@@ -144,6 +144,18 @@ def run_tikz_regression(tmp_root: Path) -> list[str]:
     return errors
 
 
+def run_tikz_lint_regression() -> list[str]:
+    result = subprocess.run(
+        [sys.executable, str(TIKZ_COMPILER), "--lint"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return [f"TikZ color lint failed:\n{result.stdout.strip()}\n{result.stderr.strip()}"]
+    return []
+
+
 def main() -> int:
     print("=" * 80)
     print("I.P.A.R.A Infra Steady-State Gate")
@@ -154,6 +166,7 @@ def main() -> int:
     if not errors:
         errors.extend(check_lesson_shim())
         errors.extend(check_handbook_specimen_contract())
+        errors.extend(run_tikz_lint_regression())
 
     if not errors:
         with tempfile.TemporaryDirectory(prefix="ipara_infra_gate_") as tmp:
@@ -172,6 +185,7 @@ def main() -> int:
     print("Lesson thin shim      : OK")
     print("Handbook same-body    : OK")
     print("Standard/Margin build : OK (warnings-as-errors)")
+    print("TikZ color mixing lint: OK")
     print("TikZ dark/light SVG   : OK")
     print("-" * 80)
     print("PASSED: all infra steady-state invariants hold.")

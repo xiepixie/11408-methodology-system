@@ -1,0 +1,178 @@
+% ── V02 几何概型与测度归一化（大空间呼吸感 2 行布局） ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 上半部第 1 行：左（一维长度与单点） + 右（二维会面问题） ──
+% ══════════════════════════════════════════════════════════════
+
+% ── 1. 左卡片：一维测度：长度与单点零测度 ──
+\begin{scope}[xshift=0cm, yshift=5.0cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themecurve}1. 一维测度：长度与单点零测度}
+    };
+  \end{pgfonlayer}
+
+  % 一维数轴图形（直接裸画在卡片底色上，零二级线框）
+  \begin{pgfonlayer}{background}
+    % 数轴箭头线
+    \draw[color=themegray!60, line width=0.8pt, ->] (0.1, 2.3) -- (2.35, 2.3) node[right] {\tiny $x$};
+    % 样本空间 [0, L]
+    \draw[color=themefg, line width=1.4pt] (0.3, 2.3) -- (2.05, 2.3);
+    \draw[color=themefg, line width=1.0pt] (0.3, 2.15) -- (0.3, 2.45);
+    \draw[color=themefg, line width=1.0pt] (2.05, 2.15) -- (2.05, 2.45);
+
+    % 子区间 [a, b] 高亮
+    \draw[color=themecurve, line width=2.8pt] (0.75, 2.3) -- (1.65, 2.3);
+    \fill[color=themecurve] (0.75, 2.3) circle (2.0pt);
+    \fill[color=themecurve] (1.65, 2.3) circle (2.0pt);
+
+    % 单点 x_0 红色标记
+    \fill[color=themealert] (1.2, 2.3) circle (2.3pt);
+  \end{pgfonlayer}
+
+  % 文字标注与说明
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north, color=themefg] at (0.3, 2.1) {\tiny $0$};
+    \node[anchor=north, color=themecurve] at (0.75, 2.1) {\tiny $a$};
+    \node[anchor=north, color=themealert] at (1.2, 2.1) {\tiny $x_0$};
+    \node[anchor=north, color=themecurve] at (1.65, 2.1) {\tiny $b$};
+    \node[anchor=north, color=themefg] at (2.05, 2.1) {\tiny $L$};
+
+    \node[anchor=south, color=themecurve] at (1.2, 2.55) {\scriptsize 长度 $\mu(A) = b-a$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=4.3cm] at (2.65, 4.3) {
+      \small \textbf{一维几何测度：}\\[0.25em]
+      \scriptsize $\bullet$ \textbf{区间概率公式}：\\[0.1em]
+      \quad $P(a \le X \le b) = \frac{b-a}{L}$；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{单点零测度}：\\[0.1em]
+      \quad $P(X = x_0) = 0$ 但 $\{x_0\}\ne \varnothing$；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{质的飞跃}：\\[0.1em]
+      \quad 零概率事件 $\ne$ 不可能事件。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 2. 右卡片：二维会面问题与补集法 ──
+\begin{scope}[xshift=7.7cm, yshift=5.0cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themeamber}2. 二维测度：会面问题与补集法}
+    };
+  \end{pgfonlayer}
+
+  % 会面问题 2D 图形（裸画在卡片底色上）
+  \begin{pgfonlayer}{background}
+    % 正方形样本空间 [0, T]^2
+    \fill[fill=themeamber!18!themebg] (0.25, 1.1) rectangle (2.35, 3.2);
+    
+    % 两侧补集直角三角形
+    \fill[fill=themefg!12!themebg] (0.25, 1.65) -- (0.25, 3.2) -- (1.8, 3.2) -- cycle;
+    \fill[fill=themefg!12!themebg] (0.8, 1.1) -- (2.35, 1.1) -- (2.35, 2.65) -- cycle;
+
+    % 会面带状区域边框
+    \draw[color=themeamber, line width=0.9pt] (0.25, 1.65) -- (1.8, 3.2);
+    \draw[color=themeamber, line width=0.9pt] (0.8, 1.1) -- (2.35, 2.65);
+
+    % 正方形外框与对角线
+    \draw[color=themefg, line width=0.9pt] (0.25, 1.1) rectangle (2.35, 3.2);
+    \draw[color=themegray!60, line width=0.5pt, dashed] (0.25, 1.1) -- (2.35, 3.2);
+  \end{pgfonlayer}
+
+  % 文字标注与说明
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north east, color=themefg] at (0.25, 1.1) {\tiny $0$};
+    \node[anchor=north, color=themefg] at (2.35, 1.1) {\tiny $T$};
+    \node[anchor=east, color=themefg] at (0.25, 3.2) {\tiny $T$};
+    
+    \node[color=themeamber] at (1.3, 2.15) {\tiny $|X-Y| \le d$};
+    \node[color=themegray] at (0.65, 2.75) {\tiny 补集 $\triangle$};
+    \node[color=themegray] at (1.95, 1.55) {\tiny 补集 $\triangle$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=4.5cm] at (2.55, 4.3) {
+      \small \textbf{二维会面几何化：}\\[0.25em]
+      \scriptsize $\bullet$ \textbf{相遇条件}：$|X - Y| \le d$；\\[0.35em]
+      \scriptsize $\bullet$ \textbf{补集直角三角形法}：\\[0.1em]
+      \quad \mbox{$\mu(A^c) = 2 \times \frac{1}{2}(T-d)^2 = (T-d)^2$；}\\[0.35em]
+      \scriptsize $\bullet$ \textbf{相遇概率（面积比）}：\\[0.1em]
+      \quad \mbox{$P(|X-Y|\le d) = 1 - \frac{(T-d)^2}{T^2}$。}
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 下半部第 2 行：全宽卡片（概率公理体系与测度归一化对比） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0.3cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (14.8, 4.3);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.05) {
+      \large \textbf{\color{themealert}3. 概率公理体系与测度归一化对比}
+    };
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 左栏：古典概型 vs 几何概型公理模型
+    \node[anchor=north west, text width=7.2cm] at (0.1, 3.55) {
+      \small \textbf{测度归一化统一模型：}\\[0.25em]
+      \scriptsize $\bullet$ \textbf{\color{themecurve}古典概型（离散计数测度）}：\\[0.1em]
+      \quad $P(A) = \frac{|A|}{|\Omega|} = \frac{\sum_{\omega\in A} 1}{\sum_{\omega\in\Omega} 1}$ \quad （样本空间有限）；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{\color{themeamber}几何概型（连续几何测度）}：\\[0.1em]
+      \quad $P(A) = \frac{\mu(A)}{\mu(\Omega)} = \frac{\int_A 1\,d\mu}{\int_\Omega 1\,d\mu}$ \quad （总测度 $0 < \mu(\Omega) < \infty$）。
+    };
+
+    % 中间分割线
+    \draw[color=themegray!30, line width=0.6pt] (7.5, 0.3) -- (7.5, 3.5);
+
+    % 右栏：公理统一性与失效边界
+    \node[anchor=north west, text width=6.8cm] at (7.8, 3.55) {
+      \small \textbf{公理统一性与适用边界：}\\[0.25em]
+      \scriptsize $\bullet$ \textbf{公理统一性}：两者均为基础测度在有限正测度下的归一化；\\[0.35em]
+      \scriptsize $\bullet$ \textbf{无界区域失效}：全平面 $\mathbb R^2$ 不存在平移不变且总积为 $1$ 的均匀测度；\\[0.35em]
+      \scriptsize $\bullet$ \textbf{计算要诀}：遇复杂多边形区域优先采用补集直角三角形法。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 底部全图全局总结 (无框轻量排印) ──
+% ══════════════════════════════════════════════════════════════
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.3, -0.2) {
+    \footnotesize \textbf{几何概型核心准则：} 几何概型是离散计数向连续测度的自然推广；计算二维区域时，\textbf{先画补集直角三角形比直接多重分区更不易漏项}；单点概率为零是连续测度的基本特征。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

@@ -1,0 +1,168 @@
+% ── V04 全概与 Bayes 双向树（大空间呼吸感 2 行布局） ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 上半部第 1 行：左（正向全概） + 右（逆向 Bayes） ──
+% ══════════════════════════════════════════════════════════════
+
+% ── 1. 左卡片：正向全概 ──
+\begin{scope}[xshift=0cm, yshift=5.0cm]
+  % 卡片底色（单层，无内层框）
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themecurve}1. 正向全概：前向路径加权汇总}
+    };
+  \end{pgfonlayer}
+
+  % 树状图与说明左右分栏
+  \begin{pgfonlayer}{background}
+    % 起点根节点
+    \fill[fill=themefg] (0.2, 2.3) circle (2.2pt);
+    
+    % 先验分支 B1, B2, B3
+    \draw[color=themecurve, line width=1.0pt, ->] (0.2, 2.3) -- (1.0, 3.3);
+    \draw[color=themeamber, line width=1.0pt, ->] (0.2, 2.3) -- (1.0, 2.3);
+    \draw[color=themealert, line width=1.0pt, ->] (0.2, 2.3) -- (1.0, 1.3);
+
+    % 似然分支到达 A
+    \draw[color=themecurve, line width=1.0pt, ->] (1.3, 3.3) -- (2.05, 2.45);
+    \draw[color=themeamber, line width=1.0pt, ->] (1.3, 2.3) -- (2.05, 2.3);
+    \draw[color=themealert, line width=1.0pt, ->] (1.3, 1.3) -- (2.05, 2.15);
+
+    % 终点 A
+    \fill[fill=themeamber, draw=themefg, line width=0.6pt] (2.05, 2.3) circle (2.8pt);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=east, color=themefg] at (0.1, 2.3) {\scriptsize $\Omega$};
+    \node[color=themecurve] at (1.15, 3.55) {\scriptsize $B_1$};
+    \node[color=themeamber] at (1.15, 2.45) {\scriptsize $B_2$};
+    \node[color=themealert] at (1.15, 1.05) {\scriptsize $B_3$};
+
+    \node[anchor=south east, color=themecurve] at (0.6, 2.85) {\tiny $P(B_1)$};
+    \node[anchor=south west, color=themecurve] at (1.5, 2.95) {\tiny $P(A\mid B_1)$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=4.5cm] at (2.45, 4.3) {
+      \small \textbf{由因索果全概率：}\\[0.25em]
+      \scriptsize $\bullet$ \textbf{完备事件组划分}：\\[0.1em]
+      \quad $\Omega = B_1 \mathbin{\dot\cup} B_2 \mathbin{\dot\cup} B_3$；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{全概率公式}：\\[0.1em]
+      \quad \mbox{$P(A) = \sum_{i=1}^3 P(B_i) P(A\mid B_i)$；}\\[0.4em]
+      \scriptsize $\bullet$ \textbf{物理图像}：\\[0.1em]
+      \quad 顺向遍历各互斥原因路径质量。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 2. 右卡片：逆向 Bayes ──
+\begin{scope}[xshift=7.7cm, yshift=5.0cm]
+  % 卡片底色（单层，无内层框）
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themeamber}2. 逆向~Bayes：后验成因归因}
+    };
+  \end{pgfonlayer}
+
+  % 树状图与说明左右分栏
+  \begin{pgfonlayer}{background}
+    % 证据起点 A
+    \fill[fill=themeamber, draw=themefg, line width=0.6pt] (0.4, 2.3) circle (2.8pt);
+
+    % 逆向回溯箭头
+    \draw[color=themecurve, line width=1.0pt, ->] (0.5, 2.4) -- (1.5, 3.3);
+    \draw[color=themeamber, line width=1.0pt, ->] (0.5, 2.3) -- (1.5, 2.3);
+    \draw[color=themealert, line width=1.0pt, ->] (0.5, 2.2) -- (1.5, 1.3);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=east, color=themeamber] at (0.3, 2.3) {\scriptsize $A$};
+    \node[anchor=west, color=themecurve] at (1.6, 3.3) {\scriptsize $B_1\mid A$};
+    \node[anchor=west, color=themeamber] at (1.6, 2.3) {\scriptsize $B_2\mid A$};
+    \node[anchor=west, color=themealert] at (1.6, 1.3) {\scriptsize $B_3\mid A$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=4.5cm] at (2.45, 4.3) {
+      \small \textbf{由果溯因后验更新：}\\[0.25em]
+      \scriptsize $\bullet$ \textbf{逆向后验公式}：\\[0.1em]
+      \quad \mbox{$P(B_j\mid A) = \frac{P(B_j)P(A\mid B_j)}{\sum_i P(B_i)P(A\mid B_i)}$；}\\[0.4em]
+      \scriptsize $\bullet$ \textbf{比例更新核心}：\\[0.1em]
+      \quad $\text{后验} \propto \text{先验} \times \text{似然}$；\\[0.4em]
+      \scriptsize $\bullet$ \textbf{归一化}：用全概 $P(A)$ 作分母。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 下半部第 2 行：全宽卡片（四大对象与基础率效应） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0.3cm]
+  % 卡片底色（单层，无内层多重嵌套框）
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (14.8, 4.3);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.05) {
+      \large \textbf{\color{themealert}3. 四大对象角色与医学罕见病基础率效应}
+    };
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 左侧四大对象列表（纯排印层级，无外加方框）
+    \node[anchor=north west, text width=7.2cm] at (0.1, 3.55) {
+      \small \textbf{Bayes 四大核心角色：}\\[0.25em]
+      \scriptsize $\bullet$ \textbf{\color{themecurve}先验~$P(B)$}：未获证据前的原因基准概率；\\[0.35em]
+      \scriptsize $\bullet$ \textbf{\color{themeamber}似然~$P(A\mid B)$}：该原因下产生结果的相容度；\\[0.35em]
+      \scriptsize $\bullet$ \textbf{\color{themealert}后验~$P(B\mid A)$}：见证据后原因概率的更新值；\\[0.35em]
+      \scriptsize $\bullet$ \textbf{证据~$P(A)$}：全概率加权汇总的归一化总分母。
+    };
+
+    % 中间分割线
+    \draw[color=themegray!30, line width=0.6pt] (7.5, 0.3) -- (7.5, 3.5);
+
+    % 右侧医学罕见病与考场警示
+    \node[anchor=north west, text width=6.8cm] at (7.8, 3.55) {
+      \small \textbf{罕见病检验警示（基础率效应）：}\\[0.25em]
+      \scriptsize $\bullet$ 若患病先验 $P(B)=0.001$ 极低；\\[0.3em]
+      \scriptsize $\bullet$ 即使检测灵敏度 $P(A\mid B)=0.99$ 且误诊率仅 $1\%$，\\[0.3em]
+      \scriptsize $\bullet$ 阳性后验 $P(B\mid A) \approx 9\%$ 依然绝大多数为假阳性！\\[0.3em]
+      \scriptsize $\bullet$ \textbf{\color{themeamber}核心认知}：后验受先验强力锚定，不可轻信假阳性。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 底部全图全局总结 (无框轻量排印) ──
+% ══════════════════════════════════════════════════════════════
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.3, -0.2) {
+    \footnotesize \textbf{全概与 Bayes 对偶哲学：} 全概率公式是 \textbf{由因索果}（顺向路径加权汇总）；Bayes 公式是 \textbf{由果溯因}（逆向证据重分配权重）；后验排序由“先验 $\times$ 似然”决定。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

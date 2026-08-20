@@ -1,0 +1,105 @@
+% ── V15 样本向量正交分解与自由度几何 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ── 1. 左侧几何投影视口 (3D 样本空间正交分解) ──
+\begin{scope}[xshift=0cm, yshift=0cm]
+  % 坐标设定
+  \coordinate (Origin) at (0.2, 0.4);
+  \coordinate (O_mu) at (1.4, 1.2);
+  \coordinate (X_bar) at (2.8, 2.2);
+  \coordinate (Diag_End) at (4.5, 3.4);
+  \coordinate (X_sample) at (2.1, 4.8);
+
+  % 背景层：残差超平面与辅助虚线
+  \begin{pgfonlayer}{background}
+    % 残差超平面 1^\perp (倾斜平行四边形)
+    \fill[fill=blue!10!themebg, fill opacity=0.5, draw=themegray!60!themefg, dashed, line width=0.8pt]
+      (-0.4, 2.5) -- (3.6, 0.7) -- (4.8, 3.1) -- (0.8, 4.9) -- cycle;
+    \node[anchor=north east, text=themegray] at (3.6, 0.55) {\scriptsize 残差超平面 $\boldsymbol{1}^\perp$ ($\sum e_i=0$)};
+
+    % 原点到均值方向延长线
+    \draw[->, color=themeamber, line width=1.5pt] (Origin) -- (Diag_End)
+      node[anchor=south west, text=themeamber] {\footnotesize $\operatorname{span}\{\boldsymbol{1}\}$};
+    \node[anchor=north east, text=themegray] at (Origin) {\scriptsize 原点 $\boldsymbol{0}$};
+
+    % 直角符号 (在 X_bar 处)
+    \draw[line width=0.8pt, color=themegray]
+      ($(X_bar) + (0.16, 0.12)$) -- ($(X_bar) + (0.16, 0.12) + (-0.07, 0.30)$) -- ($(X_bar) + (-0.07, 0.30)$);
+
+    % 辅助虚线：总离差基准
+    \draw[color=themecurve!60!themebg, line width=0.9pt, dashed] (O_mu) -- (X_sample);
+  \end{pgfonlayer}
+
+  % 主体向量 (main 层)
+  % 均值投影向量 \mu 1 -> \bar{X} 1
+  \draw[->, color=themeamber, line width=2.0pt] (O_mu) -- (X_bar)
+    node[midway, below right=1pt, text=themeamber] {\footnotesize $\sqrt{n}(\bar{X}-\mu)\boldsymbol{u}_1$};
+
+  % 残差向量 e (从 X_bar 垂直指向 X_sample)
+  \draw[->, color=themealert, line width=2.0pt] (X_bar) -- (X_sample)
+    node[pos=0.65, left=3pt, text=themealert] {\footnotesize $\boldsymbol{e} = \boldsymbol{X}-\bar{X}\boldsymbol{1}$};
+
+  % 总离差向量 \mu 1 -> X_sample
+  \draw[->, color=themecurve, line width=2.0pt] (O_mu) -- (X_sample)
+    node[pos=0.35, left=3pt, text=themecurve] {\footnotesize $\boldsymbol{X}-\mu\boldsymbol{1}$};
+
+  % 前景标注点与文本 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    \fill[color=themefg] (O_mu) circle (2.2pt) node[anchor=north east] {\footnotesize $\mu\boldsymbol{1}$};
+    \fill[color=themeamber] (X_bar) circle (2.5pt) node[anchor=north west] {\footnotesize $\bar{\boldsymbol{X}} = \bar{X}\boldsymbol{1}$};
+    \fill[color=themecurve] (X_sample) circle (2.5pt) node[anchor=south] {\footnotesize 样本 $\boldsymbol{X}=(X_1,\dots,X_n)^\top$};
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 2. 右侧代数与统计推断面板 (宽卡片排版) ──
+\begin{scope}[xshift=6.0cm, yshift=0cm]
+  % 卡片 1: 几何正交投影与自由度分解
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!8!themebg, draw=themegray, line width=0.8pt, rounded corners=3pt]
+      (0, 2.5) rectangle (8.2, 5.9);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=7.8cm] at (0.2, 5.75) {
+      \footnotesize \textbf{\color{themeamber}1. 正交分解与勾股定理（平方和恒等式）}\\[0.35em]
+      $\bullet$ 样本向量沿全 $1$ 方向做正交投影：$\boldsymbol{X} = \bar{\boldsymbol{X}} + \boldsymbol{e}$\\[0.3em]
+      $\bullet$ 正交性保证交叉项为零：$\sum_{i=1}^n e_i = \sum_{i=1}^n (X_i - \bar{X}) = 0$\\[0.3em]
+      $\bullet$ 勾股定理对应平方和分解：\\[0.25em]
+      \quad $\underbrace{\sum_{i=1}^n (X_i - \mu)^2}_{\|\boldsymbol{X}-\mu\boldsymbol{1}\|^2} = \underbrace{n(\bar{X}-\mu)^2}_{\|\bar{\boldsymbol{X}}-\mu\boldsymbol{1}\|^2} + \underbrace{\sum_{i=1}^n (X_i - \bar{X})^2}_{\|\boldsymbol{e}\|^2 = (n-1)S^2}$
+    };
+  \end{pgfonlayer}
+
+  % 卡片 2: 正态旋转不变性与独立性机制
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!8!themebg, draw=themegray, line width=0.8pt, rounded corners=3pt]
+      (0, -0.9) rectangle (8.2, 2.0);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=7.8cm] at (0.2, 1.85) {
+      \footnotesize \textbf{\color{themecurve}2. 自由度账本与独立性本质}\\[0.35em]
+      $\bullet$ \textbf{自由度本质}：残差受约束 $\sum e_i=0$，波动维数为 $n-1$\\[0.3em]
+      $\bullet$ \textbf{正态旋转对称性}：正态随机向量在正交基下投影相互独立\\[0.3em]
+      $\bullet$ \textbf{统计量精确分布律}：\\[0.25em]
+      \quad $\bar{X} \sim N(\mu, \sigma^2/n)$ \quad 且 \quad $\frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1)$\\[0.25em]
+      \quad $\bar{X} \text{ 与 } S^2 \text{ 严格相互独立}$
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 3. 底部全图全局总结 (无框轻量排印) ──
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.2cm, align=center] at (7.1, -1.3) {
+    \footnotesize \textbf{几何本质：} 均值占用 1 个位置方向（自由度 1），残差在正交的 $n-1$ 维子空间中自由波动；正态旋转对称性保证二者严格概率独立。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

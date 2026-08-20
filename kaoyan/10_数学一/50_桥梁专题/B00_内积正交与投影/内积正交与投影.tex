@@ -28,17 +28,27 @@
 \section{为什么普通坐标还不够}
 普通基只保证每个向量有唯一坐标。若题目进一步问“长度多大、夹角多少、哪个方向最接近、怎样把不同方向解耦”，还需要内积。
 
-在标准欧氏空间中
+先固定最小定义。实线性空间上的内积是一个二元函数 $\langle\cdot,\cdot\rangle$，满足对称性、对每个变量的线性以及正定性
 \[
-\langle x,y\rangle=x^Ty,
+\langle x,x\rangle\ge0,
 \qquad
-\lVert x\rVert=\sqrt{\langle x,x\rangle}.
+\langle x,x\rangle=0\Longleftrightarrow x=0.
 \]
-正交由
+有了内积以后才定义
 \[
-\langle x,y\rangle=0
+\lVert x\rVert:=\sqrt{\langle x,x\rangle},
+\qquad
+x\perp y\Longleftrightarrow\langle x,y\rangle=0.
 \]
-定义。于是“垂直”不再依赖一张图，而成为可计算的代数关系。
+在标准欧氏空间中，所用内积具体为
+\[
+\langle x,y\rangle=x^Ty.
+\]
+对于子空间 $W$，还定义它的正交补
+\[
+W^\perp:=\{r:\langle r,w\rangle=0\text{ 对所有 }w\in W\}.
+\]
+于是“垂直”与“某个方向集合全部正交”都不再依赖一张图，而成为可计算的代数关系。
 
 \subsection{坐标点积不是永远的抽象内积公式}
 若换到一般非规范正交基，坐标列的普通点积不再自动等于原空间内积。真正的几何对象是内积本身；矩阵坐标必须连同基或 Gram 矩阵一起解释。
@@ -127,12 +137,12 @@ r=v-p=\left(\frac12,-\frac12\right)^T,
 \section{母例二：函数也可以有“正交分量”}
 在函数空间中定义
 \[
-\langle f,g\rangle=\int_{-1}^{1}f(x)g(x)\,dx.
+\langle f,g\rangle=\int_{-1}^{1}f(x)g(x)\,\mathrm{d}x.
 \]
 把 $f(x)=x^2$ 投影到常数函数子空间 $W=\operatorname{span}\{1\}$。系数为
 \[
 c=\frac{\langle x^2,1\rangle}{\langle1,1\rangle}
-=\frac{\int_{-1}^{1}x^2\,dx}{\int_{-1}^{1}1\,dx}
+=\frac{\int_{-1}^{1}x^2\,\mathrm{d}x}{\int_{-1}^{1}1\,\mathrm{d}x}
 =\frac13.
 \]
 于是
@@ -141,7 +151,7 @@ x^2=\frac13+\left(x^2-\frac13\right),
 \]
 且
 \[
-\int_{-1}^{1}\left(x^2-\frac13\right)dx=0.
+\int_{-1}^{1}\left(x^2-\frac13\right)\,\mathrm{d}x=0.
 \]
 同一个“投影 + 正交残差”接口已经从二维向量无缝迁移到了函数对象。
 
@@ -162,7 +172,7 @@ B04 约束极值 & 切空间与法空间 & 用正交补解释“目标梯度的�
 \section{资格与停止边界}
 \begin{enumerate}
 \item 必须先说明使用哪个内积；换内积会改变长度、正交与投影。
-\item 投影到一个子空间前，要确认目标集合真的是线性/仿射对象；一般曲线上的最近点不能直接套线性投影公式。
+\item 上面的 $\operatorname{proj}_W$ 公式直接针对线性子空间 $W$。仿射子空间要先平移回线性子空间再投影；一般曲线或曲面上的最近点不能直接套线性投影公式。
 \item 普通基不等于正交基；只有正交基才能逐项用投影系数解耦坐标。
 \item B00 只解释投影接口。Fourier 的无限级数收敛与恢复值转 B08/高数 Topic11；约束极值的正则性与候选全集转 B04/高数 Topic07。
 \end{enumerate}

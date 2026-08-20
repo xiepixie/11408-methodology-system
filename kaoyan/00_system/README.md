@@ -15,6 +15,7 @@
   - [Handbook 与 Rule 契约](handbook_contract.md)
   - [学科心智模型手册通用写作规范](handbook_writing_spec.md)
   - [专题训练写作规范](topic_practice_writing_spec.md)
+  - [图示语义与视觉推理规范](diagram_design_spec.md)
   - [Inbox 与规则验证协议](evidence_promotion.md)
   - [Canonical Ownership Matrix](ownership_matrix.md)
 - **真题源重建**：
@@ -30,7 +31,7 @@
   - [LaTeX Design System 路由](latex_design_system.md)
   - [LaTeX 视觉与布局规范](latex_layout_spec.md)
 
-同一规则只允许一个 Owner。执行提示词负责“怎么执行”，规范负责“规则是什么”，速查页只负责入口，不复制正文。
+同一规则只允许一个 Owner。执行提示词负责“怎么执行”，规范负责“规则是什么”，速查页只负责入口，不复制正文。配图任务固定按“训练/正文决定是否需要图 → `diagram_design_spec.md` 回读具体手册、确定插入位置与图中内容 → `latex_layout_spec.md` 做版心、样式、TikZ/PGF 与视觉自检”这一条链路执行。
 
 ## 2. 自动化工具与状态
 

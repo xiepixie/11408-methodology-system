@@ -48,15 +48,21 @@ Inbox + 待验证 Rules + 新题表现
 
 ```text
 先写清问题表示 / 母题 / 局部规则 / 反例
--> 发现图能显著压缩推理时，立即留下规范“待补图”或“候选配图”占位
--> 继续完成本轮语义审阅与 Source Diff
--> 整个专题集中图审：去重、复用、决定是否真的值得画
--> 批量建立图源并生成 SVG
--> 视觉验收后替换占位
--> 必要图清零后再进入“已采用”
+→ 发现图能显著压缩推理时，立即留下规范“待补图”或“候选配图”占位
+→ 继续完成本轮语义审阅与 Source Diff
+→ 整个专题集中图审：先去重、复用、决定是否真的值得画
+→ 对真正要画的图执行六步闭环：
+   1. 回读目标手册：确定准确插入位置，写清前文已知、后文用途和图中必须出现/不得出现的内容
+   2. 图示语义规划：按 diagram_design_spec.md 确定对象、关系、不变量、图型、术语与禁止误读
+   3. 样式与工程实现：按 latex_layout_spec.md 结合当前 \linewidth 采用项目默认的轻量少框、充足留白、局部说明归位与前景可读样式
+   4. 双主题矢量编译：compile_tikz_to_svg.py 生成暗色/亮色 SVG
+   5. 真实视觉自检：既检查孤立图，也检查插回原 Markdown / Handbook 后的尺寸、遮挡、换行、主题与图文衔接
+   6. 按使用范围做验证：Markdown 检查阅读视图；嵌入 Handbook 时再走正式编译/发布入口；稳定改动按 AGENTS.md 执行相应 check / audit
+→ 替换占位；没有认知收益的候选图直接删除
+→ 必要图清零后再进入“已采用”
 ```
 
-这里强调的是“**图意图早记录，图资产晚生成**”，而不是“把图永远拖到以后”。具体占位语法、TikZ→SVG 管线和成熟门槛见 [`topic_practice_writing_spec.md`](topic_practice_writing_spec.md)。
+这里强调的是“**图意图早记录，真正画图前重新读手册，内容规划先于样式，图资产晚生成，实际阅读视图必须验收**”。图审不等于“把所有占位都画出来”：删除、复用、链接既有 Canonical 图和新建图源都是合法结局。占位语法、图形 Owner、复用与成熟门槛见 [`topic_practice_writing_spec.md`](topic_practice_writing_spec.md)；具体手册定位、图前内容规划、图示语义与术语见 [`diagram_design_spec.md`](diagram_design_spec.md)；版心、PGF Layer、项目样式偏好与视觉自检流水线见 [`latex_layout_spec.md`](latex_layout_spec.md)。
 
 ### 发布循环：阶段
 

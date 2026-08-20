@@ -1,0 +1,118 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+
+% ── 左子图：一般方向 (混合与偏转) ──
+\begin{scope}[shift={(0,0)}]
+  \draw[themegray!70, line width=0.8pt, rounded corners=5pt] (-2.6,-2.4) rectangle (2.8,2.6);
+  \node[font=\bfseries\small, text=themealert, above] at (0.1, 2.7) {一般方向：偏转与方向混合};
+
+  \coordinate (O1) at (0,0);
+  \coordinate (X) at (1.8, 0.6);
+  \coordinate (AX) at (1.0, 2.0);
+
+  \begin{pgfonlayer}{background}
+    % 原方向直线 (虚线)
+    \draw[dashed, themegray, line width=0.9pt] (-2.0*1.8/1.89, -2.0*0.6/1.89) -- (2.2*1.8/1.89, 2.2*0.6/1.89);
+    
+    % 偏转角度弧线
+    \draw[->, themealert, line width=1.0pt] (1.0, 0.33) to[bend left=24] node[right, font=\scriptsize, text=themealert] {偏转角 $\theta \ne 0$} (0.6, 1.2);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{main}
+    % 坐标轴
+    \draw[->, themegray!50, line width=0.7pt] (-2.2,0) -- (2.4,0);
+    \draw[->, themegray!50, line width=0.7pt] (0,-1.8) -- (0,2.2);
+
+    % 原向量 x (中性灰粗实线)
+    \draw[->, themegray, line width=2.0pt] (O1) -- (X);
+
+    % 作用后向量 Ax (珊瑚红粗实线)
+    \draw[->, themealert, line width=2.2pt] (O1) -- (AX);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[text=themegray, fill=themebg, inner sep=0.8pt, font=\small, right] at (X) {\bfseries 输入 $\boldsymbol{x}$};
+    \node[text=themealert, fill=themebg, inner sep=0.8pt, font=\small, above] at (AX) {\bfseries 输出 $\boldsymbol{A}\boldsymbol{x}$};
+    \node[text=themegray, font=\scriptsize, below right] at (1.6, 0.4) {原直线 $L_{\boldsymbol{x}}$};
+    
+    \node[font=\scriptsize, text=themealert, align=center] at (0.1, -1.8) {
+      $\boldsymbol{A}\boldsymbol{x} \notin \operatorname{span}\{\boldsymbol{x}\}$\\
+      被算子混合引入了新的正交方向
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 右子图：特征方向 (自然伸缩不混合) ──
+\begin{scope}[shift={(7.8,0)}]
+  \draw[themegray!70, line width=0.8pt, rounded corners=5pt] (-2.6,-2.4) rectangle (3.0,2.6);
+  \node[font=\bfseries\small, text=themecurve, above] at (0.2, 2.7) {特征方向：纯伸缩、不被混合};
+
+  \coordinate (O2) at (0,0);
+  \coordinate (V1) at (0.9, 0.45);
+  \coordinate (AV1) at (1.8, 0.9);   % lambda1 = 2.0
+  \coordinate (V2) at (-0.6, 1.2);
+  \coordinate (AV2) at (-0.3, 0.6);  % lambda2 = 0.5
+
+  \begin{pgfonlayer}{background}
+    % 特征直线 1
+    \draw[themecurve!60!themegray, line width=1.0pt, dashed] (-2.2, -1.1) -- (2.3, 1.15) node[below right, font=\scriptsize] {$E_{\lambda_1}$};
+    % 特征直线 2
+    \draw[themeamber!60!themegray, line width=1.0pt, dashed] (0.9, -1.8) -- (-0.9, 1.8) node[above left, font=\scriptsize] {$E_{\lambda_2}$};
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{main}
+    % 坐标轴
+    \draw[->, themegray!50, line width=0.7pt] (-2.2,0) -- (2.6,0);
+    \draw[->, themegray!50, line width=0.7pt] (0,-1.8) -- (0,2.2);
+
+    % 特征向量 v1 与 Av1 = lambda1 v1 (晶蓝)
+    \draw[->, themecurve, line width=1.8pt] (O2) -- (V1);
+    \draw[->, themecurve, line width=2.4pt] (O2) -- (AV1);
+
+    % 特征向量 v2 与 Av2 = lambda2 v2 (暖金)
+    \draw[->, themeamber, line width=2.2pt] (O2) -- (V2);
+    \draw[->, themeamber, line width=1.6pt] (O2) -- (AV2);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[text=themecurve, fill=themebg, inner sep=0.8pt, font=\scriptsize, above left] at (V1) {$\boldsymbol{v}_1$};
+    \node[text=themecurve, fill=themebg, inner sep=0.8pt, font=\bfseries\footnotesize, right] at (AV1) {$\boldsymbol{A}\boldsymbol{v}_1 = \lambda_1\boldsymbol{v}_1$};
+
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, font=\scriptsize, left] at (V2) {$\boldsymbol{v}_2$};
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, font=\bfseries\footnotesize, above right] at (AV2) {$\boldsymbol{A}\boldsymbol{v}_2 = \lambda_2\boldsymbol{v}_2$};
+    
+    \node[font=\scriptsize, text=themecurve, align=center] at (0.2, -1.8) {
+      $\boldsymbol{A}\boldsymbol{v}_i \in \operatorname{span}\{\boldsymbol{v}_i\}$\\
+      严格留在自身直线，矩阵运算降为标量数乘
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 底部总结横条 ──
+\node[font=\bfseries\small, color=themecurve, anchor=north] at (5.2, -2.8) {
+  核心心智模型：特征向量是算子的“自然不变方向”；在特征基下，矩阵动作完全退化为各轴的独立伸缩
+};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

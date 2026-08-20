@@ -1,0 +1,53 @@
+\begin{tikzpicture}[color=themefg,text=themefg,>=Stealth]
+  \tikzset{
+    corecard/.style={draw=themecurve,fill=themecurve,fill opacity=0.08,text opacity=1,rounded corners=2mm,line width=1.1pt,minimum width=11.2cm,minimum height=1.0cm,align=center,font=\small},
+    catcard/.style={draw=themegray,fill=themebg,rounded corners=1.5mm,line width=0.8pt,minimum width=5.4cm,minimum height=2.8cm,align=left,font=\small},
+    tag/.style={fill=themebg,inner sep=1pt,font=\small}
+  }
+
+  % Core Top Banner
+  \node[corecard] (banner) at (0,3.2) {
+    \textbf{微积分建模统一度量：}
+    $\boxed{dQ = \rho \cdot d\mu}$ \quad （物理量微元 $=$ 物理强度/密度 $\times$ 几何微元）
+  };
+
+  % 2x2 Category Cards
+  % Card 1: 1D Line element
+  \node[catcard] (c1) at (-2.9,1.1) {
+    \textbf{\color{themeamber} 1. 曲线线元 $ds$}\\[2pt]
+    $\bullet$ 直角: $ds=\sqrt{1+(y')^2}\,dx$\\[1pt]
+    $\bullet$ 参数: $ds=\sqrt{(x')^2+(y')^2}\,dt$\\[1pt]
+    $\bullet$ 极坐标: $ds=\sqrt{r^2+(r')^2}\,d\theta$\\[3pt]
+    \footnotesize\color{themegray} $\to$ 弧长、细杆质量、引力、质心
+  };
+
+  % Card 2: 2D Area element
+  \node[catcard] (c2) at (2.9,1.1) {
+    \textbf{\color{themeamber} 2. 平面面积元 $dA$}\\[2pt]
+    $\bullet$ 直角: $dA=dx\,dy$\\[1pt]
+    $\bullet$ 极坐标: $dA=r\,dr\,d\theta$\\[1pt]
+    $\bullet$ 扇形微元: $dA=\frac12 r^2\,d\theta$\\[3pt]
+    \footnotesize\color{themegray} $\to$ 平面面积、薄片质量、静水压力
+  };
+
+  % Card 3: 2D Surface in 3D
+  \node[catcard] (c3) at (-2.9,-2.0) {
+    \textbf{\color{themecurve} 3. 旋转/曲面元 $dS$}\\[2pt]
+    $\bullet$ 旋转侧面积: $dS=2\pi r\,ds$\\[1pt]
+    $\bullet$ 显式曲面: $dS=\sqrt{1+z_x^2+z_y^2}\,dxdy$\\[1pt]
+    $\bullet$ 参数式: $dS=\lVert\mathbf r_u\times\mathbf r_v\rVert\,dudv$\\[3pt]
+    \footnotesize\color{themegray} $\to$ 旋转曲面积、曲面通量、电荷
+  };
+
+  % Card 4: 3D Volume element
+  \node[catcard] (c4) at (2.9,-2.0) {
+    \textbf{\color{themecurve} 4. 体积微元 $dV$}\\[2pt]
+    $\bullet$ 圆盘/垫圈: $dV=\pi (R^2-r^2)\,dx$\\[1pt]
+    $\bullet$ 柱壳法: $dV=2\pi r h\,dr$\\[1pt]
+    $\bullet$ 柱/球坐标: $r\,drd\theta dz,\ \rho^2\sin\phi\,d\rho d\phi d\theta$\\[3pt]
+    \footnotesize\color{themegray} $\to$ 旋转体积、立体质量、转动惯量、做功
+  };
+
+  \node[font=\small,text=themegray,anchor=north] at (0,-3.7)
+  {微元建模不是背多套公式，而是先定几何载体 $d\mu$，再配上对应物理强度 $\rho$ 积分闭合。};
+\end{tikzpicture}

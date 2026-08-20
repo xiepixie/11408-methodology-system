@@ -1,0 +1,142 @@
+% ── V00 概率论与数理统计全局认知地图 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 1. 顶层：随机世界（基础概率空间）──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themecurve!12!themebg, draw=themecurve, line width=1.0pt, rounded corners=4pt]
+      (0.5, 9.4) rectangle (14.5, 11.6);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=13.6cm] at (0.7, 11.45) {
+      \textbf{\normalsize \color{themecurve}第一层：随机世界 $(\Omega, \mathcal F, P)$ —— 概率质量分配与守恒}\\[0.25em]
+      \footnotesize $\bullet$ \textbf{样本空间 $\Omega$}（全部试验结果 $\omega$） \quad
+      $\bullet$ \textbf{事件域 $\mathcal F$}（关心子集 $A$） \quad
+      $\bullet$ \textbf{概率测度 $P$}（Kolmogorov 公理）\\[0.2em]
+      \scriptsize \textbf{核心准则}：$A \subseteq B \implies P(A) \le P(B)$；可列可加性；容斥记账 $P(A\cup B) = P(A) + P(B) - P(AB)$；古典/几何测度归一化
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 顶层 -> 中层（观察函数映射）
+\draw[->, color=themecurve, line width=1.5pt] (7.5, 9.4) -- (7.5, 8.65)
+  node[midway, right=3pt, text=themecurve] {\footnotesize \textbf{选择观察函数：$X(\omega), (X,Y)(\omega)$（数值化信息压缩）}};
+
+% ══════════════════════════════════════════════════════════════
+% ── 2. 中层：观察、分布与四大信息算子 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0cm]
+  % 2.1 中层总领框
+  \begin{pgfonlayer}{background}
+    \fill[fill=themeamber!12!themebg, draw=themeamber, line width=0.9pt, rounded corners=3pt]
+      (0.5, 7.35) rectangle (14.5, 8.65);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=13.6cm] at (0.7, 8.5) {
+      \textbf{\normalsize \color{themeamber}第二层：分布空间与四大信息算子 —— $F_X(x) = P(X \le x)$}\\[0.2em]
+      \footnotesize 概率质量推前至数轴/平面，通过四大基本信息动作完成分布重述、降维与特征压缩：
+    };
+  \end{pgfonlayer}
+
+  % 2.2 四大算子平行卡片
+  % 卡片 1: 条件化
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!6!themebg, draw=themecurve, line width=0.8pt, rounded corners=3pt]
+      (0.5, 4.7) rectangle (3.8, 7.05);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=3.1cm] at (0.6, 6.9) {
+      \footnotesize \textbf{\color{themecurve}1. 条件化（信息）}\\[0.25em]
+      \scriptsize $\bullet$ 信息收缩：$P(A\mid B) = \frac{P(AB)}{P(B)}$\\[0.15em]
+      \scriptsize $\bullet$ 全概公式：正向加权汇总\\[0.15em]
+      \scriptsize $\bullet$ Bayes：逆向后验归因
+    };
+  \end{pgfonlayer}
+
+  % 卡片 2: 边缘化
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!6!themebg, draw=themealert, line width=0.8pt, rounded corners=3pt]
+      (4.05, 4.7) rectangle (7.35, 7.05);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=3.1cm] at (4.15, 6.9) {
+      \footnotesize \textbf{\color{themealert}2. 边缘化（降维）}\\[0.25em]
+      \scriptsize $\bullet$ 联合支撑：$f_{X,Y}(x,y)$\\[0.15em]
+      \scriptsize $\bullet$ 独立解耦：$f_{X,Y} = f_X f_Y$\\[0.15em]
+      \scriptsize $\bullet$ 截面积分：$f_X(x) = \int f\,dy$
+    };
+  \end{pgfonlayer}
+
+  % 卡片 3: 变量变换
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!6!themebg, draw=themeamber, line width=0.8pt, rounded corners=3pt]
+      (7.6, 4.7) rectangle (10.9, 7.05);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=3.1cm] at (7.7, 6.9) {
+      \footnotesize \textbf{\color{themeamber}3. 变量变换（函数）}\\[0.25em]
+      \scriptsize $\bullet$ 观察改变：$Y = g(X)$\\[0.15em]
+      \scriptsize $\bullet$ 卷积和分布：$f_{X+Y}(z)$\\[0.15em]
+      \scriptsize $\bullet$ 二维 Jacobian 面积元
+    };
+  \end{pgfonlayer}
+
+  % 卡片 4: 数字特征
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!6!themebg, draw=themegray, line width=0.8pt, rounded corners=3pt]
+      (11.15, 4.7) rectangle (14.5, 7.05);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=3.15cm] at (11.25, 6.9) {
+      \footnotesize \textbf{4. 数字特征（压缩）}\\[0.25em]
+      \scriptsize $\bullet$ 期望 $E(X)$（中心位置）\\[0.15em]
+      \scriptsize $\bullet$ 方差 $\operatorname{Var}(X)$（平方偏离）\\[0.15em]
+      \scriptsize $\bullet$ 协方差 $\operatorname{Cov}$ / 相关系数 $\rho$
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% 中层 -> 底层（重复抽样与大样本极限定理）
+\draw[->, color=themealert, line width=1.5pt] (7.5, 4.7) -- (7.5, 3.95)
+  node[midway, right=3pt, text=themealert] {\footnotesize \textbf{独立重复抽样 $X_1,\dots,X_n$（LLN 稳定位置 + CLT 正态波动）}};
+
+% ══════════════════════════════════════════════════════════════
+% ── 3. 底层：数理统计推断双向闭环 ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themealert!12!themebg, draw=themealert, line width=1.0pt, rounded corners=4pt]
+      (0.5, 1.5) rectangle (14.5, 3.95);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, text width=13.6cm] at (0.7, 3.75) {
+      \textbf{\normalsize \color{themealert}第三层：统计推断 —— 抽样分布标尺与三大推断任务}\\[0.3em]
+      \footnotesize $\bullet$ \textbf{三大抽样分布标尺}：$\chi^2(\nu)$（方差）、$t(\nu)$（代未知方差）、$F(\nu_1,\nu_2)$（方差比）\\[0.2em]
+      \footnotesize $\bullet$ \textbf{点估计与评价}：矩估计（样本矩=总体矩） / 极大似然 MLE（驻点或边界极值）；无偏性、有效性、MSE\\[0.2em]
+      \footnotesize $\bullet$ \textbf{区间与检验对偶}：枢轴量反演置信区间 $\longleftrightarrow$ 假设检验（两类错误 $\alpha,\beta$、功效 $1-\beta$、单双尾拒绝域）
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 4. 底部全图全局总结 (无框轻量排印) ──
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.5, 1.05) {
+    \footnotesize \textbf{学科统一双向哲学：} 概率论是 \textbf{正向生成推理}（模型参数 $\theta \to$ 生成随机数据 $X$）；数理统计是 \textbf{逆向推断约束}（观测数据 $x_{\mathrm{obs}} \to$ 约束与估计模型参数 $\theta$）。二者共享同一生成模型与抽样分布标尺。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

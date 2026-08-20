@@ -1,0 +1,166 @@
+% ── V13 大数定律与中心极限双尺度（大空间呼吸感 2 行布局） ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 上半部第 1 行：左（大数定律） + 右（中心极限定理） ──
+% ══════════════════════════════════════════════════════════════
+
+% ── 1. 左卡片：大数定律（LLN） ──
+\begin{scope}[xshift=0cm, yshift=5.0cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themecurve}1. 大数定律（LLN）：原尺度塌缩}
+    };
+  \end{pgfonlayer}
+
+  % 图像与文字左右分栏
+  \begin{pgfonlayer}{background}
+    % 坐标轴
+    \draw[color=themegray, line width=0.6pt, ->] (0.2, 1.2) -- (2.9, 1.2) node[anchor=west] {\tiny $\bar x$};
+    \draw[color=themegray, line width=0.6pt, ->] (1.5, 0.9) -- (1.5, 4.1);
+
+    % 曲线演进（n=1, n=10, n->oo）
+    \draw[color=themegray!60, line width=0.8pt, domain=-1.2:1.2, samples=30]
+      plot ({1.5 + \x}, {1.2 + 0.6*exp(-\x*\x/0.8)});
+    \draw[color=themeamber, line width=1.0pt, domain=-0.9:0.9, samples=30]
+      plot ({1.5 + \x}, {1.2 + 1.4*exp(-\x*\x/0.25)});
+    \draw[color=themecurve, line width=1.5pt, domain=-0.45:0.45, samples=30]
+      plot ({1.5 + \x}, {1.2 + 2.6*exp(-\x*\x/0.04)});
+
+    \fill[color=themecurve] (1.5, 1.2) circle (2.2pt);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north, color=themecurve] at (1.5, 1.1) {\small $\mu$};
+    \node[anchor=east, color=themegray] at (0.6, 1.7) {\tiny $n=1$};
+    \node[anchor=east, color=themeamber] at (0.8, 2.5) {\tiny $n=10$};
+    \node[anchor=west, color=themecurve] at (1.75, 3.6) {\tiny $n \to \infty$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=3.8cm] at (3.1, 4.3) {
+      \small \textbf{物理机制（退化塌缩）：}\\[0.25em]
+      \scriptsize $\operatorname{Var}(\bar X_n) = \frac{\sigma^2}{n} \to 0$；\\[0.15em]
+      宏观随机涨落完全消失，概率质量集中塌缩于常数单点 $\mu$。\\[0.7em]
+      \small \textbf{收敛命题：}\\[0.25em]
+      \scriptsize 弱定律：$\bar X_n \xrightarrow{P} \mu$\\[0.15em]
+      强大数：$\bar X_n \xrightarrow{a.s.} \mu$
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 2. 右卡片：中心极限定理（CLT） ──
+\begin{scope}[xshift=7.7cm, yshift=5.0cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themeamber}2. 中心极限（CLT）：$\sqrt{n}$ 尺度展开}
+    };
+  \end{pgfonlayer}
+
+  % 图像与文字左右分栏
+  \begin{pgfonlayer}{background}
+    % 阴影区间
+    \fill[fill=themecurve!20!themebg, domain=-0.75:0.75]
+      (0.75, 1.2) -- plot[domain=-0.75:0.75, samples=30] ({1.5 + \x}, {1.2 + 2.5*exp(-\x*\x/0.7)}) -- (2.25, 1.2) -- cycle;
+
+    % 坐标轴
+    \draw[color=themegray, line width=0.6pt, ->] (0.2, 1.2) -- (2.8, 1.2) node[anchor=west] {\tiny $z$};
+    \draw[color=themegray, line width=0.6pt, ->] (1.5, 0.9) -- (1.5, 4.0);
+
+    % 标准正态曲线
+    \draw[color=themecurve, line width=1.4pt, domain=-1.25:1.25, samples=40]
+      plot ({1.5 + \x}, {1.2 + 2.5*exp(-\x*\x/0.7)});
+
+    % 分界虚线
+    \draw[color=themeamber, line width=0.6pt, dashed] (0.75, 1.2) -- (0.75, 2.3);
+    \draw[color=themeamber, line width=0.6pt, dashed] (2.25, 1.2) -- (2.25, 2.3);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north, color=themefg] at (1.5, 1.1) {\tiny $0$};
+    \node[anchor=north, color=themeamber] at (0.75, 1.1) {\tiny $-1$};
+    \node[anchor=north, color=themeamber] at (2.25, 1.1) {\tiny $1$};
+    \node[anchor=south, color=themecurve] at (1.5, 3.75) {\scriptsize $N(0,1)$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=3.9cm] at (3.0, 4.3) {
+      \small \textbf{物理机制（显微展开）：}\\[0.25em]
+      \scriptsize 乘以 $\frac{\sqrt{n}}{\sigma}$ 放大残差波动；\\[0.15em]
+      微观残余涨落展开为普适对称的高斯钟形曲线。\\[0.7em]
+      \small \textbf{收敛命题：}\\[0.25em]
+      \scriptsize $Z_n = \frac{\sqrt{n}(\bar X_n-\mu)}{\sigma} \xrightarrow{d} N(0,1)$
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 下半部第 2 行：全宽卡片（双尺度核心对比与考场决策清单） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0.3cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (14.8, 4.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 3.95) {
+      \large \textbf{\color{themealert}3. 双尺度对比辨析与考场动作清单}
+    };
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 左栏：对比维度
+    \node[anchor=north west, text width=7.2cm] at (0.1, 3.25) {
+      \small $\bullet$ \textbf{\color{themecurve}研究对象}：$\bar X_n$（宏观）~vs~$Z_n$（显微）；\\[0.45em]
+      \small $\bullet$ \textbf{\color{themeamber}极限形态}：退化常数~$\mu$~vs~普适高斯~$N(0,1)$；\\[0.45em]
+      \small $\bullet$ \textbf{\color{themealert}核心功能}：证明参数估计一致性与宏观稳态。
+    };
+
+    % 中间分割线
+    \draw[color=themegray!30, line width=0.6pt] (7.4, 0.3) -- (7.4, 3.4);
+
+    % 右栏：收敛模式与考场警示
+    \node[anchor=north west, text width=7.0cm] at (7.7, 3.25) {
+      \small $\bullet$ \textbf{\color{themecurve}收敛模式}：依概率收敛~$\xrightarrow{P}$~vs~依分布收敛~$\xrightarrow{d}$；\\[0.45em]
+      \small $\bullet$ \textbf{\color{themeamber}功能定位}：参数点估计~vs~渐近置信区间估计；\\[0.45em]
+      \small $\bullet$ \textbf{\color{themealert}考场避坑警示}：\\[0.15em]
+      \quad 求和区间概率必用~CLT~查表，勿用~LLN！
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 底部全图全局总结 (无框轻量排印) ──
+% ══════════════════════════════════════════════════════════════
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.3, -0.2) {
+    \footnotesize \textbf{双尺度全景哲学：} 大数定律回答 \textbf{“收敛到何处”}（原尺度退化为确定常数 $\mu$）；中心极限定理回答 \textbf{“残余波动如何分布”}（$\sqrt{n}$ 尺度展开为高斯分布）；二者互不替代。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

@@ -1,0 +1,118 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 左图: Lagrange 中值定理 (割线与平行切线) ──
+\begin{axis}[
+    name=axL,
+    width=7.8cm,
+    height=7.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-0.3, xmax=3.5,
+    ymin=-0.5, ymax=3.4,
+    xtick={0.5,1.75,3.0},
+    xticklabels={$a$,$\xi$,$b$},
+    ytick=\empty,
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={Lagrange 中值定理：斜割线与平行切线},
+]
+% 真实函数 f(x) = -(x-1.8)^2 + 2.5 + 0.3*x
+\addplot[themecurve, line width=2.0pt, domain=0.4:3.1, samples=80] {-(x-1.8)^2 + 2.5 + 0.3*x};
+\node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:2.7,2.2) {$y=f(x)$};
+
+\begin{pgfonlayer}{background}
+    % 割线 AB
+    \draw[themeamber, line width=1.4pt] (axis cs:0.5,0.96) -- (axis cs:3.0,1.96);
+    \node[text=themeamber, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:1.6,1.45) {割线 (斜率 $\frac{f(b)-f(a)}{b-a}$)};
+
+    % 平行切线 at xi=1.75
+    \draw[themealert, line width=1.4pt] (axis cs:0.6,2.5625) -- (axis cs:2.9,3.4825);
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south] at (axis cs:1.75,3.15) {平行切线 (斜率 $f'(\xi)$)};
+
+    % 垂线
+    \draw[themegray, dashed] (axis cs:0.5,0) -- (axis cs:0.5,0.96);
+    \draw[themegray, dashed] (axis cs:3.0,0) -- (axis cs:3.0,1.96);
+    \draw[themegray, dashed] (axis cs:1.75,0) -- (axis cs:1.75,3.0225);
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{foreground}
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(0.5,0.96) (3.0,1.96)};
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themealert, draw=themefg] coordinates {(1.75,3.0225)};
+    \node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north east] at (axis cs:0.5,0.92) {$A(a,f(a))$};
+    \node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north west] at (axis cs:3.0,1.92) {$B(b,f(b))$};
+\end{pgfonlayer}
+\end{axis}
+
+% ── 右图: 辅助函数 F(x) = f(x) - 割线(x) (Rolle 对应) ──
+\begin{axis}[
+    name=axR,
+    at={($(axL.east)+(1.6cm,0)$)},
+    anchor=west,
+    width=7.8cm,
+    height=7.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-0.3, xmax=3.5,
+    ymin=-0.5, ymax=2.4,
+    xtick={0.5,1.75,3.0},
+    xticklabels={$a$,$\xi$,$b$},
+    ytick=\empty,
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={Rolle 辅助函数：端点压平 $F(a)=F(b)=0$ 获水平切线},
+]
+% F(x) = f(x) - 割线(x)
+\addplot[themecurve, line width=2.0pt, domain=0.4:3.1, samples=80] {-(x-1.8)^2 + 1.74 - 0.1*x};
+\node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:2.5,0.9) {$F(x)=f(x)-\text{割线}(x)$};
+
+\begin{pgfonlayer}{background}
+    % 水平切线 y = 1.5625
+    \draw[themealert, line width=1.4pt] (axis cs:0.6,1.5625) -- (axis cs:2.9,1.5625);
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south] at (axis cs:1.75,1.65) {水平切线 $F'(\xi)=0$};
+
+    % 垂线
+    \draw[themegray, dashed] (axis cs:1.75,0) -- (axis cs:1.75,1.5625);
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{foreground}
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(0.5,0) (3.0,0)};
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themealert, draw=themefg] coordinates {(1.75,1.5625)};
+    \node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north] at (axis cs:0.5,-0.18) {$F(a)=0$};
+    \node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north] at (axis cs:3.0,-0.18) {$F(b)=0$};
+\end{pgfonlayer}
+\end{axis}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

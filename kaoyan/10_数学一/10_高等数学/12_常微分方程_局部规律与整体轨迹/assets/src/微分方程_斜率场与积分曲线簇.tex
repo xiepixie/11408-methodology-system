@@ -1,0 +1,84 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, scale=1.4]
+
+% 标题
+\node[font=\footnotesize\bfseries, align=center] at (0.8, 3.7) {一阶微分方程斜率场与积分曲线簇：局部方向导数引导全局解曲线};
+
+% 坐标轴
+\draw[-{Stealth}, themefg, line width=1pt] (-2.8, 0) -- (3.8, 0) node[right, font=\scriptsize] {$x$};
+\draw[-{Stealth}, themefg, line width=1pt] (0, -2.6) -- (0, 3.2) node[above, font=\scriptsize] {$y$};
+
+% 刻度
+\foreach \i in {-2,-1,1,2,3} {
+    \draw[themefg] (\i, 0.05) -- (\i, -0.05) node[below, font=\tiny] {$\i$};
+}
+\foreach \j in {-2,-1,1,2} {
+    \draw[themefg] (0.05, \j) -- (-0.05, \j) node[left, font=\tiny] {$\j$};
+}
+
+% 1. 斜率场短线段 (y' = x - y)
+\begin{pgfonlayer}{background}
+    \foreach \px in {-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0} {
+        \foreach \py in {-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5} {
+            \pgfmathsetmacro{\slp}{\px - \py}
+            \pgfmathsetmacro{\ang}{atan(\slp)}
+            \draw[themegray!60, line width=0.8pt] 
+                ({\px + 0.12*cos(\ang)}, {\py + 0.12*sin(\ang)}) -- 
+                ({\px - 0.12*cos(\ang)}, {\py - 0.12*sin(\ang)});
+        }
+    }
+\end{pgfonlayer}
+
+% 2. 积分曲线簇 y = x - 1 + C*exp(-x)
+% C = 0: y = x - 1 (渐近直线)
+\draw[themegray, dashed, line width=1.4pt, domain=-1.5:3.2, samples=50] plot (\x, {\x - 1});
+\node[text=themegray, font=\tiny, fill=themebg, inner sep=0.5pt] at (2.8, 1.55) {$y=x-1\ (C=0)$};
+
+% C = 2: y = x - 1 + 2*exp(-x) (过 (0,1))
+\draw[themecurve, line width=2.0pt, domain=-0.8:3.2, samples=60] plot (\x, {\x - 1 + 2*exp(-\x)});
+\node[text=themecurve, font=\scriptsize\bfseries, fill=themebg, inner sep=0.8pt] at (2.5, 1.95) {$C=2$};
+
+% C = -2: y = x - 1 - 2*exp(-x) (过 (0,-3))
+\draw[themeamber, line width=2.0pt, domain=-0.2:3.2, samples=60] plot (\x, {\x - 1 - 2*exp(-\x)});
+\node[text=themeamber, font=\scriptsize\bfseries, fill=themebg, inner sep=0.8pt] at (2.5, 1.1) {$C=-2$};
+
+\begin{pgfonlayer}{foreground}
+    % 初值点 (0,1)
+    \fill[themealert] (0,1) circle (2.5pt);
+    \draw[themefg, line width=0.6pt] (0,1) circle (2.5pt);
+    \node[text=themealert, font=\scriptsize\bfseries, fill=themebg, inner sep=0.8pt, anchor=south east] at (-0.1, 1.15) {初值点 $(x_0,y_0)=(0,1)$};
+
+    % 说明框
+    \node[text=themefg, font=\scriptsize, fill=themebg, inner sep=1.5pt, anchor=north west] at (-2.7, 3.0) {
+        \begin{tabular}{l}
+        \textbf{微分方程}：$y' = x - y$\\[2pt]
+        1. 短线段：在点 $(x,y)$ 处的切线斜率 $y'$\\
+        2. 积分曲线：处处与斜率场相切的平滑轨迹\\
+        3. 初值条件 $y(x_0)=y_0$ 从解簇中锁定唯一解
+        \end{tabular}
+    };
+\end{pgfonlayer}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

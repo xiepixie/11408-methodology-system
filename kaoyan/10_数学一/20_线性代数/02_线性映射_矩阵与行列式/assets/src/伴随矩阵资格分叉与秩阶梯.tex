@@ -1,0 +1,85 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+
+% ── 左侧：可逆 vs 奇异两大约束分叉 ──
+\begin{scope}[shift={(0,0)}]
+  % 顶层根节点：母恒等式
+  \node[draw=themecurve, fill=themebg, rounded corners=6pt, line width=1.4pt, inner sep=6pt, align=center] (Root) at (3.0, 3.0) {
+    {\bfseries 母恒等式}：$\boldsymbol{A}\operatorname{adj}(\boldsymbol{A}) = (\det\boldsymbol{A})\boldsymbol{I}$
+  };
+
+  % 分支 1：满秩可逆分支 (det A != 0)
+  \node[draw=themeamber, fill=themebg, rounded corners=4pt, line width=1.0pt, inner sep=6pt, text width=4.8cm, anchor=north] (NonSing) at (0.4, 1.8) {
+    {\bfseries\color{themeamber} 满秩可逆分支 ($\det\boldsymbol{A} \ne 0$)} \\[3pt]
+    \raggedright\footnotesize
+    $\bullet$ $\operatorname{adj}(\boldsymbol{A}) = (\det\boldsymbol{A})\boldsymbol{A}^{-1}$\\
+    $\bullet$ 保持满秩：$r(\operatorname{adj}\boldsymbol{A}) = n$\\
+    $\bullet$ 行列式：$\det(\operatorname{adj}\boldsymbol{A}) = (\det\boldsymbol{A})^{n-1}$
+  };
+
+  % 分支 2：奇异/核约束分支 (det A = 0)
+  \node[draw=themealert, fill=themebg, rounded corners=4pt, line width=1.0pt, inner sep=6pt, text width=4.8cm, anchor=north] (Sing) at (5.6, 1.8) {
+    {\bfseries\color{themealert} 奇异/核约束分支 ($\det\boldsymbol{A} = 0$)} \\[3pt]
+    \raggedright\footnotesize
+    $\bullet$ 零乘积：$\boldsymbol{A}\operatorname{adj}(\boldsymbol{A}) = \boldsymbol{O}$\\
+    $\bullet$ 列落入核：$\operatorname{Col}(\operatorname{adj}\boldsymbol{A}) \subseteq \ker\boldsymbol{A}$\\
+    $\bullet$ 行列式：$\det(\operatorname{adj}\boldsymbol{A}) = 0$
+  };
+
+  % 分叉连线
+  \draw[->, themeamber, line width=1.6pt] (Root.south -| NonSing.north) -- node[left, font=\scriptsize, text=themeamber] {$\det A \ne 0$} (NonSing.north);
+  \draw[->, themealert, line width=1.6pt] (Root.south -| Sing.north) -- node[right, font=\scriptsize, text=themealert] {$\det A = 0$} (Sing.north);
+\end{scope}
+
+% ── 右侧：伴随矩阵三级秩阶梯 ──
+\begin{scope}[shift={(10.8,0)}]
+  \node[font=\bfseries\small, text=themecurve] at (2.0, 3.2) {$\operatorname{adj}\boldsymbol{A}$ 三级秩阶梯};
+
+  % 阶梯 1: r(A) = n
+  \node[draw=themecurve, fill=themecurve!15!themebg, rounded corners=3pt, line width=1.0pt, inner sep=5pt, text width=3.8cm, align=center] (L1) at (2.0, 2.3) {
+    $r(\boldsymbol{A}) = n \implies r(\operatorname{adj}\boldsymbol{A}) = n$
+  };
+
+  % 阶梯 2: r(A) = n - 1
+  \node[draw=themeamber, fill=themeamber!15!themebg, rounded corners=3pt, line width=1.0pt, inner sep=5pt, text width=3.8cm, align=center] (L2) at (2.0, 1.1) {
+    $r(\boldsymbol{A}) = n - 1 \implies r(\operatorname{adj}\boldsymbol{A}) = 1$
+  };
+
+  % 阶梯 3: r(A) <= n - 2
+  \node[draw=themealert, fill=themealert!15!themebg, rounded corners=3pt, line width=1.0pt, inner sep=5pt, text width=3.8cm, align=center] (L3) at (2.0, -0.1) {
+    $r(\boldsymbol{A}) \le n - 2 \implies \operatorname{adj}\boldsymbol{A} = \boldsymbol{O}$
+  };
+
+  % 阶梯下降箭头
+  \draw[->, themegray, line width=1.4pt] (L1) -- (L2);
+  \draw[->, themegray, line width=1.4pt] (L2) -- (L3);
+\end{scope}
+
+% ── 底部总结横条 ──
+\node[font=\bfseries\small, color=themecurve, anchor=north] at (7.4, -1.2) {
+  核心心智模型：$\det A = 0$ 时伴随矩阵不是逆，而是核方向生成器；秩阶梯只有 $n, 1, 0$ 三种可能
+};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

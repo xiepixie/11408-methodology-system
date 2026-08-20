@@ -1,0 +1,68 @@
+\begin{tikzpicture}[
+  color=themefg,
+  text=themefg,
+  >=Stealth,
+  axis/.style={themegray, line width=0.9pt, -{Stealth[length=1.7mm]}},
+  region/.style={themecurve, fill=themecurve, fill opacity=0.12, line width=1.5pt},
+  shell/.style={themeamber, line width=1.3pt},
+  shelldash/.style={themeamber, dashed, line width=0.9pt},
+  strip/.style={themealert, fill=themealert, fill opacity=0.45, line width=1.3pt},
+  warnarr/.style={themealert, line width=1.2pt, {Stealth[length=1.6mm]}-{Stealth[length=1.6mm]}},
+  tag/.style={fill=themebg, inner sep=1.5pt, font=\footnotesize}
+]
+
+  % ── 坐标轴 ──
+  \draw[axis] (-3.2, 0) -- (3.4, 0) node[right, font=\small] {$x$};
+  \draw[axis] (0, -0.6) -- (0, 3.6) node[above, font=\small] {$y$ (旋转轴)};
+
+  % ── 跨轴平面区域 D: [-2.0, 2.0] x [0, 2.2] ──
+  \draw[region] (-2.0, 0) rectangle (2.0, 2.2);
+  \node[text=themecurve, font=\footnotesize\bfseries, fill=themebg, inner sep=1.5pt] at (-1.5, 2.75) {跨轴区域 $D: [-a, a]\times[0, H]$};
+
+  % ── 3D 柱壳背景与填充 (半径 r=1.3, 高度 H=2.2, 椭圆 y半轴 0.28) ──
+  \fill[themeamber, opacity=0.18] (-1.3, 0) -- (-1.3, 2.2) arc (180:360:1.3cm and 0.28cm) -- (1.3, 0) arc (0:-180:1.3cm and 0.28cm);
+
+  % 左右两侧竖直微元条高亮 (宽 0.16)
+  \fill[themealert, opacity=0.40] (-1.38, 0) rectangle (-1.22, 2.2);
+  \fill[themealert, opacity=0.40] (1.22, 0) rectangle (1.38, 2.2);
+
+  % 柱壳顶面完整椭圆
+  \draw[shell, fill=themeamber, fill opacity=0.30] (0, 2.2) ellipse (1.3cm and 0.28cm);
+
+  % 柱壳底面椭圆 (前半实线，后半虚线)
+  \draw[shelldash] (-1.3, 0) arc (180:0:1.3cm and 0.28cm);
+  \draw[shell] (-1.3, 0) arc (180:360:1.3cm and 0.28cm);
+
+  % 柱壳左右母线 (即 x = -r 与 x = +r 处微元条)
+  \draw[strip] (-1.3, 0) -- (-1.3, 2.2);
+  \draw[strip] (1.3, 0) -- (1.3, 2.2);
+  \fill[themealert] (-1.3, 0) circle (2.0pt);
+  \fill[themealert] (1.3, 0) circle (2.0pt);
+
+  % ── 旋转指示 (放置在 y 轴高位纯净区) ──
+  \draw[-{Stealth[length=1.6mm]}, themecurve, line width=1.1pt] (0.24, 3.2) arc (0:270:0.24cm and 0.12cm);
+  \node[text=themecurve, font=\tiny\bfseries, anchor=west] at (0.35, 3.2) {绕 $y$ 轴};
+
+  % ── 半径标尺 ──
+  \draw[warnarr] (-1.3, 1.0) -- (0, 1.0);
+  \node[tag, text=themecurve, font=\tiny\bfseries, anchor=south] at (-0.65, 1.04) {半径 $r$};
+
+  \draw[warnarr] (0, 1.0) -- (1.3, 1.0);
+  \node[tag, text=themecurve, font=\tiny\bfseries, anchor=south] at (0.65, 1.04) {半径 $r$};
+
+  % ── 坐标刻度标注 ──
+  \node[tag, text=themealert, font=\footnotesize\bfseries, anchor=north] at (-1.3, -0.32) {$-r$};
+  \node[tag, text=themealert, font=\footnotesize\bfseries, anchor=north] at (1.3, -0.32) {$+r$};
+  \node[tag, font=\footnotesize, anchor=north] at (-2.0, -0.32) {$-a$};
+  \node[tag, font=\footnotesize, anchor=north] at (2.0, -0.32) {$+a$};
+
+  % ── 引出说明 ──
+  \draw[themegray, densely dotted, line width=0.8pt] (1.3, 1.6) -- (2.3, 1.6);
+  \node[tag, text=themealert, font=\footnotesize\bfseries, anchor=west, align=left] at (2.3, 1.6) {$\pm r$ 绕 $y$ 轴公转\\扫出\textbf{同一个}圆柱壳！};
+
+  % ── 底部警示 ──
+  \node[font=\small, align=center] at (0, -1.35) {
+    \textbf{\color{themealert}避坑警示}：对称点 $x = -r$ 与 $x = +r$ 绕 $y$ 轴公转扫出\textbf{完全重合的同一个薄圆柱壳}！\\[3pt]
+    \footnotesize\color{themegray} 若盲目积分 $2\pi\int_{-a}^a |x| h(x)\,dx$ 会导致体积被\textbf{重复计算为 2 倍}。正确做法：仅按物理半径 $r \in [0, a]$ 积分一次。
+  };
+\end{tikzpicture}

@@ -1,0 +1,142 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 子图 1: g(x)|x-a| (局部幅值包络压扁) ──
+\begin{axis}[
+    name=ax1,
+    width=6.0cm,
+    height=6.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-0.5, xmax=2.5,
+    ymin=-1.6, ymax=1.6,
+    xtick={0,2},
+    ytick={-1,1},
+    clip=true,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize, align=center, yshift=6pt},
+    title={\textbf{类型 1：$g(x)|x-a|$}\\[2pt]\scriptsize 局部幅值包络压扁},
+]
+\begin{pgfonlayer}{background}
+    % 包络线 y = ±(x-1)
+    \draw[themegray, dashed, line width=1pt] (axis cs:-0.4,-1.4) -- (axis cs:2.4,1.4);
+    \draw[themegray, dashed, line width=1pt] (axis cs:-0.4,1.4) -- (axis cs:2.4,-1.4);
+    \node[text=themegray, font=\tiny, fill=themebg, inner sep=0.5pt, anchor=south east] at (axis cs:2.3,1.1) {$y=\pm(x-a)$};
+\end{pgfonlayer}
+
+% f(x) = (x-1)|x-1|
+\addplot[themecurve, line width=2.0pt, domain=-0.2:1.0, samples=80] {-(x-1)^2};
+\addplot[themecurve, line width=2.0pt, domain=1.0:2.2, samples=80] {(x-1)^2};
+
+\begin{pgfonlayer}{foreground}
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(1,0)};
+    \node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north] at (axis cs:1,-0.2) {$x=a$ 可导 ($f'=0$)};
+\end{pgfonlayer}
+\end{axis}
+
+% ── 子图 2: |g(x)| (输出负部向上翻折) ──
+\begin{axis}[
+    name=ax2,
+    at={($(ax1.east)+(1.2cm,0)$)},
+    anchor=west,
+    width=6.0cm,
+    height=6.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-2.0, xmax=2.0,
+    ymin=-0.6, ymax=2.5,
+    xtick={-1,1},
+    ytick={1,2},
+    clip=true,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize, align=center, yshift=6pt},
+    title={\textbf{类型 2：$|g(x)|$}\\[2pt]\scriptsize 输出负部向上翻折},
+]
+\begin{pgfonlayer}{background}
+    % 原函数 g(x) = x^2-1 负部 (浅色虚线)
+    \addplot[themegray, dashed, line width=1.3pt, domain=-1.0:1.0, samples=80] {x^2-1};
+    \node[text=themegray, font=\tiny, fill=themebg, inner sep=0.5pt, anchor=north] at (axis cs:0,-0.32) {原负部 $g(x)<0$};
+\end{pgfonlayer}
+
+% |x^2-1| 正部与翻折部
+\addplot[themecurve, line width=2.0pt, domain=-1.8:-1.0, samples=50] {x^2-1};
+\addplot[themealert, line width=2.0pt, domain=-1.0:1.0, samples=80] {-(x^2-1)};
+\addplot[themecurve, line width=2.0pt, domain=1.0:1.8, samples=50] {x^2-1};
+
+\begin{pgfonlayer}{foreground}
+    % 两个折点 (-1,0) 与 (1,0)
+    \addplot[only marks, mark=x, mark size=3.5pt, line width=1.5pt, themealert] coordinates {(-1,0) (1,0)};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south] at (axis cs:0,1.05) {翻折尖点 ($g'\ne 0$)};
+\end{pgfonlayer}
+\end{axis}
+
+% ── 子图 3: g(|x|) (输入右半边向左镜像) ──
+\begin{axis}[
+    name=ax3,
+    at={($(ax2.east)+(1.2cm,0)$)},
+    anchor=west,
+    width=6.0cm,
+    height=6.8cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-2.2, xmax=2.2,
+    ymin=-0.5, ymax=2.5,
+    xtick={-2,-1,1,2},
+    ytick={1,2},
+    clip=true,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize, align=center, yshift=6pt},
+    title={\textbf{类型 3：$g(|x|)$}\\[2pt]\scriptsize 输入非负侧镜像对称},
+]
+\begin{pgfonlayer}{background}
+    % y 轴对称参考虚线
+    \draw[themegray!40, dashed] (axis cs:0,-0.5) -- (axis cs:0,2.5);
+\end{pgfonlayer}
+
+% g(|x|) = (|x|-1)^2 + 0.2
+\addplot[themeamber, line width=2.0pt, domain=-2.0:0, samples=80] {(-x-1)^2 + 0.2};
+\addplot[themecurve, line width=2.0pt, domain=0:2.0, samples=80] {(x-1)^2 + 0.2};
+
+\begin{pgfonlayer}{foreground}
+    % 镜像拼接点 (0, 1.2)
+    \addplot[only marks, mark=x, mark size=3.5pt, line width=1.5pt, themealert] coordinates {(0,1.2)};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:0.1,1.25) {折点 ($g'(0^+)\ne 0$)};
+    \node[text=themefg, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north] at (axis cs:0,-0.12) {偶函数镜像};
+\end{pgfonlayer}
+\end{axis}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

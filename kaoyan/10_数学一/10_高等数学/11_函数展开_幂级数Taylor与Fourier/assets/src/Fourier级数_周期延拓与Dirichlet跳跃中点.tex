@@ -1,0 +1,92 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{a4af9d}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+\begin{axis}[
+    width=14.0cm,
+    height=8.0cm,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\scriptsize},
+    every axis label/.style={color=themefg},
+    xmin=-7.2, xmax=7.5,
+    ymin=-2.0, ymax=2.8,
+    xtick={-6.28, -3.14, 0, 3.14, 6.28},
+    xticklabels={$-2\pi$, $-\pi$, $0$, $\pi$, $2\pi$},
+    ytick={-1, 0, 1},
+    yticklabels={$-1$, $0$, $1$},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={Fourier 级数与 Dirichlet 收敛：周期延拓后在跳跃间断点处收敛于左右极限中点},
+]
+
+\begin{pgfonlayer}{background}
+    % 主值区间 [-\pi, \pi] 极微弱底色
+    \fill[themecurve!15!themebg] (axis cs:-3.14,-1.5) rectangle (axis cs:3.14,1.5);
+    \draw[themecurve!70!themebg, dashed, line width=1.0pt] (axis cs:-3.14,-1.5) -- (axis cs:-3.14,1.5);
+    \draw[themecurve!70!themebg, dashed, line width=1.0pt] (axis cs:3.14,-1.5) -- (axis cs:3.14,1.5);
+    \node[text=themecurve, font=\scriptsize\bfseries] at (axis cs:0, 1.35) {主值区间 $[-\pi,\pi]$};
+\end{pgfonlayer}
+
+% 周期延拓波形 (方波)
+\addplot[themecurve, line width=2.0pt, domain=-6.28:-3.14] {1};
+\addplot[themecurve, line width=2.0pt, domain=-3.14:0] {-1};
+\addplot[themecurve, line width=2.0pt, domain=0:3.14] {1};
+\addplot[themecurve, line width=2.0pt, domain=3.14:6.28] {-1};
+
+% 空心断点
+\addplot[only marks, mark=o, mark size=2.5pt, line width=1.2pt, themecurve, fill=themebg] coordinates {
+    (-6.28,1) (-3.14,1) (-3.14,-1) (0,-1) (0,1) (3.14,1) (3.14,-1) (6.28,-1)
+};
+
+\begin{pgfonlayer}{foreground}
+    % Dirichlet 收敛中点 (实心高亮红点)
+    \addplot[only marks, mark=*, mark size=3pt, fill=themealert, draw=themefg] coordinates {
+        (-6.28,0) (-3.14,0) (0,0) (3.14,0) (6.28,0)
+    };
+
+    % 中点标注
+    \node[text=themealert, font=\scriptsize\bfseries, anchor=north] at (axis cs:0,-0.2) {
+        $S(0)=\frac{f(0^-)+f(0^+)}{2}=0$
+    };
+    \node[text=themealert, font=\scriptsize\bfseries, anchor=south west] at (axis cs:3.25,0.2) {
+        $S(\pi)=0$
+    };
+
+    % 定理结论框放置在顶部纯净空间 (完全避让任何曲线)
+    \node[text=themefg, font=\scriptsize, anchor=north west] at (axis cs:-7.2, 2.75) {
+        \begin{tabular}{l}
+        \textbf{Dirichlet 收敛定理}：\\
+        1. 连续点：$S(x)=f(x)$\\
+        2. 跳跃点：$S(x_0)=\frac{f(x_0^-)+f(x_0^+)}{2}$\\
+        3. 周期端点：$S(\pm\pi)=\frac{f(\pi^-)+f(-\pi^+)}{2}$
+        \end{tabular}
+    };
+\end{pgfonlayer}
+
+\end{axis}
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

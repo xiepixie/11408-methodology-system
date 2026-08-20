@@ -1,0 +1,26 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning,decorations.pathreplacing,patterns}
+
+% ── 双主题语义色彩定义 (由编译管线自动注入与映射) ──
+\definecolor{themebg}{HTML}{30362d}     % 背景底色 (暗色墨绿 / 亮色米白)
+\definecolor{themefg}{HTML}{edf4e8}     % 主体前景 (暗色柔白 / 亮色炭黑)
+\definecolor{themegray}{HTML}{9ea897}   % 中性网格与辅助虚线
+\definecolor{themecurve}{HTML}{7eb6ff}  % 主体曲线与正向映射 (晶蓝 / 皇家蓝)
+\definecolor{themealert}{HTML}{ff7b7b}  % 焦点/反例/边界渐近线 (珊瑚红 / 朱砂红)
+\definecolor{themeamber}{HTML}{f5b942}  % 导数切线/中间算子 (暖金 / 金褐)
+
+% ── 声明显式图层栈（强制文字与点标记处于 foreground 最顶层）──
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\input{v05_cdf_jump_and_interval_probability_body.tikz}
+\end{CJK*}
+\end{document}

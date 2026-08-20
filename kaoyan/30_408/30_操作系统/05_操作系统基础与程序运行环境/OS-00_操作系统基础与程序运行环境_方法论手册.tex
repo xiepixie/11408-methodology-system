@@ -459,16 +459,108 @@ OS 的发展可以用两个不断变化的目标驱动：
 
 \subsection{链接到底在解决什么？——多个模块怎样成为一个可执行整体}
 
-编译单元彼此独立时会留下外部符号引用。例如一个目标文件调用另一个目标文件中的函数。链接器必须解决两类核心问题：
+独立编译的根本代价是：每个模块只知道自己的局部布局，却不知道\kw{其他模块最终在哪里}。例如 \code{main.o} 调用另一个目标文件中的 \code{foo}，汇编器可以知道“这里需要调用 \code{foo}”，却未必知道 \code{foo} 在最终映像中的位置。于是链接器必须解决两个不同问题：
 \[
 \boxed{\text{Symbol Resolution} + \text{Relocation}}
 \]
 
-\kw{Symbol Resolution}：这个名字最终指向哪个定义？
+\kw{Symbol Resolution（符号解析）}回答：\textbf{这个引用究竟绑定到哪个定义？} 例如 \code{foo} 应关联哪个函数定义。它建立的是“名字/引用 $\mapsto$ 定义”的关系。
 
-\kw{Relocation}：组合后对象和代码位置改变，相关引用怎样调整到正确位置？
+\kw{Relocation（重定位）}回答：\textbf{定义和各模块位置已经确定后，哪些机器码或数据字段必须怎样改写？} 它处理的是“引用位置 + relocation type + 最终地址布局 $\mapsto$ 修补值”。
 
-本册只保留链接层面的语义。若题目追问逻辑地址怎样在运行期映射到物理地址，立即切到 OS-04。
+因此二者不能合并成“链接就是改地址”：若连 \code{foo} 指向谁都还没有决定，就没有资格计算最终修补值；反过来，知道 \code{foo} 对应哪个定义，也不等于所有引用位已经编码正确。
+
+\begin{method}[为什么目标文件需要 Symbol Table 与 Relocation Records？]
+可重定位目标文件本质上在保存两类\kw{尚未完成但信息已足够描述的工作}：
+\begin{itemize}
+  \item Symbol table 记录本模块定义/引用了哪些可链接对象，以及它们当前属于哪里；
+  \item Relocation records 记录“哪个位置以后必须修、按什么规则修、它依赖哪个符号”。
+\end{itemize}
+链接器拿到多个模块后，才同时获得\kw{全局定义集合}与\kw{最终布局}，从而把这份待办清单兑现。
+\end{method}
+
+本册只保留链接层面的语义。若题目追问逻辑/虚拟地址怎样在运行期映射到物理地址，立即切到 OS-04；\kw{link-time relocation $\neq$ run-time address translation}。
+
+\subsection{同一个 ELF 为什么有 Section View 与 Segment View？}
+
+先从学生最容易遇到的困惑开始：\kw{为什么同一个可执行文件，链接器和装入器看到的“分块方式”不一样？}
+
+假设程序里只有三样东西：一段函数代码、一个已经初始化的全局变量和一个未显式初始化的全局变量。编译、汇编之后，这些内容需要被保存进目标文件；链接时还要继续解决符号和重定位。因此链接器更关心“这些内容各自是什么、该和谁合并、哪些地方还要修改”。这就是 Section 视角。
+
+但程序真正运行时，OS/Loader 不需要逐个理解“这是 \code{.text}、这是 \code{.data}、这是某张符号表”。它更关心的是：\kw{文件中的哪一段字节要映射到哪个 VA 范围、需要什么权限、内存中要占多大范围。} 这就是 Segment 视角。
+
+所以，Section 和 Segment 不是两套互相竞争的分类，而是\kw{同一份文件为两个不同阶段提供的两种视图}：
+\[
+\boxed{
+\text{Linking View: Sections}
+\qquad\neq\qquad
+\text{Loading View: Segments}
+}
+\]
+
+\kw{Section（节）}主要服务于链接和静态组织，例如代码、数据、符号表、重定位信息等；链接器关心的是“哪些内容应合并、哪些符号要解析、哪些位置要修补”。\kw{Segment（段，program segment）}主要服务于程序装入；program header 告诉装入路径“文件中的哪些范围应映射成什么样的运行时内存区域、具有什么权限”。多个 section 可以按装入属性组合进同一个 loadable segment，因此不能把 \code{.text/.data} 等 section 名机械等同于运行时的每个 segment。
+
+\begin{warn}[Section $\neq$ Segment，也不要把中文“段”全都当一个概念]
+教材中“代码段/数据段”“分段存储管理的 segment”“ELF program segment”会共享“段”字，但 Owner 和判据不同。看到 ELF 时先问\kw{这是链接器的 section 组织，还是 loader 的 program segment 映射？}；看到内存管理时再问是否讨论 OS-04 的 segmentation 地址机制。
+\end{warn}
+
+\begin{center}
+\begin{tikzpicture}[>=Stealth,node distance=8mm and 9mm,scale=.90,transform shape]
+\tikzstyle{viewnode}=[draw,rounded corners=1.5mm,align=center,text width=42mm,minimum height=12mm,inner sep=3pt]
+\tikzstyle{vlabel}=[font=\scriptsize\bfseries,align=left,text width=24mm]
+
+\node[vlabel] (l1) {链接视图\\Section};
+\node[viewnode,fill=softblue,right=5mm of l1] (secx) {\code{.text} 等可执行节\\按节保存代码与链接信息};
+\node[viewnode,fill=softblue,right=8mm of secx] (secw) {\code{.data/.bss} 等可写节\\\code{.bss} 只需大小与零填充语义};
+\node[viewnode,fill=softgray,right=8mm of secw] (secm) {\code{.symtab/.rela*} 等\\链接元数据};
+
+\node[vlabel,below=11mm of l1] (l2) {装入视图\\Program Segment};
+\node[viewnode,fill=softorange,right=5mm of l2] (segx) {可装入段（示例 R--X）\\Program Header 描述文件范围与内存范围};
+\node[viewnode,fill=softorange,right=8mm of segx] (segw) {可装入段（示例 RW--）\\\code{p\_memsz} 可大于 \code{p\_filesz}};
+\node[viewnode,fill=softgray,right=8mm of segw] (segm) {非装入元数据\\不要求进入进程运行映像};
+
+\node[vlabel,below=11mm of l2] (l3) {运行视图\\进程 VA};
+\node[viewnode,fill=softgreen,right=5mm of l3] (vax) {可执行/只读 VA 区域\\权限由映射属性决定};
+\node[viewnode,fill=softgreen,right=8mm of vax] (vaw) {可写 VA 区域\\文件内容 + BSS 零填充范围};
+\node[viewnode,fill=softgray,right=8mm of vaw] (vam) {通常没有对应的\\运行时 VA 映射};
+
+\draw[->,thick,deepblue] (secx)--node[right,font=\scriptsize]{按装入属性组合} (segx);
+\draw[->,thick,deepblue] (secw)--node[right,font=\scriptsize]{按装入属性组合} (segw);
+\draw[->,thick,black!55] (secm)--(segm);
+\draw[->,thick,deepblue] (segx)--node[right,font=\scriptsize]{建立映射} (vax);
+\draw[->,thick,deepblue] (segw)--node[right,font=\scriptsize]{建立映射} (vaw);
+\draw[->,thick,black!55] (segm)--(vam);
+
+\node[draw=deepred,dashed,rounded corners,fit=(vax)(vaw),inner sep=5pt,
+      label={[font=\scriptsize\color{deepred}]below:{VA 区域已建立 $\neq$ 所有页面已经驻留；具体 Page/Frame 生命周期转交 OS-04}}] {};
+\end{tikzpicture}
+\end{center}
+
+\begin{method}[怎样一步一步读这张图？]
+不要从左到右扫名词，按下面三步读：
+\begin{enumerate}
+  \item \kw{先看第一行：}这是“文件里怎样组织内容”。\code{.text/.data/.bss/.symtab} 等名字首先属于静态文件组织。它们回答“这是什么内容”，不是“现在已经在 RAM 的哪里”。
+  \item \kw{再看第二行：}Loader 不按 section 名逐个搬运，而是按照 program header 给出的 segment 描述决定“文件哪些范围要映射、映射后内存多大、权限是什么”。因此多个 section 可以被组合进同一个可装入 segment。
+  \item \kw{最后看第三行：}segment 被用来建立进程的 VA 区域。到这里才进入某次执行的地址空间，但仍然只说明“这个 VA 范围合法、由什么对象支撑、具有什么权限”，\textbf{不表示其中每一页都已经在物理内存。}
+\end{enumerate}
+
+因此这张图真正要记住的是：
+\[
+\boxed{\text{文件组织}\;\neq\;\text{装入组织}\;\neq\;\text{当前物理驻留状态}}
+\]
+
+上图只是关系示意，不承诺任何具体 ELF 都恰好只有两个 \code{PT\_LOAD}，也不承诺某个 section 永远属于固定权限的 segment。
+\end{method}
+
+\begin{method}[用 BSS 检查你是不是真的看懂了]
+假设程序中有：
+\[
+\code{int counter;} 
+\]
+它没有显式初值。目标文件/可执行文件没有必要真的存一大片 0，只需要记录“运行时这里需要这么多字节，并且初始为 0”。因此可能出现：\kw{文件中占用很少，但进程 VA 中必须留出实际范围}。这正是 \code{p\_memsz > p\_filesz} 一类现象背后的直觉。
+
+如果看到 \code{.bss} 就说“它已经作为一块全 0 数据存进可执行文件并被整块搬进 RAM”，说明仍然把\kw{文件布局、VA 布局、物理驻留}混在了一起。
+\end{method}
 
 \subsection{静态链接与动态链接：绑定发生在什么时候？}
 
@@ -497,8 +589,10 @@ ELF 的动态链接模型进一步体现了这一点：可执行文件可指定 
 
 408 传统模型中的装入方式也不要孤立背。统一问：
 \[
-\boxed{\text{程序地址在什么时候被绑定到最终运行位置？}}
+\boxed{\text{程序中地址相关引用在什么时候获得足以执行的运行位置解释？}}
 \]
+
+这里的“地址绑定”是教材抽象，不应理解成现代分页系统必须把每个 VA 提前绑定到永久 PA。它想比较的是：地址修补工作是在程序生成前就结束、在装入时一次性完成，还是保留到运行时由硬件翻译。
 
 \begin{center}
 \small
@@ -524,16 +618,123 @@ ELF 的动态链接模型进一步体现了这一点：可执行文件可指定 
 
 \subsection{装入不是“把整个程序文件一次性复制进物理内存”}
 
-这是一个非常重要的边界。
-
-ELF 规范把 executable/shared object 看作程序的\kw{静态表示}，执行时由系统据此创建\kw{动态的 process image}。现代系统可以先建立映射关系，等访问发生时再读取相应物理页。
+这是一个非常重要的边界。ELF 规范把 executable/shared object 看作程序的\kw{静态表示}，执行时系统依据 program headers 创建\kw{动态 process image}。现代系统可以先建立 VA range 与 executable/shared object 的映射关系，具体物理页等真正访问时才通过 demand paging 获得。
 
 因此：
 \[
 \boxed{\text{Load / Map a Program}\neq\text{All Pages Immediately Resident}}
 \]
 
+Loader/\code{exec} 路径真正需要建立的是\kw{运行资格}：新的地址空间描述、映射、权限、初始用户栈/参数以及入口状态。内核必须参与建立受保护映射；但现代动态链接器本身也可以作为用户空间程序参与依赖解析和映射请求，所以不要把“loader”想成一个永远完全位于内核中的单一函数。
+
 这句话只在 OS-00 建立概念边界；\kw{为什么可以延迟、页表如何表示、Page Fault 如何修复}全部属于 OS-04。
+
+\subsection{把所有“地址”排成一条生命周期：408 最重要的统一图}
+
+这一部分不要从“逻辑地址、虚拟地址、物理地址”三个定义开始背。先问一个更具体的问题：\kw{如果 \code{main.c} 中调用了另一个文件里的 \code{foo()}，CPU 最后到底怎样找到 \code{foo} 的那条机器指令？}
+
+答案不是某一步突然“算出最终地址”，而是每一阶段补上一部分之前不知道的信息：
+\begin{enumerate}
+  \item \kw{编译/汇编：}知道这里有一次对 \code{foo} 的引用，也知道这条机器指令中哪个字段以后可能要修；但如果 \code{foo} 定义在另一个目标文件里，此时通常还不知道它在最终程序中的位置。
+  \item \kw{链接：}把多个目标文件放在一起后，终于知道“这个 \code{foo} 引用绑定到哪个定义”，也知道各模块在整个程序里的布局，于是可以计算相对位移、地址值，或者留下动态链接阶段继续处理的重定位信息。
+  \item \kw{装入：}可执行文件现在要真正运行。OS/Loader 根据 program headers 给这次进程建立 VA 区域、权限、入口 PC、栈等。此时谈的是\textbf{这一次执行看到的虚拟地址空间}。
+  \item \kw{真正取指：}CPU 用某个 VA 取 \code{foo} 的机器指令时，MMU 才根据当前页表把这个 VA 翻译成当前 PA；若页面尚未驻留，还可能先发生 Page Fault，再由 OS 补齐映射后重试。
+\end{enumerate}
+
+所以真正的主线不是“一个地址被不断改写”，而是：
+\[
+\boxed{\text{引用关系逐步获得更多上下文，直到一次真实访存能够落到物理内存}}
+\]
+
+稳定地按信息成熟度追踪：
+\[
+\boxed{
+\begin{aligned}
+\text{source-level name / object}
+&\xrightarrow{\text{compiler / assembler}}
+\text{module-relative symbol + relocation need}\\
+&\xrightarrow{\text{linker}}
+\text{program-wide virtual/logical layout}\\
+&\xrightarrow{\text{loader / OS}}
+\text{process address-space mappings + entry state}\\
+&\xrightarrow{\text{MMU at access time}}
+\text{current physical address / frame}.
+\end{aligned}}
+\]
+
+这不是说每种机器都恰好产生四种数值不同的地址，而是规定\kw{谁在什么时候知道什么}：
+\begin{itemize}
+  \item 编译/汇编阶段可以生成位置无关引用、模块内偏移或 relocation placeholder，但通常不知道其他模块最终布局；
+  \item 链接器拥有多个目标文件的布局，因此能形成完整程序级地址关系并修补需要的引用；
+  \item Loader/OS 依据 executable 的装入描述建立某次执行的虚拟地址空间，动态库还可能在这一阶段继续完成依赖绑定；
+  \item MMU 只在真正执行取指/访存时，把当前 VA 按页表等运行时状态翻译成 PA。物理页框属于运行时资源，编译器和普通静态链接器不能预先替 OS 决定。
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[>=Stealth,node distance=7mm and 7mm,scale=.92,transform shape]
+\tikzstyle{addrstage}=[draw=deepblue,rounded corners=1.5mm,fill=softblue,align=center,text width=70mm,minimum height=13mm,inner sep=3pt]
+\tikzstyle{ownerbox}=[draw=black!45,rounded corners,fill=softgray,align=center,text width=25mm,minimum height=10mm,font=\small]
+\tikzstyle{addrnote}=[draw=deeporange,dashed,rounded corners,fill=softorange,align=center,text width=31mm,minimum height=10mm,font=\small]
+
+\node[addrstage] (s0) {源级对象/名字\\例如 \code{foo}、\code{x}、\code{a[i]}；此时首先是\textbf{语义对象}，还不是最终机器地址};
+\node[addrstage,below=of s0] (s1) {可重定位目标文件\\节内位置/偏移 + 符号表 + 重定位项；机器码中可保留待修补字段};
+\node[addrstage,below=of s1] (s2) {链接后的可执行/共享对象\\程序级布局已经形成；引用可成为 VA、PC-relative displacement 或继续保留动态重定位};
+\node[addrstage,below=of s2] (s3) {某次执行的进程地址空间\\Loader/OS 依据 program headers 建立 VA 区域、权限、入口 PC 与初始栈};
+\node[addrstage,below=of s3,fill=softgreen] (s4) {真正取指/访存时\\当前 VA \,$\xrightarrow{\text{MMU + PTE}}$\, 当前 PA / Page Frame};
+
+\node[ownerbox,left=of s1] (o1) {编译器\\汇编器};
+\node[ownerbox,left=of s2] (o2) {链接器};
+\node[ownerbox,left=of s3] (o3) {装入路径\\OS};
+\node[ownerbox,left=of s4] (o4) {MMU + OS\\运行时状态};
+
+\node[addrnote,right=of s1] (n1) {通常还不知道\\跨模块最终位置};
+\node[addrnote,right=of s2] (n2) {程序级地址关系\\\textbf{$\neq$ 物理页框}};
+\node[addrnote,right=of s3] (n3) {建立 VA 映射资格\\\textbf{$\neq$ 全部驻留}};
+\node[addrnote,right=of s4] (n4) {PA 是这次访问沿\\当前页表得到的结果};
+
+\draw[->,thick,deepblue] (s0)--node[right,font=\scriptsize]{编译 / 汇编} (s1);
+\draw[->,thick,deepblue] (s1)--node[right,font=\scriptsize]{符号解析 + 重定位} (s2);
+\draw[->,thick,deepblue] (s2)--node[right,font=\scriptsize]{装入 / 映射} (s3);
+\draw[->,thick,deepblue] (s3)--node[right,font=\scriptsize]{访问发生} (s4);
+\draw[-,black!45] (o1)--(s1); \draw[-,black!45] (o2)--(s2); \draw[-,black!45] (o3)--(s3); \draw[-,black!45] (o4)--(s4);
+\draw[-,deeporange,dashed] (s1)--(n1); \draw[-,deeporange,dashed] (s2)--(n2); \draw[-,deeporange,dashed] (s3)--(n3); \draw[-,deeporange,dashed] (s4)--(n4);
+\end{tikzpicture}
+\end{center}
+
+\begin{method}[怎样一步一步读地址生命周期图？]
+每经过一层，只回答三个问题：\kw{现在已经知道什么？还不知道什么？下一层为什么有必要？}
+\begin{itemize}
+  \item \kw{目标文件层：}已经有机器码、符号和“哪里以后要修”的记录；还不知道完整跨模块布局，所以需要 Linker。
+  \item \kw{可执行文件层：}已经有程序级布局；还没有某次运行对应的进程地址空间，所以需要 Loader/OS。
+  \item \kw{进程 VA 层：}已经知道这个进程可以使用哪些 VA 范围；还不能由此推出某一 VA 此刻对应哪个物理页框，所以需要运行时地址翻译。
+  \item \kw{PA 层：}只针对这一次实际取指/访存，结合当前页表得到物理位置。页表状态以后可以改变，所以 PA 不是“编译时永久写死的地址”。
+\end{itemize}
+\end{method}
+
+\begin{warn}[不要寻找一个贯穿全生命周期的“同一个地址数值”]
+真正稳定的不变量是\kw{同一个程序对象/引用的语义关系被逐步具体化}，而不是某个数值从编译一路原样传到物理内存。位置无关代码、地址空间布局随机化、动态链接、分页都会让具体数值或绑定时机变化；408 做题应追踪“当前处于哪一层、当前谁有足够信息、当前输出的地址属于哪个地址空间”。
+\end{warn}
+
+\begin{method}[用一个 \code{foo()} 调用完整跑一遍]
+假设 \code{main.o} 中有一条调用 \code{foo()} 的指令，而 \code{foo} 定义在 \code{util.o}。
+\begin{enumerate}
+  \item 汇编 \code{main.o} 时，可以留下“这里引用符号 \code{foo}，以后按某种 relocation type 修这个字段”的记录；
+  \item Linker 找到 \code{util.o} 中 \code{foo} 的定义，安排两边布局，然后把调用字段修成正确的程序级地址/相对位移，或保留给动态链接器继续处理；
+  \item 程序执行时，Loader/OS 把包含这段代码的可执行 segment 映射到进程的某个 VA 区域；
+  \item PC 最终来到调用目标附近，CPU 以 VA 取指；MMU 查询 TLB/页表得到 PA；若该代码页当前不在内存，则先触发缺页，OS 把页面准备好后再重试同一次取指。
+\end{enumerate}
+
+这四步分别回答四个不同问题：\kw{引用谁？程序里放哪？这次进程看到哪？此刻 RAM 在哪？} 一旦把四问分开，链接重定位和运行时地址翻译就不容易再混。
+\end{method}
+
+\begin{exam}[四个高频问法分别找谁]
+\begin{itemize}
+  \item “\code{foo} 到底指哪个函数？” $\Rightarrow$ Symbol Resolution；
+  \item “这条 call/load 中的地址字段最终填什么？” $\Rightarrow$ Relocation；
+  \item “这个可执行文件怎样形成进程的 text/data/stack/mapping？” $\Rightarrow$ Loading / Process Image；
+  \item “CPU 此刻访问 VA=... 最终落到哪个页框？” $\Rightarrow$ OS-04 / CO-07 的 Address Translation。
+\end{itemize}
+\end{exam}
 
 \subsection{运行时内存映像：知道有哪些区域，但不要在这里讲页表}
 

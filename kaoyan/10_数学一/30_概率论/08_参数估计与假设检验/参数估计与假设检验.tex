@@ -29,6 +29,17 @@
 \definecolor{warn}{RGB}{136,68,63}
 \definecolor{purple}{RGB}{87,72,116}
 
+% ── 双主题图解语义色彩（LaTeX 打印高对比白底）──
+\definecolor{themebg}{HTML}{FFFFFF}
+\definecolor{themefg}{HTML}{111111}
+\definecolor{themegray}{HTML}{666666}
+\definecolor{themecurve}{HTML}{1D63B8}
+\definecolor{themealert}{HTML}{C53030}
+\definecolor{themeamber}{HTML}{B86E00}
+
+\newenvironment{handbookdiagram}{\par\vspace{0.4em}\noindent\begin{center}}{\end{center}\vspace{0.4em}}
+\newcommand{\diagramcaption}[1]{\par\vspace{0.3em}{\small\textbf{#1}}}
+
 \hypersetup{
   colorlinks=true,
   linkcolor=deep,
@@ -235,6 +246,11 @@ T=\frac{N_2+N_3}{n},\qquad E(T)=\theta,\qquad
 L(\theta)=\theta^{-n}I\{\theta\ge X_{(n)}\},\qquad \widehat\theta_{MLE}=X_{(n)}.
 \]
 对 $U(a,b)$，可行域要求 $a\le X_{(1)}$、$b\ge X_{(n)}$；似然与 $(b-a)^{-n}$ 成正比，若参数空间允许，MLE 通常在样本极值处取得：$\widehat a=X_{(1)},\widehat b=X_{(n)}$。对 $U(\theta,2\theta)$，可行域为 $X_{(n)}/2\le\theta\le X_{(1)}$，最大化 $\theta^{-n}$ 需选择可行域左端 $\widehat\theta=X_{(n)}/2$。这些例子共同说明：先求可行域，再判断边界方向。
+
+\begin{handbookdiagram}
+\input{assets/src/v18_likelihood_boundary_mle_body.tikz}
+\diagramcaption{图 8.1\quad 似然函数优化与截断边界 MLE（V18）：固定支撑得分方程与含参支撑可行域边界}
+\end{handbookdiagram}
 
 \begin{examplebox}{2015 真题：$U(\theta,1)$ 的矩估计与边界 MLE}
 若 $X_i\overset{\mathrm{i.i.d.}}\sim U(\theta,1)$，则
@@ -485,6 +501,11 @@ Q_1=\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1),
 \]
 这里沿用 Topic 07 的“上 $\alpha$ 分位点”记号。由于卡方分布右偏，上下分位点位置不能按正态对称习惯书写。标准差区间是对方差区间逐端取平方根。
 
+\begin{handbookdiagram}
+\input{assets/src/v19_pivot_asymmetric_inversion_body.tikz}
+\diagramcaption{图 8.2\quad 枢轴量非对称反演（V19）：卡方方差置信区间与分位点倒数交叉换位}
+\end{handbookdiagram}
+
 \subsection{双总体、配对与单侧界}
 
 两独立正态总体均值差在方差已知时使用 $Z$；等方差未知时使用合并方差 $t$；方差不等时用 Welch 近似；配对数据先对差值构造单样本区间。方差比使用
@@ -569,6 +590,11 @@ Q_1=\frac{(n-1)S^2}{\sigma_0^2}\sim\chi^2(n-1)
 
 对应 $p$ 值：右尾为 $P_{H_0}(T\ge t_{obs})$，左尾为 $P_{H_0}(T\le t_{obs})$，双尾对称统计量常为 $2\min\{P_{H_0}(T\ge t_{obs}),P_{H_0}(T\le t_{obs})\}$。非对称分布（如 $\chi^2,F$）不能机械乘二，应按检验的极端集合定义。
 
+\begin{handbookdiagram}
+\input{assets/src/v20_hypothesis_testing_rejection_regions_body.tikz}
+\diagramcaption{图 8.3\quad 假设检验单双尾拒绝域（V20）：备择方向驱动的临界值分割与概率分配}
+\end{handbookdiagram}
+
 \begin{examplebox}{2018 真题：显著性水平改变时先比较拒绝域}
 对双侧检验 $H_0:\mu=\mu_0$、$H_1:\mu\ne\mu_0$，令 $T$ 为已经确定方向的对称检验统计量。水平 $0.05$ 与 $0.01$ 的拒绝域分别为
 \[
@@ -585,6 +611,11 @@ W_{.01}=\{\lvert T\rvert>c_{.01}\},\qquad c_{.01}>c_{.05}.
 \pi(\mu_1)=1-\Phi\left(z_\alpha-\frac{\sqrt n(\mu_1-\mu_0)}\sigma\right).
 \]
 因此样本量、效应大小和噪声共同决定功效；“显著”不等于效应具有实际重要性。近似样本量计算应先指定最小有意义差异 $\delta$、显著性水平 $\alpha$ 和目标功效 $1-\beta$，再使用正态分位点，不能只因题目给出 $n$ 大就声称功效高。
+
+\begin{handbookdiagram}
+\input{assets/src/v21_two_types_of_errors_and_power_body.tikz}
+\diagramcaption{图 8.4\quad 两类错误与功效世界（V21）：$H_0$ 弃真校准与 $H_1$ 取伪/功效及样本量双降机制}
+\end{handbookdiagram}
 
 \begin{examplebox}{2021 真题：给定拒绝域后反推第二类错误}
 设 $X_i\sim N(\mu,4)$，$n=16$，右侧检验的拒绝域为 $W=\{\bar X\ge 11\}$。当真实值为 $\mu=11.5$ 时，第二类错误是“未进入拒绝域”，而不是在 $H_0$ 下重新计算：
@@ -608,6 +639,11 @@ W_{.01}=\{\lvert T\rvert>c_{.01}\},\qquad c_{.01}>c_{.05}.
 \section{第六层：区间—检验对偶与进阶检验接口}
 
 双侧 $1-\alpha$ 置信区间包含 $\theta_0$，与显著性水平 $\alpha$ 的双侧检验“不拒绝 $H_0:\theta=\theta_0$”对偶；单侧区间同样对应单侧检验。对偶关系来自同一枢轴量和同一尾部概率，不意味着任何任意区间都对应同一检验。
+
+\begin{handbookdiagram}
+\input{assets/src/v22_ci_test_duality_body.tikz}
+\diagramcaption{图 8.5\quad 置信区间与假设检验对偶（V22）：未被拒绝的候选原假设集合构成置信区间}
+\end{handbookdiagram}
 
 以下属于进阶接口：Neyman--Pearson 引理在简单 $H_0$ 对简单 $H_1$ 下，以似然比阈值构造给定尺寸下功效最大的检验；广义似然比把复合假设分别最大化似然。它们用于解释检验规则为何可以谈“最强”，不是数学一基础检验题的额外必做步骤，也不能取代具体分布下的拒绝域校准。
 

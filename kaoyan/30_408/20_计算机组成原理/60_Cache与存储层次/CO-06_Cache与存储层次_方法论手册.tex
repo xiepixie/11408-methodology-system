@@ -1,7 +1,7 @@
 \documentclass[UTF8,fontset=fandol,11pt,a4paper]{ctexart}
 \usepackage[a4paper,margin=1.75cm,headheight=15pt]{geometry}
 \usepackage{amsmath,amssymb,mathtools,booktabs,tabularx,array,enumitem}
-\usepackage[most]{tcolorbox}\usepackage{tikz}\usetikzlibrary{arrows.meta,positioning}
+\usepackage[most]{tcolorbox}\usepackage{tikz}\usetikzlibrary{arrows.meta,positioning,calc}
 \usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
@@ -9,275 +9,316 @@
 \definecolor{deep}{RGB}{38,58,72}\definecolor{soft}{RGB}{244,247,248}\definecolor{greenish}{RGB}{52,91,74}\definecolor{warnc}{RGB}{136,61,58}\definecolor{purple}{RGB}{84,72,112}\definecolor{rulegray}{RGB}{110,116,120}
 \hypersetup{colorlinks=true,linkcolor=deep,urlcolor=purple,pdftitle={CO-06 Cache 与存储层次}}
 \pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{408 · 计算机组成原理 CO-06}}\rhead{\small\color{deep}Locality · Identity · State · Cost}\cfoot{\small 第 \thepage\ 页 / 共 \pageref{LastPage} 页}\renewcommand{\headrulewidth}{0.4pt}
-\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warnc,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
+\newtcolorbox{methodbox}[1]{breakable,colback=white,colframe=greenish,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warnc,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
+\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
 \newcommand{\kw}[1]{\textbf{\color{deep}#1}}\newcommand{\code}[1]{\texttt{#1}}
-\tikzset{co/.style={draw=deep,rounded corners=1.5mm,text width=2.7cm,minimum height=0.9cm,align=center,fill=soft,font=\small,inner sep=3pt},state/.style={co,double,double distance=1.2pt,fill=white},flow/.style={-{Latex[length=2mm]},thick,draw=deep},ref/.style={-{Latex[length=2mm]},dashed,draw=rulegray}}
-\title{\vspace{-1.1cm}\textbf{Cache 与存储层次}\\[0.4em]\large 怎样维护一个正确的高速副本}
+\tikzset{co/.style={draw=deep,rounded corners=1.5mm,text width=2.45cm,minimum height=0.95cm,align=center,fill=soft,font=\small,inner sep=3pt},state/.style={co,double,double distance=1.2pt,fill=white},flow/.style={-{Latex[length=2mm]},thick,draw=deep},fault/.style={co,draw=warnc,fill=white},ref/.style={-{Latex[length=2mm]},dashed,draw=rulegray}}
+\title{\vspace{-1.1cm}\textbf{Cache 与存储层次}\\[0.4em]\large 怎样维护一个正确的高速副本，并把命中/缺失变成可靠的性能模型}
 \author{408 · 计算机组成原理 Topic CO-06}\date{}
+
 \begin{document}\maketitle
-\begin{corebox}{母问题：小而快的副本怎样证明“它就是那个数据”？}
-Cache 不是小型主存，而是带身份、有效性、修改状态和替换策略的副本系统：
+
+\begin{corebox}{母问题：小而快的副本怎样既保证“取对数据”，又真正降低平均访问成本？}
+Cache 的知识不是若干并列名词，而是一条生成链：
 \[
-\boxed{\text{Locality}\to\text{Block Transfer}\to\text{Placement}\to\text{Tag / Valid}\to\text{Offset}\to\text{Replacement / Write State}\to\text{AMAT}}
+\boxed{
+\begin{aligned}
+\text{Locality}
+&\to\text{Block Transfer}\to\text{Placement}\\
+&\to\text{Identity / State}\to\text{Hit or Miss}\\
+&\to\text{Replacement / Write}\to\text{Hierarchy Cost}
+\end{aligned}}
 \]
-每次访问既要找到候选位置，又要证明候选行保存的是请求块，并决定副本修改何时向下传播。
+这些箭头表示\textbf{解释依赖}：局部性说明为什么值得保存副本；块搬运决定副本粒度；映射给出候选位置；tag/valid 等状态证明身份；只有状态轨迹确定后，命中率与 AMAT 才有可靠输入。
 \end{corebox}
-\begin{methodbox}{本册学习范围}
+
+\begin{methodbox}{本册负责什么}
 \begin{itemize}
-\item 本册解释 Cache 为什么能加速访问、如何由地址找到候选行、怎样用标签确认身份，以及缺失时如何取回和替换数据。
-\item 本册重点解释局部性、块、组、标签、有效位、脏位、相联度、替换、写策略、3C 缺失和平均访存时间。
-\item 文件缓存、页表和 DMA 只作为可能的下一级或并行请求出现；Cache 的副本状态和正确性先在本册内闭合。
-\end{itemize}\end{methodbox}
-\section{术语先行：Cache 不是“更快的主存”这么简单}
-\begin{methodbox}{本册的十个关键词}
-\begin{itemize}
-\item \kw{Cache：}容量较小但更快的存储副本；它保存下一级存储中部分数据的拷贝。
-\item \kw{块/Cache line：}Cache 与下一级之间一次搬运的数据单位；块内偏移决定取哪一个字节。
-\item \kw{组 set：}若干候选 Cache 行的集合；组索引决定访问哪一组。
-\item \kw{标签 tag：}用来证明候选行对应哪个主存块的高位地址。
-\item \kw{有效位 valid：}说明该行是否已经装入可用数据；无效行即使标签相同也不能命中。
-\item \kw{脏位 dirty：}说明 Cache 行是否被修改而尚未写回下一级。
-\item \kw{相联度：}每个组包含的行数；直接映射为 1 路，全相联把所有行看成一组。
-\item \kw{命中/缺失 hit/miss：}命中表示身份和有效性都通过；缺失表示需要向下一级请求或先处理替换。
-\item \kw{3C 缺失：}容量缺失、冲突缺失和强制缺失三种反事实分类。
-\item \kw{AMAT：}平均访存时间，通常等于命中时间加“缺失率乘缺失代价”。
-\end{itemize}\end{methodbox}
+\item \kw{Own：}block/line、set/way、tag/index/offset、hit/miss、3C、replacement、write-through/write-back、write-allocate/no-write-allocate、Cache 物理位数、local/global miss rate 与 AMAT。
+\item \kw{Use：}CO-05 提供下一级主存/总线服务时间；CO-07 提供翻译后的地址与权限；CO-04 决定 miss 是否真的形成流水线 stall。
+\item \kw{Stop Boundary：}页表、TLB page walk 与 fault 修复不在本册重新定义；OS Page Cache 也不是 CPU Cache 的同一个状态机。
+\end{itemize}
+\end{methodbox}
+
 \tableofcontents\newpage
 
-\section{为什么“按地址直接找数据”不够}
-Cache 容量小于下一级，多个主存块必须复用有限行。因此访问必须依次回答：允许放在哪？当前行属于哪个块？该块是否有效？块内取哪一字节？若被修改，谁拥有最新副本？这五问生成 placement、tag、valid、offset、dirty 和 replacement。
+\section{为什么需要层次：单一介质同时满足不了速度、容量与成本}
+存储系统同时追求更低延迟、更大容量和更低每位成本。寄存器、SRAM Cache、主存（408 中通常由 DRAM 实现）与后备存储在这些轴上取舍不同，因此系统利用局部性把近期更可能使用的信息保留在更近的层。
 
-局部性是收益来源而非正确性证明：时间局部性预测近期重访，空间局部性预测邻近访问；预测失败仍必须通过 tag/valid 维持正确性。
+\kw{时间局部性}表示近期访问对象可能再次被访问；\kw{空间局部性}表示附近地址可能很快被访问。局部性只回答“为什么缓存可能有收益”，不证明某次访问一定命中。实际命中率还取决于块大小、容量、映射、相联度、替换策略和访问序列。
 
-\section{地址三分与组织}
-设地址宽度为 $m$ 位，数据容量为 $C$ 字节，块大小为 $B$ 字节，相联度为 $E$，则组数
-\[
-S=\frac{C}{B\times E},\quad b=\log_2B,\quad s=\log_2S,\quad t=m-s-b.
-\]
-地址字段为 `tag | set index | block offset`。若按字编址或 $B$ 用字表示，先统一单位。
+寄存器位于存储阶梯最上方，但由指令显式命名，不经过 Cache 式 placement/tag/replacement，因此不能机械当作又一级 Cache。
 
-\begin{center}\small\begin{tabularx}{\linewidth}{L{2.1cm}C{1.5cm}Y Y}\toprule
-组织 & 候选位置 & 优点 & 代价\\\midrule
-直接映射 & 1 行 & 命中路径短、无需替换选择 & 冲突风险高\\
-$E$ 路组相联 & 同组 $E$ 行 & 成本与冲突折中 & $E$ 个 tag 比较器和选择器\\
-全相联 & 任意行 & 映射冲突最少 & 全部 tag 并行比较、替换成本高\\
-\bottomrule\end{tabularx}\end{center}
-
-\section{Hit/Miss 生命周期}
-\subsection{Read hit}
-索引定位候选组，比较 `valid=1` 且 tag 匹配的行，再由 offset 选择块内字节/字。命中只证明副本身份和有效性，不表示下一级没有其他副本。
-
-\subsection{Read miss}
-\[
-\text{choose invalid/victim}\to\text{write back if dirty}\to\text{fetch block}\to\text{fill tag/data/state}\to\text{retry request}.
-\]
-顺序流水线可能 stall；能否继续执行由 CO-04 和实现的非阻塞结构决定。
-
-\subsection{3C 模型}
-compulsory 是第一次访问；capacity 是理想全相联同容量也装不下；conflict 是有限映射额外造成的互逐。分类必须绑定块大小、容量、相联度和访问序列，不能把所有 miss 都叫“Cache 太小”。
-
-\section{写策略是两条独立轴}
-Hit 时：write-through 同时更新下一级，流量大但一致关系直接；write-back 只更新 Cache 并设 dirty，逐出时才写回，流量较小但状态复杂。Miss 时：write-allocate 先取块再写入；no-write-allocate 绕过 Cache 写下一级。write-back 不自动推出 write-allocate。
-
-\begin{methodbox}{写缓冲：用有限队列吸收写直达的短时突发}
-写直达若每次都要求 CPU 等下一级真正完成，前端速度会被慢一级直接拖住。经典写缓冲器把\textbf{待写请求}先放入一个小型 FIFO，让 CPU/Cache 在缓冲尚未满时继续执行，再由下一级异步排空。
-
-但它只把``逐次等待''改成``队列化等待''，没有创造下一级带宽。若平均写入速率持续高于排空速率，写缓冲最终仍会填满并反压 CPU。因而必须区分：
-\[
-\boxed{\text{短时 burst 可由 buffer 吸收}\quad\neq\quad\text{长期服务率瓶颈被消除}}.
-\]
-
-写回策略下被替换出来的 dirty line 也可能暂存在写回缓冲中；它与写直达常见的 write buffer 都体现``先排队、后慢速提交''，但保存对象和触发事件不同，不能只凭名字互换。
+\section{对象与状态：先知道 Cache 到底保存什么}
+\begin{methodbox}{核心对象}
+\begin{itemize}
+\item \kw{Block / Cache line：}Cache 与下一级之间搬运的数据粒度；line 是 Cache 中承载一个 block 副本的位置。
+\item \kw{Set / Way：}set 是一次查找的候选集合；way 是组内的一条候选 line。
+\item \kw{Tag：}证明候选 line 对应哪个下一级 block 的身份字段。
+\item \kw{Valid：}说明当前 line 是否包含可用副本；tag 相同但 valid=0 仍不能命中。
+\item \kw{Dirty：}write-back 下说明 Cache 副本比下一级更新，逐出前可能需要写回。
+\item \kw{Replacement state：}组内 victim 选择所需的历史/近似状态；具体编码依实现与题设。
+\item \kw{Pending / ready：}综合时序题中，miss 请求是否在途、返回数据何时可用；是否需要这类状态由题设决定。
+\end{itemize}
 \end{methodbox}
 
-\section{替换与状态成本}
-直接映射没有选择；组相联/全相联需在候选中选 victim，可用 FIFO、Random、近似/精确 LRU。精确 LRU 的元数据和更新逻辑随相联度增长，不能笼统断言“每行只需 $\log_2E$ 位”。增大相联度降低冲突，可能增加 hit time、功耗和比较器数量。
-
-\section{贯穿母例：两个块反复驱逐}
-对直接映射 Cache，将地址除以 $B$ 得 block number，再算 $set=block\bmod S$。若两个 block 的 set 相同而 tag 不同，交替访问会互相驱逐，即使其他组为空。提高相联度让它们在同组共存，但需要额外比较与 victim 选择。
-
-\begin{warnbox}{典型错误路径}
-只看 tag 相同就判 hit，漏了 valid；只提高 Cache 容量就声称冲突一定消失；只看 hit rate 就宣称更快，漏了更长 hit time 或更大 miss penalty。
-\end{warnbox}
-
-\section{AMAT 与物理位数}
-单级近似：
+\subsection{地址字段：定位候选与定位块内字节}
+设主存地址宽度为 $A$ 位，Cache 数据容量为 $C$ 字节，块大小为 $B=2^b$ 字节，相联度为 $E$，则组数
 \[
-AMAT=T_{hit}+MR\times MP.
+S=\frac{C}{B E},\qquad s=\log_2S,
 \]
-多级时 miss penalty 可能包含下一级 AMAT、写回脏块和总线占用。使用公式必须声明 hit time 是否包含并行 tag/data、MP 是额外时间、写回成本是否计入、stall 是否可重叠。
-
-每行物理位数至少为 data、tag、valid，write-back 再加 dirty，替换/ECC 元数据按题设另算：
-\[
-C_{physical}=N_{lines}(data+tag+valid+dirty+metadata).
-\]
-“Cache 容量”若只指数据区，不能直接拿物理总位数替代。
-
-\section{地址翻译接口}
-PIPT、VIPT、VIVT 是 Cache 使用 VA/PA 与 TLB 的组织选择。VIPT 能并行的关键是索引位不依赖被翻译改变的 VPN 位；具体约束由页内偏移、块大小和相联度推出，不背固定上限。Cache hit 也不等于 TLB hit。
-
-\section{五列概念边界}
-\begin{center}\small\begin{tabularx}{\linewidth}{L{1.7cm}C{0.35cm}L{1.7cm}Y Y}\toprule
-概念 A & $\neq$ & 概念 B & 真正区别与题面信号 & 混淆后果\\\midrule
-Cache & $\neq$ & 主存 & 小容量带身份副本 vs 原始层级存储 & 把 tag/valid 当普通地址位\\
-Tag & $\neq$ & Index & 身份证明 vs 候选组定位 & 地址三分错位\\
-Valid & $\neq$ & Dirty & 行内容是否可用 vs 是否比下一级更新 & miss/写回条件错\\
-Write-through & $\neq$ & Write-allocate & hit 更新传播轴 vs miss 是否取块轴 & 从一个策略推另一个\\
-Hit rate & $\neq$ & Total time & 命中比例 vs hit/miss 成本综合 & 只按命中率判快慢\\
-Cache miss & $\neq$ & TLB miss & 数据副本未命中 vs 翻译副本未命中 & 把重试处理者写错\\
-\bottomrule\end{tabularx}\end{center}
-
-\section{做题控制协议}
-\begin{enumerate}
-\item 统一编址单位、主存地址宽度、数据容量、块大小和相联度；
-\item 算 line/set/offset/index/tag，并把访问转为 `(block,set,tag,offset)`；
-\item 逐次推进 valid/tag/dirty/replacement 状态；
-\item miss 写 victim、write-back、fill、策略和 retry；
-\item AMAT 先声明成本模型，避免重复计算同一 penalty；
-\item 用边界地址、冲突地址和替换后重访独立验证。
-\end{enumerate}
-\begin{methodbox}{压缩成第一动作}\
-看到 Cache 题，先问：\kw{index 找到哪些候选？valid+tag 如何证明身份？offset 取哪一段？miss 时谁被替换、谁拥有最新数据？}
-\end{methodbox}
-
-\section{本册与存储层次的接口}
-\begin{corebox}{从请求地址到副本状态}
-本册回答“目标块现在在哪个副本、怎样证明身份、缺失后向哪一级请求”，并给出填充、停顿和数据 ready 的时刻。下一级存储只需提供块和服务时间；地址翻译、流水线重叠等因素再作为题设条件接入。
-\end{corebox}
-Cache hit rate 不是完整 Cost；必须同时考虑 hit time、miss penalty、写回/填充流量、替换元数据和与流水线的重叠。它也不等于权限成功，更不等于 OS Page Cache 命中。
-
-\section{知识地图：先证明副本身份，再计算性能}
-\begin{center}\small\begin{tabularx}{\linewidth}{L{3.1cm}YY}\toprule
-考点 & 本册机制 & 接口\\\midrule
-局部性/层次 & block transfer、hit/miss、AMAT & CO-05\\
-映射与替换 & 地址三分、3C、victim state & Rules\\
-写策略/容量 & dirty、写回、物理位数 & CO-05/CO-04\\
-TLB/Cache 组合 & PIPT/VIPT/VIVT 最小边界 & CO-07/CO-B02\\
-\bottomrule\end{tabularx}\end{center}
-\begin{corebox}{一句话}
-Cache 的正确性来自“候选位置 + valid/tag 身份证明 + offset 定位 + 写状态管理”，性能才是在这个正确副本系统上由局部性、替换和 AMAT 产生的结果。\end{corebox}
-固定命中周期、精确 LRU 位数、所有缺失都阻塞整机等数值不是普遍常数，必须由题设给出。稳定方法是先完成地址分解、身份检查和副本状态转移，再把重叠或阻塞条件代入 AMAT。
-\section{补充细节：副本正确性先于命中率}
-
-Cache 的基本原理、映射、替换、写策略和性能问题都可以回接到一个副本状态机：
-\[
-\text{Request Address}
-\to\text{Block / Set / Tag / Offset}
-\to\text{Valid Identity Check}
-\to\text{Hit or Victim Path}
-\to\text{Fill / Write-back / Retry}.
-\]
-Cache 的第一问题是“这个小副本是否能证明自己就是目标块”，第二问题才是“命中率有多高”。容量、tag、valid、dirty、替换元数据和一致性责任必须分层。
-
-\subsection{层次化存储器：局部性只说明为什么值得缓存}
-
-时间局部性意味着刚访问的数据可能再次访问，空间局部性意味着邻近地址可能很快被访问。层次化存储用更小更快的上层副本换取平均访问时间下降，但每层都存在容量、块粒度、命中时间、填充成本和一致性边界。Cache line、DRAM row、页和磁盘块可能大小不同，不能把一种局部性粒度直接当成所有层的传输粒度。
-
-\subsection{地址三分与容量位数}
-
-设主存地址宽度为 $A$ 位、块大小为 $B=2^b$ 字节、Cache 有 $S=2^s$ 个组，则字节编址时
+字节编址时
 \[
 offset=b,\qquad index=s,\qquad tag=A-b-s.
 \]
-若题目按字编址，先把块大小换成“每块多少个编址单元”，再重新计算 offset。直接映射每组一行，组相联每组 $E$ 行，全相联只有一个候选组；“组数”和“行数”不能互换。
+若题目按字编址，必须先把“块大小”换成每块包含多少个\textbf{编址单元}，不能直接沿用字节偏移位数。
 
-数据容量、行数和总物理位数分别为不同问题：
+地址字段属于\textbf{请求}；Cache line 中保存的是 data 与 metadata。index/offset 并不是每一行都重复存储的字段。
+
+\subsection{数据容量与物理总位数}
+若共有 $N_{lines}$ 条 line，则数据区位数为
 \[
-C_{data}=N_{lines}\times B\times8,
+C_{data}=N_{lines}\times B\times 8.
 \]
-而总物理位数还要加 tag、valid、dirty、替换位和题设 ECC。容量题若问“Cache 容量”必须确认是 data-only 还是含元数据。
-
-\subsection{四种映射：定位候选与证明身份}
-
-直接映射用 $set=block\bmod S$ 找唯一候选行，比较一次 tag；全相联把块放到任意行，需要比较所有有效 tag；$E$ 路组相联先定位组，再在组内比较 $E$ 个候选。映射选择是在“比较器/功耗/命中时间”和“冲突概率/硬件复杂度”之间取舍，不能只说相联度越大越好。
-
-\subsection{替换算法与 Belady 边界}
-
-直接映射没有 victim 选择；组相联/全相联在候选中按 FIFO、LRU、Random 或近似策略选出一行。精确 LRU 的元数据随相联度增加，不能笼统说每行只需 $\log_2E$ 位；实际可能需要排序关系、计数器或近似树。FIFO/Random/LRU 的比较必须绑定访问序列和容量。
-
-栈算法（如理想 LRU）满足容量增加时缺页/Cache miss 不增加，非栈算法可能出现 Belady anomaly；这一结论不能泛化到所有替换策略。颠簸通常意味着工作集在当前映射/容量下反复互逐，改善方法可能是提高容量、相联度、块大小或改变访问顺序，但每种方法都有 hit time、带宽和污染代价。
-
-\subsection{写策略是两条正交轴}
-
-命中时的传播策略和未命中时的取块策略必须分开：
-\begin{itemize}
-  \item write-through：命中时同时更新下一级，状态直接但写流量大；
-  \item write-back：只更新 Cache 并置 dirty，逐出时写回，流量小但状态复杂；
-  \item write-allocate：写 miss 先取入整块，再在 Cache 中修改；
-  \item no-write-allocate：写 miss 绕过 Cache，直接写下一级。
-\end{itemize}
-常见搭配是 write-back + write-allocate 或 write-through + no-write-allocate，但一种轴绝不自动决定另一轴。多核环境下还要增加一致性/写回责任，不能把单核教材策略直接当作完整一致性协议。
-
-\subsection{完整 miss 生命周期与状态转换}
-
-一次 read miss 的最小链是
+物理实现还可能包含 tag、valid、dirty、replacement、ECC 等：
 \[
-\text{detect}
-\to\text{choose invalid/victim}
-\to\text{write back if dirty}
-\to\text{fetch block}
-\to\text{fill data/tag/valid}
-\to\text{retry request}.
+C_{physical}=\sum_{line}(data+tag+valid+dirty+metadata).
 \]
-写 miss 还要插入 write-allocate/no-write-allocate 分支。填充顺序必须先把数据写入行，再使 valid/tag 对后续访问可见；若题目涉及并发或非阻塞 Cache，还要标出 MSHR/等待者和数据 ready 时刻。Cache miss 可能使当前流水线停顿，也可能允许无关指令继续执行，属于 CO-04 的时序接口。
+题目说“Cache 容量”时先确认是 data-only，还是要求总物理位数。
 
-\subsection{3C 模型：分类必须绑定反事实基线}
-
-compulsory miss 是第一次访问块，capacity miss 是即使理想全相联、同容量也装不下，conflict miss 是有限映射额外造成的互逐。分类不是从 miss 的表面现象猜，而是比较不同容量/相联度基线下的访问序列。块大小改变后，原来的 compulsory、capacity 和 conflict 归类可能随工作集和污染改变。
-
-\subsection{AMAT、效率与重叠}
-
-单级近似为
-\[
-AMAT=T_{hit}+MR\times MP.
-\]
-多级结构中 $MP$ 可能包含下一级 AMAT、脏 victim 写回、总线仲裁和填充；若 hit time 或 miss penalty 已包含某部分，不得重复计算。题目还可能给出流水线 stall、并行 tag/data 查找或非阻塞重叠，此时先写事件时间线，再判断哪些项相加、哪些取最大。
-
-加速比和效率也要绑定基准：命中率提高但 hit time 增大，或 miss penalty 下降但 IC/CPI 改变，都可能让完整 CPU time 的比较结果不同。不能只凭命中率或 AMAT 中一个局部参数宣告系统更快。
-
-\subsection{TLB/Cache 组合与 VIPT 边界}
-
-PIPT 先用物理地址查 TLB 后查 Cache，身份直接但路径可能串行；VIVT 用虚拟地址查 Cache，可能遇到 synonym/homonym；VIPT 用页内偏移中的 index 并行查 Cache 与 TLB，再用翻译后的 tag 确认身份。VIPT 能否不发生额外别名约束取决于
-\[
-S\times B\le\text{page size}
-\]
-所对应的索引是否完全落在页内偏移中；必须结合相联度、页大小和地址位数推导，不能背一个固定容量上限。Cache hit 不等于 TLB hit，TLB miss、Page Fault 和 Cache miss 的处理者与重试点不同。
-
-\subsection{Cache 综合题的状态表}
-
+\section{三类映射：先找候选，再证明身份}
 \begin{center}\small
-\begin{tabularx}{\linewidth}{L{2.3cm}L{2.8cm}L{2.8cm}Y}
+\begin{tabularx}{\linewidth}{L{2.2cm}L{2.2cm}YY}
 \toprule
-状态字段 & 解释 & 改变事件 & 验证问题 \\
-\midrule
-valid & 行是否包含可用副本 & 首次 fill、失效、替换 & tag 相同但 valid=0 能否命中？ \\
-tag & 副本身份 & fill/替换 & 当前 block 是否与 tag 一致？ \\
-dirty & Cache 是否比下一级新 & write-back 命中写入、写回 & victim 是否必须先写回？ \\
-replacement & 组内选择历史 & 每次访问/替换 & 策略与访问序列是否一致？ \\
-pending/ready & miss 请求与返回时间 & 下一级响应、重试 & 当前流水线何时可继续？ \\
+组织 & 候选范围 & 主要收益 & 主要代价\\\midrule
+直接映射 & 每组 1 条 line & 查找和选择简单 & 冲突风险高\\
+$E$ 路组相联 & 同组 $E$ 条 line & 冲突与硬件成本折中 & 多 tag 比较、victim 选择\\
+全相联 & 全部 line & 映射冲突最少 & 比较器、功耗和替换成本最高\\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-\begin{methodbox}{CO-06 的陌生题复原}
-先统一编址单位、块大小、组数、相联度和地址宽度；再算 `(block,set,tag,offset)`，逐访问更新 valid/tag/dirty/replacement，最后写 victim、fill、write-back 和 retry。只有这条状态链闭合，AMAT 和容量位数才有可靠输入。
-\end{methodbox}
-
-\subsection{层次设计的三重矛盾与参数权衡}
-存储系统同时追求速度快、容量大、每位成本低；SRAM、DRAM、磁盘/SSD 分别在这些轴上占优，单一介质无法同时满足。寄存器虽然位于存储阶梯最上方，但由指令显式指定，不经过 hit/miss、映射和替换，因此不应机械地当作 Cache 层次。真正的缓存关系至少包括 Cache--主存和主存--后备存储：前者由硬件管理、以块为单位，后者由 OS 管理、以页为单位。
-
-两个层次的共同结构不意味着参数相同。缺页代价远高于 Cache miss，故虚存倾向更灵活的映射、软件参与和写回；Cache 则用较快的硬件查找、有限相联度和可选 write-through。主存/后备存储的平均访问时间可在串联模型下写成
+直接映射常写
 \[
-T_{avg}=H_cT_c+(1-H_c)T_{miss,c},
-\qquad
-T_{miss,c}=T_m+(1-H_m)T_d,
+set=block\ number\bmod S.
 \]
-但若题目采用“先查 Cache，miss 后才启动主存”的模型，应改写为 $T_c+(1-H_c)T_m$，并明确 $T_d$ 是否已经包含 OS/设备处理。
+组相联先由 index 定位一组，再并行/逻辑上比较组内候选 tag；全相联不需要 set index。相联度增大通常能减少 conflict miss，但也可能增加比较器、功耗和 hit path 延迟，不能只说“越大越好”。
 
-块大小、页大小、Cache 容量和相联度都不是越大越好：块/页变大可利用更多空间局部性、摊薄启动成本，却会减少候选块数、增加污染、搬运时间和内部碎片；容量增大提高命中率，却可能提高命中延迟和成本；相联度增大减少冲突，却增加比较器、功耗和 tag 路径延迟。页通常大于 Cache 块，是因为磁盘/SSD 的启动与访问代价远高于主存电路延迟，而不是因为“页一定更重要”。
+\begin{center}
+\begin{tikzpicture}[node distance=0.72cm]
+\node[co] (addr) {Request Address\\block / set / tag / offset};
+\node[co,right=of addr] (cand) {Candidate Set\\由 index 定位};
+\node[co,right=of cand] (id) {Identity Check\\valid + tag};
+\node[co,right=of id] (data) {Block Data\\offset 选目标};
+\draw[flow] (addr)--(cand);\draw[flow] (cand)--(id);\draw[flow] (id)--(data);
+\end{tikzpicture}
+\end{center}
+上图箭头表示\textbf{查找依赖}，不是要求实现必须四拍串行；现代 Cache 可以并行读取 tag/data，但逻辑上仍要同时满足候选位置、身份有效和块内定位三个条件。
 
-\begin{methodbox}{层次题的停止条件}
-先说明对象属于寄存器、Cache、主存还是后备存储，再写本层的管理者、传输单位、映射与 miss 处理者；最后声明块/页大小、命中率和 miss penalty 的时间模型。若答案只说“层次越多越快”，却没有指出局部性和代价分布，推理尚未闭合。
+\section{Hit/Miss 生命周期：Cache 是状态机，不是命中率公式}
+\subsection{Read hit}
+定位候选组后，存在一条 line 同时满足 valid=1 且 tag 匹配，再用 offset 选出目标字节/字。命中只证明“本层已有可用目标副本”，不表示下一级没有副本，也不等价于地址翻译成功。
+
+\subsection{Read miss}
+最小生命周期为
+\[
+\begin{aligned}
+\text{detect miss}
+&\to\text{choose invalid/victim}
+\to\text{write back if dirty}\\
+&\to\text{fetch block}
+\to\text{fill data/tag/state}
+\to\text{retry or complete}.
+\end{aligned}
+\]
+如果存在 invalid line，通常可直接使用；若必须逐出 victim，write-back Cache 还要检查 dirty。非阻塞 Cache、critical-word-first、MSHR 等只有题设明确时才加入；它们改变时序和重叠，不改变副本身份要求。
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.65cm]
+\node[co] (lookup) {Lookup\\set + valid/tag};
+\node[co,right=of lookup] (hit) {Hit\\return data};
+\node[fault,below=of hit] (miss) {Miss\\select line};
+\node[co,right=of miss] (wb) {Dirty victim?\\必要时 write-back};
+\node[co,right=of wb] (fill) {Lower level\\fetch + fill};
+\node[co,right=of fill] (retry) {Retry / Complete};
+\draw[flow] (lookup)--node[above,font=\scriptsize]{match}(hit);
+\draw[flow] (lookup)|-node[left,font=\scriptsize]{no match}(miss);
+\draw[flow] (miss)--(wb);\draw[flow] (wb)--(fill);\draw[flow] (fill)--(retry);
+\end{tikzpicture}
+\end{center}
+这张图表示\textbf{状态转移与慢路径责任}；具体实现可重叠某些阶段。
+
+\section{写策略：传播时机与写 Miss 行为是两条独立轴}
+命中时：
+\begin{itemize}
+\item \kw{write-through：}同时更新下一级，状态关系直接，但写流量较大；
+\item \kw{write-back：}先只更新 Cache 并置 dirty，逐出时才写回，降低平均写流量但增加状态与逐出成本。
+\end{itemize}
+写 miss 时：
+\begin{itemize}
+\item \kw{write-allocate：}先把目标 block 取入 Cache，再在本层修改；
+\item \kw{no-write-allocate：}不为这次写分配 Cache line，写请求直接向下传播。
+\end{itemize}
+常见搭配不是逻辑必然。write-back 不自动推出 write-allocate，做题必须分别判断。
+
+\begin{methodbox}{写缓冲的边界}
+write-through 若要求 CPU 等每次下一级写完成，会直接暴露慢层延迟。write buffer 把待写请求先排入有限队列，在缓冲未满时允许前端继续；write-back 的 dirty victim 也可能进入 write-back buffer。二者都用队列吸收短时突发，但没有创造下一级长期带宽：若到达率持续高于排空率，最终仍会反压前端。
 \end{methodbox}
+
+\section{替换、3C 与反事实基线}
+直接映射没有 victim 选择；组相联/全相联可使用 FIFO、Random、LRU 或近似策略。精确 LRU 的元数据与更新逻辑随相联度和编码方案变化，不能统一断言“每行只需要 $\log_2E$ 位”。
+
+3C 分类必须绑定反事实基线：
+\begin{itemize}
+\item \kw{Compulsory miss：}该 block 第一次进入当前考察层；
+\item \kw{Capacity miss：}即使换成同容量全相联基线，工作集仍装不下导致的 miss；
+\item \kw{Conflict miss：}有限映射相对同容量全相联基线额外产生的 miss。
+\end{itemize}
+块大小、容量和访问序列改变后，分类结果也可能改变。
+
+在\textbf{同一引用串、全相联且采用栈算法（如经典 LRU）}的模型中，增大容量不会增加 miss 数；Belady anomaly 是非栈策略可能出现的性质。这个结论不能越过“全相联/同一引用串/策略”条件直接套到任意 Cache 组织。
+
+\section{性能语言：先定义路径，再算 AMAT}
+\subsection{先分清时间和速率}
+\kw{Latency} 是一般的请求到结果可用等待；\kw{Access Time} 是某存储器件/接口完成规定访问的时间；\kw{Cycle Time} 强调同一资源下一次合法启动操作的间隔。\kw{Throughput} 是单位时间完成的请求/事务数，\kw{Bandwidth} 是单位时间传输的有效数据量。多体交叉和 burst 常主要提高吞吐量/带宽，并不保证单次访问 latency 同比例下降。
+
+\subsection{Hit Time、Miss Total Time 与 Miss Penalty}
+若当前层 hit 路径总时间为 $T_{hit}$，miss 从原请求开始到最终完成的总时间为 $T_{miss,total}$，本册规范化定义
+\[
+MP=T_{miss,total}-T_{hit},
+\]
+即 miss penalty 是\textbf{相对 hit 的额外成本}。若题面“缺失损失 200 cycles”未说明是额外代价还是完整 miss path，不要擅自把它记作 $MP$；先保留 $T_{miss,total}$ 再由题意判断。
+
+\subsection{AMAT 是路径时间的期望}
+若 hit rate 为 $HR$、miss rate 为 $MR=1-HR$，则定义式为
+\[
+AMAT=HR\,T_{hit}+MR\,T_{miss,total}.
+\]
+在上面的 $MP$ 定义下才可化简为
+\[
+\boxed{AMAT=T_{hit}+MR\times MP}.
+\]
+它不是第二条独立公式，而是条件期望的代数化简。
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.0cm]
+\node[co] (req) {Original\\Memory Reference};
+\node[co,right=1.25cm of req,yshift=0.75cm] (h) {Hit Path\\prob. $HR$\\time $T_{hit}$};
+\node[co,right=1.25cm of req,yshift=-0.75cm] (m) {Miss Path\\prob. $MR$\\time $T_{miss,total}$};
+\draw[flow] (req)--(h);\draw[flow] (req)--(m);
+\node[right=0.65cm of req,font=\small] at ($(req.east)+(2.7cm,0)$) {};
+\end{tikzpicture}
+\end{center}
+图中的分支是\textbf{互斥完成路径}；真实硬件是否并行、重叠，要先画事件时间线再决定 $T_{hit}$ 和 $T_{miss,total}$ 包含什么。
+
+\subsection{多级 Cache：只有走到下一层才支付下一层成本}
+若 L1 hit time 为 $t_1$、local miss rate 为 $m_1$；L2 被访问后的 hit time 为 $t_2$、local miss rate 为 $m_2$；L2 miss 后主存服务时间为 $t_M$，并暂不考虑额外写回/重叠，则
+\[
+AMAT_{L1}=t_1+m_1\left(t_2+m_2t_M\right)
+=t_1+m_1t_2+m_1m_2t_M.
+\]
+L2 的 \kw{local miss rate} 以实际到达 L2 的请求为分母；\kw{global miss rate} 以 CPU 原始 references 为分母。在“每个 L1 miss 恰好访问一次 L2、无 bypass/prefetch 额外请求”的简单模型中，L2 global miss rate 为 $m_1m_2$。
+
+下一级 AMAT、脏 victim 写回、总线仲裁、refill 与 retry 都可能进入上一级 miss path。若题设允许 non-blocking Cache、write buffer、prefetch 或流水线隐藏部分等待，某些时间可能相加、取最大，或根本不形成 CPU stall。\kw{AMAT 是每个 memory reference 的接口平均成本，不等于整个程序的 CPU time。}
+
+\section{地址翻译接口：翻译层次、数据层次和虚存慢路径不是一条链}
+PIPT、VIPT、VIVT 是 Cache 与地址翻译的接口组织：PIPT 等翻译得到 PA 后查 Cache；VIPT 可用页内偏移中的 index 与 TLB 并行，再用翻译后的物理 tag 确认身份；VIVT 则需要处理 synonym/homonym 等额外一致性问题。
+
+若 page offset 为 $p$ 位、block offset 为 $b$ 位，VIPT 在经典约束下可用于 set index 的位数至多为 $p-b$，等价写成
+\[
+sets\times block\ size\le page\ size.
+\]
+这个限制来自“index 必须完全落在翻译不改变的 page offset 中”，不是固定容量口诀。
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.58cm]
+\node[co] (va) {CPU Request\\Virtual Address};
+\node[co,right=of va] (tr) {Translation Track\\TLB / Page Walk};
+\node[co,right=of tr] (pa) {Legal PA\\+ permission};
+\node[co,right=of pa] (cache) {Data Track\\L1/L2/LLC/主存};
+\node[fault,below=0.9cm of tr] (pf) {Fault Track\\OS repair / reject};
+\draw[flow] (va)--(tr);\draw[flow] (tr)--(pa);\draw[flow] (pa)--(cache);\draw[flow] (tr)--(pf);
+\draw[ref] (pf)-|node[below,font=\scriptsize]{修复后 retry}(va);
+\end{tikzpicture}
+\end{center}
+上图箭头表示\textbf{语义依赖与控制转移}。不能把它压成无条件的 `TLB → L1 → L2 → 主存 → 磁盘`：TLB 缓存翻译，Cache 缓存数据块，页面不驻留时才进入 OS 的 fault 慢路径。
+
+\section{贯穿母例：两个块反复映射到同一组}
+设直接映射 Cache 有 $S$ 组、块大小 $B$，两个主存块 $x$ 与 $y$ 满足
+\[
+x\bmod S=y\bmod S,\qquad x\neq y.
+\]
+它们交替访问时都会定位同一条候选 line，但 tag 不同，因此可能反复互相驱逐。这个例子同时验证：
+\begin{enumerate}
+\item index 只负责定位候选，不证明身份；
+\item tag/valid 才决定 hit；
+\item 直接映射冲突来自 placement 约束，而不是 Cache 其余空间真的已满；
+\item 提高相联度可允许两块在同组共存，但会增加比较和替换成本；
+\item 命中率变化最终还要连同 hit time 与 miss penalty 才能判断性能收益。
+\end{enumerate}
+
+\section{概念边界：相似词必须改变做题行为}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{2.2cm}L{2.8cm}YY}
+\toprule
+边界 & 为什么容易混淆 & 真正判据 / 题面信号 & 混淆后果\\\midrule
+地址字段 $\neq$ line 内容 & 都出现 tag/index/offset & 请求字段用于定位；line 只保存 data+metadata & 错算物理容量\\
+Hit rate $\neq$ Performance & 命中高常常更快 & 还需 hit time、penalty、写流量与重叠 & 只凭命中率判快慢\\
+Miss penalty $\neq$ Miss total time & 都会被叫“缺失时间” & 前者是额外成本；后者含当前层查找 & 重复或漏算 hit time\\
+Local MR $\neq$ Global MR & 都写 miss rate & 分母是本层 accesses 还是 CPU refs & 多乘/少乘上层 miss rate\\
+Write-back $\neq$ Write-allocate & 常作为搭配出现 & 一个管命中后的传播，一个管写 miss 是否取块 & 从一轴错误推出另一轴\\
+Conflict $\neq$ Capacity & 都会逐出 line & 同容量全相联反事实基线是否仍 miss & 选错优化方向\\
+Latency $\neq$ Bandwidth & 都描述“快” & 单请求等待 vs 单位时间数据量 & 用带宽推出随机访问延迟\\
+Cache miss $\neq$ Page Fault & 都进入慢路径 & 数据块副本缺失 vs 翻译/驻留/权限 fault & 把硬件 miss 写成 OS 调页\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{做题控制协议：从请求到成本只走一次}
+\begin{enumerate}
+\item \kw{Reference：}先确认题目统计哪些 instruction/data references，一条源语句可能产生多次访问；
+\item \kw{Granularity：}统一编址单位、block size、Cache data size、set/way；
+\item \kw{Address：}求 block/set/tag/offset，不把地址字段写进 line metadata；
+\item \kw{State：}逐次维护 valid/tag/dirty/replacement；
+\item \kw{Lifecycle：}miss 时写 victim、write-back、lower-level fetch、fill、retry；写 miss 再判断 allocate；
+\item \kw{Count：}先数 hit、miss、write-back、lower-level transactions；
+\item \kw{Cost：}声明 hit time、miss total / extra penalty、local/global miss rate 和重叠；
+\item \kw{Verify：}检查访问总数、块数上界、概率范围、地址位数和独立时间口径。
+\end{enumerate}
+
+\begin{methodbox}{陌生题第一动作}
+先问两句话：\kw{“当前请求对应哪个 block/set/tag/offset？”“当前 line 的身份与状态是否足以证明这是目标副本？”} 只有这两问闭合后，才进入命中率和 AMAT。
+\end{methodbox}
+
+\section{本册与其他 Owner 的接口}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{L{3cm}YY}
+\toprule
+相邻 Owner & 本册使用什么 & 什么时候停止本册\\\midrule
+CO-05 主存与存储硬件 & 下一级 latency、burst、bank、bandwidth & 开始推 DRAM/总线事务内部细节\\
+CO-07 地址翻译 & 合法 PA、permission、PIPT/VIPT 条件 & 开始推 VPN/PFN、page walk、TLB 状态\\
+CO-04 流水线 & miss stall / overlap 边界 & 开始问哪条指令何时 ready/commit\\
+OS-04 / X-B02 & Page Fault 后的 repair/retry 结果 & 开始分配 frame、page-in、COW、replacement\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{corebox}{一页压缩}
+Cache 先解决\textbf{正确副本}，再讨论\textbf{平均性能}：
+\[
+\boxed{
+\begin{aligned}
+\text{Reference}
+&\to\text{Block/Set/Tag/Offset}
+\to\text{Valid Identity Check}\\
+&\to\text{Hit or Miss State Transition}
+\to\text{Event Count}
+\to\text{Path Cost / AMAT}
+\end{aligned}}
+\]
+忘掉具体公式时，从“候选位置 + 身份 + 状态 + 慢路径 + 路径期望”即可重新生成主要结论。
+\end{corebox}
 
 \end{document}

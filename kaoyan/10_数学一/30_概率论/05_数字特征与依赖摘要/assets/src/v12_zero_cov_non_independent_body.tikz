@@ -1,0 +1,164 @@
+% ── V12 零协方差与非独立反例（大空间呼吸感 2 行布局） ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 上半部第 1 行：左（反例一抛物线） + 右（反例二圆周四点） ──
+% ══════════════════════════════════════════════════════════════
+
+% ── 1. 左卡片：连续对称抛物线 Y=X^2 ──
+\begin{scope}[xshift=0cm, yshift=5.0cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themecurve}1. 反例一：连续对称 $Y=X^2$}
+    };
+  \end{pgfonlayer}
+
+  % 坐标系与抛物线
+  \begin{pgfonlayer}{background}
+    % 坐标轴
+    \draw[color=themegray, line width=0.6pt, ->] (0.2, 1.4) -- (2.8, 1.4) node[anchor=west] {\tiny $x$};
+    \draw[color=themegray, line width=0.6pt, ->] (1.45, 1.0) -- (1.45, 3.9) node[anchor=south] {\tiny $y$};
+
+    % 抛物线轨迹
+    \draw[color=themecurve, line width=1.4pt, domain=-1.15:1.15, samples=40]
+      plot ({1.45 + \x}, {1.4 + 1.4*\x*\x});
+
+    % 对称端点
+    \fill[color=themeamber] (0.3, 3.25) circle (2.0pt);
+    \fill[color=themeamber] (2.6, 3.25) circle (2.0pt);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, color=themecurve] at (0.0, 3.9) {\scriptsize $X \sim U[-1,1]$};
+    \node[anchor=north east, color=themeamber] at (2.9, 3.9) {\scriptsize $Y = X^2$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=3.9cm] at (3.0, 4.3) {
+      \small \textbf{协方差为零：}\\[0.25em]
+      \scriptsize 由奇对称性：$EX=E[X^3]=0$；\\[0.15em]
+      $\operatorname{Cov}(X,Y)=E[X^3]-0 = 0$。\\[0.7em]
+      \small \textbf{强确定性非独立：}\\[0.25em]
+      \scriptsize $Y=X^2$ 确定依赖，非独立；\\[0.15em]
+      $P(Y\le \tfrac{1}{4}\mid X=1)=0 \ne \tfrac{1}{2}$。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 2. 右卡片：圆周离散四点 ──
+\begin{scope}[xshift=7.7cm, yshift=5.0cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (7.1, 5.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 4.95) {
+      \large \textbf{\color{themeamber}2. 反例二：圆周离散四点}
+    };
+  \end{pgfonlayer}
+
+  % 几何坐标系与四点
+  \begin{pgfonlayer}{background}
+    % 虚线辅助圆
+    \draw[color=themegray!40, line width=0.6pt, dashed] (1.35, 2.3) circle (0.95cm);
+
+    % 坐标轴
+    \draw[color=themegray, line width=0.6pt, ->] (0.2, 2.3) -- (2.6, 2.3) node[anchor=west] {\tiny $x$};
+    \draw[color=themegray, line width=0.6pt, ->] (1.35, 1.0) -- (1.35, 3.8) node[anchor=south] {\tiny $y$};
+
+    % 四个离散支撑点 (概率各 1/4)
+    \fill[color=themealert] (2.3, 2.3) circle (2.2pt);
+    \fill[color=themealert] (1.35, 3.25) circle (2.2pt);
+    \fill[color=themealert] (0.4, 2.3) circle (2.2pt);
+    \fill[color=themealert] (1.35, 1.35) circle (2.2pt);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west, color=themealert] at (2.2, 2.25) {\tiny $(1,0)$};
+    \node[anchor=south, color=themealert] at (1.35, 3.35) {\tiny $(0,1)$};
+    \node[anchor=north east, color=themealert] at (0.5, 2.25) {\tiny $(-1,0)$};
+    \node[anchor=north, color=themealert] at (1.35, 1.25) {\tiny $(0,-1)$};
+
+    % 右侧文字说明
+    \node[anchor=north west, text width=4.1cm] at (2.85, 4.3) {
+      \small \textbf{乘积恒零与不相关：}\\[0.25em]
+      \scriptsize 四个点上均有 $XY \equiv 0$；\\[0.15em]
+      $E[XY]=0 \implies \operatorname{Cov}=0$。\\[0.7em]
+      \small \textbf{联合事件不独立：}\\[0.25em]
+      \scriptsize $P(X=1, Y=1)=0$；\\[0.15em]
+      但 $P(X=1)P(Y=1)=\tfrac{1}{16} \ne 0$。
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 下半部第 2 行：全宽卡片（独立与不相关辨析及二维正态特权） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0.3cm]
+  % 卡片底色
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!4!themebg, draw=themegray!30, line width=0.6pt, rounded corners=5pt]
+      (-0.2, -0.2) rectangle (14.8, 4.2);
+  \end{pgfonlayer}
+
+  % 标题
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=north west] at (0.0, 3.95) {
+      \large \textbf{\color{themealert}3. 概念辨析：独立 vs 不相关与二维正态特权}
+    };
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    % 左侧核心概念对比
+    \node[anchor=north west, text width=7.2cm] at (0.1, 3.25) {
+      \small $\bullet$ \textbf{\color{themecurve}独立性（强条件）}：$F(x,y) = F_X(x)F_Y(y)$；\\[0.15em]
+      \quad 任意可测函数变换均解耦：$E[g(X)h(Y)]=E[g(X)]E[h(Y)]$；\\[0.45em]
+      \small $\bullet$ \textbf{\color{themeamber}不相关（弱条件）}：$\operatorname{Cov}(X,Y)=0$；\\[0.15em]
+      \quad 仅代表无线性关联，无法排除高阶或对称非线性依赖；\\[0.45em]
+      \small $\bullet$ \textbf{\color{themealert}单向蕴含}：独立 $\implies$ 不相关；逆命题不成立。
+    };
+
+    % 中间分割线
+    \draw[color=themegray!30, line width=0.6pt] (7.4, 0.3) -- (7.4, 3.4);
+
+    % 右侧二维正态与考场警示
+    \node[anchor=north west, text width=7.0cm] at (7.7, 3.25) {
+      \small \textbf{二维正态分布的等价特权：}\\[0.4em]
+      \scriptsize $\bullet$ \textbf{充要等价}：若 $(X,Y)$ \textbf{服从二维联合正态}，则\\[0.2em]
+      \quad \normalsize \color{themeamber} 独立 $\iff$ 不相关 $\iff \rho_{XY}=0$\\[0.4em]
+      \scriptsize $\bullet$ \textbf{考场核心避坑陷阱}：\\[0.15em]
+      \quad \textbf{边缘正态 $\nRightarrow$ 联合正态}；若仅知 $X \sim N, Y \sim N$，\\[0.15em]
+      \quad 无法直接由不相关推导独立，必须验证联合正态性！
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 底部全图全局总结 (无框轻量排印) ──
+% ══════════════════════════════════════════════════════════════
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.3, -0.2) {
+    \footnotesize \textbf{依赖拓扑真理：} 独立性是全分布事件分解（强约束）；不相关 $\operatorname{Cov}=0$ 仅消除了一阶线性趋势；对称几何抵消不能掩盖函数确定依赖；只有在二维联合正态下二者等价。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

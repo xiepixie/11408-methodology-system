@@ -177,6 +177,10 @@ Cross-Subject Bridge 统一上移到 [408 Cross-Subject Bridge Atlas](../50_桥�
 
 性能不是第九个硬件子系统。IC、CPI、IPC、clock、critical path、latency、throughput、bandwidth、AMAT 与 speedup 进入[计组做题规则](90_做题规则/README.md)中的性能工具箱，各 Topic 只使用与自身机制直接相关的指标。
 
+## 真题训练层
+
+稳定机制仍由八个 Topic、Bridge 与 Integration 拥有；真题训练只负责把题面转换成可调用的 Owner、状态轨迹和成本输入，不建立第二套理论。存储系统跨 CO-05 / CO-06 / CO-07 / CO-B02 / OS-04 的统一训练入口见 [存储系统真题训练总索引](90_做题规则/存储系统真题训练总索引.md)。其中六类传统题型仅作检索标签，统一按 `Request → Granularity → Stream → Owner → State → Count → Cost → Verify` 推进。
+
 ## Question Control Adapter
 
 下面七问是推荐检查顺序：

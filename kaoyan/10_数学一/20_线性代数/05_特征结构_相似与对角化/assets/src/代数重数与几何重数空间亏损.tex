@@ -1,0 +1,114 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, >=Stealth]
+
+% ── 左子图：几何重数 = 2 (满方向可对角化) ──
+\begin{scope}[shift={(0,0)}]
+  \draw[themegray!70, line width=0.8pt, rounded corners=5pt] (-2.8,-2.4) rectangle (2.8,2.6);
+  \node[font=\bfseries\small, text=themecurve, above] at (0, 2.7) {满方向：代数重数 $2 =$ 几何重数 $2$};
+
+  \coordinate (O1) at (0,0);
+  \coordinate (V1) at (1.8, 0.4);
+  \coordinate (V2) at (0.4, 1.6);
+
+  \begin{pgfonlayer}{background}
+    % 二维特征子空间 E_lambda 阴影平面 (晶蓝)
+    \fill[themecurve!20!themebg, opacity=0.6, rounded corners=4pt] (-2.0, -1.2) -- (2.0, -0.4) -- (1.6, 2.0) -- (-2.2, 1.0) -- cycle;
+    \draw[themecurve, line width=1.0pt] (-2.0, -1.2) -- (2.0, -0.4) -- (1.6, 2.0) -- (-2.2, 1.0) -- cycle;
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{main}
+    % 两个线性无关特征向量
+    \draw[->, themecurve, line width=2.2pt] (O1) -- (V1);
+    \draw[->, themecurve, line width=2.2pt] (O1) -- (V2);
+    
+    % 平面内任意向量也是特征向量
+    \draw[->, themeamber, line width=1.6pt] (O1) -- ($(V1)+(V2)$);
+    \fill[themefg] (O1) circle (2.0pt);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[text=themecurve, fill=themebg, inner sep=0.8pt, font=\bfseries\small, below right] at (V1) {$\boldsymbol{v}_1$};
+    \node[text=themecurve, fill=themebg, inner sep=0.8pt, font=\bfseries\small, above left] at (V2) {$\boldsymbol{v}_2$};
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, font=\scriptsize, above right] at ($(V1)+(V2)$) {任意 $\boldsymbol{v} \in E_\lambda$};
+    
+    \node[text=themecurve, font=\footnotesize, fill=themebg, inner sep=1pt] at (0, -1.2) {特征子空间 $E_\lambda = \operatorname{span}\{\boldsymbol{v}_1, \boldsymbol{v}_2\}$};
+    \node[font=\bfseries\scriptsize, text=themecurve, align=center] at (0, -1.8) {
+      $r(\boldsymbol{A}-\lambda\boldsymbol{I}) = n - 2 \implies \dim E_\lambda = 2$\\
+      $\implies$ 方向充足，可对角化
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 右子图：几何重数 = 1 (亏损缺陷不可对角化) ──
+\begin{scope}[shift={(8.0,0)}]
+  \draw[themegray!70, line width=0.8pt, rounded corners=5pt] (-2.8,-2.4) rectangle (2.8,2.6);
+  \node[font=\bfseries\small, text=themealert, above] at (0, 2.7) {空间亏损：代数重数 $2 >$ 几何重数 $1$};
+
+  \coordinate (O2) at (0,0);
+  \coordinate (U1) at (2.0, 0.5);
+  \coordinate (U2) at (0.2, 1.7);
+  \coordinate (AU2) at (1.6, 1.7);  % A u2 = lambda u2 + u1
+
+  \begin{pgfonlayer}{background}
+    % 仅存的一维特征直线 E_lambda (暖金虚线)
+    \draw[themeamber, dashed, line width=1.4pt] (-2.4, -0.6) -- (2.4, 0.6);
+
+    % 剪切滑移箭头 (红色带箭头，带背景垫片防止穿字)
+    \draw[->, themealert, line width=1.6pt] (U2) -- 
+      node[above=2pt, font=\scriptsize\bfseries, text=themealert, fill=themebg, inner sep=1.2pt] {剪切混合 $+\boldsymbol{v}_1$} (AU2);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{main}
+    % 唯一特征向量 v1
+    \draw[->, themeamber, line width=2.4pt] (O2) -- (U1);
+
+    % 广义特征向量 v2 (不是特征向量)
+    \draw[->, themegray, line width=1.8pt] (O2) -- (U2);
+
+    % A作用后的向量 A v2
+    \draw[->, themealert, line width=1.8pt] (O2) -- (AU2);
+    
+    \fill[themefg] (O2) circle (2.0pt);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[text=themeamber, fill=themebg, inner sep=0.8pt, font=\bfseries\small, below right] at (U1) {唯一特征方向 $\boldsymbol{v}_1$};
+    \node[text=themegray, fill=themebg, inner sep=0.8pt, font=\small, left] at (U2) {$\boldsymbol{v}_2$};
+    \node[text=themealert, fill=themebg, inner sep=0.8pt, font=\scriptsize, right] at (AU2) {$\boldsymbol{A}\boldsymbol{v}_2 = \lambda\boldsymbol{v}_2 + \boldsymbol{v}_1$};
+
+    \node[text=themeamber, font=\footnotesize, fill=themebg, inner sep=1pt] at (0, -1.2) {一维特征线 $E_\lambda = \operatorname{span}\{\boldsymbol{v}_1\}$};
+    \node[font=\bfseries\scriptsize, text=themealert, align=center] at (0, -1.8) {
+      $r(\boldsymbol{A}-\lambda\boldsymbol{I}) = n - 1 \implies \dim E_\lambda = 1$\\
+      $\implies$ 方向不足，不可对角化(Jordan块)
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 底部总结横条 ──
+\node[font=\bfseries\small, color=themecurve, anchor=north] at (5.3, -2.8) {
+  核心心智模型：代数重数是根的多重度（上限），几何重数是不变方向的维数（实际）；可对角化要求方向供给填满上限
+};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

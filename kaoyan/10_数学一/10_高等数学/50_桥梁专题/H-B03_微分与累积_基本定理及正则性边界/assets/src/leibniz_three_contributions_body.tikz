@@ -1,0 +1,52 @@
+\begin{tikzpicture}[color=themefg,text=themefg,>=Stealth,x=1.25cm,y=1.25cm]
+  \tikzset{
+    axis/.style={themegray,line width=0.8pt,-{Stealth[length=1.7mm]}},
+    curve/.style={themecurve,line width=2.0pt},
+    shiftcurve/.style={themecurve,line width=1.1pt,densely dashed},
+    guide/.style={themegray,densely dashed,line width=0.7pt},
+    limita/.style={themealert,line width=1.1pt,-{Stealth[length=1.7mm]}},
+    limitb/.style={themeamber,line width=1.1pt,-{Stealth[length=1.7mm]}},
+    density/.style={themegreen,line width=1.1pt,{Stealth[length=1.5mm]}-{Stealth[length=1.5mm]}},
+    tag/.style={fill=themebg,inner sep=1.5pt,font=\small},
+    badge/.style={fill=themebg,inner sep=2pt,font=\footnotesize}
+  }
+
+  % Axes
+  \draw[axis] (-0.3,0) -- (8.6,0) node[below,font=\small] {$t$};
+  \draw[axis] (0,-0.3) -- (0,4.2) node[left,font=\small] {$y$};
+
+  % Base coordinates: alpha = 1.8, beta = 6.4
+  % g(x, t) = 1.15 + 0.16*t + 0.25*sin(50*t)
+  % Base shaded region under g(x,t)
+  \fill[themecurve,opacity=0.08] (1.8,0) -- plot[domain=1.8:6.4,samples=60] (\x,{1.15+0.16*\x+0.25*sin(50*\x)}) -- (6.4,0) -- cycle;
+  \draw[curve] plot[domain=1.8:6.4,samples=60] (\x,{1.15+0.16*\x+0.25*sin(50*\x)});
+  \node[tag,text=themecurve,anchor=north,font=\footnotesize] at (3.8,1.25) {$y=g(x,t)$};
+
+  % 1. Left boundary alpha(x) strip (Loss / Subtraction term)
+  % width dx = 0.5
+  \fill[themealert,opacity=0.25] (1.8,0) -- (2.3,0) -- (2.3,{1.15+0.16*2.3+0.25*sin(50*2.3)}) -- (1.8,{1.15+0.16*1.8+0.25*sin(50*1.8)}) -- cycle;
+  \draw[guide] (1.8,0) -- (1.8,{1.15+0.16*1.8+0.25*sin(50*1.8)});
+  \draw[themealert,densely dashed,line width=0.8pt] (2.3,0) -- (2.3,{1.15+0.16*2.3+0.25*sin(50*2.3)});
+  \draw[limita] (1.8,0.85) -- (2.3,0.85);
+  \node[tag,anchor=north,font=\footnotesize] at (1.8,-0.05) {$\alpha(x)$};
+  \node[badge,text=themealert,anchor=south,align=center] at (1.6,2.35) {② 下限移动贡献\\[1pt]\color{themealert}$-\alpha'(x)g(x,\alpha)$};
+  \draw[themegray,densely dotted] (1.6,2.30) -- (2.05,{1.15+0.16*2.05+0.25*sin(50*2.05)});
+
+  % 2. Right boundary beta(x) strip (Gain / Addition term)
+  \fill[themeamber,opacity=0.25] (6.4,0) -- (7.0,0) -- (7.0,{1.15+0.16*7.0+0.25*sin(50*7.0)}) -- (6.4,{1.15+0.16*6.4+0.25*sin(50*6.4)}) -- cycle;
+  \draw[guide] (6.4,0) -- (6.4,{1.15+0.16*6.4+0.25*sin(50*6.4)});
+  \draw[themeamber,densely dashed,line width=0.8pt] (7.0,0) -- (7.0,{1.15+0.16*7.0+0.25*sin(50*7.0)});
+  \draw[limitb] (6.4,1.2) -- (7.0,1.2);
+  \node[tag,anchor=north,font=\footnotesize] at (6.4,-0.05) {$\beta(x)$};
+  \node[badge,text=themeamber,anchor=south,align=center] at (6.8,2.75) {① 上限移动贡献\\[1pt]\color{themeamber}$+\beta'(x)g(x,\beta)$};
+
+  % 3. Interior density change (g(x+dx, t) layer)
+  \draw[shiftcurve] plot[domain=2.3:6.4,samples=50] (\x,{1.65+0.16*\x+0.25*sin(50*\x)});
+  \fill[themegreen,opacity=0.15] plot[domain=2.3:6.4,samples=50] (\x,{1.15+0.16*\x+0.25*sin(50*\x)}) -- plot[domain=6.4:2.3,samples=50] (\x,{1.65+0.16*\x+0.25*sin(50*\x)}) -- cycle;
+  \draw[density] (4.35,{1.15+0.16*4.35+0.25*sin(50*4.35)+0.05}) -- (4.35,{1.65+0.16*4.35+0.25*sin(50*4.35)-0.05});
+  \node[badge,text=themegreen,anchor=south,align=center] at (4.35,2.65) {③ 内部密度变化\\[1pt]\color{themegreen}$+\displaystyle\int_\alpha^\beta \frac{\partial g}{\partial x}\,dt$};
+
+  % Bottom summary formula
+  \node[font=\small,text=themegray,anchor=north] at (4.1,-0.75)
+  {$\dfrac{d}{dx}\displaystyle\int_{\alpha(x)}^{\beta(x)} g(x,t)\,dt = \underbrace{\beta'(x)g(x,\beta)}_{\text{① 扫入窄条}} - \underbrace{\alpha'(x)g(x,\alpha)}_{\text{② 扫出窄条}} + \underbrace{\int_{\alpha(x)}^{\beta(x)} \frac{\partial g}{\partial x}\,dt}_{\text{③ 整体增高}}$};
+\end{tikzpicture}

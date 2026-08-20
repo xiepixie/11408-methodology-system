@@ -40,9 +40,11 @@ $$
 - 时分/空分复用的教材分析轴，以及异步对结果可再现性提出的正确性底线；
 - OS 基本功能/服务与后续 Topic 的导航；
 - 操作系统发展逻辑：人工操作 / 单道批处理 / 多道批处理 / 分时 / 实时；
-- 程序从静态文件到运行映像的入口语义：编译后目标文件、链接、可执行文件、装入、进程映像；
-- `Program ≠ Executable ≠ Process Image ≠ Process`；
+- 程序从静态文件到运行映像的入口语义：编译后目标文件、符号解析、重定位、可执行文件、装入、进程映像；
+- `Program ≠ Relocatable Object ≠ Executable ≠ Process Image ≠ Process`；
+- ELF 的 linking view（sections）与 loading view（program segments）及其边界；
 - 静态链接、装入时动态链接、运行时动态链接的基础语义；
+- 地址生命周期：模块内/待重定位引用 → 程序级逻辑/虚拟布局 → 进程映射 → 运行期 VA→PA；
 - OS 结构的比较轴：分层、宏内核/模块化、微内核、外核；
 - 微内核的边界成本、外核与微内核的正交关系，以及 Exokernel / LibOS 的能力与代价；
 - 系统引导的概念链：Firmware → Boot Manager/Bootloader → Kernel → User Space；
@@ -65,6 +67,9 @@ $$
 - Remzi H. Arpaci-Dusseau, Andrea C. Arpaci-Dusseau, *Operating Systems: Three Easy Pieces*：Introduction、Virtual Machine Monitors；
 - System V ELF gABI：Program Loading and Dynamic Linking；
 - GNU Binutils `ld` Documentation：linker 的对象合并、symbol resolution 与 relocation；
+- UC Berkeley CS61C：Compiler / Assembler / Linker / Loader（CALL）与 object file / relocation 教学模型；
+- CMU 15-213：Linking，重点覆盖 symbol resolution、relocation、static/shared libraries；
+- 南京大学《计算机系统基础》LinkLab：ELF 数据节/代码节、符号解析、重定位、可重定位目标文件与 PIC；
 - UEFI Specification：Boot Manager；
 - Linux Kernel Documentation：Linux/x86 Boot Protocol；
 - seL4 Documentation：microkernel 的 minimal privileged core 与 user-space services；

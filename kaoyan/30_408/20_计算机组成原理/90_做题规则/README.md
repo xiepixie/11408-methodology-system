@@ -1,10 +1,10 @@
 # 计组做题规则与性能工具箱
 
-状态：工作稿，待验证规则已建立，尚无已采用规则。
+状态：工作稿。全科规则仍未整体晋升为“已采用”；其中存储系统 Practice Adapter 已完成 2009—2026 真题第一轮校准，并建立独立训练总索引。
 
 ## 已采用
 
-暂无。以下规则仍需用真实题目校准。
+暂无全科已采用规则。存储系统当前先以 [存储系统真题训练总索引](存储系统真题训练总索引.md) 作为证据化 Practice System；其中规则继续接受新真题攻击后再决定是否晋升为全科稳定 Rule。
 
 ## 待验证
 
@@ -132,6 +132,14 @@ zero extension 保留 unsigned 值，sign extension 保留补码值；窄化后�
 
 LBA 是主机接口编号，CHS 是教学几何或兼容视图；只有题目明确给出映射时才换算物理位置，不能由 LBA 连续推出真实介质连续。
 
+### Cache 程序题先生成 reference stream
+
+看到数组、循环或 C 语句时，先把一次程序动作展开成真正的数据读/写 reference，再生成 address/block/set stream。`a[i]=a[i]+c` 一类读改写通常至少包含一次 read 和一次 write；题目若只统计某数组或某类 Cache，先限定分母对象。不能把“一次元素访问”默认等成“一次 Cache reference”。
+
+### 连续对象先算 footprint，再谈块数/页数
+
+对象总长度为 $L$、在粒度 $U$ 的当前单元内起始偏移为 $d$ 时，先用 $\left\lceil(d+L)/U\right\rceil$ 判断实际跨越多少个固定粒度单元。分别令 $U$ 为 Cache block、page 或事务粒度，可以统一处理未对齐首地址；不能只用 `长度/粒度` 忽略首尾边界。
+
 ### Cache 题先做地址三分，再跑状态机
 
 先由块大小得到 offset，由组数得到 index，剩余才是 tag；随后检查 valid/tag，按 hit/miss、替换和写策略推进。容量题必须区分数据容量与 tag/valid/dirty/LRU 等总物理位数。
@@ -152,9 +160,13 @@ VIPT 只有使用 page-offset 位索引时才能并行查找而不依赖未知 P
 
 遇到 miss，依次写 victim、dirty/write-back、下一级取块、tag/valid 更新、retry；若是写 miss，再单独判断 write-allocate 或 no-write-allocate。不能由 write-back 自动推出写分配。
 
-### AMAT 题先声明“额外时间”和重叠
+### AMAT 题先声明“平均谁、路径是什么、额外时间是什么”
 
-写清 hit time、miss rate、miss penalty 是否为额外值，以及写回、下一级 AMAT 和流水线 stall 是否已重叠；命中率更高不自动意味着总时间更短。
+先调用 [存储层次与 AMAT](../60_Cache与存储层次/存储层次与AMAT.md)：明确原始请求分母、hit/miss/fault 互斥路径、local/global miss rate，以及 hit time、miss total time、miss penalty 是否为额外值。再检查写回、下一级 AMAT、page walk/fault 与流水线 stall 是否已包含或可重叠。命中率更高不自动意味着总时间更短，AMAT 也不等于完整 CPU time。
+
+### 存储性能题先数事件，再给事件定价
+
+先得到 reference、miss、fault、burst、writeback、DMA request 等事件数量，再分别乘各自成本；只有确认不同成本没有重复包含、且题设允许串行相加时才求和。不要一边模拟状态一边把时间混进状态表。
 
 ### 总线和 DMA 题同时追踪三种占用
 

@@ -1,0 +1,124 @@
+\documentclass[dvisvgm,tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{pgfplots}
+\usepackage{CJKutf8}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg]
+
+% ── 左图: cosh x 限制非负分支 ──
+\begin{axis}[
+    name=axL,
+    width=8.0cm,
+    height=8.0cm,
+    axis equal image,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\footnotesize},
+    every axis label/.style={color=themefg},
+    xmin=-2.6, xmax=2.8,
+    ymin=-0.5, ymax=4.2,
+    xtick={-2,-1,0,1,2},
+    ytick={1,2,3,4},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={$\cosh x$ 偶函数需限制单射分支 $[0,+\infty)$},
+]
+\begin{pgfonlayer}{background}
+    % 水平割线 y=y0 测试
+    \draw[themeamber, dashed, line width=1pt] (axis cs:-2.4,2.5) -- (axis cs:2.4,2.5);
+    \node[text=themeamber, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:2.35,2.55) {水平线 $y=y_0$};
+\end{pgfonlayer}
+
+% 左侧丢弃分支 (虚线)
+\addplot[themegray, dashed, line width=1.5pt, domain=-2.05:0, samples=100] {0.5*(exp(x)+exp(-x))};
+\node[text=themegray, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:-1.2,2.0) {舍弃分支 $x<0$};
+
+% 右侧标准主值分支 (实线)
+\addplot[themecurve, line width=2.0pt, domain=0:2.05, samples=100] {0.5*(exp(x)+exp(-x))};
+\node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north west] at (axis cs:1.35,2.4) {选取分支 $x\ge0$};
+
+\begin{pgfonlayer}{foreground}
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themecurve, draw=themefg] coordinates {(0,1)};
+    \node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:0.1,1.15) {$(0,1)$ 最小值};
+
+    % 交点标记
+    \addplot[only marks, mark=*, mark size=2pt, fill=themecurve, draw=themefg] coordinates {(1.56679,2.5)};
+    \node[text=themecurve, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south west] at (axis cs:1.6,2.55) {$x=\operatorname{arcosh}y_0$};
+
+    \addplot[only marks, mark=x, mark size=3pt, thick, themealert] coordinates {(-1.56679,2.5)};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:-1.6,2.55) {$-\operatorname{arcosh}y_0$};
+\end{pgfonlayer}
+\end{axis}
+
+% ── 右图: arcosh x 关于 y=x 对称与其竖直切线 ──
+\begin{axis}[
+    name=axR,
+    at={($(axL.east)+(1.8cm,0)$)},
+    anchor=west,
+    width=8.0cm,
+    height=8.0cm,
+    axis equal image,
+    axis lines=middle,
+    axis line style={color=themefg, -{Stealth}},
+    tick style={color=themefg},
+    tick label style={color=themefg, font=\footnotesize},
+    every axis label/.style={color=themefg},
+    xmin=-0.5, xmax=4.2,
+    ymin=-0.5, ymax=4.2,
+    xtick={1,2,3,4},
+    ytick={1,2,3,4},
+    clip=false,
+    xlabel={$x$},
+    ylabel={$y$},
+    title style={font=\footnotesize\bfseries, at={(0.5,1.06)}, anchor=south},
+    title={$y=\operatorname{arcosh} x$ 反函数关于 $y=x$ 对称},
+]
+\begin{pgfonlayer}{background}
+    % 对称轴 y=x
+    \draw[themegray, dashed, line width=1pt] (axis cs:0,0) -- (axis cs:3.8,3.8);
+    \node[text=themegray, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north west] at (axis cs:3.4,3.3) {$y=x$};
+
+    % 原分支参考 (cosh x, x>=0) 浅色虚线
+    \addplot[themegray!60, dashed, line width=1.2pt, domain=0:2.05, samples=100] {0.5*(exp(x)+exp(-x))};
+    \node[text=themegray, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=south east] at (axis cs:1.8,3.3) {$y=\cosh x$};
+
+    % x=1 竖直虚线
+    \draw[themealert, densely dashed, line width=1pt] (axis cs:1,-0.3) -- (axis cs:1,2.5);
+\end{pgfonlayer}
+
+% arcosh x 曲线 (x >= 1)
+\addplot[themealert, line width=2.0pt, domain=1.0:3.8, samples=160] {ln(x + sqrt(x^2 - 1))};
+\node[text=themealert, font=\footnotesize, fill=themebg, inner sep=1pt, anchor=north west] at (axis cs:2.3,1.3) {$y=\operatorname{arcosh} x$};
+
+\begin{pgfonlayer}{foreground}
+    % 端点 (1,0) 及竖直切线说明
+    \addplot[only marks, mark=*, mark size=2.5pt, fill=themealert, draw=themefg] coordinates {(1,0)};
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north east] at (axis cs:0.95,-0.12) {$(1,0)$};
+
+    \node[text=themealert, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=west] at (axis cs:1.35,0.4) {$\sim\sqrt{2(x-1)}$ (竖直切线)};
+    \node[text=themefg, font=\scriptsize, fill=themebg, inner sep=1pt, anchor=north east] at (axis cs:4.0,3.9) {定义域 $[1,+\infty) \to$ 值域 $[0,+\infty)$};
+\end{pgfonlayer}
+\end{axis}
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

@@ -1,0 +1,161 @@
+% ── V17 偏斜尾部分位点与对称/倒数反演 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ══════════════════════════════════════════════════════════════
+% ── 子图 1: \chi^2(\nu) 卡方分布（偏斜非负支撑） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=0cm, yshift=0cm]
+  % 背景层：坐标轴与偏斜阴影
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (-0.2, 0) -- (4.6, 0) node[right] {\footnotesize $y$};
+    \draw[->, color=themegray, line width=0.8pt] (0, 0) -- (0, 2.85) node[above=1pt] {\scriptsize $f(y)$};
+
+    % 左尾填充 (alpha): 0 到 0.8
+    \fill[fill=themeamber!35!themebg, domain=0.01:0.8, variable=\x]
+      (0, 0) -- plot(\x, {3.6*sqrt(\x)*exp(-1.1*\x)}) -- (0.8, 0) -- cycle;
+    % 右尾填充 (alpha): 2.8 到 4.2
+    \fill[fill=themeamber!35!themebg, domain=2.8:4.2, variable=\x]
+      (2.8, 0) -- plot(\x, {3.6*sqrt(\x)*exp(-1.1*\x)}) -- (4.2, 0) -- cycle;
+
+    % 临界点虚线
+    \draw[color=themeamber, dashed, line width=0.8pt] (0.8, 0) -- (0.8, {3.6*sqrt(0.8)*exp(-1.1*0.8)});
+    \draw[color=themeamber, dashed, line width=0.8pt] (2.8, 0) -- (2.8, {3.6*sqrt(2.8)*exp(-1.1*2.8)});
+  \end{pgfonlayer}
+
+  % 主体曲线 (main 层)
+  \draw[color=themeamber, line width=1.5pt, domain=0.01:4.2, samples=60, smooth]
+    plot(\x, {3.6*sqrt(\x)*exp(-1.1*\x)});
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themeamber] at (2.2, 3.45) {\textbf{\footnotesize 1. $\chi^2(\nu)$ 分布：偏斜非负支撑}};
+    
+    % 尾部面积标注
+    \node[anchor=south, text=themeamber] at (0.45, 0.45) {\scriptsize 面积 $\alpha$};
+    \node[anchor=south, text=themeamber] at (3.45, 0.3) {\scriptsize 面积 $\alpha$};
+
+    % 坐标轴刻度
+    \fill[color=themeamber] (0.8, 0) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $\chi^2_{1-\alpha}$};
+    \fill[color=themeamber] (2.8, 0) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $\chi^2_\alpha$};
+    \node[anchor=north east, text=themegray] at (0, -0.05) {\scriptsize $0$};
+
+    % 核心反演法则卡片
+    \node[anchor=north, fill=themefg!8!themebg, draw=themeamber, line width=0.8pt, rounded corners=2pt, text width=4.2cm, align=center] at (2.2, -0.7) {
+      \footnotesize \textbf{\color{themeamber}非对称单尾法则}\\[0.15em]
+      \scriptsize $\chi^2_{1-\alpha}(\nu) \ne -\chi^2_\alpha(\nu)$\\[0.1em]
+      \scriptsize 双侧检验需分别查左右两尾分位点
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 子图 2: t(\nu) 分布（关于零对称） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=5.2cm, yshift=0cm]
+  % 背景层：坐标轴与双尾阴影
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (-0.2, 0) -- (4.6, 0) node[right] {\footnotesize $t$};
+    \draw[->, color=themegray, line width=0.8pt] (2.2, 0) -- (2.2, 2.85) node[above=1pt] {\scriptsize $f(t)$};
+
+    % 对称双尾填充 (alpha/2)
+    \fill[fill=themecurve!35!themebg, domain=0.2:1.1, variable=\x]
+      (0.2, 0) -- plot(\x, {2.4/(1 + 2.2*(\x-2.2)^2)}) -- (1.1, 0) -- cycle;
+    \fill[fill=themecurve!35!themebg, domain=3.3:4.2, variable=\x]
+      (3.3, 0) -- plot(\x, {2.4/(1 + 2.2*(\x-2.2)^2)}) -- (4.2, 0) -- cycle;
+
+    % 临界点虚线
+    \draw[color=themecurve, dashed, line width=0.8pt] (1.1, 0) -- (1.1, {2.4/(1 + 2.2*(1.1-2.2)^2)});
+    \draw[color=themecurve, dashed, line width=0.8pt] (3.3, 0) -- (3.3, {2.4/(1 + 2.2*(3.3-2.2)^2)});
+  \end{pgfonlayer}
+
+  % 主体曲线 (main 层)
+  \draw[color=themecurve, line width=1.5pt, domain=0.2:4.2, samples=60, smooth]
+    plot(\x, {2.4/(1 + 2.2*(\x-2.2)^2)});
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themecurve] at (2.2, 3.45) {\textbf{\footnotesize 2. $t(\nu)$ 分布：关于零对称}};
+    
+    % 尾部面积标注
+    \node[anchor=south, text=themecurve] at (0.65, 0.45) {\scriptsize 面积 $\frac{\alpha}{2}$};
+    \node[anchor=south, text=themecurve] at (3.75, 0.45) {\scriptsize 面积 $\frac{\alpha}{2}$};
+
+    % 坐标轴刻度
+    \fill[color=themecurve] (1.1, 0) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $-t_{\alpha/2}$};
+    \fill[color=themecurve] (3.3, 0) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $t_{\alpha/2}$};
+    \node[anchor=north, text=themegray] at (2.2, -0.05) {\scriptsize $0$};
+
+    % 核心反演法则卡片
+    \node[anchor=north, fill=themefg!8!themebg, draw=themecurve, line width=0.8pt, rounded corners=2pt, text width=4.2cm, align=center] at (2.2, -0.7) {
+      \footnotesize \textbf{\color{themecurve}对称负号法则}\\[0.15em]
+      \scriptsize $t_{1-\alpha}(\nu) = -t_\alpha(\nu)$\\[0.1em]
+      \scriptsize $P(T > t_\alpha) = P(T < -t_\alpha) = \alpha$
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 子图 3: F(\nu_1, \nu_2) 分布（正半轴与倒数互换） ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[xshift=10.4cm, yshift=0cm]
+  % 背景层：坐标轴与长尾阴影
+  \begin{pgfonlayer}{background}
+    \draw[->, color=themefg, line width=0.8pt] (-0.2, 0) -- (4.6, 0) node[right] {\footnotesize $x$};
+    \draw[->, color=themegray, line width=0.8pt] (0, 0) -- (0, 2.85) node[above=1pt] {\scriptsize $f(x)$};
+
+    % 左尾填充 (alpha): 0 到 0.7
+    \fill[fill=themealert!35!themebg, domain=0.01:0.7, variable=\x]
+      (0, 0) -- plot(\x, {3.2*\x/(1 + 1.6*\x)^2.5}) -- (0.7, 0) -- cycle;
+    % 右尾填充 (alpha): 2.6 到 4.2
+    \fill[fill=themealert!35!themebg, domain=2.6:4.2, variable=\x]
+      (2.6, 0) -- plot(\x, {3.2*\x/(1 + 1.6*\x)^2.5}) -- (4.2, 0) -- cycle;
+
+    % 临界点虚线
+    \draw[color=themealert, dashed, line width=0.8pt] (0.7, 0) -- (0.7, {3.2*0.7/(1 + 1.6*0.7)^2.5});
+    \draw[color=themealert, dashed, line width=0.8pt] (2.6, 0) -- (2.6, {3.2*2.6/(1 + 1.6*2.6)^2.5});
+  \end{pgfonlayer}
+
+  % 主体曲线 (main 层)
+  \draw[color=themealert, line width=1.5pt, domain=0.01:4.2, samples=60, smooth]
+    plot(\x, {3.2*\x/(1 + 1.6*\x)^2.5});
+
+  % 前景标注 (foreground 层)
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=south, color=themealert] at (2.2, 3.45) {\textbf{\footnotesize 3. $F(\nu_1, \nu_2)$ 分布：倒数换序}};
+    
+    % 尾部面积标注
+    \node[anchor=south, text=themealert] at (0.4, 0.45) {\scriptsize 面积 $\alpha$};
+    \node[anchor=south, text=themealert] at (3.35, 0.25) {\scriptsize 面积 $\alpha$};
+
+    % 坐标轴刻度
+    \fill[color=themealert] (0.7, 0) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $F_{1-\alpha}$};
+    \fill[color=themealert] (2.6, 0) circle (1.8pt) node[anchor=north, text=themefg] {\scriptsize $F_\alpha$};
+    \node[anchor=north east, text=themegray] at (0, -0.05) {\scriptsize $0$};
+
+    % 核心反演法则卡片
+    \node[anchor=north, fill=themefg!8!themebg, draw=themealert, line width=0.8pt, rounded corners=2pt, text width=4.2cm, align=center] at (2.2, -0.7) {
+      \footnotesize \textbf{\color{themealert}倒数与自由度互换法则}\\[0.15em]
+      \scriptsize $F_{1-\alpha}(\nu_1,\nu_2) = \frac{1}{F_\alpha(\nu_2,\nu_1)}$\\[0.1em]
+      \scriptsize 倒数操作必须同步交换自由度次序
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+% ── 4. 底部全图全局总结 (无框轻量排印) ──
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.5, -2.1) {
+    \footnotesize \textbf{分位点换算准则：} $\chi^2$ 分布偏斜非负绝无负号关系，$t$ 分布关于零对称（取负号换尾），$F$ 分布取倒数必须同步交换自由度次序。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

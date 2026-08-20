@@ -30,7 +30,8 @@ Stable Handbook types remain `Atlas / Topic / Bridge / Integration`. Foundation 
 | create/restructure Handbook or Rules | `00_system/handbook_contract.md` |
 | large Handbook body rewrite | `00_system/handbook_writing_spec.md` |
 | LaTeX Family/Profile/dependency/Semantic API | `../infra/latex/README.md`（全局 Owner；本仓库路由见 `00_system/latex_design_system.md`） |
-| LaTeX font/table/diagram/layout | `00_system/latex_layout_spec.md` |
+| diagram placement / content plan / visual semantics | `00_system/diagram_design_spec.md` |
+| LaTeX font/table/diagram engineering/layout | `00_system/latex_layout_spec.md` |
 | Owner/duplication/dependency | `00_system/ownership_matrix.md` |
 | evidence/Rule promotion | `00_system/evidence_promotion.md` |
 | exam/PDF source reconstruction (408/数学等) | `00_system/exam_source_agent_prompt.md` → `00_system/exam_source_conversion_spec.md` → corresponding `exam_profiles/*.json` |
@@ -65,7 +66,7 @@ For Topic / Bridge / Integration deep bodies:
 ```bash
 python3 00_system/cognitive_system.py publish "<target.tex>"
 ```
-This is the only recommended deep-Handbook publish entry. New Canonical Handbook sources follow the Infra Forward Standard and prefer `\documentclass[profile=standard]{ipara-handbook}`; `kaoyan/ipara-handbook.sty` remains only a compatibility surface for existing sources. Existing Canonical documents switch Family API only when already being substantially revised or when a real layout/portability defect exists. Global KOMA/CTeX + Core/Class architecture and regression gates are owned by `../../infra/latex/README.md`; this repository's concrete visual rules are owned by `00_system/latex_layout_spec.md`. Atlas does not require publication to be complete; optional Atlas posters are derived visuals under `assets/` and use `python3 00_system/cognitive_system.py publish-view "<Atlas>/assets/<Atlas>_Poster.tex"`. Never edit PDF by hand.
+This is the only recommended deep-Handbook publish entry. New Canonical Handbook sources follow the Infra Forward Standard and prefer `\documentclass[profile=standard]{ipara-handbook}`; `kaoyan/ipara-handbook.sty` remains only a compatibility surface for existing sources. Existing Canonical documents switch Family API only when already being substantially revised or when a real layout/portability defect exists. Global KOMA/CTeX + Core/Class architecture and regression gates are owned by `../../infra/latex/README.md`; cross-domain diagram semantics are owned by `00_system/diagram_design_spec.md`, while concrete LaTeX/TikZ layout and rendering rules are owned by `00_system/latex_layout_spec.md`. Atlas does not require publication to be complete; optional Atlas posters are derived visuals under `assets/` and use `python3 00_system/cognitive_system.py publish-view "<Atlas>/assets/<Atlas>_Poster.tex"`. Never edit PDF by hand.
 
 ## Validation
 After stable changes:

@@ -1,0 +1,120 @@
+% ── V16 三大抽样分布生成谱系架构 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+% ── 1. 顶层源头节点：标准正态分布 ──
+\begin{pgfonlayer}{background}
+  \fill[fill=themecurve!12!themebg, draw=themecurve, line width=1.0pt, rounded corners=4pt]
+    (3.5, 6.4) rectangle (11.6, 7.6);
+\end{pgfonlayer}
+\begin{pgfonlayer}{foreground}
+  \node[anchor=center, align=center] at (7.55, 7.0) {
+    \textbf{\normalsize \color{themecurve}基准源：独立标准正态 $Z_i \overset{\mathrm{i.i.d.}}{\sim} N(0,1)$}\\[0.25em]
+    \scriptsize 旋转对称、单位方差、无偏基准尺度
+  };
+\end{pgfonlayer}
+
+% ── 2. 第一分支：卡方分布 \chi^2(\nu) (左侧) ──
+\begin{pgfonlayer}{background}
+  \fill[fill=themefg!8!themebg, draw=themeamber, line width=0.9pt, rounded corners=3pt]
+    (0.1, 1.6) rectangle (4.8, 5.6);
+\end{pgfonlayer}
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north west, text width=4.4cm] at (0.25, 5.45) {
+    \textbf{\color{themeamber}\normalsize 1. $\chi^2(\nu)$ 卡方分布}\\[0.25em]
+    \footnotesize \textbf{生成法则}：独立平方和\\[0.15em]
+    \quad $Y = \sum_{i=1}^\nu Z_i^2 \sim \chi^2(\nu)$\\[0.3em]
+    \footnotesize \textbf{核心性质与数字特征}：\\[0.15em]
+    $\bullet$ 支撑区间：$y \in (0, +\infty)$\\[0.15em]
+    $\bullet$ 期望方差：$E(Y) = \nu,\ \operatorname{Var}(Y) = 2\nu$\\[0.15em]
+    $\bullet$ \textbf{独立可加性}：\\[0.1em]
+    \quad $\sum_{j} \chi^2(\nu_j) = \chi^2(\sum_j \nu_j)$
+  };
+\end{pgfonlayer}
+
+% ── 3. 第二分支：t 分布 t(\nu) (中间) ──
+\begin{pgfonlayer}{background}
+  \fill[fill=themefg!8!themebg, draw=themecurve, line width=0.9pt, rounded corners=3pt]
+    (5.2, 1.6) rectangle (9.9, 5.6);
+\end{pgfonlayer}
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north west, text width=4.4cm] at (5.35, 5.45) {
+    \textbf{\color{themecurve}\normalsize 2. $t(\nu)$ 分布}\\[0.25em]
+    \footnotesize \textbf{生成法则}：正态 $\div$ 均方根卡方\\[0.15em]
+    \quad $T = \frac{Z}{\sqrt{U/\nu}},\ Z \perp\!\!\!\perp U \sim \chi^2(\nu)$\\[0.3em]
+    \footnotesize \textbf{核心性质与数字特征}：\\[0.15em]
+    $\bullet$ 零对称、单峰、厚尾（代未知方差）\\[0.15em]
+    $\bullet$ 期望：$E(T) = 0\quad (\nu > 1)$\\[0.15em]
+    $\bullet$ 方差：$\operatorname{Var}(T) = \frac{\nu}{\nu-2}\quad (\nu > 2)$
+  };
+\end{pgfonlayer}
+
+% ── 4. 第三分支：F 分布 F(\nu_1, \nu_2) (右侧) ──
+\begin{pgfonlayer}{background}
+  \fill[fill=themefg!8!themebg, draw=themealert, line width=0.9pt, rounded corners=3pt]
+    (10.3, 1.6) rectangle (15.0, 5.6);
+\end{pgfonlayer}
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north west, text width=4.4cm] at (10.45, 5.45) {
+    \textbf{\color{themealert}\normalsize 3. $F(\nu_1, \nu_2)$ 分布}\\[0.25em]
+    \footnotesize \textbf{生成法则}：独立均方卡方之比\\[0.15em]
+    \quad $F = \frac{U_1/\nu_1}{U_2/\nu_2},\ U_1 \perp\!\!\!\perp U_2 \sim \chi^2$\\[0.3em]
+    \footnotesize \textbf{核心性质与数字特征}：\\[0.15em]
+    $\bullet$ 支撑区间：$x \in (0, +\infty)$\\[0.15em]
+    $\bullet$ 期望：$E(F) = \frac{\nu_2}{\nu_2-2}\quad (\nu_2 > 2)$\\[0.15em]
+    $\bullet$ 分子分母自由度\textbf{严格不可交换}
+  };
+\end{pgfonlayer}
+
+% ── 5. 主干生成箭头 (main 层) ──
+% 顶层 -> 卡方 (平方和)
+\draw[->, color=themeamber, line width=1.5pt] (5.2, 6.4) -- (2.45, 5.6)
+  node[midway, above left, text=themeamber] {\footnotesize 平方和 $\sum Z_i^2$};
+
+% 顶层 -> t (提供标准正态分子)
+\draw[->, color=themecurve, line width=1.5pt] (7.55, 6.4) -- (7.55, 5.6)
+  node[midway, right=2pt, text=themecurve] {\footnotesize 分子 $Z \sim N(0,1)$};
+
+% 顶层 -> F (通过方差比构建)
+\draw[->, color=themealert, line width=1.5pt] (9.9, 6.4) -- (12.65, 5.6)
+  node[midway, above right, text=themealert] {\footnotesize 方差比枢轴};
+
+% ── 6. 跨卡片代数桥梁 ──
+% 卡方 -> t (短桥)
+\draw[->, color=themeamber, line width=1.4pt] (4.8, 3.8) -- (5.2, 3.8)
+  node[midway, above=1pt, text=themefg] {\scriptsize $U$};
+
+% t -> F (平方桥：T^2 ~ F(1,\nu))
+\draw[->, color=themecurve, line width=1.4pt] (9.9, 3.8) -- (10.3, 3.8)
+  node[midway, above=1pt, text=themecurve] {\scriptsize $T^2$};
+
+% 卡片下方辅助徽标 (foreground 层)
+\begin{pgfonlayer}{foreground}
+  % t 渐近
+  \node[anchor=north, fill=themebg, inner sep=1.8pt, draw=themecurve!50!themegray, rounded corners=2pt] at (7.55, 1.25) {
+    \scriptsize 渐近正态：$t(\nu) \xrightarrow{\nu \to \infty} N(0,1)$
+  };
+
+  % F 倒数
+  \node[anchor=north, fill=themebg, inner sep=1.8pt, draw=themealert!50!themegray, rounded corners=2pt] at (12.65, 1.25) {
+    \scriptsize 倒数反演：$\frac{1}{F} \sim F(\nu_2, \nu_1)$
+  };
+\end{pgfonlayer}
+
+% ── 7. 底部全图全局总结 (无框轻量排印) ──
+\begin{pgfonlayer}{foreground}
+  \node[anchor=north, text=themefg, text width=14.8cm, align=center] at (7.55, 0.4) {
+    \footnotesize \textbf{生成三要素：} 正态总体资格（基础）、方差标尺标准化（除真实 $\sigma$）、独立随机方向数（自由度）。正态与独立性缺失时精确生成链断裂。
+  };
+\end{pgfonlayer}
+
+\end{tikzpicture}

@@ -1,7 +1,9 @@
 \documentclass[UTF8,a4paper,10pt]{ctexart}
 \usepackage{ipara-handbook}
 \usepackage{booktabs,tabularx,tikz}
-\usetikzlibrary{arrows.meta,positioning}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\colorlet{themebg}{white}\colorlet{themefg}{black}\colorlet{themegray}{gray!70}
+\colorlet{themecurve}{blue!70!black}\colorlet{themealert}{red!70!black}\colorlet{themeamber}{orange!80!black}\colorlet{themegreen}{green!60!black}
 \begin{document}
 \section*{H-I01\quad 微积分建模：从局部微元到整体量}
 \textbf{定位：}本 Integration 只验收跨 Topic 组合，不重新教授单个微元或积分机制。
@@ -42,16 +44,20 @@ I_L=\int d(P,L)^2\,dm.
 
 这也给出两个高价值检查：若载体与密度共同关于某个平面/轴对称，质心必须落在相应对称集合上；转动惯量的量纲应为 $[\text{质量}][\text{长度}]^2$。如果题目只给形心，等价于取常密度；密度不均匀时不能继续把几何中心当成质心。
 
-\subsection*{3.\ 体积、弧长与功的切换}
-\begin{tabularx}{\linewidth}{@{}lX@{}}
-\toprule
-目标 & 典型微元与资格\\ \midrule
-旋转体体积 & $dV=\pi r^2\,dx$ 或壳元 $dV=2\pi r h\,dx$；先确认切片方向\\
-曲线弧长 & $ds=\sqrt{(dx)^2+(dy)^2}$；参数式用 $\sqrt{(x')^2+(y')^2}\,dt$\\
-力做功 & $dW=\mathbf F\cdot d\mathbf r$；方向和单位由位移元决定\\
-曲面通量 & $d\Phi=\mathbf F\cdot\mathbf n\,dS$；必须先定向\\
-\bottomrule
-\end{tabularx}
+\begin{center}
+\input{assets/src/micro_element_matrix_body.tikz}
+\end{center}
+
+\subsection*{3.\ 极坐标与参数曲线的几何量切片}
+极坐标下计算公共区域面积时，必须先解出交点确定分段角 $\theta_0$，再沿极径射线判断各段的上/外边界：
+\[
+A = \int_0^{\theta_0}\frac12 r_2^2(\theta)\,d\theta + \int_{\theta_0}^{\pi/2}\frac12 r_1^2(\theta)\,d\theta.
+\]
+
+\begin{center}
+\input{assets/src/polar_boundary_switch_body.tikz}
+\end{center}
+
 \subsection*{4.\ 旋转体：选择的是切片方向，不是背公式}
 同一平面区域绕轴旋转时有两种局部化：垂直于轴切片得到圆盘/垫圈，平行于轴切片得到圆柱壳。
 若已知 $y=f(x)$ 且绕 $y$ 轴，比较两条路线：反解 $x=g(y)$ 后用圆盘，或保留 $x$ 用壳元
@@ -73,7 +79,70 @@ dV=2\pi\,\underbrace{\lvert x-x_{\rm axis}\rvert}_{\text{半径}}
 最小反例是矩形 $[-1,1]\times[0,1]$ 绕 $y$ 轴：实体只是体积 $\pi$ 的单位圆柱；把左右壳直接相加会错误得到 $2\pi$。所以壳层法的第一问不是“半径是多少”，而是“\textbf{这个半径是否已经被另一侧生成过？}”
 \end{warnbox}
 
+\begin{center}
+\input{assets/src/cross_axis_shell_body.tikz}
+\end{center}
+
 圆盘/垫圈也应按“半径集合”理解：一个垂直于轴的线段若跨过旋转轴，旋转后内半径是 $0$，形成圆盘；不能把上下边界到轴的距离机械做平方差。
+
+若典型连通平面区域 $D$ 绕同一平面内、且不穿过 $D$（因而 $D$ 位于轴的一侧）的直线
+\[
+L:ax+by+c=0
+\]
+旋转一周，并且面积元扫出的体积按一次覆盖计数，可以把每个面积元 $dA$ 看成绕轴扫出的薄环体：
+\[
+dV=2\pi r(x,y)\,dA,
+\qquad
+r(x,y)=\frac{\lvert ax+by+c\rvert}{\sqrt{a^2+b^2}}.
+\]
+于是
+\[
+\boxed{V=\iint_D2\pi r(x,y)\,dA.}
+\]
+这不是新的孤立公式，而是壳层思想从“一条竖条”推广到“任意面积元”。“轴不穿过区域 + 一次覆盖”是不可省略的资格；若区域分离在轴两侧、存在自重叠或旋转后不同面积元生成同一体积层，仍必须回到覆盖审计，不能机械累加。若满足上述资格，再利用质心定义可压成 $V=2\pi A\,d(\bar P,L)$。
+
+旋转曲面面积使用另一种微元：
+\[
+dS=2\pi\,\underbrace{r}_{\text{到旋转轴距离}}\,ds.
+\]
+它局部累加“周长 $\times$ 弧长”，不能把 $ds$ 静默替换为 $dx$。若生成曲线存在重复参数化、自交或跨轴回折，还要检查不同微段旋转后是否扫到同一块曲面；否则积分会按生成重数计面积。体积有限也不推出表面积有限，两者尾部模型不同。
+
+\subsection*{5.\ 相关变化率：保持动态对象直到求导完成}
+把几何关系写成时间的恒等式 $G(x(t),y(t),\ldots)=0$，先对 $t$ 求导：
+\[
+G_x\frac{dx}{dt}+G_y\frac{dy}{dt}+\cdots=0,
+\]
+再代入题目给定时刻的长度、半径或体积。若求导前就把瞬时值代成常数，对应变化率会被错误地消掉。
+单位是这里的接口语言：$\mathrm m/\mathrm s$、$\mathrm m^2/\mathrm s$、$\mathrm m^3/\mathrm s$ 分别提示长度、面积、体积的变化率对象。
+
+\subsection*{6.\ 压力与做功：强度必须乘对几何载体}
+变力做功沿位移累积 $dW=F(x)\,dx$；抽水时局部贡献为
+\[
+dW=\underbrace{\rho g A(y)\,dy}_{\text{薄层重量}}
+\underbrace{D(y)}_{\text{提升距离}}.
+\]
+
+\begin{tcolorbox}[title=质心法为什么能压缩整段抽水积分]
+若所有质量元最终都被提升到同一个出口高度 $H$，且只计算克服重力所做的功，则
+\[
+W=\int g(H-y)\,dm
+=Mg\left(H-\frac1M\int y\,dm\right)
+=Mg(H-\bar y).
+\]
+所以“把全部质量集中在质心”不是新的经验公式，而是\textbf{积分线性性把所有高度差的质量加权平均压缩成质心高度}。直觉上，每一小块都要爬不同距离；质心记录的正是这些距离的质量加权平均。
+
+这条压缩只有在最终高度统一、目标量只有重力势能变化时才成立。若不同质量元终点不同，或还要计入压强损失、其他能量项，就必须回到逐层微元，不能套质心式。
+\end{tcolorbox}
+
+\begin{center}
+\input{assets/src/pumping_work_depth_body.tikz}
+\end{center}
+
+静水压力则在面积上累积，取从液面量起的竖直深度 $h$：
+\[
+dF=\rho gh\,dA=\rho gh\,L(h)\,dh.
+\]
+“深度”不是任意坐标值，“移动距离”也不是切片位置；二者都要从物理对象重新定义。��应按“半径集合”理解：一个垂直于轴的线段若跨过旋转轴，旋转后内半径是 $0$，形成圆盘；不能把上下边界到轴的距离机械做平方差。
 
 若典型连通平面区域 $D$ 绕同一平面内、且不穿过 $D$（因而 $D$ 位于轴的一侧）的直线
 \[

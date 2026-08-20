@@ -1,0 +1,16 @@
+\begin{tikzpicture}[color=themefg,text=themefg,>=Stealth,x=8.2cm,y=3.6cm]
+  \draw[themefg,line width=.8pt,-{Stealth[length=1.7mm]}] (-.08,0)--(1.08,0) node[below] {$x$};
+  \draw[themefg,line width=.8pt,-{Stealth[length=1.7mm]}] (0,-.08)--(0,.72);
+  \fill[themecurve,opacity=.07] plot[domain=0:1,samples=80] (\x,{.55*\x*(1-\x)}) -- plot[domain=1:0,samples=80] (\x,{-.55*\x*(1-\x)}) -- cycle;
+  \draw[themeamber,densely dashed,line width=1.2pt] plot[domain=0:1,samples=80] (\x,{.55*\x*(1-\x)});
+  \draw[themeamber,densely dashed,line width=1.2pt] plot[domain=0:1,samples=80] (\x,{-.55*\x*(1-\x)});
+  \draw[themecurve,line width=2pt] plot[domain=0:1,samples=100] (\x,{.40*\x*(1-\x)*(1-.45*\x)});
+  \fill[themealert] (0,0) circle (.8pt); \fill[themealert] (1,0) circle (.8pt);
+  \node[fill=themebg,inner sep=1pt,anchor=north] at (0,-.02) {$a$};
+  \node[fill=themebg,inner sep=1pt,anchor=north] at (1,-.02) {$b$};
+  \node[fill=themebg,inner sep=1pt,text=themeamber,anchor=south west] at (.57,.12) {$\pm\dfrac M2(x-a)(b-x)$};
+  \node[fill=themebg,inner sep=1pt,text=themecurve,anchor=south west] at (.31,.055) {$f(x)$};
+  \draw[themegray,densely dotted] (.5,-.04)--(.5,.18);
+  \node[font=\small,text=themegray,anchor=north] at (.5,-.16)
+  {$f(a)=f(b)=0,\ \lvert f''\rvert\le M$：两个端点零约束把函数困在二次包络内。};
+\end{tikzpicture}

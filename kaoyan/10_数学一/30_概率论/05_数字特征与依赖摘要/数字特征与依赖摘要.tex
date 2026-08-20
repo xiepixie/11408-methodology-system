@@ -29,6 +29,22 @@
 \definecolor{warn}{RGB}{136,68,63}
 \definecolor{purple}{RGB}{87,72,116}
 
+% ── 双主题图解语义色彩（LaTeX 打印高对比白底）──
+\definecolor{themebg}{HTML}{FFFFFF}
+\definecolor{themefg}{HTML}{111111}
+\definecolor{themegray}{HTML}{666666}
+\definecolor{themecurve}{HTML}{1D63B8}
+\definecolor{themealert}{HTML}{C53030}
+\definecolor{themeamber}{HTML}{B86E00}
+\definecolor{themeblue}{HTML}{1D63B8}
+
+\newenvironment{handbookdiagram}{\par\vspace{0.4em}\noindent\begin{center}}{\end{center}\vspace{0.4em}}
+\newcommand{\diagramcaption}[1]{\par\vspace{0.3em}{\small\textbf{#1}}}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
 \hypersetup{
   colorlinks=true,
   linkcolor=deep,
@@ -350,6 +366,12 @@ $\lvert\rho\rvert=1$ 当且仅当 $Y=aX+b$ 几乎处处成立，其中 $a$ 的�
 
 独立且二阶矩存在 $\Rightarrow \operatorname{Cov}(X,Y)=0$，但逆命题一般不成立。例：$X\sim U(-1,1),Y=X^2$ 时，奇偶对称使 $E(XY)=E(X^3)=0$，故不相关；然而 $Y$ 完全由 $X$ 决定，显然不独立。只有联合正态这一特殊结构把“不相关”升级为“独立”。
 
+\begin{handbookdiagram}
+\resizebox{0.92\linewidth}{!}{%
+\input{assets/src/v12_zero_cov_non_independent_body.tikz}%
+}
+\end{handbookdiagram}
+
 \subsection{协方差矩阵与线性组合}
 
 对随机向量 $\boldsymbol X=(X_1,\ldots,X_p)^{\mathsf T}$，
@@ -451,6 +473,12 @@ E[X-m(Y)\mid Y]=0.
 \]
 因此全方差不是记忆公式，而是“层内噪声 + 层间均值差异”的正交分解。全协方差完全沿同一拆分，只需把平方换成交叉乘积。
 \end{methodbox}
+
+\begin{handbookdiagram}
+\resizebox{0.92\linewidth}{!}{%
+\input{assets/src/v11_total_variance_decomposition_body.tikz}%
+}
+\end{handbookdiagram}
 
 \begin{methodbox}{分布函数/密度的凸混合：先恢复选择层，再直接算矩}
 若

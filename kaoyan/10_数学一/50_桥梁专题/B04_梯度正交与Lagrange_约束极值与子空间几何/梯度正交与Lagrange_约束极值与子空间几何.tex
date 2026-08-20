@@ -27,12 +27,19 @@ T_xM=\ker Dg_x
 
 这条链说明，Lagrange 乘子不是凭空出现的“新算法”，而是\textbf{约束线性化 + 正交补}的坐标表达。
 
-\section{第一步：约束真正限制的是“允许小位移”}
-设可行集
+\section{第一步：先定义正则点，再谈“允许小位移”}
+设单约束可行集
 \[
-M=\{x:g(x)=c\}.
+M=\{x:g(x)=c\},
+\qquad g:\mathbb R^n\to\mathbb R.
 \]
-在一个正则点 $x$，若沿可行曲线 $\gamma(t)\subset M$ 运动且 $\gamma(0)=x$，则
+本册称 $x\in M$ 为正则点，是指
+\[
+\nabla g(x)\neq0.
+\]
+更一般地，多约束 $g:\mathbb R^n\to\mathbb R^k$ 的正则点要求 Jacobian $Dg_x$ 满行秩 $k$。这个条件保证一阶线性化真正看见了局部约束几何。
+
+现在若沿可行曲线 $\gamma(t)\subset M$ 运动且 $\gamma(0)=x$，则
 \[
 g(\gamma(t))\equiv c.
 \]
@@ -108,7 +115,7 @@ T_xM=\ker Dg_x.
 \]
 若约束梯度线性无关，即 $Dg_x$ 满行秩，则
 \[
-T_xM^\perp=\operatorname{Im}(Dg_x)^T
+T_xM^\perp=\operatorname{Im}(Dg_x^T)
 =\operatorname{span}\{\nabla g_1,\dots,\nabla g_k\}.
 \]
 于是
@@ -119,7 +126,7 @@ T_xM^\perp=\operatorname{Im}(Dg_x)^T
 }
 \]
 
-因此 Lagrange 乘子 $\lambda_i$ 可以理解为：\textbf{目标梯度在各约束法向基中的坐标。}
+因此 Lagrange 乘子 $\lambda_i$ 可以理解为：\textbf{目标梯度在约束梯度这组法向基中的坐标。}这里依赖满行秩；若约束梯度线性相关，乘子表示可能不唯一，甚至一阶线性化本身失真。
 
 \section{为什么需要正则性：奇异约束会让“梯度法向”失去信息}
 若单约束点满足
@@ -202,7 +209,7 @@ B00 / 线代 Topic01 & 内积、正交、投影 & 把“一阶变化为零”翻
 \end{tabular}
 
 \section{更深一层：梯度本身依赖内积，微分才是第一对象}
-$Df_x$ 本质上是一个线性泛函。之所以能够把它写成向量 $\nabla f$，是因为欧氏内积允许用
+$Df_x$ 本质上是一个线性泛函，即把允许位移 $h$ 线性地映成一阶变化率。之所以能够把它写成向量 $\nabla f$，是因为欧氏内积允许用
 \[
 Df_x(h)=\langle\nabla f,h\rangle
 \]

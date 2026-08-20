@@ -21,7 +21,7 @@ B03 因此不是“高数判别式很像线代正定判据”，而是**二阶�
 
 ## 母接口
 
-在驻点附近：
+先固定对象：$H=(\partial^2 f/\partial x_i\partial x_j)$ 是点处 Hessian 矩阵，真正对方向 $h$ 取值的是二次型 $h^THh$。在驻点附近：
 
 $$
 f(x+h)=f(x)+\frac12 h^T H h+o(\lVert h\rVert^2),
@@ -30,7 +30,7 @@ $$
 因此：
 
 $$
-\boxed{\text{Local Second-Order Shape}\rightarrow\text{Quadratic Form}}
+\boxed{\text{二阶局部形状}\longrightarrow\text{二次型符号结构}}
 $$
 
 ## 本桥拥有
@@ -44,7 +44,7 @@ B01、多元 Taylor、线代二次型与正定性。
 ## 边界与反桥
 
 - Hessian 是点处二阶导数信息，二次型是其局部模型中的代数表示；两者不是同一对象；
-- Hessian 判别失效时不能把“半正定”直接解释成极小值。
+- 不能把“Hessian 奇异”机械等同于“判别失效”：若二次型已经不定，即使奇异仍可判鞍点；真正需要转高阶的是半正定/半负定并存在零方向的情形。
 
 ## 扩展
 
@@ -64,4 +64,4 @@ Rayleigh quotient、广义特征值与更一般约束二次型只保留必要接
 - Published View：[Hessian与二次型_二阶局部形状与正定性.pdf](../../../90_publish/math1/Hessian与二次型_二阶局部形状与正定性.pdf)
 
 ## 第一轮审阅
-已核对 Hessian 二阶局部模型到二次型符号判定的交接；明确半正定时判别可能失效。下一轮用退化驻点、方向限制和合同变换题验证。
+已核对 Hessian 二阶局部模型到二次型符号判定的交接；明确“奇异”与“二阶信息不足”不能混同。下一轮用退化驻点、奇异不定矩阵、方向限制和合同变换题验证。

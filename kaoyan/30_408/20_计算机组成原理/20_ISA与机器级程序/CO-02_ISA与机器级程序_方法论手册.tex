@@ -153,26 +153,49 @@ N_{k+1}=\bigl(N_k-U_k\bigr)2^{w_k},
 \subsection{定长与变长、RISC 与 CISC}
 定长格式让字段位置和取指边界规整，便于译码和并行取指；变长格式可以提高代码密度，却增加边界识别和译码成本。RISC/CISC 是一组设计权衡：指令规整度、内存操作约束、代码密度、译码复杂度、编译器与硬件分工都可能参与，不能推出“RISC 必然硬布线”或“CISC 必然微程序”。
 
-\section{从程序意图到可执行映像：四个转换阶段}
-“高级语言能运行”不是编译器一步把文字变成 CPU 动作。稳定的生命周期是：
+\section{从程序意图到可执行映像：先按中间产物拆阶段}
+“高级语言能运行”不是编译器一步把文字变成 CPU 动作。408 的阶段化模型应先按\kw{输入/输出产物}拆开：
 \[
-\text{source}\xrightarrow{\text{compiler}}\text{assembly/relocatable object}
-\xrightarrow{\text{assembler}}\text{machine object}
-\xrightarrow{\text{linker}}\text{executable image}
-\xrightarrow{\text{loader}}\text{process address space}.
+\text{Source}
+\xrightarrow{\text{preprocess}}
+\text{Translation Unit}
+\xrightarrow{\text{compiler}}
+\text{Assembly}
+\xrightarrow{\text{assembler}}
+\text{Relocatable Object}
+\xrightarrow{\text{linker}}
+\text{Executable / Shared Object}.
 \]
-编译器把表达式、控制流和函数调用映射为 ISA 可表达的指令与数据布局；汇编器把助记符和伪指令解析为机器码、符号表和重定位记录；链接器解析跨目标文件的符号引用，合并代码/数据段并完成或保留重定位；装入器把可执行映像放入进程地址空间，设置入口 PC、栈和必要的动态绑定。每一步都可能改变表示，但必须保持最终可观察语义。
+程序真正开始运行时才进入下一条 OS 路径：
+\[
+\text{Executable}
+\xrightarrow{\text{loader / exec}}
+\text{Process Image + Entry State}
+\xrightarrow{\text{CPU}}
+\text{Execution}.
+\]
 
-这条链也解释了三个边界：编译器选择不等于 ISA 必需序列；链接地址不等于运行时物理地址；装入完成不等于第一条指令已经提交。题目给出目标文件、符号或重定位项时，先判断它处在哪一个阶段，再决定谁能修改它。
+预处理处理宏、条件编译和头文件展开；编译器把高级语言语义映射为 ISA 可表达的指令与数据布局；汇编器把助记符、伪指令和标签变成机器码，并产生符号表与重定位记录；链接器解析跨目标文件的符号引用、安排代码/数据位置并据此修补或保留重定位；装入器则消费已经形成的可执行映像，建立进程地址空间、初始栈和入口状态。命令行中的 \code{gcc} 常作为 driver 一次串起多步，但工具被一个命令包装，不表示这些语义阶段合并了。
+
+\begin{methodbox}{题目问“生成可执行文件”时在哪里停止？}
+若题目问“高级语言源程序怎样转换成可执行目标文件”，链条停止在\kw{链接}：
+\[
+\boxed{\text{预处理}\to\text{编译}\to\text{汇编}\to\text{链接}}.
+\]
+Loader 消费 executable 并开始建立运行环境，它不属于“把源程序生成可执行文件”的最后一步。
+\end{methodbox}
+
+这条链也解释了四个边界：编译器选择不等于 ISA 必需序列；可重定位目标文件还允许存在未决外部引用；链接地址不等于运行时物理地址；装入完成不等于第一条指令已经提交。题目给出目标文件、符号或重定位项时，先判断它处在哪一个阶段，再决定谁有足够信息修改它。
 
 \begin{center}\small
 \begin{tabularx}{\linewidth}{L{2.0cm}YY}
 \toprule
 阶段 & 主要输入/输出 & 不能直接推出的事实\\\midrule
-编译 & 源语言语义 $\to$ 汇编/目标代码 & 唯一指令序列或固定寄存器分配\\
-汇编 & 助记符/伪指令 $\to$ 机器码、符号、重定位 & 所有地址已经最终确定\\
-链接 & 多个目标文件 $\to$ 可执行映像 & 已经位于某个进程的物理内存\\
-装入 & 映像 $\to$ 进程地址空间与入口状态 & 已经完成执行或不会缺页\\
+预处理 & 源文件 $\to$ 展开后的翻译单元 & 已经生成机器指令\\
+编译 & 高级语言语义 $\to$ 汇编/低级表示 & 唯一指令序列或固定寄存器分配\\
+汇编 & 汇编源码 $\to$ 可重定位目标文件 & 所有符号和地址已经最终确定\\
+链接 & 多个目标文件/库 $\to$ 可执行或共享对象 & 已经位于某个进程的物理内存\\
+装入 & 可执行映像 $\to$ 进程映像与入口状态 & 所有页面已驻留或程序已经执行\\
 \bottomrule
 \end{tabularx}\end{center}
 
@@ -238,6 +261,15 @@ Load 的宽度决定读几个字节；signed/unsigned load 决定读入寄存器
 
 \subsection{控制流}
 条件结构通常变为比较、条件选择下一 PC 和无条件跳转形成回边。分支目标可以是 PC 相对、寄存器间接或 ISA 规定的其他形式；比较是否产生显式标志、是否与分支合并，由 ISA 决定。
+
+\subsection{比较结果怎样成为条件转移的输入}
+CO-01 负责产生有限宽度减法结果与 $ZF/CF/SF/OF$ 等候选状态；本册只解释 ISA 怎样消费这些证据。对 408 常见的“先做 $A-B$、再查条件码”模型：
+\begin{itemize}
+  \item $A=B$ 时，结果为零，所以 $ZF=1$；
+  \item 有符号比较不能只看 $SF$。overflow 会让机器结果的表面符号与数学符号相反，因此常见条件码用 $SF\oplus OF$ 校正：$A<B$ 对应 $SF\oplus OF=1$，$A>B$ 还需 $ZF=0$ 且 $SF\oplus OF=0$；
+  \item 无符号比较看 zero 与 carry/borrow，但必须先锁定题设对 $CF$ 的口径。若题目规定减法 $CF=1$ 表示借位，则 $A<B$ 对应 $CF=1$，$A>B$ 对应 $ZF=0\land CF=0$。
+\end{itemize}
+这不是“所有 ISA 都有同一组 flags”的宣言：有的 ISA 用 no-borrow carry，有的比较指令直接写普通寄存器，有的分支直接比较两个寄存器。稳定方法是先写\textbf{比较产生了什么逻辑谓词}，再按题设把谓词映射到 condition code / branch condition。
 
 \subsection{函数调用：ISA 与 ABI 的分层}
 函数调用至少有四个状态交接：参数/返回值位置、返回地址、保存责任、栈帧布局。ISA 提供跳转、寄存器和访存等原语；ABI 约定哪些寄存器 caller-saved/callee-saved、参数何时溢出到栈、返回值放在哪里。ABI 不是硬件自动保存规则，具体名称也不能跨架构照抄。
@@ -323,6 +355,7 @@ PC 相对 & $\neq$ & 绝对地址 & 相对目标由 PC 基准和位移形成；�
   \item 解码字段预算，明确 opcode、register、immediate 和 function 各占哪些位；
   \item 对每个内存操作先写 $EA$ 生成式，再区分 value、pointer、address-of-address 和访存次数；
   \item 若是数组/栈帧，先乘元素大小或确认偏移单位；若是多字节对象，画地址—字节表；
+  \item 若是 compare / 条件转移，先写实际比较谓词和 $A-B$；signed 用 $SF\oplus OF$ 校正结果符号，unsigned 先确认 carry/borrow 口径，再读取对应条件；
   \item 函数题分开 ISA 原语、ABI 约定和编译器选择；不要把某架构寄存器名称当成普适规则；
   \item 最后把语义交给 CO-03/CO-04，独立检查状态差、地址单位、写回位置和异常可见效果。
 \end{enumerate}
@@ -474,15 +507,14 @@ ISA 只提供跳转、寄存器读写和访存等原语；ABI 规定跨编译单
 
 \subsection{汇编表示与目标文件：助记符不是最终机器状态}
 
-汇编源到运行映像至少经历四个阶段：
+本册后文再次遇到工具链时只保留产物边界：
 \[
-\text{Source}
-\xrightarrow{compiler}\text{Assembly / Relocatable Object}
-\xrightarrow{assembler}\text{Machine Object}
-\xrightarrow{linker}\text{Executable Image}
-\xrightarrow{loader}\text{Process Address Space}.
+\text{Assembly}
+\xrightarrow{assembler}\text{Relocatable Object}
+\xrightarrow{linker}\text{Executable / Shared Object}
+\xrightarrow{loader}\text{Process Image}.
 \]
-编译器负责把高级语言语义映射为 ISA 可表达的指令和数据布局；汇编器解析助记符、伪指令、标签并生成机器码、符号表和重定位记录；链接器解析跨目标文件的符号引用、合并段并完成或保留重定位；装入器设置进程地址空间、入口 PC、栈和动态绑定。链接地址不是运行时物理地址，装入完成也不表示第一条指令已经提交。
+可重定位目标文件已经含机器指令和静态数据，但还可能保留未定义外部符号以及“将来必须修补哪里”的 relocation records。链接器拥有多个模块的整体布局后，才能完成 symbol resolution 与相应 relocation；Loader 再把可执行表示转成运行时地址空间。\kw{链接阶段的重定位}与\kw{运行期 VA $\to$ PA 地址翻译}不是同一个动作：前者修补文件/映像中的地址相关引用，后者由 OS+MMU 在程序运行时解释虚拟地址。完整链接/装入机制转交 OS-00，运行期地址翻译转交 OS-04 / CO-07。
 
 x86 等变长指令的字节流必须先识别前缀、操作码、ModR/M、SIB、位移和立即数字段，再确定指令长度；Intel 与 AT\&T 语法的操作数顺序、立即数前缀和内存表达式书写不同，但最终机器语义应一致。伪指令可能展开成一条或多条真实指令，题目问“机器码长度”时必须确认是否已经展开。
 
