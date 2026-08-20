@@ -1,36 +1,260 @@
-\documentclass[UTF8,a4paper,10pt]{ctexart}
-\usepackage[a4paper,margin=1.75cm]{geometry}
-\usepackage{amsmath,amssymb,booktabs,tabularx}
-\usepackage[most]{tcolorbox}
-\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
-\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\documentclass[profile=standard]{ipara-handbook}
+\title{B04｜梯度、正交与 Lagrange：约束极值与子空间几何}
+\author{}
+\date{}
 \begin{document}
-\section*{B04\quad 梯度、正交与 Lagrange：约束极值与子空间几何}
-\textbf{依赖：}B00+B01。只解释可行方向、法方向和梯度平行的接口。
-\begin{tcolorbox}[title=母接口]
-约束 $g(x)=c$ 的切空间满足 $\nabla g(x)\cdot h=0$。
-若正则点上 $f$ 沿所有可行方向的一阶变化均为零，则
+\maketitle
+
+\begin{quote}
+本册回答：\textbf{为什么“约束极值”最后会出现梯度线性相关？Lagrange 乘子到底是在解一个公式，还是在描述“允许方向”与“禁止方向”的几何分解？}
+\end{quote}
+
+\section{本册定位：把约束先线性化，再用正交补读极值条件}
+高数 Topic07 Own 梯度、约束极值和 Lagrange 方法；B01 Own 局部线性化；B00 Own 内积/正交；线代 Topic03 Own kernel、row space 与正交补。B04 只 Own 一条接口：
 \[
-\nabla f(x)=\lambda\nabla g(x).
+\boxed{
+\text{约束 }g(x)=c
+\xrightarrow{\text{B01}}
+Dg_x(h)=0
+\xrightarrow{\text{kernel}}
+T_xM=\ker Dg_x
+\xrightarrow{\perp}
+\text{法空间}
+\xrightarrow{df|_{T_xM}=0}
+\nabla f\text{ 落入法空间}
+}
 \]
-\end{tcolorbox}
-\subsection*{1.\ 从允许方向推出乘子}
-在正则约束 $\nabla g\ne0$ 下，法空间由 $\nabla g$ 张成。约束极值要求 $\nabla f$ 对切空间正交，故必须落入法空间。多约束时写成
+
+这条链说明，Lagrange 乘子不是凭空出现的“新算法”，而是\textbf{约束线性化 + 正交补}的坐标表达。
+
+\section{第一步：约束真正限制的是“允许小位移”}
+设可行集
 \[
-\nabla f=\lambda_1\nabla g_1+\cdots+\lambda_k\nabla g_k,
+M=\{x:g(x)=c\}.
 \]
-前提是约束梯度线性独立。
-\subsection*{2.\ 算法边界}
-Lagrange 方程只生成内部正则候选；还需检查约束集合是否为空、边界/端点、奇异点和全局比较。若 $\nabla g=0$，不能机械除以梯度或直接套乘子。
-\subsection*{3.\ 连接投影与最小距离}
-点到平面的最短距离是把位移投影到法方向；约束优化则把目标梯度投影到切空间后要求其为零。二者共享正交分解，但优化目标、可行集和正则条件不同。
-\subsection*{4.\ 最小例子与调用}
-求 $x+y=1$ 上距原点最近点。令 $f=x^2+y^2,g=x+y$，则
+在一个正则点 $x$，若沿可行曲线 $\gamma(t)\subset M$ 运动且 $\gamma(0)=x$，则
 \[
-(2x,2y)=\lambda(1,1),\qquad x+y=1,
+g(\gamma(t))\equiv c.
 \]
-得到 $x=y=1/2$。几何上这是原点到直线的法向投影。题面出现“约束下最值/最近点”时，先找可行切向与法向资格。
-\begin{corebox}{检查句}
-我找出的切向/法向对象是什么？约束梯度是否独立且非零？候选之后是否补齐边界和全局比较？
-\end{corebox}
+对 $t$ 求导：
+\[
+Dg_x(\gamma'(0))=0.
+\]
+所以所有可行切向量都必须落在
+\[
+\boxed{\ker Dg_x}.
+\]
+在常见正则条件下，这个 kernel 正好就是约束曲面在 $x$ 处的切空间。
+
+这一步非常重要：约束并不是“多了一条方程”，而是\textbf{删掉了一些可移动方向}。
+
+\section{标量约束：为什么梯度就是法向}
+若 $g:\mathbb R^n\to\mathbb R$ 可微，则
+\[
+Dg_x(h)=\nabla g(x)^T h.
+\]
+因此
+\[
+\ker Dg_x=\{h:\nabla g(x)^Th=0\}=\nabla g(x)^\perp.
+\]
+于是切空间与法方向形成正交分解：
+\[
+T_xM=\ker Dg_x,
+\qquad
+N_xM=\operatorname{span}\{\nabla g(x)\}.
+\]
+
+这就是高数“梯度垂直等值面”和线代“kernel 的正交补”真正接上的位置。
+
+\section{极值条件：目标在所有允许方向上的一阶变化必须为零}
+若 $x$ 是约束上的局部极值点，那么对任何可行切向 $h\in T_xM$，都必须有
+\[
+Df_x(h)=0.
+\]
+对标量目标函数
+\[
+Df_x(h)=\nabla f(x)^Th,
+\]
+所以
+\[
+\nabla f(x)\perp T_xM.
+\]
+而 $T_xM^\perp=N_xM$，因此
+\[
+\boxed{\nabla f(x)\in N_xM.}
+\]
+单个正则约束时法空间由 $\nabla g$ 张成，于是
+\[
+\boxed{\nabla f(x)=\lambda\nabla g(x).}
+\]
+
+所以“梯度平行”只是最终的坐标句；真正的母句是：
+\[
+\boxed{\text{目标的一阶变化在所有允许方向上都必须消失。}}
+\]
+
+\section{多约束：乘子其实是法空间坐标}
+若
+\[
+g_1(x)=c_1,\dots,g_k(x)=c_k,
+\]
+把约束组合成
+\[
+g:\mathbb R^n\to\mathbb R^k.
+\]
+其 Jacobian $Dg_x$ 的 kernel 给切空间：
+\[
+T_xM=\ker Dg_x.
+\]
+若约束梯度线性无关，即 $Dg_x$ 满行秩，则
+\[
+T_xM^\perp=\operatorname{Im}(Dg_x)^T
+=\operatorname{span}\{\nabla g_1,\dots,\nabla g_k\}.
+\]
+于是
+\[
+\boxed{
+\nabla f(x)
+=\lambda_1\nabla g_1(x)+\cdots+\lambda_k\nabla g_k(x).
+}
+\]
+
+因此 Lagrange 乘子 $\lambda_i$ 可以理解为：\textbf{目标梯度在各约束法向基中的坐标。}
+
+\section{为什么需要正则性：奇异约束会让“梯度法向”失去信息}
+若单约束点满足
+\[
+\nabla g(x)=0,
+\]
+则线性化方程
+\[
+Dg_x(h)=0
+\]
+对所有 $h$ 都成立，无法正确刻画真实可行方向。
+
+例如约束
+\[
+g(x,y)=x^2+y^2=0
+\]
+的可行集实际上只有原点，但在原点 $\nabla g=0$。若机械套
+\[
+\nabla f=\lambda\nabla g,
+\]
+就会要求 $\nabla f=0$，这显然不是“原点作为唯一可行点取得约束极值”的必要条件。
+
+所以“约束梯度非零/多约束梯度独立”不是计算细节，而是保证\textbf{一阶线性化没有丢掉约束几何}的资格门。
+
+\section{母例一：最近点为什么也是 Lagrange}
+在直线
+\[
+x+y=1
+\]
+上找离原点最近点。令
+\[
+f(x,y)=x^2+y^2,
+\qquad g(x,y)=x+y.
+\]
+切向方向满足
+\[
+h_1+h_2=0,
+\]
+即由 $(1,-1)$ 张成。约束极值要求目标梯度
+\[
+\nabla f=(2x,2y)
+\]
+对该切向正交，因此必须平行于法向 $(1,1)$：
+\[
+(2x,2y)=\lambda(1,1).
+\]
+结合 $x+y=1$ 得
+\[
+x=y=\frac12.
+\]
+
+这题同时可以由 B00 看成正交投影。两条路线共享“残差/梯度没有切向分量”这一结构，但一个研究点到子空间的距离，一个研究一般目标函数的约束驻点。
+
+\section{母例二：为什么闭区域最值不能只解乘子方程}
+Lagrange 只描述\textbf{光滑正则约束流形内部}的一阶候选。若题目是在闭区域上求全局最值，还必须把候选全集补齐：
+\begin{itemize}
+\item 内部驻点；
+\item 每一条光滑边界上的正则约束候选；
+\item 边界交点、端点、角点；
+\item 约束奇异点；
+\item 最后做函数值比较。
+\end{itemize}
+
+因此
+\[
+\boxed{\nabla f=\lambda\nabla g}
+\]
+从来不是“得到极值”的充分结论，它只是一类候选生成器。
+
+\section{B04 串起哪些章节}
+\begin{tabular}{p{0.23\linewidth}p{0.30\linewidth}p{0.39\linewidth}}
+\hline
+Owner / 下游 & 提供对象 & B04 的翻译责任\\
+\hline
+B01 / 高数 Topic07 & 约束的一阶线性化 $Dg_x$ & 把允许方向读成 $\ker Dg_x$\\
+线代 Topic03 & kernel、row space、正交补 & 把切空间的正交补读成法空间\\
+B00 / 线代 Topic01 & 内积、正交、投影 & 把“一阶变化为零”翻译成梯度无切向分量\\
+高数 Topic07 & Lagrange 方程与全局最值 & 输出乘子候选的几何来源与资格边界\\
+\hline
+\end{tabular}
+
+\section{更深一层：梯度本身依赖内积，微分才是第一对象}
+$Df_x$ 本质上是一个线性泛函。之所以能够把它写成向量 $\nabla f$，是因为欧氏内积允许用
+\[
+Df_x(h)=\langle\nabla f,h\rangle
+\]
+把线性泛函表示成一个向量。
+
+所以更稳定的抽象表达是
+\[
+Df_x|_{T_xM}=0.
+\]
+“梯度平行”是选定标准欧氏内积之后的向量化版本。这一背景能帮助阻断一个常见误区：换到非标准内积后，“梯度向量”的具体坐标会变化，但“微分在所有切向上为零”这条极值条件不变。
+
+\section{反桥梁：最容易错误升级的结论}
+\begin{tabular}{p{0.20\linewidth}p{0.04\linewidth}p{0.20\linewidth}p{0.48\linewidth}}
+\hline
+A & & B & 真正区别\\
+\hline
+$\nabla f\parallel\nabla g$ & $\neq$ & 已得到极值 & 只是正则约束下的一阶必要候选\\
+$\nabla g=0$ & $\neq$ & 没有约束 & 可能是约束表示奇异，一阶线性化失真\\
+切空间 & $\neq$ & 整个可行集 & 前者只是一点处的一阶线性近似\\
+法空间 & $\neq$ & 一个固定法向量 & 多约束时法空间通常是多个约束梯度张成的子空间\\
+\hline
+\end{tabular}
+
+\section{调用信号与退出边界}
+题面出现“约束最值、最近点、切线/切平面、法向、多约束”时，先问：
+\begin{enumerate}
+\item 当前可行集在候选点是否正则？
+\item 约束线性化 $Dg_x(h)=0$ 给出了哪些允许方向？
+\item 目标的一阶变化是否在这些方向上全部为零？
+\item 乘子候选之后是否还缺奇异点、端点、边界层级与全局比较？
+\end{enumerate}
+
+若题目进一步问约束下二阶充分条件，需要把 Hessian 限制到切空间上；这一层可作为 B03+B04 的 Extension，不在数学一主干机械展开。
+
+\section{一页压缩}
+B04 最后只保留一条母句：
+\[
+\boxed{
+T_xM=\ker Dg_x,
+\qquad
+Df_x|_{T_xM}=0.
+}
+\]
+在标准欧氏内积下，它等价于
+\[
+\boxed{\nabla f(x)\in T_xM^\perp.}
+\]
+单约束正则点再压缩成
+\[
+\nabla f=\lambda\nabla g.
+\]
+
+如果能从“允许方向”重新生成乘子公式，而不是从公式反背几何，B04 才真正掌握。
+
 \end{document}

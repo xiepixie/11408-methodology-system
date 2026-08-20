@@ -1,89 +1,219 @@
-\documentclass[11pt,a4paper]{ctexart}
-\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
-\usepackage{amsmath,amssymb,mathtools}
-\usepackage{booktabs,tabularx,array}
-\usepackage{enumitem}
-\usepackage[most]{tcolorbox}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning}
-\usepackage{xcolor,fancyhdr,hyperref,bookmark,microtype}
-\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
-\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}
-\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
-\definecolor{deep}{RGB}{42,58,73}\definecolor{soft}{RGB}{245,247,249}\definecolor{warn}{RGB}{136,68,63}\definecolor{greenish}{RGB}{57,92,76}\definecolor{purple}{RGB}{87,72,116}
-\hypersetup{colorlinks=true,linkcolor=deep,pdftitle={B05 线性方程与线性微分方程：一点加 Kernel}}
-\pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{数学一 · Bridge B05}}\rhead{\small\color{deep}一点 + Kernel}\cfoot{\small\thepage}\renewcommand{\headrulewidth}{0.4pt}
-\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}
-\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
-\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}
-\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+\documentclass[profile=standard]{ipara-handbook}
+\title{B05｜线性方程与线性微分方程：一点加核空间}
+\author{}
+\date{}
 \begin{document}
-\begin{center}{\LARGE\textbf{B05｜线性方程与线性微分方程：一点 + Kernel}}\\[0.4em]
-{\large 同一条线性结构，为什么“一个解”能生成全部解？}\end{center}
-\vspace{0.4em}
-\begin{quote}本 Bridge 不拥有线代方程组或 ODE 的完整求解技巧，只解释一条可反复调用的接口：先找一个满足目标的特解，再沿着齐次核的自由方向移动。\end{quote}
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-\section{Position 与两侧 Owner}
-线代 Topic04 Owns $Ax=b$ 的可达性、kernel 和仿射解集；高数 Topic12 Owns $L[y]=f$ 的解族、初值与特解。B05 只 Own 两侧之间的共享结构和调用边界。
+\maketitle
 
-\section{Mother Interface：一点 + Kernel}
-设 $T:V\to W$ 是线性映射。若 $x_0$ 满足 $T(x_0)=b$，任意另一个解 $x$ 满足
+\begin{quote}
+本册回答：\textbf{为什么线性方程组和线性微分方程都会出现“特解 + 齐次通解”？这不是两门课碰巧使用同一句口诀，而是同一个线性映射逆像结构。}
+\end{quote}
+
+\section{本册定位：研究线性映射的纤维，而不是某种求解技巧}
+线代 Topic04 Own $Ax=b$ 的可达性、核空间和仿射解集；高数 Topic12 Own 线性 ODE 的求解、初值与解族。B05 只 Own：
 \[
-T(x-x_0)=T(x)-T(x_0)=b-b=0,
+\boxed{T^{-1}(b)=x_0+\ker T}
 \]
-所以 $x-x_0\in\ker T$，从而
+这一跨有限维/函数空间都成立的线性结构。
+
+它告诉我们：
+\begin{itemize}
+\item 一个特解负责“命中目标输出” $b$；
+\item 核空间负责“怎样改变输入而不改变输出”；
+\item 全部解就是一个特解沿所有不可见方向的平移。
+\end{itemize}
+
+\section{母定理：非空线性逆像一定是核空间的仿射平移}
+设 $T:V\to W$ 为线性映射。若 $x_0$ 满足
+\[
+T(x_0)=b,
+\]
+则任意另一个解 $x$ 满足
+\[
+T(x-x_0)=T(x)-T(x_0)=0,
+\]
+所以
+\[
+x-x_0\in\ker T.
+\]
+反过来，对任意 $z\in\ker T$，
+\[
+T(x_0+z)=b.
+\]
+因此
 \[
 \boxed{T^{-1}(b)=x_0+\ker T.}
 \]
-这不是类比，而是同一条线性证明：\textbf{一个特解负责命中目标，kernel 负责保持输出不变的自由度}。
 
-\begin{center}
-\begin{tikzpicture}[node distance=0.55cm and 0.75cm,box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.15cm,minimum height=0.9cm,align=center,fill=soft,font=\small},arr/.style={-{Latex[length=2mm]},thick,draw=deep}]
-\node[box] (a) {目标 $b$\\或 $f(x)$};
-\node[box,right=of a] (b) {找一个特解\\$x_0$ 或 $y_p$};
-\node[box,right=of b] (c) {齐次核\\$\ker T$ 或 $y_h$};
-\node[box,below=of c] (d) {全部解\\一点 + Kernel};
-\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);
-\end{tikzpicture}
-\end{center}
+这条证明只用了线性性，所以它比任何具体消元法、常系数特征方程或待定系数法都更根本。
 
-\section{线代端：逆像的仿射平移}
-对 $Ax=b$，若 $x_0$ 是一个特解，齐次解空间 $\ker A=\{z:Az=0\}$ 给出
+\section{先分两道问题：能不能到达，到了以后有多少自由度}
+线性方程真正包含两个独立问题：
 \[
-\boxed{x=x_0+z,\quad z\in\ker A.}
+\boxed{b\in\operatorname{Im}T?}
 \]
-因此非齐次解集通常不经过原点，也不是线性子空间；只有 $b=0$ 时解集本身就是 kernel。存在性由 $b\in\operatorname{Im}A$ 决定，自由度由 $\ker A$ 决定。
-
-\section{ODE 端：齐次解空间的平移}
-对线性微分算子 $L$，若 $L[y_p]=f$，则
+决定是否存在解；若存在，
 \[
-L[y_p+y_h]=f+0=f,\qquad y_h\in\ker L=\{y:L[y]=0\}.
+\boxed{\ker T}
 \]
-于是
+决定解之间还能怎样自由移动。
+
+这也是为什么“有解”和“唯一解”不能混在一起：唯一解还要求
+\[
+\ker T=\{0\}.
+\]
+
+\section{线性方程组：非齐次解集为什么不是子空间}
+对
+\[
+Ax=b,
+\]
+若 $x_0$ 是特解，则
+\[
+\boxed{x=x_0+z,\qquad z\in\ker A.}
+\]
+当 $b\neq0$ 时，解集通常不含原点，因此不是线性子空间，而是核空间的仿射平移。
+
+所以齐次方程与非齐次方程的关系应读成：
+\[
+\boxed{\text{齐次方程决定方向，非齐次目标决定平移到哪里。}}
+\]
+
+\section{线性微分方程：函数空间里完全同一件事}
+设线性微分算子
+\[
+L[y]=a_n(x)y^{(n)}+\cdots+a_1(x)y'+a_0(x)y.
+\]
+若
+\[
+L[y_p]=f,
+\]
+则任意齐次解 $y_h\in\ker L$ 满足
+\[
+L[y_p+y_h]=f.
+\]
+反过来，任意两个非齐次解之差都在 $\ker L$ 中。因此
 \[
 \boxed{\{y:L[y]=f\}=y_p+\ker L.}
 \]
-初值条件不是重新定义方程，而是在这组仿射解中选取一条轨迹。若系数连续且最高阶系数不为零，$n$ 阶初值通常给出 $n$ 个独立线性条件，裁掉 $n$ 个自由常数。
 
-\begin{examplebox}{最小验证例}
-线代 $\begin{bmatrix}1&1\end{bmatrix}x=1$ 的一个特解为 $(1,0)^T$，kernel 由 $(1,-1)^T$ 张成，故 $x=(1,0)^T+t(1,-1)^T$。ODE $y'-y=e^x$ 的一个特解为 $xe^x$，齐次核为 $Ce^x$，故 $y=(x+C)e^x$。两题的“自由方向”不同，但接口完全相同。
-\end{examplebox}
+这里没有把微分算子“等同成一个矩阵”；我们只是使用了两者共享的线性映射结构。
 
-\section{调用条件与 Anti-Bridge}
-\begin{tabularx}{\linewidth}{L{0.28\linewidth}Y}
-\toprule
-调用信号 & 应保持的不变量 \\
-\midrule
-已知一个解，要求全部解 & 两个候选解之差必须落在齐次核 \\
-已知非齐次系统，要求初值解 & 先写仿射解族，再用条件裁剪常数 \\
-比较线代/ODE 的“特解 + 通解” & 只翻译算子、输入输出和核，不翻译对象维数 \\
-\bottomrule
-\end{tabularx}
-\begin{warnbox}{不要把接口扩大成错误定理}
-“特解 + kernel”依赖线性。一般非线性 ODE 的解集不必对加法封闭；ODE 的微分算子也不等于某个有限维矩阵。特征根与 companion matrix、matrix exponential 是真实 Extension，不是本 Bridge 的主干。
-\end{warnbox}
+\section{为什么 $n$ 阶齐次 ODE 会出现 $n$ 个自由常数}
+在常见正则条件下，$n$ 阶线性齐次 ODE 的解空间维数为 $n$。因此可取一组基础解
+\[
+y_1,\dots,y_n,
+\]
+使
+\[
+\ker L=\operatorname{span}\{y_1,\dots,y_n\}.
+\]
+于是非齐次通解写成
+\[
+\boxed{y=y_p+C_1y_1+\cdots+C_ny_n.}
+\]
 
-\section{Compression 与陌生题检查}
-忘掉公式时只复原三问：\textbf{目标输出是什么？已有哪个特解命中它？哪些输入方向经过算子后变成零？} 最后分别验证一个特解代回、每个 kernel 方向代回和全部条件是否独立。
+“$n$ 个常数”不是格式规定，而是核空间维数的坐标表现。
+
+\section{初值条件：不是重新求方程，而是在仿射解族中切一刀}
+例如 $n$ 阶 ODE 给定
+\[
+y(x_0),y'(x_0),\dots,y^{(n-1)}(x_0)
+\]
+时，这些条件可以看成作用在解空间上的 $n$ 个线性/仿射约束。在存在唯一性条件满足时，它们把原本 $n$ 维的自由常数完全裁掉，最终留下一个解。
+
+因此解题结构可以压成：
+\[
+\boxed{\text{先构造整个仿射解族，再用初值选择其中一个点。}}
+\]
+
+\section{母例：两个世界只换对象，不换证明}
+线代：
+\[
+\begin{bmatrix}1&1\end{bmatrix}x=1.
+\]
+一个特解是
+\[
+x_0=(1,0)^T,
+\]
+核空间由
+\[
+(1,-1)^T
+\]
+张成，所以
+\[
+x=(1,0)^T+t(1,-1)^T.
+\]
+
+ODE：
+\[
+y'-y=e^x.
+\]
+一个特解是
+\[
+y_p=xe^x,
+\]
+齐次核为
+\[
+\ker L=\{Ce^x:C\in\mathbb R\},
+\]
+因此
+\[
+y=(x+C)e^x.
+\]
+
+两题的对象、维数和求特解方法完全不同，但“一个点 + 核空间”的证明一字不改。
+
+\section{为什么叠加原理与一点加核空间其实是同一件事}
+线性算子满足
+\[
+L[\alpha y_1+\beta y_2]
+=\alpha L[y_1]+\beta L[y_2].
+\]
+所以齐次解对线性组合封闭，形成核空间；非齐次解则不对任意线性组合封闭，却保持“两个解之差为齐次解”。
+
+这说明：
+\begin{itemize}
+\item \textbf{叠加原理}解释核空间为什么是线性空间；
+\item \textbf{一点加核空间}解释非齐次解集为什么是仿射空间。
+\end{itemize}
+
+\section{B05 串起哪些章节}
+\begin{tabular}{p{0.23\linewidth}p{0.30\linewidth}p{0.39\linewidth}}
+\hline
+Owner / 下游 & 提供对象 & B05 的翻译责任\\
+\hline
+线代 Topic03/04 & image、kernel、$Ax=b$ 解空间 & 把“可达 + 自由度”抽成一般线性逆像结构\\
+高数 Topic12 & 线性 ODE、齐次解、特解、初值 & 把函数解族解释为微分算子的仿射逆像\\
+线代 Topic05 / ODE Extension & 特征根、谱、矩阵指数 & 只作为线性系统更深表示的扩展，不进入数学一标量 ODE 主干\\
+\hline
+\end{tabular}
+
+\section{反桥梁：哪些“特解 + 通解”不能乱迁移}
+\begin{tabular}{p{0.20\linewidth}p{0.04\linewidth}p{0.20\linewidth}p{0.48\linewidth}}
+\hline
+A & & B & 真正区别\\
+\hline
+非齐次解集 & $\neq$ & 线性子空间 & 一般是 $x_0+\ker T$，不经过原点\\
+一个特解 & $\neq$ & 全部解 & 仍必须加上完整 kernel\\
+线性 ODE & $\neq$ & 一般非线性 ODE & 非线性方程解集通常不具备仿射平移结构\\
+微分算子 & $\neq$ & 有限维矩阵 & 两者共享线性结构，但对象空间与分析性质不同\\
+\hline
+\end{tabular}
+
+\section{调用信号与一页压缩}
+看到“已知一个解求全部解、非齐次通解、比较两个解、初值裁剪、齐次解空间”时，先问：
+\begin{enumerate}
+\item 当前算子是否线性？
+\item 目标输出 $b$ 或 $f$ 是否可达？
+\item 已知哪个特解？
+\item 哪些输入变化会被算子送到零？
+\item 附加条件还要从仿射解族中裁掉多少自由方向？
+\end{enumerate}
+
+最终只需记住
+\[
+\boxed{\text{非空线性逆像 = 一个特解 + 核空间}.}
+\]
+
 \end{document}

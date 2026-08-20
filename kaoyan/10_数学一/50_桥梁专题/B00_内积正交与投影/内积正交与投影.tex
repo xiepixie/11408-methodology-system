@@ -1,49 +1,204 @@
-\documentclass[UTF8,a4paper,10pt]{ctexart}
-\usepackage[a4paper,margin=1.75cm]{geometry}
-\usepackage{amsmath,amssymb,booktabs,tabularx}
-\usepackage[most]{tcolorbox}
-\usepackage{enumitem}
-\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
-\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\documentclass[profile=standard]{ipara-handbook}
+\title{B00｜内积、正交与投影}
+\author{}
+\date{}
 \begin{document}
-\section*{B00\quad 内积、正交与投影}
-\textbf{定位：}本 Bridge 将空间几何、线性代数坐标和函数投影翻译到同一内积语言，不重复各 Topic 的本体定义。
-\begin{tcolorbox}[title=母接口]
-内积 $\longrightarrow$ 长度 $\longrightarrow$ 角度 $\longrightarrow$ 正交
-$\longrightarrow$ 投影 $\longrightarrow$ 最小误差分解。
-\end{tcolorbox}
-\subsection*{1.\ 投影不是“画一条垂线”而是求最优系数}
-对非零向量 $u$，向量 $v$ 在 $\operatorname{span}\{u\}$ 上的投影为
+\maketitle
+
+\begin{quote}
+这座桥回答一个最基础的跨科问题：\textbf{空间几何里的“垂直、分量、最近”，线代里的“正交、坐标”，以及 Fourier 里的“系数”，为什么能够使用同一种语言？}
+\end{quote}
+
+\section{本册定位：在线性结构上增加一套几何读法}
+线代 Topic01 Own 向量空间、基、坐标、内积、正交与 Gram--Schmidt；高数 Topic06 Own 空间对象、方向、角度、距离等几何计算；高数 Topic11 Own Fourier 展开与收敛。B00 不重新教授这些本体，而只 Own 一条稳定翻译：
 \[
-\operatorname{proj}_{u}v=\frac{\langle v,u\rangle}{\langle u,u\rangle}u,
-\qquad v=\operatorname{proj}_{u}v+r,\quad r\perp u.
+\boxed{
+\text{内积}
+\xrightarrow{\text{定义几何}}
+\text{长度/角度/正交}
+\xrightarrow{\text{正交分解}}
+\text{投影 + 正交残差}
+\xrightarrow{\text{坐标读取}}
+\text{最小误差/正交系数}
+}
 \]
-系数来自令误差平方 $\|v-cu\|^2$ 最小；求导得 $c=\langle v,u\rangle/\langle u,u\rangle$。因此正交分解同时承担几何高度和代数最小二乘两种意义。
-\subsection*{2.\ 多方向与正交基}
-若 $\{e_i\}$ 是正交基，则
+
+这里第一个箭头表示“在线性空间上增加额外结构”，并不是向量空间公理自动推出内积。
+
+\section{为什么普通坐标还不够}
+普通基只保证每个向量有唯一坐标。若题目进一步问“长度多大、夹角多少、哪个方向最接近、怎样把不同方向解耦”，还需要内积。
+
+在标准欧氏空间中
 \[
-v=\sum_i\frac{\langle v,e_i\rangle}{\langle e_i,e_i\rangle}e_i.
+\langle x,y\rangle=x^Ty,
+\qquad
+\lVert x\rVert=\sqrt{\langle x,x\rangle}.
 \]
-标准正交时系数简化为 $\langle v,e_i\rangle$。函数空间中把有限维求和换成积分：
+正交由
 \[
-\langle f,g\rangle=\int_a^b f(x)g(x)\,dx,\qquad
-c_n=\frac{\langle f,\phi_n\rangle}{\langle\phi_n,\phi_n\rangle}.
+\langle x,y\rangle=0
 \]
-这解释 B08 的 Fourier 系数，但不替代其收敛定理。
-\subsection*{3.\ 资格与反桥}
-\begin{itemize}[leftmargin=2em]
-\item 几何垂直、向量正交、函数正交分别依赖不同内积或方向对象；
-\item 正交不等于概率独立，也不自动等于统计不相关；
-\item 投影公式必须先确认内积、目标子空间和分母非零。
-\end{itemize}
-\subsection*{4.\ 最小例子与调用}
-取 $v=(2,1)^T,u=(1,1)^T$，则
+定义。于是“垂直”不再依赖一张图，而成为可计算的代数关系。
+
+\subsection{坐标点积不是永远的抽象内积公式}
+若换到一般非规范正交基，坐标列的普通点积不再自动等于原空间内积。真正的几何对象是内积本身；矩阵坐标必须连同基或 Gram 矩阵一起解释。
+
+因此 B00 的第一个对象边界是
 \[
-\operatorname{proj}_u v=\frac{3}{2}(1,1)^T,\qquad
-r=v-\operatorname{proj}_u v=\left(\frac12,-\frac12\right)^T,\quad r^Tu=0.
+\boxed{\text{内积几何}\neq\text{某一份坐标中的机械点积}.}
 \]
-题面出现“最近、最小误差、垂足、正交系数”时，先调用这条“投影 + 正交残差”分解。
-\begin{corebox}{检查句}
-当前的“垂直”是哪个对象之间的内积为零？投影留下的残差是否真的与目标子空间正交？坐标系或权函数是否已经固定？
-\end{corebox}
+
+\section{母接口：投影 = 保留目标分量，残差与目标正交}
+先看一维子空间 $W=\operatorname{span}\{u\}$，$u\neq0$。寻找 $v$ 在 $W$ 中的“最接近分量”，写成 $cu$。要求残差
+\[
+r=v-cu
+\]
+与 $u$ 正交：
+\[
+\langle v-cu,u\rangle=0.
+\]
+于是
+\[
+\boxed{
+\operatorname{proj}_{u}v
+=\frac{\langle v,u\rangle}{\langle u,u\rangle}u
+}
+\]
+并且
+\[
+v=\operatorname{proj}_{u}v+r,
+\qquad r\perp u.
+\]
+
+这条正交残差条件不是附加检查，而是投影的接口不变量。
+
+\section{为什么正交投影同时解决“最近点”}
+对任意 $w\in W$，设 $p=\operatorname{proj}_Wv$。由于
+\[
+v-p\perp W,
+\]
+而 $p-w\in W$，所以两部分正交。由勾股关系
+\[
+\lVert v-w\rVert^2
+=\lVert v-p\rVert^2+\lVert p-w\rVert^2
+\ge \lVert v-p\rVert^2.
+\]
+等号只在 $w=p$ 时成立。因此
+\[
+\boxed{p\text{ 是 }W\text{ 中距离 }v\text{ 最近的点}.}
+\]
+
+这一步解释了为什么“画垂线”“最短距离”“最小平方误差”会在不同章节重复出现：它们共享的是同一条正交分解机制。
+
+\section{多方向：正交基为什么让坐标直接变成投影系数}
+若 $e_1,\dots,e_k$ 两两正交，则对 $v\in\operatorname{span}\{e_i\}$，
+\[
+v=\sum_{i=1}^k c_i e_i,
+\qquad
+c_i=\frac{\langle v,e_i\rangle}{\langle e_i,e_i\rangle}.
+\]
+若进一步规范化为 $\lVert e_i\rVert=1$，则
+\[
+\boxed{c_i=\langle v,e_i\rangle.}
+\]
+
+所以正交基的核心收益不是“看起来整齐”，而是每个坐标都可以单独读取，不会被其他方向的分量污染。
+
+这正是 B08 能把 Fourier 系数解释成投影坐标的根源。
+
+\section{母例一：空间几何中的垂足}
+取
+\[
+v=(2,1)^T,
+\qquad u=(1,1)^T.
+\]
+则
+\[
+p=\operatorname{proj}_u v
+=\frac{3}{2}(1,1)^T,
+\]
+残差
+\[
+r=v-p=\left(\frac12,-\frac12\right)^T,
+\qquad r^Tu=0.
+\]
+所以 $p$ 不仅是“某个公式算出的向量”，还是直线 $\operatorname{span}\{u\}$ 上离 $v$ 最近的点。
+
+\section{母例二：函数也可以有“正交分量”}
+在函数空间中定义
+\[
+\langle f,g\rangle=\int_{-1}^{1}f(x)g(x)\,dx.
+\]
+把 $f(x)=x^2$ 投影到常数函数子空间 $W=\operatorname{span}\{1\}$。系数为
+\[
+c=\frac{\langle x^2,1\rangle}{\langle1,1\rangle}
+=\frac{\int_{-1}^{1}x^2\,dx}{\int_{-1}^{1}1\,dx}
+=\frac13.
+\]
+于是
+\[
+x^2=\frac13+\left(x^2-\frac13\right),
+\]
+且
+\[
+\int_{-1}^{1}\left(x^2-\frac13\right)dx=0.
+\]
+同一个“投影 + 正交残差”接口已经从二维向量无缝迁移到了函数对象。
+
+\section{B00 究竟串起哪些章节}
+\begin{tabular}{p{0.23\linewidth}p{0.30\linewidth}p{0.39\linewidth}}
+\hline
+Owner / 下游 & 提供或接收的对象 & B00 的翻译责任\\
+\hline
+高数 Topic06 空间对象 & 方向、法向、角度、距离 & 把几何垂直/分量翻译成内积与正交投影\\
+线代 Topic01 & 内积、正交基、Gram--Schmidt & 提供抽象代数本体，B00 解释其跨科几何意义\\
+B04 约束极值 & 切空间与法空间 & 用正交补解释“目标梯度的切向投影必须为零”\\
+高数 Topic11 / B08 & Fourier 基函数与系数 & 把函数系数翻译成正交投影坐标\\
+\hline
+\end{tabular}
+
+因此 B00 是 B04、B08 的共同上游，而不是一篇孤立的“投影公式笔记”。
+
+\section{资格与停止边界}
+\begin{enumerate}
+\item 必须先说明使用哪个内积；换内积会改变长度、正交与投影。
+\item 投影到一个子空间前，要确认目标集合真的是线性/仿射对象；一般曲线上的最近点不能直接套线性投影公式。
+\item 普通基不等于正交基；只有正交基才能逐项用投影系数解耦坐标。
+\item B00 只解释投影接口。Fourier 的无限级数收敛与恢复值转 B08/高数 Topic11；约束极值的正则性与候选全集转 B04/高数 Topic07。
+\end{enumerate}
+
+\section{反桥梁：最容易越级的四组关系}
+\begin{tabular}{p{0.20\linewidth}p{0.04\linewidth}p{0.20\linewidth}p{0.48\linewidth}}
+\hline
+A & & B & 真正区别\\
+\hline
+线性无关 & $\neq$ & 正交 & 正交非零组必无关；无关只排除线性冗余，不要求内积为零\\
+正交 & $\neq$ & 单位化 & 前者比较方向，后者只规范长度\\
+正交 & $\neq$ & 概率独立 & 一个由内积定义，一个由联合分布分解定义\\
+投影 & $\neq$ & 随意删坐标 & 正交投影由目标子空间和内积共同决定，残差必须满足正交不变量\\
+\hline
+\end{tabular}
+
+\section{什么时候应该调用这座桥}
+题面出现“最近、最短距离、垂足、正交系数、最小误差、正交基、Fourier 系数来源”时，第一观察不是背公式，而是问：
+\begin{enumerate}
+\item 当前对象是什么空间里的对象？
+\item 使用哪个内积？
+\item 目标子空间是什么？
+\item 能否写成“目标分量 + 正交残差”？
+\end{enumerate}
+
+\section{一页压缩}
+B00 最后只保留一句话：
+\[
+\boxed{
+\text{正交投影把对象分成“目标子空间中的可保留分量”与“对目标完全不可见的正交残差”。}
+}
+\]
+忘掉公式时，从
+\[
+v=p+r,\qquad p\in W,\quad r\in W^\perp
+\]
+重新推出投影系数；再用勾股关系恢复“最近点”含义。若这个结构能同时解释空间距离、正交坐标与 Fourier 系数，B00 才算真正掌握。
+
 \end{document}

@@ -1,0 +1,221 @@
+\documentclass[profile=standard]{ipara-handbook}
+\title{B09｜协方差矩阵与二次型：随机波动的方向结构}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\begin{quote}
+本册回答：\textbf{协方差矩阵为什么一定半正定？相关系数为什么不能任意超过 $1$？二维正态的“椭圆方向”为什么会由协方差矩阵的特征向量决定？}
+\end{quote}
+
+\section{本册定位：把概率的二阶摘要翻译成线代的方向二次型}
+概率 Topic05 Own 方差、协方差；概率 Topic04 Own 二维正态与随机向量线性变换；线代 Topic05/06 Own 实对称谱结构、二次型与正半定。B09 只 Own：
+\[
+\boxed{
+\Sigma
+\xrightarrow{a^T(\cdot)}
+\operatorname{Var}(a^TX)=a^T\Sigma a
+\xrightarrow{\ge0}
+\Sigma\succeq0
+}
+\]
+以及线性变换下
+\[
+\boxed{\operatorname{Cov}(AX)=A\Sigma A^T.}
+\]
+
+\section{协方差矩阵不是一堆成对公式}
+对随机向量
+\[
+X=(X_1,\dots,X_n)^T,
+\qquad \mu=E[X],
+\]
+定义
+\[
+\Sigma=E[(X-\mu)(X-\mu)^T].
+\]
+矩阵元素是
+\[
+\Sigma_{ij}=\operatorname{Cov}(X_i,X_j).
+\]
+它首先是一张实对称矩阵，但更重要的是：它把所有方向上线性组合的波动统一编码起来。
+
+\section{母接口：任意方向方差就是一个二次型}
+取任意确定向量 $a$，标量随机变量
+\[
+Y=a^TX
+\]
+的方差为
+\[
+\begin{aligned}
+\operatorname{Var}(Y)
+&=E\bigl[(a^T(X-\mu))^2\bigr]\\
+&=E\bigl[a^T(X-\mu)(X-\mu)^Ta\bigr]\\
+&=a^T\Sigma a.
+\end{aligned}
+\]
+因为任何方差都非负，故
+\[
+\boxed{a^T\Sigma a\ge0,\qquad \forall a.}
+\]
+于是
+\[
+\boxed{\Sigma\succeq0.}
+\]
+
+所以“协方差矩阵半正定”不是额外记忆性质，而只是“任意线性组合的方差不能为负”翻译到线代之后的必然结果。
+
+\section{二维相关系数界为什么来自正半定}
+二维协方差矩阵为
+\[
+\Sigma=
+\begin{pmatrix}
+\sigma_X^2&\rho\sigma_X\sigma_Y\\
+\rho\sigma_X\sigma_Y&\sigma_Y^2
+\end{pmatrix}.
+\]
+半正定要求
+\[
+\det\Sigma
+=\sigma_X^2\sigma_Y^2(1-\rho^2)\ge0.
+\]
+若两方差均正，则
+\[
+\boxed{|\rho|\le1.}
+\]
+
+因此相关系数界也可以从二次型合法性重新生成，而不必把 Cauchy--Schwarz 与矩阵判据当成两套无关结论。
+
+\section{线性变换：随机方向怎样被重新混合}
+令
+\[
+Y=AX+b.
+\]
+均值平移为
+\[
+E[Y]=A\mu+b,
+\]
+而中心化后
+\[
+Y-EY=A(X-\mu).
+\]
+所以
+\[
+\boxed{
+\operatorname{Cov}(Y)
+=A\Sigma A^T.
+}
+\]
+
+这与二次型变量代换非常相似：一个方向 $c$ 在新变量中的方差为
+\[
+\operatorname{Var}(c^TY)
+=c^TA\Sigma A^Tc
+=(A^Tc)^T\Sigma(A^Tc).
+\]
+也就是说，新坐标中的某个方向，实际对应原随机空间中的方向 $A^Tc$。
+
+\section{正交主轴：特征向量为什么是主波动方向}
+由于 $\Sigma$ 实对称且半正定，存在正交矩阵 $Q$ 使
+\[
+Q^T\Sigma Q
+=\operatorname{diag}(\lambda_1,\dots,\lambda_n),
+\qquad \lambda_i\ge0.
+\]
+令
+\[
+Z=Q^T(X-\mu).
+\]
+则
+\[
+\operatorname{Cov}(Z)
+=Q^T\Sigma Q
+=\operatorname{diag}(\lambda_i).
+\]
+所以在这些正交方向上，交叉协方差被消掉，每个坐标的方差就是对应特征值。
+
+这给出一个重要几何读法：
+\[
+\boxed{\text{特征向量 = 二阶波动的主方向，特征值 = 该方向上的方差强度}.}
+\]
+
+注意这里只能一般推出“不相关”，不能推出独立；联合正态时才有额外加强。
+
+\section{退化：零特征值不是“方差为零一点”，而是一条确定关系}
+若存在非零 $a$ 使
+\[
+a^T\Sigma a=0,
+\]
+则
+\[
+\operatorname{Var}(a^TX)=0.
+\]
+因此
+\[
+a^TX=E[a^TX]
+\]
+几乎处处，即某个非平凡线性组合实际上没有随机波动。
+
+二维中 $|\rho|=1$ 就对应协方差矩阵退化；两个中心化变量存在严格线性关系。这也解释非退化二维正态为什么要求
+\[
+|\rho|<1.
+\]
+
+\section{二维正态：概率密度中的二次型从哪里来}
+非退化二维正态密度的指数核心可以写成
+\[
+(x-\mu)^T\Sigma^{-1}(x-\mu).
+\]
+这是一个正定二次型。沿协方差矩阵的正交特征方向换坐标后，若
+\[
+\Sigma=Q\Lambda Q^T,
+\]
+则
+\[
+(x-\mu)^T\Sigma^{-1}(x-\mu)
+=z^T\Lambda^{-1}z
+=\sum_i\frac{z_i^2}{\lambda_i}.
+\]
+所以等密度曲线的主轴方向由 $\Sigma$ 的特征向量给出，而轴向尺度由特征值决定。
+
+这正是线代二次型与概率二维正态的稳定接口，而不是“椭圆看起来像二次型”的表面类比。
+
+\section{B09 串起哪些章节}
+\begin{tabular}{p{0.23\linewidth}p{0.30\linewidth}p{0.39\linewidth}}
+\hline
+Owner / 下游 & 提供对象 & B09 的翻译责任\\
+\hline
+概率 Topic05 & 方差、协方差、相关系数 & 把所有线性组合方差统一成二次型\\
+概率 Topic04 & 二维正态、随机向量线性变换 & 解释 $A\Sigma A^T$、退化与等密度主轴\\
+线代 Topic06 & 正半定二次型 & 把“方差非负”翻译为矩阵半正定\\
+线代 Topic05 & 实对称谱定理 & 把协方差的方向耦合解成正交主波动方向\\
+\hline
+\end{tabular}
+
+\section{反桥梁}
+\begin{tabular}{p{0.20\linewidth}p{0.04\linewidth}p{0.20\linewidth}p{0.48\linewidth}}
+\hline
+A & & B & 真正区别\\
+\hline
+零协方差 & $\neq$ & 独立 & 前者只消除二阶线性交叠；一般联合结构仍可能依赖\\
+协方差矩阵半正定 & $\neq$ & 正定 & 半正定允许零方差线性组合和低维退化\\
+特征方向不相关 & $\neq$ & 特征方向独立 & 只有联合正态等额外结构下才可升级\\
+协方差矩阵 & $\neq$ & 完整联合分布 & 它只是二阶摘要，很多不同分布共享同一协方差\\
+\hline
+\end{tabular}
+
+\section{调用信号与一页压缩}
+看到“$aX+bY$ 的方差、协方差矩阵、相关系数合法范围、二维正态线性变换、退化、等密度椭圆”时，先写
+\[
+\boxed{\operatorname{Var}(a^TX)=a^T\Sigma a.}
+\]
+然后问：
+\begin{enumerate}
+\item 当前方向 $a$ 是什么？
+\item $\Sigma$ 是否半正定/退化？
+\item 是否需要正交对角化读取主波动方向？
+\item 当前结论只到“不相关”，还是题目额外给了联合正态资格？
+\end{enumerate}
+
+\end{document}

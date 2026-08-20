@@ -84,9 +84,9 @@
 | Handbook Source 待迁移 | 8 |
 | 其他 | 20 |
 | 工作稿 | 6 |
-| 已发布 | 32 |
-| 已采用 | 54 |
-| 待人工确认 | 54 |
+| 已发布 | 31 |
+| 已采用 | 55 |
+| 待人工确认 | 56 |
 | 待验证 | 2 |
 | 旧发布物待纳管 | 1 |
 | 框架/目录已建立 | 12 |
@@ -124,7 +124,7 @@
 | 数学一 / 线性代数 | [线性映射、矩阵与行列式](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/02_%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84_%E7%9F%A9%E9%98%B5%E4%B8%8E%E8%A1%8C%E5%88%97%E5%BC%8F/%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84%E3%80%81%E7%9F%A9%E9%98%B5%E4%B8%8E%E8%A1%8C%E5%88%97%E5%BC%8F.md) | Source；第一轮 Markdown 工作稿已迁入 Canonical LaTeX，仅保留作 Source Diff 记录，不再作为正文 Owner |
 | 数学一 / 线性代数 | [秩、基本子空间与等价](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/03_%E7%A7%A9_%E5%9F%BA%E6%9C%AC%E5%AD%90%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%AD%89%E4%BB%B7/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
 | 数学一 / 线性代数 | [秩、基本子空间与等价](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/03_%E7%A7%A9_%E5%9F%BA%E6%9C%AC%E5%AD%90%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%AD%89%E4%BB%B7/%E7%A7%A9%E3%80%81%E5%9F%BA%E6%9C%AC%E5%AD%90%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%AD%89%E4%BB%B7.md) | Source；原 README 工作稿，保留作 Topic03 Source Diff 记录，不再作为 Canonical 正文 |
-| 数学一 / 线性代数 | [线性方程组：可达性与解空间](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/04_%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B%E7%BB%84_%E5%8F%AF%E8%BE%BE%E6%80%A7%E4%B8%8E%E8%A7%A3%E7%A9%BA%E9%97%B4/README.md) | 待人工确认；已发布。Canonical LaTeX 第一版正文与 PDF 已建立，等待内容确认 |
+| 数学一 / 线性代数 | [线性方程组：可达性与解空间](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/04_%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B%E7%BB%84_%E5%8F%AF%E8%BE%BE%E6%80%A7%E4%B8%8E%E8%A7%A3%E7%A9%BA%E9%97%B4/README.md) | Canonical 第二轮心智模型深化与三本 Active Practice 优化已完成；待人工确认后同步正式发布版 PDF |
 | 数学一 / 线性代数 | [线性方程组：可达性与解空间](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/04_%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B%E7%BB%84_%E5%8F%AF%E8%BE%BE%E6%80%A7%E4%B8%8E%E8%A7%A3%E7%A9%BA%E9%97%B4/%E7%BA%BF%E6%80%A7%E6%96%B9%E7%A8%8B%E7%BB%84%EF%BC%9A%E5%8F%AF%E8%BE%BE%E6%80%A7%E4%B8%8E%E8%A7%A3%E7%A9%BA%E9%97%B4.md) | Source；原 README 工作稿，保留作 Topic04 Source Diff 记录，不再作为 Canonical 正文 |
 | 数学一 / 线性代数 | [特征结构：相似与对角化](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/05_%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%84_%E7%9B%B8%E4%BC%BC%E4%B8%8E%E5%AF%B9%E8%A7%92%E5%8C%96/README.md) | 本轮审阅与训练闭环补全完成；已发布。Canonical LaTeX、Active Practice 与 Published PDF 已同步，等待最终人工确认 |
 | 数学一 / 线性代数 | [特征结构：相似与对角化](10_%E6%95%B0%E5%AD%A6%E4%B8%80/20_%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/05_%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%84_%E7%9B%B8%E4%BC%BC%E4%B8%8E%E5%AF%B9%E8%A7%92%E5%8C%96/%E7%89%B9%E5%BE%81%E7%BB%93%E6%9E%84%EF%BC%9A%E7%9B%B8%E4%BC%BC%E4%B8%8E%E5%AF%B9%E8%A7%92%E5%8C%96.md) | Source；原 README 工作稿，保留作 Topic05 Source Diff 记录，不再作为 Canonical 正文 |
@@ -140,7 +140,7 @@
 | 数学一 / 概率统计 | [总体、样本与抽样分布：统计量为什么仍然随机](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/07_%E6%80%BB%E4%BD%93%E6%A0%B7%E6%9C%AC%E4%B8%8E%E6%8A%BD%E6%A0%B7%E5%88%86%E5%B8%83/README.md) | 待人工确认；P07-A/P07-B/P07-C 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审，统计量、自由度、精确抽样分布与顺序统计接口已补齐并通过发布验证。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏 |
 | 数学一 / 概率统计 | [参数估计与假设检验：用抽样分布校准逆向推断](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/08_%E5%8F%82%E6%95%B0%E4%BC%B0%E8%AE%A1%E4%B8%8E%E5%81%87%E8%AE%BE%E6%A3%80%E9%AA%8C/README.md) | 待人工确认；P08-A/P08-B/P08-C/P08-D 已完成 Source Diff、旧九章原子级核销与跨册 Owner 复审；估计、区间、检验与任务分流已拆成独立训练入口并通过发布/导航核验。后续若继续验证，目标是用真题/陌生题攻击训练规则，而不是继续补迁移遗漏 |
 | 数学一 / 概率统计 | [概率论与数理统计统一总图](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/README.md) | 待人工确认；README 是 Canonical Subject Atlas 候选。八个 Topic 已完成旧九章原子级 Source Diff、跨册 Owner/术语/参数化复审，并与现有数学一真题全量分类底账交叉核验；当前可读取真题的 P01--P08 路由与代表题计算证据已闭合。尚未升级为“已采用”的原因只剩使用者确认与陌生题表现证据；1994 原卷缺失、2022 末段题源损坏等来源缺口继续按 Evidence 边界保留。单一问题族的考试动作优先进入各 Topic 同目录训练 Markdown；跨多个训练专题稳定复用并经证据验证的控制另见概率统计做题规则 |
-| 数学一 / 概率统计 | [概率统计训练手册：从识别对象到独立验算](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E7%BB%9F%E8%AE%A1%E8%AE%AD%E7%BB%83%E6%89%8B%E5%86%8C.md) | 首版；基于本目录 P01--P08 Canonical 心智模型、同目录训练 Markdown 与上传《概率论与数理统计专题手稿（上册第 1--3 章）》重构 |
+| 数学一 / 概率统计 | [概率统计训练手册：从识别对象到独立验算](10_%E6%95%B0%E5%AD%A6%E4%B8%80/30_%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E7%BB%9F%E8%AE%A1%E8%AE%AD%E7%BB%83%E6%89%8B%E5%86%8C.md) | 第二版；基于本目录 P01--P08 正文心智模型、同目录训练 Markdown，以及上传的上册第 1--3 章与下册第 4--7 章源稿共同重构 |
 | 数学一 / 跨科 Bridge | [B00｜内积、正交与投影](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/B00_%E5%86%85%E7%A7%AF%E6%AD%A3%E4%BA%A4%E4%B8%8E%E6%8A%95%E5%BD%B1/README.md) | 待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅 |
 | 数学一 / 跨科 Bridge | [B01｜局部线性化：微分 × 线性映射](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/B01_%E5%B1%80%E9%83%A8%E7%BA%BF%E6%80%A7%E5%8C%96_%E5%BE%AE%E5%88%86%E4%B8%8E%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84/README.md) | 待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅 |
 | 数学一 / 跨科 Bridge | [B02｜Jacobian 与行列式：坐标变换 × 局部体积缩放](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/B02_Jacobian%E4%B8%8E%E8%A1%8C%E5%88%97%E5%BC%8F_%E5%9D%90%E6%A0%87%E5%8F%98%E6%8D%A2%E4%B8%8E%E5%B1%80%E9%83%A8%E4%BD%93%E7%A7%AF%E7%BC%A9%E6%94%BE/README.md) | 待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅 |
@@ -151,7 +151,9 @@
 | 数学一 / 跨科 Bridge | [B06B｜期望、联合概率与边缘化：概率的积分语言](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/B06B_%E6%9C%9F%E6%9C%9B%E8%81%94%E5%90%88%E6%A6%82%E7%8E%87%E4%B8%8E%E8%BE%B9%E7%BC%98%E5%8C%96_%E6%A6%82%E7%8E%87%E7%9A%84%E7%A7%AF%E5%88%86%E8%AF%AD%E8%A8%80/README.md) | 待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅 |
 | 数学一 / 跨科 Bridge | [B07｜随机变量变换与 Jacobian：概率质量守恒](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/B07_%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F%E5%8F%98%E6%8D%A2%E4%B8%8EJacobian_%E6%A6%82%E7%8E%87%E8%B4%A8%E9%87%8F%E5%AE%88%E6%81%92/README.md) | 待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅 |
 | 数学一 / 跨科 Bridge | [B08｜Fourier 与正交基：函数表示 × 正交投影](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/B08_Fourier%E4%B8%8E%E6%AD%A3%E4%BA%A4%E5%9F%BA_%E5%87%BD%E6%95%B0%E8%A1%A8%E7%A4%BA%E4%B8%8E%E6%AD%A3%E4%BA%A4%E6%8A%95%E5%BD%B1/README.md) | 待人工确认；已建立 Canonical LaTeX 工作稿，尚未完成使用者审阅 |
-| 数学一 / 跨科 Bridge | [数学一 Core Bridge Atlas](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/README.md) | 已采用；README 是 Canonical Bridge Atlas，B00--B08 Canonical Bridge 工作稿已建立，均待人工确认 |
+| 数学一 / 跨科 Bridge | [B09｜协方差矩阵与二次型：随机波动的方向结构](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/B09_%E5%8D%8F%E6%96%B9%E5%B7%AE%E7%9F%A9%E9%98%B5%E4%B8%8E%E4%BA%8C%E6%AC%A1%E5%9E%8B_%E9%9A%8F%E6%9C%BA%E6%B3%A2%E5%8A%A8%E7%9A%84%E6%96%B9%E5%90%91%E7%BB%93%E6%9E%84/README.md) | 待人工确认；本轮由跨学科 Bridge Gate 新增的 Canonical 候选 |
+| 数学一 / 跨科 Bridge | [B10｜样本中心化与正交投影：自由度与抽样分布](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/B10_%E6%A0%B7%E6%9C%AC%E4%B8%AD%E5%BF%83%E5%8C%96%E4%B8%8E%E6%AD%A3%E4%BA%A4%E6%8A%95%E5%BD%B1_%E8%87%AA%E7%94%B1%E5%BA%A6%E4%B8%8E%E6%8A%BD%E6%A0%B7%E5%88%86%E5%B8%83/README.md) | 待人工确认；本轮由跨学科 Bridge Gate 新增的 Canonical 候选 |
+| 数学一 / 跨科 Bridge | [数学一跨学科桥梁总图](10_%E6%95%B0%E5%AD%A6%E4%B8%80/50_%E6%A1%A5%E6%A2%81%E4%B8%93%E9%A2%98/README.md) | 已采用；README 是数学一跨学科桥梁层的 Canonical Atlas。B00—B10（含 B06A/B06B）均已有 Canonical `.tex` 工作稿，当前仍待使用者确认，不因本轮扩容自动晋升状态 |
 | 数学一 / 跨科 Integration | [I01｜二维正态分布：三科汇流验收](10_%E6%95%B0%E5%AD%A6%E4%B8%80/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/I01_%E4%BA%8C%E7%BB%B4%E6%AD%A3%E6%80%81%E5%88%86%E5%B8%83_%E4%B8%89%E7%A7%91%E6%B1%87%E6%B5%81%E9%AA%8C%E6%94%B6/README.md) | 目录已建立，正文未建 |
 | 数学一 / 跨科 Integration | [I02｜二维随机变量线性变换](10_%E6%95%B0%E5%AD%A6%E4%B8%80/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/I02_%E4%BA%8C%E7%BB%B4%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2/README.md) | 目录已建立，正文未建 |
 | 数学一 / 跨科 Integration | [I03｜线性常微分方程组](10_%E6%95%B0%E5%AD%A6%E4%B8%80/60_%E7%BB%BC%E5%90%88%E4%B8%93%E9%A2%98/I03_%E7%BA%BF%E6%80%A7%E5%B8%B8%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B%E7%BB%84/README.md) | 目录已建立，正文未建；部分内容属于 Extension 验收 |

@@ -1,0 +1,259 @@
+\documentclass[profile=standard]{ipara-handbook}
+\title{B10｜样本中心化与正交投影：自由度与抽样分布}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\begin{quote}
+本册回答：\textbf{为什么样本方差偏偏除以 $n-1$？为什么正态总体下 $\bar X$ 与 $S^2$ 会独立？为什么离差平方和会出现 $\chi^2(n-1)$？这三件事其实来自同一张正交分解图。}
+\end{quote}
+
+\section{本册定位：把统计样本看成欧氏空间中的随机向量}
+概率 Topic07 Own 样本均值、样本方差、三大抽样分布；B00/线代 Topic01 Own 正交投影；线代 Topic03 Own 子空间维数与秩。B10 只 Own 下面这条接口：
+\[
+\boxed{
+\mathbb R^n
+=\operatorname{span}\{\mathbf1\}
+\oplus
+\mathbf1^\perp
+}
+\]
+以及样本向量在这两个正交子空间中的分解如何翻译成“均值信息 + 残差信息”。
+
+\section{样本均值其实是沿 $\mathbf1$ 方向的投影坐标}
+令
+\[
+X=(X_1,\dots,X_n)^T,
+\qquad
+\mathbf1=(1,\dots,1)^T.
+\]
+投影到 $\operatorname{span}\{\mathbf1\}$ 的矩阵为
+\[
+P=\frac{\mathbf1\mathbf1^T}{\mathbf1^T\mathbf1}
+=\frac1n\mathbf1\mathbf1^T.
+\]
+于是
+\[
+PX
+=\frac1n\mathbf1\mathbf1^TX
+=\bar X\mathbf1.
+\]
+所以样本均值不是突然出现的统计公式；它就是样本向量在“所有坐标共同移动”的均值方向上的投影系数。
+
+\section{中心化 = 删除均值方向}
+定义残差投影矩阵
+\[
+R:=I-P.
+\]
+则
+\[
+RX=X-\bar X\mathbf1
+=(X_1-\bar X,\dots,X_n-\bar X)^T.
+\]
+由于
+\[
+\mathbf1^T RX=0,
+\]
+中心化后的残差向量落在
+\[
+\boxed{\mathbf1^\perp}
+\]
+中。
+
+这就是恒等式
+\[
+\sum_{i=1}^n(X_i-\bar X)=0
+\]
+的线代意义：$n$ 个残差坐标并不独立，它们被一个线性约束限制在 $n-1$ 维子空间中。
+
+\section{为什么自由度是 $n-1$}
+投影矩阵 $P$ 的秩为 $1$，因此
+\[
+\operatorname{rank}(R)
+=\operatorname{rank}(I-P)
+=n-1.
+\]
+而残差平方和就是残差向量的平方范数：
+\[
+\sum_{i=1}^n(X_i-\bar X)^2
+=\lVert RX\rVert^2
+=X^TRX,
+\]
+因为 $R=R^T=R^2$。
+
+所以“$n-1$ 个自由度”的核心不是一句统计口诀，而是：
+\[
+\boxed{\text{中心化投影删掉了一个均值方向，残差只剩 }n-1\text{ 个正交方向。}}
+\]
+
+这也解释为什么样本方差写成
+\[
+S^2=\frac{1}{n-1}\lVert RX\rVert^2.
+\]
+分母 $n-1$ 与残差空间维数严格对应。
+
+\section{正态样本为什么把几何分解升级成概率独立}
+设
+\[
+X_i\overset{\mathrm{i.i.d.}}\sim N(\mu,\sigma^2).
+\]
+标准化样本向量
+\[
+Z:=\frac{X-\mu\mathbf1}{\sigma}
+\]
+满足
+\[
+Z\sim N(0,I_n).
+\]
+这是各向同性标准正态：任意正交变换后分布不变。
+
+把空间选成一组规范正交基，其中第一根为
+\[
+e_1=\frac1{\sqrt n}\mathbf1,
+\]
+其余 $e_2,\dots,e_n$ 张成 $\mathbf1^\perp$。在这组正交坐标中，
+\[
+e_1^TZ
+\]
+只描述均值方向，而
+\[
+e_2^TZ,\dots,e_n^TZ
+\]
+只描述残差方向。
+
+由于联合标准正态在正交变换后仍是各坐标独立的标准正态，这两块正交坐标彼此独立。
+
+因此在正态样本下：
+\[
+\boxed{PX\text{ 与 }RX\text{ 相互独立}}
+\]
+进一步得到
+\[
+\boxed{\bar X\perp S^2.}
+\]
+
+这里必须强调：一般随机向量的几何正交\textbf{不推出}概率独立；正态结构是关键加强条件。
+
+\section{卡方自由度为什么就是残差空间维数}
+在上面的规范正交坐标中，残差向量对应 $n-1$ 个独立标准正态坐标：
+\[
+Z_2,\dots,Z_n\overset{\mathrm{i.i.d.}}\sim N(0,1).
+\]
+所以
+\[
+\frac{\lVert RX\rVert^2}{\sigma^2}
+=Z_2^2+\cdots+Z_n^2
+\sim\chi^2(n-1).
+\]
+于是
+\[
+\boxed{
+\frac{(n-1)S^2}{\sigma^2}
+\sim\chi^2(n-1).
+}
+\]
+
+因此“自由度 $n-1$”在三个地方是同一个对象：
+\begin{itemize}
+\item 残差子空间的维数；
+\item 投影矩阵 $R$ 的秩/迹；
+\item 卡方中独立标准正态平方项的个数。
+\end{itemize}
+
+\section{$t$ 分布为什么自然从两块正交信息拼出来}
+正态样本下
+\[
+\frac{\sqrt n(\bar X-\mu)}{\sigma}\sim N(0,1),
+\]
+而
+\[
+\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1),
+\]
+且二者独立。
+
+因此
+\[
+\frac{\sqrt n(\bar X-\mu)}{S}
+=\frac{Z}{\sqrt{U/(n-1)}}
+\sim t(n-1).
+\]
+
+所以 $t$ 分布不是“把未知 $\sigma$ 换成 $S$ 后神奇地产生的新表”，而是\textbf{均值方向的标准正态坐标 ÷ 独立残差方向产生的随机尺度}。
+
+这是一条非常重要的结构生成链：
+\[
+\boxed{\text{正交分解}\to\text{独立}\to\chi^2\text{ 残差尺度}\to t\text{ 标准化}.}
+\]
+
+\section{平方和分解也是勾股定理}
+对任意固定常数 $\mu$，
+\[
+X-\mu\mathbf1
+=(X-\bar X\mathbf1)+(\bar X-\mu)\mathbf1.
+\]
+两项正交，因此由勾股关系
+\[
+\boxed{
+\sum_{i=1}^n(X_i-\mu)^2
+=\sum_{i=1}^n(X_i-\bar X)^2
++n(\bar X-\mu)^2.
+}
+\]
+
+这条经典统计平方和分解，本质上就是 B00 的正交投影分解在样本空间中的实例。
+
+\section{B10 串起哪些章节}
+\begin{tabular}{p{0.23\linewidth}p{0.30\linewidth}p{0.39\linewidth}}
+\hline
+Owner / 下游 & 提供对象 & B10 的翻译责任\\
+\hline
+B00 / 线代 Topic01 & 正交投影、勾股分解 & 把样本均值/中心化翻译成两块正交分量\\
+线代 Topic03 & rank、子空间维数 & 把自由度读成残差投影的秩 $n-1$\\
+概率 Topic07 & $\bar X,S^2,\chi^2,t,F$ & 解释卡方自由度与均值/方差独立的结构来源\\
+概率 Topic04/B09 & 正态向量与协方差 & 提供正交变换下 Gaussian 独立性的加强条件\\
+\hline
+\end{tabular}
+
+\section{为什么“估计一个参数就减一”不是根本规则}
+在本问题中减一，是因为我们把样本投影到一个一维均值子空间，并把这一维从残差空间中删掉。
+
+更一般的线性模型中，若投影到一个 $p$ 维模型子空间，残差空间维数会变成 $n-p$。这说明“自由度减少多少”真正由\textbf{消耗了多少独立线性方向}决定。
+
+一般 Cochran 定理、回归与方差分析属于 Extension；数学一只保留当前一维均值投影这条主线。
+
+\section{反桥梁}
+\begin{tabular}{p{0.20\linewidth}p{0.04\linewidth}p{0.20\linewidth}p{0.48\linewidth}}
+\hline
+A & & B & 真正区别\\
+\hline
+几何正交 & $\neq$ & 概率独立 & 只有联合正态等额外结构下才能从正交升级为独立\\
+残差有 $n$ 个坐标 & $\neq$ & 有 $n$ 个自由度 & 它们满足总和为零，只张成 $n-1$ 维子空间\\
+除以 $n-1$ & $\neq$ & 任意无偏修正口诀 & 本质来自当前残差空间维数；其他模型自由度可能不同\\
+$\chi^2(n-1)$ & $\neq$ & 任意总体下精确成立 & 精确卡方抽样分布依赖正态总体\\
+\hline
+\end{tabular}
+
+\section{调用信号与一页压缩}
+看到“为什么样本方差除 $n-1$、$\bar X$ 与 $S^2$ 独立、正态样本卡方、$t$ 分布自由度”时，先画一张空间分解：
+\[
+\boxed{
+X
+=PX+RX
+=\bar X\mathbf1+(X-\bar X\mathbf1),
+\qquad
+\operatorname{span}\{\mathbf1\}\perp\mathbf1^\perp.
+}
+\]
+
+然后问：
+\begin{enumerate}
+\item 均值方向占几维？
+\item 残差空间还剩几维？
+\item 当前总体是否正态，足以把正交分量升级为独立？
+\item 当前平方和是否正好是残差投影的平方范数？
+\end{enumerate}
+
+能从这张图重新生成 $n-1$、$\chi^2$、独立性和 $t$，就不再需要把它们当四条孤立定理背诵。
+
+\end{document}

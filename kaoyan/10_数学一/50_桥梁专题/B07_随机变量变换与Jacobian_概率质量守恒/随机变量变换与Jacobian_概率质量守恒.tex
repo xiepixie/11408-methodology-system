@@ -1,45 +1,245 @@
-\documentclass[UTF8,a4paper,10pt]{ctexart}
-\usepackage[a4paper,margin=1.75cm]{geometry}
-\usepackage{amsmath,amssymb,booktabs,tabularx}
-\usepackage[most]{tcolorbox}
-\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
-\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\documentclass[profile=standard]{ipara-handbook}
+\title{B07｜随机变量变换与 Jacobian：概率质量守恒}
+\author{}
+\date{}
 \begin{document}
-\section*{B07\quad 随机变量变换与 Jacobian：概率质量守恒}
-\textbf{依赖：}B02+B06A/B06B。只解释变换方向、支持迁移和质量守恒。
-\begin{tcolorbox}[title=母接口]
-原坐标区域的概率质量不变：
+\maketitle
+
+\begin{quote}
+本册回答：\textbf{随机变量换坐标时，为什么密度必须乘逆 Jacobian？为什么非单调变换要把多个原像贡献相加？这些公式背后真正守恒的到底是什么？}
+\end{quote}
+
+\section{本册定位：B02 的几何微元 × B06 的概率总账}
+概率 Topic04 Own 随机变量变换、联合支撑、CDF 原像法与新分布；B02 Own Jacobian 体积缩放；B06A/B06B Own 密度—累积与概率质量汇总。B07 只 Own 一条稳定跨科接口：
 \[
-f_{U,V}(u,v)=f_{X,Y}(x(u,v),y(u,v))
-\left\lvert\frac{\partial(x,y)}{\partial(u,v)}\right\rvert.
+\boxed{
+\text{同一随机结果的概率质量}
+\quad\text{不因我们更换坐标而改变}
+}
 \]
-\end{tcolorbox}
-\subsection*{1.\ 一一变换}
-先写 $(u,v)=T(x,y)$ 的逆像 $(x,y)=T^{-1}(u,v)$ 与新支持域，再使用逆变换 Jacobian。矩阵和行列式方向必须与“密度乘微元保持不变”
+
+在一一光滑变换下，这条守恒写成
 \[
-f_{X,Y}\,dxdy=f_{U,V}\,dudv
+\boxed{
+f_{X}(x)\,dx=f_Y(y)\,dy}
 \]
-一致。
-\subsection*{2.\ 一维与多分支}
-若 $Y=g(X)$ 在目标区间单调，
+或二维的
 \[
-f_Y(y)=f_X(g^{-1}(y))\left\lvert\frac{d}{dy}g^{-1}(y)\right\rvert.
+\boxed{
+f_{X,Y}(x,y)\,dxdy=f_{U,V}(u,v)\,dudv.}
 \]
-非单调时按所有满足 $g(x_i)=y$ 的分支求和，并分别检查原支持。
-\subsection*{3.\ 失败边界}
+
+密度不是守恒量；\textbf{密度 × 微元所代表的局部概率质量}才是。
+
+\section{为什么密度会“反向补偿”体积变化}
+设新变量
+\[
+y=g(x)
+\]
+在当前区间上一一可微。若 $g$ 在某处把长度放大为原来的 $|g'(x)|$ 倍，那么同一小块概率质量会摊到更长的新区间上，因此新密度必须相应变小：
+\[
+f_Y(y)\approx \frac{f_X(x)}{|g'(x)|}.
+\]
+精确写成
+\[
+\boxed{
+f_Y(y)=f_X(g^{-1}(y))\left|\frac{d}{dy}g^{-1}(y)\right|.}
+\]
+
+所以“乘逆导数”不是概率专属口诀，而是\textbf{质量固定、坐标体积改变后密度必须反向补偿}。
+
+\section{二维：为什么自然使用逆变换 Jacobian}
+设
+\[
+(U,V)=G(X,Y)
+\]
+且逆变换存在：
+\[
+(X,Y)=H(U,V).
+\]
+则
+\[
+dxdy
+=\left|\frac{\partial(x,y)}{\partial(u,v)}\right|dudv.
+\]
+同一小区域概率守恒给出
+\[
+\boxed{
+f_{U,V}(u,v)
+=f_{X,Y}(H(u,v))
+\left|\frac{\partial(x,y)}{\partial(u,v)}\right|.}
+\]
+
+为什么概率公式看起来总爱用“逆 Jacobian”？因为目标是把原密度表达成\textbf{新坐标变量的函数}，自然先把旧坐标写成新坐标的函数。若坚持使用正变换 determinant，也可以，但必须在对应原像点取倒数；两种写法来自同一 B02 逆映射关系。
+
+\section{support 为什么和 Jacobian 同等重要}
+密度公式只告诉“某个合法新点附近的局部强度怎样变”，却不告诉哪些新点真的能由原 support 到达。
+
+因此变换题必须同时维护两张账：
+\[
+\boxed{\text{局部尺度账：Jacobian}}
+\qquad
+\boxed{\text{可达范围账：support / image}.}
+\]
+
+只换密度公式而不换支撑，会得到归一化错误甚至在不可能区域赋正密度。
+
+\section{非一一变换：为什么必须把所有原像加起来}
+若 $Y=g(X)$ 对同一个 $y$ 有多个原像
+\[
+x_1(y),\dots,x_k(y),
+\]
+且各分支局部单调，则目标小区间附近的概率来自所有这些互不重叠的小原像区间，因此
+\[
+\boxed{
+f_Y(y)=\sum_{i=1}^k f_X(x_i(y))\left|\frac{dx_i}{dy}\right|.}
+\]
+
+这不是“多乘几项”，而是概率的可加性：多个不同原始结果被变换折叠到同一个输出值附近，质量必须全部汇总。
+
+\section{母例一：$Y=X^2$ 把正负两支折叠到一起}
+若
+\[
+X\sim U(-1,1),
+\qquad Y=X^2,
+\]
+则新支撑为
+\[
+0<y<1.
+\]
+每个 $y\in(0,1)$ 有两个原像
+\[
+x_1=\sqrt y,
+\qquad x_2=-\sqrt y.
+\]
+原密度均为 $1/2$，且
+\[
+\left|\frac{dx_i}{dy}\right|=\frac1{2\sqrt y}.
+\]
+所以
+\[
+f_Y(y)
+=\frac12\frac1{2\sqrt y}
++\frac12\frac1{2\sqrt y}
+=\frac1{2\sqrt y},
+\qquad 0<y<1.
+\]
+
+漏掉任何一个分支都会少掉一半总质量。
+
+\section{母例二：二维线性变换把 determinant 与概率直接接起来}
+设
+\[
+\binom UV=A\binom XY,
+\qquad \det A\neq0.
+\]
+则逆变换为
+\[
+\binom XY=A^{-1}\binom UV,
+\]
+且
+\[
+\left|\frac{\partial(x,y)}{\partial(u,v)}\right|
+=|\det A^{-1}|=rac1{|\det A|}.
+\]
+于是
+\[
+\boxed{
+f_{U,V}(u,v)=f_{X,Y}(A^{-1}(u,v))\frac1{|\det A|}.}
+\]
+
+这条式子把线代 determinant 的“面积倍率”和概率的“密度反向补偿”完全对齐。
+
+\section{退化线性变换：determinant 为零时发生了什么}
+若 $A$ 不可逆，例如
+\[
+U=X+Y,
+\qquad V=2X+2Y,
+\]
+则 $(U,V)$ 永远落在直线
+\[
+V=2U
+\]
+上。原二维概率质量被压到低维子空间，因此通常不存在相对于二维面积的普通联合密度。
+
+这正是 B02 的“determinant 为零 = 局部满维体积塌缩”在概率世界中的直接含义。
+
+所以
+\[
+\boxed{\det A=0\text{ 不代表概率消失，而是普通满维密度表示失效。}}
+\]
+
+\section{CDF 原像法为什么比 Jacobian 更基础}
+对任意变换 $Y=g(X)$，最原始的定义始终是
+\[
+F_Y(y)=P(g(X)\le y).
+\]
+把事件拉回原变量：
+\[
+F_Y(y)=P(X\in g^{-1}(( -\infty,y])).
+\]
+
+这个原像法不要求全局一一，也能处理分段、常值区间和可能产生原子的情况。Jacobian 密度公式只是当原像结构足够光滑时的高效局部版本。
+
+因此路线优先级是：
+\[
+\boxed{\text{先懂原像与质量，再把光滑分支压缩成 Jacobian 公式。}}
+\]
+
+\section{更深背景：pushforward 与 change of variables}
+随机变量本质上把底层概率测度推到取值空间。若 $Y=g(X)$，新分布是原分布在 $g$ 下的推前。
+
+数学一不需要测度论术语完成计算，但这个背景能统一三件事：
 \begin{itemize}
-\item 只换公式不换 support 会产生错误概率；
-\item Jacobian 为零或变换非光滑时不能机械套公式；
-\item 多对一映射必须分支求和，不能挑一个逆函数。
+\item CDF 法是在直接计算推前后的事件概率；
+\item 多分支求和是在汇总同一输出点的所有原像质量；
+\item Jacobian 是绝对连续情形下，推前测度相对于新坐标体积的密度变换因子。
 \end{itemize}
-\subsection*{4.\ 最小例子与调用}
-若 $X\sim U(-1,1)$ 且 $Y=X^2$，对 $0<y<1$ 有两个逆像 $\pm\sqrt y$，故
+
+\section{B07 串起哪些章节}
+\begin{tabular}{p{0.23\linewidth}p{0.30\linewidth}p{0.39\linewidth}}
+\hline
+Owner / 上游 & 提供对象 & B07 的翻译责任\\
+\hline
+B02 / 高数 Topic08 & Jacobian、区域换元、体积倍率 & 把几何微元变化翻译成密度反向补偿\\
+B06A & CDF/PDF 与质量账本 & 强调真正守恒的是概率质量而非密度值\\
+B06B & 原像/纤维上的质量汇总 & 解释多分支、和/积等函数变换为何要累计所有来源\\
+概率 Topic04 & 随机变量函数、联合支撑、目标分布 & 输出可执行的 support + inverse + Jacobian 接口\\
+\hline
+\end{tabular}
+
+\section{反桥梁：最危险的四组混淆}
+\begin{tabular}{p{0.20\linewidth}p{0.04\linewidth}p{0.20\linewidth}p{0.48\linewidth}}
+\hline
+A & & B & 真正区别\\
+\hline
+密度值 & $\neq$ & 概率质量 & 前者依赖坐标尺度，后者在变量重表达下保持\\
+Jacobian 正确 & $\neq$ & 变换题已完成 & 仍必须检查 support、分支、奇异点与归一化\\
+一个逆函数分支 & $\neq$ & 完整原像 & 非单调变换同一输出可能有多个来源\\
+连续输入 & $\neq$ & 输出必有普通密度 & 常值区间可把正概率质量压成一个原子\\
+\hline
+\end{tabular}
+
+\section{调用信号与第一动作}
+看到“$Y=g(X)$、$(U,V)=G(X,Y)$、求变换后密度、二维正态线性变换、径向变量”时，先写：
+\begin{enumerate}
+\item 原 support 是什么，新变量值域是什么？
+\item 对一个目标新点，完整原像有几支？
+\item 变换是否在各分支光滑、一一且 Jacobian 非退化？
+\item 使用的是正变换还是逆变换的 determinant？
+\item 最终总质量是否重新归一到 $1$？
+\end{enumerate}
+
+\section{一页压缩}
+B07 最后只保留一条守恒式：
 \[
-f_Y(y)=\frac12\frac{1}{2\sqrt y}+\frac12\frac{1}{2\sqrt y}
-=\frac{1}{2\sqrt y}.
+\boxed{\text{probability mass before}=\text{probability mass after}.}
 \]
-题面出现非单调变换时，先列完整原像与新支持，再对所有分支求和。
-\begin{corebox}{检查句}
-守恒等式中的微元方向是什么？新域是否是完整逆像？是否存在多个分支、奇异点或边界缺口？
-\end{corebox}
+在光滑一一情形，它展开为
+\[
+\boxed{f_{\rm old}\,dV_{\rm old}=f_{\rm new}\,dV_{\rm new}.}
+\]
+
+若非一一，就把所有原像分支的质量相加；若降维，普通满维密度可能消失。能从这条守恒重新生成逆 Jacobian、support 与多分支公式，才算真正掌握 B07。
+
 \end{document}

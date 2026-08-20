@@ -1,85 +1,198 @@
-\documentclass[11pt,a4paper]{ctexart}
-\usepackage[a4paper,margin=1.78cm,headheight=15pt]{geometry}
-\usepackage{amsmath,amssymb,mathtools}
-\usepackage{booktabs,tabularx,array}
-\usepackage{enumitem}
-\usepackage[most]{tcolorbox}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning}
-\usepackage{xcolor,fancyhdr,hyperref,bookmark,microtype}
-\newcolumntype{Y}{>{\raggedright\arraybackslash}X}\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-\setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
-\definecolor{deep}{RGB}{42,58,73}\definecolor{soft}{RGB}{245,247,249}\definecolor{warn}{RGB}{136,68,63}\definecolor{greenish}{RGB}{57,92,76}\definecolor{purple}{RGB}{87,72,116}
-\hypersetup{colorlinks=true,linkcolor=deep,pdftitle={B08 Fourier 与正交基：函数表示与正交投影}}
-\pagestyle{fancy}\fancyhf{}\lhead{\small\color{deep}\textbf{数学一 · Bridge B08}}\rhead{\small\color{deep}函数坐标 · 正交投影}\cfoot{\small\thepage}\renewcommand{\headrulewidth}{0.4pt}
-\newtcolorbox{corebox}[1]{breakable,colback=soft,colframe=deep,title=\textbf{#1},boxrule=0.8pt,arc=2mm}\newtcolorbox{warnbox}[1]{breakable,colback=white,colframe=warn,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}\newtcolorbox{examplebox}[1]{breakable,colback=white,colframe=purple,title=\textbf{#1},boxrule=0.7pt,arc=1.5mm}\newcommand{\kw}[1]{\textbf{\color{deep}#1}}
+\documentclass[profile=standard]{ipara-handbook}
+\title{B08｜傅里叶展开与正交基：函数表示与正交投影}
+\author{}
+\date{}
 \begin{document}
-\begin{center}{\LARGE\textbf{B08｜Fourier 与正交基：函数表示与正交投影}}\\[0.4em]
-{\large 为什么 Fourier 系数必然由内积积分产生？}\end{center}
-\vspace{0.4em}
-\begin{quote}本 Bridge 只解释有限维“坐标 = 投影”如何翻译为函数空间中的 Fourier 系数；收敛、延拓、跳跃点和逐项操作仍由高数 Topic11 Own。\end{quote}
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-\section{Position 与两侧 Owner}
-B00 Owns 内积、正交和投影的基础语言；线代 Topic01 Owns 基与坐标；高数 Topic11 Owns 幂级数/Fourier 的收敛和展开。B08 只 Own 接口翻译与使用边界。
+\maketitle
 
-\section{Mother Interface：系数就是投影坐标}
-有限维中，若 $\{e_i\}$ 是规范正交基，
-\[
-v=\sum_i c_i e_i,\qquad c_i=\langle v,e_i\rangle.
-\]
-把向量换成函数，把有限和换成级数，把点积换成积分内积，就得到
-\[
-f\sim\sum_n c_n\phi_n,\qquad c_n=\frac{\langle f,\phi_n\rangle}{\langle\phi_n,\phi_n\rangle}.
-\]
-在 $[-L,L]$ 上取 $\phi_n=\cos(n\pi x/L)$ 或 $\sin(n\pi x/L)$，内积为
-\[
-\langle f,g\rangle=\int_{-L}^{L}f(x)g(x)\,dx,
-\]
-于是产生 Topic11 的 Fourier 系数公式。
+\begin{quote}
+本册回答：\textbf{傅里叶系数为什么一定长成“函数乘正弦/余弦再积分”的样子？它与线性代数中的坐标、正交投影、最小平方误差究竟是什么关系？}
+\end{quote}
 
-\begin{center}
-\begin{tikzpicture}[node distance=0.55cm and 0.7cm,box/.style={draw=deep,rounded corners=1.5mm,minimum width=3.15cm,minimum height=0.9cm,align=center,fill=soft,font=\small},arr/.style={-{Latex[length=2mm]},thick,draw=deep}]
-\node[box] (a) {对象\\向量 $v$ / 函数 $f$};
-\node[box,right=of a] (b) {正交基\\$e_i$ / $\phi_n$};
-\node[box,right=of b] (c) {内积\\点积 / 积分};
-\node[box,below=of c] (d) {投影系数\\坐标 $c_i$ / $c_n$};
-\draw[arr] (a)--(b);\draw[arr] (b)--(c);\draw[arr] (c)--(d);
-\end{tikzpicture}
-\end{center}
-
-\section{接口推导：正交性消掉其他坐标}
-假设 $f=\sum_k c_k\phi_k$，与某个 $\phi_j$ 取内积：
+\section{本册定位：把函数系数读成正交坐标}
+B00 Own 内积、正交与投影；线代 Topic01 Own 基与坐标；高数 Topic11 Own 傅里叶级数的周期延拓、系数计算、收敛与恢复。B08 只 Own：
 \[
-\langle f,\phi_j\rangle=\sum_k c_k\langle\phi_k,\phi_j\rangle=c_j\langle\phi_j,\phi_j\rangle,
+\boxed{
+\text{正交函数系}
+\xrightarrow{\text{内积}}
+\text{投影坐标}
+\xrightarrow{\text{有限部分和}}
+\text{正交投影近似}
+}
 \]
-因为 $k\ne j$ 的交叉项为零。故
+
+它不负责“级数最终是否逐点等于原函数”；那是高数 Topic11 的收敛问题。
+
+\section{有限维原型：为什么正交坐标能被单独抽取}
+若 $e_1,\dots,e_n$ 是正交基，且
 \[
-\boxed{c_j=\frac{\langle f,\phi_j\rangle}{\langle\phi_j,\phi_j\rangle}.}
+v=\sum_{k=1}^n c_ke_k,
 \]
-这解释了 Fourier 系数中“对函数乘一个正弦/余弦再积分”的必然性：积分不是额外技巧，而是在做坐标投影。
-
-\begin{examplebox}{最小例子：偶延拓的余弦系数}
-在 $[0,L]$ 上给 $f$ 做偶延拓，函数与余弦基同为偶函数，正弦投影自动为零。于是
+与 $e_j$ 取内积：
 \[
-a_n=\frac2L\int_0^L f(x)\cos\frac{n\pi x}{L}\,dx,
+\langle v,e_j\rangle
+=\sum_k c_k\langle e_k,e_j\rangle
+=c_j\langle e_j,e_j\rangle.
 \]
-这只是全区间投影公式利用对称性后的压缩写法。
-\end{examplebox}
+所以
+\[
+\boxed{c_j=\frac{\langle v,e_j\rangle}{\langle e_j,e_j\rangle}.}
+\]
 
-\section{调用条件与边界}
-\begin{tabularx}{\linewidth}{L{0.29\linewidth}Y}
-\toprule
-题面信号 & Bridge 输出 \\
-\midrule
-需要解释 Fourier 系数来源 & 把“系数”翻译为函数与基函数的内积投影 \\
-奇偶性使一半系数消失 & 检查完整 integrand 的对称，不只看 $f$ \\
-选择特殊点求常数级数 & 先由 Topic11 判恢复值，再做投影坐标代入 \\
-\bottomrule
-\end{tabularx}
-\begin{warnbox}{三个必须阻断的类比}
-有限维正交基与无限函数级数不自动等同；写出系数不等于证明逐点收敛；正交也不意味着概率独立。完备性、Parseval 和 Hilbert 空间只作为 Extension。
-\end{warnbox}
+这条公式是 B08 的母原型。核心不是“内积能算系数”，而是\textbf{正交性让其他方向的交叉项全部消失}。
 
-\section{Compression 与陌生题检查}
-遇到 Fourier 展开时复原四步：\textbf{选基函数 → 写内积 → 用正交性抽取系数 → 回到 Topic11 检查收敛/跳跃点}。若系数公式与区间长度、基函数范数不匹配，优先检查内积归一化而不是重算积分。
+\section{把向量换成函数，点积自然变成积分内积}
+在 $[-L,L]$ 上定义
+\[
+\langle f,g\rangle=\int_{-L}^{L}f(x)g(x)dx.
+\]
+三角函数满足正交关系，例如对 $m\neq n$，
+\[
+\int_{-L}^{L}\cos\frac{m\pi x}{L}\cos\frac{n\pi x}{L}dx=0.
+\]
+
+于是当我们用
+\[
+1,\quad \cos\frac{n\pi x}{L},\quad \sin\frac{n\pi x}{L}
+\]
+作为正交函数系时，系数必然由内积投影产生：
+\[
+\boxed{
+a_n=\frac1L\int_{-L}^{L}f(x)\cos\frac{n\pi x}{L}dx,
+}
+\]
+\[
+\boxed{
+b_n=\frac1L\int_{-L}^{L}f(x)\sin\frac{n\pi x}{L}dx.
+}
+\]
+常数项对应常数方向的投影。
+
+因此“乘一个三角函数再积分”不是傅里叶的神秘技巧，而是在函数空间里做坐标读取。
+
+\section{有限部分和：不仅是截断，更是最佳平方误差投影}
+令 $V_N$ 为前若干个三角基函数张成的有限维子空间，$S_Nf$ 为对应傅里叶部分和。由于
+\[
+f-S_Nf\perp V_N,
+\]
+对任意 $p\in V_N$，有
+\[
+f-p=(f-S_Nf)+(S_Nf-p),
+\]
+两项正交，所以
+\[
+\lVert f-p\rVert_2^2
+=\lVert f-S_Nf\rVert_2^2+\lVert S_Nf-p\rVert_2^2
+\ge \lVert f-S_Nf\rVert_2^2.
+\]
+于是
+\[
+\boxed{S_Nf\text{ 是 }V_N\text{ 中对 }f\text{ 的最佳 }L^2\text{ 近似}.}
+\]
+
+这一步把 B00 的“投影 = 最近点”完整迁移到函数空间，也是 B08 比单纯系数推导更深的一层。
+
+\section{奇偶性为什么能自动消掉一半系数}
+若 $f$ 为偶函数，则
+\[
+f(x)\sin\frac{n\pi x}{L}
+\]
+为奇函数，所以
+\[
+b_n=0.
+\]
+若 $f$ 为奇函数，则常数方向和余弦方向投影均为零。
+
+因此“偶函数只有余弦项、奇函数只有正弦项”不是一个独立口诀，而是\textbf{对称性使某些内积自动为零}。
+
+做题时真正要检查的是完整被积函数的奇偶性，而不是只看 $f$ 本身。
+
+\section{为什么“算出坐标”不等于“级数已经恢复原函数”}
+有限维空间里，给出一组基坐标就能精确恢复向量；无限维函数空间没有这么简单。
+
+写出傅里叶系数只说明我们得到了每个正交方向上的投影坐标。要从这些坐标重建 $f$，还要处理：
+\begin{itemize}
+\item 所选正交系统是否足够完备；
+\item 级数在哪种意义下收敛；
+\item 逐点收敛时连续点、跳跃点分别恢复什么值；
+\item 是否允许逐项积分、逐项求导。
+\end{itemize}
+
+所以必须阻断：
+\[
+\boxed{\text{系数存在}\neq\text{逐点恢复成立}.}
+\]
+
+高数 Topic11 Own 这些收敛资格。
+
+\section{从 Bessel 到 Parseval：投影坐标还保存多少能量}
+对任意有限个规范正交方向，正交投影满足
+\[
+\sum_{k=1}^N|c_k|^2\le \lVert f\rVert_2^2.
+\]
+这就是 Bessel 型不等式的几何含义：投影到若干方向得到的平方坐标总量，不会超过原对象的平方范数。
+
+若正交系统完备并在相应 Hilbert 空间意义下展开完整，则进一步有 Parseval 等式
+\[
+\lVert f\rVert_2^2=\sum_k|c_k|^2.
+\]
+
+数学一不需要完整 Hilbert 空间理论，但这条 Extension 能解释：傅里叶系数不是一串任意常数，而是函数“能量”在正交方向上的分配。
+
+\section{母例：偶延拓为什么只需余弦投影}
+在 $[0,L]$ 上给定函数 $f$，做偶延拓到 $[-L,L]$。偶延拓后的函数与所有正弦基正交，因此
+\[
+b_n=0.
+\]
+余弦系数为
+\[
+a_n=\frac2L\int_0^Lf(x)\cos\frac{n\pi x}{L}dx.
+\]
+系数前的 $2/L$ 并不是需要死记的新常数，而来自：
+\begin{itemize}
+\item 全区间内积利用偶性缩成两倍半区间积分；
+\item 再除以余弦基函数在当前内积下的范数平方。
+\end{itemize}
+
+因此若区间或归一化约定改变，应重新从投影公式生成，而不是硬套原系数。
+
+\section{B08 串起哪些章节}
+\begin{tabular}{p{0.23\linewidth}p{0.30\linewidth}p{0.39\linewidth}}
+\hline
+Owner / 上游 & 提供对象 & B08 的翻译责任\\
+\hline
+B00 / 线代 Topic01 & 内积、正交基、投影坐标、最近点 & 把有限维投影机制迁移到函数对象\\
+高数 Topic11 & 傅里叶基、延拓、系数、收敛 & 解释系数来源与有限部分和的最佳平方近似\\
+高数 Topic05 & 积分 & 积分在这里承担“函数内积”而非普通面积累积的角色\\
+\hline
+\end{tabular}
+
+\section{反桥梁}
+\begin{tabular}{p{0.20\linewidth}p{0.04\linewidth}p{0.20\linewidth}p{0.48\linewidth}}
+\hline
+A & & B & 真正区别\\
+\hline
+正交函数系 & $\neq$ & 已证明完备 & 正交只消交叉项；完备性决定能否完整恢复\\
+傅里叶系数 & $\neq$ & 函数点值 & 系数是全区间投影坐标，不是某点采样\\
+有限部分和最佳 $L^2$ 近似 & $\neq$ & 每一点都最接近 & $L^2$ 最优是整体平方误差意义，不是逐点误差最小\\
+正交 & $\neq$ & 概率独立 & 一个是函数内积结构，一个是联合概率分解\\
+\hline
+\end{tabular}
+
+\section{调用信号与一页压缩}
+看到“傅里叶系数来源、奇偶项消失、正弦/余弦展开、部分和、特殊点求和”时，先问：
+\begin{enumerate}
+\item 当前区间与内积是什么？
+\item 基函数是否正交，范数平方是多少？
+\item 哪些系数因对称性内积为零？
+\item 当前任务只需投影系数，还是还要回 Topic11 审计收敛与跳跃点恢复？
+\end{enumerate}
+
+最终只需记住
+\[
+\boxed{
+\text{傅里叶系数 = 函数在正交基方向上的投影坐标；部分和 = 对有限基子空间的正交投影。}
+}
+\]
+
 \end{document}

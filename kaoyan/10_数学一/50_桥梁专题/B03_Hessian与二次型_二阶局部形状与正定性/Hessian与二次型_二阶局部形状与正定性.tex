@@ -1,30 +1,215 @@
-\documentclass[UTF8,a4paper,10pt]{ctexart}
-\usepackage[a4paper,margin=1.75cm]{geometry}
-\usepackage{amsmath,amssymb,booktabs,tabularx}
-\usepackage[most]{tcolorbox}
-\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
-\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\documentclass[profile=standard]{ipara-handbook}
+\title{B03｜Hessian 与二次型：二阶局部形状与正定性}
+\author{}
+\date{}
 \begin{document}
-\section*{B03\quad Hessian 与二次型：二阶局部形状与正定性}
-\textbf{依赖：}B01。二阶信息在驻点处先去掉一阶项，再由二次型判断局部形状。
-\begin{tcolorbox}[title=母接口]
-$f(x+h)=f(x)+\nabla f(x)^Th+\frac12h^TH(x)h+o(\|h\|^2)$；
-驻点 $\nabla f(x)=0$ 时，局部形状由 $q(h)=h^THh$ 主导。
-\end{tcolorbox}
-\subsection*{1.\ 符号结构}
-对称 Hessian $H$ 若正定，则 $q(h)>0$（$h\ne0$），给出严格局部极小；负定给出严格局部极大；不定则存在升降两条方向，必为鞍点。半正定/半负定只能说明二阶项未否定，不能直接推出极值。
-\subsection*{2.\ 代数与几何翻译}
-合同变换 $H\mapsto P^THP$ 改变坐标表示但保留惯性；特征值符号是正定性的快速证据。二维判据 $\det H>0$ 且 $f_{xx}>0$ 对应正定，$\det H<0$ 对应不定；$\det H=0$ 必须检查高阶项或特殊路径。
-\subsection*{3.\ 约束与边界}
-若驻点不在开域内部，不能只看 Hessian；边界、约束切向和可行路径需要转交 B04 或高数 Topic07。Hessian 是点处导数对象，二次型是局部模型中的代数函数，两者不可混称。
-\subsection*{4.\ 最小例子与调用}
-对 $f(x,y)=x^2+4xy+5y^2$，原点是驻点，且
+\maketitle
+
+\begin{quote}
+本册回答：\textbf{为什么多元函数的一张二阶偏导表，能够决定局部是“碗、山峰还是鞍点”？为什么换坐标以后 Hessian 的数表会变，但极值类型不能跟着坐标系改变？}
+\end{quote}
+
+\section{本册定位：把二阶导数翻译成所有方向上的局部形状}
+高数 Topic07 Own Hessian、多元 Taylor 与局部极值；线代 Topic06 Own 二次型、合同、惯性和正定性；线代 Topic05 提供实对称谱结构。B03 只 Own 一条稳定接口：
 \[
-h^THh=2h_1^2+8h_1h_2+10h_2^2
-=2(h_1+2h_2)^2+2h_2^2>0\quad(h\ne0).
+\boxed{
+\text{二阶 Taylor}
+\xrightarrow{\nabla f(a)=0}
+\frac12 h^T H_f(a) h
+\xrightarrow{\text{二次型符号}}
+\text{局部各方向的升降结构}
+}
 \]
-所以原点严格局部极小。题面出现二阶偏导表、二次型或特征值符号时，先验证驻点，再调用此符号翻译。
-\begin{corebox}{检查句}
-是否先验证驻点？二次型是否在所有非零方向同号？退化时是否停止二阶判别并转向高阶项/边界？
-\end{corebox}
+
+如果没有这座桥，Hessian 判别很容易退化为二维的 $AC-B^2$ 口诀；一旦遇到退化、换坐标或高维问题，就不知道判据从哪里来。
+
+\section{为什么必须先让一阶项消失}
+若 $f$ 在 $a$ 附近足够光滑，则
+\[
+f(a+h)=f(a)+\nabla f(a)^T h+rac12 h^T H_f(a)h+o(\lVert h\rVert^2).
+\]
+若 $\nabla f(a)\neq0$，一阶项通常是 $O(\lVert h\rVert)$，会压过二阶项 $O(\lVert h\rVert^2)$。因此直接看 Hessian 没有资格。
+
+只有在内部驻点
+\[
+\nabla f(a)=0
+\]
+时，二阶项才成为首要候选主部：
+\[
+f(a+h)-f(a)=\frac12 h^THh+o(\lVert h\rVert^2),\qquad H:=H_f(a).
+\]
+
+\section{Hessian 不是局部形状本身：真正作用的是二次型}
+Hessian $H$ 是点 $a$ 处二阶导数的矩阵记录；真正对一个小位移 $h$ 产生数值的是
+\[
+q(h):=h^THh.
+\]
+它回答：\textbf{沿当前小方向走出去，二阶主部是向上、向下还是看不见变化？}
+
+因此必须区分
+\[
+\boxed{H\text{ 是矩阵表示},\qquad q(h)=h^THh\text{ 是二阶局部模型}.}
+\]
+
+更抽象地说，一阶导数是线性映射；二阶导数本质上是双线性型。对标量函数，在标准坐标下它被 Hessian 这张对称矩阵表示。这一层正是 B01 的“导数是线性对象”向二阶升级后的自然结果。
+
+\section{正定、负定、不定怎样翻译成几何}
+若对所有 $h\neq0$ 都有
+\[
+h^THh>0,
+\]
+则 $H$ 正定。由于余项比 $\lVert h\rVert^2$ 更小，在足够小邻域内二次正量支配余项，从而
+\[
+f(a+h)>f(a),
+\]
+所以 $a$ 是严格局部极小点。
+
+同理：
+\begin{itemize}
+\item $H$ 负定 $\Rightarrow$ 严格局部极大；
+\item $H$ 不定 $\Rightarrow$ 存在一条方向二阶上升、另一条方向二阶下降，因此必为鞍形；
+\item $H$ 半正定、半负定或奇异时，二阶信息不足，必须继续看更高阶主部、特殊路径或原函数结构。
+\end{itemize}
+
+这里“判别失效”只表示\textbf{当前二阶证据不够}，绝不等于“没有极值”。
+
+\section{换坐标为什么会出现合同，而不是相似}
+在驻点附近先做线性坐标替换
+\[
+h=Pz,
+\qquad P\text{ 可逆}.
+\]
+则
+\[
+h^THh=z^T(P^THP)z.
+\]
+因此同一个局部二次型在新坐标中的矩阵是
+\[
+\boxed{H\mapsto P^THP.}
+\]
+这正是线代 Topic06 的合同变换。
+
+这一步非常关键：局部极小、局部极大、鞍点不会因为换了一组坐标而改变，所以真正可靠的二阶信息必须是合同下稳定的结构。Sylvester 惯性定理告诉我们：正、负、零方向的数量保持不变。
+
+\subsection{为什么强调“在驻点”}
+对一般\textbf{非线性}坐标变换，Hessian 的链式变换会额外出现“一阶导数 × 坐标变换的二阶导数”项。恰恰在 $\nabla f(a)=0$ 的临界点，这些附加项消失，二阶型才真正按合同方式变换。
+
+这说明“驻点资格”不仅是为了套二阶判别，它还保证了\textbf{二阶局部形状具有坐标无关的意义}。
+
+\section{正交主轴：特征值把各方向解耦}
+实对称 $H$ 存在正交矩阵 $Q$ 使
+\[
+Q^THQ=\operatorname{diag}(\lambda_1,\dots,\lambda_n).
+\]
+令 $h=Qz$，则
+\[
+h^THh=\sum_{i=1}^n\lambda_i z_i^2.
+\]
+于是特征方向成为互不耦合的主轴：
+\begin{itemize}
+\item $\lambda_i>0$：该方向二阶向上；
+\item $\lambda_i<0$：该方向二阶向下；
+\item $\lambda_i=0$：二阶模型在该方向失去分辨力。
+\end{itemize}
+
+所以“看 Hessian 特征值”并不是另一套技巧，而只是把同一个二次型旋到最容易读取的正交坐标。
+
+\section{二维判别式为什么成立}
+二维对称 Hessian 写成
+\[
+H=\begin{pmatrix}A&B\\B&C\end{pmatrix}.
+\]
+正定当且仅当
+\[
+A>0,
+\qquad AC-B^2>0,
+\]
+负定当且仅当
+\[
+A<0,
+\qquad AC-B^2>0,
+\]
+而
+\[
+AC-B^2<0
+\]
+说明两个特征值异号，因此不定。
+
+所以常见的
+\[
+D=f_{xx}f_{yy}-f_{xy}^2
+\]
+只是二次型定号在二维的压缩表示；忘掉口诀时，回到“所有方向同号还是异号”即可重建。
+
+\section{两个退化母例：同样二阶不够，结局可以完全不同}
+\subsection{退化但仍严格极小}
+\[
+f(x,y)=x^4+y^2.
+\]
+原点 Hessian 为
+\[
+\begin{pmatrix}0&0\\0&2\end{pmatrix},
+\]
+只半正定，二阶判别不能给出严格极小；但原函数满足
+\[
+x^4+y^2>0\qquad((x,y)\neq(0,0)),
+\]
+所以原点确实是严格局部极小。
+
+\subsection{同样存在零特征方向，却可能是鞍点}
+\[
+g(x,y)=x^4-y^4.
+\]
+原点 Hessian 为零矩阵，但沿 $y=0$ 有 $g>0$，沿 $x=0$ 有 $g<0$，所以是鞍点。
+
+这两个例子共同说明：\textbf{零特征值不是答案，而是“二阶信息到此停止”的信号。}
+
+\section{B03 串起哪些章节}
+\begin{tabular}{p{0.23\linewidth}p{0.30\linewidth}p{0.39\linewidth}}
+\hline
+Owner / 下游 & 提供对象 & B03 的翻译责任\\
+\hline
+高数 Topic07 & Hessian、二阶 Taylor、驻点 & 把二阶项识别为二次型并读取局部方向符号\\
+线代 Topic06 & 合同、惯性、正定性 & 解释极值类型为什么与坐标选择无关\\
+线代 Topic05 & 实对称谱定理 & 用正交主轴/特征值把二次型方向解耦\\
+高数 Topic06 / 二次曲面 & 主轴与几何形状 & 只共享“正交主轴 + 符号结构”，不重讲曲面分类\\
+\hline
+\end{tabular}
+
+\section{反桥梁：最容易偷换的对象}
+\begin{tabular}{p{0.20\linewidth}p{0.04\linewidth}p{0.20\linewidth}p{0.48\linewidth}}
+\hline
+A & & B & 真正区别\\
+\hline
+Hessian & $\neq$ & 二次型 & Hessian 是点处二阶导数矩阵；$h^THh$ 才对方向取值\\
+正定 Hessian & $\neq$ & 函数全局凸 & 前者只给一个点附近的二阶局部信息；全局凸需要整个区域的条件\\
+$\det H>0$ & $\neq$ & 正定 & determinant 只给特征值乘积；二维还需一个主子式符号，高维更不能只看 determinant\\
+合同 & $\neq$ & 相似 & 合同保惯性、描述二次型换变量；相似保谱、描述算子换基\\
+\hline
+\end{tabular}
+
+\section{调用信号与退出边界}
+看到“驻点、Hessian、二阶偏导表、正定/负定、局部极值、鞍点”时，先问：
+\begin{enumerate}
+\item 一阶项是否真的消失？
+\item 当前二阶对象是哪个 $h^THh$？
+\item 二次型在所有非零方向上同号、异号，还是存在零方向？
+\item 若退化，是否立即停止二阶判别并转高阶主部/特殊路径？
+\end{enumerate}
+
+若题目带约束，普通 Hessian 不能直接替代约束切空间上的二阶分析；应先转 B04 确认允许方向。
+
+\section{一页压缩}
+B03 最终只需保留：
+\[
+\boxed{
+\nabla f(a)=0,
+\qquad
+f(a+h)-f(a)=\frac12h^THh+o(\lVert h\rVert^2).
+}
+\]
+然后把问题翻译成一句线代话：\textbf{这个二次型在所有非零小方向上是什么符号？}
+
+能从“二阶导数 $\to$ 二次型 $\to$ 合同惯性 $\to$ 局部形状”重新生成二维判别、特征值判别与退化边界，才算真正掌握这座桥。
+
 \end{document}

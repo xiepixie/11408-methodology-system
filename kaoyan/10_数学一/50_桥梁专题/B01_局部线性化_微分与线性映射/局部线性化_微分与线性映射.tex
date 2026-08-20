@@ -1,51 +1,191 @@
-\documentclass[UTF8,a4paper,10pt]{ctexart}
-\usepackage[a4paper,margin=1.75cm]{geometry}
-\usepackage{amsmath,amssymb,booktabs,tabularx,tikz}
-\usetikzlibrary{arrows.meta,positioning}
-\usepackage[most]{tcolorbox}
-\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
-\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\documentclass[profile=standard]{ipara-handbook}
+\title{B01｜局部线性化：微分与线性映射}
+\author{}
+\date{}
 \begin{document}
-\section*{B01\quad 局部线性化：微分 $\times$ 线性映射}
-\textbf{定位：}本 Bridge 解释多元可微为何产生唯一的最佳局部线性映射，并把它交给矩阵表示。
-\begin{tcolorbox}[title=母接口]
-$F(x+h)=F(x)+DF_x(h)+o(\|h\|)$；可微的核心不是“偏导都存在”，而是存在一个统一线性主部。
-\end{tcolorbox}
-\begin{center}
-\begin{tikzpicture}[node distance=9mm,every node/.style={draw,rounded corners,align=center,minimum width=3.0cm,minimum height=8mm,font=\small},>=Latex]
-\node (a) {非线性映射\\$F(x+h)$};
-\node (b) [right=of a] {线性主部\\$DF_x(h)$};
-\node (c) [right=of b] {矩阵表示\\$J_F(x)h$};
-\draw[->,thick] (a)--(b); \draw[->,thick] (b)--(c);
-\end{tikzpicture}
-\end{center}
-\subsection*{1.\ 统一误差条件}
-对 $F:\mathbb R^n\to\mathbb R^m$，可微意味着存在线性映射 $L$ 使
+\maketitle
+
+\begin{quote}
+这座桥回答一个跨学科母问题：\textbf{高数里“可微”的真正输出为什么不是一堆偏导数，而是一张线性映射？这张线性映射又怎样被线代的矩阵语言接收？}
+\end{quote}
+
+\section{本册定位：把“变化率”升级为“统一线性主部”}
+高数 Topic07 Own 多元可微、偏导、方向导数、梯度、Jacobian matrix 与链式法则；线代 Topic02 Own 线性映射及其矩阵表示。B01 不重新定义两侧，而只 Own 一条接口：
 \[
-\lim_{\|h\|\to0}\frac{\|F(x+h)-F(x)-Lh\|}{\|h\|}=0.
+\boxed{
+F\text{ 在 }x\text{ 可微}
+\Longrightarrow
+\text{存在唯一线性映射 }DF_x
+\Longrightarrow
+\text{选基后得到矩阵 }J_F(x)
+}
 \]
-若偏导在邻域连续，$L$ 的矩阵就是 Jacobian $J_F(x)$。链式法则变成
+这里第一步是数学蕴含，第二步是“对象到表示”的接口翻译。
+
+若没有这座桥，最常见的断裂是：学生会算 $F_x,F_y$，却不知道为什么它们应该组织成一张矩阵；会背 Jacobian matrix，却把它误认为原非线性函数本身；会做链式法则，却说不清为什么矩阵乘法次序不能反。
+
+\section{为什么偏导数不够：它们只是坐标轴探针}
+设 $F:\mathbb R^n\to\mathbb R^m$。偏导数只观察
 \[
-D(G\circ F)_x=DG_{F(x)}\circ DF_x,\qquad
-J_{G\circ F}=J_G(F(x))J_F(x).
+F(x+t e_i)-F(x)
 \]
-\subsection*{2.\ 为什么偏导存在不够}
-偏导只沿坐标轴观察，不能控制所有方向的统一余项。若某点的路径 $h=t v(t)$ 使
+沿第 $i$ 个坐标轴的变化。方向导数则把探针扩展到某条固定方向 $v$。但“每条方向都能单独测出变化率”仍不等于存在一个统一模型同时解释所有小位移。
+
+真正的可微要求：存在一个线性映射 $L:\mathbb R^n\to\mathbb R^m$，使
 \[
-\frac{\|F(x+h)-F(x)-Lh\|}{\|h\|}
-\not\to0,
+F(x+h)=F(x)+Lh+r(h),
+\qquad
+\frac{\lVert r(h)\rVert}{\lVert h\rVert}\to0.
 \]
-则不存在同一个最佳局部线性映射，即使每个坐标偏导都存在。
-\subsection*{3.\ 与下游接口}
-B02 取 $J_F$ 的 determinant 解释局部体积缩放；B03 取二阶余项形成 Hessian 二次型；B04 把一阶线性主部限制到切空间。矩阵只是表示，不能把 $F$ 本身误认成线性。
-\subsection*{4.\ 最小例子与调用}
-令 $F(x,y)=(x^2+xy,e^y)$。在 $(1,0)$ 处
+此时 $L$ 唯一，记为 $DF_x$。
+
+\subsection{“最佳局部线性”到底最佳在哪里}
+不是说 $DF_xh$ 在每个有限尺度上都最接近 $F(x+h)-F(x)$，而是说误差相对于步长是一阶更小量：
 \[
-J_F(1,0)=\begin{pmatrix}2&1\\0&1\end{pmatrix},\qquad
-F(1+h,k)=F(1,0)+J_F(1,0)\binom hk+o(\sqrt{h^2+k^2}).
+F(x+h)-F(x)-DF_xh=o(\lVert h\rVert).
 \]
-题面要求“小增量近似、误差传播、复合映射导数”时，先寻找这个统一线性主部，而不是逐坐标猜变化。
-\begin{corebox}{检查句}
-我是否控制了所有方向的余项？矩阵的行列尺寸是否等于输入/输出维度？复合时因子顺序是否保持？
-\end{corebox}
+所以当 $h$ 缩小一倍，主部随 $\lVert h\rVert$ 一阶缩小，而余项比这一尺度更快消失。这就是“线性主部支配局部变化”的严格含义。
+
+\section{线代怎样接收：矩阵只是 $DF_x$ 的坐标记录}
+在线代中，一个抽象线性映射只有在选定定义域与陪域的基以后，才写成矩阵。对标准基，$DF_x$ 的矩阵就是 Jacobian matrix：
+\[
+J_F(x)
+=
+\begin{pmatrix}
+\dfrac{\partial F_1}{\partial x_1}&\cdots&\dfrac{\partial F_1}{\partial x_n}\\
+\vdots&&\vdots\\
+\dfrac{\partial F_m}{\partial x_1}&\cdots&\dfrac{\partial F_m}{\partial x_n}
+\end{pmatrix}.
+\]
+因此
+\[
+DF_x(h)\quad\leftrightarrow\quad J_F(x)[h]_{m std}.
+\]
+这一步必须记住对象边界：
+\[
+\boxed{DF_x\neq J_F(x),\qquad J_F(x)\text{ 是 }DF_x\text{ 在给定基下的表示}.}
+\]
+
+\section{为什么链式法则必然变成矩阵乘法}
+若 $F:\mathbb R^n\to\mathbb R^m$、$G:\mathbb R^m\to\mathbb R^p$ 都可微，则局部先经过 $F$ 的线性主部，再经过 $G$ 的线性主部：
+\[
+D(G\circ F)_x=DG_{F(x)}\circ DF_x.
+\]
+选标准基后得到
+\[
+J_{G\circ F}(x)=J_G(F(x))J_F(x).
+\]
+乘法顺序不是口诀，而是函数复合顺序的坐标表达：向量 $h$ 先被 $J_F$ 作用，再被 $J_G$ 作用。
+
+\subsection{维度是最便宜的独立校验}
+若
+\[
+J_F:m\times n,
+\qquad
+J_G:p\times m,
+\]
+则
+\[
+J_GJ_F:p\times n,
+\]
+正好对应复合映射 $\mathbb R^n\to\mathbb R^p$。如果维度乘不上，说明对象顺序已经错了。
+
+\section{一个母例：同一个局部线性对象怎样被不同下游继续读取}
+设
+\[
+F(x,y)=\bigl(x^2+xy,e^y\bigr).
+\]
+在 $(1,0)$ 处
+\[
+J_F(1,0)=
+\begin{pmatrix}
+2&1\\0&1
+\end{pmatrix}.
+\]
+所以
+\[
+F(1+h,k)=F(1,0)+
+\begin{pmatrix}
+2&1\\0&1
+\end{pmatrix}
+\binom hk+o\!\left(\sqrt{h^2+k^2}\right).
+\]
+这一张局部线性对象可以被多个 Bridge 继续读取：
+\begin{itemize}
+\item B02 取其 determinant，解释局部面积缩放；
+\item 若 $F$ 是标量函数的一阶导数对象，B04 读取其 kernel/法空间结构；
+\item 二阶升级后，B03 读取 Hessian 产生的二次型；
+\item 复合映射继续用线性映射复合解释链式法则。
+\end{itemize}
+这说明 B01 不是“可微的一种解释”，而是 B02/B03/B04 的共同上游接口。
+
+\section{最重要的资格边界}
+\subsection{偏导存在不推出可微}
+偏导只给坐标轴信息。如果不同方向上的误差无法由同一个线性映射统一控制，就不能过 B01。
+
+典型反例
+\[
+f(x,y)=
+\begin{cases}
+\dfrac{x^2y}{x^4+y^2},&(x,y)\neq(0,0),\\
+0,&(0,0),
+\end{cases}
+\]
+可以出现若干方向导数存在却不连续的现象。判断可微资格时，最终仍要回到统一余项，而不是“导数数量够不够多”。
+
+\subsection{$C^1$ 是方便的充分条件，不是可微的定义}
+偏导在邻域连续可以推出可微，但可微本身并不要求偏导函数在邻域连续。不能把“常用判据”升级成定义。
+
+\subsection{Jacobian determinant 只在方阵情形存在}
+$F:\mathbb R^n\to\mathbb R^m$ 的 Jacobian matrix 总可以是矩形。只有 $m=n$ 时，才有 ordinary determinant。B02 只接收满足该维度资格的局部线性映射。
+
+\section{跨章节地图：B01 串起了哪些内容}
+\begin{tabular}{p{0.22\linewidth}p{0.32\linewidth}p{0.38\linewidth}}
+\hline
+章节 & 交给 B01 的对象 & B01 输出到哪里\\
+\hline
+高数 Topic07 可微 & 统一小位移模型 & 线代 Topic02 的线性映射/矩阵表示\\
+高数 Topic07 链式 & 两层局部变化 & 线性映射复合与矩阵乘法\\
+高数 Topic08 换元 & 坐标变换的一阶作用 & B02 determinant 体积缩放\\
+高数 Topic07 二阶 Taylor & 一阶模型完成后的升级入口 & B03 Hessian 二次型\\
+高数 Topic07 约束 & 约束函数的一阶线性条件 & B04 kernel/法空间\\
+\hline
+\end{tabular}
+
+\section{调用信号与退出边界}
+题面出现“小增量近似、全微分、误差传播、复合映射、Jacobian matrix、局部坐标变化”时，先问：
+\begin{enumerate}
+\item 当前对象是否真的可微，而不只是偏导存在？
+\item 输入空间、输出空间的维度分别是多少？
+\item 线性主部 $DF_x$ 作用在哪个增量 $h$ 上？
+\item 当前目标只是求导，还是要继续读 determinant、二阶形状或约束空间？
+\end{enumerate}
+若目标只是得到 Jacobian matrix，到这里即可退出 B01；若问体积、极值、约束，则分别转 B02/B03/B04。
+
+\section{反桥梁：几个看起来像但不能混的对象}
+\begin{tabular}{p{0.2\linewidth}p{0.04\linewidth}p{0.2\linewidth}p{0.48\linewidth}}
+\hline
+A & & B & 真正区别\\
+\hline
+偏导存在 & $\neq$ & 可微 & 前者只看坐标轴；后者要求统一线性余项\\
+方向导数存在 & $\neq$ & 可微 & 每条方向分别存在，不代表方向到导数的关系线性且余项一致\\
+Jacobian matrix & $\neq$ & 原映射 & 前者是点处导数的矩阵表示；后者通常非线性\\
+Jacobian matrix & $\neq$ & determinant & 一个记录完整线性作用，一个只压缩方阵的体积缩放\\
+\hline
+\end{tabular}
+
+\section{一页压缩}
+忘掉所有坐标公式，只保留：
+\[
+\boxed{F(x+h)=F(x)+DF_x(h)+o(\lVert h\rVert)}.
+\]
+然后问四件事：
+\begin{enumerate}
+\item $DF_x$ 是否真的存在？
+\item 它是从哪个输入空间到哪个输出空间的线性映射？
+\item 当前矩阵只是怎样的坐标表示？
+\item 下游究竟要读它的完整方向作用、determinant、二阶升级，还是约束 kernel？
+\end{enumerate}
+能从这四问重新生成 Jacobian、链式与三个下游 Bridge，B01 才真正掌握。
+
 \end{document}

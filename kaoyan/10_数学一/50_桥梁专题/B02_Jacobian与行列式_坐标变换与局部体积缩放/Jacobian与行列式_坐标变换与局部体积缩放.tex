@@ -1,43 +1,198 @@
-\documentclass[UTF8,a4paper,10pt]{ctexart}
-\usepackage[a4paper,margin=1.75cm]{geometry}
-\usepackage{amsmath,amssymb,booktabs,tabularx}
-\usepackage[most]{tcolorbox}
-\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
-\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\documentclass[profile=standard]{ipara-handbook}
+\title{B02｜Jacobian 与行列式：坐标变换与局部体积缩放}
+\author{}
+\date{}
 \begin{document}
-\section*{B02\quad Jacobian 与行列式：坐标变换与局部体积缩放}
-\textbf{依赖：}B01。这里只拥有“局部线性化 $\to$ determinant $\to$ 微元缩放”的接口。
-\begin{tcolorbox}[title=母接口]
-非线性坐标变换 $\xrightarrow{\text{局部化}}$ 线性映射
-$\xrightarrow{\det}$ 有向面积/体积缩放。
-\end{tcolorbox}
-\subsection*{1.\ Jacobian matrix 与 determinant 分层}
-若 $T(u)=\bigl(x(u),y(u)\bigr)$，则
+\maketitle
+
+\begin{quote}
+本册回答：\textbf{为什么一个非线性坐标变换最后会在积分微元前出现一个行列式？为什么有时乘 Jacobian、有时乘逆 Jacobian，而这件事不应该靠背“倒数公式”解决？}
+\end{quote}
+
+\section{本册定位：把局部线性作用压缩成体积倍率}
+B01 Own “可微产生局部线性映射”；高数 Topic07 Own Jacobian matrix；线代 Topic02 Own determinant 的代数与几何机制；高数 Topic08 Own 多重积分换元。B02 只 Own 它们之间的接口：
 \[
-J_T(u)=\begin{pmatrix}x_u&x_v\\y_u&y_v\end{pmatrix},\qquad
-dA_{xy}=\left\lvert\det J_T(u)\right\rvert\,du\,dv.
+\boxed{
+T\text{ 可微}
+\xrightarrow{\text{B01}}
+DT_u
+\xrightarrow{\text{选基}}
+J_T(u)
+\xrightarrow{\det}
+\text{局部有向体积倍率}
+\xrightarrow{|\cdot|}
+\text{无向面积/体积微元倍率}
+}
 \]
-矩阵记录每个输入方向被送到哪里；determinant 记录平行小平行四边形的有向面积因子。三维同理得到体积因子。
-\subsection*{2.\ 换元公式的方向}
-若积分被写成 $(x,y)=T(u,v)$，密度仍是原坐标函数的复合：
+
+如果没有这座桥，Jacobian 很容易退化成一个“换元时别忘了乘的东西”，学生也就无法自行判断变换方向、奇异点和多分支。
+
+\section{先分清两个对象：Jacobian matrix 与 determinant}
+对
 \[
-\iint_{\Omega_{xy}}f(x,y)\,dxdy
-=\iint_{\Omega_{uv}}f(x(u,v),y(u,v))\,\lvert\det J_T\rvert\,dudv.
+T:\mathbb R^n\to\mathbb R^m,
 \]
-若题目给的是逆变换，则必须使用对应方向的 Jacobian；不能看到一个 determinant 就凭记忆取倒数。
-\subsection*{3.\ 失效边界}
-\begin{itemize}
-\item $\det J_T=0$ 表示局部压缩到低维，通常不能直接用普通换元公式；
-\item 变换可能多对一，需分片或按分支求和；
-\item 换元后必须同步搬运区域、函数复合、微元和方向/绝对值。
-\end{itemize}
-\subsection*{4.\ 最小例子与调用}
-极坐标变换 $T(r,\theta)=(r\cos\theta,r\sin\theta)$ 满足
+Jacobian matrix 是 $DT_u$ 在坐标下的表示，维度为 $m\times n$。它记录每个输入方向局部被送到哪里。
+
+只有 $m=n$ 时，才可以继续取
 \[
-\det J_T=\begin{vmatrix}\cos\theta&-r\sin\theta\\\sin\theta&r\cos\theta\end{vmatrix}=r,
+\det J_T(u).
 \]
-故 $dA=r\,drd\theta$。$r=0$ 处 determinant 为零，说明原点的角度表示退化；题面出现坐标换元或密度变换时先写变换方向和新域。
-\begin{corebox}{检查句}
-矩阵维度是否方阵？我用的是正变换还是逆变换？新域是否真的是原域的完整逆像？Jacobian 的绝对值和分支是否交代？
-\end{corebox}
+行列式把一张完整的线性映射压缩成一个标量：局部满维小平行体的\textbf{有向体积倍率}。
+
+因此：
+\[
+\boxed{J_T\neq\det J_T.}
+\]
+前者保留方向作用，后者只保留满维缩放与定向信息。
+
+\section{为什么 determinant 正好是微元倍率}
+在二维中，一个很小的 $du\,dv$ 矩形由边向量
+\[
+e_1\,du,\qquad e_2\,dv
+\]
+张成。经过局部线性映射 $DT_u$ 后，两条边近似变成
+\[
+DT_u(e_1)\,du,\qquad DT_u(e_2)\,dv.
+\]
+它们张成的小平行四边形有向面积是原面积的
+\[
+\det J_T(u)
+\]
+倍。因此普通面积只取大小：
+\[
+\boxed{dA_x=\lvert\det J_T(u)\rvert\,dA_u.}
+\]
+三维完全同理：determinant 是局部体积倍率。
+
+\section{换元公式不是“公式搬家”，而是总累积量保持不变}
+若 $(x,y)=T(u,v)$，原积分为
+\[
+\iint_{D_{xy}} f(x,y)\,dx\,dy.
+\]
+换坐标以后，同一块几何区域被另一套网格编码。若 $T$ 在所用分片上足够光滑且一一，则
+\[
+\boxed{
+\iint_{D_{xy}}f(x,y)\,dxdy
+=
+\iint_{D_{uv}}f(T(u,v))\,
+\lvert\det J_T(u,v)\rvert\,dudv.
+}
+\]
+这里真正保持的是\textbf{累积的几何/物理总量}；变的是区域编码、函数表示和局部微元。
+
+\section{为什么正变换与逆变换不能靠记忆选倒数}
+假设题目先给
+\[
+(u,v)=S(x,y),
+\]
+但积分最终要写在 $(u,v)$ 中。最稳的办法不是问“Jacobian 要不要取倒数”，而是先写你实际使用的映射方向：
+\[
+(x,y)=T(u,v)=S^{-1}(u,v).
+\]
+那么直接使用
+\[
+\left\lvert\frac{\partial(x,y)}{\partial(u,v)}\right\rvert.
+\]
+若两边局部互逆，则链式法则给
+\[
+J_TJ_S=I,
+\]
+因此
+\[
+\det J_T=\frac{1}{\det J_S}.
+\]
+“倒数”只是逆映射线性化后的结果，不是另一条孤立规则。
+
+\section{组合变换：为什么倍率会相乘}
+若先做 $T$ 再做 $S$，B01 给出
+\[
+J_{S\circ T}=J_S(T(u))J_T(u).
+\]
+取 determinant：
+\[
+\det J_{S\circ T}
+=\det J_S(T(u))\det J_T(u).
+\]
+因此连续两次坐标缩放的局部体积倍率相乘。这也提供了复杂换元的独立校验：若把一个变换拆成两步，最终倍率应与直接求复合 Jacobian 一致。
+
+\section{母例：极坐标中的 $r$ 从哪里来}
+令
+\[
+T(r,\theta)=(r\cos\theta,r\sin\theta).
+\]
+则
+\[
+J_T=
+\begin{pmatrix}
+\cos\theta&-r\sin\theta\\
+\sin\theta&r\cos\theta
+\end{pmatrix},
+\qquad
+\det J_T=r.
+\]
+于是
+\[
+dA=r\,dr\,d\theta.
+\]
+这个 $r$ 不是人为补偿：角度变化 $d\theta$ 在半径 $r$ 处对应的切向长度本来就是约 $r\,d\theta$，与径向厚度 $dr$ 相乘自然形成面积 $r\,dr\,d\theta$。
+
+在 $r=0$ 处 determinant 为零，说明角度坐标失去区分能力：所有 $\theta$ 都描述同一个原点。这正是“坐标退化”的几何含义。
+
+\section{局部资格不等于全局覆盖}
+\subsection{$\det J_T\neq0$ 只给局部可逆性线索}
+它说明局部没有把满维方向压扁；在合适正则条件下可调用逆函数定理得到局部可逆。但它\textbf{不能单独保证整个区域上一一}。
+
+例如极坐标若让 $\theta$ 横跨多个完整周期，绝大多数点会被重复覆盖，即使 $r>0$ 处 Jacobian 非零。
+
+\subsection{多对一必须分片或计重}
+普通换元公式默认在所使用区域上控制好覆盖次数。若一个新坐标点对应多个原坐标分支，应拆区或显式累计各分支，不能只算一遍 determinant。
+
+\subsection{determinant 为零意味着局部降维}
+若 $\det J_T=0$，局部小体积被压到低维，普通满维换元不能机械通过这一点。题目若只在零测集上出现孤立奇异点，有时整体积分仍可处理；但必须由具体定理/区域决定，不能把“某一点为零”与“整个换元必失败”简单等同。
+
+\section{B02 串起了哪些内容}
+\begin{tabular}{p{0.23\linewidth}p{0.31\linewidth}p{0.38\linewidth}}
+\hline
+Owner / 下游 & 对象 & B02 的接口\\
+\hline
+B01 / 高数 Topic07 & 局部线性映射、Jacobian matrix & 只在同维方阵时取 determinant 读取满维缩放\\
+线代 Topic02 & determinant & 将“线性映射体积倍率”翻译到非线性坐标变换的局部网格\\
+高数 Topic08 & 重积分区域与微元 & 输出新坐标微元倍率，并要求同步搬运区域\\
+B07 / 概率 Topic04 & 随机变量变换 & 把同一体积倍率进一步解释为密度必须反向补偿的概率质量守恒\\
+\hline
+\end{tabular}
+
+\section{反桥梁：四个高频偷换}
+\begin{tabular}{p{0.20\linewidth}p{0.04\linewidth}p{0.20\linewidth}p{0.48\linewidth}}
+\hline
+A & & B & 真正区别\\
+\hline
+Jacobian matrix & $\neq$ & determinant & 前者可矩形且保留方向作用；后者仅方阵且压成体积标量\\
+$\det J\neq0$ & $\neq$ & 全局一一 & 非零只控制局部退化，覆盖仍需全局检查\\
+正变换 Jacobian & $\neq$ & 逆变换 Jacobian & 二者对应不同映射方向，互为倒数需先有局部可逆\\
+有向体积 & $\neq$ & 普通面积/体积 & determinant 带方向符号；积分微元通常取绝对值\\
+\hline
+\end{tabular}
+
+\section{调用信号与第一观察}
+题面出现“二重/三重积分换元、极坐标/柱坐标、给出新旧变量关系、变量变换的密度”时，先写四行账本：
+\begin{enumerate}
+\item 当前实际使用的映射方向：旧变量 = 新变量的函数，还是相反？
+\item 新区域是不是原区域的完整逆像/像，是否一一覆盖？
+\item Jacobian matrix 是否方阵，determinant 是否退化？
+\item 当前任务只需几何微元，还是要继续转 B07 维护概率质量？
+\end{enumerate}
+
+\section{一页压缩}
+B02 的生成句只有一句：
+\[
+\boxed{\text{非线性换坐标在足够小尺度上由线性映射控制，而 determinant 正是这张线性映射的满维体积倍率。}}
+\]
+因此忘掉所有换元口诀时，只需从
+\[
+dV_{\rm old}\approx\lvert\det DT\rvert\,dV_{\rm new}
+\]
+重建公式，再同时核对变换方向、区域覆盖、绝对值与奇异点。
+
 \end{document}

@@ -1,36 +1,174 @@
-\documentclass[UTF8,a4paper,10pt]{ctexart}
-\usepackage[a4paper,margin=1.75cm]{geometry}
-\usepackage{amsmath,amssymb,booktabs,tabularx}
-\usepackage[most]{tcolorbox}
-\setlength{\parindent}{2em}\setlength{\parskip}{0.3em}
-\newtcolorbox{corebox}[1]{colback=gray!8,colframe=black!70,title=\textbf{#1},boxrule=.7pt,arc=1mm}
+\documentclass[profile=standard]{ipara-handbook}
+\title{B06A｜CDF 与 PDF：局部概率密度与累积}
+\author{}
+\date{}
 \begin{document}
-\section*{B06A\quad PDF 与 CDF：局部概率密度与累积}
-\textbf{定位：}连接高数 FTC 与概率一维分布；不把离散质量伪装成普通密度。
-\begin{tcolorbox}[title=母接口]
+\maketitle
+
+\begin{quote}
+本册回答：\textbf{为什么概率论里的 CDF 与 PDF 会呈现“积分—求导”关系？为什么这条关系对连续密度非常自然，却不能把所有分布都粗暴地写成 $F'=f$？}
+\end{quote}
+
+\section{本册定位：把概率总账与局部强度接到微积分基本定理}
+概率 Topic03 Own 随机变量、分布、CDF、PMF 与 PDF；高数 Topic05/H-B03 Own 微分—累积的基本定理与正则性边界。B06A 只 Own 一条跨科接口：
 \[
-F(x)=P(X\le x)\quad\longleftrightarrow\quad
-F(x)=\int_{-\infty}^{x}f(t)\,dt,\qquad F'(x)=f(x)
+\boxed{
+\text{概率质量在 }(-\infty,x]\text{ 上的累积}
+\xrightarrow{\text{CDF}}
+F(x)
+\quad\Longleftrightarrow\quad
+\text{局部连续质量强度 }f(x)
+}
 \]
-最后一式只在具备相应正则性时成立。
-\end{tcolorbox}
-\subsection*{1.\ 三层对象}
-CDF $F$ 总是单调不减、右连续且有端点极限；PDF $f$ 是连续型分布的局部密度；区间概率由
+
+在具有密度的情形，二者通过
 \[
-P(a<X\le b)=F(b)-F(a)=\int_a^b f(x)\,dx
+F(x)=\int_{-\infty}^{x}f(t)\,dt
 \]
-给出。密度值本身不是概率，必须乘以区间长度并取极限才有局部解释。
-\subsection*{2.\ 正则性边界}
-连续型分布下 $F$ 绝对连续时几乎处处 $F'=f$；但一般 CDF 可能含跳跃或奇异部分，不能默认存在处处 PDF。离散型变量用点质量 $P(X=x_i)$，不能写成普通函数在点处的“密度值”。
-\subsection*{3.\ 反向使用}
-给定 PDF 先核对非负性与全域积分为 $1$，再累积成 CDF；给定 CDF 求区间概率时优先做差，只有在可导并且题目要求密度时才求导。
-\subsection*{4.\ 最小例子与调用}
-若 $f(x)=e^{-x}\mathbf1_{x\ge0}$，则
+连接；在适当正则点，微积分基本定理给
 \[
-F(x)=\begin{cases}0,&x<0,\\1-e^{-x},&x\ge0.\end{cases}
+F'(x)=f(x).
 \]
-在 $x>0$ 上 $F'=f$，但端点 $0$ 仍应按 CDF 的右连续性检查。题面出现区间概率或“由 $F$ 求 $f$”时，先确定对象类型与支持。
-\begin{corebox}{检查句}
-当前对象是 CDF、PDF 还是点质量？边界点是否有跳跃？归一化和支持集是否闭合？
-\end{corebox}
+
+\section{先分三层对象：分布、CDF、PDF}
+分布本身是概率质量怎样落在实轴上的整体规则。CDF 是它的通用累计表示：
+\[
+F_X(x)=P(X\le x).
+\]
+任何实随机变量都有 CDF。
+
+PDF 则只属于具有绝对连续分布的情形：若存在非负可积函数 $f$ 使
+\[
+P(X\in A)=\int_A f(x)\,dx
+\]
+对相应集合成立，则 $f$ 是密度。
+
+因此对象关系应明确写成：\textbf{每个实随机变量的分布都可以用 CDF 表示；只有具有绝对连续分布的那一类，才进一步拥有普通 PDF 表示。}不能把“每个分布都有 CDF”错误升级成“每个 CDF 都有普通导数密度”。
+
+\section{为什么密度值不是概率}
+对很短区间 $[x,x+\Delta x]$，若 $f$ 在 $x$ 附近连续，则
+\[
+P(x<X\le x+\Delta x)
+\approx f(x)\Delta x.
+\]
+所以 $f(x)$ 是“单位长度上的局部质量强度”，真正概率必须再乘一个长度并累积。
+
+因此密度可以大于 $1$，只要总积分仍为 $1$；而连续型随机变量通常满足
+\[
+P(X=x)=0.
+\]
+
+这也是为什么
+\[
+\boxed{f(x)\neq P(X=x).}
+\]
+
+\section{微积分基本定理怎样进入概率}
+若
+\[
+F(x)=\int_{-\infty}^{x}f(t)\,dt,
+\]
+则对 $a<b$，
+\[
+P(a<X\le b)=F(b)-F(a)=\int_a^b f(t)\,dt.
+\]
+
+当 $f$ 在 $x$ 处连续时，FTC 给出
+\[
+F'(x)=f(x).
+\]
+更一般地，若 $F$ 绝对连续，则存在 $f\in L^1$ 使
+\[
+F(x)=F(-\infty)+\int_{-\infty}^{x}f(t)dt
+\]
+并且 $F'=f$ 几乎处处。
+
+对数学一来说不需要展开完整测度论，但这个背景非常重要：\textbf{“PDF 是 CDF 的导数”其实依赖绝对连续结构，不是 CDF 的定义。}
+
+\section{跳跃为什么代表原子质量}
+若 CDF 在 $x_0$ 处跳跃，则
+\[
+P(X=x_0)=F(x_0)-F(x_0^-).
+\]
+这部分质量集中在单点上，无法由普通函数密度在零长度单点上的积分产生。
+
+所以离散分布与混合分布必须保留“跳跃账本”。例如
+\[
+P(X=0)=\frac12,
+\]
+其余一半在 $(0,1)$ 上均匀，则 CDF 同时包含跳跃与连续增长。对连续段求导只能得到连续部分密度，不能把原子质量弄丢。
+
+\section{母例：指数分布把局部—累积完整跑一遍}
+若
+\[
+f(x)=e^{-x}\mathbf 1_{x\ge0},
+\]
+则
+\[
+F(x)=
+\begin{cases}
+0,&x<0,\\
+1-e^{-x},&x\ge0.
+\end{cases}
+\]
+对 $x>0$，
+\[
+F'(x)=e^{-x}=f(x).
+\]
+区间概率既可由 CDF 做差，也可由密度积分：
+\[
+P(a<X\le b)=F(b)-F(a)=\int_a^b e^{-x}dx.
+\]
+
+这个母例的重点不是积分本身，而是看清：CDF 是累计账本，PDF 是局部连续强度，FTC 负责两者之间的合法转换。
+
+\section{B06A 串起哪些章节}
+\begin{tabular}{p{0.23\linewidth}p{0.30\linewidth}p{0.39\linewidth}}
+\hline
+Owner / 下游 & 提供对象 & B06A 的翻译责任\\
+\hline
+高数 Topic05 / H-B03 & 变上限积分、FTC、正则性 & 解释“局部强度积成累计量、累计量何时可微”\\
+概率 Topic03 & CDF、PMF、PDF、混合分布 & 解释哪些概率对象能走积分—求导接口，哪些必须保留跳跃\\
+B06B & 概率积分语言 & 向联合/边缘/期望输出“质量必须通过积分/求和汇总”的基础语义\\
+B07 & 变量变换 & 提供新分布最后仍须通过 CDF/密度账本验收的接口\\
+\hline
+\end{tabular}
+
+\section{反桥梁：四个最危险的越级}
+\begin{tabular}{p{0.20\linewidth}p{0.04\linewidth}p{0.20\linewidth}p{0.48\linewidth}}
+\hline
+A & & B & 真正区别\\
+\hline
+CDF 连续 & $\neq$ & 存在普通 PDF & 连续只能排除跳跃，仍可能存在奇异连续分布\\
+PDF 值 & $\neq$ & 点概率 & 密度是局部强度，概率是对区间/集合的积分\\
+$F'=f$ & $\neq$ & 所有点处必成立 & 一般绝对连续情形只需几乎处处；不连续密度点要单独审计\\
+零点概率 & $\neq$ & 不可能取到 & 连续变量单点概率为零，但该点仍可在支撑中\\
+\hline
+\end{tabular}
+
+\section{调用信号与退出边界}
+看到“由 $F$ 求 $f$、由 $f$ 求 $F$、区间概率、分布函数合法性、混合分布”时，先问：
+\begin{enumerate}
+\item 当前对象是 CDF、PDF 还是点质量？
+\item CDF 是否有跳跃？连续部分是否具备密度资格？
+\item 当前目标用做差最直接，还是需要积分/求导？
+\item 最后总质量是否为 $1$，CDF 是否单调、右连续并满足两端极限？
+\end{enumerate}
+
+\section{一页压缩}
+B06A 最终只保留三句：
+\[
+\boxed{F(x)=P(X\le x)}
+\]
+是总账；若分布具有密度，则
+\[
+\boxed{F(x)=\int_{-\infty}^{x}f(t)dt};
+\]
+在合适正则点再有
+\[
+\boxed{F'(x)=f(x)}.
+\]
+
+真正要记住的边界是：\textbf{跳跃质量不在普通密度里，CDF 总存在而 PDF 不总存在。}
+
 \end{document}

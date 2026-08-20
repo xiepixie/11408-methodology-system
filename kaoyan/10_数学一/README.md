@@ -86,8 +86,10 @@ $$
 | B06B | 期望、联合概率与边缘化 | 概率权重/联合质量 ↔ 积分累积 |
 | B07 | 随机变量变换与 Jacobian | 坐标重表达 ↔ 概率质量守恒 |
 | B08 | Fourier 与正交基 | 函数表示 ↔ 正交投影 |
+| B09 | 协方差矩阵与二次型 | 随机方向波动 ↔ 正半定二次型 |
+| B10 | 样本中心化与正交投影 | 样本均值/方差 ↔ 自由度与残差子空间 |
 
-当前依赖关系：B04、B08 使用 B00 的内积/正交接口；B02、B03、B04 使用 B01 的局部线性化接口；B06B 使用 B06A 的 density–accumulation 接口；B07 同时使用 B02 的 Jacobian 接口与概率侧的分布/质量守恒接口。B05 相对独立。这里的“使用”表示知识依赖，不表示前者逻辑蕴含后者。
+当前依赖关系：B04、B08 使用 B00 的内积/正交接口；B02、B03、B04 使用 B01 的局部线性化接口；B06B 使用 B06A 的局部密度—累积接口；B07 同时使用 B02 的 Jacobian 接口与 B06A/B06B 的概率质量接口；B09 使用线代二次型/谱结构解释协方差的方向波动；B10 使用 B00 的投影与线代子空间维数，并调用正态随机向量的线性变换结构。B05 相对独立。这里的“使用”表示知识依赖，不表示前者逻辑蕴含后者。
 
 ## 4. Integration Layer
 
@@ -178,7 +180,7 @@ Integration 不按数量规划。只有完整问题确实能检验多个成熟�
 | 高等数学 | [10_高等数学](10_高等数学/README.md) | Subject Atlas 已采用；Topic01–12、H-B01–H-B05、H-I01 均已建立 Canonical `.tex` 候选正文并按需发布 |
 | 线性代数 | [20_线性代数](20_线性代数/README.md) | Subject Atlas 为 Canonical Map；Topic01–06 已建立并发布 Canonical `.tex` 候选正文，当前待人工确认 |
 | 概率论与数理统计 | [30_概率论](30_概率论/README.md) | Subject Atlas 待人工确认；Topic01–08 已完成旧九章 Source Diff、跨册核销与真题路由交叉验证，Canonical `.tex` 均已同步 Published View；尚未标记“已采用”仅因等待使用者确认 |
-| Cross-Subject Bridge | [50_桥梁专题](50_桥梁专题/README.md) | B00–B08 已建立 Canonical 工作稿并按需发布 |
+| Cross-Subject Bridge | [50_桥梁专题](50_桥梁专题/README.md) | B00–B10（含 B06A/B06B）已建立 Canonical 工作稿；B09/B10 为本轮调研新增候选，均待人工确认 |
 | Integration | [60_综合专题](60_综合专题/README.md) | 作为跨模块组合层按成熟 Owner 逐步建立 |
 | Control Rules | [90_学科做题规则](90_学科做题规则/README.md) | Markdown Control Rules；候选规则必须经真题/陌生题验证后再升级 |
 
