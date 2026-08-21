@@ -1,0 +1,20 @@
+\documentclass[dvisvgm,tikz,border=7pt]{standalone}
+\usepackage{CJKutf8}
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\tikzset{n/.style={circle,draw=themecurve,minimum size=8mm,inner sep=0pt,line width=1.1pt},e/.style={draw=themefg,line width=1pt}}
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[text=themefg,color=themefg]
+\node[n] (a) at (0,0) {A};
+\node[n] (b) at (18mm,14mm) {B};
+\node[n] (enode) at (18mm,-14mm) {E};
+\node[n] (c) at (48mm,14mm) {C};
+\node[n] (f) at (48mm,-14mm) {F};
+\node[n] (d) at (66mm,0) {D};
+\draw[e](a)--(b);\draw[e](a)--(enode);\draw[e](b)--(c);\draw[e](enode)--(f);\draw[e](c)--(d);\draw[e](f)--(d);\draw[e](b)--(f);\draw[e](enode)--(c);
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

@@ -306,6 +306,18 @@ switch：状态从源地址学习，动作由目的地址决定}\label{7-etherne
 表项会老化，因为主机可能移动、拓扑可能变化。MAC table
 是从流量观察得到的局部软状态，不是路由协议生成的全网路径。
 
+\subsection{“收到帧”至少有四层含义：物理到达、交换复制、网卡接受、上层交付}
+
+共享介质、Hub、交换机和网卡题最容易把“能收到”压成一个布尔值。应当按事件链区分：
+
+\[
+\boxed{\text{Signal reaches interface}\to\text{Bridge/switch egress action}\to\text{NIC MAC filtering}\to\text{Upper-layer delivery}}
+\]
+
+Hub 在物理层复制比特，因此同一共享段上的接口可以\textbf{物理看到}信号；switch 的未知单播/广播泛洪则是把原 frame 复制到若干 egress，目的 MAC 不会因此变成广播地址；终端网卡收到 frame 后还要依据目的 MAC、广播/组播订阅及工作模式判断是否\textbf{接受}，未接受的普通单播不会递交网络层。因此“其他主机在物理上收到”“交换机把帧发到该端口”“网卡接收该帧”“上层进程得到数据”是四个不同命题。
+
+这个分层同样解释了交换机自学习题：当前帧先影响 switch table，再决定哪些链路会出现该 frame；不能拿最终 MAC 表反推先前帧的物理可见范围，也不能把链路可见性误写成应用已收到数据。
+
 \section{环路、STP 与 VLAN}\label{8-ux73afux8defstp-ux4e0e-vlan}
 
 \subsection{为什么二层环路危险}\label{81-ux4e3aux4ec0ux4e48ux4e8cux5c42ux73afux8defux5371ux9669}

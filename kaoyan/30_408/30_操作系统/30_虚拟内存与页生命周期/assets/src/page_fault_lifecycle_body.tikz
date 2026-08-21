@@ -1,0 +1,52 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  stage/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,minimum width=2.7cm,minimum height=.82cm,align=center},
+  good/.style={stage,draw=themecurve,fill=themecurve!10!themebg},
+  io/.style={stage,draw=themeamber,fill=themeamber!10!themebg},
+  bad/.style={stage,draw=themealert,fill=themealert!10!themebg},
+  flow/.style={->,line width=1.0pt,themegray},
+  fast/.style={->,line width=1.1pt,themecurve},
+  slow/.style={->,line width=1.1pt,themeamber},
+  stop/.style={->,line width=1.1pt,themealert},
+  note/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,inner xsep=6pt,inner ysep=5pt,align=left}
+}
+\node[anchor=west,font=\bfseries\large] at (0,9.15) {Page Fault：同一个同步异常入口，修复路径可能“纯内存、等待 I/O、或拒绝访问”};
+\node[anchor=west,text=themegray] at (0,8.62) {不要把 Page Fault、TLB Miss、Cache Miss 或“必然读磁盘”压成一个事件；先分类当前缺失的是映射、驻留还是权限。};
+
+\node[good] (cpu) at (1.6,7.15) {CPU 执行指令\\访问 VA};
+\node[stage] (mmu) at (5.1,7.15) {MMU/PTE 检查\\普通路径无法完成};
+\node[stage] (trap) at (8.6,7.15) {同步异常 Trap\\进入内核};
+\node[stage] (class) at (12.1,7.15) {验证 VMA / 权限 / 状态\\精确分类 fault};
+\draw[flow] (cpu)--(mmu); \draw[flow] (mmu)--(trap); \draw[flow] (trap)--(class);
+
+% branches
+\node[good] (memfix) at (3.3,4.9) {纯内存修复\\Demand-zero / COW};
+\node[io] (disk) at (8.0,4.9) {需要外部内容\\File / Swap page-in};
+\node[bad] (illegal) at (12.7,4.9) {不可修复\\非法地址 / 真权限错误};
+\draw[fast] (class.south) |- node[pos=.68,above]{合法，可在 RAM 内修复} (memfix.east);
+\draw[slow] (class.south) |- node[pos=.65,above]{合法，但需 I/O} (disk.east);
+\draw[stop] (class.south) -- node[right]{非法} (illegal.north);
+
+\node[good] (alloc) at (3.3,3.15) {分配/复制页框\\填好数据};
+\node[io] (block) at (8.0,3.15) {当前 task Blocked\\设备异步读入};
+\node[bad] (signal) at (12.7,3.15) {Signal / Kill\\不重试原访问};
+\draw[fast] (memfix)--(alloc); \draw[slow] (disk)--(block); \draw[stop] (illegal)--(signal);
+
+\node[good] (pte) at (5.6,1.35) {数据已经就绪后\\更新 PTE / 必要的 TLB 状态};
+\node[good] (retry) at (9.4,1.35) {返回用户态\\重试原指令};
+\draw[fast] (alloc) |- (pte.west);
+\draw[slow] (block) |- node[pos=.25,below]{I/O 完成 $\to$ Ready $\to$ 再获 CPU} (pte.east);
+\draw[fast] (pte)--(retry);
+\draw[fast,bend left=20] (retry.north) to node[above]{same instruction} (cpu.south);
+
+\node[note,anchor=west,text width=5.0cm] at (14.6,1.65) {\textbf{顺序不变量：}必须先让目标 frame 的内容正确就绪，再让 PTE/present 状态对普通访问可见；反过来会暴露未完成的数据。};
+\node[note,anchor=west,text width=5.0cm] at (14.6,4.55) {\textbf{是否阻塞？}Demand-zero/COW 可能在当前内核路径直接修复，不要求换进程；只有需要等待设备等外部事件时，才进入 Blocked。};
+
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-.25) {TLB miss 只表示翻译缓存无副本；page walk 若成功可直接 refill。Cache miss 是物理数据副本缺失，也不等于进入 OS。};
+\end{tikzpicture}

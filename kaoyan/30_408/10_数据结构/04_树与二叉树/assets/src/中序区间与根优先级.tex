@@ -1,0 +1,144 @@
+\documentclass[dvisvgm,tikz,border=5pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{CJKutf8}
+\usetikzlibrary{arrows.meta,calc,positioning,decorations.pathreplacing,fit}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[>=Stealth, font=\small, color=themefg, text=themefg]
+
+% ── 标题与编码说明 ─────────────────────────────────────────────
+\node[anchor=west, font=\bfseries\large] at (-0.3,10.65)
+  {二维表建系法：中序定列，另一条序列定“谁先做根”};
+\node[anchor=west, font=\small, text=themegray] at (-0.3,10.08)
+  {中序 $I=[D,I,G,A,E,J,C,B,F,H]$；后序倒置 $R=[E,C,H,B,F,J,G,A,D,I]$。};
+\node[anchor=west, font=\scriptsize, text=themegray] at (-0.3,9.58)
+  {只比较左右次序与先后次序；表格中的几何距离没有数值意义。};
+
+% ── 10x10 表格 ─────────────────────────────────────────────────
+\def\cell{0.82}
+\def\xzero{0.7}
+\def\yzero{0.35}
+
+\begin{pgfonlayer}{background}
+  % 总网格
+  \fill[themefg!2!themebg]
+    (\xzero-0.5*\cell,\yzero-0.5*\cell)
+    rectangle
+    (\xzero+9.5*\cell,\yzero+9.5*\cell);
+  \draw[themegray!28, line width=0.35pt, step=\cell]
+    (\xzero-0.5*\cell,\yzero-0.5*\cell)
+    grid
+    (\xzero+9.5*\cell,\yzero+9.5*\cell);
+
+  % E 的第一次左右搜索区间：只表达“当前中序区间”，不表达距离
+  \fill[themeamber!7!themebg]
+    (\xzero-0.5*\cell,\yzero-0.5*\cell)
+    rectangle
+    (\xzero+3.5*\cell,\yzero+8.5*\cell);
+  \fill[themecurve!7!themebg]
+    (\xzero+4.5*\cell,\yzero-0.5*\cell)
+    rectangle
+    (\xzero+9.5*\cell,\yzero+8.5*\cell);
+
+  % 第一层区间边界：E 的中序列切分
+  \draw[themealert!75!themebg, densely dashed, line width=0.8pt]
+    (\xzero+3.5*\cell,\yzero-0.5*\cell) --
+    (\xzero+3.5*\cell,\yzero+9.5*\cell);
+  \draw[themealert!75!themebg, densely dashed, line width=0.8pt]
+    (\xzero+4.5*\cell,\yzero-0.5*\cell) --
+    (\xzero+4.5*\cell,\yzero+9.5*\cell);
+\end{pgfonlayer}
+
+% 行列标签：行从上到下 = R；列从左到右 = I
+\foreach \c/\name in {0/D,1/I,2/G,3/A,4/E,5/J,6/C,7/B,8/F,9/H}{
+  \pgfmathsetmacro{\xx}{\xzero+\c*\cell}
+  \node[font=\small\bfseries, text=themefg] at (\xx,\yzero-0.82) {\name};
+}
+\foreach \r/\name in {0/E,1/C,2/H,3/B,4/F,5/J,6/G,7/A,8/D,9/I}{
+  \pgfmathsetmacro{\yy}{\yzero+(9-\r)*\cell}
+  \node[font=\small\bfseries, text=themefg, anchor=east] at (\xzero-0.73,\yy) {\name};
+}
+\node[font=\small\bfseries, text=themegray, anchor=north] at (\xzero+4.5*\cell,\yzero-1.28)
+  {中序 $I$：从左到右};
+\node[font=\small\bfseries, text=themegray, rotate=90] at (\xzero-1.38,\yzero+4.5*\cell)
+  {定根序列 $R$：越靠上越早};
+
+% ── 交点：每个节点恰占一个中序列和一个优先级行 ───────────────
+\tikzset{
+  pnode/.style={circle, draw=themefg, fill=themebg, minimum size=6.6mm, inner sep=0pt, line width=0.8pt},
+  rootnode/.style={circle, draw=themealert, fill=themealert!14!themebg, minimum size=7.4mm, inner sep=0pt, line width=1.25pt},
+  leftroot/.style={circle, draw=themeamber, fill=themeamber!14!themebg, minimum size=7.0mm, inner sep=0pt, line width=1.1pt},
+  rightroot/.style={circle, draw=themecurve, fill=themecurve!14!themebg, minimum size=7.0mm, inner sep=0pt, line width=1.1pt}
+}
+
+% coordinates: x=inorder column, y=10-rank
+\coordinate (pD) at (\xzero+0*\cell,\yzero+1*\cell);
+\coordinate (pI) at (\xzero+1*\cell,\yzero+0*\cell);
+\coordinate (pG) at (\xzero+2*\cell,\yzero+3*\cell);
+\coordinate (pA) at (\xzero+3*\cell,\yzero+2*\cell);
+\coordinate (pE) at (\xzero+4*\cell,\yzero+9*\cell);
+\coordinate (pJ) at (\xzero+5*\cell,\yzero+4*\cell);
+\coordinate (pC) at (\xzero+6*\cell,\yzero+8*\cell);
+\coordinate (pB) at (\xzero+7*\cell,\yzero+6*\cell);
+\coordinate (pF) at (\xzero+8*\cell,\yzero+5*\cell);
+\coordinate (pH) at (\xzero+9*\cell,\yzero+7*\cell);
+
+% 先画最终父子边；线只表示 parent-child，不表示时间或距离
+\begin{pgfonlayer}{main}
+  \draw[themegray!78, line width=0.95pt] (pE) -- (pG);
+  \draw[themegray!78, line width=0.95pt] (pE) -- (pC);
+  \draw[themegray!78, line width=0.95pt] (pG) -- (pD);
+  \draw[themegray!78, line width=0.95pt] (pG) -- (pA);
+  \draw[themegray!78, line width=0.95pt] (pD) -- (pI);
+  \draw[themegray!78, line width=0.95pt] (pC) -- (pJ);
+  \draw[themegray!78, line width=0.95pt] (pC) -- (pH);
+  \draw[themegray!78, line width=0.95pt] (pH) -- (pB);
+  \draw[themegray!78, line width=0.95pt] (pB) -- (pF);
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{foreground}
+  \node[pnode] at (pD) {D};
+  \node[pnode] at (pI) {I};
+  \node[leftroot] at (pG) {G};
+  \node[pnode] at (pA) {A};
+  \node[rootnode] at (pE) {E};
+  \node[pnode] at (pJ) {J};
+  \node[rightroot] at (pC) {C};
+  \node[pnode] at (pB) {B};
+  \node[pnode] at (pF) {F};
+  \node[pnode] at (pH) {H};
+\end{pgfonlayer}
+
+% ── 右侧：只保留手算动作，长解释交给正文 ───────────────────────
+\node[anchor=west, font=\bfseries, text=themefg] at (9.55,8.55) {按四步读表};
+\node[anchor=west, font=\small] at (9.55,7.55)
+  {\textbf{1.} 全表最高点 $E$ $\Rightarrow$ 根};
+\node[anchor=west, font=\small] at (9.55,6.55)
+  {\textbf{2.} $E$ 所在列 $\Rightarrow$ 切成左右区间};
+\node[anchor=west, font=\small] at (9.55,5.55)
+  {\textbf{3.} 左区间最高 $G$，右区间最高 $C$};
+\node[anchor=west, font=\small] at (9.55,4.55)
+  {\textbf{4.} 对两个子区间重复以上步骤};
+
+\draw[themeamber, line width=1.0pt] (9.55,3.45) -- (14.55,3.45);
+\node[anchor=west, align=left, text width=5.0cm, font=\small, text=themeamber] at (9.55,2.75)
+  {关键限定：只在\textbf{当前中序子区间}里找最高点，不能跨祖先已经切开的边界。};
+\node[anchor=west, align=left, text width=5.0cm, font=\scriptsize, text=themegray] at (9.55,1.25)
+  {连线表示最终父子关系；网格距离不表示树深或真实边长。};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

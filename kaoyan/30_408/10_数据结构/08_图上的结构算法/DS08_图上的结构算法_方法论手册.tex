@@ -1,5 +1,6 @@
 \documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
 \usepackage{ipara-handbook}
+\usepackage{graphicx}
 \handbooksetup{DS-08 图上的结构算法}{408 · 数据结构 DS-08}{Goal · Candidate · Commit · Invariant}
 \begin{document}
 \handbooktitle{图上的结构算法}{不要背七段代码：追踪候选域、提交时刻与仍然成立的事实}{408 · 数据结构 Topic DS-08}
@@ -95,6 +96,11 @@ d[v]\leftarrow\min\{d[v],d[u]+w\},
 \subsection{Dijkstra：固定当前最近的顶点}
 非负权保证未来绕路只会继续增加长度。因此，当未过期的最小暂定距离 $(d,u)$ 出队时，不存在一条经未确定顶点绕回来使 $d[u]$ 更小的路径。
 
+\begin{center}
+\resizebox{0.94\linewidth}{!}{\input{30_408/10_数据结构/08_图上的结构算法/assets/src/dijkstra_commit_body.tikz}}
+\end{center}
+右侧反例只改变一条边为负权：松弛动作本身仍合法，真正失效的是“当前最小暂定距离可以永久提交”的证明。
+
 \begin{methodbox}{读代码时只盯三个状态}
 \begin{enumerate}
   \item \code{distance[v]}：目前最好上界，不等于所有时刻都已最终确定；
@@ -170,6 +176,11 @@ vl[u]=\min_{u\to v}\{vl[v]-w(u,v)\}.
 e=ve[u],\qquad l=vl[v]-w(u,v).
 \]
 只有 $e=l$，即总时差为零，活动才是关键活动。
+
+\begin{center}
+\resizebox{0.94\linewidth}{!}{\input{30_408/10_数据结构/08_图上的结构算法/assets/src/aoe_critical_path_body.tikz}}
+\end{center}
+图中节点只承载事件的 $ve/vl$，边承载活动持续时间和 $(e,l)$；纵向排布只为避让，不表示事件时间。
 
 若要估算缩短工期的代价，先找当前关键路径；非关键活动有正总时差，单独缩短它不会改变项目工期。只有缩短所有当前关键路径上的至少一条活动，工期才可能下降；存在多条互不共享的关键路径时，必须同时在每条路径上选活动。活动可缩短量受工期下限或资源上限约束，不能把“零时差”误当成“可无限压缩”。
 

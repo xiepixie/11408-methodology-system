@@ -175,7 +175,7 @@ Cross-Subject Bridge 统一上移到 [408 Cross-Subject Bridge Atlas](../50_桥�
 
 ## 性能的归属
 
-性能不是第九个硬件子系统。IC、CPI、IPC、clock、critical path、latency、throughput、bandwidth、AMAT 与 speedup 进入[计组做题规则](90_做题规则/README.md)中的性能工具箱，各 Topic 只使用与自身机制直接相关的指标。
+性能不是第九个硬件子系统。IC、CPI、IPC、clock、critical path、latency、throughput、bandwidth、AMAT 与 speedup 进入[计组做题规则](90_做题规则/README.md)中的性能工具箱，各 Topic 只使用与自身机制直接相关的指标。主频/CPI/MIPS/程序总时间的直接训练入口见[性能指标与程序执行时间](90_做题规则/性能指标与程序执行时间.md)；存储层次性能继续进入各存储 Practice Adapter。
 
 ## 真题训练层
 

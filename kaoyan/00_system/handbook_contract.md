@@ -196,7 +196,13 @@ Handbook 可以保留少量能跑通机制的**母例**；训练 Markdown 负责
 
 ## 8. Rules
 
-规则不是知识摘要。局部规则可以直接融入对应训练 Markdown；只有作用范围跨越多个训练专题时，才值得成为 Subject Rules。
+规则不是知识摘要。局部规则可以直接融入对应训练 Markdown；只有作用范围跨越多个训练专题、并且确实需要统一维护时，才值得成为 Subject Rules。
+
+判断位置时先过作用域闸门：
+
+- **触发信号是某个 Topic 的专有对象**（例如某种具体算法、某个硬件结构、某类积分或分布）时，默认留在该 Topic / Bridge / Integration 的 Practice；
+- **同一动作在多个独立训练文件中都成立**，而且删掉具体 Topic 名以后仍然清楚可执行时，才考虑放 Subject Rules；
+- “这句话听起来很通用”不是上移理由。上移必须减少重复维护或提供跨专题统一控制。
 
 一条规则至少要自然说清：
 
@@ -231,9 +237,13 @@ Rules 可以只有三个区域：
 规则按作用范围放置：
 
 - 单一问题族的局部规则：直接融入对应训练 Markdown；
-- 跨多个训练专题的学科级规则：放 Subject Rules；
-- 通用解题控制：放 `01_control/problem_solving_kernel.md`；
+- 跨多个训练专题、需要统一维护的学科级规则：放 Subject Rules；
+- 跨学科、跨考试仍然成立的通用解题控制：放 `01_control/problem_solving_kernel.md`；
 - 只在一个问题族里有用的局部技巧：留在对应训练 Markdown，不必为了“规则化”单独晋升。
+
+Subject Rules 应保持短而稳定。若某条 Subject Rule 需要大量 Topic 专有例子才能讲清，优先把例子和具体变式放回局部 Practice，Subject Rules 只保留跨专题的动作与退出条件。
+
+Subject Rules 目录里可以保留少量跨 Topic 的训练导航或训练工具。它们逻辑上仍是 Learning / Practice 辅助入口，不是新的资产类型，也不自动获得 Rule Ownership。若这样做，文件头部必须明确身份和模型归属，并且只能组织现有 Owner；一旦内容开始独立解释机制，应回到 Topic / Bridge / Integration，而不是继续在 Rules 目录扩张。
 
 ## 9. 什么内容不进入稳定资产
 

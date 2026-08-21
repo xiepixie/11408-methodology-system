@@ -1,6 +1,6 @@
 # 传输层：从 host 交付到 process 会话
 
-状态：已采用候选；Canonical 深度正文已建立并发布，心智模型仍待题目验证。
+状态：待人工确认；Canonical 深度正文已建立并发布，本轮 305 题中的对应题目已完成首轮验证。Endpoint/byte sequence/lifecycle 主干已稳定，后续重点验证 RTO/SACK/persist 等深层状态分支。
 
 ## Hook
 
@@ -22,6 +22,10 @@ IP 只能把 packet 送到 host；port 与 endpoint state 才能把数据交给�
 
 - [Canonical LaTeX 正文](NET-06_传输层与TCP_方法论手册.tex)
 - [Published PDF](../../../90_publish/408/NET-06_传输层与TCP_方法论手册.pdf)
+
+## Practice Adapter
+
+- [TCP 序号、窗口与连接状态推演](TCP序号、窗口与连接状态推演.md)：双向 byte sequence → ACK 连续前缀 → 发送窗口 → handshake/close/timer 状态。
 
 ## Source Diff
 

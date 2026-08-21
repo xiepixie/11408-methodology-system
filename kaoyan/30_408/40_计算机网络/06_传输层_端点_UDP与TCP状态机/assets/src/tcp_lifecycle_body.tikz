@@ -1,0 +1,48 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  lifeline/.style={themegray,line width=.8pt,dashed},
+  msg/.style={->,line width=1.05pt,themecurve},
+  close/.style={->,line width=1.05pt,themeamber},
+  state/.style={rounded corners=2pt,draw=themegray,fill=themefg!3!themebg,inner xsep=5pt,inner ysep=3pt,align=center},
+  tw/.style={state,draw=themealert,fill=themealert!10!themebg},
+  note/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,inner xsep=6pt,inner ysep=5pt,align=left}
+}
+\node[anchor=west,font=\bfseries\large] at (0,11.0) {TCP 生命周期：握手同步两个 byte 序号空间，关闭则分别结束两个发送方向};
+\node[anchor=west,text=themegray] at (0,10.47) {正常主动打开 + A 主动关闭示例。报文数可以因 ACK+FIN 合并而变化，但“双方知道什么、两个方向何时关闭、谁进入 TIME-WAIT”不变。};
+
+\node[font=\bfseries,text=themecurve] (A) at (4.0,9.55) {端点 A（主动打开/关闭）};
+\node[font=\bfseries,text=themecurve] (B) at (12.0,9.55) {端点 B（被动打开）};
+\draw[lifeline] (4.0,9.15)--(4.0,.35); \draw[lifeline] (12.0,9.15)--(12.0,.35);
+
+\node[state] at (2.6,8.75) {CLOSED $\to$ SYN-SENT};
+\node[state] at (13.4,8.75) {LISTEN};
+\draw[msg] (4.0,8.3)--node[above]{SYN, seq=$x$} (12.0,8.3);
+\node[state] at (13.55,7.7) {SYN-RECEIVED};
+\draw[msg] (12.0,7.3)--node[above]{SYN+ACK, seq=$y$, ack=$x+1$} (4.0,7.3);
+\draw[msg] (4.0,6.3)--node[above]{ACK, seq=$x+1$, ack=$y+1$} (12.0,6.3);
+\node[state,draw=themecurve] at (2.85,5.85) {ESTABLISHED};
+\node[state,draw=themecurve] at (13.15,5.85) {ESTABLISHED};
+\node[note,anchor=west,text width=5.0cm] at (14.6,7.25) {第三次不是“凑次数”：B 只有收到对 $y$ 的确认，才得到证据知道 A 已接收自己的 SYN/ISN。SYN 各占 1 个 sequence number。};
+
+\draw[themegray,line width=.45pt] (0,5.2)--(18.6,5.2);
+\node[anchor=west,font=\bfseries,text=themeamber] at (0,4.65) {A 主动关闭：FIN 只关闭 A$\to$B 方向，B 仍可继续发送};
+\node[state] at (2.65,4.0) {FIN-WAIT-1};
+\draw[close] (4.0,3.75)--node[above]{FIN, seq=$u$} (12.0,3.75);
+\draw[close] (12.0,3.05)--node[above]{ACK, ack=$u+1$} (4.0,3.05);
+\node[state] at (2.65,2.65) {FIN-WAIT-2};
+\node[state] at (13.45,3.4) {CLOSE-WAIT\\B 应用仍可发送};
+\draw[close] (12.0,2.05)--node[above]{FIN, seq=$v$} (4.0,2.05);
+\node[state] at (13.45,1.65) {LAST-ACK};
+\draw[close] (4.0,1.3)--node[above]{ACK, ack=$v+1$} (12.0,1.3);
+\node[tw] at (2.5,.85) {TIME-WAIT\\等待 $2MSL$};
+\node[state] at (13.45,.85) {CLOSED};
+
+\node[note,anchor=west,text width=5.2cm] at (14.6,3.2) {FIN 也占 1 个序号。TIME-WAIT 属于\textbf{主动关闭方}，不是固定属于 client；它允许重发最终 ACK，并让旧连接迟到 segment 在同四元组复用前消失。};
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-.25) {分支边界：同时关闭可能经过 CLOSING；RST 是异常复位，不走有序半关闭；本图只画正常路径，不冒充完整 RFC 状态转移全集。};
+\end{tikzpicture}

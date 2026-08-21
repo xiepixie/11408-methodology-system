@@ -1,6 +1,6 @@
 # 单跳交付：帧、MAC、局域网与交换机
 
-状态：已采用候选；Canonical 深度正文已建立并发布，心智模型仍待题目验证。
+状态：待人工确认；Canonical 深度正文已建立并发布，本轮 305 题中的对应题目已完成首轮验证。Core Mother Model 暂未发现需重写问题，剩余压力转向训练变式与跨 Topic 迁移。
 
 ## Hook
 
@@ -22,6 +22,10 @@
 
 - [Canonical LaTeX 正文](NET-02_单跳交付_方法论手册.tex)
 - [Published PDF](../../../90_publish/408/NET-02_单跳交付_方法论手册.pdf)
+
+## Practice Adapter
+
+- [帧、透明传输与介质访问](帧、透明传输与介质访问.md)：定界/填充 → 检错 → 发送权 → 交换机本跳动作；显式处理 NRZI 与零比特填充的易错边界。
 
 ## Source Diff
 

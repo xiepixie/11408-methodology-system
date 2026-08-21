@@ -1,6 +1,6 @@
 # 可靠传输：用有限状态驯服丢失、损坏与乱序
 
-状态：已采用候选；Canonical 深度正文已建立并发布，心智模型仍待题目验证。
+状态：待人工确认；Canonical 深度正文已建立并发布，本轮 305 题中的对应题目已完成首轮验证。Core Mother Model 暂未发现需重写问题，剩余压力转向 SR/ACK 丢失等复杂状态变式与跨 Topic 迁移。
 
 ## Hook
 
@@ -22,6 +22,10 @@
 
 - [Canonical LaTeX 正文](NET-03_可靠传输_方法论手册.tex)
 - [Published PDF](../../../90_publish/408/NET-03_可靠传输_方法论手册.pdf)
+
+## Practice Adapter
+
+- [GBN、SR 与窗口状态推演](GBN、SR与窗口状态推演.md)：先声明 ACK/缓存/Timer 语义，再逐事件维护 sender/receiver 双账本与序号空间约束。
 
 ## Source Diff
 

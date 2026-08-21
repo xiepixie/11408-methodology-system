@@ -1,6 +1,6 @@
 # 应用层：把通信能力组织成可发现、可解释的服务
 
-状态：已采用候选；Canonical 深度正文已建立并发布，心智模型仍待题目验证。
+状态：待人工确认；Canonical 深度正文已建立并发布，本轮 305 题中的对应题目已完成首轮验证。DNS/FTP/Mail/HTTP 主干已稳定，后续重点验证 TTL/negative cache、resource/representation 与 HTTP 高阶复用。
 
 ## Hook
 
@@ -22,6 +22,10 @@ DHCP 的配置生命周期由 NET04 Owns；TCP/UDP 的连接与可靠性由 NET0
 
 - [Canonical LaTeX 正文](NET-08_应用层服务语义_方法论手册.tex)
 - [Published PDF](../../../90_publish/408/NET-08_应用层服务语义_方法论手册.pdf)
+
+## Practice Adapter
+
+- [DNS、HTTP 与应用层时延](DNS、HTTP与应用层时延.md)：authority/cache → DNS referral chain → HTTP 依赖 DAG → 串并行 RTT/传输时间核验。
 
 ## Source Diff
 

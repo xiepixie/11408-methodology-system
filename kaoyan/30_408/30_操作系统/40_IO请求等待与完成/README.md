@@ -17,6 +17,9 @@
 ## 训练导航
 
 - [I/O 请求与完成](IO请求与完成.md)：把程序查询、中断、DMA、缓冲、SPOOLing、磁盘调度与阻塞 I/O 统一放进控制线、数据线和任务状态线；承接旧 Canonical 的十三问检查表与题型路由。
+- [单缓冲、双缓冲与缓冲池计算](单缓冲、双缓冲与缓冲池计算.md)：先画 $T/M/C$ 时间线，再生成单/双缓冲稳态周期、启动/排空与缓冲池状态迁移；显式分开 Buffer/Cache/DMA。
+- [设备分配、DMA 与 I/O 通道](设备分配、DMA与IO通道.md)：LUT/SDT/DCT/COCT/CHCT 资源链 + DMA/Interrupt/Channel 责任链 + SPOOLing 虚拟设备边界。
+- [磁盘地址、服务时间与调度计算](磁盘地址与调度计算.md)：训练 CHS/LBA/LBN、寻道/旋转/传输时间、SSTF/SCAN/LOOK 端点约定、磁带记录密度与 SSD/磨损均衡边界；专门承接 408 的手算型外存题。
 
 ## Read Next
 

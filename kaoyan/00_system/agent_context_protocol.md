@@ -39,8 +39,9 @@ Agent 不应为了显得全面而通读整个仓库。上下文加载分为 **Bo
 - LaTeX 字体/表格/TikZ工程/PGF Layer/版心/主题/高分辨率视觉自检与 SVG 渲染：`latex_layout_spec.md`；
 - Owner、重复定义和依赖：`ownership_matrix.md`；
 - 错题、规则晋升、周复盘：`evidence_promotion.md`；
+- 用题目攻击心智模型、判断题面是否自洽、模型修改后的回归验证：`problem_model_validation.md`；
 - 真题/PDF/扫描试卷转译为可编辑 Obsidian Source：先读 `exam_source_agent_prompt.md`，再读 `exam_source_conversion_spec.md` 与对应 Exam Profile；408、数学一共用这一套场景路由；
-- 用现有心智模型批量重写真题题解：先读 `exam_solution_agent_prompt.md`、`exam_solution_authoring_spec.md`、`exam_solution_quality_assurance.md` 与 `01_control/problem_solving_kernel.md`，再按题加载对应 Subject Atlas / Rules / Topic / Bridge / Integration；
+- 用现有心智模型批量重写真题题解：先读 `exam_solution_agent_prompt.md`、`exam_solution_authoring_spec.md`、`exam_solution_quality_assurance.md` 与 `01_control/problem_solving_kernel.md`，再按题加载对应 Subject Atlas、当前 Topic / Bridge / Integration Canonical Owner 与问题族 Practice；只有出现跨多个训练专题的统一控制时，才补读 Subject Rules；
 - 系统架构变化：`architecture.md`；
 - 术语冲突：`terminology.md`；
 - 脚本、`check / audit / publish` 或仓库一致性：`repository_integrity.md`。
@@ -53,7 +54,7 @@ Boot Core 已经包含 `CURRENT.md`。如果本任务需要判断全局成熟度
 
 ### L2：学科基线
 
-先读取对应 Course / Subject Atlas `README.md` 和 Subject Rules。显式声明 `类型：Atlas` 的 README 本身就是 Canonical Atlas Source，Agent 应直接从这里取得：
+先读取对应 Course / Subject Atlas `README.md`。如果当前任务已经落到具体问题族，再读对应 Topic / Bridge / Integration 及其训练 Markdown；只有确实需要跨多个训练专题的统一控制时，才补读 Subject Rules。显式声明 `类型：Atlas` 的 README 本身就是 Canonical Atlas Source，Agent 应直接从这里取得：
 
 - 学科 Mother Question；
 - Topic / Bridge / Integration 地图；
@@ -87,9 +88,9 @@ Topic / Bridge / Integration 如果没有 Canonical `.tex`，或者状态明确�
 | `explore` | 还没有模型、想深入讨论 | Mapper + Socratic Tutor | Course / Subject Atlas、相邻 Topic | 临时工作模型（provisional model）+ 反例 + 用户复述 |
 | `model-diff` | 刚学完，这是我的理解 | Socratic Tutor + Mapper | Atlas、Topic | 主干/混淆/缺口/边界 |
 | `solve` | 这题不会，按现有模型讲 | Model-Grounded Solver | Atlas、Topic、对应训练 Markdown；必要时 Subject Rules | 模型锚点 + 母题表示 + 解题链 + 校验 + 复原问题 |
-| `exam-solution` | 批量优化历年真题解析、用心智模型重写题解 | Model-Grounded Solver + Editor | `exam_solution_agent_prompt.md` + `exam_solution_authoring_spec.md` + `exam_solution_quality_assurance.md` + Canonical Exam Source + Subject Atlas / Rules + 当前 Topic/Bridge/Integration | `solutions/qNN.md` + 年度 solution review + 题解验证 + Model Feedback Closure |
-| `wrong` | 这是错题和原过程 | Debugger | Topic、Rules、Evidence 协议 | First Divergence + 诊断假设 + 最小复测 |
-| `adversary` | 攻击这条理解/规则 | Adversary | Topic 或 Rules、已有表现 | 反例、失效条件、成本与下一次测试 |
+| `exam-solution` | 批量优化历年真题解析、用心智模型重写题解 | Model-Grounded Solver + Editor | `exam_solution_agent_prompt.md` + `exam_solution_authoring_spec.md` + `exam_solution_quality_assurance.md` + Canonical Exam Source + Subject Atlas + 当前 Topic/Bridge/Integration + 对应 Practice；必要时 Subject Rules | `solutions/qNN.md` + 年度 solution review + 题解验证 + Model Feedback Closure |
+| `wrong` | 这是错题和原过程 | Debugger | 当前 Topic / Bridge / Integration、对应 Practice、Evidence 协议；必要时 Subject Rules | First Divergence + 诊断假设 + 最小复测 |
+| `adversary` | 攻击这条理解/规则，或用题目攻击模型 | Adversary | 当前 Topic / Bridge / Integration、规则所在 Practice 或 Subject Rules（按作用域）、已有表现；涉及题目↔模型验证时加读 `problem_model_validation.md` | 反例、失效条件、成本与下一次测试 |
 | `practice` | 针对这个断点出题 | Coach | Topic、对应训练 Markdown、已确认断点 | 少量诊断题 + 变式轴 + 每题观察目标 |
 | `import` | 导入新手册/旧稿 | Mapper + Editor | Handbook Contract、Ownership、对应 Course / Subject Atlas | Handbook Diff + 人工决策点 |
 | `exam-source` | 转真题/PDF/扫描试卷、重画题图 | Editor + Source Reconstructor | `exam_source_agent_prompt.md` + `exam_source_conversion_spec.md` + 对应 Exam Profile + 目标 Exam Archive 状态 + 用户提供的最高质量题面 | Canonical Exam Markdown + `exam.json` + Semantic SVG + Logic Review + Validation |
@@ -157,10 +158,10 @@ Observable Facts
 408 区分 Course Atlas 与四个 Subject Atlas。Agent 应按任务范围读取最小上下文：
 
 - Course / Cross-Subject：`30_408/README.md` + `30_408/50_桥梁专题/README.md` + `30_408/60_综合专题/README.md`；
-- 数据结构：`30_408/README.md` + `30_408/10_数据结构/README.md` + 数据结构 Rules；
-- 计组：`30_408/README.md` + `30_408/20_计算机组成原理/README.md` + 计组 Rules；
-- OS：`30_408/README.md` + `30_408/30_操作系统/README.md` + OS Rules；
-- 网络：`30_408/README.md` + `30_408/40_计算机网络/README.md` + 网络 Rules。
+- 数据结构：`30_408/README.md` + `30_408/10_数据结构/README.md`；需要跨专题控制时再读数据结构 Rules；
+- 计组：`30_408/README.md` + `30_408/20_计算机组成原理/README.md`；需要跨专题控制时再读计组 Rules；
+- OS：`30_408/README.md` + `30_408/30_操作系统/README.md`；需要跨专题控制时再读 OS Rules；
+- 网络：`30_408/README.md` + `30_408/40_计算机网络/README.md`；需要跨专题控制时再读网络 Rules。
 
 Cross-Subject Bridge / Integration 问题只在需要时读取四科相关 Owner，不无差别加载所有 Topic。旧 408 综合复习总览入口已清退，统一由 `30_408/README.md` 路由。
 
@@ -169,9 +170,9 @@ Cross-Subject Bridge / Integration 问题只在需要时读取四科相关 Owner
 数学一现在区分 Course Atlas 与三个 Subject Atlas。Agent 应按任务范围读取最小上下文：
 
 - Course / Cross-Subject：`10_数学一/README.md` + `10_数学一/50_桥梁专题/README.md` + `10_数学一/60_综合专题/README.md`；
-- 高等数学：`10_数学一/README.md` + `10_数学一/10_高等数学/README.md` + 数学 Rules；
-- 线性代数：`10_数学一/README.md` + `10_数学一/20_线性代数/README.md` + `10_数学一/90_学科做题规则/README.md` + `10_数学一/90_学科做题规则/线性代数.md`；
-- 概率论与数理统计：`10_数学一/README.md` + `10_数学一/30_概率论/README.md` + `10_数学一/90_学科做题规则/概率统计.md`。
+- 高等数学：`10_数学一/README.md` + `10_数学一/10_高等数学/README.md`；需要跨专题控制时再读数学 Rules；
+- 线性代数：`10_数学一/README.md` + `10_数学一/20_线性代数/README.md`；需要跨专题控制时再读 `10_数学一/90_学科做题规则/线性代数.md`；
+- 概率论与数理统计：`10_数学一/README.md` + `10_数学一/30_概率论/README.md`；需要跨专题控制时再读 `10_数学一/90_学科做题规则/概率统计.md`。
 
 自动路由 Subject：`math / calculus / linear-algebra / probability`。Cross-Subject Bridge 或 Integration 问题使用 `math`；单科问题优先使用对应 Subject，避免无差别加载三科世界模型。
 

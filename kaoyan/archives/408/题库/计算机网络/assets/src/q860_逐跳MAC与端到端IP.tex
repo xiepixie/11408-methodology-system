@@ -1,0 +1,30 @@
+\documentclass[dvisvgm,tikz,border=7pt]{standalone}
+\usepackage{CJKutf8}
+\usetikzlibrary{positioning}
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themeamber}{HTML}{f5b942}
+\tikzset{
+ host/.style={draw=themefg,rounded corners=2pt,minimum width=20mm,minimum height=9mm,align=center,line width=.9pt},
+ router/.style={draw=themecurve,rounded corners=5pt,minimum width=22mm,minimum height=11mm,align=center,line width=1.1pt},
+ wan/.style={draw=themeamber,rounded corners=6pt,minimum width=22mm,minimum height=10mm,align=center,line width=1pt},
+ link/.style={draw=themefg,line width=1pt},
+ lab/.style={font=\small,text=themeamber,fill=themebg,inner sep=1pt}
+}
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[text=themefg,color=themefg,node distance=18mm]
+\node[host] (h1) {主机 1};
+\node[router,right=26mm of h1] (r1) {R1};
+\node[wan,right=25mm of r1] (w) {WAN};
+\node[router,right=25mm of w] (r2) {R2};
+\node[host,right=26mm of r2] (h2) {主机 2};
+\draw[link](h1)--node[lab,above]{以太网 1}(r1);
+\draw[link](r1)--(w);
+\draw[link](w)--(r2);
+\draw[link](r2)--node[lab,above]{以太网 2}(h2);
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

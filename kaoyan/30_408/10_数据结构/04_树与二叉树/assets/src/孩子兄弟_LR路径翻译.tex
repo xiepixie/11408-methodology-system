@@ -1,0 +1,68 @@
+\documentclass[dvisvgm,tikz,border=5pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{CJKutf8}
+\usetikzlibrary{arrows.meta,positioning,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[font=\small,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  n/.style={circle,draw=themefg,fill=themebg,minimum size=7mm,inner sep=0pt,line width=.8pt},
+  orig/.style={themegray,line width=.9pt},
+  Ledge/.style={->,themecurve,line width=1.0pt},
+  Redge/.style={->,themeamber,dashed,line width=1.0pt}
+}
+
+\node[anchor=west,font=\bfseries] at (0,6.55) {孩子兄弟表示：$L$ 向下到第一个孩子，$R$ 同层到下一个兄弟};
+\node[anchor=west,font=\small,text=themegray] at (0,6.05)
+  {左右两图表示同一个森林；$L/R$ 只表示转换后二叉结构中的两种指针含义。};
+
+% left panel original forest
+\node[font=\bfseries] at (3.45,5.35) {原森林};
+\node[n] (A1) at (2.1,4.45) {A};
+\node[n] (B1) at (.7,3.10) {B};
+\node[n] (C1) at (2.1,3.10) {C};
+\node[n] (D1) at (3.5,3.10) {D};
+\node[n] (E1) at (5.25,4.45) {E};
+\node[n] (F1) at (4.55,3.10) {F};
+\node[n] (G1) at (5.95,3.10) {G};
+\draw[orig] (A1)--(B1); \draw[orig] (A1)--(C1); \draw[orig] (A1)--(D1);
+\draw[orig] (E1)--(F1); \draw[orig] (E1)--(G1);
+\node[font=\small,text=themegray,align=center] at (3.35,2.12)
+  {$A$ 的孩子：$B,C,D$；$E$ 的孩子：$F,G$\\$A,E$ 是森林中两棵树的根};
+
+\draw[themegray,line width=.5pt] (6.75,1.45)--(6.75,5.55);
+
+% right panel binary encoding
+\node[font=\bfseries] at (10.4,5.35) {孩子兄弟二叉表示};
+\node[n] (A2) at (9.25,4.65) {A};
+\node[n] (B2) at (8.15,3.45) {B};
+\node[n] (C2) at (9.45,3.45) {C};
+\node[n] (D2) at (10.75,3.45) {D};
+\node[n] (E2) at (12.0,4.65) {E};
+\node[n] (F2) at (11.45,2.25) {F};
+\node[n] (G2) at (12.75,2.25) {G};
+
+\draw[Ledge] (A2)--node[left,font=\scriptsize,text=themecurve] {$L$}(B2);
+\draw[Redge] (B2)--node[above,font=\scriptsize,text=themeamber] {$R$}(C2);
+\draw[Redge] (C2)--node[above,font=\scriptsize,text=themeamber] {$R$}(D2);
+\draw[Redge] (A2)--node[above,font=\scriptsize,text=themeamber] {$R$}(E2);
+\draw[Ledge] (E2)--node[left,font=\scriptsize,text=themecurve] {$L$}(F2);
+\draw[Redge] (F2)--node[above,font=\scriptsize,text=themeamber] {$R$}(G2);
+
+\node[anchor=west,font=\small,text=themecurve] at (7.45,1.45) {$L=$ first child：下降一层};
+\node[anchor=west,font=\small,text=themeamber] at (11.05,1.45) {$R=$ next sibling：同层右移};
+\node[anchor=west,font=\small,text=themegray] at (7.45,.78)
+  {$A\xrightarrow{R}E$ 表示“下一棵树根”，不是原树中 $A$ 的孩子。};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

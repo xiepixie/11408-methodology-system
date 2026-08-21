@@ -1,0 +1,63 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  axis/.style={->,line width=.9pt,themegray},
+  curve/.style={line width=1.5pt,themecurve},
+  event/.style={densely dashed,line width=.9pt,themealert},
+  threshold/.style={densely dashed,line width=.8pt,themeamber},
+  note/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,inner xsep=6pt,inner ysep=5pt,align=left}
+}
+\node[anchor=west,font=\bfseries\large] at (0,8.75) {TCP 经典拥塞窗口：增长阶段相同，Timeout 与 3 DupACK 的“退让强度”不同};
+\node[anchor=west,text=themegray] at (0,8.22) {示意采用 408 常见 Reno 简化：Slow Start 约每 RTT 翻倍，CA 约每 RTT $+1$ MSS；事件常数必须服从题设。};
+
+% axes
+\draw[axis] (1.0,1.05)--(1.0,7.25) node[above]{cwnd};
+\draw[axis] (1.0,1.05)--(13.6,1.05) node[right]{RTT / 轮次};
+\draw[threshold] (1.0,5.45)--(13.2,5.45);
+\node[anchor=west,text=themeamber] at (13.3,5.45) {当前 $ssthresh$};
+
+% curve points before dup ack
+\coordinate (p1) at (1.55,1.55);
+\coordinate (p2) at (2.35,2.15);
+\coordinate (p3) at (3.15,3.25);
+\coordinate (p4) at (3.95,5.45);
+\coordinate (p5) at (4.8,5.85);
+\coordinate (p6) at (5.65,6.25);
+\coordinate (p7) at (6.5,6.65);
+\draw[curve] (p1)--(p2)--(p3)--(p4)--(p5)--(p6)--(p7);
+\node[anchor=south,text=themecurve,align=center] at (2.65,3.65) {Slow Start\\快速探测};
+\node[anchor=south,text=themecurve,align=center] at (5.2,6.15) {Congestion Avoidance\\加性试探};
+
+% dupack event
+\draw[event] (6.5,1.05)--(6.5,7.05);
+\node[anchor=south,text=themealert,align=center] at (6.5,7.05) {3 Duplicate ACKs\\路径仍有后续数据到达};
+\coordinate (q1) at (7.0,3.85);
+\coordinate (q2) at (7.85,4.25);
+\coordinate (q3) at (8.7,4.65);
+\coordinate (q4) at (9.55,5.05);
+\draw[curve] (p7)--(q1)--(q2)--(q3)--(q4);
+\node[anchor=north,text=themecurve,align=center] at (8.2,3.75) {Reno 简化：\\减半附近后线性恢复};
+
+% timeout event
+\draw[event] (9.55,1.05)--(9.55,7.05);
+\node[anchor=south,text=themealert,align=center] at (9.55,7.05) {Timeout\\反馈闭环严重中断};
+\coordinate (r1) at (10.05,1.55);
+\coordinate (r2) at (10.8,2.15);
+\coordinate (r3) at (11.55,3.25);
+\coordinate (r4) at (12.3,4.15);
+\coordinate (r5) at (13.05,4.55);
+\draw[curve] (q4)--(r1)--(r2)--(r3)--(r4)--(r5);
+\node[anchor=north,text=themealert,align=center] at (10.7,1.45) {回小初值\\重新 Slow Start};
+
+% event formulas cards
+\node[note,anchor=west,text width=6.1cm] at (14.7,6.15) {\textbf{任何事件先保存事件前窗口：}先取 $cwnd_{event}$，再按题设更新 $ssthresh$，最后更新新 $cwnd$。不能先把窗口改小，再拿新值“减半”。};
+\node[note,anchor=west,text width=6.1cm] at (14.7,3.85) {\textbf{3 DupACK：}说明缺口之后还有 segment 穿过路径。Tahoe 可退回小初值；Reno 经典简化常退到新 $ssthresh$ 附近并继续 CA/recovery。具体 $+3$ 膨胀只按题设使用。};
+\node[note,anchor=west,text width=6.1cm] at (14.7,1.6) {\textbf{Timeout：}通常作为更强的拥塞证据，经典模型将 $cwnd$ 降到小初值并重新 SS。$rwnd$ 只限制实际发送，不自动改写这条拥塞状态轨迹。};
+
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-.05) {纵轴只表达窗口状态，不是路径真实容量；$ssthresh$ 是本地阶段分界估计。现代 TCP 算法并不都沿这条经典 Reno 曲线。};
+\end{tikzpicture}

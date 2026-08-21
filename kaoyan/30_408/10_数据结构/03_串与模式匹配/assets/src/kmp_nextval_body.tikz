@@ -1,0 +1,40 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[>=Stealth,font=\small,color=themefg,text=themefg]
+\tikzset{
+  state/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,minimum width=2.35cm,minimum height=.95cm,align=center},
+  redundant/.style={state,draw=themealert,fill=themealert!10!themebg},
+  keep/.style={state,draw=themecurve,fill=themecurve!10!themebg},
+  jump/.style={->,line width=1.05pt,themegray},
+  skip/.style={->,line width=1.2pt,themeamber,dashed}
+}
+\node[anchor=west,font=\bfseries\large] at (0,5.65) {\texttt{nextval}：把“字符相同、已知必败”的中间状态提前删掉};
+\node[anchor=west,text=themegray] at (0,5.10)
+  {模式 $P=\texttt{aabaaab}$；考虑 $j=4$，此时 $P[4]=\texttt a$，且 $next[4]=1$、$P[1]=\texttt a$。};
+
+\node[state] (s4) at (2.1,3.75) {$j=4$\\比较 $P[4]=\texttt a$};
+\node[redundant] (s1) at (6.1,3.75) {$j=1$\\再次比较 $P[1]=\texttt a$};
+\node[keep] (sm1) at (10.1,3.75) {$j=-1$\\哨兵状态};
+\draw[jump] (s4) -- node[above,font=\scriptsize] {$next[4]=1$} (s1);
+\draw[jump] (s1) -- node[above,font=\scriptsize] {$nextval[1]=-1$} (sm1);
+
+\node[anchor=west,font=\small,text=themealert] at (3.85,2.75)
+  {若当前主串字符 $T[i]\neq\texttt a$，那么回退到另一个 \texttt a 后仍必然失配。};
+\draw[skip,bend right=24] (s4.south) to node[below,font=\scriptsize,text=themeamber] {$nextval[4]=-1$：直接跳过冗余比较} (sm1.south);
+
+\node[anchor=west,font=\bfseries] at (0,1.35) {对照：什么时候不能跳？};
+\node[state] (s5) at (2.1,.35) {$j=5$\\$P[5]=\texttt a$};
+\node[keep] (s2) at (6.1,.35) {$next[5]=2$\\$P[2]=\texttt b$};
+\draw[->,line width=1.05pt,themecurve] (s5) -- node[above,font=\scriptsize,text=themecurve] {$\texttt a\neq\texttt b$} (s2);
+\node[anchor=west,font=\small,text=themegray] at (7.65,.35)
+  {当前字符虽不能匹配 \texttt a，仍可能匹配 \texttt b；状态 2 必须保留。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,-1.05)
+  {$\boxed{P[j]=P[next[j]]\Rightarrow\text{同一个 }T[i]\text{ 上该回退状态必败，继续沿失败链跳转}}$};
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-1.65)
+  {$-1$ 只是教材哨兵编码，不表示“长度为 $-1$ 的前缀”。};
+\end{tikzpicture}

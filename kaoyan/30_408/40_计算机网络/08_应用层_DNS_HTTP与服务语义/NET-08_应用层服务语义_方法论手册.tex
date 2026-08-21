@@ -203,6 +203,16 @@ server-side session 建立业务状态。
 因此``HTTP 使用 TCP''是特定版本/部署的 transport mapping，不是 HTTP
 resource semantics 本身。
 
+\subsection{Transport endpoint 不等于 HTTP authority：同一 IP:port 可以承载多个名字空间}
+
+TCP 的四元组只把字节流交给某个 server endpoint；HTTP 仍需要知道当前请求属于哪个应用名字。对 HTTP/1.1，\code{Host} 请求首部携带目标 host/authority；HTTP/2/3 使用等价的 \code{:authority} 语义。因此两个不同域名即使 DNS 最终解析到同一 server IP、并使用相同 TCP port，也可以由同一服务进程按 application authority 选择不同 virtual host / resource namespace。
+
+\[
+\boxed{\text{Domain/Authority}\neq\text{IP address}\neq\text{TCP endpoint}}
+\]
+
+这里不能反向推断：共享 IP/port 不表示两个域名是同一应用资源；不同域名也不要求必须分配不同 IP 或不同 port。题目若问“同一服务器怎样区分两个基于名称的站点”，应在 HTTP message semantics 中找 Host/authority，而不是强行修改传输层标识。
+
 \section{Web
 性能从依赖图生成}\label{5-web-ux6027ux80fdux4eceux4f9dux8d56ux56feux751fux6210}
 

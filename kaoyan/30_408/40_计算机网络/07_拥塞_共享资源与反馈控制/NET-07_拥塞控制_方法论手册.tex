@@ -1,5 +1,6 @@
 \documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
 \usepackage{ipara-handbook}
+\usepackage{graphicx}
 \handbooksetup{NET-07 拥塞控制}{408 · 计算机网络 NET-07}{Feedback · cwnd · AIMD · Reno}
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \providecommand{\passthrough}[1]{#1}
@@ -199,6 +200,11 @@ segments 已到达。这通常比 timeout
 具体 \(\text{cwnd}/\text{ssthresh}\) 数值更新必须服从题目指定的
 Tahoe/Reno 教材模型；现代 TCP 实现有多种 congestion-control
 algorithms，不能把一张 408 状态图冒充所有工程实现。
+
+\begin{center}
+\resizebox{0.96\linewidth}{!}{\input{30_408/40_计算机网络/07_拥塞_共享资源与反馈控制/assets/src/tcp_congestion_curve_body.tikz}}
+\end{center}
+图只固定经典 408 的反馈结构：Slow Start 快增、Congestion Avoidance 加性试探、3 DupACK 的温和退让与 Timeout 的强退让。具体门限、初值与 recovery 临时膨胀必须服从题设版本。
 
 \section{ACK
 clock：反馈不仅说``收到''，还提供节奏}\label{8-ack-clockux53cdux9988ux4e0dux4ec5ux8bf4ux6536ux5230ux8fd8ux63d0ux4f9bux8282ux594f}

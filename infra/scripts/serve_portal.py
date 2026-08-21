@@ -9,7 +9,9 @@ from __future__ import annotations
 import argparse
 import functools
 import http.server
+import json
 import os
+import re
 import socketserver
 import sys
 import webbrowser
@@ -33,6 +35,170 @@ def find_free_port(start_port: int = 8080) -> int:
     return start_port
 
 
+class PortalRequestHandler(http.server.SimpleHTTPRequestHandler):
+    """Custom request handler with REST API support for real-time annotation sync."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, directory=str(KAOYAN_DIR), **kwargs)
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
+
+    def do_POST(self):
+        if self.path == "/api/annotate":
+            self.handle_annotate()
+        else:
+            self.send_error(404, "API endpoint not found")
+
+    def _send_json(self, data: dict, status: int = 200):
+        body = json.dumps(data, ensure_ascii=False).encode("utf-8")
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+        self.wfile.write(body)
+
+    def handle_annotate(self):
+        try:
+            content_length = int(self.headers.get("Content-Length", 0))
+            post_data = self.rfile.read(content_length)
+            payload = json.loads(post_data.decode("utf-8"))
+        except Exception as e:
+            return self._send_json({"success": False, "error": f"Invalid JSON payload: {e}"}, 400)
+
+        local_path_str = payload.get("local_path", "")
+        action = payload.get("action", "add")
+        selected_text = payload.get("selected_text", "").strip()
+        mark_type = payload.get("mark_type", "[?]").strip()
+        paragraph_id = payload.get("paragraph_id", "").strip()
+        context_before = payload.get("context_before", "")
+        context_after = payload.get("context_after", "")
+
+        if not local_path_str or not selected_text:
+            return self._send_json({"success": False, "error": "Missing local_path or selected_text"}, 400)
+
+        # Resolve and validate target path security
+        target_path = (REPO_ROOT / local_path_str).resolve()
+        if not target_path.exists() or not str(target_path).startswith(str(KAOYAN_DIR)):
+            return self._send_json({"success": False, "error": "Invalid or forbidden file path"}, 403)
+
+        try:
+            content = target_path.read_text(encoding="utf-8")
+        except Exception as e:
+            return self._send_json({"success": False, "error": f"Failed to read file: {e}"}, 500)
+
+        # Execute atomic annotation mutation
+        updated_content, success, msg = self._apply_annotation(
+            content=content,
+            action=action,
+            selected_text=selected_text,
+            mark_type=mark_type,
+            paragraph_id=paragraph_id,
+            context_before=context_before,
+            context_after=context_after
+        )
+
+        if not success:
+            return self._send_json({"success": False, "error": msg}, 422)
+
+        try:
+            target_path.write_text(updated_content, encoding="utf-8")
+        except Exception as e:
+            return self._send_json({"success": False, "error": f"Failed to write file: {e}"}, 500)
+
+        return self._send_json({
+            "success": True,
+            "message": msg,
+            "content": updated_content,
+            "local_path": local_path_str
+        })
+
+    def _apply_annotation(self, content: str, action: str, selected_text: str, mark_type: str, paragraph_id: str, context_before: str, context_after: str) -> tuple[str, bool, str]:
+        raw_words = [re.escape(w) for w in re.split(r"\s+", selected_text) if w]
+        if not raw_words:
+            return content, False, "选中文本为空"
+        
+        words_pattern = r"\s+".join(raw_words)
+
+        if action == "add":
+            already_hl_pattern = rf"==\s*({words_pattern})\s*==(?:\s*(\[\?\]|\[!\]|\[★\]|\[\~\]|\?|!|★|~))?"
+
+            def replace_in_text(target_str: str) -> tuple[str, bool]:
+                m_hl = re.search(already_hl_pattern, target_str)
+                if m_hl:
+                    matched_inner = m_hl.group(1)
+                    rep = f"=={matched_inner}==" if mark_type == "==" else f"=={matched_inner}== {mark_type}"
+                    new_str = target_str[:m_hl.start()] + rep + target_str[m_hl.end():]
+                    return new_str, True
+                
+                m_plain = re.search(words_pattern, target_str)
+                if m_plain:
+                    matched_exact = m_plain.group(0)
+                    rep = f"=={matched_exact}==" if mark_type == "==" else f"=={matched_exact}== {mark_type}"
+                    new_str = target_str[:m_plain.start()] + rep + target_str[m_plain.end():]
+                    return new_str, True
+
+                return target_str, False
+
+            if paragraph_id:
+                paragraphs = content.split("\n\n")
+                found = False
+                new_paragraphs = []
+                for p in paragraphs:
+                    if paragraph_id in p and not found:
+                        new_p, ok = replace_in_text(p)
+                        if ok:
+                            p = new_p
+                            found = True
+                    new_paragraphs.append(p)
+                if found:
+                    return "\n\n".join(new_paragraphs), True, f"已同步标注 {mark_type} 至本地文件"
+
+            new_content, ok = replace_in_text(content)
+            if ok:
+                return new_content, True, f"已同步标注 {mark_type} 至本地文件"
+            else:
+                return content, False, f"未能在文件中找到目标文本: {selected_text}"
+
+        elif action == "remove":
+            hl_pattern = rf"==\s*({words_pattern})\s*==(?:\s*(\[\?\]|\[!\]|\[★\]|\[\~\]|\?|!|★|~))?"
+
+            def remove_in_text(target_str: str) -> tuple[str, bool]:
+                m = re.search(hl_pattern, target_str)
+                if m:
+                    matched_inner = m.group(1)
+                    new_str = target_str[:m.start()] + matched_inner + target_str[m.end():]
+                    return new_str, True
+                return target_str, False
+
+            if paragraph_id:
+                paragraphs = content.split("\n\n")
+                found = False
+                new_paragraphs = []
+                for p in paragraphs:
+                    if paragraph_id in p and not found:
+                        new_p, ok = remove_in_text(p)
+                        if ok:
+                            p = new_p
+                            found = True
+                    new_paragraphs.append(p)
+                if found:
+                    return "\n\n".join(new_paragraphs), True, "已清除本地文件中的高亮标注"
+
+            new_content, ok = remove_in_text(content)
+            if ok:
+                return new_content, True, "已清除本地文件中的高亮标注"
+            else:
+                return content, False, f"未找到该高亮标记: {selected_text}"
+
+        return content, False, f"未知操作: {action}"
+
+
 def main():
     parser = argparse.ArgumentParser(description="Start the Kaoyan Knowledge & Reading Portal")
     parser.add_argument("--port", type=int, default=None, help="Port to serve on")
@@ -48,20 +214,17 @@ def main():
     # Step 2: Choose Port & Serve
     port = args.port or find_free_port(8080)
     url = f"http://127.0.0.1:{port}/portal/"
-
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(KAOYAN_DIR))
     
     print("\n" + "=" * 60)
-    print("🚀 Kaoyan Knowledge & Reading Portal")
+    print("🚀 Kaoyan Knowledge & Reading Portal (with Real-time Sync)")
     print("=" * 60)
     print(f"📡 Serving at: {url}")
     print(f"📁 Root directory: {KAOYAN_DIR}")
-    print("⌨️  快捷键:")
-    print("   • Cmd/Ctrl + K  : 全局秒级模糊检索")
-    print("   • J / K         : 上下切换手册")
-    print("   • [             : 展开/折叠侧边栏")
-    print("   • F             : 全屏专注模式 (Zen Mode)")
-    print("   • T             : 明暗主题切换")
+    print("✨ 功能特性:")
+    print("   • 📝 网页划词标注实时同步写回本地 Markdown (Obsidian 同步)")
+    print("   • ⌘ Cmd/Ctrl + K  : 全局秒级模糊检索")
+    print("   • 🌗 T            : 明暗主题切换 (默认护眼暗色)")
+    print("   • 🔲 F            : 全屏专注阅读 (Zen Mode)")
     print("=" * 60)
     print("按 Ctrl + C 退出服务\n")
 
@@ -70,7 +233,7 @@ def main():
 
     # Allow address reuse
     socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("127.0.0.1", port), handler) as httpd:
+    with socketserver.TCPServer(("127.0.0.1", port), PortalRequestHandler) as httpd:
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:

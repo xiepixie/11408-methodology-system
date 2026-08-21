@@ -28,6 +28,11 @@ Request
 - DMA 可以搬运数据并报告完成；buffer policy、mapping/unmapping、completion callback 归 OS 与 X-B03。
 - 总线仲裁只决定共享事务发起权，不等于 OS 设备分配。
 
+## 训练导航
+
+- [总线事务、定时与有效带宽](总线事务、定时与有效带宽.md)：训练时钟频率 vs 传输率、burst/non-burst、地址/命令/等待/数据 beat 的事务时间线，以及 peak/effective bandwidth 的统一记账。
+- [总线仲裁、中断与 DMA 状态推演](总线仲裁、中断与DMA状态推演.md)：initiator/target → 仲裁 → 中断 Request/Accept/Entry/Service/Return → DMA Setup/Transfer/Completion；分开 DREQ、bus grant 与 IRQ。
+
 ## 阅读
 
 - [Canonical 深度正文](CO-08_总线与IO硬件_方法论手册.tex)

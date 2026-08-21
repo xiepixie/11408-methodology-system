@@ -1,11 +1,11 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesFile{ipara-reading.sty}[2026/08/20 v3.0 I.P.A.R.A Cornell Interactive High-Legibility Reading Style]
+\ProvidesFile{ipara-reading.sty}[2026/08/20 v3.1 I.P.A.R.A Cornell Interactive High-Legibility Reading Style]
 
 % -----------------------------------------------------
-% Core Packages
+% 核心依赖
 % -----------------------------------------------------
 \RequirePackage{amsmath,amssymb,mathtools}
-\RequirePackage{booktabs,tabularx,longtable,array,multirow}
+\RequirePackage{tabularx,array}
 \RequirePackage{enumitem}
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{xcolor}
@@ -13,14 +13,12 @@
 \RequirePackage{hyperref}
 \RequirePackage{bookmark}
 \RequirePackage{microtype}
-\RequirePackage{pifont}
-\RequirePackage{caption}
 \RequirePackage{ragged2e}
 \RequirePackage{paracol}
 \RequirePackage{bm}
 
 % -----------------------------------------------------
-% Typography & High-Legibility Fonts (字体清晰，斜体稳健饱满)
+% 字体与长文可读性
 % -----------------------------------------------------
 \RequirePackage{fontspec}
 
@@ -36,7 +34,7 @@
   BoldItalicFont=texgyreheros-bolditalic.otf
 ]
 
-% 国际音标专用字体（优先 TeX Live 自带 Charis SIL 语言学字体，全 Unicode 音标字符覆盖）
+% 国际音标优先使用 TeX Live 自带的 Charis SIL，以保证 IPA 字符覆盖完整。
 \IfFontExistsTF{CharisSIL-Regular.ttf}{%
   \newfontfamily\ipafont{CharisSIL-Regular.ttf}[
     BoldFont=CharisSIL-Bold.ttf,
@@ -47,40 +45,40 @@
 }
 
 % -----------------------------------------------------
-% Semantic Color Palette (系统化语义色彩架构)
+% 语义配色
 % -----------------------------------------------------
-% 1. 主轴与结构色 (Structure & Headings)
+% 1. 主轴与结构
 \definecolor{readMain}{RGB}{24,52,88}         % 沉稳深蓝 (标题、章节标志、核心主线)
 \definecolor{readDeep}{RGB}{14,30,52}         % 深邃黑蓝
 \definecolor{readSoftBlue}{RGB}{242,246,252}  % 浅蓝底色
 
-% 2. 词汇与地道表达色 (Lexicon & Natural Spoken)
+% 2. 表达与口语重构
 \definecolor{readGreen}{RGB}{20,90,60}        % 墨玉绿 (核心表达、生词编号、口语替换)
 \definecolor{readSoftGreen}{RGB}{240,250,244} % 浅绿底色
 
-% 3. 语法与难点阻碍色 (Obstacles & Diagnostics)
+% 3. 理解断点与诊断
 \definecolor{readRed}{RGB}{140,40,40}         % 赭红 (语法难点、理解障碍、发音易错点)
 \definecolor{readSoftRed}{RGB}{254,242,242}   % 浅红底色
 
-% 4. 语调与发音跟读色 (Prosody & Pronunciation)
+% 4. 语音与韵律
 \definecolor{readTeal}{RGB}{25,95,100}        % 蓝绿 (意群断句、语调升降、自然跟读)
 \definecolor{readSoftTeal}{RGB}{240,250,250}  % 浅蓝绿底色
 
-% 5. 思考与产出表达色 (Output & Reflection)
+% 5. 输出与反思
 \definecolor{readPurple}{RGB}{82,50,125}      % 雅紫 (个人观点、复述提纲、造句输出)
 \definecolor{readSoftPurple}{RGB}{246,242,252}% 浅紫底色
 
-% 6. 焦点与强调色 (Focus & Accent)
+% 6. 焦点与强调
 \definecolor{readOrange}{RGB}{160,85,15}      % 暖琥珀 (重音焦点词、宏观命题重点)
 
-% 7. 中性基底与正文 (Neutrals & Body Text)
+% 7. 正文与中性色
 \definecolor{readDarkText}{RGB}{30,35,42}     % 炭黑正文 (比纯黑温润，长久阅读不累眼)
 \definecolor{readGray}{RGB}{115,125,135}      % 辅助文字浅灰
 \definecolor{readSoftGray}{RGB}{248,249,251}  % 浅灰卡片底色
 \definecolor{readBorder}{RGB}{218,225,232}    % 分割线与细边框
 
 % -----------------------------------------------------
-% Page Layout & Typography Mechanics
+% 页面与正文排版
 % -----------------------------------------------------
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.35em plus 0.05em minus 0.05em}
@@ -101,7 +99,7 @@
 }
 
 % -----------------------------------------------------
-% Header & Footer (完全去除顶部页眉，仅保留底部极简页码)
+% 页眉页脚：不设顶部页眉，只保留底部页码
 % -----------------------------------------------------
 \pagestyle{fancy}
 \fancyhf{}
@@ -111,7 +109,7 @@
 \setlength{\headsep}{0pt}
 
 % -----------------------------------------------------
-% Section Marker (现代垂直色标 + 主题线)
+% 分节标题
 % -----------------------------------------------------
 \newcommand{\readingsection}[1]{%
   \par\vspace{1.5em}%
@@ -122,10 +120,10 @@
 }
 
 % -----------------------------------------------------
-% 1. Editorial Masthead (纯净排版题头，扁平无冗余嵌套，彻底杜绝换行碎字)
+% 1. 文章题头
 % -----------------------------------------------------
 \newcommand{\articleheader}[6]{%
-  % #1: Title, #2: Subtitle, #3: Source, #4: Topic, #5: Difficulty, #6: Date
+  % #1 标题；#2 副标题；#3 来源；#4 主题；#5 训练标签；#6 日期
   \par\vspace{-0.6cm}%
   {\noindent\huge\bfseries\sffamily\color{readMain} #1}\par
   \if\relax\detokenize{#2}\relax\else
@@ -138,7 +136,7 @@
   {\footnotesize\sffamily
     \begin{tabularx}{\linewidth}{@{}>{\RaggedRight\arraybackslash}X r@{}}
       \textbf{\color{readMain}来源}：#3 & \textbf{\color{readMain}日期}：#6 \\[0.2em]
-      \textbf{\color{readMain}主题}：#4 & \textbf{\color{readMain}难度}：#5
+      \textbf{\color{readMain}主题}：#4 & \textbf{\color{readMain}训练标签}：#5
     \end{tabularx}%
   }%
   \vspace{0.3em}%
@@ -147,93 +145,76 @@
 }
 
 % -----------------------------------------------------
-% 2. Core Takeaway (一句话核心观点：单边极简重点条)
+% 2. 训练后主旨
 % -----------------------------------------------------
-\newtcolorbox{coretakeaway}[1][一句话核心观点]{
+\newtcolorbox{coretakeaway}[1][训练后主旨]{
   enhanced,
   breakable,
   blanker,
   borderline west={3pt}{0pt}{readMain},
   colback=readSoftBlue!60,
   left=10pt,right=8pt,top=5pt,bottom=5pt,
+  before upper={\noindent\textbf{\sffamily\color{readMain}#1}\par\vspace{0.2em}},
   before skip=0.2em, after skip=0.75em
 }
 
 % -----------------------------------------------------
-% 3. Cornell Parallel Dual-Column Engine (6:4 双向可点击超链接)
+% 3. Cornell 6:4 双栏与双向跳转
 % -----------------------------------------------------
 \setlength{\columnsep}{18pt}
 \setlength{\columnseprule}{0.5pt}
 \colseprulecolor{readBorder}
 \columnratio{0.60, 0.40}
 
-% Text keyword marker (Left column: click to jump to right note)
+% 左栏候选表达标记：点击编号跳到右栏笔记
 \newcommand{\kw}[2]{%
   \hypertarget{text:#2}{}%
   \textbf{\color{readMain}#1}%
   \textsuperscript{\hyperlink{note:#2}{\sffamily\bfseries\color{readGreen}[#2]}}%
 }
 
-% Obstacle keyword marker (Left column: click to jump to right obstacle note)
+% 左栏理解断点标记：点击编号跳到右栏诊断
 \newcommand{\obs}[2]{%
   \hypertarget{textobs:#2}{}%
   \underline{\smash{\color{readRed}#1}}%
   \textsuperscript{\hyperlink{noteobs:#2}{\sffamily\bfseries\color{readRed}![#2]}}%
 }
 
-% Left Column: Article Paragraph (Natural, breathable, uniform spacing)
+% 左栏原文段落
 \newcommand{\artpara}[2]{%
   \noindent\textbf{\color{readMain}\sffamily[#1]}\hspace{0.5em}%
   {\normalsize\linespread{1.26}\selectfont\color{readDarkText} #2}\par\vspace{0.8em}%
 }
 
-% Right Column: Typographic Note Entries (Click number to jump back to left text)
+% 右栏表达笔记：点击编号返回左栏原文
 \newcommand{\noteitem}[5]{%
-  % #1: Mark, #2: Expression, #3: Meaning, #4: Natural Spoken, #5: Example
+  % #1 编号；#2 表达；#3 当前语境；#4 口语重构；#5 本篇备注或长期去向
   \hypertarget{note:#1}{}%
   \noindent{\small\sffamily\bfseries\hyperlink{text:#1}{\color{readGreen}[#1]} \color{readGreen}#2}\par
   \vspace{0.08em}%
-  {\footnotesize\RaggedRight\color{readDarkText}
-    \noindent\textbf{\color{readMain}意思}：#3\par
-    \noindent\textbf{\color{readTeal}口语}：\textit{#4}\par
+  {\small\RaggedRight\color{readDarkText}
+    \noindent\textbf{\color{readMain}语境}：#3\par
+    \if\relax\detokenize{#4}\relax\else
+      \noindent\textbf{\color{readTeal}口语}：\textit{#4}\par
+    \fi
     \if\relax\detokenize{#5}\relax\else
-      \noindent\textbf{\color{readPurple}造句}：#5\par
+      \noindent\textbf{\color{readPurple}备注}：#5\par
     \fi
   }\par\vspace{0.75em}%
 }
 
 \newcommand{\noteobs}[3]{%
-  % #1: Mark, #2: Obstacle, #3: Explanation
+  % #1 编号；#2 断点名称；#3 定点解释
   \hypertarget{noteobs:#1}{}%
   \noindent{\small\sffamily\bfseries\hyperlink{textobs:#1}{\color{readRed}![#1]} \color{readRed}#2}\par
   \vspace{0.08em}%
-  {\footnotesize\RaggedRight\color{readDarkText}
-    \noindent\textbf{\color{readRed}点拨}：#3\par
+  {\small\RaggedRight\color{readDarkText}
+    \noindent\textbf{\color{readRed}解释}：#3\par
   }\par\vspace{0.75em}%
 }
 
 % -----------------------------------------------------
-% 4. Spoken Register Conversion Table (含中文释义，与前文笔记一一锚定)
-% -----------------------------------------------------
-\NewDocumentEnvironment{spokenconv}{+b}{%
-  \par\vspace{0.3em}%
-  \begingroup\small
-  \renewcommand{\arraystretch}{1.3}%
-  \begin{tabularx}{\linewidth}{@{}>{\bfseries\color{readMain}\arraybackslash}p{0.48\linewidth} >{\RaggedRight\arraybackslash\color{readGreen!90!black}}X@{}}
-  \toprule
-  \textbf{\color{readMain}原文书面/正式表达 (含中文释义)} & \textbf{\color{readTeal}更自然的口语化表达 (Natural Spoken)} \\
-  \midrule
-  #1
-  \bottomrule
-  \end{tabularx}%
-  \endgroup
-  \par\vspace{0.6em}%
-}{}
-
-\newcommand{\convitem}[2]{#1 & #2 \\}
-
-% -----------------------------------------------------
-% 5. Textual Prosody & Intonation Markup Primitives (纯文本语音语调标记体系)
+% 4. 语音与韵律文本标记
 % -----------------------------------------------------
 % 国际音标与发音基底
 \newcommand{\ipa}[1]{{\ipafont\color{readTeal!90!black}#1}}
@@ -252,8 +233,8 @@
 \newcommand{\weak}[1]{{\color{readGray}\textit{#1}}}
 \newcommand{\phonlink}[2]{#1\kern0.1em\raisebox{-0.1ex}{\color{readTeal}\footnotesize$\smile$}\kern0.1em#2}
 
-% 语调与韵律剖析块 (Prosody & Cadence Breakdown)
-\newtcolorbox{prosodybox}[1][语调与韵律剖析]{
+% 语音与韵律训练块
+\newtcolorbox{prosodybox}[1][语音与韵律训练]{
   enhanced,
   breakable,
   blanker,
@@ -263,6 +244,9 @@
   before skip=0.4em, after skip=0.75em
 }
 
+\newcommand{\prosodysource}[1]{%
+  \noindent\textbf{\color{readGray}【声音参考】} {\small\color{readDarkText}#1}\par\vspace{0.2em}%
+}
 \newcommand{\prosodyorig}[1]{%
   \noindent\textbf{\color{readTeal}【原句】} \textit{#1}\par\vspace{0.25em}%
 }
@@ -286,7 +270,7 @@
 }
 
 % -----------------------------------------------------
-% 6. Spoken Output (脱稿复述与观点：纯净段落导引，无无意义嵌套)
+% 5. 脱稿输出与观点
 % -----------------------------------------------------
 \newcommand{\oralblock}[2]{%
   \par\vspace{0.4em}%
@@ -295,7 +279,7 @@
 }
 
 % -----------------------------------------------------
-% 7. Interactive AI Q&A (AI 问答互动)
+% 6. AI 对谈与反馈
 % -----------------------------------------------------
 \newtcolorbox{aiinteraction}[1]{
   enhanced,
@@ -321,19 +305,9 @@
   {\small\color{readDarkText} #1}\par\vspace{0.25em}%
 }
 \newcommand{\ainatural}[1]{%
-  \noindent\textbf{\color{readGreen}【更地道的说法】}\par
+  \noindent\textbf{\color{readGreen}【自然改写】}\par
   \vspace{0.1em}%
   {\small\bfseries\color{readGreen!85!black} #1}\par\vspace{0.12em}%
-}
-
-% -----------------------------------------------------
-% 8. Core Takeaways List (今日重点积累)
-% -----------------------------------------------------
-\newenvironment{takeawaylist}{%
-  \begin{enumerate}[label=\textbf{\color{readGreen}\arabic*.},leftmargin=1.5em,itemsep=0.25em,topsep=0.18em]
-    \small
-}{%
-  \end{enumerate}
 }
 
 \endinput

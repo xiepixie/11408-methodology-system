@@ -1,6 +1,6 @@
 # IP 地址、子网与分组转发：把全局目的压缩成逐跳动作
 
-状态：已采用候选；Canonical 深度正文已建立并发布，心智模型仍待题目验证。
+状态：待人工确认；Canonical 深度正文已建立并发布，本轮 305 题中的对应题目已完成首轮验证。Core Mother Model 覆盖充分，当前缺口主要是二次分片、NAT 生命周期及多播/移动性组合变式。
 
 ## Hook
 
@@ -29,6 +29,10 @@
 
 - [Canonical LaTeX 正文](NET-04_IP地址_子网与分组转发_方法论手册.tex)
 - [Published PDF](../../../90_publish/408/NET-04_IP地址_子网与分组转发_方法论手册.pdf)
+
+## Practice Adapter
+
+- [IP 地址、子网与逐跳转发](IP地址、子网与逐跳转发.md)：Scope/名字类型 → Same-Subnet/LPM → 当前 next hop → TTL/MTU/frame/NAT 状态推进。
 
 ## 当前状态
 

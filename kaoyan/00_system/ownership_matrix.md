@@ -21,6 +21,16 @@ Owner 应尽量定位到具体 Handbook 或 Rules 文件。尚未建立工作文
 
 日常不需要为每个概念维护状态。只有真正进入台账的项目才使用。
 
+## 2.1 项目级 Control Owner
+
+| 控制职责 | Canonical Owner | 边界提醒 |
+|---|---|---|
+| 单题表示、路径选择、执行与校验 | `01_control/problem_solving_kernel.md` | 只管“这道题现在怎么解”，不决定稳定资产改哪里 |
+| 题目质量、题目→模型攻击、模型修改后的回归验证 | `00_system/problem_model_validation.md` | 只判断 Question / Practice / Bridge / Canonical 哪一层被打穿；不拥有具体学科机制 |
+| 错题诊断、候选规则证据与晋升/否定 | `00_system/evidence_promotion.md` | 先判作用域，再判成熟度；不拥有题面事实 |
+| 专题局部规则与训练文档写法 | `00_system/topic_practice_writing_spec.md` | 规定 Practice 的物理/写作契约，不把局部规则上移为 Subject Rules |
+| 真题 Derived Solution QA | `00_system/exam_solution_quality_assurance.md` | 只验收题解学习责任和反馈闭环；题目↔模型双向验证调用上面的 validation Owner |
+
 ## 3. 408 当前规划
 
 408 日常唯一 Course Atlas 见 [30_408/README.md](../30_408/README.md)；架构设计依据见 [408 学科架构](../30_408/00_统一总图/README.md)。本表只登记最容易重复或跨界的概念。
@@ -55,7 +65,7 @@ Owner 应尽量定位到具体 Handbook 或 Rules 文件。尚未建立工作文
 | Translation Result → Cache Access Handoff | `30_408/20_计算机组成原理/85_科内桥梁/CO-B02_地址翻译与Cache访问/CO-B02_地址翻译与Cache访问_桥梁手册.tex` | VIPT/PIPT、CO-I01、X-I01 | CO-B02 只拥有 PA/permission/attributes、地址位来源和 miss/fault 路由；PTE 与 Cache 状态机仍归 CO-07/06 |
 | Single-instruction Cross-module Lifecycle | `30_408/20_计算机组成原理/86_综合专题/CO-I01_一条指令的一生/CO-I01_一条指令的一生_综合手册.tex` | LOAD/STORE/ADD/BRANCH 综合题 | CO-I01 只拥有 fast/slow path、跨 Owner 顺序与精确提交；不重新定义 CO01–08 局部机制 |
 | Process / Thread / Blocking / Wakeup | `30_408/30_操作系统/10_进程线程调度与控制权/OS-01_OS-02_进程线程调度与控制权_方法论手册.tex`、`30_408/30_操作系统/20_并发同步与死锁/OS-03_并发锁与PV_方法论手册.tex` | I/O、并发、综合过程 | OS-01 拥有执行实体、调度与控制权；OS-03 拥有同步等待协议，综合册只追踪过程 |
-| Synchronization / Monitor / Deadlock Avoidance | `30_408/30_操作系统/20_并发同步与死锁/OS-03_并发锁与PV_方法论手册.tex` | OS-B01、资源分配题、并发程序题 | Topic 拥有状态谓词、等待/唤醒语义与死锁机制；Rules 只拥有题面触发和检查动作 |
+| Synchronization / Monitor / Deadlock Avoidance | `30_408/30_操作系统/20_并发同步与死锁/OS-03_并发锁与PV_方法论手册.tex` | OS-B01、资源分配题、并发程序题 | Topic 拥有状态谓词、等待/唤醒语义与死锁机制；单一问题族的题面触发和检查动作归对应 Practice，只有跨多个训练专题仍需统一维护的控制才归 Subject Rules |
 | Page Fault / Frame Allocation / Replacement / COW | `30_408/30_操作系统/30_虚拟内存与页生命周期/OS-04_虚拟内存与地址翻译_方法论手册.tex` | X-B02、OS-B02、X-I01 | 翻译硬件、驻留修复和置换策略必须分层 |
 | OFD / inode / dentry | `30_408/30_操作系统/50_文件系统/OS-06_07_文件系统与磁盘_方法论手册.tex` | Process、fork、dup、unlink、read 综合 | 文件系统定义对象与生命周期；Process 只使用引用 |
 | DMA Controller / Bus Transfer | `30_408/20_计算机组成原理/80_总线与IO硬件/CO-08_总线与IO硬件_方法论手册.tex` | X-B03、X-I02 | CO-08 拥有控制器、仲裁、总线事务与传输完成证据；OS 拥有 submit、mapping、completion 与 wake |

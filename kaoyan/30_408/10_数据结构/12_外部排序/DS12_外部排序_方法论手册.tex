@@ -1,5 +1,6 @@
 \documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
 \usepackage{ipara-handbook}
+\usepackage{graphicx}
 \handbooksetup{DS-12 外部排序}{408 · 数据结构 DS-12}{Block I/O · Runs · Multiway Merge · Passes}
 \begin{document}
 \handbooktitle{外部排序}{数据不能全进内存时，怎样减少块 I/O 轮数}{408 · 数据结构 Topic DS-12}
@@ -31,6 +32,11 @@
 
 \subsection{多路归并、缓冲区与败者树}
 朴素地从 $k$ 个当前首元素中找最小值，每输出一条记录要做 $k-1$ 次比较；$k$ 增大虽然减少归并趟数，却可能让内部比较抵消 I/O 收益。败者树在内部节点保存每场比较的败者，让胜者沿路径晋级；冠军输出后只需沿该路回到根，单次调整约为 $\lceil\log_2 k\rceil$ 次比较，内部比较成本与 $k$ 的线性增长脱钩。相比胜者树，败者树保存的正是新元素沿路径再次会遇到的对手，更新时不必重新访问兄弟节点。
+
+\begin{center}
+\input{30_408/10_数据结构/12_外部排序/assets/src/loser_tree_body.tikz}
+\end{center}
+图中内部节点保存当前比较的败者，顶部单独保存全局胜者；输出某一路并补入新值后，只有该叶到根的比较链失效，其他子树不需要重赛。
 
 每一路至少需要输入缓冲区，输出还需一个输出缓冲区；$k$ 不能脱离内存预算盲目增大。某一路耗尽时可把它的当前值替换为 $+\infty$，当冠军也是 $+\infty$ 才表示全部输入耗尽。初始化败者树可先让内部节点指向 $-\infty$ 虚拟叶，再逐路插入首元素，避免未初始化比较。
 

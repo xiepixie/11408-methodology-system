@@ -26,6 +26,9 @@ DS-B01 Frontier Traversal；Atlas Foundation。
 - 完整实现：[`ds07_graph_traversal.hpp`](code/ds07_graph_traversal.hpp)
 - 边界测试：[`ds07_graph_traversal_test.cpp`](code/ds07_graph_traversal_test.cpp)
 
+## 训练导航
+- [图表示、BFS 与 DFS 状态推演](图表示、BFS与DFS状态推演.md)：表示语义 → Unseen/Discovered/Expanded → frontier → 连通分量与无权最短层数。
+
 ## Code Contract
 本册代码按 `Operation Contract -> Representation -> Frontier -> Visit State -> Expansion -> Coverage` 组织。实现同时保留邻接表（遍历）与邻接矩阵（判边）以对照表示成本；DFS/BFS 在发现时标记 `visited`，不连通图通过遍历森林补齐组件。DS08 只调用图表示和遍历接口，不复制底层实现。
 

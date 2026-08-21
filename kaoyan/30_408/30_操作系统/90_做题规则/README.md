@@ -1,20 +1,38 @@
 # 操作系统做题规则
 
-状态：工作稿，待验证规则已建立，尚无已采用规则。
+状态：工作稿。475–695 操作系统练习题库已完成一轮回归攻击；这些证据可支持训练规则继续保留，但**不能替代真题 + 陌生题验证**，因此尚不直接升级为“已采用”。
 
 ## 已采用
 
-暂无。既有出版物中的检查表需要在真题和陌生题中重新验证。
+暂无。既有出版物中的检查表仍需在真题和陌生题中完成最终验证。
+
+题库回归证据索引：[475–695 题库回归矩阵](题库回归矩阵.md)。
+
+## 题库回归已支持｜475–695
+
+本轮 221 道题反复支持了以下操作规则，后续验证应优先用真题/陌生题攻击其边界，而不是重新从零发明另一套流程：
+
+- **状态题**：`Blocked / Ready / Running / Suspended` 必须落到“缺 CPU、缺事件还是缺重新激活资格”；wakeup 只先承诺 Ready。
+- **线程题**：先数内核真正可见的调度实体，再判断 ULT/KLT/M:N 的时间片、阻塞传播和物理并行度。
+- **调度题**：先固定 Candidate / Key / Decision Point / Tie / Preemption；RR 中主动阻塞会提前释放 CPU，动态优先级必须服从题设更新策略。
+- **PV/Mutex**：先确定 semaphore 内部记法；经典负值模型才可用 `|S|=等待者数`；`Blocked != Unlock`，锁所有权与 CPU 所有权分开追踪。
+- **死锁**：单类资源公式必须先过假设门；`Deadlocked ⊂ Unsafe`，多类资源立即切回 Need/Available/Safety。
+- **经典内存管理**：先分地址绑定时机、物理放置粒度、逻辑分段结构和碎片类型；动态分区必须维护地址有序区间而非只记块大小。
+- **分页/虚存**：translation / residency / fault / replacement 分层；多级页表先锁 offset，再拆 VPN；置换前先锁 frame quota 与 victim scope。
+- **文件系统**：pathname 与 fd 两个入口分开；先追 `fd -> open state -> object`；I/O 次数题先写缓存假设；bitmap 先统一 0/1-based 编号。
+- **I/O**：控制线、数据线、task 状态线分开；Interrupt / DMA / Blocking 互不等价；缓冲先画时间线；磁盘调度先声明 endpoint convention，再生成服务顺序。
+- **设备成本模型**：HDD 的 seek/rotation/transfer 与 SSD 的 FTL/GC/wear leveling 不混用；CHS 只在题设固定几何模型下线性化。
 
 ## 待验证
 
 ### OS 首次定位链
 
 ```text
-Resource / Abstraction
+Model Contract
+-> Resource / Abstraction
 -> Objects / Relations / Queues
 -> Event
--> Boundary
+-> Boundary / Owner
 -> Mechanism
 -> Policy
 -> Invariant
@@ -22,8 +40,20 @@ Resource / Abstraction
 -> Cost
 ```
 
-先区分底层资源与上层抽象，再按事件推进状态；只有存在多个合法候选时才引入 Policy。正常路径已经唯一且题目不问失败/性能时，在 `Invariant` 检查通过后停止，不机械展开慢路径与成本。
+第一步先锁定**决定答案的模型契约**：单/多处理器、调度域、信号量内部表示、地址/块编号方式、经典实现口径、是否忽略某类缓存/缺页/写回/端点成本。只有这些前提不改变答案时，才允许省略不写。随后再区分底层资源与上层抽象，按事件推进状态；只有存在多个合法候选时才引入 Policy。正常路径已经唯一且题目不问失败/性能时，在 `Invariant` 检查通过后停止，不机械展开慢路径与成本。
 
+### 不同维度不能互相推出
+
+遇到选项把两个概念直接画等号时，先检查它们是否属于不同轴：
+
+- `Blocked ≠ Unlock`：CPU 使用权变化，不自动改变锁/资源所有权；
+- `Wakeup ≠ Running`：等待条件满足，不自动完成调度；
+- `Mapping ≠ Residency`：存在虚拟映射，不保证页面已在 RAM；
+- `Interrupt ≠ DMA`：一个描述完成通知，一个描述主要数据搬运者；
+- `fd ≠ OFD ≠ file object`：句柄、打开实例、持久对象属于不同层；
+- `Available enough ≠ Safe`：当前能分配，不代表试分配后仍存在安全序列。
+
+这类“跨轴偷换”是 475–695 中最稳定的错误来源之一。
 ### 先列对象、关系和队列
 
 综合题开始模拟前，先列出 task、address space、fd/OFD、page/frame、request 等对象，以及当前引用和所在队列。

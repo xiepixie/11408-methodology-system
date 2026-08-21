@@ -1,0 +1,26 @@
+\documentclass[dvisvgm,tikz,border=6pt]{standalone}
+\usepackage{CJKutf8}
+\usetikzlibrary{positioning,arrows.meta}
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themeamber}{HTML}{f5b942}
+\tikzset{
+ host/.style={draw=themefg,rounded corners=2pt,minimum width=12mm,minimum height=8mm,align=center,line width=.9pt},
+ dev/.style={draw=themecurve,rounded corners=3pt,minimum width=23mm,minimum height=11mm,align=center,line width=1.1pt},
+ link/.style={draw=themefg,line width=1pt}
+}
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[text=themefg,color=themefg,node distance=11mm and 15mm]
+\node[dev] (r) {路由器};
+\node[dev,below left=13mm and 28mm of r] (hub) {集线器};
+\node[dev,below right=13mm and 28mm of r] (sw) {交换机};
+\draw[link] (r)--(hub);
+\draw[link] (r)--(sw);
+\foreach \n/\x in {A/-27,B/-9,C/9,D/27}{\node[host] (h\n) at ([xshift=\x mm,yshift=-23mm]hub.south) {\n};\draw[link](hub)--(h\n);}
+\foreach \n/\x in {E/-27,F/-9,G/9,H/27}{\node[host] (h\n) at ([xshift=\x mm,yshift=-23mm]sw.south) {\n};\draw[link](sw)--(h\n);}
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

@@ -23,6 +23,7 @@ DS01 的底层顺序/链接表示；DS-B01 的 traversal frontier 接口。
 ## Manual
 - Canonical：[栈队列与受限访问：方法论手册 (TeX)](DS02_栈队列与受限访问_方法论手册.tex)
 - Published：[栈队列与受限访问：方法论手册 (PDF)](../../../90_publish/408/DS02_栈队列与受限访问_方法论手册.pdf)
+- 训练：[栈状态、循环队列与合法序列](栈状态、循环队列与合法序列.md)：`top/front/rear` 语义、共享栈、栈排列、两栈队列、链队列、循环队列公式与表达式栈容量的状态推演。
 - 完整实现：[`ds02_restricted_access.hpp`](code/ds02_restricted_access.hpp)
 - 边界测试：[`ds02_restricted_access_test.cpp`](code/ds02_restricted_access_test.cpp)
 

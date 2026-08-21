@@ -1,0 +1,43 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  page/.style={circle,draw=themegray,fill=themefg!3!themebg,minimum size=12mm,inner sep=0pt,align=center},
+  used/.style={page,draw=themecurve,fill=themecurve!10!themebg},
+  victim/.style={page,draw=themealert,fill=themealert!10!themebg},
+  dirty/.style={page,draw=themeamber,fill=themeamber!10!themebg},
+  arr/.style={->,line width=1.0pt,themegray},
+  note/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,inner xsep=6pt,inner ysep=5pt,align=left}
+}
+\node[anchor=west,font=\bfseries\large] at (0,8.9) {CLOCK：指针给出扫描顺序，访问位估计“最近性”，脏位只增加淘汰成本};
+\node[anchor=west,text=themegray] at (0,8.37) {Basic CLOCK 的规则稳定；Enhanced/Improved CLOCK 如何按 $(A,M)$ 分多轮扫描在不同教材中可能不同，必须先读题设。};
+
+% circular pages
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,7.45) {A. Basic CLOCK / Second Chance};
+\node[used] (p0) at (4.0,6.6) {$P_0$\\$A=1$};
+\node[used] (p1) at (6.2,5.4) {$P_1$\\$A=1$};
+\node[victim] (p2) at (5.4,3.1) {$P_2$\\$A=0$};
+\node[page] (p3) at (2.6,3.1) {$P_3$\\$A=0$};
+\node[page] (p4) at (1.8,5.4) {$P_4$\\$A=0$};
+\draw[arr,bend left=12] (p0)--(p1); \draw[arr,bend left=12] (p1)--(p2); \draw[arr,bend left=12] (p2)--(p3); \draw[arr,bend left=12] (p3)--(p4); \draw[arr,bend left=12] (p4)--(p0);
+\draw[->,line width=1.4pt,themeamber] (3.05,7.25)--node[left,text=themeamber]{hand} (p0.north west);
+\node[note,anchor=west,text width=6.4cm] at (8.0,5.45) {从 hand 开始：遇 $A=1$，清成 0 并继续；遇第一个可淘汰的 $A=0$，选为 victim。上例：$P_0,P_1$ 得到第二次机会，随后 $P_2$ 被选中。};
+\node[note,anchor=west,text width=6.4cm] at (8.0,3.35) {访问某页时硬件/系统把 $A$ 置 1；CLOCK 不维护精确 LRU 全序，而是用一圈扫描把“近期访问过”近似压缩成 1 bit。};
+
+\draw[themegray,line width=.45pt] (0,1.65)--(15.0,1.65);
+\node[anchor=west,font=\bfseries,text=themeamber] at (0,.9) {B. 加入修改位 $M$ 后：把“未来价值”和“替换代价”分开};
+\node[page] (c00) at (3.0,-.15) {$(A,M)$\\$(0,0)$};
+\node[dirty] (c01) at (6.0,-.15) {$(0,1)$};
+\node[used] (c10) at (9.0,-.15) {$(1,0)$};
+\node[used,draw=themeamber] (c11) at (12.0,-.15) {$(1,1)$};
+\node[anchor=north,align=center,text=themegray] at (3.0,-.95) {近期未访问\\且 clean};
+\node[anchor=north,align=center,text=themegray] at (6.0,-.95) {近期未访问\\但 dirty};
+\node[anchor=north,align=center,text=themegray] at (9.0,-.95) {近期访问\\clean};
+\node[anchor=north,align=center,text=themegray] at (12.0,-.95) {近期访问\\且 dirty};
+\node[note,anchor=west,text width=5.0cm] at (14.1,-.2) {$A$ 回答“最近是否用过”；$M$ 回答“淘汰是否需要写回”。具体先找哪一类、扫描几轮，按题设的 Improved CLOCK 规则执行。};
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-2.15) {禁止误读：$M=0$ 不等于“最近未访问”；dirty/clean 是替换成本轴，不是 recency 轴。};
+\end{tikzpicture}

@@ -1,5 +1,6 @@
 \documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
 \usepackage{ipara-handbook}
+\usepackage{graphicx}
 \handbooksetup{NET-03 可靠传输}{408 · 计算机网络 NET-03}{Seq · ACK · Timer · Window}
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \providecommand{\passthrough}[1]{#1}
@@ -248,6 +249,11 @@ W_T=W_R\le 2^{k-1}.
 \]
 
 这个约束不是为了``方便计算''，而是为了让接收方仅凭有限序号和当前窗口就能判定身份。
+
+\begin{center}
+\resizebox{0.96\linewidth}{!}{\input{30_408/40_计算机网络/03_可靠传输_序号_ACK_定时器与滑动窗口/assets/src/arq_windows_body.tikz}}
+\end{center}
+图用同一个 3-bit 序号空间对照 Stop-and-Wait、GBN 与 SR，并直接构造 SR 窗口过大时旧帧重新落入新接收窗口的身份歧义。
 
 \section{GBN 与 SR
 的真正权衡}\label{7-gbn-ux4e0e-sr-ux7684ux771fux6b63ux6743ux8861}

@@ -26,5 +26,8 @@ Atlas Foundation；DS-B03 与图算法交接。
 - 完整实现：[`ds05_heap.hpp`](code/ds05_heap.hpp)
 - 边界测试：[`ds05_heap_test.cpp`](code/ds05_heap_test.cpp)
 
+## 训练导航
+- [Heap 操作与优先队列推演](Heap操作与优先队列推演.md)：完全树与父子偏序 → 末尾插入上滤 → 删根补位下滤 → bottom-up 建堆与堆排序边界。
+
 ## Code Contract
 本册代码按 `Operation Contract -> State Fields -> Core Transition -> Invariant Repair -> Boundary Branches -> Complexity -> Executable Tests` 组织。实现固定为最小堆：根保存当前极小值，完全二叉树下标映射保证紧凑形状，`push/pop` 通过上滤/下滤恢复父子偏序，`build_heap` 使用底向上调整。DS04 的 Huffman、DS08 的图算法与 DS11 的堆排序只调用相应优先队列接口。

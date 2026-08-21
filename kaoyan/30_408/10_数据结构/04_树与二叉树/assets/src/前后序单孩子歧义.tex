@@ -1,0 +1,57 @@
+\documentclass[dvisvgm,tikz,border=5pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{CJKutf8}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[>=Stealth, font=\small, color=themefg, text=themefg]
+
+\node[anchor=west, font=\bfseries] at (0,6.6)
+  {前序 + 后序的唯一信息缺口：单孩子到底挂左还是挂右};
+\node[anchor=west, font=\small, text=themegray] at (0,6.05)
+  {两棵树只改变唯一孩子的左右方向；节点身份和父子骨架完全相同。};
+
+% Left panel
+\node[font=\bfseries, text=themecurve] at (4.0,5.15) {方案一：唯一孩子在左};
+\node[draw=themecurve, fill=themecurve!12!themebg, circle, minimum size=9mm] (A1) at (4.0,4.2) {A};
+\node[draw=themefg, fill=themebg, circle, minimum size=9mm] (B1) at (2.9,2.7) {B};
+\draw[themealert, line width=1.4pt] (A1) -- (B1);
+\node[font=\small, text=themegray] at (4.0,1.6) {$Pre=[A,B]$};
+\node[font=\small, text=themegray] at (4.0,1.05) {$Post=[B,A]$};
+
+% Right panel
+\node[font=\bfseries, text=themecurve] at (11.0,5.15) {方案二：唯一孩子在右};
+\node[draw=themecurve, fill=themecurve!12!themebg, circle, minimum size=9mm] (A2) at (11.0,4.2) {A};
+\node[draw=themefg, fill=themebg, circle, minimum size=9mm] (B2) at (12.1,2.7) {B};
+\draw[themealert, line width=1.4pt] (A2) -- (B2);
+\node[font=\small, text=themegray] at (11.0,1.6) {$Pre=[A,B]$};
+\node[font=\small, text=themegray] at (11.0,1.05) {$Post=[B,A]$};
+
+% Middle equivalence of observations, not structures
+\draw[<->, themegray, line width=1.0pt] (6.4,3.45) -- (8.6,3.45);
+\node[font=\small\bfseries, text=themegray, align=center] at (7.5,4.05) {两条遍历序列\\完全相同};
+\node[font=\small, text=themealert, align=center] at (7.5,2.55) {左右方向不同\\序列无法区分};
+
+% Bottom conclusion
+\draw[themegray, line width=0.6pt] (0.8,0.35) -- (14.2,0.35);
+\node[anchor=west, font=\small, text=themefg] at (0.8,-0.35)
+  {每个单孩子节点都独立产生一次“左 / 右”选择。};
+\node[anchor=east, font=\bfseries, text=themealert] at (14.2,-0.35)
+  {$k$ 个单孩子节点 $\Longrightarrow 2^k$ 棵兼容有序二叉树};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

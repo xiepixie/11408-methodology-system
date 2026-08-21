@@ -22,3 +22,7 @@ receiver-side flow control 与 path-side congestion control 怎样同时约束�
 
 ## Review v1
 已重构为 receiver/path 两个独立反馈回路；补入 `FlightSize`、zero-window probe、四种约束组合与“状态上限不等于新增发送量”的边界。
+
+## Question Evidence
+
+930、933 直接区分 `rwnd` 与 `cwnd` Owner，948、953 又要求实际发送受 `min(cwnd,rwnd)` 约束，944 提供 byte-window 的量纲接口。**核心 Bridge 已被直接验证**。剩余缺口主要是显式给出 `FlightSize` 的三变量可发送量题，以及 zero-window persist 与 congestion event 同时出现时的双回路状态推进。

@@ -1,0 +1,54 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[>=Stealth,font=\small,color=themefg,text=themefg]
+\tikzset{
+  event/.style={circle,draw=themefg,fill=themebg,minimum size=11mm,inner sep=0pt,line width=.9pt},
+  critical/.style={->,line width=1.6pt,themecurve},
+  normal/.style={->,line width=.95pt,themegray},
+  label/.style={font=\scriptsize,fill=themebg,inner sep=1.2pt},
+  card/.style={rounded corners=4pt,draw=themegray,fill=themefg!3!themebg,inner xsep=7pt,inner ysep=6pt,align=left}
+}
+\node[anchor=west,font=\bfseries\large] at (0,7.0) {AOE 关键路径：事件算 $ve/vl$，活动算 $e/l$，零时差才构成关键链};
+\node[anchor=west,text=themegray] at (0,6.45)
+  {边上的前一个数是持续时间 $w$；括号内给出活动 $(e,l)$。蓝色实线表示 $l-e=0$ 的关键活动。};
+
+\node[event] (v0) at (1.2,3.8) {$v_0$};
+\node[event] (v1) at (4.3,5.2) {$v_1$};
+\node[event] (v2) at (4.3,2.4) {$v_2$};
+\node[event] (v3) at (8.0,3.3) {$v_3$};
+\node[event] (v4) at (11.5,3.8) {$v_4$};
+
+\draw[normal] (v0) -- node[label,above left] {$3\;(0,1)$} (v1);
+\draw[critical] (v0) -- node[label,below left,text=themecurve] {$2\;(0,0)$} (v2);
+\draw[normal] (v1) -- node[label,above] {$2\;(3,4)$} (v3);
+\draw[critical] (v2) -- node[label,below,text=themecurve] {$4\;(2,2)$} (v3);
+\draw[normal,bend left=15] (v1) to node[label,above] {$3\;(3,5)$} (v4);
+\draw[critical] (v3) -- node[label,above,text=themecurve] {$2\;(6,6)$} (v4);
+
+\node[anchor=south,font=\scriptsize,text=themegray,align=center] at (v0.north) {$ve=0$\\$vl=0$};
+\node[anchor=south,font=\scriptsize,text=themegray,align=center] at (v1.north) {$ve=3$\\$vl=4$};
+\node[anchor=north,font=\scriptsize,text=themegray,align=center] at (v2.south) {$ve=2$\\$vl=2$};
+\node[anchor=south,font=\scriptsize,text=themegray,align=center] at (v3.north) {$ve=6$\\$vl=6$};
+\node[anchor=south,font=\scriptsize,text=themegray,align=center] at (v4.north) {$ve=8$\\$vl=8$};
+
+\node[card,anchor=west,text width=5.3cm] at (12.8,5.25)
+  {\textbf{正向：事件最早时间}\\[-1mm]
+   $ve[v]=\max(ve[u]+w)$。\\
+   本例 $ve[v_3]=\max(3+2,2+4)=6$。};
+\node[card,anchor=west,text width=5.3cm] at (12.8,3.15)
+  {\textbf{反向：事件最迟时间}\\[-1mm]
+   $vl[u]=\min(vl[v]-w)$。\\
+   本例 $vl[v_1]=\min(6-2,8-3)=4$。};
+\node[card,anchor=west,text width=5.3cm] at (12.8,1.0)
+  {\textbf{活动判定}\\[-1mm]
+   对 $u\to v$：$e=ve[u]$，$l=vl[v]-w$。只有 $e=l$ 才是关键活动。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,.55)
+  {关键路径：$v_0\to v_2\to v_3\to v_4$，工期 $=8$。};
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-.1)
+  {图中纵向位置只为避让，不表示事件时间；真正时间只看 $ve/vl$ 数值与边权。};
+\end{tikzpicture}

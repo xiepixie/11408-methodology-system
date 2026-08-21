@@ -1,6 +1,6 @@
 # 主存与存储硬件：地址怎样落到物理介质
 
-状态：Canonical LaTeX 已完成本轮结构、术语与图示重审；现有 Published PDF 仍是上一版派生稿，待发布流程同步。
+状态：Canonical LaTeX 已完成本轮结构、术语与题库攻击重审；Published PDF 已同步本轮正文。
 
 ## Hook
 
@@ -21,6 +21,7 @@ Cache line/tag/replacement 归 CO-06；VA/TLB 归 CO-07；总线事务细节归 
 ## 训练导航
 
 - [主存组织与访问成本](主存组织与访问成本.md)：训练芯片扩展、DRAM 行列/刷新、交叉编址、连续对象跨体、突发事务、Latency/Access Time/Cycle/Throughput/Bandwidth、磁盘与 RAID；稳定机制仍回本册 Canonical。
+- [Flash 与 SSD 介质特性](Flash与SSD介质特性.md)：训练非易失性、NAND page/erase-block 粒度、读写不对称、垃圾回收/磨损均衡与“SSD 很快但通常不是主存”的层次边界。
 - [存储系统真题训练总索引](../90_做题规则/存储系统真题训练总索引.md)：按 2009—2026 真题把 CO-05 与 Cache/TLB/OS VM 的训练接口接起来。
 
 ## Read Next

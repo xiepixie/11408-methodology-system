@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420">
+  <g fill="none" stroke="currentColor" stroke-width="2">
+    <line x1="90" y1="335" x2="90" y2="70"/><line x1="90" y1="335" x2="290" y2="200"/><line x1="90" y1="335" x2="430" y2="335"/>
+    <line x1="90" y1="70" x2="290" y2="200"/><line x1="90" y1="70" x2="480" y2="70"/><line x1="290" y1="200" x2="480" y2="70"/>
+    <line x1="290" y1="200" x2="620" y2="200"/><line x1="290" y1="200" x2="430" y2="335"/><line x1="480" y1="70" x2="620" y2="200"/><line x1="430" y1="335" x2="620" y2="200"/>
+  </g>
+  <g fill="white" stroke="currentColor" stroke-width="2">
+    <circle cx="90" cy="335" r="22"/><circle cx="90" cy="70" r="22"/><circle cx="290" cy="200" r="22"/><circle cx="430" cy="335" r="22"/><circle cx="480" cy="70" r="22"/><circle cx="620" cy="200" r="22"/>
+  </g>
+  <g fill="currentColor" font-family="serif" font-size="24" text-anchor="middle" dominant-baseline="central">
+    <text x="90" y="335">A</text><text x="90" y="70">B</text><text x="290" y="200">D</text><text x="430" y="335">C</text><text x="480" y="70">E</text><text x="620" y="200">F</text>
+  </g>
+  <g fill="white" stroke="none"><rect x="68" y="185" width="44" height="28"/><rect x="170" y="247" width="36" height="28"/><rect x="247" y="323" width="36" height="28"/><rect x="170" y="116" width="44" height="28"/><rect x="274" y="56" width="52" height="28"/><rect x="376" y="116" width="44" height="28"/><rect x="444" y="185" width="36" height="28"/><rect x="337" y="255" width="36" height="28"/><rect x="536" y="116" width="36" height="28"/><rect x="516" y="255" width="36" height="28"/></g>
+  <g fill="currentColor" font-family="sans-serif" font-size="18" text-anchor="middle" dominant-baseline="central">
+    <text x="90" y="199">12</text><text x="188" y="261">5</text><text x="265" y="337">8</text><text x="192" y="130">15</text><text x="300" y="70">20</text><text x="398" y="130">10</text><text x="462" y="199">8</text><text x="355" y="269">6</text><text x="554" y="130">9</text><text x="534" y="269">4</text>
+  </g>
+</svg>

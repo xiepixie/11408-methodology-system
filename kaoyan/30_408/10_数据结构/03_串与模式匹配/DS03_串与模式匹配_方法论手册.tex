@@ -1,5 +1,6 @@
 \documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
 \usepackage{ipara-handbook}
+\usepackage{graphicx}
 \handbooksetup
   {DS-03 串与模式匹配}
   {408 · 数据结构 DS-03}
@@ -49,6 +50,11 @@ T[5]=\texttt{b}\qquad\text{与}\qquad P[3]=\texttt{b},
 
 因此 KMP 的关键不是先问“模式串右移几格”，而是先问：\kw{已经匹配成功的文本后缀中，最长有多少字符也等于模式前缀？}
 \end{examplebox}
+
+\begin{center}
+\resizebox{0.94\linewidth}{!}{\input{30_408/10_数据结构/03_串与模式匹配/assets/src/kmp_fallback_body.tikz}}
+\end{center}
+图中只编码“已经匹配部分如何重新对齐”和“主串当前字符仍是同一个”两件事；横向距离只表示对齐关系，不表示真实执行时间。
 
 现在再抽象。若当前准备比较 $T[i]$ 与 $P[j]$，并且前面已有 $j$ 个字符匹配成功，则保持
 \[
@@ -179,6 +185,11 @@ P[j]=P[\operatorname{next}[j]],
 \]
 例如 $j=4$ 失配时，\code{nextval[4]=-1} 表示没有值得用同一文本字符继续尝试的非负模式状态；标准哨兵主循环随后执行 $i\mathrel{+}=1,j\mathrel{+}=1$，下一次真正比较从模式下标 0 开始。
 \end{examplebox}
+
+\begin{center}
+\resizebox{0.94\linewidth}{!}{\input{30_408/10_数据结构/03_串与模式匹配/assets/src/kmp_nextval_body.tikz}}
+\end{center}
+图中虚线跳跃只表示“提前删除必败的模式状态”；普通失配仍保持当前主串字符，只修改模式状态。
 
 \subsection{模式串为什么右移 \texorpdfstring{$j-j'$}{j-j'}：从起点坐标生成公式}
 设失配前模式起点为

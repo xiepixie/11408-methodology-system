@@ -1,0 +1,66 @@
+\documentclass[dvisvgm,tikz,border=5pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{CJKutf8}
+\usetikzlibrary{arrows.meta,positioning,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[>=Stealth,font=\small,color=themefg,text=themefg]
+\tikzset{
+  n/.style={circle,draw=themefg,fill=themebg,minimum size=8mm,inner sep=0pt,line width=.85pt},
+  root/.style={n,draw=themecurve,fill=themecurve!10!themebg,line width=1.1pt},
+  path/.style={->,themeamber,line width=1.1pt},
+  other/.style={->,themegray,line width=.9pt}
+}
+
+\node[anchor=west,font=\bfseries] at (0,6.25)
+  {路径压缩：集合没有变，只把本次 Find 经过的父指针改得更短};
+\node[anchor=west,font=\small,text=themegray] at (0,5.72)
+  {箭头表示 parent 指针，方向始终指向根；执行 $Find(a)$ 时只改写路径 $a\to b\to c\to r$。};
+
+% before
+\node[font=\bfseries] at (3.6,4.9) {压缩前};
+\node[n] (a1) at (1.2,3.65) {$a$};
+\node[n] (b1) at (2.7,3.65) {$b$};
+\node[n] (c1) at (4.2,3.65) {$c$};
+\node[root] (r1) at (5.7,3.65) {$r$};
+\node[n] (x1) at (4.2,2.25) {$x$};
+\draw[path] (a1)--(b1); \draw[path] (b1)--(c1); \draw[path] (c1)--(r1);
+\draw[other] (x1)--(c1);
+\node[font=\small,text=themegray,align=center] at (3.6,1.25)
+  {$a,b,c,x$ 的代表元都为 $r$\\但 $a$ 到根要走 3 条父边};
+
+% transition
+\draw[->,themecurve,line width=1.2pt] (7.1,3.65)--node[above,font=\small,text=themecurve] {$Find(a)$}(9.0,3.65);
+
+% after
+\node[font=\bfseries] at (12.5,4.9) {压缩后};
+\node[root] (r2) at (12.5,3.65) {$r$};
+\node[n] (a2) at (9.9,2.45) {$a$};
+\node[n] (b2) at (11.6,2.10) {$b$};
+\node[n] (c2) at (13.4,2.10) {$c$};
+\node[n] (x2) at (15.1,2.45) {$x$};
+\draw[path] (a2)--(r2); \draw[path] (b2)--(r2); \draw[path] (c2)--(r2);
+\draw[other] (x2)--(c2);
+\node[font=\small,text=themegray,align=center] at (12.5,1.05)
+  {$a,b,c$ 直接指向 $r$；$x$ 不在本次查找路径上，仍指向 $c$};
+
+\draw[themegray,line width=.6pt] (0,.15)--(16.3,.15);
+\node[anchor=west,font=\small] at (0,-.45)
+  {不变量：所有节点的最终根仍是 $r$，所以集合划分没有改变；改变的只是实现树形。};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

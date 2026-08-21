@@ -9,7 +9,7 @@
 怎样在不断合并集合的过程中，高效回答两个元素当前是否属于同一集合？
 
 ## Mother Model
-`Partition -> Representative -> Find / Union -> Path Compression / Rank -> Set Invariant`
+`集合划分 -> 每组选一个根 -> Find 找根 / Union 合并根 -> 按秩或大小控高 + 路径压缩 -> 快速判断是否同集合`
 
 ## Owns
 并查集对象、代表元、Find、Union、按秩/大小合并、路径压缩及动态连通语义。
@@ -23,6 +23,7 @@ Atlas Foundation；DS-B03 与 Kruskal/图连通问题交接。
 ## Manual
 - Canonical：[UnionFind与集合划分：方法论手册 (TeX)](DS06_UnionFind与集合划分_方法论手册.tex)
 - Published：[UnionFind与集合划分：方法论手册 (PDF)](../../../90_publish/408/DS06_UnionFind与集合划分_方法论手册.pdf)
+- 训练：[并查集父指针、合并与路径压缩](并查集父指针、合并与路径压缩.md)：分清“集合划分”和“parent 父指针树”，读懂负值/父下标，推演 Find、Union 与路径压缩，判断成功合并次数、判环条件和各种复杂度结论需要的前提。
 - 完整实现：[`ds06_union_find.hpp`](code/ds06_union_find.hpp)
 - 边界测试：[`ds06_union_find_test.cpp`](code/ds06_union_find_test.cpp)
 

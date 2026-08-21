@@ -1,6 +1,6 @@
 # NET-I01｜一个网络请求的一生：从域名到网页返回
 
-状态：已采用候选；Canonical Integration 正文已建立并发布，组合边界已复核。
+状态：待人工确认；Canonical Integration 正文已建立并发布，组合边界已复核。305 题已验证各局部接口方向，但完整 `URL + 初始状态 -> HTTP representation` 综合迁移证据仍不足，已建立专门训练入口继续攻击。
 
 ## Hook
 
@@ -24,3 +24,7 @@
 
 - [Canonical LaTeX 正文](NET-I01_一个网络请求的一生_综合手册.tex)
 - [Published PDF](../../../../90_publish/408/NET-I01_一个网络请求的一生_综合手册.pdf)
+
+## Training
+
+- [跨层网络请求状态推演](跨层网络请求状态推演.md)：从 `URL + 当前状态` 出发，按前置条件复用/创建 DHCP、DNS、FIB/next-hop、ARP/ND、TCP 与 HTTP 状态，并用 First Divergence 定位综合故障。

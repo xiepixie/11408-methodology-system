@@ -1,0 +1,78 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[>=Stealth,font=\small,color=themefg,text=themefg]
+\tikzset{
+  cell/.style={draw=themegray,minimum width=8.2mm,minimum height=8.2mm,inner sep=0pt,font=\small},
+  hit/.style={cell,draw=themecurve,fill=themecurve!10!themebg},
+  border/.style={cell,draw=themeamber,fill=themeamber!12!themebg},
+  miss/.style={cell,draw=themealert,fill=themealert!10!themebg},
+  note/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,inner xsep=7pt,inner ysep=5pt,align=left}
+}
+
+\node[anchor=west,font=\bfseries\large] at (0,6.5) {KMP 失配回退：保留已知相等部分，主串指针不回退};
+\node[anchor=west,text=themegray] at (0,5.95)
+  {例：$T=\texttt{abababaca}$，$P=\texttt{ababaca}$。在 $i=5,j=5$ 处，$T[i]=\texttt b\neq\texttt c=P[j]$。};
+
+\node[anchor=east,font=\bfseries] at (1.35,4.75) {主串 $T$};
+\foreach \x/\ch in {0/a,1/b,2/a,3/b,4/a,5/b,6/a,7/c,8/a}{
+  \pgfmathsetmacro{\xx}{2.0+0.82*\x}
+  \node[cell] (t\x) at (\xx,4.75) {\texttt{\ch}};
+  \node[font=\scriptsize,text=themegray] at (\xx,5.25) {\x};
+}
+\node[draw=themealert,rounded corners=1pt,fit=(t5),inner sep=1.5pt] {};
+\node[anchor=west,font=\scriptsize,text=themealert] at (10.05,4.75) {$i=5$};
+
+\node[anchor=east,font=\bfseries] at (1.35,3.55) {失配前 $P$};
+\foreach \x/\ch in {0/a,1/b,2/a,3/b,4/a,5/c,6/a}{
+  \pgfmathsetmacro{\xx}{2.0+0.82*\x}
+  \ifnum\x<5
+    \ifnum\x>1
+      \node[border] (p\x) at (\xx,3.55) {\texttt{\ch}};
+    \else
+      \node[hit] (p\x) at (\xx,3.55) {\texttt{\ch}};
+    \fi
+  \else
+    \ifnum\x=5
+      \node[miss] (p\x) at (\xx,3.55) {\texttt{\ch}};
+    \else
+      \node[cell] (p\x) at (\xx,3.55) {\texttt{\ch}};
+    \fi
+  \fi
+}
+\node[anchor=west,font=\scriptsize,text=themealert] at (10.05,3.55) {$j=5$};
+\node[anchor=west,font=\scriptsize,text=themeamber] at (2.0,2.92)
+  {已匹配的 \texttt{ababa} 中，最长真前后缀是 \texttt{aba}：前缀 $P[0..2]=$ 后缀 $P[2..4]$。};
+
+\draw[->,line width=1.1pt,themeamber] (6.25,2.65) -- node[right,font=\scriptsize,text=themeamber] {$j\leftarrow next[5]=3$} (6.25,1.95);
+
+\node[anchor=east,font=\bfseries] at (1.35,1.45) {回退后 $P$};
+\foreach \x/\ch in {0/a,1/b,2/a,3/b,4/a,5/c,6/a}{
+  \pgfmathsetmacro{\xx}{3.64+0.82*\x}
+  \ifnum\x<3
+    \node[border] (q\x) at (\xx,1.45) {\texttt{\ch}};
+  \else
+    \ifnum\x=3
+      \node[hit] (q\x) at (\xx,1.45) {\texttt{\ch}};
+    \else
+      \node[cell] (q\x) at (\xx,1.45) {\texttt{\ch}};
+    \fi
+  \fi
+}
+\draw[themeamber,densely dashed,line width=.9pt] (3.64,1.0) -- (3.64,4.25);
+\draw[themeamber,densely dashed,line width=.9pt] (5.28,1.0) -- (5.28,4.25);
+\node[anchor=west,font=\scriptsize,text=themecurve] at (10.05,1.45) {$i=5$ 不变，$j=3$};
+
+\node[note,anchor=west,text width=4.55cm] at (9.85,5.55)
+  {\textbf{安全移动的证据}\\[-1mm]
+   已匹配后缀 \texttt{aba} 已知等于模式前缀 \texttt{aba}，因此移动后这 3 个字符无需重比。};
+\node[note,anchor=west,text width=4.55cm] at (9.85,2.75)
+  {\textbf{禁止误读}\\[-1mm]
+   图中右移的是模式串的候选对齐位置；主串 $i$ 没有回退，也不是重新从 $T[2]$ 开始扫描。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,.35)
+  {$\boxed{\text{失配}\;\Rightarrow\;\text{复用最长可用边界}\;\Rightarrow\;j\text{ 回退而 }i\text{ 单调前进}}$};
+\end{tikzpicture}

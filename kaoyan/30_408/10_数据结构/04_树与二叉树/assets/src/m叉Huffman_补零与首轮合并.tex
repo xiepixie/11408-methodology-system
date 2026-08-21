@@ -1,0 +1,52 @@
+\documentclass[dvisvgm,tikz,border=5pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{CJKutf8}
+\usetikzlibrary{arrows.meta,positioning,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[>=Stealth,font=\small,color=themefg,text=themefg]
+\tikzset{
+  bag/.style={rounded corners=4pt,draw=themegray,fill=themefg!3!themebg,minimum height=.9cm,inner xsep=7pt,inner ysep=5pt,align=center},
+  act/.style={rounded corners=4pt,draw=themeamber,fill=themeamber!10!themebg,minimum height=.9cm,inner xsep=8pt,align=center},
+  edge/.style={->,themegray,line width=1pt}
+}
+
+\node[anchor=west,font=\bfseries] at (0,5.9)
+  {4 叉 Huffman：补零与“首轮少合并”只是两种等价记账方式};
+\node[anchor=west,font=\small,text=themegray] at (0,5.35)
+  {真实权值 $\{1,1,2,3,5,8,13,21\}$，因为 $8\not\equiv1\pmod3$，需要补两个零权虚叶。};
+
+% left route
+\node[font=\bfseries,text=themecurve] at (4.0,4.45) {视角 A：显式补两个 0};
+\node[bag] (a0) at (4.0,3.55) {$\{0,0,1,1,2,3,5,8,13,21\}$};
+\node[act] (a1) at (4.0,2.25) {$0+0+1+1=2$};
+\node[bag,draw=themecurve] (a2) at (4.0,.95) {$\{2,2,3,5,8,13,21\}$};
+\draw[edge] (a0)--(a1); \draw[edge] (a1)--(a2);
+
+% right route
+\node[font=\bfseries,text=themeamber] at (11.2,4.45) {视角 B：不画虚叶};
+\node[bag] (b0) at (11.2,3.55) {$\{1,1,2,3,5,8,13,21\}$};
+\node[act] (b1) at (11.2,2.25) {首轮只取两个：$1+1=2$};
+\node[bag,draw=themecurve] (b2) at (11.2,.95) {$\{2,2,3,5,8,13,21\}$};
+\draw[edge] (b0)--(b1); \draw[edge] (b1)--(b2);
+
+\draw[<->,themecurve,line width=1.1pt] (a2.east)--node[above,font=\small,text=themecurve]{同一候选多重集}(b2.west);
+\node[anchor=west,font=\small,text=themegray] at (1.8,-.25)
+  {从这里开始，两种写法完全一致：之后每一轮都取当前 4 个最小权值合并。};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

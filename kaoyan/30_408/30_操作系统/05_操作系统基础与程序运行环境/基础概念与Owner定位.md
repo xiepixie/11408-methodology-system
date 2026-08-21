@@ -34,22 +34,128 @@
 
 **检查与退出**：只要两步地址变换的“地址空间、Owner 或确定时机”不同，就不能把它们合并成一个“地址换算”。一旦进入 VA→PA、页表、驻留/缺页，停止在 OS-00，转交 OS-04 / CO-07。
 
+## 多道 / 分时题：先分“目标、机制、调度参数”
+
+### 局部规则：看到“提高利用率 / 改善响应”先问优化目标
+
+**触发信号**：题面同时出现多道程序、分时、时间片、中断、调度算法、交互响应。
+
+**第一动作**：先写目标：
+
+```text
+Multiprogramming -> 用别的可运行工作覆盖 I/O 等待，提高资源利用率
+Time-sharing     -> 在共享 CPU 的同时让交互任务尽快重新得到服务，强调 response/fairness
+```
+
+随后再区分：中断/定时器属于实现机制，时间片大小和优先级/抢占规则属于调度 policy/parameter。
+
+**检查与退出**：不要把“多道”直接等价成“交互好”，也不要把“时间片越大”当作响应越好的单调规律。时间片过小会增加切换成本，过大又趋近 FCFS；题目必须在响应与开销之间判断。
+
+## 系统调用题：按五段责任链判“谁完成”
+
+```text
+用户侧准备参数 / 调用约定
+-> 执行受控 syscall/trap instruction
+-> 硬件完成受控特权入口并保存最小架构现场
+-> 内核分派并执行服务，必要时调度/等待
+-> 受保护返回；用户侧读取返回值
+```
+
+### 局部规则：Mode Switch、Kernel Execution、Context Switch 三件事分开
+
+**触发信号**：选项问“谁切到内核态、谁调用服务例程、系统调用是否一定换进程”。
+
+**第一动作**：分别标：
+
+- privilege transition 由受控硬件入口保证；
+- service routine 属内核代码；
+- 只有 scheduler 真正换可调度实体才发生 context switch。
+
+**检查与退出**：用户程序“发起 syscall”不等于它能任意修改特权位；进入内核态也不等于已经切换到另一个进程。
+
+## OS 结构题：先画 privilege boundary，再谈模块位置
+
+**触发信号**：monolithic / layered / microkernel / user-space server 混在选项中。
+
+**第一动作**：先问某服务必须不必须拥有直接硬件/关键内核状态控制权。IPC、低级调度、异常/中断入口等最小机制更接近微内核核心；文件系统等高层服务可以移到用户态服务器。
+
+**检查与退出**：`在内核外` 不等于“功能不存在”，`微内核` 也不自动推出“性能一定更高”；跨地址空间 IPC/调度会带来边界成本。
+
+## Boot 题：只追踪控制权和“谁能理解下一阶段”
+
+稳定母链：
+
+```text
+Firmware -> Boot stage / Bootloader -> Kernel -> Initial user space
+```
+
+传统 BIOS/MBR 只是这条链的一种具体查找协议：Firmware 取 MBR，再根据分区/后续引导信息继续扩大可理解范围。
+
+### 局部规则
+
+**触发信号**：BIOS、MBR、PBR、boot block、UEFI、kernel loading 混在一起。
+
+**第一动作**：逐阶段问“当前谁有控制权、它已经能读取什么格式、它怎样定位下一阶段”。
+
+**检查与退出**：不要假设第一阶段能一次装入完整 OS，也不要把 MBR/PBR 的历史固定数字外推成 UEFI/GPT 的通用规律。
+
+## VMM 题：先检查真实资源控制权是否仍在 VMM 边界内
+
+**触发信号**：Guest OS、Type 1/2 VMM、敏感/特权操作、虚拟设备。
+
+**第一动作**：问 Guest 的 CPU、内存和 I/O 效果最终是否仍由 VMM/硬件虚拟化机制仲裁；Guest 看到的是虚拟资源状态，不应绕过边界直接修改宿主真实关键状态。
+
+**检查与退出**：Type 1/2 是架构坐标，不要推成“Type 2 全部代码都在最高特权级”或“VMM 代码量一定大于完整 OS”。
+
 ## 常用边界
 
-| 对象 A | ≠ | 对象 B | 第一判据 |
-| ------------- | ------- | ------------------ | -------------------------------- |
-| Abstraction | ≠ | Virtualization | 接口简化 vs 逻辑化/复用物理资源 |
-| Concurrency | ≠ | Parallelism | 一段时间内共同推进 vs 同一时刻物理同时执行 |
-| Mechanism | ≠ | Policy | 如何做到 vs 选择谁/选择什么 |
-| Program | ≠ | Process | 静态描述 vs 某次动态执行实例 |
-| Executable | ≠ | Process Image | 文件表示 vs 某次执行形成的运行时表示 |
-| Section | ≠ | Program Segment | 链接/静态组织单位 vs 装入映射单位 |
-| Link-time Relocation | ≠ | Run-time Address Translation | 修补目标/映像中的地址相关引用 vs 每次访问时 VA→PA |
-| Loading | ≠ | All Pages Resident | 建立运行映像/映射 vs 所有内容已兑现到 RAM |
-| Task State | ≠ | CPU Mode | Ready/Blocked/Running vs User/Kernel privilege |
-| Monolithic | ≠ | Non-modular | 特权边界位置 vs 软件内部组织方式 |
-| Firmware | ≠ | Bootloader | 早期平台环境 vs 选择/装载内核的后续阶段 |
-| OS Virtualization | ≠ | Machine Virtualization | 给应用受管抽象 vs 给 Guest OS 一台虚拟机器 |
+| 对象 A                 | ≠   | 对象 B                         | 第一判据                                           |
+| ------------- | ------- | ------------------- | ------------------------------- |
+| Abstraction          | ≠   | Virtualization               | 接口简化 vs 逻辑化/复用物理资源                             |
+| Concurrency          | ≠   | Parallelism                  | 一段时间内共同推进 vs 同一时刻物理同时执行                        |
+| Mechanism            | ≠   | Policy                       | 如何做到 vs 选择谁/选择什么                               |
+| Program              | ≠   | Process                      | 静态描述 vs 某次动态执行实例                               |
+| Executable           | ≠   | Process Image                | 文件表示 vs 某次执行形成的运行时表示                           |
+| Section              | ≠   | Program Segment              | 链接/静态组织单位 vs 装入映射单位                            |
+| Link-time Relocation | ≠   | Run-time Address Translation | 修补目标/映像中的地址相关引用 vs 每次访问时 VA→PA                 |
+| Loading              | ≠   | All Pages Resident           | 建立运行映像/映射 vs 所有内容已兑现到 RAM                      |
+| Task State           | ≠   | CPU Mode                     | Ready/Blocked/Running vs User/Kernel privilege |
+| Monolithic           | ≠   | Non-modular                  | 特权边界位置 vs 软件内部组织方式                             |
+| Firmware             | ≠   | Bootloader                   | 早期平台环境 vs 选择/装载内核的后续阶段                         |
+| OS Virtualization    | ≠   | Machine Virtualization       | 给应用受管抽象 vs 给 Guest OS 一台虚拟机器                   |
+
+## 题库母题：概念题也要有推理入口
+
+### [Q478｜“分时系统怎样改善响应时间？”](../../../archives/408/题库/操作系统/01_操作系统基础与程序运行环境_选择题.md#478)
+
+这题不是让你背“某个算法天然适合分时”。第一步先把目标写出来：**响应时间 = 交互任务多久能再次获得 CPU 服务。** 然后才比较时间片大小、是否允许抢占、是否给交互任务更高优先级。这样就能看出存储管理方式、代码可重入等虽然重要，却不是这道题的直接杠杆。
+
+### [Q483｜“系统调用过程中，哪些事情由用户程序完成？”](../../../archives/408/题库/操作系统/01_操作系统基础与程序运行环境_选择题.md#483)
+
+把一次系统调用拆成四段就不会混：
+
+```text
+用户准备参数
+→ 执行受控 syscall/trap 入口
+→ 硬件切入特权态，内核执行服务
+→ 返回用户态，用户读取返回值
+```
+
+因此“用户发起系统调用”不等于“用户自己把 CPU 改成内核态”，也不等于“用户直接调用内核服务例程”。
+
+### [Q495｜“文件系统应不应该放在微内核里？”](../../../archives/408/题库/操作系统/01_操作系统基础与程序运行环境_选择题.md#495)
+
+先别背“微内核很小”。先画特权边界：**哪些能力必须直接掌握关键硬件/调度状态，哪些只是建立在这些机制之上的高层服务？** 低级调度、IPC、异常/中断入口属于最小核心；文件系统可以作为用户态服务器，因此不必留在微内核核心。
+
+### [Q497–500｜“机器从上电到内核运行，中间到底发生什么？”](../../../archives/408/题库/操作系统/01_操作系统基础与程序运行环境_选择题.md#497)
+
+不要把 BIOS、MBR、PBR、boot block 当成孤立名词背顺序。每一阶段只问两件事：**当前谁有控制权？它已经能理解什么格式，从哪里找到下一阶段？** 这样传统 BIOS/MBR 和现代 UEFI 只是不同查找协议，背后的“逐级扩大能力并交接控制权”是一条稳定母链。
+
+### [Q501–502｜“Guest OS 到底是不是真的拥有硬件？”](../../../archives/408/题库/操作系统/01_操作系统基础与程序运行环境_选择题.md#501)
+
+Guest 可以像操作真实机器一样管理自己的虚拟 CPU、内存和设备，但真实资源的最终效果仍由 VMM/硬件虚拟化机制仲裁。做 VMM 题只要追问：**谁拥有真实资源的最终控制权？Guest 能不能绕过这条边界？** 就能过滤掉很多关于 Type 1/2 的绝对化说法。
+
+**这组概念题共同训练：先把对象、目标和特权边界画清楚，再判断术语；不要靠“这个词听起来像正确答案”做选择。**
 
 ## Owner 路由
 

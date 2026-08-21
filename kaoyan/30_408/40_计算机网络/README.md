@@ -1,7 +1,7 @@
 # 计算机网络 Subject Atlas
 
 > 类型：Atlas
-> 状态：已采用；README 是 Canonical Subject Atlas。31 份个人旧笔记已完成全科 Source Routing；NET01--NET08 八个 Topic 均已建立并发布 Canonical LaTeX 候选正文，NET-I01 已建立并发布 Integration。
+> 状态：已采用；README 是 Canonical Subject Atlas。31 份个人旧笔记已完成全科 Source Routing；NET01--NET08 八个 Topic 均已建立并发布 Canonical LaTeX 正文，并已用 305 道正式题完成首轮题库验证。当前剩余验证压力主要在 Bridge / Integration 与少量深层状态分支。
 
 ## 学科母问题
 
@@ -83,7 +83,7 @@ OSI 是七层参考模型；Internet 协议族的工程分层通常把 OSI 的�
 | [拥塞控制](07_拥塞_共享资源与反馈控制/README.md) | 共享网络怎样通过反馈避免 offered load 压垮容量？ | congestion signal、cwnd、slow start、AIMD、avoidance、fast recovery 教材模型 |
 | [应用层服务语义](08_应用层_DNS_HTTP与服务语义/README.md) | 端到端通信能力怎样成为可发现、可解释的服务？ | DNS、HTTP semantics、C/S、P2P、FTP、SMTP、POP3、MIME |
 
-目录为 `01_` 到 `08_`。八册均已由旧 README Source 完成逐项迁入 `.tex` 并发布；“候选”表示仍需题目验证心智模型，不表示正文缺失或存在第二个 Owner。
+目录为 `01_` 到 `08_`。八册均已由旧 README Source 完成逐项迁入 `.tex` 并发布；305 道正式题已经验证八个 Topic 的 Core Mother Model 与主要边界。尚未被充分攻击的内容集中在收敛中间态、Reno/dupACK、RTO/SACK、HTTP 高阶缓存/复用等深层分支，以及六座 Bridge / NET-I01 的组合迁移。
 
 ## 已锁定 Ownership
 
@@ -145,6 +145,18 @@ $$
 
 因此 `rwnd`、`cwnd` 是约束来源，不等于“此刻可以立刻再发送的字节数”。
 
+### 有状态不等于“面向连接 / 可靠 / 已可执行”
+
+305 道题反复暴露出同一种错误迁移：看到一个机制维护了状态，就顺手给它附加另一个层次的服务性质。必须把下面几条主动拆开：
+
+- 电路交换建立并预留路径状态，不自动等于“拥有端到端可靠交付机制”；
+- PPP 有 LCP/NCP 的链路控制生命周期，不等于向网络层提供 ACK/重传式可靠连接服务；
+- 路由控制面已经 selected route，不等于对应 FIB action 已经安装、next hop 已可执行；
+- TCP 首部存在 `Window` 字段，不等于该字段承载 sender 的 `cwnd`；它通告 receiver-side `rwnd`；
+- 一个 TCP endpoint 已经定位到同一 server IP:port，也不等于 HTTP application authority 已唯一确定；Host/authority 仍属于应用层名字。
+
+因此遇到“有连接、有表、有窗口、有缓存、有映射”时，先问：**这个状态是谁拥有、它证明了什么、它向哪一层提供什么服务、是否已经进入可执行阶段？** 状态存在只能证明对应 Owner 保存了某种历史/约束，不能跨层推出可靠性、连接语义或最终可达性。
+
 ### 其他核心分流边界
 
 | 不能混用 | 判据 |
@@ -187,7 +199,15 @@ Canonical product：[NET-I01｜一个网络请求的一生](60_综合专题/NET-
 
 跨科母模型入口：[缓冲与有限中间态](../00_统一总图/跨科母模型_缓冲与有限中间态.md)。交换端口队列、可靠传输重传/失序缓存、TCP 发送接收缓冲、`rwnd`、路由器队列与拥塞反馈可在这里统一理解；具体协议状态机继续由 NET-02/03/04/06/07 拥有。
 
-## Question Control Adapter：网络八问
+## Question Control Adapter：快速三问 + 完整诊断八问
+
+305 题首轮验证表明，八问适合作为 **Diagnostic Completeness Checklist**，但不适合要求每道选择题机械完整抄写。考场先用三问完成快速路由：
+
+```text
+Scope -> Object / State Owner -> Event
+```
+
+一旦确认 Topic，就立即进入对应训练文档的局部控制协议。只有跨层综合题、题面歧义、做错后的 First Divergence 诊断，才展开完整八问：
 
 1. 当前作用域是一跳、端到端、一个 AS 还是全球 Internet？
 2. 当前通信对象是 process、host、switch、router 还是 application？
@@ -198,7 +218,7 @@ Canonical product：[NET-I01｜一个网络请求的一生](60_综合专题/NET-
 7. 反馈信号是什么？
 8. 时间、带宽、队列、丢包或状态成本是什么？
 
-规则入口：[网络做题规则](90_做题规则/README.md)。
+因此八问的职责是检查“有没有漏维度”，不是把所有题都强行改写成八步算法。规则入口：[网络做题规则](90_做题规则/README.md)。
 
 ## 学习入口
 

@@ -17,6 +17,7 @@
 ## 训练导航
 
 - [PV 题的约束建模](PV同步题.md)：把题面先压成坏状态、继续条件和许可，再决定 P/V；训练同步/互斥分流、初值、等待依赖、完整落笔流程、最少信号量和独立验算，不复制 OS-03 理论正文。
+- [管程与条件变量状态推演](管程与条件变量状态推演.md)：mutex / predicate / condition 三分，训练 `wait` 原子释放睡眠、Mesa `while` 重检、Hoare/Mesa 交权与 lost wakeup 反例。
 - [死锁判断与 Banker](死锁判断与Banker.md)：先区分 Prevention / Avoidance / Detection / Recovery，再处理 Safety、Resource-Request、Need/Request、资源分配图与恢复；把旧 Canonical 中的考场判题协议迁到训练层。
 
 ## 下一步阅读

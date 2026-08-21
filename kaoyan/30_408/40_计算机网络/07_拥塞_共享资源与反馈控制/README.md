@@ -1,6 +1,6 @@
 # 拥塞控制：在不知道路径容量时闭环试探
 
-状态：已采用候选；Canonical 深度正文已建立并发布，心智模型仍待题目验证。
+状态：待人工确认；Canonical 深度正文已建立并发布，本轮 305 题中的对应题目已完成首轮验证。基础 cwnd/ssthresh 轨迹已稳定，后续重点补 Tahoe/Reno duplicate-ACK、fast recovery 与 AQM/ECN 证据。
 
 ## Hook
 
@@ -22,6 +22,10 @@
 
 - [Canonical LaTeX 正文](NET-07_拥塞控制_方法论手册.tex)
 - [Published PDF](../../../90_publish/408/NET-07_拥塞控制_方法论手册.pdf)
+
+## Practice Adapter
+
+- [TCP 拥塞窗口轮次推演](TCP拥塞窗口轮次推演.md)：先锁题设口径，再按阶段/事件更新 `cwnd`、`ssthresh` 与实际发送上限。
 
 ## Source Diff
 

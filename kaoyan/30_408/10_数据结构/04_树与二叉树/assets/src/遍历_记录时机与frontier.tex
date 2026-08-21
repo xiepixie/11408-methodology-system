@@ -1,0 +1,75 @@
+\documentclass[dvisvgm,tikz,border=5pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{CJKutf8}
+\usetikzlibrary{arrows.meta,calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[>=Stealth, font=\small, color=themefg, text=themefg]
+
+% --- DFS panel -------------------------------------------------------------
+\node[anchor=west, font=\bfseries] at (0,6.5) {DFS：同一次递归，只改变“什么时候记录根”};
+
+\node[draw=themecurve, fill=themecurve!12!themebg, rounded corners=3pt,
+      minimum width=2.4cm, minimum height=1.0cm, align=center] (enter) at (1.8,4.9)
+      {进入当前根 $N$};
+\node[draw=themeamber, fill=themeamber!12!themebg, rounded corners=3pt,
+      minimum width=2.4cm, minimum height=1.0cm, align=center] (leftret) at (5.7,4.9)
+      {左子树 $L$ 返回};
+\node[draw=themealert, fill=themealert!10!themebg, rounded corners=3pt,
+      minimum width=2.4cm, minimum height=1.0cm, align=center] (rightret) at (9.6,4.9)
+      {右子树 $R$ 返回};
+
+\draw[->, line width=1.1pt, themegray] (enter.east) --
+  node[above, font=\scriptsize, text=themegray]{递归处理 $L$} (leftret.west);
+\draw[->, line width=1.1pt, themegray] (leftret.east) --
+  node[above, font=\scriptsize, text=themegray]{递归处理 $R$} (rightret.west);
+
+\node[font=\bfseries, text=themecurve] at (1.8,3.7) {前序：记录 $N$};
+\node[font=\bfseries, text=themeamber] at (5.7,3.7) {中序：记录 $N$};
+\node[font=\bfseries, text=themealert] at (9.6,3.7) {后序：记录 $N$};
+
+\node[anchor=west, font=\scriptsize, text=themegray] at (0,3.0)
+  {横向位置只表示事件先后，不表示真实耗时比例。};
+
+% --- BFS panel -------------------------------------------------------------
+\node[anchor=west, font=\bfseries] at (0,2.2) {BFS：层序改的是待处理节点的取出规则};
+
+% small tree
+\node[draw=themecurve, fill=themecurve!12!themebg, circle, minimum size=7mm] (n) at (1.2,0.8) {$N$};
+\node[draw=themefg, fill=themebg, circle, minimum size=7mm] (l) at (0.3,-0.5) {$L$};
+\node[draw=themefg, fill=themebg, circle, minimum size=7mm] (r) at (2.1,-0.5) {$R$};
+\node[draw=themefg, fill=themebg, circle, minimum size=6.5mm] (l1) at (-0.2,-1.8) {$L_1$};
+\node[draw=themefg, fill=themebg, circle, minimum size=6.5mm] (l2) at (0.8,-1.8) {$L_2$};
+\draw[line width=0.9pt, themegray] (n) -- (l);
+\draw[line width=0.9pt, themegray] (n) -- (r);
+\draw[line width=0.9pt, themegray] (l) -- (l1);
+\draw[line width=0.9pt, themegray] (l) -- (l2);
+
+\node[anchor=west, text=themegray, font=\small] at (3.6,1.35) {队首出队，孩子按左、右顺序入队：};
+\node[draw=themecurve, fill=themecurve!10!themebg, rounded corners=2pt,
+      minimum width=2.2cm, minimum height=0.75cm] (q1) at (5.0,0.5) {$[N]$};
+\node[draw=themecurve, fill=themecurve!10!themebg, rounded corners=2pt,
+      minimum width=2.6cm, minimum height=0.75cm] (q2) at (8.1,0.5) {$[L,R]$};
+\node[draw=themecurve, fill=themecurve!10!themebg, rounded corners=2pt,
+      minimum width=3.5cm, minimum height=0.75cm] (q3) at (11.8,0.5) {$[R,L_1,L_2]$};
+\draw[->, line width=1.0pt, themegray] (q1.east) -- (q2.west);
+\draw[->, line width=1.0pt, themegray] (q2.east) -- (q3.west);
+\node[anchor=west, font=\scriptsize, text=themegray] at (3.6,-0.5)
+  {层序次序由 FIFO 队列决定，与 N/L/R 的递归记录时机无关。};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

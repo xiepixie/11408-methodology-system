@@ -45,9 +45,12 @@ SUB_SUBJECT_ORDER = {
         "计算机网络",
     ],
     "english1": [
+        "每日外刊精读",
+        "高频学术表达库",
+        "英语能力与输出",
         "英语统一方法论",
-        "英语写作",
         "阅读理解",
+        "英语写作",
         "英汉翻译",
         "完形与新题型",
     ],
@@ -313,7 +316,7 @@ def scan_markdown_drills(pdf_items: list[dict]) -> list[dict]:
             if any(skip in path_str for skip in [
                 "/assets/", "/code/", "/tests/", "/tools/", "/skills/",
                 "/00_system/", "/.venv/", "/tmp/", "README.md", "SOURCE_DIFF.md",
-                "00_迁移与重构规划.md"
+                "00_迁移与重构规划.md", "AGENTS.md"
             ]):
                 continue
 
@@ -370,7 +373,13 @@ def scan_markdown_drills(pdf_items: list[dict]) -> list[dict]:
                 elif "00_统一总图" in path_str or "跨科" in path_str:
                     sub_subject = "408 综合与跨科"
             elif subject_key == "english1":
-                if "10_阅读" in path_str:
+                if "daily_reading/01_articles" in path_str:
+                    sub_subject = "每日外刊精读"
+                elif "daily_reading/02_expressions" in path_str:
+                    sub_subject = "高频学术表达库"
+                elif "daily_reading/03_capabilities" in path_str:
+                    sub_subject = "英语能力与输出"
+                elif "10_阅读" in path_str:
                     sub_subject = "阅读理解"
                 elif "20_完形" in path_str:
                     sub_subject = "完形与新题型"
@@ -383,19 +392,80 @@ def scan_markdown_drills(pdf_items: list[dict]) -> list[dict]:
             elif subject_key == "system":
                 sub_subject = "解题控制核"
 
-            # Derive clean code from immediate parent directory
+            # Derive clean code and id
+            doc_id = f"drill_{subject_key}_{md_path.stem}"
             code = "DRILL"
             parent_name = md_path.parent.name
-            b_match = re.match(r"^(B\d{2}[A-Z]?)_", parent_name)
-            hb_match = re.match(r"^(H-B\d{2})_", parent_name)
-            num_match = re.match(r"^(\d{2})_", parent_name)
-            if b_match:
-                code = f"MATH-{b_match.group(1)}-Drill"
-            elif hb_match:
-                code = f"{hb_match.group(1)}-Drill"
-            elif num_match:
-                prefix = "H" if "高等数学" in sub_subject else ("LA" if "线性代数" in sub_subject else ("DS" if "数据结构" in sub_subject else "TR"))
-                code = f"{prefix}{num_match.group(1)}-Drill"
+            
+            if "daily_reading/01_articles" in path_str:
+                date_match = re.search(r"(\d{4}-\d{2}-\d{2})", parent_name)
+                date_str = date_match.group(1) if date_match else ""
+                clean_date = date_str.replace("-", "")
+                code = f"ENG-READ-{clean_date}" if clean_date else "ENG-READ"
+                doc_id = f"drill_english1_reading_{parent_name}"
+                source_match = re.search(r"^source:\s*([^\n\r]+)", content, re.MULTILINE)
+                source_val = source_match.group(1).strip() if source_match else ""
+                if source_val and date_str:
+                    title = f"{title} · {source_val} ({date_str})"
+                elif date_str:
+                    title = f"{title} ({date_str})"
+                if not training_scope:
+                    fm_match = re.search(r"^---\n([\s\S]*?)\n---", content)
+                    topics_str = "语篇精读与语块吸收"
+                    if fm_match:
+                        topics_match = re.findall(r"^\s*-\s*([^\n\r]+)", fm_match.group(1), re.MULTILINE)
+                        if topics_match:
+                            topics_str = " · ".join(topics_match)
+                    training_scope = f"外刊语篇首读诊断、深读分析与高频表达沉淀（Topics: {topics_str}）"
+            elif "daily_reading/02_expressions" in path_str:
+                num_match = re.match(r"^(\d{2})_", md_path.stem)
+                code = f"ENG-EXP-{num_match.group(1)}" if num_match else "ENG-EXP"
+                doc_id = f"drill_english1_exp_{md_path.stem}"
+                if not training_scope:
+                    intro_match = re.search(r">\s*([^\n\r]+)", content)
+                    if intro_match:
+                        training_scope = intro_match.group(1).strip()
+            elif "daily_reading/03_capabilities" in path_str:
+                code = "ENG-CAP"
+                doc_id = f"drill_english1_cap_{md_path.stem}"
+            else:
+                b_match = re.match(r"^(B\d{2}[A-Z]?)_", parent_name)
+                hb_match = re.match(r"^(H-B\d{2})_", parent_name)
+                num_match = re.match(r"^(\d{2})_", parent_name)
+                if b_match:
+                    code = f"MATH-{b_match.group(1)}-Drill"
+                elif hb_match:
+                    code = f"{hb_match.group(1)}-Drill"
+                elif num_match:
+                    if "高等数学" in sub_subject:
+                        prefix = "H"
+                    elif "线性代数" in sub_subject:
+                        prefix = "LA"
+                    elif "概率" in sub_subject:
+                        prefix = "PR"
+                    elif "数据结构" in sub_subject:
+                        prefix = "DS"
+                    elif "计算机组成原理" in sub_subject:
+                        prefix = "CO"
+                    elif "操作系统" in sub_subject:
+                        prefix = "OS"
+                    elif "计算机网络" in sub_subject:
+                        prefix = "NET"
+                    else:
+                        prefix = "TR"
+                    code = f"{prefix}{num_match.group(1)}-Drill"
+                elif "50_科内桥梁" in path_str or "DS-B" in parent_name or "CO-B" in parent_name:
+                    bridge_match = re.search(r"((?:DS|CO|OS|NET)-B\d{2})", parent_name)
+                    if bridge_match:
+                        code = f"{bridge_match.group(1)}-Drill"
+                elif "60_综合专题" in path_str or "DS-I" in parent_name or "CO-I" in parent_name:
+                    int_match = re.search(r"((?:DS|CO|OS|NET)-I\d{2})", parent_name)
+                    if int_match:
+                        code = f"{int_match.group(1)}-Drill"
+                elif "70_算法扩展" in path_str or "DS-A" in parent_name:
+                    alg_match = re.search(r"(DS-A\d{2})", parent_name)
+                    if alg_match:
+                        code = f"{alg_match.group(1)}-Drill"
 
             if not model_owner_id:
                 # Fallback: try matching twin PDF by parent directory name
@@ -416,6 +486,14 @@ def scan_markdown_drills(pdf_items: list[dict]) -> list[dict]:
                     tags.append("桥梁")
                 if "跨科桥梁" not in tags and "50_桥梁专题" in path_str:
                     tags.append("跨科桥梁")
+            if "daily_reading/01_articles" in path_str:
+                if "外刊精读" not in tags:
+                    tags.append("外刊精读")
+                if "Spotlight" not in tags and "Spotlight" in content:
+                    tags.append("Spotlight")
+            if "daily_reading/02_expressions" in path_str:
+                if "表达库" not in tags:
+                    tags.append("表达库")
             if "训练手册" not in tags:
                 tags.append("训练手册")
 
@@ -423,7 +501,7 @@ def scan_markdown_drills(pdf_items: list[dict]) -> list[dict]:
             local_rel_path = f"kaoyan/{rel_to_kaoyan.as_posix()}"
 
             drill_item = {
-                "id": f"drill_{subject_key}_{md_path.stem}",
+                "id": doc_id,
                 "subject": subject_key,
                 "subject_name": SUBJECT_NAMES.get(subject_key, subject_key),
                 "sub_subject": sub_subject,

@@ -26,6 +26,9 @@ Heap/Union-Find 内部机制；网络路由协议本体。Routing 只可 Use 本
 - 完整实现：[`ds08_graph_algorithms.hpp`](code/ds08_graph_algorithms.hpp)
 - 断言测试：[`ds08_graph_algorithms_test.cpp`](code/ds08_graph_algorithms_test.cpp)
 
+## 训练导航
+- [MST、最短路与拓扑状态推演](MST、最短路与拓扑状态推演.md)：Goal → Candidate → Commit → Update → Failure；分开 Prim/Kruskal/Dijkstra/Floyd/Kahn 的候选域与提交点。
+
 ## Code Contract
 本册代码覆盖 Prim/Kruskal、Dijkstra、Bellman-Ford、Floyd、拓扑排序，以及包含最早事件、最迟事件与零时差活动判定的完整 AOE 关键路径。
 

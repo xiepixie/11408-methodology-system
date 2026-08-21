@@ -1,0 +1,36 @@
+\documentclass[dvisvgm,tikz,border=7pt]{standalone}
+\usepackage{CJKutf8}
+\usetikzlibrary{positioning,shapes.geometric}
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themeamber}{HTML}{f5b942}
+\tikzset{
+ host/.style={draw=themefg,rounded corners=2pt,minimum width=11mm,minimum height=7mm,align=center,line width=.85pt},
+ sw/.style={draw=themecurve,rounded corners=3pt,minimum width=26mm,minimum height=18mm,align=center,line width=1.1pt},
+ hub/.style={diamond,draw=themeamber,aspect=1.6,minimum width=17mm,minimum height=9mm,align=center,line width=1pt},
+ link/.style={draw=themefg,line width=.95pt},
+ pl/.style={font=\scriptsize,text=themeamber,fill=themebg,inner sep=1pt}
+}
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[text=themefg,color=themefg]
+\node[sw] (s1) at (0,0) {交换机 1};
+\node[sw] (s2) at (78mm,0) {交换机 2};
+\draw[link] (s1.east)--node[pl,above]{6--3}(s2.west);
+\node[host] (a) at (-27mm,15mm) {A}; \draw[link](a)--node[pl,above]{1}(s1.west |- a);
+\node[host] (d) at (-27mm,-15mm) {D}; \draw[link](d)--node[pl,below]{3}(s1.west |- d);
+\node[host] (b) at (27mm,15mm) {B}; \draw[link](s1.east |- b)--node[pl,above]{4}(b);
+\node[host] (c) at (27mm,-15mm) {C}; \draw[link](s1.east |- c)--node[pl,below]{5}(c);
+\node[hub] (hub) at (-31mm,0) {Hub}; \draw[link](hub)--node[pl,above]{2}(s1.west);
+\node[host] (x) at (-55mm,8mm) {X}; \draw[link](x)--(hub);
+\node[host] (e) at (-55mm,-8mm) {E}; \draw[link](e)--(hub);
+\node[host] (f) at (51mm,15mm) {F}; \draw[link](f)--node[pl,above]{1}(s2.west |- f);
+\node[host] (g) at (51mm,-15mm) {G}; \draw[link](g)--node[pl,below]{2}(s2.west |- g);
+\node[host] (h) at (105mm,15mm) {H}; \draw[link](s2.east |- h)--node[pl,above]{4}(h);
+\node[host] (i) at (105mm,0) {I}; \draw[link](s2.east)--node[pl,above]{5}(i);
+\node[host] (j) at (105mm,-15mm) {J}; \draw[link](s2.east |- j)--node[pl,below]{6}(j);
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

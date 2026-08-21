@@ -1,0 +1,62 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[>=Stealth,font=\small,color=themefg,text=themefg]
+\tikzset{
+  keynode/.style={draw=themefg,rounded corners=2pt,fill=themebg,minimum height=7mm,inner xsep=5pt,line width=.8pt},
+  over/.style={keynode,draw=themealert,fill=themealert!10!themebg},
+  good/.style={keynode,draw=themecurve,fill=themecurve!10!themebg},
+  parent/.style={keynode,draw=themeamber,fill=themeamber!10!themebg},
+  edge/.style={themegray,line width=.9pt},
+  action/.style={->,line width=1.1pt,themegray}
+}
+\node[anchor=west,font=\bfseries\large] at (0,10.25) {B 树局部修复：溢出就分裂上提，下溢先借位，借不到再合并};
+\node[anchor=west,text=themegray] at (0,9.7)
+  {以 5 阶 B 树为例：每节点至多 5 个孩子、至多 4 个关键字；非根节点至少 2 个关键字。};
+
+% split panel
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,8.75) {1. 插入溢出：5 个关键字超过上限 4};
+\node[over] (full) at (4.0,7.75) {$10\mid20\mid30\mid40\mid50$};
+\draw[action] (6.55,7.75)--node[above,font=\scriptsize]{中间 key 上提}(8.15,7.75);
+\node[parent] (p30) at (10.0,8.45) {$30$};
+\node[good] (l20) at (8.9,6.95) {$10\mid20$};
+\node[good] (r20) at (11.1,6.95) {$40\mid50$};
+\draw[edge] (p30)--(l20); \draw[edge] (p30)--(r20);
+\node[anchor=west,font=\scriptsize,text=themegray] at (12.5,7.7)
+  {父节点若也溢出，沿同一规则继续向上；根分裂使树高 $+1$。};
+
+\draw[themegray,line width=.45pt] (0,6.1)--(16.7,6.1);
+
+% borrow panel
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,5.35) {2. 删除下溢：相邻兄弟有富余时先借位};
+\node[parent] (bp1) at (3.5,4.4) {$30$};
+\node[keynode] (bl1) at (2.1,3.15) {$10\mid20\mid25$};
+\node[over] (br1) at (4.9,3.15) {$40$};
+\draw[edge] (bp1)--(bl1); \draw[edge] (bp1)--(br1);
+\node[anchor=west,font=\scriptsize,text=themealert] at (5.85,3.15) {右节点仅 1 个 key，低于下限 2};
+\draw[action] (7.7,4.05)--node[above,font=\scriptsize]{兄弟最大 key 上父；父分隔 key 下移}(9.7,4.05);
+\node[parent] (bp2) at (11.5,4.4) {$25$};
+\node[good] (bl2) at (10.1,3.15) {$10\mid20$};
+\node[good] (br2) at (12.9,3.15) {$30\mid40$};
+\draw[edge] (bp2)--(bl2); \draw[edge] (bp2)--(br2);
+\node[anchor=west,font=\scriptsize,text=themegray] at (14.05,3.15) {两侧重新合法，父分隔范围也同步更新};
+
+\draw[themegray,line width=.45pt] (0,2.35)--(16.7,2.35);
+
+% merge panel
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,1.65) {3. 兄弟也在下限：借不到，只能把父分隔 key 一起合并};
+\node[parent] (mp1) at (3.5,.7) {$30$};
+\node[keynode] (ml1) at (2.15,-.45) {$10\mid20$};
+\node[over] (mr1) at (4.85,-.45) {$40$};
+\draw[edge] (mp1)--(ml1); \draw[edge] (mp1)--(mr1);
+\draw[action] (6.55,.25)--node[above,font=\scriptsize]{合并}(8.15,.25);
+\node[good] (merged) at (10.3,-.05) {$10\mid20\mid30\mid40$};
+\node[anchor=west,font=\scriptsize,text=themegray] at (12.6,-.05)
+  {父节点少 1 个 key；若父继续下溢则递归修复。若空父是根，则合并节点成为新根，树高 $-1$。};
+
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-1.35)
+  {图只展示局部节点占用与父分隔 key 的移动；各关键字之间的孩子子树未画出，但其区间顺序必须随 key 重分配一起保持。};
+\end{tikzpicture}

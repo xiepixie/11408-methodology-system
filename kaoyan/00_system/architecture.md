@@ -97,10 +97,14 @@ Rule 可以先放在“待验证”区域，不需要立即证明自己是长期
 规则按作用范围就近归属：
 
 - 只服务一个具体问题族的规则，直接写进对应训练 Markdown，与母题和变式放在一起；
-- 真正跨多个训练专题、多个 Topic 反复使用的规则，才进入 Subject Rules；
+- 真正跨多个训练专题、多个 Topic 反复使用，而且仍需要统一维护的控制，才进入 Subject Rules；
 - 跨学科、跨考试的通用控制继续由 `01_control/problem_solving_kernel.md` 与 Exam Control 拥有。
 
-因此 Subject Rules 不再承担“收集本学科所有局部技巧”的职责，它主要负责跨专题控制与训练专题导航。
+这里增加一个简单的作用域闸门：**如果一条规则的触发信号本身就是某个 Topic 的专有对象，例如 Booth、TLB、Cache set、DMA 或某个具体积分结构，那么它默认属于对应 Practice，而不是 Subject Rules。** 只有把这些专有名词拿掉以后，同一个动作仍能在多个独立训练专题中重复调用，才有资格考虑上移。
+
+因此 Subject Rules 不再承担“收集本学科所有局部技巧”的职责。它应该越来越短，只保留真正跨专题的观察顺序、路径选择、风险控制与校验动作，并通过链接把读者送回局部 Practice。
+
+`90_做题规则/` 目录可以额外放少量**跨 Topic 的训练导航或训练工具**，前提是没有单一 Topic 能自然拥有这个检索入口，例如“全科性能成本工具”或“多个存储 Owner 的真题索引”。这类文件逻辑上仍属于 Learning / Practice 辅助入口；放在 `90_做题规则/` 只是为了让学科级训练入口集中。它们必须在头部明确“不是 Subject Rule、不是 Handbook”，只组织已有 Owner，不创造新机制，也不因为目录位置获得规则 Owner 身份。
 
 ## 5. Learning Plane
 
@@ -121,7 +125,9 @@ Learning 同时回答两个问题：“题目空间怎样被压缩？”以及�
 
 Inbox 是自由区。几句话、原始草稿或一段对话摘要都可以，不要求 ID、标签、YAML 或完整分类。
 
-Learning Plane 只负责把一次体验变成**可检验的候选**，不直接决定稳定资产怎么改。诊断术语与 No Update 的含义见 [`terminology.md`](terminology.md)；错题、证据强度和规则晋升见 [`evidence_promotion.md`](evidence_promotion.md)。
+Learning Plane 只负责把一次体验变成**可检验的候选**，不直接决定稳定资产怎么改。诊断术语与 No Update 的含义见 [`terminology.md`](terminology.md)；错题、证据强度和规则晋升见 [`evidence_promotion.md`](evidence_promotion.md)。当候选来自正式题目，或准备判断“题目打穿了模型还是题面本身有问题”时，统一调用 [`problem_model_validation.md`](problem_model_validation.md)。
+
+这套验证协议不是第四个 Plane。它只是 Learning 向 Control / Knowledge 回压时的交通规则：先检查题目质量，再判断缺口位于 Question、Practice、Bridge 还是 Canonical；Canonical 修改后再用少量边界题和扰动题回测。
 
 架构只坚持两条：
 

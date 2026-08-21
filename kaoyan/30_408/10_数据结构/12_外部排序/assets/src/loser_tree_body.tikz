@@ -1,0 +1,54 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[>=Stealth,font=\small,color=themefg,text=themefg]
+\tikzset{
+  leaf/.style={rounded corners=3pt,draw=themefg,fill=themebg,minimum width=1.8cm,minimum height=.72cm,align=center},
+  loser/.style={circle,draw=themeamber,fill=themeamber!10!themebg,minimum size=8.5mm,inner sep=0pt},
+  winner/.style={rounded corners=3pt,draw=themecurve,fill=themecurve!10!themebg,minimum width=2.35cm,minimum height=.78cm,align=center},
+  edge/.style={themegray,line width=.9pt},
+  path/.style={themecurve,line width=1.6pt},
+  note/.style={rounded corners=4pt,draw=themegray,fill=themefg!3!themebg,inner xsep=7pt,inner ysep=6pt,align=left}
+}
+\node[anchor=west,font=\bfseries\large] at (0,7.0) {4 路败者树：每次只让“刚补入的那一路”沿叶到根重新比赛};
+\node[anchor=west,text=themegray] at (0,6.45)
+  {叶子只保存各 run 的当前首元素；内部节点保存本场败者，顶部另保留全局胜者。};
+
+% initial tree
+\node[font=\bfseries,text=themecurve] at (4.0,5.55) {输出前：当前首元素 $3,6,2,8$};
+\node[winner] (w0) at (4.0,4.85) {全局胜者 $R_2:2$};
+\node[loser] (lroot) at (4.0,3.75) {3};
+\node[loser] (ll) at (2.45,2.65) {6};
+\node[loser] (lr) at (5.55,2.65) {8};
+\node[leaf] (r0) at (1.35,1.35) {$R_0$\\3};
+\node[leaf] (r1) at (3.55,1.35) {$R_1$\\6};
+\node[leaf,draw=themecurve] (r2) at (5.75,1.35) {$R_2$\\2};
+\node[leaf] (r3) at (7.95,1.35) {$R_3$\\8};
+\draw[edge] (r0)--(ll); \draw[edge] (r1)--(ll); \draw[edge] (r2)--(lr); \draw[edge] (r3)--(lr);
+\draw[edge] (ll)--(lroot); \draw[edge] (lr)--(lroot); \draw[edge] (lroot)--(w0);
+\node[anchor=west,font=\scriptsize,text=themegray,align=left] at (8.45,3.2)
+  {败者：$6,8,3$\\胜者：$2$};
+
+\draw[themegray,line width=.45pt] (9.65,.65)--(9.65,5.75);
+
+% update tree
+\node[font=\bfseries,text=themecurve] at (13.0,5.55) {输出 2 后，$R_2$ 补入 7};
+\node[winner] (w1) at (13.0,4.85) {新胜者 $R_0:3$};
+\node[loser,draw=themecurve] (uroot) at (13.0,3.75) {7};
+\node[loser] (ul) at (11.45,2.65) {6};
+\node[loser,draw=themecurve] (ur) at (14.55,2.65) {8};
+\node[leaf] (u0) at (10.35,1.35) {$R_0$\\3};
+\node[leaf] (u1) at (12.25,1.35) {$R_1$\\6};
+\node[leaf,draw=themecurve] (u2) at (14.15,1.35) {$R_2$\\7};
+\node[leaf] (u3) at (16.05,1.35) {$R_3$\\8};
+\draw[edge] (u0)--(ul); \draw[edge] (u1)--(ul); \draw[path] (u2)--(ur); \draw[edge] (u3)--(ur);
+\draw[edge] (ul)--(uroot); \draw[path] (ur)--(uroot); \draw[path] (uroot)--(w1);
+\node[anchor=west,font=\scriptsize,text=themecurve] at (9.85,.5)
+  {蓝线：$7$ 只沿原比较路径重赛；左侧 $R_0/R_1$ 子树不动。};
+
+\node[note,anchor=west,text width=7.9cm] at (0,-.2)
+  {\textbf{复杂度来源：}一次输出只改变一个 run 的当前首元素，因此只有该叶到根的比较链失效。树高为 $\lceil\log_2 k\rceil$，单次选择更新为 $O(\log k)$，但归并 I/O 趟数和缓冲区需求不因此改变。};
+\end{tikzpicture}

@@ -1,6 +1,6 @@
 # 路由与控制平面：不完整知识怎样收敛为可用转发状态
 
-状态：已采用候选；Canonical 深度正文已建立并发布，心智模型仍待题目验证。
+状态：待人工确认；Canonical 深度正文已建立并发布，本轮 305 题中的对应题目已完成首轮验证。DV/LS/PV 主干已通过题库攻击，后续重点验证 convergence mixed state、BGP policy + next-hop resolution。
 
 ## Hook
 
@@ -29,6 +29,10 @@
 
 - [Canonical LaTeX 正文](NET-05_路由与控制平面_方法论手册.tex)
 - [Published PDF](../../../90_publish/408/NET-05_路由与控制平面_方法论手册.pdf)
+
+## Practice Adapter
+
+- [RIP、OSPF、BGP 与路由收敛推演](RIP、OSPF、BGP与路由收敛推演.md)：消息 → candidate → selection → FIB install → packet use；保留收敛中间态。
 
 ## 当前状态
 

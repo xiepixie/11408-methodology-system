@@ -25,6 +25,10 @@ CO01–CO08、CO-B01 与 CO-B02。ADD / STORE / BRANCH 只用于删改母轨迹�
 
 本 Integration 只拥有完整单指令协作轨迹、fast/slow path、跨 Owner handoff 和停止条件；不重新定义任何局部机制。进入某个 Topic 的内部推导时，应跳回其 Canonical Owner。
 
+## 训练导航
+
+- [一条指令全过程推演](一条指令全过程推演.md)：训练值依赖线、ready/need 时间线与 exception/commit 线怎样共同组织 LOAD / STORE / ADD / BRANCH 的完整推演。
+
 ## 阅读
 
 - [Canonical Integration 正文](CO-I01_一条指令的一生_综合手册.tex)

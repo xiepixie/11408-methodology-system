@@ -253,6 +253,16 @@ CDM & 近似正交 code sequence & chip rate、同步、相关检测 & 用内积
 \bottomrule
 \end{handbooktable}
 
+\subsection{交换方式的三条轴：状态、粒度、可靠性不能混成一个排名}
+
+交换方式首先决定的是\textbf{资源/路径状态何时建立}以及\textbf{中间节点以多大粒度等待和转发}；它本身并不自动拥有“可靠/不可靠”的端到端服务语义。可靠性还要看是否存在检错、确认、序号、重传或上层恢复机制。因此：
+
+\[
+\boxed{\text{Path/Resource State}\ \perp\ \text{Forwarding Granularity}\ \perp\ \text{Reliability Mechanism}}
+\]
+
+同理，“时延最小/最稳定”也必须绑定工作负载与阶段：电路交换要先支付 setup，但连接建立后不再逐结点收齐完整报文；报文/分组交换要承担 store-and-forward、排队与首部开销，而分组化又可通过更小粒度和流水线降低等待整报文的代价。考试若把“可靠性”直接排成电路/报文/分组三者的固定名次，必须先确认题目是否显式采用某个传统教材简化模型，不能把这种口径升级为交换方式的定义。
+
 报文交换与分组交换都可 store-and-forward，区别是缓存/调度粒度。packet 化不能消除总数据发送量，但允许第一包在整份 message 尚未发送完时进入下一跳，也让多个流细粒度交错。
 
 \subsection{数据报与虚电路：同为分组交换，状态位置不同}

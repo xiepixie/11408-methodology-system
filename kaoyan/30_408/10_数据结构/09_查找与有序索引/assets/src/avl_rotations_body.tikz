@@ -1,0 +1,64 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  n/.style={circle,draw=themefg,fill=themebg,minimum size=6.8mm,inner sep=0pt,line width=.8pt,font=\small},
+  hot/.style={n,draw=themealert,fill=themealert!10!themebg},
+  edge/.style={themegray,line width=.85pt},
+  rot/.style={->,themecurve,line width=1.1pt},
+  sub/.style={draw=themegray,rounded corners=2pt,minimum width=8mm,minimum height=5mm,inner sep=1pt,text=themegray}
+}
+\node[anchor=west,font=\bfseries\large] at (0,10.9) {AVL 四类旋转：只改局部父子关系，中序次序始终保持};
+\node[anchor=west,font=\small,text=themegray] at (0,10.35)
+  {四个面板只改变“新增路径的两次方向”。旋转后统一得到 $T_1<B<T_2<C<T_3<A<T_4$ 或其对称的同一中序次序。};
+
+% helper macro-like manual panels
+% LL
+\node[font=\bfseries,text=themeamber] at (3.7,9.45) {LL：对 $A$ 右旋};
+\node[hot] (lla) at (1.8,8.5) {$A$}; \node[n] (llb) at (1.0,7.55) {$B$}; \node[n] (llc) at (.45,6.55) {$C$};
+\node[sub] (llt1) at (.05,5.7) {$T_1$}; \node[sub] (llt2) at (.85,5.7) {$T_2$}; \node[sub] (llt3) at (1.55,6.55) {$T_3$}; \node[sub] (llt4) at (2.65,7.55) {$T_4$};
+\draw[edge] (lla)--(llb); \draw[edge] (lla)--(llt4); \draw[edge] (llb)--(llc); \draw[edge] (llb)--(llt3); \draw[edge] (llc)--(llt1); \draw[edge] (llc)--(llt2);
+\draw[rot] (3.0,7.35)--node[above,font=\scriptsize]{右旋}(4.0,7.35);
+\node[n,draw=themecurve] (ll2b) at (5.2,8.5) {$B$}; \node[n] (ll2c) at (4.35,7.4) {$C$}; \node[n] (ll2a) at (6.05,7.4) {$A$};
+\node[sub] (ll2t1) at (3.85,6.35) {$T_1$}; \node[sub] (ll2t2) at (4.85,6.35) {$T_2$}; \node[sub] (ll2t3) at (5.55,6.35) {$T_3$}; \node[sub] (ll2t4) at (6.55,6.35) {$T_4$};
+\draw[edge] (ll2b)--(ll2c); \draw[edge] (ll2b)--(ll2a); \draw[edge] (ll2c)--(ll2t1); \draw[edge] (ll2c)--(ll2t2); \draw[edge] (ll2a)--(ll2t3); \draw[edge] (ll2a)--(ll2t4);
+
+% RR
+\node[font=\bfseries,text=themeamber] at (11.8,9.45) {RR：对 $A$ 左旋};
+\node[hot] (rra) at (9.0,8.5) {$A$}; \node[n] (rrb) at (9.8,7.55) {$B$}; \node[n] (rrc) at (10.35,6.55) {$C$};
+\node[sub] (rrt1) at (8.15,7.55) {$T_1$}; \node[sub] (rrt2) at (9.25,6.55) {$T_2$}; \node[sub] (rrt3) at (9.95,5.7) {$T_3$}; \node[sub] (rrt4) at (10.75,5.7) {$T_4$};
+\draw[edge] (rra)--(rrt1); \draw[edge] (rra)--(rrb); \draw[edge] (rrb)--(rrt2); \draw[edge] (rrb)--(rrc); \draw[edge] (rrc)--(rrt3); \draw[edge] (rrc)--(rrt4);
+\draw[rot] (11.0,7.35)--node[above,font=\scriptsize]{左旋}(12.0,7.35);
+\node[n,draw=themecurve] (rr2b) at (13.2,8.5) {$B$}; \node[n] (rr2a) at (12.35,7.4) {$A$}; \node[n] (rr2c) at (14.05,7.4) {$C$};
+\node[sub] (rr2t1) at (11.85,6.35) {$T_1$}; \node[sub] (rr2t2) at (12.85,6.35) {$T_2$}; \node[sub] (rr2t3) at (13.55,6.35) {$T_3$}; \node[sub] (rr2t4) at (14.55,6.35) {$T_4$};
+\draw[edge] (rr2b)--(rr2a); \draw[edge] (rr2b)--(rr2c); \draw[edge] (rr2a)--(rr2t1); \draw[edge] (rr2a)--(rr2t2); \draw[edge] (rr2c)--(rr2t3); \draw[edge] (rr2c)--(rr2t4);
+
+\draw[themegray,line width=.45pt] (0,5.1)--(15.3,5.1);
+
+% LR
+\node[font=\bfseries,text=themeamber] at (3.7,4.55) {LR：先左旋 $B$，再右旋 $A$};
+\node[hot] (lra) at (1.8,3.75) {$A$}; \node[n] (lrb) at (1.0,2.8) {$B$}; \node[n] (lrc) at (1.55,1.8) {$C$};
+\node[sub] (lrt1) at (.45,1.8) {$T_1$}; \node[sub] (lrt2) at (1.15,.9) {$T_2$}; \node[sub] (lrt3) at (1.95,.9) {$T_3$}; \node[sub] (lrt4) at (2.65,2.8) {$T_4$};
+\draw[edge] (lra)--(lrb); \draw[edge] (lra)--(lrt4); \draw[edge] (lrb)--(lrt1); \draw[edge] (lrb)--(lrc); \draw[edge] (lrc)--(lrt2); \draw[edge] (lrc)--(lrt3);
+\draw[rot] (3.0,2.5)--node[above,font=\scriptsize]{双旋}(4.0,2.5);
+\node[n,draw=themecurve] (lr2c) at (5.2,3.75) {$C$}; \node[n] (lr2b) at (4.35,2.65) {$B$}; \node[n] (lr2a) at (6.05,2.65) {$A$};
+\node[sub] (lr2t1) at (3.85,1.6) {$T_1$}; \node[sub] (lr2t2) at (4.85,1.6) {$T_2$}; \node[sub] (lr2t3) at (5.55,1.6) {$T_3$}; \node[sub] (lr2t4) at (6.55,1.6) {$T_4$};
+\draw[edge] (lr2c)--(lr2b); \draw[edge] (lr2c)--(lr2a); \draw[edge] (lr2b)--(lr2t1); \draw[edge] (lr2b)--(lr2t2); \draw[edge] (lr2a)--(lr2t3); \draw[edge] (lr2a)--(lr2t4);
+
+% RL
+\node[font=\bfseries,text=themeamber] at (11.8,4.55) {RL：先右旋 $B$，再左旋 $A$};
+\node[hot] (rla) at (9.0,3.75) {$A$}; \node[n] (rlb) at (9.8,2.8) {$B$}; \node[n] (rlc) at (9.25,1.8) {$C$};
+\node[sub] (rlt1) at (8.15,2.8) {$T_1$}; \node[sub] (rlt2) at (8.85,.9) {$T_2$}; \node[sub] (rlt3) at (9.65,.9) {$T_3$}; \node[sub] (rlt4) at (10.35,1.8) {$T_4$};
+\draw[edge] (rla)--(rlt1); \draw[edge] (rla)--(rlb); \draw[edge] (rlb)--(rlc); \draw[edge] (rlb)--(rlt4); \draw[edge] (rlc)--(rlt2); \draw[edge] (rlc)--(rlt3);
+\draw[rot] (11.0,2.5)--node[above,font=\scriptsize]{双旋}(12.0,2.5);
+\node[n,draw=themecurve] (rl2c) at (13.2,3.75) {$C$}; \node[n] (rl2a) at (12.35,2.65) {$A$}; \node[n] (rl2b) at (14.05,2.65) {$B$};
+\node[sub] (rl2t1) at (11.85,1.6) {$T_1$}; \node[sub] (rl2t2) at (12.85,1.6) {$T_2$}; \node[sub] (rl2t3) at (13.55,1.6) {$T_3$}; \node[sub] (rl2t4) at (14.55,1.6) {$T_4$};
+\draw[edge] (rl2c)--(rl2a); \draw[edge] (rl2c)--(rl2b); \draw[edge] (rl2a)--(rl2t1); \draw[edge] (rl2a)--(rl2t2); \draw[edge] (rl2b)--(rl2t3); \draw[edge] (rl2b)--(rl2t4);
+
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-.05)
+  {图只表达局部指针重组与中序不变量；$T_1\ldots T_4$ 的内部形状与高度未画出。旋转后仍需重新计算高度并检查 $\lvert BF\rvert\le1$。};
+\end{tikzpicture}

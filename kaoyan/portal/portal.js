@@ -125,6 +125,12 @@
     imageLightboxClose: document.getElementById('image-lightbox-close'),
     imageLightboxImg: document.getElementById('image-lightbox-img'),
     imageLightboxCaption: document.getElementById('image-lightbox-caption'),
+
+    // Floating Annotation Popovers
+    selectionPopover: document.getElementById('selection-popover'),
+    highlightActionPopover: document.getElementById('highlight-action-popover'),
+    highlightCurrentTag: document.getElementById('highlight-current-tag'),
+    highlightBtnDelete: document.getElementById('highlight-btn-delete'),
   };
 
   // --------------------------------------------------------------------------
@@ -272,7 +278,19 @@
       }
     });
 
-    const list = Array.from(subSubjects);
+    let list = Array.from(subSubjects);
+    if (state.manifest && state.manifest.sub_subjects && state.manifest.sub_subjects[state.currentSubject]) {
+      const order = state.manifest.sub_subjects[state.currentSubject];
+      list.sort((a, b) => {
+        const idxA = order.indexOf(a);
+        const idxB = order.indexOf(b);
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+        if (idxA !== -1) return -1;
+        if (idxB !== -1) return 1;
+        return a.localeCompare(b, 'zh-CN');
+      });
+    }
+
     if (list.length <= 1) {
       el.subFilterSection.style.display = 'none';
       state.currentSubSubject = 'all';
@@ -478,6 +496,12 @@
     if (!content) return '';
     let text = content;
 
+    // Strip YAML frontmatter at the beginning of the file
+    text = text.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, '');
+
+    // Strip Obsidian comments %% ... %%
+    text = text.replace(/%%[\s\S]*?%%/g, '');
+
     // Convert Obsidian Wikilink images ![[assets/xxx.svg]] or ![[assets/xxx.svg|400]]
     text = text.replace(/!\[\[([^\]\|]+)(?:\|([^\]]+))?\]\]/g, (match, path, altOrWidth) => {
       const alt = altOrWidth ? altOrWidth : '';
@@ -503,10 +527,29 @@
     text = text.replace(/^>\s*(?:\[!RULE\]|\[!TIP\]|\*?\*?解题规则\*?\*?|\*?\*?动作规则\*?\*?)[：:]\s*(.+)$/gm, 
       (m, p1) => `<div class="callout callout-rule"><div class="callout-title">💡 解题动作规则</div>${formatInlineLinks(p1)}</div>`);
 
+    // Convert Obsidian diagnostic highlights ==span== [?] or ==span== [!] or ==span== [★] or ==span== [~]
+    text = text.replace(/==([\s\S]+?)==\s*(\[\?\]|\[!\]|\[★\]|\[\~\]|\?|!|★|~)/g, (match, span, tag) => {
+      const tagClean = tag.replace(/[\[\]]/g, '');
+      let tagClass = 'anno-unknown';
+      let label = '[?] 词义不懂';
+      if (tagClean === '!') { tagClass = 'anno-syntax'; label = '[!] 句法脱节'; }
+      else if (tagClean === '★') { tagClass = 'anno-star'; label = '[★] 优质表达'; }
+      else if (tagClean === '~') { tagClass = 'anno-verify'; label = '[~] 存疑验证'; }
+      return `<mark class="anno-highlight ${tagClass}" data-raw-span="${escapeHtml(span)}" data-raw-tag="[${tagClean}]" title="${label}">${span}<span class="anno-badge">[${tagClean}]</span></mark>`;
+    });
+
+    // Convert plain Obsidian highlights ==span==
+    text = text.replace(/==([\s\S]+?)==/g, (match, span) => {
+      return `<mark class="anno-highlight anno-plain" data-raw-span="${escapeHtml(span)}" data-raw-tag="==" title="高亮标记">${span}</mark>`;
+    });
+
     return text;
   }
 
-  function renderMarkdownDoc(doc) {
+  function renderMarkdownDoc(doc, preserveScroll = false) {
+    const stage = document.querySelector('.drill-stage');
+    const savedScrollTop = stage ? stage.scrollTop : 0;
+
     el.welcomeScreen.style.display = 'none';
     el.pdfViewerWrapper.style.display = 'none';
     if (el.markdownViewerWrapper) el.markdownViewerWrapper.style.display = 'flex';
@@ -717,12 +760,183 @@
       }
     });
 
+    // Step 9: Attach click listeners on Obsidian diagnostic highlights
+    el.markdownBody.querySelectorAll('.anno-highlight').forEach(hl => {
+      hl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const span = hl.getAttribute('data-raw-span') || hl.textContent;
+        const tag = hl.getAttribute('data-raw-tag') || '[?]';
+        const rect = hl.getBoundingClientRect();
+
+        activeHighlightElement = {
+          span: span,
+          tag: tag,
+          pElem: hl.closest('p, li, blockquote, div')
+        };
+
+        if (el.highlightActionPopover) {
+          if (el.selectionPopover) el.selectionPopover.style.display = 'none';
+          if (el.highlightCurrentTag) {
+            const tagMap = {
+              '[?]': '[?] 词义不懂',
+              '[!]': '[!] 句法脱节',
+              '[★]': '[★] 优质表达',
+              '[~]': '[~] 存疑验证',
+              '==': '普通高亮'
+            };
+            el.highlightCurrentTag.textContent = tagMap[tag] || `${tag} 标注`;
+          }
+          el.highlightActionPopover.style.display = 'flex';
+          el.highlightActionPopover.style.left = `${rect.left + rect.width / 2}px`;
+          el.highlightActionPopover.style.top = `${rect.top}px`;
+        }
+      });
+    });
+
     // Generate TOC
     generateDrillTOC();
 
-    // Scroll stage to top
-    const stage = document.querySelector('.drill-stage');
-    if (stage) stage.scrollTop = 0;
+    // Scroll stage to top or preserve
+    if (stage) {
+      if (preserveScroll) {
+        stage.scrollTop = savedScrollTop;
+      } else {
+        stage.scrollTop = 0;
+      }
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // Annotation & Selection Engine
+  // --------------------------------------------------------------------------
+  let currentSelectionContext = null;
+  let activeHighlightElement = null;
+
+  function hidePopovers() {
+    if (el.selectionPopover) el.selectionPopover.style.display = 'none';
+    if (el.highlightActionPopover) el.highlightActionPopover.style.display = 'none';
+    currentSelectionContext = null;
+    activeHighlightElement = null;
+  }
+
+  function handleTextSelection() {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || selection.rangeCount === 0) {
+      if (!activeHighlightElement) {
+        if (el.selectionPopover) el.selectionPopover.style.display = 'none';
+      }
+      return;
+    }
+
+    const selectedText = selection.toString().trim();
+    if (!selectedText || selectedText.length < 1) {
+      if (el.selectionPopover) el.selectionPopover.style.display = 'none';
+      return;
+    }
+
+    // Ensure selection is inside markdownBody
+    const range = selection.getRangeAt(0);
+    let container = range.commonAncestorContainer;
+    if (container.nodeType === Node.TEXT_NODE) container = container.parentElement;
+    if (!el.markdownBody || (!el.markdownBody.contains(container) && el.markdownBody !== container)) {
+      if (el.selectionPopover) el.selectionPopover.style.display = 'none';
+      return;
+    }
+
+    // Find closest paragraph or block ID
+    let paragraphId = '';
+    let pElem = container.closest('p, li, blockquote, div, h1, h2, h3');
+    if (pElem) {
+      const match = pElem.textContent.match(/\^p\d{2}/);
+      if (match) paragraphId = match[0];
+    }
+
+    const rect = range.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) return;
+
+    currentSelectionContext = {
+      selected_text: selectedText,
+      paragraph_id: paragraphId,
+      doc_id: state.selectedDocId
+    };
+
+    if (el.selectionPopover) {
+      if (el.highlightActionPopover) el.highlightActionPopover.style.display = 'none';
+      el.selectionPopover.style.display = 'flex';
+      el.selectionPopover.style.left = `${rect.left + rect.width / 2}px`;
+      el.selectionPopover.style.top = `${rect.top}px`;
+    }
+  }
+
+  function applyAnnotation(markType) {
+    if (!currentSelectionContext || !state.selectedDocId) return;
+    const doc = state.documents.find(d => d.id === state.selectedDocId);
+    if (!doc || !doc.local_path) return;
+
+    const payload = {
+      local_path: doc.local_path,
+      action: 'add',
+      selected_text: currentSelectionContext.selected_text,
+      mark_type: markType,
+      paragraph_id: currentSelectionContext.paragraph_id || ''
+    };
+
+    fetch('/api/annotate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showToast(`✅ ${markType} 标注已同步至本地 Markdown`);
+        doc.content = data.content;
+        renderMarkdownDoc(doc, true);
+        hidePopovers();
+        window.getSelection().removeAllRanges();
+      } else {
+        showToast('⚠️ 标注保存失败: ' + (data.error || '未知错误'));
+      }
+    })
+    .catch(() => {
+      showToast(`📝 离线模式: 运行 python3 infra/scripts/serve_portal.py 享受实时落盘`);
+      hidePopovers();
+    });
+  }
+
+  function removeAnnotation(spanText, tag, paragraphId) {
+    if (!state.selectedDocId) return;
+    const doc = state.documents.find(d => d.id === state.selectedDocId);
+    if (!doc || !doc.local_path) return;
+
+    const payload = {
+      local_path: doc.local_path,
+      action: 'remove',
+      selected_text: spanText,
+      mark_type: tag,
+      paragraph_id: paragraphId || ''
+    };
+
+    fetch('/api/annotate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showToast('🗑️ 已从本地 Markdown 中清除标注');
+        doc.content = data.content;
+        renderMarkdownDoc(doc, true);
+        hidePopovers();
+      } else {
+        showToast('⚠️ 清除失败: ' + (data.error || '未知错误'));
+      }
+    })
+    .catch(() => {
+      showToast('⚠️ 服务未连接，无法修改本地文件');
+      hidePopovers();
+    });
   }
 
   function generateDrillTOC() {
@@ -932,7 +1146,8 @@
         const filenameMatch = doc.filename.toLowerCase().includes(q);
         const subMatch = doc.sub_subject.toLowerCase().includes(q);
         const tagMatch = doc.tags && doc.tags.some(t => t.toLowerCase().includes(q));
-        return titleMatch || codeMatch || filenameMatch || subMatch || tagMatch;
+        const scopeMatch = doc.training_scope && doc.training_scope.toLowerCase().includes(q);
+        return titleMatch || codeMatch || filenameMatch || subMatch || tagMatch || scopeMatch;
       }).slice(0, 40);
 
       // Match external courses if applicable
@@ -1245,6 +1460,85 @@
     // Image Lightbox Close bindings
     if (el.imageLightboxClose) el.imageLightboxClose.addEventListener('click', closeImageLightbox);
     if (el.imageLightboxBackdrop) el.imageLightboxBackdrop.addEventListener('click', closeImageLightbox);
+
+    // Selection Popover Type Buttons
+    document.querySelectorAll('.selection-popover .popover-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const mark = btn.getAttribute('data-mark');
+        if (mark) applyAnnotation(mark);
+      });
+    });
+
+    // Highlight Action Popover Tag Switch Buttons
+    document.querySelectorAll('.highlight-action-popover .popover-mini-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const mark = btn.getAttribute('data-switch-mark');
+        if (activeHighlightElement && mark) {
+          const pMatch = activeHighlightElement.pElem ? activeHighlightElement.pElem.textContent.match(/\^p\d{2}/) : null;
+          currentSelectionContext = {
+            selected_text: activeHighlightElement.span,
+            paragraph_id: pMatch ? pMatch[0] : '',
+            doc_id: state.selectedDocId
+          };
+          applyAnnotation(mark);
+        }
+      });
+    });
+
+    // Highlight Action Delete Button
+    if (el.highlightBtnDelete) {
+      el.highlightBtnDelete.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (activeHighlightElement) {
+          const pMatch = activeHighlightElement.pElem ? activeHighlightElement.pElem.textContent.match(/\^p\d{2}/) : null;
+          removeAnnotation(activeHighlightElement.span, activeHighlightElement.tag, pMatch ? pMatch[0] : '');
+        }
+      });
+    }
+
+    // Prevent popover buttons from clearing browser text selection
+    if (el.selectionPopover) {
+      el.selectionPopover.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    }
+
+    if (el.highlightActionPopover) {
+      el.highlightActionPopover.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    }
+
+    // Text Selection Event on Markdown Body
+    document.addEventListener('mouseup', (e) => {
+      if (el.selectionPopover && el.selectionPopover.contains(e.target)) return;
+      if (el.highlightActionPopover && el.highlightActionPopover.contains(e.target)) return;
+      setTimeout(handleTextSelection, 15);
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.shiftKey) {
+        setTimeout(handleTextSelection, 15);
+      }
+    });
+
+    // Dismiss popovers on outside click
+    document.addEventListener('mousedown', (e) => {
+      if (el.selectionPopover && el.selectionPopover.style.display !== 'none' && !el.selectionPopover.contains(e.target)) {
+        if (!e.target.closest('.anno-highlight')) {
+          hidePopovers();
+        }
+      }
+      if (el.highlightActionPopover && el.highlightActionPopover.style.display !== 'none' && !el.highlightActionPopover.contains(e.target)) {
+        if (!e.target.closest('.anno-highlight')) {
+          hidePopovers();
+        }
+      }
+    });
 
     // Command palette click
     if (el.cmdResults) {

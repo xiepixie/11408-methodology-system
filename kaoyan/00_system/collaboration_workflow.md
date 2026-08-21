@@ -114,7 +114,7 @@ Handbook 状态词义统一见 [`terminology.md`](terminology.md) §10；本工�
 用户明确要求时，AI 可以直接解答，但应使用 Model-Grounded Solver，而不是输出脱离项目语言的标准答案。
 
 ```text
-读取 Atlas / Topic / Subject Rules
+读取 Atlas / Topic / 当前问题族 Practice；确有跨专题控制时再读 Subject Rules
 -> 指出 Model Anchor
 -> 把题面翻译成模型对象
 -> 解释路径选择
@@ -156,7 +156,7 @@ Handbook 状态词义统一见 [`terminology.md`](terminology.md) §10；本工�
 
 ### 场景 D：验证一条候选规则
 
-1. 先判断规则作用范围：局部规则打开对应训练 Markdown；跨多个训练专题的规则才打开 Subject Rules；
+1. 先判断规则作用范围：触发信号若属于某个 Topic 的专有对象，默认打开对应训练 Markdown；只有同一动作跨多个独立训练专题仍成立时才打开 Subject Rules；
 2. AI 生成最小反例、表面不同的新题和竞争规则；
 3. 记录实际收益、失效条件和时间成本；
 4. 人决定已采用、收窄后继续验证、局部保留、已否定或 No Update。
@@ -196,7 +196,7 @@ Handbook 状态词义统一见 [`terminology.md`](terminology.md) §10；本工�
 ```text
 Canonical Exam Question
 -> Subject / Topic / Bridge 定位
--> 读取 Canonical Handbook + Subject Rules
+-> 读取 Canonical Handbook + 当前问题族 Practice；确需跨专题控制时再补 Subject Rules
 -> legacy qNN 仅作旧解析参考
 -> 独立求解
 -> Model Anchor / Problem Representation / Decision / Solution / Verification / Compression
@@ -205,7 +205,7 @@ Canonical Exam Question
 -> No Update / Rule Evidence / Handbook Challenge / Bridge Evidence
 ```
 
-旧 `qNN_*.md` 不再被视为高质量题解 Owner，且不得复制其中可能存在 OCR 错误的题面。若真题暴露的只是候选调用规则或证据不足的模型疑点，先登记 Challenge / Candidate 并继续验证；若已经独立确认 Canonical Handbook 存在事实、机制或适用边界硬错误，则在同一维护闭环中进入 Stable Write，修正唯一 Handbook Owner 后重新验证受影响题解。Rule Promotion 与 Handbook Error Fix 不使用同一证据门槛。
+旧 `qNN_*.md` 不再被视为高质量题解 Owner，且不得复制其中可能存在 OCR 错误的题面。若真题暴露题面条件、模型边界或调用路径疑点，先按 [`problem_model_validation.md`](problem_model_validation.md) 区分 Question / Practice / Bridge / Canonical；候选调用规则继续走 Evidence Promotion。若已经独立确认 Canonical Handbook 存在事实、机制或适用边界硬错误，则在同一维护闭环中进入 Stable Write，修正唯一 Handbook Owner 后先跑相关小回归题组，再扩大检查到受影响题解。Rule Promotion 与 Handbook Error Fix 不使用同一证据门槛。
 
 ### 场景 E：新增或导入一本手册
 
@@ -297,9 +297,9 @@ Atlas 如果制作视觉海报，海报必须完全派生自 Canonical README；
 | 动作 | 必须更新 | 条件更新 | 不应更新 |
 |---|---|---|---|
 | 学完新内容 | 通常无 | Inbox | PDF、Ownership |
-| 做题/错题 | Inbox 或 No Update | Rules、Exam Control | Handbook（未经验证） |
+| 做题/错题 | Inbox 或 No Update | 对应 Topic / Bridge / Integration Practice、跨专题时才更新 Subject Rules；考场决策问题进 Exam Control | Handbook（未经验证） |
 | 真题/PDF 转译 | Exam Archive 中的 Canonical Markdown + `exam.json` + 必要 Semantic SVG + Logic Review | 简短 README、复核清单 | Handbook、Rules、答案/解析、第二份 Canonical 正文 |
-| 规则验证 | Subject Rules | Inbox 清理 | Topic 机制定义 |
+| 规则验证 | 对应 Topic Practice 或 Subject Rules（按作用域） | Inbox 清理 | Topic 机制定义 |
 | 导入旧 Atlas | Canonical Atlas README | Ownership、Rules | 为同一地图再造一份 `.tex` 真相 |
 | 导入旧 Topic/Bridge/Integration | README Landing + Canonical `.tex` 工作稿 | Course / Subject Atlas、Ownership、Rules | 把旧 Markdown/PDF 继续当正文 Owner |
 | 修改 Topic | Canonical `.tex`、README 状态/链接 | Uses/Bridge/Integration、重新编译 PDF | 把完整正文写回 README |
@@ -307,7 +307,7 @@ Atlas 如果制作视觉海报，海报必须完全派生自 Canonical README；
 | 新建 Integration | README Landing + Integration `.tex` | Course / Subject Atlas、参与 Owner 链接 | 重新拥有局部机制 |
 | 增加 Extension / Anti-Bridge | Atlas 写入 Canonical README；Topic/Bridge 写入 Canonical `.tex` | 入口导航 | 为它们新建平行 Handbook 树 |
 | 发布 | `90_publish/*.pdf`、README 发布链接、状态 | 依赖链接 | Inbox、手工编辑 PDF |
-| 周复盘 | CURRENT、Inbox/Rules 决策 | Handbook | 为了显得有进度而更新 |
+| 周复盘 | CURRENT、Inbox 与 Practice / Subject Rules 决策 | Handbook | 为了显得有进度而更新 |
 
 ## 6. 每次协作的结束报告
 

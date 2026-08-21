@@ -34,8 +34,9 @@ Stable Handbook types remain `Atlas / Topic / Bridge / Integration`. Foundation 
 | LaTeX font/table/diagram engineering/layout | `00_system/latex_layout_spec.md` |
 | Owner/duplication/dependency | `00_system/ownership_matrix.md` |
 | evidence/Rule promotion | `00_system/evidence_promotion.md` |
+| question quality / question-to-model attack / model regression | `00_system/problem_model_validation.md` |
 | exam/PDF source reconstruction (408/数学等) | `00_system/exam_source_agent_prompt.md` → `00_system/exam_source_conversion_spec.md` → corresponding `exam_profiles/*.json` |
-| model-grounded exam solutions | `00_system/exam_solution_agent_prompt.md` → `00_system/exam_solution_authoring_spec.md` → `00_system/exam_solution_quality_assurance.md` → `01_control/problem_solving_kernel.md` → Subject Atlas / Rules / Topic Owner |
+| model-grounded exam solutions | `00_system/exam_solution_agent_prompt.md` → `00_system/exam_solution_authoring_spec.md` → `00_system/exam_solution_quality_assurance.md` → `01_control/problem_solving_kernel.md` → Subject Atlas → 当前 Topic / Bridge / Integration Owner → 对应 Practice；仅在跨专题控制确有需要时再读 Subject Rules |
 | architecture change | `00_system/architecture.md` |
 | terminology conflict | `00_system/terminology.md` |
 | check/audit behavior | `00_system/repository_integrity.md` |

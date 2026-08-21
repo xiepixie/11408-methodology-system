@@ -1,0 +1,36 @@
+\documentclass[dvisvgm,tikz,border=5pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{CJKutf8}
+\usetikzlibrary{arrows.meta,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\tikzset{
+  host/.style={draw=themefg, rounded corners=2pt, minimum width=20mm, minimum height=10mm, align=center, line width=0.9pt},
+  router/.style={draw=themecurve, rounded corners=5pt, minimum width=25mm, minimum height=12mm, align=center, line width=1.1pt},
+  link/.style={-{Latex[length=2.2mm]}, draw=themefg, line width=1.0pt},
+  label/.style={font=\small, text=themefg, fill=themebg, inner sep=1.2pt}
+}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[color=themefg, text=themefg, node distance=28mm]
+  \node[host] (a) {主机 A};
+  \node[router, right=of a] (r) {路由器};
+  \node[host, right=of r] (b) {主机 B};
+
+  \draw[link] (a) -- node[label, above]{1 Mb/s} (r);
+  \draw[link] (r) -- node[label, above]{1 Mb/s} (b);
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

@@ -1,35 +1,38 @@
-# 05 · 趋势与变化 (Trends, Evolution & Dynamics)
+# 05 · 趋势与变化
 
-> 本分类归集描述技术演进、行业浪潮、观念变迁、热情延续等动态过程的表达。
+> 本分类归集用于描述兴起、扩张、演进、延续与变化背景的可迁移表达。
 
 ---
 
 ### `[EXP-007]` amid the boom of...
 
-* **释义与沟通功能**：【趋势】在……蓬勃发展 / 席卷而来的大火浪潮之中
-* **声音形式**：/əˈmɪd ðə buːm əv/（连读自然流畅）
+* **释义与沟通功能**：【趋势背景】先交代某个平台、行业或现象正在快速兴起，再把后文变化放进这个背景中。
+* **声音形式**：`amid` /əˈmɪd/，与后面的弱读 `the` 自然衔接；句中主要重音通常落在真正的趋势对象上。
 * **语体映射**：
-  * **正式书面**：during the exponential growth of...
-  * **中性通用**：with the rapid rise of...
-  * **自然口语**：with [X] blowing up all over the place
-* **触发情境**：在讨论 AI 大模型、短视频、新能源等正在爆发性增长的时代大背景时。
+  * **正式书面**：amid rapid growth in... / amid a boom in...
+  * **中性通用**：as ... grows rapidly / with the rapid rise of...
+  * **自然口语**：with ... really taking off / with ... blowing up
+* **触发情境**：当你想先给出“某事正在快速兴起”的大背景，再解释随之出现的行为、市场或观念变化时。
 * **句型骨架**：
-  * `Amid the boom of [AI / BookTok / EV], [phenomenon/trend] is accelerating.`
-* **来源溯源**：[《The Magic of Summer Reading》P8](../01_articles/2026/2026-08-20_the_magic_of_summer_reading/article.md#p8)
-* **生命周期**：`L2 · 模仿`
+  * `Amid a boom in [industry / activity], [new trend] is emerging.`
+  * `Amid the boom of [named platforms / cultural phenomena], [change] has accelerated.`
+* **使用边界**：`exponential growth` 是更强的数量判断，除非数据确实支持指数增长，否则不要把它当作 `boom` 的默认同义改写。
+* **来源溯源**：[《The Magic of Summer Reading》P8](../01_articles/2026/2026-08-20_the_magic_of_summer_reading/article.md#^p08)
+* **生命周期**：`L0 · 捕获`（已建立节点，待真实训练验证）
 
 ---
 
 ### `[EXP-005]` keep the magic of ... alive
 
-* **释义与沟通功能**：【演进/维系】让……的独特魅力 / 热情历久弥新、延续下去
-* **声音形式**：/kiːp ðə ˈmædʒɪk əv ... əˈlaɪv/
+* **释义与沟通功能**：【维系】让一种原有的乐趣、魅力、传统或情感体验继续存在，而不是随着时间消失。
+* **声音形式**：`keep the magic of ... alive` 中，`magic` 与 `alive` 通常承载主要信息重音。
 * **语体映射**：
-  * **正式书面**：sustain enthusiasm for / preserve the vitality of...
-  * **中性通用**：continue the tradition of...
-  * **自然口语**：keep that good reading vibe going / keep the passion alive
-* **触发情境**：当你想表达“成年后依然守护某份童年热爱”或“维系团队活力”时。
+  * **正式书面**：preserve the appeal of... / sustain enthusiasm for...
+  * **中性通用**：keep the tradition / spirit of ... going
+  * **自然口语**：keep the magic of ... alive / keep that feeling going
+* **触发情境**：当你想表达“长大以后仍想延续某种童年体验”“继续维持一种传统或氛围”时。
 * **句型骨架**：
-  * `We organize [activities] to keep the magic of [reading/coding] alive.`
-* **来源溯源**：[《The Magic of Summer Reading》P6](../01_articles/2026/2026-08-20_the_magic_of_summer_reading/article.md#p6)
-* **生命周期**：`L2 · 模仿`
+  * `We [do X] to keep the magic of [experience / tradition] alive.`
+  * `[Activity] helps keep that sense of [wonder / community] alive.`
+* **来源溯源**：[《The Magic of Summer Reading》P6](../01_articles/2026/2026-08-20_the_magic_of_summer_reading/article.md#^p06)
+* **生命周期**：`L0 · 捕获`（已建立节点，待真实训练验证）

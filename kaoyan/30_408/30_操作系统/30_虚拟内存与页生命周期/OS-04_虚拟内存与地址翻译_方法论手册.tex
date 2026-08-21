@@ -521,39 +521,9 @@ MMU 在正常 快路径 不能完成访问时触发 page-fault exception。内�
 
 \subsection{统一处理流程}
 \begin{center}
-
-\begingroup
-\small
-\resizebox{0.96\linewidth}{!}{%
-\begin{tikzpicture}[>=Stealth, node distance=1.8cm and 3.2cm]
-\tikzset{
-  startnode/.style={draw=mainblue, ultra thick, fill=softblue, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
-  failnode/.style={draw=purple, ultra thick, fill=softpurple, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
-  trapnode/.style={draw=deeporange, ultra thick, fill=softorange, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
-  checknode/.style={draw=teal, ultra thick, fill=softteal, rounded corners=2.5mm, align=center, minimum width=3.0cm, minimum height=0.95cm, font=\small\bfseries},
-  badnode/.style={draw=deepred, ultra thick, fill=softred, rounded corners=2.5mm, align=center, minimum width=2.8cm, minimum height=0.95cm, font=\small\bfseries},
-  fixnode/.style={draw=deepgreen, ultra thick, fill=softgreen, rounded corners=2.5mm, align=center, minimum width=3.2cm, minimum height=0.95cm, font=\small\bfseries}
-}
-\node[startnode] (a) {CPU 发起访问 VA};
-\node[failnode, right=of a] (b) {MMU 检测翻译失败};
-\node[trapnode, right=of b] (c) {Trap 进入 OS 内核};
-
-\node[checknode, below=of c] (d) {检查 VA 是否位于合法 VMA？};
-\node[badnode, left=of d] (bad) {否：非法越界访问\\[2pt]\small Signal / SIGSEGV};
-\node[fixnode, below=of d] (fix) {是：识别缺页类型并修复\\[2pt]\small (分配 / 装入 / COW / 调入)};
-\node[startnode, left=of fix] (retry) {返回并重试原指令};
-
-\draw[->, ultra thick, deepblue] (a) -- node[above=3pt, font=\small\bfseries] {发起访问} (b);
-\draw[->, ultra thick, purple] (b) -- node[above=3pt, font=\small\bfseries] {翻译失败} (c);
-\draw[->, ultra thick, deeporange] (c) -- node[right=4pt, font=\small\bfseries] {Trap 进入 OS} (d);
-\draw[->, ultra thick, deepred] (d) -- node[above=3pt, font=\small\bfseries] {Invalid VMA} (bad);
-\draw[->, ultra thick, deepgreen] (d) -- node[right=4pt, font=\small\bfseries] {Valid VMA} (fix);
-\draw[->, ultra thick, deepgreen] (fix) -- node[above=3pt, font=\small\bfseries] {修复完成} (retry);
-\draw[->, ultra thick, deepblue] (retry.west) -- ++(-5.8cm,0) |- node[pos=0.75, left=4pt, font=\small\bfseries] {重试指令} (a.west);
-\end{tikzpicture}%
-}
-\endgroup
+\resizebox{0.96\linewidth}{!}{\input{30_408/30_操作系统/30_虚拟内存与页生命周期/assets/src/page_fault_lifecycle_body.tikz}}
 \end{center}
+图把 Page Fault 之后的三条真实分支拆开：纯内存修复可直接返回重试，需要外部内容时才阻塞等待 I/O，非法地址或真实权限错误则拒绝访问。PTE 只能在目标页内容已经就绪后再对普通访问开放。
 
 缺页处理不是固定的“读盘后结束”，更不能一概写成“缺页 $\Rightarrow$ 阻塞 $\Rightarrow$ 调度”。Page Fault 首先是当前访存指令触发的\kw{同步异常入口}：内核保存/读取 fault 现场，验证地址归属与访问权限，再按 fault 原因选择修复或拒绝。若是 demand-zero、COW 等\kw{纯内存内修复}，内核可以在当前 task 的内核路径中分配/复制页、更新 PTE 与必要的翻译状态，然后直接返回并\kw{重试原指令}，期间不要求切换进程；若是 file-backed page-in、swap-in 或 dirty victim write-back 等需要等待设备完成的路径，当前 task 才会进入 Blocked，设备完成后被唤醒到 Ready，再由调度器决定何时重新 Running。若地址或权限非法且没有合法修复机制，则不应重试，而应报告异常并终止。
 
@@ -689,6 +659,11 @@ CLOCK / 二次机会算法利用 PTE 中的 Reference Bit，将“精确的时�
 \end{itemize}
 访问位回答“近期是否被使用”，脏位回答“淘汰是否可能需要写回”；二者分别是\kw{未来价值估计}与\kw{置换成本估计}，不能把 $D/M=0$ 当成“最近未访问”。
 \end{method}
+
+\begin{center}
+\resizebox{0.96\linewidth}{!}{\input{30_408/30_操作系统/30_虚拟内存与页生命周期/assets/src/clock_replacement_body.tikz}}
+\end{center}
+Basic CLOCK 的扫描规则可以直接复原；加入 dirty/modification bit 后，图只固定两类状态的语义，不把某一教材的 Enhanced CLOCK 扫描轮次冒充统一标准。
 
 \subsection{Dirty Page 为什么影响置换代价}
 若 victim 是 clean page，若有可靠后备对象，通常可以直接丢弃映射并未来重新获得；dirty page 则可能需要 write-back：

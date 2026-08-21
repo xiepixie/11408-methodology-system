@@ -23,7 +23,7 @@ python3 00_system/cognitive_system.py start <scenario> --subject <subject> [--to
 | `import` | 导入旧稿、外部材料或 Handbook Source |
 | `exam-source` | 重建 PDF、扫描卷或高清题图为 Canonical Exam Source |
 | `exam-solution` | 基于 Canonical Exam Source 与现有模型撰写真题题解 |
-| `review` | 复盘 Inbox、候选 Rules 与真实表现 |
+| `review` | 复盘 Inbox、局部 Practice / Subject Rules 候选与真实表现 |
 | `publish` | 发布 Topic / Bridge / Integration 阅读版 |
 
 示例：

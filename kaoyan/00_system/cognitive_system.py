@@ -461,7 +461,7 @@ def command_start(scenario: str, subject: str, topic: str | None) -> int:
 # ---------------------------------------------------------------------------
 
 
-NON_HANDBOOK_DIRS = {"sources", "archives", "tmp", ".venv", ".git", "legacy"}
+NON_HANDBOOK_DIRS = {"sources", "archives", "tmp", ".venv", ".git", "legacy", "daily_reading"}
 
 
 def markdown_files() -> list[Path]:

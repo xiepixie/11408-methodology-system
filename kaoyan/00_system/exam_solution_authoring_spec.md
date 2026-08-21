@@ -11,7 +11,8 @@
 ```text
 Canonical Exam Source = 原题事实 Owner
 Handbook / Bridge / Integration = 机制与边界 Owner
-Subject Rules = 题面触发、第一动作与检查 Owner
+Topic / Bridge / Integration Practice = 当前问题族的题目信号、第一动作与局部检查 Owner
+Subject Rules = 只有跨多个训练专题仍需统一维护的控制 Owner
 Exam Solution = Derived：把某一道题沿上述模型完整跑一遍
 ```
 
@@ -23,10 +24,11 @@ Exam Solution = Derived：把某一道题沿上述模型完整跑一遍
 
 1. 对应年度 `*_正式版.md` 中的 Canonical Question；
 2. 408 Course / Subject Atlas；
-3. 该题真正调用的 Topic Canonical `.tex`；
-4. 必要时读取 Bridge / Integration Canonical `.tex`；
-5. 对应 Subject Rules；
-6. 旧 `qNN_*.md` 的答案与解析只作为 Derived Reference，用于发现遗漏、比较答案，不作为题面事实或机制 Owner。
+3. 该题真正调用的 Topic / Bridge / Integration Canonical Owner；
+4. 当前问题族已有对应训练 Markdown 时，读取它的母题、局部规则与代表题；
+5. 若完整推理还需要其他 Owner，再按依赖补读最少的相邻 Topic / Bridge / Integration；
+6. 只有当前动作确实跨多个训练专题时，才补读对应 Subject Rules；
+7. 旧 `qNN_*.md` 的答案与解析只作为 Derived Reference，用于发现遗漏、比较答案，不作为题面事实或机制 Owner。
 
 若旧题解与 Canonical Source 冲突，以正式版题面为准；若旧题解与 Handbook 冲突，先检查 Handbook 适用边界，不能为了迁就旧答案修改模型。
 

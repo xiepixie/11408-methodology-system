@@ -1,0 +1,32 @@
+\documentclass[dvisvgm,tikz,border=7pt]{standalone}
+\usepackage{CJKutf8}
+\usetikzlibrary{positioning}
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themeamber}{HTML}{f5b942}
+\tikzset{
+ host/.style={draw=themefg,rounded corners=2pt,minimum width=15mm,minimum height=8mm,align=center,line width=.9pt},
+ router/.style={draw=themecurve,rounded corners=5pt,minimum width=19mm,minimum height=10mm,align=center,line width=1.1pt},
+ link/.style={draw=themefg,line width=1pt},
+ cost/.style={font=\small,text=themeamber,fill=themebg,inner sep=1pt}
+}
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[text=themefg,color=themefg]
+\node[host] (a) at (0,12mm) {A};
+\node[router] (r1) at (28mm,12mm) {R1};
+\node[router] (r2) at (72mm,12mm) {R2};
+\node[host] (b) at (100mm,12mm) {B};
+\node[router] (r3) at (28mm,-16mm) {R3};
+\node[router] (r4) at (72mm,-16mm) {R4};
+\draw[link](a)--node[cost,above]{2}(r1);
+\draw[link](r1)--node[cost,above]{6}(r2);
+\draw[link](r2)--node[cost,above]{2}(b);
+\draw[link](r1)--node[cost,left]{3}(r3);
+\draw[link](r3)--node[cost,below]{1}(r4);
+\draw[link](r4)--node[cost,right]{1}(r2);
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

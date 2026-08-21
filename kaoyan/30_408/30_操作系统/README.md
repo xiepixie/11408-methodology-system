@@ -9,7 +9,18 @@
 
 操作系统研究：怎样在并发、资源有限和硬件异步事件存在的条件下，为程序提供受保护、可组合、可管理的执行环境。
 
-本 Atlas 选择下面的状态表示作为统一观察接口：
+本 Atlas 先把**题设模型契约**与**系统运行状态**分开。221 道题库回归反复证明：很多失误不是机制不会，而是先默认了错误的抽象层、实现口径或计数约定。
+
+先写模型契约：
+
+$$
+C:=
+(\text{Execution Model},\text{Representation},\text{Granularity},\text{Convention},\text{Cost Assumption}).
+$$
+
+它回答：单/多处理器？ULT/KLT/M:N？经典负值信号量还是非负许可？BIOS/MBR 还是 UEFI？CHS/LBA 怎样编号？是否忽略 TLB、缺页、缓存、写回或端点移动？**只有先锁定这些决定答案的前提，后面的状态推演才有唯一语义。**
+
+再选择下面的状态表示作为统一观察接口：
 
 $$
 S:=
@@ -34,7 +45,23 @@ $$
 
 Liveness 与 Safety 不同：它通常要求在调度、公平性、资源最终可获得等额外条件下，某个等待中的目标**最终会发生**；因此不能把 Liveness 简化成普通状态不变量。
 
-统一推演时依次问：当前状态是什么；什么事件有资格改变它；若不加控制会出现什么 Bad State；要保护的是哪项 Safety 或 Liveness 性质；什么最小机制足以满足性质；该机制付出什么 Trade-off。这里是设计/诊断顺序，不是学科本体的因果链。
+统一推演时采用：
+
+```text
+Model Contract
+→ State
+→ Event
+→ Boundary / Owner
+→ Mechanism
+→ Policy
+→ Invariant
+→ Slow Path / Recovery
+→ Cost
+```
+
+依次问：题设在哪个模型里成立；当前状态是什么；什么事件有资格改变它；谁拥有这次状态更新；若不加控制会出现什么 Bad State；要保护的是哪项 Safety 或 Liveness；什么最小机制足以满足性质；正常路径失败后是否进入等待、fault、recovery；最后才计算成本。这里是设计/诊断顺序，不是学科本体的因果链。
+
+题库回归还反复支持一个反口诀：**不同维度不能互相推出。** `Blocked ≠ Unlock`、`Wakeup ≠ Running`、`Mapping ≠ Residency`、`Interrupt ≠ DMA`、`fd ≠ file object`、`安全状态 ≠ 当前资源充足`。遇到陌生题时，先把这些轴拆开，通常比背结论更稳。
 
 本 README 直接拥有 Subject Atlas 地图。
 

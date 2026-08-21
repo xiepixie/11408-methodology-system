@@ -1,0 +1,38 @@
+\documentclass[dvisvgm,tikz,border=6pt]{standalone}
+\usepackage{CJKutf8}
+\usetikzlibrary{positioning,fit,arrows.meta}
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themeamber}{HTML}{f5b942}
+\tikzset{
+ host/.style={draw=themefg,rounded corners=2pt,minimum width=14mm,minimum height=8mm,align=center,line width=.9pt},
+ sw/.style={draw=themecurve,rounded corners=3pt,minimum width=24mm,minimum height=11mm,align=center,line width=1.1pt},
+ link/.style={draw=themefg,line width=1pt},
+ trunk/.style={draw=themeamber,line width=1.4pt},
+ vlabel/.style={text=themeamber,font=\small}
+}
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[text=themefg,color=themefg,node distance=10mm and 13mm]
+\node[sw] (s1) {交换机 1};
+\node[sw,right=48mm of s1] (s2) {交换机 2};
+\draw[trunk] (s1)--node[above,text=themeamber,font=\small]{Trunk} (s2);
+\node[host,above left=12mm and 12mm of s1] (a) {A};
+\node[host,left=16mm of s1] (b) {B};
+\node[host,below left=12mm and 12mm of s1] (c) {C};
+\node[host,above right=12mm and 12mm of s2] (d) {D};
+\node[host,right=16mm of s2] (e) {E};
+\node[host,below right=12mm and 12mm of s2] (f) {F};
+\foreach \x in {a,b,c}\draw[link](\x)--(s1);
+\foreach \x in {d,e,f}\draw[link](\x)--(s2);
+\node[vlabel,left=2mm of a] {VLAN1};
+\node[vlabel,left=2mm of b] {VLAN1};
+\node[vlabel,left=2mm of c] {VLAN1};
+\node[vlabel,right=2mm of d] {VLAN2};
+\node[vlabel,right=2mm of e] {VLAN2};
+\node[vlabel,right=2mm of f] {VLAN3};
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

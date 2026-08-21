@@ -358,6 +358,53 @@
       </div>
 
     </div>
+  </div>
+
+  <!-- Text Selection Floating Annotation Toolbar -->
+  <div class="selection-popover" id="selection-popover" style="display: none;">
+    <div class="popover-arrow"></div>
+    <div class="popover-content">
+      <button class="popover-btn anno-btn-unknown" data-mark="[?]" title="[?] 词义/搭配不懂 (Unknown Meaning)">
+        <span class="popover-badge-icon">❓</span>
+        <span class="popover-label">[?] 词义</span>
+      </button>
+      <button class="popover-btn anno-btn-syntax" data-mark="[!]" title="[!] 句法/指代脱节 (Syntax / Grammar)">
+        <span class="popover-badge-icon">❗</span>
+        <span class="popover-label">[!] 句法</span>
+      </button>
+      <button class="popover-btn anno-btn-star" data-mark="[★]" title="[★] 优质表达/想吸收 (Desirable Expression)">
+        <span class="popover-badge-icon">⭐</span>
+        <span class="popover-label">[★] 表达</span>
+      </button>
+      <button class="popover-btn anno-btn-verify" data-mark="[~]" title="[~] 存疑验证 (Need Verification)">
+        <span class="popover-badge-icon">〰️</span>
+        <span class="popover-label">[~] 存疑</span>
+      </button>
+      <button class="popover-btn anno-btn-highlight" data-mark="==" title="普通高亮 (Highlight Only)">
+        <span class="popover-badge-icon">🖍️</span>
+        <span class="popover-label">高亮</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Highlight Action Popover (for modifying or removing existing marks) -->
+  <div class="highlight-action-popover" id="highlight-action-popover" style="display: none;">
+    <div class="popover-arrow"></div>
+    <div class="popover-content">
+      <span class="highlight-tag-badge" id="highlight-current-tag">[?] 词义</span>
+      <div class="popover-divider"></div>
+      <button class="popover-mini-btn" data-switch-mark="[?]" title="切换为 [?] 词义">❓</button>
+      <button class="popover-mini-btn" data-switch-mark="[!]" title="切换为 [!] 句法">❗</button>
+      <button class="popover-mini-btn" data-switch-mark="[★]" title="切换为 [★] 表达">⭐</button>
+      <button class="popover-mini-btn" data-switch-mark="[~]" title="切换为 [~] 存疑">〰️</button>
+      <button class="popover-mini-btn" data-switch-mark="==" title="切换为普通高亮">🖍️</button>
+      <div class="popover-divider"></div>
+      <button class="popover-btn-delete" id="highlight-btn-delete" title="清除该高亮标注">
+        <span>🗑️ 清除</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Image Lightbox Modal (Click-to-Zoom) -->
   <div class="image-lightbox-overlay" id="image-lightbox-overlay" style="display: none;">
     <div class="image-lightbox-backdrop" id="image-lightbox-backdrop"></div>

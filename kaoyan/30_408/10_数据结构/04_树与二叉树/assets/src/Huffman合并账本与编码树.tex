@@ -1,0 +1,74 @@
+\documentclass[dvisvgm,tikz,border=5pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{CJKutf8}
+\usetikzlibrary{calc,positioning}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[font=\small, color=themefg, text=themefg]
+\tikzset{
+  leaf/.style={circle, draw=themecurve, fill=themecurve!10!themebg, minimum size=9mm, inner sep=0pt, line width=1.0pt},
+  merge/.style={circle, draw=themeamber, fill=themeamber!12!themebg, minimum size=9mm, inner sep=0pt, line width=1.0pt},
+  edge/.style={themegray, line width=1.0pt}
+}
+
+\node[anchor=west, font=\bfseries] at (0,6.6) {Huffman：每次合并同时生成内部节点，并把合并和计入 WPL};
+\node[anchor=west, font=\small, text=themegray] at (0,6.05)
+  {示例权值 $\{2,3,7,9\}$；左右摆放只为排版，本图不约定 0/1 码字。};
+
+% Huffman tree
+\node[merge] (m21) at (5.0,5.0) {21};
+\node[leaf]  (w9)  at (3.4,3.75) {9};
+\node[merge] (m12) at (6.6,3.75) {12};
+\node[merge] (m5)  at (5.4,2.35) {5};
+\node[leaf]  (w7)  at (7.8,2.35) {7};
+\node[leaf]  (w2)  at (4.7,0.95) {2};
+\node[leaf]  (w3)  at (6.1,0.95) {3};
+
+\begin{pgfonlayer}{background}
+  \draw[edge] (m21)--(w9);
+  \draw[edge] (m21)--(m12);
+  \draw[edge] (m12)--(m5);
+  \draw[edge] (m12)--(w7);
+  \draw[edge] (m5)--(w2);
+  \draw[edge] (m5)--(w3);
+\end{pgfonlayer}
+
+\node[font=\scriptsize, text=themegray] at (5.4,1.65) {$2+3=5$};
+\node[font=\scriptsize, text=themegray] at (6.6,3.0) {$5+7=12$};
+\node[font=\scriptsize, text=themegray] at (5.0,4.35) {$9+12=21$};
+
+% Ledger card
+\begin{scope}[xshift=10.2cm,yshift=4.95cm]
+  \begin{pgfonlayer}{background}
+    \fill[fill=themefg!3!themebg, draw=themegray, rounded corners=5pt]
+      (-0.35,-4.05) rectangle (5.6,0.55);
+  \end{pgfonlayer}
+  \node[anchor=west, font=\bfseries, text=themeamber] at (0,0.05) {合并账本};
+  \node[anchor=west, font=\small] at (0,-0.75) {$2+3=5$};
+  \node[anchor=west, font=\small] at (0,-1.45) {$5+7=12$};
+  \node[anchor=west, font=\small] at (0,-2.15) {$9+12=21$};
+  \draw[themegray, line width=0.6pt] (0,-2.65) -- (4.85,-2.65);
+  \node[anchor=west, font=\bfseries, text=themealert] at (0,-3.25) {$\mathrm{WPL}=5+12+21=38$};
+  \node[anchor=west, font=\small, text=themegray] at (0,-3.75)
+    {根权 $21$ 是总权值，不是 WPL。};
+\end{scope}
+
+\node[anchor=west, font=\small, text=themegray] at (0,0.15)
+  {只问 WPL 时，直接累计每轮合并和，不必先写具体码字。};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

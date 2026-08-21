@@ -1,0 +1,52 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  block/.style={draw=themegray,minimum width=11mm,minimum height=6.5mm,inner sep=0pt},
+  target/.style={block,draw=themecurve,fill=themecurve!10!themebg},
+  line/.style={draw=themegray,minimum width=1.3cm,minimum height=6mm,inner sep=0pt},
+  cand/.style={line,draw=themeamber,fill=themeamber!10!themebg},
+  arr/.style={->,line width=1.0pt,themegray},
+  compare/.style={->,line width=1.05pt,themeamber},
+  note/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,inner xsep=6pt,inner ysep=5pt,align=left}
+}
+\node[anchor=west,font=\bfseries\large] at (0,8.8) {Cache 三种映射：改变的是“候选 line 有多少”，身份仍靠 Valid + Tag 证明};
+\node[anchor=west,text=themegray] at (0,8.28) {同一个主存 block $b$ 在三种组织中寻找副本；图只比较 placement/candidate 范围，不比较替换策略或写策略。};
+
+% memory blocks
+\node[anchor=west,font=\bfseries] at (0,7.4) {主存 Block};
+\foreach \i in {0,...,7}{
+  \pgfmathsetmacro{\xx}{2.0+0.72*\i}
+  \ifnum\i=5 \node[target] (mb) at (\xx,7.4) {$b$};
+  \else \node[block] at (\xx,7.4) {\i}; \fi
+}
+
+% Direct
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,5.95) {直接映射};
+\node[anchor=west] at (0,5.38) {$[Tag\mid Index\mid Offset]$};
+\foreach \i in {0,...,3}{\pgfmathsetmacro{\yy}{6.2-0.72*\i}\ifnum\i=1 \node[cand] (d1) at (6.0,\yy) {line 1};\else \node[line] at (6.0,\yy) {line \i};\fi}
+\draw[compare] (mb.south) to[bend right=16] node[above,sloped]{Index 唯一定位} (d1.west);
+\node[note,anchor=west,text width=6.4cm] at (8.0,5.0) {候选数 $=1$：只比较 1 个 Tag。硬件简单，但映射到同一 line 的不同 block 不能共存，冲突风险最高。};
+
+% Set associative
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,3.55) {$2$ 路组相联};
+\node[anchor=west] at (0,2.98) {$[Tag\mid Set\ Index\mid Offset]$};
+\node[line] at (5.25,3.65) {set 0 / w0}; \node[line] at (6.75,3.65) {set 0 / w1};
+\node[cand] (s10) at (5.25,2.85) {set 1 / w0}; \node[cand] (s11) at (6.75,2.85) {set 1 / w1};
+\draw[compare] (mb.south) to[bend right=7] node[below,sloped]{Set Index 定一组} (s10.west);
+\node[note,anchor=west,text width=6.4cm] at (8.0,3.15) {候选数 $=E=2$：组内两个 Tag 都要参与匹配；同组的两个活跃 block 可以共存，所以“same set”本身不等于 conflict miss。};
+
+% Fully associative
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,1.4) {全相联};
+\node[anchor=west] at (0,.83) {$[Tag\mid Offset]$（没有 Set Index）};
+\foreach \i in {0,...,3}{\pgfmathsetmacro{\xx}{4.2+1.45*\i}\node[cand] (f\i) at (\xx,.95) {line \i};}
+\draw[compare] (mb.south) to[bend right=25] node[below,sloped]{任意 line 都可放} (f1.north);
+\node[note,anchor=west,text width=6.4cm] at (10.7,1.0) {候选数 $=$ 全部 line：映射冲突最少，但需要更广的 Tag 比较与 victim 选择，硬件/功耗/时延代价更高。};
+
+\node[anchor=west,font=\bfseries,text=themeamber] at (0,-.35) {$\boxed{\text{Index/Set 只缩小候选集合；是否 Hit 最终仍要 Valid=1 且 Tag 匹配。}}$};
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-.95) {地址字段属于请求；Cache line 保存 Data + Tag + Valid/Dirty/Replacement 等 metadata，不能把 Index/Offset 机械算成每行都存一份。};
+\end{tikzpicture}

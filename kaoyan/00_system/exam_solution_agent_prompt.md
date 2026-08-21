@@ -8,7 +8,7 @@
 
 1. 只从 Canonical Exam Source 获取题面事实；
 2. 定位对应 Subject / Topic / Bridge / Integration；
-3. 读取该 Owner 的 Canonical Handbook 与 Subject Rules；
+3. 读取该 Owner 的 Canonical Handbook；若存在当前问题族训练 Markdown，先读局部 Practice；只有确实需要跨多个训练专题的统一控制时，再补读 Subject Rules；
 4. 把旧 `qNN_*.md` 当作 legacy derived reference，只用来比较答案与发现遗漏；
 5. 独立求解；
 6. 生成 `solutions/qNN.md`；
@@ -27,8 +27,9 @@ AGENTS.md
 -> exam_solution_quality_assurance.md
 -> problem_solving_kernel.md
 -> 对应 408 Course / Subject Atlas
--> Subject Rules
 -> 当前题真正调用的 Topic / Bridge / Integration Canonical .tex
+-> 当前问题族训练 Markdown（若存在）
+-> Subject Rules（仅在需要跨专题控制时）
 -> 年度 *_正式版.md 对应题
 -> legacy qNN_*.md
 ```

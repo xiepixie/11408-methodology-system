@@ -1,0 +1,57 @@
+\documentclass[dvisvgm,tikz,border=5pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{CJKutf8}
+\usetikzlibrary{arrows.meta,positioning,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[font=\small,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  n/.style={circle,draw=themefg,fill=themebg,minimum size=8mm,inner sep=0pt,line width=.8pt},
+  real/.style={themegray,line width=1pt},
+  thread/.style={->,themeamber,dashed,line width=1pt},
+  seq/.style={->,themecurve,line width=.9pt}
+}
+
+\node[anchor=west,font=\bfseries] at (0,6.3) {中序线索：tag 决定 child 字段表示孩子还是线索};
+\node[anchor=west,font=\small,text=themegray] at (0,5.82)
+  {实线：真实孩子（tag=0）；虚线箭头：由空指针改成的前驱/后继线索（tag=1）。};
+
+% tree
+\node[n] (D) at (6.0,4.85) {D};
+\node[n] (B) at (3.8,3.65) {B};
+\node[n] (F) at (8.2,3.65) {F};
+\node[n] (A) at (2.7,2.35) {A};
+\node[n,draw=themeamber] (C) at (4.9,2.35) {C};
+\node[n] (E) at (7.2,2.35) {E};
+\draw[real] (D)--(B); \draw[real] (D)--(F);
+\draw[real] (B)--(A); \draw[real] (B)--(C); \draw[real] (F)--(E);
+
+% selected threads
+\draw[thread,bend right=18] (C) to node[below left,font=\scriptsize,text=themeamber] {前驱 $B$} (B);
+\draw[thread,bend right=18] (C) to node[below right,font=\scriptsize,text=themeamber] {后继 $D$} (D);
+\draw[thread,bend right=16] (E) to node[below left,font=\scriptsize,text=themeamber] {前驱 $D$} (D);
+\draw[thread,bend left=15] (E) to node[below right,font=\scriptsize,text=themeamber] {后继 $F$} (F);
+
+% inorder sequence
+\node[anchor=west,font=\bfseries] at (.2,1.25) {对应中序序列：};
+\foreach \x/\name in {2.6/A,4.0/B,5.4/C,6.8/D,8.2/E,9.6/F}{
+  \node[n,minimum size=6.5mm,font=\small] (s\name) at (\x,1.25) {\name};
+}
+\draw[seq] (sA)--(sB); \draw[seq] (sB)--(sC); \draw[seq] (sC)--(sD);
+\draw[seq] (sD)--(sE); \draw[seq] (sE)--(sF);
+
+\node[anchor=west,font=\small,text=themegray] at (.2,.45)
+  {$C$ 的两个 child 原本为空，可分别写入前驱 $B$、后继 $D$；$D$ 的 child 已被真实孩子占用。};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

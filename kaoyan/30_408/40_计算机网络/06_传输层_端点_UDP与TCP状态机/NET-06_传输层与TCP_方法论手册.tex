@@ -1,5 +1,6 @@
 \documentclass[UTF8,fontset=none,11pt,a4paper]{ctexart}
 \usepackage{ipara-handbook}
+\usepackage{graphicx}
 \handbooksetup{NET-06 传输层与 TCP}{408 · 计算机网络 NET-06}{Endpoint · UDP · TCP · State}
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \providecommand{\passthrough}[1]{#1}
@@ -289,6 +290,11 @@ A sends FIN
 TIME-WAIT 让 active closer 有机会重发最后 ACK，并让旧 connection 的迟到
 segment 在相同 endpoint tuple
 被复用前消失。它用暂时保留状态换取连接实例之间的不歧义。
+
+\begin{center}
+\resizebox{0.96\linewidth}{!}{\input{30_408/40_计算机网络/06_传输层_端点_UDP与TCP状态机/assets/src/tcp_lifecycle_body.tikz}}
+\end{center}
+图把正常主动打开与主动关闭放在同一双端点时间线上：第三次握手完成 server 对 client 已收到其 ISN 的知识闭环；FIN 只关闭一个方向；TIME-WAIT 由主动关闭事件决定，而不是固定属于 client。
 
 \section{TCP
 状态的一生}\label{10-tcp-ux72b6ux6001ux7684ux4e00ux751f}

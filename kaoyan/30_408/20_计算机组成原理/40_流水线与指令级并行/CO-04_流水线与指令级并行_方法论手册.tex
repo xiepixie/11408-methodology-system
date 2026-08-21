@@ -6,7 +6,7 @@
 \usepackage[most]{tcolorbox}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,matrix,calc}
-\usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage}
+\usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage,graphicx}
 
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
@@ -109,7 +109,11 @@ T_{clk}\ge \max_i T_i+T_{reg}.
 \[
 T_{pipe}=(k+n-1)T_{clk},
 \]
-但这只是无 hazard、无 miss、段延迟均衡的成本模型。
+因此有限任务的平均完成率为
+\[
+Throughput_n=\frac{n}{(k+n-1)T_{clk}},
+\]
+只有当 $n$ 足够大时才趋近稳态峰值 $1/T_{clk}$。这一区分能阻断“流水线吞吐率恒等于主频”的误用：具体执行 100 条指令仍要支付 fill/drain，问稳态上限时才忽略这项有限序列开销。但这整个模型仍只适用于无 hazard、无 miss、每级一拍的理想流水。
 
 \subsection{吞吐率与延迟}
 流水线主要提高稳态吞吐率，不保证降低单条指令 latency。更深的流水可能缩短 $T_{clk}$，却增加流水寄存器开销、填充/排空、分支惩罚和旁路复杂度。因此比较性能必须回到
@@ -223,6 +227,11 @@ $I_2$ & & IF & ID & stall & EX & MEM & WB\\
 
 该“一拍”只在上述 stage、memory latency、寄存器时序和 MEM-to-EX 旁路假设下成立。若分级更深、memory 多周期或旁路端点不同，必须重新比较 need/ready。
 
+\begin{center}
+\resizebox{0.96\linewidth}{!}{\input{30_408/20_计算机组成原理/40_流水线与指令级并行/assets/src/pipeline_hazards_body.tikz}}
+\end{center}
+图把 ALU 旁路、Load-use 与结构冒险放在同一 Need--Ready/Resource 模型下；一拍 stall 和 IF/MEM 冲突都明确绑定图上写出的经典五段假设。
+
 \begin{warnbox}{母例故意暴露的错误路径}
 “有 forwarding，所以永不停顿”忽略了值尚未产生；“LOAD 在 EX 算出了结果”把 EA 当成 load data；“I1 已经转发，所以已经完成”把 ready 当 commit。
 \end{warnbox}
@@ -240,6 +249,11 @@ CPI_{branch}=f_{branch}\,r_{mispredict}\,P_{mispredict},
 
 \subsection{两位饱和计数器}
 两位预测器是四状态 FSM，单次相反结果只使状态向另一方向移动一步。题目必须给初态、实际 T/NT 序列和采用高位/状态预测规则；循环“通常只错一次”不是无条件定律，初态和连续多轮会改变结果。
+
+\begin{center}
+\resizebox{0.96\linewidth}{!}{\input{30_408/20_计算机组成原理/40_流水线与指令级并行/assets/src/branch_predictor_flush_body.tikz}}
+\end{center}
+状态机只决定预测方向；mispredict penalty 仍必须由实际分支决策级和已经进入流水线的年轻指令数生成。
 
 \section{CPI 与总时间：从时空图计数}
 

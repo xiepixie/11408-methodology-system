@@ -1,0 +1,46 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  seq/.style={draw=themegray,minimum width=7.5mm,minimum height=7.5mm,inner sep=0pt},
+  send/.style={seq,draw=themecurve,fill=themecurve!10!themebg},
+  recv/.style={seq,draw=themeamber,fill=themeamber!10!themebg},
+  overlap/.style={seq,draw=themealert,fill=themealert!12!themebg},
+  note/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,inner xsep=6pt,inner ysep=5pt,align=left}
+}
+\node[anchor=west,font=\bfseries\large] at (0,9.2) {Stop-and-Wait、GBN、SR：窗口上限来自“旧副本与新一轮序号不能混淆”};
+\node[anchor=west,text=themegray] at (0,8.68) {例用 3-bit 序号空间 $0\ldots7$；先锁 ACK、缓存和 Timer 语义，再把窗口解释为当前合法身份集合。};
+
+% SAW
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,7.65) {A. Stop-and-Wait};
+\foreach \i in {0,...,7}{\pgfmathsetmacro{\xx}{2.2+0.78*\i}\ifnum\i=0\node[send] at (\xx,7.05) {0};\else\node[seq] at (\xx,7.05) {\i};\fi}
+\node[note,anchor=west,text width=6.8cm] at (9.0,7.05) {任意时刻只允许 1 个未确认数据实例；1 bit 就足以区分“当前新帧”和“上一个序号的迟到/重传副本”。};
+
+% GBN
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,5.85) {B. GBN：$W_R=1$，发送窗口至少留 1 个序号在外};
+\foreach \i in {0,...,7}{\pgfmathsetmacro{\xx}{2.2+0.78*\i}\ifnum\i<7\node[send] at (\xx,5.25) {\i};\else\node[seq,draw=themealert] at (\xx,5.25) {7};\fi}
+\node[anchor=north,text=themecurve] at (4.54,4.73) {$W_T=7=2^3-1$ 可取满};
+\node[anchor=north,text=themealert] at (7.66,4.73) {至少一个序号不在本轮发送窗口};
+\node[note,anchor=west,text width=6.8cm] at (9.0,5.25) {接收端只接受下一期望序号，失序帧通常丢弃；累计 ACK 压缩连续前缀。若 8 个序号全进发送窗口，回绕后新 0 与仍可能存在的旧 0 无法靠序号区分。};
+
+% SR
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,3.55) {C. SR：发送/接收窗口都大，必须避免新旧接收区间重叠};
+\foreach \i in {0,...,7}{\pgfmathsetmacro{\xx}{2.2+0.78*\i}\ifnum\i<4\node[recv] (old\i) at (\xx,2.95) {\i};\else\node[seq] at (\xx,2.95) {\i};\fi}
+\node[anchor=north,text=themeamber] at (3.37,2.43) {旧接收窗口 $[0,3]$};
+\foreach \i in {0,...,7}{\pgfmathsetmacro{\xx}{2.2+0.78*\i}\ifnum\i>3\node[send] at (\xx,1.75) {\i};\else\node[seq] at (\xx,1.75) {\i};\fi}
+\node[anchor=north,text=themecurve] at (6.49,1.23) {安全的新窗口 $[4,7]$：与旧窗口不重叠};
+\node[note,anchor=west,text width=6.8cm] at (9.0,2.35) {对称 SR 取 $W_T=W_R=4=2^{3-1}$ 时，序号空间恰好分成两半。旧帧 0 即使迟到，也不属于新合法窗口 $[4,7]$。};
+
+% unsafe overlap minimal counterexample
+\node[anchor=west,font=\bfseries,text=themealert] at (0,.45) {若 SR 窗口扩大到 5：};
+\foreach \i in {0,...,7}{\pgfmathsetmacro{\xx}{2.2+0.78*\i}\ifnum\i<5\node[recv] at (\xx,-.2) {\i};\else\node[seq] at (\xx,-.2) {\i};\fi}
+\node[anchor=west] at (6.8,-.2) {$\to$ 滑动 5 后新窗口为 $[5,6,7,0,1]$};
+\node[overlap] at (11.25,-.2) {0}; \node[overlap] at (12.05,-.2) {1};
+\node[anchor=west,text=themealert] at (12.7,-.2) {旧 0/1 可落入新窗口，身份歧义};
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,-1.55) {$\boxed{\text{GBN: }W_T\le2^k-1\qquad\text{SR: }W_T+W_R\le2^k\quad(\text{对称时 }W\le2^{k-1})}$};
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-2.15) {窗口的性能需求由 RTT/发送时间产生；这里画的是协议身份安全上限，两类约束不能互相替代。};
+\end{tikzpicture}

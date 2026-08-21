@@ -279,6 +279,8 @@ min(rwnd,cwnd) 是在途上限，不是新增可发送量
 
 ## 6. 心智模型反馈闭环：题解必须能反向修系统
 
+题解发现“题目条件可疑、现有模型解释不自然、或模型修改后需要回测”时，先调用 [`problem_model_validation.md`](problem_model_validation.md) 判断问题位于 Question、Practice、Bridge 还是 Canonical。本文件只继续负责题解 QA，不复制那套双向验证协议。
+
 每道题完成后必须内部分类：
 
 ```text
@@ -325,7 +327,7 @@ Canonical Model Update
 - 单题暴露了一个方便技巧，但还不知道边界；
 - 题面存在多个合理解释，证据不足。
 
-这些进入 Subject Rules 的待验证证据或年度 `solution_review.md`。
+这些先按作用域进入对应 Topic Practice、Subject Rules 的待验证证据或年度 `solution_review.md`；单一问题族的第一动作不因为来自真题就自动上移 Subject Rules。
 
 ### 6.3 Source 错误与模型错误严格分开
 

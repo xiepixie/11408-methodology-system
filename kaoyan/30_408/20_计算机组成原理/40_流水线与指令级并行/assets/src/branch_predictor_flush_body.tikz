@@ -1,0 +1,53 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  st/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,minimum width=2.25cm,minimum height=.85cm,align=center},
+  taken/.style={st,draw=themecurve,fill=themecurve!10!themebg},
+  nottaken/.style={st,draw=themeamber,fill=themeamber!10!themebg},
+  arr/.style={->,line width=.9pt,themegray},
+  wrong/.style={rounded corners=2pt,draw=themealert,fill=themealert!10!themebg,minimum width=1.35cm,minimum height=.65cm,align=center},
+  ok/.style={rounded corners=2pt,draw=themecurve,fill=themecurve!10!themebg,minimum width=1.35cm,minimum height=.65cm,align=center},
+  note/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,inner xsep=6pt,inner ysep=5pt,align=left}
+}
+\node[anchor=west,font=\bfseries\large] at (0,8.35) {2-bit 分支预测：状态机决定“猜哪边”，流水线决定“猜错要作废谁”};
+\node[anchor=west,text=themegray] at (0,7.82) {计数器只保存近期方向偏好；预测失败的代价由分支实际在哪一级决策、已有多少年轻指令进入流水线决定。};
+
+% FSM
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,6.95) {A. 四状态饱和计数器};
+\node[nottaken] (sn) at (2.0,5.65) {00\\强不跳};
+\node[nottaken] (wn) at (5.1,5.65) {01\\弱不跳};
+\node[taken] (wt) at (8.2,5.65) {10\\弱跳转};
+\node[taken] (st) at (11.3,5.65) {11\\强跳转};
+\draw[arr] (sn) -- node[above]{T} (wn);
+\draw[arr,bend left=18] (wn) to node[above]{T} (wt);
+\draw[arr] (wt) -- node[above]{T} (st);
+\draw[arr,bend left=18] (st) to node[below]{NT} (wt);
+\draw[arr,bend left=18] (wt) to node[below]{NT} (wn);
+\draw[arr,bend left=18] (wn) to node[below]{NT} (sn);
+\draw[arr,loop left] (sn) to node[left]{NT} (sn);
+\draw[arr,loop right] (st) to node[right]{T} (st);
+\node[note,anchor=west,text width=4.5cm] at (13.1,5.65) {00/01 预测 NT，10/11 预测 T；一次反常结果只把强状态推到弱状态，不立即翻转方向。初始状态必须由题设给定。};
+
+% pipeline flush
+\node[anchor=west,font=\bfseries,text=themealert] at (0,3.95) {B. 预测失败：年轻的错误路径指令必须 Flush，不能 Commit};
+\node[anchor=west] at (0,3.15) {假设分支 $B$ 在 EX 末才确定实际方向：};
+\node[ok] (bif) at (4.0,3.15) {$B$: IF};
+\node[ok] (bid) at (5.6,3.15) {ID};
+\node[ok] (bex) at (7.2,3.15) {EX};
+\draw[arr] (bif)--(bid); \draw[arr] (bid)--(bex);
+\node[wrong] (i1) at (5.6,2.15) {错路 $I_1$\\ID};
+\node[wrong] (i2) at (4.0,1.25) {错路 $I_2$\\IF};
+\draw[->,line width=1.15pt,themealert] (bex.south) |- node[pos=.25,right,font=\scriptsize,text=themealert]{mispredict} (i1.east);
+\draw[->,line width=1.15pt,themealert] (bex.south) |- (i2.east);
+\node[font=\bfseries,text=themealert] at (8.7,2.0) {Flush $I_1,I_2$};
+\node[ok] (target) at (11.0,2.0) {正确目标\\重新 IF};
+\draw[->,line width=1.1pt,themecurve] (8.9,2.0)--(target);
+\node[note,anchor=west,text width=4.65cm] at (13.1,2.0) {Flush 与 Stall 不同：Stall 是正确路径暂时不能推进；Flush 是已经进入的年轻指令被证明属于错误路径，必须取消其架构副作用。};
+
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-.05) {禁止误读：图中的“两条错路指令”只对应“EX 末决策 + 单发射经典前端”这一示例。若分支在 ID/MEM 决策、采用 delay slot 或不同取指宽度，惩罚必须重新由时间线计算。};
+\end{tikzpicture}

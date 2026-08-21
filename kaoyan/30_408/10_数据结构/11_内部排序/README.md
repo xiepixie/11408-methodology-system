@@ -26,5 +26,8 @@ DS05 Heap 作为 heap sort 的底层机制；Atlas Foundation。
 - 完整实现：[`ds11_internal_sort.hpp`](code/ds11_internal_sort.hpp)
 - 边界测试：[`ds11_internal_sort_test.cpp`](code/ds11_internal_sort_test.cpp)
 
+## 训练导航
+- [排序过程、稳定性与基数排序](排序过程、稳定性与基数排序.md)：从一趟后的“已提交区域”反推算法，分栏比较/移动/空间，并维护 LSD 各位稳定性。
+
 ## Code Contract
 本册代码覆盖插入、选择、归并、快速、堆和非负整数 LSD 基数排序；堆排序在本册实现排序过程，但 Heap 的优先队列机制仍由 DS05 Own。测试覆盖空、已排序、重复、逆序和基数排序负值拒绝。

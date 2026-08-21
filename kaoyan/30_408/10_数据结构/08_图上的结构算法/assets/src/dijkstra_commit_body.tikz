@@ -1,0 +1,52 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[>=Stealth,font=\small,color=themefg,text=themefg]
+\tikzset{
+  v/.style={circle,draw=themefg,fill=themebg,minimum size=9mm,inner sep=0pt,line width=.9pt},
+  fixed/.style={v,draw=themecurve,fill=themecurve!10!themebg},
+  bad/.style={v,draw=themealert,fill=themealert!10!themebg},
+  e/.style={->,line width=1.0pt,themegray},
+  neg/.style={->,line width=1.2pt,themealert},
+  card/.style={rounded corners=4pt,draw=themegray,fill=themefg!3!themebg,inner xsep=7pt,inner ysep=6pt,align=left}
+}
+\node[anchor=west,font=\bfseries\large] at (0,6.6) {Dijkstra：非负权让“当前最小暂定距离”可以永久提交};
+\node[anchor=west,text=themegray] at (0,6.05)
+  {左：非负权下，未提交区域再绕一圈只会增加代价；右：一条负边即可让已经提交的距离被后来路径改小。};
+
+% left panel
+\node[font=\bfseries,text=themecurve] at (3.7,5.1) {非负权：提交成立};
+\node[fixed] (s1) at (1.4,3.8) {$s$};
+\node[fixed] (a1) at (4.0,4.4) {$a$};
+\node[v] (b1) at (4.0,2.8) {$b$};
+\node[v] (c1) at (6.5,3.6) {$c$};
+\draw[e] (s1) -- node[above,font=\scriptsize] {2} (a1);
+\draw[e] (s1) -- node[below,font=\scriptsize] {5} (b1);
+\draw[e] (a1) -- node[above,font=\scriptsize] {$\ge0$} (c1);
+\draw[e] (b1) -- node[below,font=\scriptsize] {$\ge0$} (c1);
+\node[card,anchor=north,text width=5.9cm] at (3.95,2.15)
+  {$d[a]=2$ 是当前最小暂定值。任何经过尚未提交顶点的新路径，都只能在已有非负代价上继续增加，因此不可能再把 $a$ 降到 2 以下。};
+
+\draw[themegray,line width=.5pt] (8.0,1.0)--(8.0,5.4);
+
+% right panel
+\node[font=\bfseries,text=themealert] at (12.1,5.1) {负权反例：提交失效};
+\node[fixed] (s2) at (9.2,3.8) {$s$};
+\node[bad] (a2) at (12.0,4.5) {$a$};
+\node[v] (b2) at (12.0,2.7) {$b$};
+\draw[e] (s2) -- node[above,font=\scriptsize] {2} (a2);
+\draw[e] (s2) -- node[below,font=\scriptsize] {5} (b2);
+\draw[neg] (b2) -- node[right,font=\scriptsize,text=themealert] {$-4$} (a2);
+\node[anchor=west,font=\small] at (13.0,4.55) {先看到 $d[a]=2$};
+\node[anchor=west,font=\small,text=themealert] at (13.0,3.85) {若此时永久提交 $a$};
+\node[anchor=west,font=\small] at (13.0,2.85) {后来路径 $s\to b\to a$};
+\node[anchor=west,font=\small,text=themealert] at (13.0,2.15) {代价 $5+(-4)=1<2$};
+\node[card,anchor=north,text width=6.2cm] at (12.0,1.35)
+  {失败点不是“松弛公式错了”，而是\textbf{提交证明}错了：未提交区域中的负边可以把未来绕路总价降下来。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,.2)
+  {$\boxed{\text{非负边权}\Rightarrow\text{最小暂定值可提交};\quad\text{出现负边}\Rightarrow\text{立即停用该提交不变量}}$};
+\end{tikzpicture}

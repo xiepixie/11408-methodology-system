@@ -1,0 +1,58 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  cell/.style={draw=themegray,minimum width=9mm,minimum height=6.8mm,inner sep=0pt,align=center},
+  active/.style={cell,draw=themecurve,fill=themecurve!10!themebg},
+  wait/.style={cell,draw=themealert,fill=themealert!10!themebg},
+  bubble/.style={cell,draw=themeamber,dashed,text=themeamber},
+  note/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,inner xsep=6pt,inner ysep=5pt,align=left},
+  flow/.style={->,line width=1.05pt,themecurve},
+  bad/.style={->,line width=1.05pt,themealert}
+}
+\node[anchor=west,font=\bfseries\large] at (0,9.35) {经典五段流水线：冒险只在“需要时刻早于可用时刻”时变成停顿};
+\node[anchor=west,text=themegray] at (0,8.82)
+  {本图固定：IF--ID--EX--MEM--WB；ALU 结果 EX 末产生，Load 数据 MEM 末产生；支持 EX/MEM、MEM/WB $\to$ EX 旁路。};
+
+% time header
+\node[anchor=east,font=\bfseries] at (1.45,7.75) {周期};
+\foreach \c in {1,...,7}{\node[font=\bfseries,text=themegray] at (1.75+0.92*\c,7.75) {\c};}
+
+% ALU forwarding panel
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,7.05) {A. ALU $\to$ ALU：值已产生，旁路即可，不必等 WB};
+\node[anchor=east] at (1.45,6.35) {$I_1$: ADD};
+\foreach \c/\s in {1/IF,2/ID,3/EX,4/MEM,5/WB}{\node[active] (a1\c) at (1.75+0.92*\c,6.35) {\s};}
+\node[anchor=east] at (1.45,5.55) {$I_2$: SUB};
+\foreach \c/\s in {2/IF,3/ID,4/EX,5/MEM,6/WB}{\node[active] (a2\c) at (1.75+0.92*\c,5.55) {\s};}
+\draw[flow,bend left=24] (a13.north east) to node[above,font=\scriptsize,text=themecurve] {R1 ready} (a24.north west);
+\node[note,anchor=west,text width=5.8cm] at (9.3,6.0) {\textbf{Need--Ready：} $I_1$ 的 R1 在周期 3 的 EX 末已产生；$I_2$ 到周期 4 的 EX 才需要，因此旁路路径赶得上。};
+
+% load use
+\node[anchor=west,font=\bfseries,text=themealert] at (0,4.65) {B. Load-use：未来值还没产生，旁路也不能“穿越时间”};
+\node[anchor=east] at (1.45,3.95) {$I_1$: LW};
+\foreach \c/\s in {1/IF,2/ID,3/EX,4/MEM,5/WB}{\node[active] (l1\c) at (1.75+0.92*\c,3.95) {\s};}
+\node[anchor=east] at (1.45,3.15) {$I_2$: ADD};
+\node[active] (l22) at (1.75+0.92*2,3.15) {IF};
+\node[wait] (l23) at (1.75+0.92*3,3.15) {ID};
+\node[wait] (l24) at (1.75+0.92*4,3.15) {ID};
+\node[active] (l25) at (1.75+0.92*5,3.15) {EX};
+\node[active] at (1.75+0.92*6,3.15) {MEM};
+\node[active] at (1.75+0.92*7,3.15) {WB};
+\node[bubble] at (1.75+0.92*4,2.35) {bubble};
+\draw[bad,bend left=21] (l14.south east) to node[below,font=\scriptsize,text=themealert] {data ready at MEM end} (l25.north west);
+\node[note,anchor=west,text width=5.8cm] at (9.3,3.55) {原本 $I_2$ 想在周期 4 进入 EX，但 Load 数据到周期 4 \textbf{末}才存在；把 consumer 的 EX 推到周期 5 后，MEM/WB $\to$ EX 才能送达。};
+
+% structural hazard strip
+\node[anchor=west,font=\bfseries,text=themeamber] at (0,1.55) {C. 结构冒险是“同拍抢同一资源”，不是数据依赖};
+\node[cell,draw=themeamber] (mem) at (3.0,.65) {$I_1$ MEM\\data memory};
+\node[cell,draw=themeamber] (fetch) at (6.0,.65) {$I_4$ IF\\instruction fetch};
+\node[font=\bfseries,text=themealert] at (4.5,.65) {$\times$};
+\node[note,anchor=west,text width=7.3cm] at (8.1,.65) {只有题设让 IF 与 MEM 共用\textbf{同一个单端口存储资源}时才冲突；若 I/D 分离或有足够端口，这条结构冒险不存在。};
+
+\node[anchor=west,font=\scriptsize,text=themegray] at (0,-.45)
+  {禁止误读：本图的一拍 load-use stall 只属于上面的经典五段与旁路时序；换 RF 时序、MEM 延迟、旁路端点或乱序模型后必须重新比较 Produced / Path-Ready / Need。};
+\end{tikzpicture}

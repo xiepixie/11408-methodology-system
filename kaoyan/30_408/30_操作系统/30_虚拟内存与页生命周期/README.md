@@ -16,6 +16,7 @@
 
 ## 训练导航
 
+- [连续分配、重定位与分段](连续分配重定位与分段.md)：训练静态/动态重定位、Base/Limit、First/Next/Best/Worst Fit、回收合并、内部/外部碎片、分段与段页式；承接 408 中“虚拟内存之前”的经典内存管理题。
 - [地址翻译与缺页](地址翻译与缺页.md)：训练 VA/VPN/offset、多级页表、TLB/PTE、Page Fault 原因分类、COW 与跨计组翻译链；408 经典“缺页”保持为页面当前不驻留这一分支，不再把 TLB miss、Cache miss 或所有 Page Fault 混称“缺页”。
 - [页面驻留与置换](页面驻留与置换.md)：训练 resident set、FIFO/LRU/CLOCK、dirty/writeback、local/global、Belady、working set/PFF 与 thrashing；承接旧训练阶梯。
 

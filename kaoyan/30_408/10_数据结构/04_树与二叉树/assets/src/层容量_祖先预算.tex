@@ -1,0 +1,67 @@
+\documentclass[dvisvgm,tikz,border=5pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{CJKutf8}
+\usetikzlibrary{arrows.meta,positioning,calc}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[>=Stealth,font=\small,color=themefg,text=themefg]
+\tikzset{
+  count/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,minimum width=1.35cm,minimum height=.78cm,align=center},
+  bad/.style={count,draw=themealert,fill=themealert!10!themebg},
+  good/.style={count,draw=themecurve,fill=themecurve!10!themebg},
+  up/.style={->,themegray,line width=.9pt}
+}
+
+\node[anchor=west,font=\bfseries] at (0,5.7)
+  {层容量题：目标层放多少节点，要把“父节点成本”一层层向上算};
+\node[anchor=west,font=\small,text=themegray] at (0,5.15)
+  {例：二叉树共 126 个节点，问第 7 层最多能有多少个节点。方框表示各层至少需要的节点数，不是实际树形。};
+
+\node[anchor=west,font=\bfseries,text=themealert] at (0,4.15) {尝试 $x=64$：};
+\node[anchor=west,font=\scriptsize,text=themegray] at (2.02,4.83)
+  {每条箭头：上一层至少取 $\left\lceil\text{当前层}/2\right\rceil$};
+\node[bad] (a7) at (2.15,4.15) {第7层\\64};
+\node[count] (a6) at (3.65,4.15) {第6层\\32};
+\node[count] (a5) at (5.15,4.15) {第5层\\16};
+\node[count] (a4) at (6.65,4.15) {第4层\\8};
+\node[count] (a3) at (8.15,4.15) {第3层\\4};
+\node[count] (a2) at (9.65,4.15) {第2层\\2};
+\node[count] (a1) at (11.15,4.15) {根\\1};
+\draw[up] (a7)--(a6);
+\draw[up] (a6)--(a5); \draw[up] (a5)--(a4); \draw[up] (a4)--(a3); \draw[up] (a3)--(a2); \draw[up] (a2)--(a1);
+\node[anchor=west,font=\small,text=themealert] at (12.05,4.15) {$\sum=127>126$};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,2.45) {尝试 $x=63$：};
+\node[good] (b7) at (2.15,2.45) {第7层\\63};
+\node[count] (b6) at (3.65,2.45) {第6层\\32};
+\node[count] (b5) at (5.15,2.45) {第5层\\16};
+\node[count] (b4) at (6.65,2.45) {第4层\\8};
+\node[count] (b3) at (8.15,2.45) {第3层\\4};
+\node[count] (b2) at (9.65,2.45) {第2层\\2};
+\node[count] (b1) at (11.15,2.45) {根\\1};
+\draw[up] (b7)--(b6);
+\draw[up] (b6)--(b5); \draw[up] (b5)--(b4); \draw[up] (b4)--(b3); \draw[up] (b3)--(b2); \draw[up] (b2)--(b1);
+\node[anchor=west,font=\small,text=themecurve] at (12.05,2.45) {$\sum=126$};
+
+\draw[themegray,line width=.6pt] (0,1.25)--(14.7,1.25);
+\node[anchor=west,font=\small] at (0,.65)
+  {一般地：第 $k$ 层放 $x$ 个节点，就从 $x$ 开始逐层向上取整计算最少父节点。};
+\node[anchor=east,font=\bfseries,text=themecurve] at (14.7,.65)
+  {本例最大为 $63$};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

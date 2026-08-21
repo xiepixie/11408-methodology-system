@@ -16,6 +16,7 @@
   - [学科心智模型手册通用写作规范](handbook_writing_spec.md)
   - [专题训练写作规范](topic_practice_writing_spec.md)
   - [图示语义与视觉推理规范](diagram_design_spec.md)
+  - [题目与心智模型双向验证协议](problem_model_validation.md)
   - [Inbox 与规则验证协议](evidence_promotion.md)
   - [Canonical Ownership Matrix](ownership_matrix.md)
 - **真题源重建**：

@@ -1,0 +1,70 @@
+\documentclass[dvisvgm,tikz,border=5pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{CJKutf8}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,decorations.pathreplacing}
+
+\definecolor{themebg}{HTML}{30362d}
+\definecolor{themefg}{HTML}{edf4e8}
+\definecolor{themegray}{HTML}{9ea897}
+\definecolor{themecurve}{HTML}{7eb6ff}
+\definecolor{themealert}{HTML}{ff7b7b}
+\definecolor{themeamber}{HTML}{f5b942}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+\pagecolor{themebg}
+\begin{tikzpicture}[font=\small,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  nodec/.style={circle,draw=themefg,fill=themebg,minimum size=7mm,inner sep=0pt,line width=.8pt},
+  leaf/.style={rounded corners=2pt,draw=themefg,fill=themebg,minimum width=10mm,minimum height=7mm,inner sep=2pt},
+  edge/.style={themegray,line width=.8pt},
+  slot/.style={draw=themegray,minimum width=5.4mm,minimum height=5.5mm,inner sep=0pt,font=\scriptsize}
+}
+
+\node[anchor=west,font=\bfseries] at (0,6.7) {前缀码容量：短码会占掉它下面整棵后缀子树};
+\node[anchor=west,font=\small,text=themegray] at (0,6.18)
+  {二进制最大码长 $H=4$，已有码字 $1$、$01$；统一换算到深度 4 的 16 个叶槽。};
+
+% trie sketch
+\node[nodec] (root) at (3.0,5.0) {$\epsilon$};
+\node[nodec] (z0) at (1.8,3.9) {0};
+\node[leaf,draw=themealert,text=themealert] (z1) at (4.2,3.9) {1};
+\draw[edge] (root)--node[above left,font=\scriptsize] {0}(z0);
+\draw[edge] (root)--node[above right,font=\scriptsize] {1}(z1);
+\node[nodec] (z00) at (.9,2.75) {00};
+\node[leaf,draw=themeamber,text=themeamber] (z01) at (2.7,2.75) {01};
+\draw[edge] (z0)--node[above left,font=\scriptsize] {0}(z00);
+\draw[edge] (z0)--node[above right,font=\scriptsize] {1}(z01);
+\node[font=\small,text=themealert,align=left,anchor=west] at (4.85,3.9)
+  {$1$ 占 $2^{4-1}=8$ 个深度-4 槽};
+\node[font=\small,text=themeamber,align=left,anchor=west] at (3.35,2.75)
+  {$01$ 占 $2^{4-2}=4$ 个槽};
+\node[font=\small,text=themecurve,align=left,anchor=west] at (1.45,1.8)
+  {$00$ 子树还剩 4 个长度-4 码字位置};
+
+% slot bar
+\node[anchor=west,font=\bfseries] at (0,.95) {统一折算到深度 4：};
+\foreach \i in {0,...,15}{
+  \pgfmathsetmacro{\xx}{2.7+0.58*\i}
+  \ifnum\i<8
+    \node[slot,draw=themealert,text=themealert] at (\xx,.95) {\ifnum\i=3 $1$\fi};
+  \else
+    \ifnum\i<12
+      \node[slot,draw=themeamber,text=themeamber] at (\xx,.95) {\ifnum\i=9 $01$\fi};
+    \else
+      \node[slot,draw=themecurve,text=themecurve] at (\xx,.95) {};
+    \fi
+  \fi
+}
+\draw[decorate,decoration={brace,mirror,amplitude=3pt},themealert,line width=.9pt]
+  (2.42,.55) -- (6.98,.55) node[midway,below=5pt,font=\scriptsize,text=themealert] {$1$：8 槽};
+\draw[decorate,decoration={brace,mirror,amplitude=3pt},themeamber,line width=.9pt]
+  (7.05,.55) -- (9.37,.55) node[midway,below=5pt,font=\scriptsize,text=themeamber] {$01$：4 槽};
+\draw[decorate,decoration={brace,mirror,amplitude=3pt},themecurve,line width=.9pt]
+  (9.37,.55) -- (11.69,.55) node[midway,below=5pt,font=\scriptsize,text=themecurve] {剩余：4 槽};
+\node[font=\small,text=themegray,anchor=west] at (2.65,-.15)
+  {$16-8-4=4$：最多再增加 4 个长度为 4 的码字；若问总字符数，则为 $2+4=6$。};
+
+\end{tikzpicture}
+\end{CJK*}
+\end{document}

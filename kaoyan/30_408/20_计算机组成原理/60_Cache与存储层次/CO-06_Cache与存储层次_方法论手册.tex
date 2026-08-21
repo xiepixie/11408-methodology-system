@@ -2,7 +2,7 @@
 \usepackage[a4paper,margin=1.75cm,headheight=15pt]{geometry}
 \usepackage{amsmath,amssymb,mathtools,booktabs,tabularx,array,enumitem}
 \usepackage[most]{tcolorbox}\usepackage{tikz}\usetikzlibrary{arrows.meta,positioning,calc}
-\usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage}
+\usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage,graphicx}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
 \setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}\setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
@@ -77,6 +77,29 @@ offset=b,\qquad index=s,\qquad tag=A-b-s.
 
 地址字段属于\textbf{请求}；Cache line 中保存的是 data 与 metadata。index/offset 并不是每一行都重复存储的字段。
 
+\subsection{地址位预算是不变量：几何参数变化时先看谁把位让给谁}
+对字节编址、2 的幂几何，地址宽度固定为 $A$ 时始终满足
+\[
+\boxed{A=tag+index+offset}.
+\]
+这条等式比记某一道“块变大以后 Tag 怎样变”的结论更稳定。结合
+\[
+S=\frac{C}{BE}
+\]
+可以直接生成常见微扰：
+\begin{itemize}
+  \item 固定 Cache 数据容量 $C$ 与相联度 $E$，块大小 $B$ 加倍：$offset+1$，组数减半所以 $index-1$，二者抵消，因此 $tag$ 不变；
+  \item 固定块大小和总 line 数，相联度 $E$ 加倍：组数减半，所以 $index-1$；$offset$ 不变，因此 $tag+1$；
+  \item 固定地址宽度与组数，块大小加倍：$offset+1$ 而 $index$ 不变，因此 $tag-1$。
+\end{itemize}
+所以“相联度提高”“块变大”都不能脱离\textbf{哪些总量保持不变}直接推出 Tag 变化。
+
+直接映射还有一个可作独立校验的数量关系。若主存与 Cache 使用相同块大小，主存块数与 Cache line 数之比为 $2^{tag}$，则
+\[
+tag=\log_2\!\left(\frac{N_{memory\ blocks}}{N_{cache\ lines}}\right).
+\]
+在主存容量与 Cache 数据容量均按相同编址粒度计量时，这个比值也等于两者容量之比。它只是直接映射、规则 2 的幂组织下的派生检查，不替代地址三分。
+
 \subsection{数据容量与物理总位数}
 若共有 $N_{lines}$ 条 line，则数据区位数为
 \[
@@ -105,6 +128,11 @@ $E$ 路组相联 & 同组 $E$ 条 line & 冲突与硬件成本折中 & 多 tag �
 set=block\ number\bmod S.
 \]
 组相联先由 index 定位一组，再并行/逻辑上比较组内候选 tag；全相联不需要 set index。相联度增大通常能减少 conflict miss，但也可能增加比较器、功耗和 hit path 延迟，不能只说“越大越好”。
+
+\begin{center}
+\resizebox{0.96\linewidth}{!}{\input{30_408/20_计算机组成原理/60_Cache与存储层次/assets/src/cache_mapping_body.tikz}}
+\end{center}
+同一个主存 block 在三种组织中只改变“候选 line 范围”；命中仍必须由 Valid 与 Tag 共同证明。图中的地址字段属于请求，不表示每条 Cache line 都保存 Index/Offset。
 
 \begin{center}
 \begin{tikzpicture}[node distance=0.72cm]

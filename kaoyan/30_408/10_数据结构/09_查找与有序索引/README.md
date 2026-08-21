@@ -26,5 +26,9 @@ Hash 的映射机制；具体实现细节超出 408 核心时标 Extension。
 - 完整实现：[`ds09_ordered_index.hpp`](code/ds09_ordered_index.hpp)
 - 断言测试：[`ds09_ordered_index_test.cpp`](code/ds09_ordered_index_test.cpp)
 
+## 训练导航
+- [折半查找、BST 与 AVL 推演](折半查找、BST与AVL推演.md)：区间不变量/判定树 → BST 路径 → AVL 两次方向与旋转；显式区分静态二分判定树和动态平衡索引。
+- [红黑树、B 树与 B+ 树状态判断](红黑树、B树与B加树状态判断.md)：红黑颜色/黑高不变量 → B 树阶与容量边界 → 插删分裂合并 → B+ 叶层与范围查找。
+
 ## Code Contract
 本册代码覆盖 BST 的查找、插入、三类删除分支、有序输出，以及 AVL 的 LL/RR/LR/RL 插入旋转、查找、高度和有序/平衡不变量。B/B+ 的根分裂、节点合并与外存 I/O 作为正文机制和后续扩展边界。
