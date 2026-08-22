@@ -4,24 +4,26 @@
 
 <style>
   @media print, (prefers-color-scheme: light) {
-    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #fafaf7 !important; }
+    [fill='#2e362c'], [fill='#2E362C'], [fill='#2e362c' i] { fill: #faf8f5 !important; }
+    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #faf8f5 !important; }
     [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }
+    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
     [fill='#9ea897'], [fill='#9EA897'], [fill='#9ea897' i] { fill: #666666 !important; }
     [fill='#7eb6ff'], [fill='#7EB6FF'], [fill='#7eb6ff' i] { fill: #1d63b8 !important; }
     [fill='#ff7b7b'], [fill='#FF7B7B'], [fill='#ff7b7b' i] { fill: #c53030 !important; }
     [fill='#f5b942'], [fill='#F5B942'], [fill='#f5b942' i] { fill: #b86e00 !important; }
     [fill='#c084fc'], [fill='#C084FC'], [fill='#c084fc' i] { fill: #7c3aed !important; }
     [fill='#4ade80'], [fill='#4ADE80'], [fill='#4ade80' i] { fill: #15803d !important; }
-    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
-    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }
+    [stroke='#2e362c'], [stroke='#2E362C'], [stroke='#2e362c' i] { stroke: #faf8f5 !important; }
+    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #faf8f5 !important; }
     [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }
+    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
     [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }
     [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }
     [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }
     [stroke='#f5b942'], [stroke='#F5B942'], [stroke='#f5b942' i] { stroke: #b86e00 !important; }
     [stroke='#c084fc'], [stroke='#C084FC'], [stroke='#c084fc' i] { stroke: #7c3aed !important; }
     [stroke='#4ade80'], [stroke='#4ADE80'], [stroke='#4ade80' i] { stroke: #15803d !important; }
-    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
   }
 </style>
 <defs>
@@ -86,7 +88,7 @@
 <path id='g31-93' d='M1.470486 2.241594V-6.724782H.19726V-6.339228H1.084932V1.85604H.19726V2.241594H1.470486Z'/>
 </defs>
 <g id='page1'>
-<rect x='-69.011212' y='-69.011213' width='353.608747' height='232.619666' fill='#30362d'/>
+<rect x='-69.011212' y='-69.011213' width='353.608747' height='232.619666' fill='#2e362c'/>
 <g stroke-miterlimit='10' transform='translate(-35.072503,117.731617)scale(0.996264,-0.996264)'>
 <g fill='#000' stroke='#000'>
 <g stroke-width='0.4'>
@@ -318,8 +320,8 @@
 <path d='M198.03076 160.47302L226.71095 146.47417' fill='none'/>
 </g>
 </g>
-<g fill='#30362d'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
+<g fill='#2e362c'>
 <path d='M13.12146-8.78223H21.02176V-1.90726H13.12146Z' stroke='none'/>
 </g>
 <g transform='translate(14.62146,-7.28223)'>
@@ -334,8 +336,8 @@
 </g>
 </g>
 </g>
-<g fill='#30362d'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
+<g fill='#2e362c'>
 <path d='M124.71262-14.75714H162.09022V-1.90726H124.71262Z' stroke='none'/>
 </g>
 <g transform='translate(126.21262,-11.00714)'>
@@ -358,8 +360,8 @@
 </g>
 </g>
 </g>
-<g fill='#30362d'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
+<g fill='#2e362c'>
 <path d='M269.66382-11.15726H276.62769V-1.90726H269.66382Z' stroke='none'/>
 </g>
 <g transform='translate(271.16382,-9.65726)'>
@@ -374,8 +376,8 @@
 </g>
 </g>
 </g>
-<g fill='#30362d'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
+<g fill='#2e362c'>
 <path d='M53.11531-12.90726H64.33741V-1.90726H53.11531Z' stroke='none'/>
 </g>
 <g transform='translate(54.61531,-9.65726)'>
@@ -391,8 +393,8 @@
 </g>
 </g>
 </g>
-<g fill='#30362d'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
+<g fill='#2e362c'>
 <path d='M221.0999-12.90726H232.322V-1.90726H221.0999Z' stroke='none'/>
 </g>
 <g transform='translate(222.5999,-9.65726)'>

@@ -127,7 +127,7 @@
 <path id='g53-57' d='M2.460772-1.58406C2.460772-1.270237 2.440847-.891656 2.271482-.597758C2.107098-.308842 1.8132-.094645 1.409714-.094645C1.354919-.094645 1.051059-.094645 .881694-.214197C1.006227-.249066 1.080946-.343711 1.080946-.473225C1.080946-.632628 .961395-.737235 .816936-.737235C.732254-.737235 .552927-.692403 .552927-.458281C.552927 .109589 1.285181 .109589 1.419676 .109589C2.256538 .109589 2.988792-.60274 2.988792-1.633873C2.988792-2.839352 2.400996-3.317559 1.713574-3.317559C1.215442-3.317559 .971357-3.143213 .772105-2.973848C.463263-2.719801 .398506-2.445828 .398506-2.191781C.398506-1.907846 .483188-1.653798 .752179-1.419676C.986301-1.210461 1.215442-1.080946 1.638854-1.080946C1.843088-1.080946 2.201743-1.150685 2.460772-1.58406ZM1.648817-1.250311C1.449564-1.250311 1.260274-1.285181 1.080946-1.50934C.931507-1.693649 .926526-1.897883 .926526-2.191781C.926526-2.550436 .941469-2.699875 1.13076-2.899128C1.205479-2.983811 1.354919-3.128269 1.713574-3.128269C2.445828-3.128269 2.445828-2.306351 2.445828-2.092154C2.445828-1.678705 2.15193-1.250311 1.648817-1.250311Z'/>
 </defs>
 <g id='page1'>
-<rect x='-69.011212' y='-69.011213' width='371.255851' height='288.484483' fill='#fafaf7'/>
+<rect x='-69.011212' y='-69.011213' width='371.255851' height='288.484483' fill='#faf8f5'/>
 <g stroke-miterlimit='10' transform='translate(-64.905895,49.945091)scale(0.996264,-0.996264)'>
 <g fill='#000' stroke='#000'>
 <g stroke-width='0.4'>
@@ -307,8 +307,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M10.19489 63.15761H20.03537V68.7715H10.19489Z' stroke='none'/>
 </g>
 <g transform='translate(10.99489,64.95761)'>
@@ -324,8 +324,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M100.88565 63.15761H110.72613V68.7715H100.88565Z' stroke='none'/>
 </g>
 <g transform='translate(101.68565,64.95761)'>
@@ -341,8 +341,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M191.57642 63.15761H201.4169V68.7715H191.57642Z' stroke='none'/>
 </g>
 <g transform='translate(192.37642,64.95761)'>
@@ -358,8 +358,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M282.26718 63.15761H292.10766V68.7715H282.26718Z' stroke='none'/>
 </g>
 <g transform='translate(283.06718,64.95761)'>
@@ -375,8 +375,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M305.52557 70.10445H340.76031V78.70445H305.52557Z' stroke='none'/>
 </g>
 <g transform='translate(306.32558,72.65445)'>
@@ -396,8 +396,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M40.42514 45.98735H50.26562V51.60124H40.42514Z' stroke='none'/>
 </g>
 <g transform='translate(41.22514,47.78735)'>
@@ -413,8 +413,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M131.1159 45.98735H140.95638V51.60124H131.1159Z' stroke='none'/>
 </g>
 <g transform='translate(131.91591,47.78735)'>
@@ -430,8 +430,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M221.80667 45.98735H231.64715V51.60124H221.80667Z' stroke='none'/>
 </g>
 <g transform='translate(222.60667,47.78735)'>
@@ -447,8 +447,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M305.52557 52.93419H354.52734V61.53419H305.52557Z' stroke='none'/>
 </g>
 <g transform='translate(306.32558,55.48419)'>
@@ -470,8 +470,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M63.31665 11.00383H87.83462V18.11494H63.31665Z' stroke='none'/>
 </g>
 <g transform='translate(64.11665,12.80383)'>
@@ -489,8 +489,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M154.00742 11.00383H178.52539V18.11494H154.00742Z' stroke='none'/>
 </g>
 <g transform='translate(154.80742,12.80383)'>
@@ -508,8 +508,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M244.69818 11.00383H269.21615V18.11494H244.69818Z' stroke='none'/>
 </g>
 <g transform='translate(245.49818,12.80383)'>
@@ -527,8 +527,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M305.52557 35.42953H368.52734V44.69833H305.52557Z' stroke='none'/>
 </g>
 <g transform='translate(306.32558,37.97954)'>
@@ -692,8 +692,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M18.33815 86.20967H40.62956V92.593H18.33815Z' stroke='none'/>
 </g>
 <g transform='translate(19.13815,87.00967)'>
@@ -717,8 +717,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M18.33815 15.21745H47.24867V22.43412H18.33815Z' stroke='none'/>
 </g>
 <g transform='translate(19.13815,16.8508)'>
@@ -953,8 +953,8 @@
 </g>
 </g>
 <g stroke-width='0.4'>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M75.77563 101.29909H85.61611V106.91298H75.77563Z' stroke='none'/>
 </g>
 <g transform='translate(76.57564,103.09909)'>
@@ -970,8 +970,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M136.23615 93.75438H146.07663V99.36827H136.23615Z' stroke='none'/>
 </g>
 <g transform='translate(137.03615,95.55438)'>
@@ -987,8 +987,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M45.54538 1.73082H55.38586V7.34471H45.54538Z' stroke='none'/>
 </g>
 <g transform='translate(46.34538,3.53082)'>
@@ -1004,8 +1004,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M106.00589 7.76659H115.84637V13.38048H106.00589Z' stroke='none'/>
 </g>
 <g transform='translate(106.8059,9.56659)'>

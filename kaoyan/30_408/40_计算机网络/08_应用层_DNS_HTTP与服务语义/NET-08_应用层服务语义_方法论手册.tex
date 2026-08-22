@@ -345,6 +345,14 @@ FTP 传“副本”而非像 NFS 那样透明联机访问；ASCII 模式可做�
 
 \subsection{DNS：递归责任与迭代 referral 分开}
 
+\begin{figure}[htbp]
+  \centering
+  \resizebox{0.96\linewidth}{!}{\input{assets/src/dns_recursive_iterative_body.tikz}}
+  \caption{DNS 域名系统：递归查询与迭代查询分级权威解析}
+  \label{fig:dns-query-modes}
+\end{figure}
+
+
 stub 向 recursive resolver 发送 query（name、type、class、transaction ID 等）；resolver 先查 cache。未命中时，它依次向 root、TLD 和 authoritative server 发迭代查询，referral 通过 NS 及必要的 glue/address 信息指出下一位 authority；最终 answer 或 negative result 按 TTL 缓存并返回 stub。收到 response 时必须核对 query identity/匹配字段；TTL 到期后旧 cache 不再直接回答。UDP 是经典普通查询的常见承载，截断或 zone transfer 等分支可转 TCP，不能把承载写成唯一语义。
 
 \subsection{HTTP：请求语义与连接时延分开}

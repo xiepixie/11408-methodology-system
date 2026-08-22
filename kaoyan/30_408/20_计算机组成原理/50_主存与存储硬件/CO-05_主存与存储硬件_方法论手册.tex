@@ -1,7 +1,7 @@
 \documentclass[UTF8,fontset=fandol,11pt,a4paper]{ctexart}
 \usepackage[a4paper,margin=1.75cm,headheight=15pt]{geometry}
 \usepackage{amsmath,amssymb,mathtools,booktabs,tabularx,array,enumitem}
-\usepackage[most]{tcolorbox}\usepackage{tikz}\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage[most]{tcolorbox}\usepackage{tikz}\usetikzlibrary{arrows.meta,positioning,calc,fit}
 \usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \setlength{\parindent}{2em}\setlength{\parskip}{0.34em}\setlength{\emergencystretch}{3em}\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{3pt}
@@ -142,6 +142,10 @@ n=n_{width}n_{depth}.
 全译码使用所有需要的高位地址，地址唯一；部分译码忽略部分高位，电路更省但可能产生地址重影；线选可能浪费地址空间。\kw{“这个地址能读到数据”不等于“它只对应这一个物理单元”。}
 
 \begin{center}
+\input{assets/src/memory_chip_expansion_body.tikz}
+\end{center}
+
+\begin{center}
 \begin{tikzpicture}[node distance=0.62cm]
 \node[co] (cpu) {CPU / Controller\\Address + R/W};
 \node[co,right=of cpu] (sel) {Module / Chip\\Select};
@@ -162,6 +166,10 @@ local(a)=\left\lfloor\frac{a}{m}\right\rfloor.
 若按字、块或更大粒度交叉，应先把地址换成对应粒度编号再取模。高位交叉更像把大段连续地址分区到不同模块，不能自动获得顺序流的 Bank 并行。
 
 两个请求落到同一 Bank 只是\textbf{潜在冲突条件}；是否真正冲突还取决于到达间隔和单体忙时间。
+
+\begin{center}
+\input{assets/src/interleaved_memory_timing_body.tikz}
+\end{center}
 
 设单体存储周期为 $T$，连续请求的传送/启动节拍为 $\tau$，有 $m$ 个体且无冲突；在经典流水模型满足 $T\le m\tau$ 时，\textbf{单个不间断连续流}读 $q$ 个字可写成
 \[

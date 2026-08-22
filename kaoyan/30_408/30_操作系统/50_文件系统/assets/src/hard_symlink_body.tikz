@@ -1,0 +1,72 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  panel/.style={draw=themegray!50,rounded corners=6pt,fill=themefg!2!themebg,inner sep=8pt},
+  dentry/.style={draw=themecurve,rounded corners=3pt,minimum width=2.6cm,minimum height=.75cm,align=center,fill=themecurve!8!themebg,font=\scriptsize\bfseries,text=themecurve},
+  inodebox/.style={draw=themegreen,rounded corners=3pt,minimum width=2.8cm,minimum height=.75cm,align=center,fill=themegreen!8!themebg,font=\scriptsize\bfseries,text=themegreen},
+  symbox/.style={draw=themeamber,rounded corners=3pt,minimum width=3.2cm,minimum height=.75cm,align=center,fill=themeamber!8!themebg,font=\scriptsize\bfseries,text=themeamber},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themecurve},
+  sflow/.style={->,line width=1.1pt,themeamber},
+  gflow/.style={->,line width=1.1pt,themegreen},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {硬链接 vs 符号链接（软链接）：命名目录项与独立文件对象的本质区别};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.0)
+  {本质差异：硬链接是同一 Inode 的多个目录别名（引用计数加 1）；符号链接是包含目标路径字符串的独立文件对象（拥有独立 Inode）。};
+
+% ══════════════════════════════════════════════════════════════
+% ── Panel A: 硬链接 (Hard Link) (x = 0 .. 8.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(0,1.8)}]
+  \draw[panel] (0,0) rectangle (8.4,5.8);
+  \node[font=\bfseries\normalsize,text=themecurve] at (4.2,5.3) {A. 硬链接 (Hard Link)：共享同一 Inode};
+
+  \node[dentry] (d_a) at (1.8,4.0) {目录项 A\\文件名: \texttt{file.txt}};
+  \node[dentry] (d_b) at (1.8,2.2) {目录项 B\\文件名: \texttt{link.txt}};
+
+  \node[inodebox] (in_x) at (6.0,3.1) {共享 Inode 101\\$\text{link\_count} = 2$\\指向物理数据块};
+
+  \draw[flow] (d_a.east) -- (in_x.west);
+  \draw[flow] (d_b.east) -- (in_x.west);
+
+  \node[anchor=north,font=\scriptsize,text=themefg,align=center] at (4.2,1.2)
+    {删除 \texttt{file.txt} 仅使 $\text{link\_count} \leftarrow 1$\\文件数据仍可通过 \texttt{link.txt} 正常访问};
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── Panel B: 符号链接 (Symbolic Link) (x = 9.0 .. 17.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(9.0,1.8)}]
+  \draw[panel] (0,0) rectangle (8.4,5.8);
+  \node[font=\bfseries\normalsize,text=themeamber] at (4.2,5.3) {B. 符号链接 (Soft Link)：独立 Inode 存路径};
+
+  \node[dentry] (s_dentry) at (1.6,4.0) {目录项\\文件名: \texttt{sym.lnk}};
+  \node[symbox] (s_inode) at (5.5,4.0) {独立 Inode 202\\数据: \texttt{"/a/file.txt"}};
+  \node[inodebox] (s_target) at (5.5,2.2) {目标 Inode 101\\(真实数据块)};
+
+  \draw[flow] (s_dentry) -- (s_inode);
+  \draw[sflow] (s_inode) -- node[right=2pt,lbl,text=themeamber] {路径解析 (Path Resolution)} (s_target);
+
+  \node[anchor=north,font=\scriptsize,text=themeamber,align=center] at (4.2,1.2)
+    {若源文件 \texttt{/a/file.txt} 被删除\\符号链接依然存在，但变为“死链接 (Dangling)”};
+\end{scope}
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,0.85)
+  {\textbf{核心对比速查表：}\\
+   $\bullet$ \textbf{跨文件系统}：硬链接\textbf{不能}跨文件系统（Inode 号在分区内局部有效）；符号链接\textbf{可以}跨文件系统；\\
+   $\bullet$ \textbf{目录链接}：硬链接通常\textbf{不允许链接目录}（防止目录成环造成无限循环）；符号链接\textbf{允许链接目录}；\\
+   $\bullet$ \textbf{文件大小}：硬链接大小等于目标文件大小；符号链接大小等于\textbf{路径字符串长度}（字节数）。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.2)
+  {禁止误读：删除文件操作 (unlink) 永远只是删除目录项并使 Inode 的 link\_count 减 1；当且仅当引用计数为 0 时才真正释放物理盘块。};
+\end{tikzpicture}

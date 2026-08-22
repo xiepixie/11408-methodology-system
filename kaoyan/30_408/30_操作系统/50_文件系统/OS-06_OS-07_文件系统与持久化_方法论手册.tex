@@ -390,6 +390,10 @@ D_0 \xrightarrow{home} D_1 \xrightarrow{user} D_2 \xrightarrow{a.txt} I.
 
 相对符号链接保存的是路径字符串，解析起点通常是链接所在目录；绝对符号链接从根开始。删除目标只会留下 dangling link，不会自动删除链接对象。硬链接与符号链接的判断顺序应固定为：是否共享同一 inode、是否增加目标 link count、能否跨文件系统、目标删除后是否仍可沿链接访问。
 
+\begin{center}
+\input{assets/src/hard_symlink_body.tikz}
+\end{center}
+
 \section{第 3 章：VFS 与 Mount——把多个文件系统拼成一个命名空间}
 
 \subsection{为什么需要 VFS}
@@ -455,39 +459,7 @@ POSIX 语义中，每次成功 \code{open()} 创建一个新的打开文件描�
 
 \subsection{三种最重要的共享关系}
 \begin{center}
-\begin{tikzpicture}[x=3.30cm,y=1.55cm]
-  % independent
-  \node[font=\small\bfseries] at (0.45,0.65) {Independent open};
-  \node[fsnode] (a1) at (0,0) {fd=3\\[-1pt]\scriptsize process A};
-  \node[fsnodep] (a2) at (0,-1) {OFD \#1\\[-1pt]\scriptsize offset=100};
-  \node[fsnodeg] (ai) at (0.45,-2) {inode X};
-  \draw[refedge] (a1) -- (a2); \draw[refedge] (a2) -- (ai);
-  \node[fsnode] (b1) at (0.9,0) {fd=7\\[-1pt]\scriptsize process B};
-  \node[fsnodep] (b2) at (0.9,-1) {OFD \#2\\[-1pt]\scriptsize offset=0};
-  \draw[refedge] (b1) -- (b2); \draw[refedge] (b2) -- (ai);
-  % fork
-  \node[font=\small\bfseries] at (2.45,0.65) {fork};
-  \node[fsnode] (pfd) at (2.0,0) {Parent fd};
-  \node[fsnode] (cfd) at (2.9,0) {Child fd};
-  \node[fsnodep] (fofd) at (2.45,-1) {same OFD\\[-1pt]\scriptsize shared offset};
-  \node[fsnodeg] (fi) at (2.45,-2) {inode Y};
-  \draw[refedge] (pfd) -- (fofd); \draw[refedge] (cfd) -- (fofd); \draw[refedge] (fofd) -- (fi);
-\end{tikzpicture}
-\captionof{figure}{独立 open 产生独立 OFD；fork 后对应 fd 引用同一 OFD，因此共享 file offset。}
-\end{center}
-
-\begin{center}
-\begin{tikzpicture}[x=3.4cm,y=1.5cm]
-  \node[font=\small\bfseries] at (1,0.65) {dup / dup2};
-  \node[fsnode] (fd3) at (0,0) {fd=3};
-  \node[fsnode] (fd8) at (2,0) {fd=8};
-  \node[fsnodep] (ofd) at (1,-1) {same OFD\\[-1pt]\scriptsize offset + status};
-  \node[fsnodeg] (inode) at (1,-2) {inode Z};
-  \draw[refedge] (fd3) -- (ofd);
-  \draw[refedge] (fd8) -- (ofd);
-  \draw[refedge] (ofd) -- (inode);
-\end{tikzpicture}
-\captionof{figure}{dup 不会再次 open，而是增加一个 fd 句柄指向同一个 OFD。}
+\input{assets/src/fd_ofd_inode_body.tikz}
 \end{center}
 
 \subsection{一个稳定的题目判断法}
@@ -655,45 +627,7 @@ LBN\xrightarrow{index}PBN.
 \]
 
 \begin{center}
-\begin{tikzpicture}[x=2.10cm,y=1.20cm]
-  \tikzset{
-    idxnode/.style={draw=deeporange, thick, fill=softorange, rounded corners=1.5mm, align=center, minimum width=1.85cm, minimum height=0.75cm, font=\scriptsize\bfseries},
-    dtanode/.style={draw=deepgreen, thick, fill=softgreen, double, rounded corners=1.5mm, align=center, minimum width=1.85cm, minimum height=0.75cm, font=\scriptsize\bfseries},
-    rootnode/.style={draw=mainblue, thick, fill=softblue, rounded corners=1.5mm, align=center, minimum width=1.85cm, minimum height=0.75cm, font=\scriptsize\bfseries},
-    levnode/.style={draw=purple, thick, fill=softpurple, rounded corners=1.5mm, align=center, minimum width=1.85cm, minimum height=0.75cm, font=\scriptsize\bfseries}
-  }
-  \node[rootnode] (ino) at (0,0) {inode\\[-1pt]\tiny mixed index};
-  
-  \node[levnode] (d) at (1,1.15) {Direct\\[-1pt]\tiny 直接指向};
-  \node[levnode] (s) at (1,0.38) {Single\\[-1pt]\tiny 单重间接};
-  \node[levnode] (q) at (1,-0.38) {Double\\[-1pt]\tiny 双重间接};
-  \node[levnode] (t) at (1,-1.15) {Triple\\[-1pt]\tiny 三重间接};
-  
-  % Direct
-  \node[dtanode] (bd) at (2,1.15) {Data Block\\[-1pt]\tiny 数据块};
-  
-  % Single
-  \node[idxnode] (i1) at (2,0.38) {Index Block\\[-1pt]\tiny 一级索引块};
-  \node[dtanode] (bs) at (3,0.38) {Data Block\\[-1pt]\tiny 数据块};
-  
-  % Double
-  \node[idxnode] (i2a) at (2,-0.38) {L2 Index\\[-1pt]\tiny 二级索引表};
-  \node[idxnode] (i2b) at (3,-0.38) {L1 Index\\[-1pt]\tiny 一级索引表};
-  \node[dtanode] (bq) at (4,-0.38) {Data Block\\[-1pt]\tiny 数据块};
-  
-  % Triple
-  \node[idxnode] (i3a) at (2,-1.15) {L3 Index\\[-1pt]\tiny 三级索引表};
-  \node[idxnode] (i3b) at (3,-1.15) {L2 Index\\[-1pt]\tiny 二级索引表};
-  \node[idxnode] (i3c) at (4,-1.15) {L1 Index\\[-1pt]\tiny 一级索引表};
-  \node[dtanode] (bt) at (5,-1.15) {Data Block\\[-1pt]\tiny 数据块};
-  
-  \draw[refedge] (ino) -- (d); \draw[refedge] (ino) -- (s); \draw[refedge] (ino) -- (q); \draw[refedge] (ino) -- (t);
-  \draw[refedge] (d) -- (bd);
-  \draw[refedge] (s) -- (i1); \draw[refedge] (i1) -- (bs);
-  \draw[refedge] (q) -- (i2a); \draw[refedge] (i2a) -- (i2b); \draw[refedge] (i2b) -- (bq);
-  \draw[refedge] (t) -- (i3a); \draw[refedge] (i3a) -- (i3b); \draw[refedge] (i3b) -- (i3c); \draw[refedge] (i3c) -- (bt);
-\end{tikzpicture}
-\captionof{figure}{经典 inode 混合索引。每增加一级间接，就多一次索引块解析机会与空间层级。}
+\input{assets/src/inode_mixed_index_body.tikz}
 \end{center}
 
 \subsection{I/O 次数一定先写缓存假设}

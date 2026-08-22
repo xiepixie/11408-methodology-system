@@ -67,6 +67,14 @@ HARD_GATES = (
         (sys.executable, "kaoyan/00_system/tools/validate_exam_archive_spec.py", "--exam", "math1", "--quiet"),
     ),
     Gate("Math1 Canonical Source", (sys.executable, "kaoyan/00_system/tools/check_math1_exam_source.py", "--quiet")),
+    Gate(
+        "English Daily Reading",
+        (
+            sys.executable,
+            "kaoyan/20_英语一/10_阅读/daily_reading/00_system/tools/check_daily_reading.py",
+            "--smoke",
+        ),
+    ),
 )
 
 

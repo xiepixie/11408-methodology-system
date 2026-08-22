@@ -1,0 +1,63 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  panel/.style={draw=themegray!50,rounded corners=6pt,fill=themefg!2!themebg,inner sep=8pt},
+  box_cli/.style={draw=themecurve,rounded corners=3pt,minimum width=2.4cm,minimum height=.75cm,align=center,fill=themecurve!10!themebg,font=\scriptsize\bfseries,text=themecurve},
+  box_dns/.style={draw=themeamber,rounded corners=3pt,minimum width=2.6cm,minimum height=.75cm,align=center,fill=themeamber!10!themebg,font=\scriptsize\bfseries,text=themeamber},
+  box_srv/.style={draw=themegreen,rounded corners=3pt,minimum width=2.6cm,minimum height=.75cm,align=center,fill=themegreen!10!themebg,font=\scriptsize\bfseries,text=themegreen},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow_q/.style={->,line width=1.1pt,themecurve},
+  flow_r/.style={->,line width=1.1pt,themeamber,dashed},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.8) {DNS 域名系统：递归查询（客户端到本地域名服务器）与迭代查询（分级权威）};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.2)
+  {解析场景：主机查询 \texttt{www.abc.com}。主机到本地域名服务器采用递归查询；本地域名服务器向上级采用迭代查询。};
+
+% ── 拓扑节点定义 ──
+\node[box_cli] (host) at (1.4,5.0) {客户端主机\\(Client)};
+\node[box_dns] (local) at (5.2,5.0) {本地域名服务器\\(Local DNS)};
+
+\node[box_srv] (root) at (14.0,7.3) {根域名服务器\\(Root DNS)};
+\node[box_srv] (tld) at (14.0,5.0) {顶级域名服务器\\(.com TLD)};
+\node[box_srv] (auth) at (14.0,2.7) {权威域名服务器\\(abc.com Auth)};
+
+% ── 递归查询 (主机 <-> Local DNS) ──
+\draw[flow_q] (host.north east) to[out=25,in=155] node[above=1pt,lbl,text=themecurve] {1. 递归查询: \texttt{www.abc.com}} (local.north west);
+\draw[flow_r] (local.south west) to[out=-155,in=-25] node[below=1pt,lbl,text=themegreen] {8. 最终返回 IP 结果} (host.south east);
+
+% ── 迭代查询 (Local DNS <-> 上级服务器) ──
+% 步骤 2 & 3: 根 (y 范围 6.0 .. 7.5)
+\draw[flow_q] (6.5,5.6) to[out=30,in=180] node[pos=0.45,above=2pt,lbl,text=themecurve] {2. 查询根} (root.west);
+\draw[flow_r] (root.south west) to[out=-155,in=15] node[pos=0.6,below=2pt,lbl,text=themeamber] {3. 推荐 .com TLD} (6.5,5.3);
+
+% 步骤 4 & 5: TLD (y 范围 4.7 .. 5.2)
+\draw[flow_q] (6.5,5.0) -- node[pos=0.5,above=2pt,lbl,text=themecurve] {4. 查询 .com} (12.7,5.0);
+\draw[flow_r] (12.7,4.6) -- node[pos=0.5,below=2pt,lbl,text=themeamber] {5. 推荐 abc.com 权威} (6.5,4.6);
+
+% 步骤 6 & 7: 权威 (y 范围 2.5 .. 4.5)
+\draw[flow_q] (6.5,4.3) to[out=-15,in=160] node[pos=0.55,above=2pt,lbl,text=themecurve] {6. 查询权威} (auth.north west);
+\draw[flow_r] (auth.west) to[out=-175,in=-30] node[pos=0.45,below=2pt,lbl,text=themegreen] {7. 返回目标 IP 地址} (6.5,4.0);
+
+% ── 本地缓存机制 ──
+\node[draw=themegreen,rounded corners=3pt,fill=themegreen!8!themebg,font=\tiny\bfseries,text=themegreen,anchor=north,align=center] at (5.2,3.4)
+  {DNS 高速缓存 (TTL 倒计时)\\命中直接返回 8，无需发起 2..7};
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,1.0)
+  {\textbf{DNS 递归 vs 迭代查询核心区别：}\\
+   1. \textbf{递归查询 (Recursive)}：被询问服务器承担“包办到底”责任，自身去查询其他服务器并最终返回 IP（客户端 $\leftrightarrow$ 本地 DNS）；\\
+   2. \textbf{迭代查询 (Iterative)}：被询问服务器仅返回“下一级服务器地址”，由请求方自己再去向下一级发起查询（本地 DNS $\leftrightarrow$ 根/TLD/权威）；\\
+   3. \textbf{传输层承载}：常规域名解析使用 \textbf{UDP 53}（开销小、响应快）；区域传送 (Zone Transfer) 使用 \textbf{TCP 53}（保证主从同步可靠性）。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.15)
+  {禁止误读：根域名服务器通常不直接返回目标主机的 IP，而是返回负责顶级域名 (.com, .cn) 的 TLD 服务器地址。};
+\end{tikzpicture}

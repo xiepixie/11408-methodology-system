@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="360" height="300">
   <style>
-    .bg { fill: #fafaf7; }
+    .bg { fill: #faf8f5; }
     .fg { stroke: #111111; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .axis { stroke: #111111; stroke-width: 1.8; fill: none; }
     .grid { stroke: #eceee8; stroke-width: 1; stroke-dasharray: 4,4; fill: none; }

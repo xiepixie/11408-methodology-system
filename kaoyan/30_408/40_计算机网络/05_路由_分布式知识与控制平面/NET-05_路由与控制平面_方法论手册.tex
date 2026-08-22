@@ -203,6 +203,14 @@ Split horizon、poison reverse、triggered update 分别减少回告、明确宣
 
 \subsection{RIP 报文与定时器流程}
 
+\begin{figure}[htbp]
+  \centering
+  \resizebox{0.96\linewidth}{!}{\input{assets/src/rip_count_to_infinity_body.tikz}}
+  \caption{RIP 路由协议计数到无穷与毒性反转防环机制}
+  \label{fig:rip-count-infinity}
+\end{figure}
+
+
 经典 RIP 题可以按下面的状态轨迹写：
 \[
 \begin{gathered}

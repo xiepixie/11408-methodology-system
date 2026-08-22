@@ -1,0 +1,65 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  box/.style={draw=themegray,rounded corners=3pt,minimum width=3.2cm,minimum height=.82cm,align=center,fill=themefg!3!themebg},
+  pbox/.style={box,draw=themecurve,fill=themecurve!8!themebg,font=\scriptsize\bfseries,text=themecurve},
+  vbox/.style={box,draw=themegreen,fill=themegreen!8!themebg,font=\scriptsize\bfseries,text=themegreen},
+  waitbox/.style={box,draw=themealert,fill=themealert!8!themebg,font=\scriptsize\bfseries,text=themealert},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themecurve},
+  vflow/.style={->,line width=1.1pt,themegreen},
+  wflow/.style={->,line width=1.1pt,themealert},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {信号量 P/V：许可计数回答“能否继续”，等待队列保存“谁在等待”};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.0)
+  {原子性语义：$P(S)$（申请资源，值减 1）与 $V(S)$（释放资源，值加 1）。计数值 $S.value < 0$ 的绝对值精确等于等待队列中的阻塞进程数。};
+
+% ══════════════════════════════════════════════════════════════
+% ── 上半部：P(S) 操作流 (y = 5.4) ──
+% ══════════════════════════════════════════════════════════════
+\node[pbox] (p_req) at (1.8,5.4) {进程执行 $P(S)$\\(Wait / 申请许可)};
+\node[box] (p_dec) at (6.0,5.4) {原子执行 $S.value \leftarrow S.value - 1$};
+
+\node[pbox] (p_pass) at (11.0,6.3) {$S.value \ge 0$\\获得许可，继续执行};
+\node[waitbox] (p_block) at (11.0,4.5) {$S.value < 0$\\无可用资源，自我阻塞入队};
+
+\draw[flow] (p_req) -- (p_dec);
+\draw[flow] (p_dec.east) to[out=25,in=180] node[pos=0.45,lbl,text=themecurve] {有剩余资源} (p_pass.west);
+\draw[wflow] (p_dec.east) to[out=-25,in=180] node[pos=0.45,lbl,text=themealert] {资源不足} (p_block.west);
+
+% ══════════════════════════════════════════════════════════════
+% ── 下半部：V(S) 操作流 (y = 2.8) ──
+% ══════════════════════════════════════════════════════════════
+\node[vbox] (v_req) at (1.8,2.8) {进程执行 $V(S)$\\(Signal / 释放许可)};
+\node[box] (v_inc) at (6.0,2.8) {原子执行 $S.value \leftarrow S.value + 1$};
+
+\node[box] (v_none) at (11.0,3.5) {$S.value > 0$\\无等待进程，仅递增计数};
+\node[vbox] (v_wake) at (11.0,2.1) {$S.value \le 0$\\从等待队列唤醒一个进程};
+
+\draw[vflow] (v_req) -- (v_inc);
+\draw[vflow] (v_inc.east) to[out=20,in=180] node[pos=0.45,lbl,text=themegray] {队列为空} (v_none.west);
+\draw[vflow] (v_inc.east) to[out=-20,in=180] node[pos=0.45,lbl,text=themegreen] {队列非空} (v_wake.west);
+
+% 唤醒后转就绪
+\node[box,draw=themegreen,anchor=west] (ready_node) at (13.8,2.1) {移入就绪队列 (Ready)\\等待 CPU 调度};
+\draw[vflow] (v_wake) -- (ready_node);
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,0.85)
+  {\textbf{经典记录型信号量定义与物理含义：}\\
+   $\bullet$ $S.value > 0$：表示当前系统中\textbf{可用空闲资源数}；\\
+   $\bullet$ $S.value = 0$：表示资源恰好分配完毕，且\textbf{等待队列为空}；\\
+   $\bullet$ $S.value < 0$：表示资源已耗尽，且 $|S.value|$ 精确等于当前\textbf{在等待队列中阻塞的进程总数}。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.2)
+  {禁止误读：$V(S)$ 唤醒阻塞进程只是将其状态变为 Ready 并挂入就绪队列，\textbf{绝不等于立即抢占 CPU 运行}。};
+\end{tikzpicture}

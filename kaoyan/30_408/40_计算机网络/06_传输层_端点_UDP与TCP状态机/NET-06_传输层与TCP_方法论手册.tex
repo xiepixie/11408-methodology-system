@@ -511,6 +511,14 @@ SACK 不替代 cumulative ACK。若连续前缀到 1000，已额外收到 $[1501
 
 \section{流量控制核验层：零窗口、小报文与吞吐上界}
 
+\begin{figure}[htbp]
+  \centering
+  \resizebox{0.96\linewidth}{!}{\input{assets/src/tcp_flow_control_rwnd_body.tikz}}
+  \caption{TCP 流量控制：rwnd 通告、零窗口死锁与持续计时器探测}
+  \label{fig:tcp-rwnd-flow-control}
+\end{figure}
+
+
 接收端窗口是动态库存：data 到达增加 buffered unread bytes，应用读取减少它们。因此 rwnd 可增也可减，且不超过 receive buffer capacity。发送端当前可发新数据仍应计算
 \[
 W_{usable}=\max\{0,\min(rwnd,cwnd)-\mathrm{FlightSize}\}.

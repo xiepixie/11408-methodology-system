@@ -72,16 +72,10 @@
 \begin{corebox}{母问题：一条指令承诺的状态变化，怎样由有限硬件真正发生？}
 ISA 只规定软件应当观察到什么变化；数据通路和控制器必须决定这些变化由哪些值、部件、路径和时钟边界实现。本册的生成链是
 \[
-\boxed{
-\text{ISA State Delta}
-\to\text{Required Values}
-\to\text{Producer--Consumer Graph}
-\to\text{Datapath}
-\to\text{Resource Schedule}
-\to\text{Control Word}
-\to\text{Clock Boundary}
-\to\text{Precise Commit}
-}
+\boxed{\begin{aligned}
+\text{ISA State Delta}&\to\text{Required Values}\to\text{Producer--Consumer Graph}\to\text{Datapath}\\
+&\to\text{Resource Schedule}\to\text{Control Word}\to\text{Clock Boundary}\to\text{Precise Commit}
+\end{aligned}}
 \]
 箭头表示设计依赖：后一步必须能够实现前一步，而不能反过来用某张教材通路图篡改指令语义。
 \end{corebox}
@@ -256,11 +250,10 @@ MUX & 从候选来源中选一路 & 被选来源语义正确 & 选择信号、�
 
 \begin{corebox}{数据通路和控制通路的分工}
 \[
-\boxed{
-\text{Datapath: what values can move and transform}
-\qquad
-\text{Control: which legal movement happens now}
-}
+\boxed{\begin{aligned}
+\text{Datapath: }&\text{what values can move and transform}\\
+\text{Control: }&\text{which legal movement happens now}
+\end{aligned}}
 \]
 数据通路提供可能性集合；控制器按指令、阶段和条件选出当前合法转移。
 \end{corebox}
@@ -291,6 +284,10 @@ T_{clk}\ge T_{cq}+T_{comb,max}+T_{setup}+T_{skew}.
 \begin{warnbox}{单总线规则}
 同一时刻通常只允许一个源驱动总线；多个目标可以锁存同一个总线值。两条箭头画得下，不代表两个不同源能够同时输出。
 \end{warnbox}
+
+\begin{center}
+\input{assets/src/single_bus_microops_body.tikz}
+\end{center}
 
 \section{单周期与多周期：同一依赖图的两种调度}
 
@@ -368,6 +365,10 @@ T_{instr}(i)=C_iT_{clk}^{multi}.
 \subsection{微程序控制}
 
 微程序控制把控制字和下一微地址组织为微指令，存放在控制存储器中。机器指令触发某段微程序入口，微顺序器按条件选择后继微指令。
+
+\begin{center}
+\input{assets/src/microprogram_control_loop_body.tikz}
+\end{center}
 
 \begin{center}
 \small
@@ -658,11 +659,10 @@ CPU 数据通路与控制的任务，是把 ISA 的状态差翻译成值依赖�
 
 CPU 结构、指令周期、单周期/多周期、单总线、硬布线和微程序都可以压回同一条生成链：
 \[
-\text{Architectural State Delta}
-\to\text{Value / Resource Dependency}
-\to\text{Micro-operation Schedule}
-\to\text{Control Word / Next State}
-\to\text{Clocked Commit}.
+\begin{aligned}
+\text{Architectural State Delta}&\to\text{Value / Resource Dependency}\to\text{Micro-operation Schedule}\\
+&\to\text{Control Word / Next State}\to\text{Clocked Commit}.
+\end{aligned}
 \]
 “CPU 有哪些部件”只是结果，不是起点；每一个寄存器、MUX、端口和控制信号都必须能回答“它承载哪一个值、阻止哪一种冲突、在哪个时钟边界锁存”。
 

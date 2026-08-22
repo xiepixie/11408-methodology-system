@@ -1,0 +1,66 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  field/.style={draw=themegray,rounded corners=3pt,minimum height=.75cm,align=center,fill=themefg!3!themebg,font=\scriptsize\bfseries},
+  tablebox/.style={draw=themecurve,rounded corners=4pt,minimum width=2.6cm,minimum height=.82cm,align=center,fill=themecurve!8!themebg,font=\scriptsize\bfseries,text=themecurve},
+  ptebox/.style={draw=themeamber,rounded corners=4pt,minimum width=2.8cm,minimum height=.82cm,align=center,fill=themeamber!8!themebg,font=\scriptsize\bfseries,text=themeamber},
+  pabox/.style={draw=themegreen,rounded corners=4pt,minimum width=3.2cm,minimum height=.82cm,align=center,fill=themegreen!8!themebg,font=\scriptsize\bfseries,text=themegreen},
+  sparse/.style={draw=themegray,dashed,rounded corners=3pt,minimum width=2.4cm,minimum height=.72cm,align=center,fill=themefg!2!themebg,font=\tiny,text=themegray},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themecurve},
+  sflow/.style={->,line width=1.05pt,themegray,dashed},
+  pflow/.style={->,line width=1.1pt,themegreen},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {多级页表：树形索引按需分配，用增加访存次数换取节省页表内存};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.0)
+  {结构分解：虚拟地址 $VA = [I_1 \mid I_2 \mid \cdots \mid I_k \mid \text{Offset}]$。未使用的稀疏地址空间无需建立下级页表，大幅压缩页表开销。};
+
+% ── 虚拟地址字段划分 (y = 6.4) ──
+\node[field,minimum width=2.4cm,text=themecurve] (va_i1) at (2.0,6.4) {$I_1$ (顶级索引)};
+\node[field,minimum width=2.4cm,text=themecurve] (va_i2) at (6.2,6.4) {$I_2$ (二级索引)};
+\node[field,minimum width=2.4cm,text=themeamber] (va_ik) at (10.6,6.4) {$I_k$ (末级索引)};
+\node[field,minimum width=2.8cm,text=themegreen] (va_off) at (15.2,6.4) {$\text{Offset}$ (页内偏移 $p$ 位)};
+
+% ── 逐级查表流水线 (y = 4.4) ──
+\node[tablebox] (t1) at (2.0,4.4) {顶级页表 (Page Dir)\\基址在 CR3 寄存器};
+\node[tablebox] (t2) at (6.2,4.4) {二级页表 (Page Table)\\由 $I_1$ 命中表项索引};
+\node[ptebox] (pte) at (10.6,4.4) {末级 PTE\\有效位 + 页框号 PFN};
+\node[pabox] (pa) at (15.2,4.4) {物理地址 PA\\$[\text{PFN} \mid \text{Offset}]$};
+
+\draw[flow] (va_i1.south) -- (t1.north);
+\draw[flow] (t1.east) -- node[above=2pt,lbl,text=themecurve] {$I_1$ 索引下级基址} (t2.west);
+
+\draw[flow] (va_i2.south) -- (t2.north);
+\draw[flow] (t2.east) -- node[above=2pt,lbl,text=themeamber] {$I_2$ 索引目标 PTE} (pte.west);
+
+\draw[flow] (va_ik.south) -- (pte.north);
+\draw[pflow] (pte.east) -- node[above=2pt,lbl,text=themegreen] {提取 PFN} (pa.west);
+
+\draw[pflow] (va_off.south) -- node[right=2pt,lbl,text=themegreen] {Offset 直接拼接} (pa.north);
+
+% ── 稀疏未分配分支 (y = 2.6) ──
+\node[sparse] (sp1) at (2.0,2.6) {未分配虚存段\\顶级 PTE.Valid = 0\\(无需下级页表)};
+\node[sparse] (sp2) at (6.2,2.6) {未分配虚存段\\二级 PTE.Valid = 0\\(无需分配物理页)};
+
+\draw[sflow] (t1.south) -- (sp1.north);
+\draw[sflow] (t2.south) -- (sp2.north);
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,1.1)
+  {\textbf{多级页表核心计算与特性：}\\
+   1. \textbf{索引位数确定}：若页面大小为 $2^p$ 字节，PTE 大小为 $e$ 字节，则一个页面可容纳 $2^p / e$ 个 PTE，对应每级索引消耗 $\log_2(2^p / e)$ 位；\\
+   2. \textbf{稀疏节省}：多级页表的唯一目的是\textbf{节省页表占用的物理内存}，而非加速寻址；\\
+   3. \textbf{访存开销与 TLB}：$k$ 级页表未命中 TLB 时需访问内存 $k+1$ 次（$k$ 次查页表 + 1 次访问目标数据）；引入 TLB 将平均访存降至接近 1 次。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.1)
+  {禁止误读：多级页表不能减少逻辑上的总映射项数，它仅免除了“未分配地址段对应下级页表的物理存储”。};
+\end{tikzpicture}

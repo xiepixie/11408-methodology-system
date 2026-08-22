@@ -17,7 +17,7 @@
   * `Researchers attribute [the replication problem] to [hardware variability].`
   * `I wouldn't attribute [the result] entirely to [one factor].`
 * **使用边界**：如果明确强调“责任 / 责怪”，再考虑 `blame A on B`、`hold B responsible for A`；它们不与中性的 `attribute A to B` 完全等价。
-* **来源溯源**：New Scientist 《A New Replication Crisis?》
+* **来源溯源**：[New Scientist《A New Replication Crisis?》P11](../01_articles/2026/2026-08-21_a_new_replication_crisis/article.md#^p11)
 * **生命周期**：`L0 · 捕获`（已建立节点，待真实训练验证）
 
 ---
@@ -34,4 +34,5 @@
 * **句型骨架**：
   * `A big reason for this is that [clause].`
   * `A big reason for [noun phrase] is [noun phrase].`
+* **来源溯源**：[New Scientist《A New Replication Crisis?》P10](../01_articles/2026/2026-08-21_a_new_replication_crisis/article.md#^p10)
 * **生命周期**：`L0 · 捕获`（已建立节点，待真实训练验证）

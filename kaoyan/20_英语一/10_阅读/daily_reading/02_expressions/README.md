@@ -50,11 +50,12 @@
 | `EXP-005` | **keep the magic of ... alive** | 05 趋势与变化 | `L0 · 捕获` | [《The Magic of Summer Reading》P6](../01_articles/2026/2026-08-20_the_magic_of_summer_reading/article.md#^p06) |
 | `EXP-006` | **There's nothing like... to...** | 01 观点与立场 | `L0 · 捕获` | [《The Magic of Summer Reading》P1](../01_articles/2026/2026-08-20_the_magic_of_summer_reading/article.md#^p01) |
 | `EXP-007` | **amid the boom of...** | 05 趋势与变化 | `L0 · 捕获` | [《The Magic of Summer Reading》P8](../01_articles/2026/2026-08-20_the_magic_of_summer_reading/article.md#^p08) |
-| `EXP-008` | **(remain) an open question** | 04 不确定与判断 | `L0 · 捕获` | 《A New Replication Crisis?》 |
-| `EXP-009` | **attribute A to B** | 02 因果与归因 | `L0 · 捕获` | 《A New Replication Crisis?》 |
-| `EXP-010` | **a big reason for this is...** | 02 因果与归因 | `L0 · 捕获` | 口语训练 |
+| `EXP-008` | **(remain) an open question** | 04 不确定与判断 | `L0 · 捕获` | [《A New Replication Crisis?》P2](../01_articles/2026/2026-08-21_a_new_replication_crisis/article.md#^p02) |
+| `EXP-009` | **attribute A to B** | 02 因果与归因 | `L0 · 捕获` | [《A New Replication Crisis?》P11](../01_articles/2026/2026-08-21_a_new_replication_crisis/article.md#^p11) |
+| `EXP-010` | **a big reason for this is...** | 02 因果与归因 | `L0 · 捕获` | [《A New Replication Crisis?》P10](../01_articles/2026/2026-08-21_a_new_replication_crisis/article.md#^p10) |
 | `EXP-011` | **What impressed me most was...** | 01 观点与立场 | `L2 · 提示使用` | [《The Magic of Summer Reading》即时脱稿复述](../01_articles/2026/2026-08-20_the_magic_of_summer_reading/reading_view.tex) |
 | `EXP-012` | **distinguish A from B / distinguish among...** | 03 比较与转折 | `L2 · 提示使用` | [《English Decoded!》第一次冷输出](../01_articles/2026/2026-08-20_english_decoded/reading_view.tex) |
+| `EXP-013` | **consider X / take X into consideration** | 04 不确定与判断 | `L0 · 捕获` | [《A New Replication Crisis?》最小修复输出](../01_articles/2026/2026-08-21_a_new_replication_crisis/reading_view.tex) |
 
 当前这些节点主要来自系统搭建期的样例与候选表达。没有真实训练证据前，统一从 `L0 · 捕获` 起步；后续只根据学习者真实表现晋级。
 

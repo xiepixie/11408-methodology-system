@@ -731,7 +731,7 @@ A4 宽版心下，全图总结与上方局部说明之间约 $0.8\text{cm}\sim1.
 \usetikzlibrary{arrows.meta,calc,positioning,decorations.pathreplacing,patterns}
 
 % ── 双主题语义色彩定义 (由编译管线自动注入与映射) ──
-\definecolor{themebg}{HTML}{30362d}     % 背景底色 (暗色墨绿 / 亮色米白)
+\definecolor{themebg}{HTML}{2e362c}     % 背景底色 (暗色墨绿 #2E362C / 亮色暖白 #FAF8F5)
 \definecolor{themefg}{HTML}{edf4e8}     % 主体前景 (暗色柔白 / 亮色炭黑)
 \definecolor{themegray}{HTML}{9ea897}   % 中性网格与辅助虚线
 \definecolor{themecurve}{HTML}{7eb6ff}  % 主体曲线与正向映射 (晶蓝 / 皇家蓝)

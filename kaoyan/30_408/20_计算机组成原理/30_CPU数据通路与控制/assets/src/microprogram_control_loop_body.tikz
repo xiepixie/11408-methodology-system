@@ -1,0 +1,48 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  box/.style={draw=themegray,rounded corners=3pt,fill=themefg!3!themebg,minimum width=2.6cm,minimum height=.95cm,align=center},
+  ctrl/.style={draw=themecurve,rounded corners=3pt,fill=themecurve!9!themebg,minimum width=2.8cm,minimum height=.95cm,align=center},
+  cond/.style={draw=themeamber,rounded corners=3pt,fill=themeamber!9!themebg,minimum width=2.6cm,minimum height=.95cm,align=center},
+  warn/.style={draw=themealert,rounded corners=3pt,fill=themealert!8!themebg,inner xsep=6pt,inner ysep=5pt,align=center},
+  flow/.style={->,line width=1.05pt,themecurve},
+  cflow/.style={->,line width=1.05pt,themeamber}
+}
+\node[anchor=west,font=\bfseries\large,align=left,text width=16.2cm] at (0,8.25) {微程序控制：每条微指令同时回答“本拍做什么”\\和“下一拍去哪”};
+\node[anchor=west,text=themegray,align=left,text width=16.2cm] at (0,7.56) {控制存储器仍按微地址访问；条件测试与 opcode 映射只影响下一微地址，\\不把控存变成 CAM。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,6.95) {A. 控制闭环};
+\node[box] (ir) at (1.4,5.85) {IR / opcode\\机器指令字段};
+\node[ctrl] (map) at (4.45,5.85) {入口映射\\machine opcode $\to$ micro entry};
+\node[ctrl] (upc) at (7.55,5.85) {$\mu PC$\\当前微地址};
+\node[ctrl] (store) at (10.8,5.85) {Control Store\\按 $\mu$address 读微指令};
+\draw[flow] (ir)--(map);
+\draw[flow] (map)--(upc);
+\draw[flow] (upc)--(store);
+
+\node[ctrl] (mir) at (10.8,3.95) {MIR / Microinstruction\\控制字段 + 顺序字段};
+\node[box] (dp) at (7.55,3.95) {Datapath\\Enable / Select / Command};
+\node[cond] (test) at (4.45,3.95) {条件来源\\flags / ready / interrupt};
+\node[ctrl] (seq) at (1.4,3.95) {Microsequencer\\选择 next $\mu$address};
+\draw[flow] (store)--(mir);
+\draw[flow] (mir)--(dp);
+\draw[cflow] (test)--(seq);
+\draw[cflow] (mir.south) |- ++(0,-.65) -| node[pos=.25,below] {next / test field} (seq.south);
+\draw[cflow] (seq.north) to[bend left=28] node[above] {sequential / branch / dispatch} (upc.north);
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,2.55) {B. 一条微指令的字段职责};
+\node[ctrl,minimum width=3.0cm] at (1.65,1.55) {操作控制字段\\打开哪些微操作};
+\node[ctrl,minimum width=3.0cm] at (5.0,1.55) {测试/条件字段\\观察哪一个条件};
+\node[ctrl,minimum width=3.0cm] at (8.35,1.55) {下一地址字段\\候选后继/分支目标};
+\node[cond,minimum width=3.0cm] at (11.7,1.55) {入口映射/顺序 +1\\由题设实现选择};
+
+\node[warn,anchor=west,text width=6.0cm] at (0,.25) {\textbf{字段直接编码：}同一字段中的命令通常互斥；若一组有 $m$ 个命令且还需 no-op，最少位数是 $\lceil\log_2(m+1)\rceil$。};
+\node[box,anchor=west,text width=6.0cm] at (6.45,.25) {不同字段可同时发出相容控制，因此微指令并行度来自“哪些动作被分到不同字段”，不是字段越多越快。};
+
+\node[anchor=west,text=themegray,align=left,text width=16.2cm] at (0,-1.0) {做题调用：先把本拍自然语言数据动作写出来，再编码控制字段；随后根据 phase/opcode/condition 选择下一微地址。\\微操作是动作，微指令是这些动作的编码载体。};
+\end{tikzpicture}

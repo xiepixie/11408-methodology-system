@@ -3,7 +3,7 @@
 \usepackage{amsmath,amssymb,mathtools,booktabs,tabularx,array,enumitem}
 \usepackage[most]{tcolorbox}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning}
+\usetikzlibrary{arrows.meta,positioning,calc,fit}
 \usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
@@ -128,6 +128,10 @@ DMA & 只配置与收尾 & device $\leftrightarrow$ memory & 块完成/错误通
 \end{center}
 中断消除的是持续 busy waiting，不自动消除 ISR 和搬运成本；DMA 下沉的是传输循环，不代表 CPU、Cache、内存和互连没有成本。
 
+\begin{center}
+\input{assets/src/io_control_modes_body.tikz}
+\end{center}
+
 \section{中断硬件路径与软件交接}
 \[
 \text{device event}\to\text{pending}\to\text{mask/priority}\to\text{precise boundary}\to\text{architectural entry state}\to\text{vector}.
@@ -152,6 +156,10 @@ DMA & 只配置与收尾 & device $\leftrightarrow$ memory & 块完成/错误通
   \item \kw{软件 ISR 服务 (Software Driver Service)}：保存通用寄存器现场 $\to$ 开中断（若允许嵌套） $\to$ 执行具体设备 I/O 服务 $\to$ 关中断 $\to$ 恢复通用寄存器 $\to$ 执行特权返回指令 \code{iret}。
 \end{itemize}
 向量中断中，向量号索引向量表得到入口地址；非向量中断由软件轮询源头。注意：“向量地址”（表项地址）与“中断向量”（表项内容/入口地址）不可混为一谈。
+
+\begin{center}
+\input{assets/src/interrupt_hw_sw_boundary_body.tikz}
+\end{center}
 
 \subsection{响应优先级 vs 处理优先级}
 \begin{itemize}

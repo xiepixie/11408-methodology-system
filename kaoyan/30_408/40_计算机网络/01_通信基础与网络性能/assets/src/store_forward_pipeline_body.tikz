@@ -1,0 +1,77 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  host/.style={draw=themecurve,rounded corners=3pt,minimum width=1.8cm,minimum height=.75cm,align=center,fill=themecurve!10!themebg,font=\scriptsize\bfseries,text=themecurve},
+  rtr/.style={draw=themeamber,rounded corners=3pt,minimum width=1.8cm,minimum height=.75cm,align=center,fill=themeamber!10!themebg,font=\scriptsize\bfseries,text=themeamber},
+  pkt1/.style={draw=themecurve,fill=themecurve!15!themebg,font=\scriptsize\bfseries,text=themecurve,align=center},
+  pkt2/.style={draw=themeamber,fill=themeamber!15!themebg,font=\scriptsize\bfseries,text=themeamber,align=center},
+  pkt3/.style={draw=themegreen,fill=themegreen!15!themebg,font=\scriptsize\bfseries,text=themegreen,align=center},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themecurve},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.8) {分组交换：存储转发机制与流水线填管/稳态时序};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.2)
+  {设定：$3$ 段等速链路（$N=3$ 跳），每个分组长度 $L$，链路发送速率 $R$，单跳发送时延 $s = L/R$。忽略节点排队与处理时延。};
+
+% ── 物理拓扑 (y = 6.9) ──
+\node[host] (ha) at (1.2,6.9) {源主机 A};
+\node[rtr] (r1) at (5.8,6.9) {路由器 $R_1$};
+\node[rtr] (r2) at (10.4,6.9) {路由器 $R_2$};
+\node[host] (hb) at (15.0,6.9) {目的主机 B};
+
+\draw[flow] (ha) -- node[above=2pt,lbl,text=themecurve] {链路 1 ($R$)} (r1);
+\draw[flow] (r1) -- node[above=2pt,lbl,text=themeamber] {链路 2 ($R$)} (r2);
+\draw[flow] (r2) -- node[above=2pt,lbl,text=themegreen] {链路 3 ($R$)} (hb);
+
+% ── 甘特流水线图 (y = 2.4 .. 5.6) ──
+\draw[themegray,line width=0.6pt] (2.6,5.8) -- (13.6,5.8);
+\foreach \x/\t in {2.6/0, 4.8/1s, 7.0/2s, 9.2/3s, 11.4/4s, 13.6/5s} {
+  \draw[themegray] (\x,5.7) -- (\x,5.9);
+  \node[font=\tiny,above=1pt,text=themegray] at (\x,5.9) {\t};
+}
+
+% 链路 1
+\node[anchor=east,font=\scriptsize\bfseries] at (2.4,5.1) {链路 1 ($A \to R_1$)};
+\draw[pkt1] (2.6,4.75) rectangle (4.8,5.45) node[midway] {$P_1$};
+\draw[pkt2] (4.8,4.75) rectangle (7.0,5.45) node[midway] {$P_2$};
+\draw[pkt3] (7.0,4.75) rectangle (9.2,5.45) node[midway] {$P_3$};
+
+% 链路 2
+\node[anchor=east,font=\scriptsize\bfseries] at (2.4,3.9) {链路 2 ($R_1 \to R_2$)};
+\draw[pkt1] (4.8,3.55) rectangle (7.0,4.25) node[midway] {$P_1$};
+\draw[pkt2] (7.0,3.55) rectangle (9.2,4.25) node[midway] {$P_2$};
+\draw[pkt3] (9.2,3.55) rectangle (11.4,4.25) node[midway] {$P_3$};
+
+% 链路 3
+\node[anchor=east,font=\scriptsize\bfseries] at (2.4,2.7) {链路 3 ($R_2 \to B$)};
+\draw[pkt1] (7.0,2.35) rectangle (9.2,3.05) node[midway] {$P_1$};
+\draw[pkt2] (9.2,2.35) rectangle (11.4,3.05) node[midway] {$P_2$};
+\draw[pkt3] (11.4,2.35) rectangle (13.6,3.05) node[midway] {$P_3$};
+
+% 标注
+\draw[<->,line width=1.1pt,themecurve] (2.6,1.8) -- (9.2,1.8)
+  node[midway,above=2pt,lbl,text=themecurve] {首包填管延时：$N \times \frac{L}{R} = 3s$};
+
+\draw[<->,line width=1.1pt,themeamber] (9.2,1.8) -- (13.6,1.8)
+  node[midway,above=2pt,lbl,text=themeamber] {后续 $(P-1)$ 包推进：$(3-1)s = 2s$};
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,0.6)
+  {\textbf{分组交换总时延黄金计算公式：}\\
+   若源端发送 $P$ 个分组，经过 $N$ 段等速链路（$N-1$ 个路由器），单段传播延时为 $d_{\text{prop}}$：\\
+   $\bullet$ \textbf{总发送/传输时延}：$T_{\text{trans}} = (N + P - 1) \times \frac{L}{R}$（首包耗时 $N \cdot \frac{L}{R}$ 填满管道，之后每过 $\frac{L}{R}$ 交付一个分组）；\\
+   $\bullet$ \textbf{总传播时延}：$T_{\text{prop}} = N \times d_{\text{prop}}$（每个 bit 都必须物理穿越 $N$ 段链路）；\\
+   $\bullet$ \textbf{端到端总时延}：$T_{\text{total}} = (N + P - 1)\frac{L}{R} + N \cdot d_{\text{prop}} + \sum \text{排队/处理延时}$。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.5)
+  {禁止误读：分组交换不会减少单个 bit 在物理介质中的传播时延；它的性能优势来自“上一跳链路发送后续分组”与“下一跳转发前序分组”的流水线重叠。};
+\end{tikzpicture}

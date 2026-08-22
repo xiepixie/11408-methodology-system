@@ -423,6 +423,14 @@ PPP 只在点到点链路上建立 framing/封装接口，不承担共享介质�
 
 \subsection{CSMA/CD：争用期、JAM 与截断退避}
 
+\begin{figure}[htbp]
+  \centering
+  \resizebox{0.96\linewidth}{!}{\input{assets/src/csma_cd_2tau_body.tikz}}
+  \caption{CSMA/CD 争用期 $2\tau$ 与最小帧长约束时空图}
+  \label{fig:csmacd-2tau}
+\end{figure}
+
+
 最大单向传播时延为 $\tau$，则最坏碰撞返回需要 $2\tau$。发送站必须在这段时间内仍然处于发送态：
 \[
 T_f=\frac{L}{R}\ge 2\tau,\qquad L_{\min}=2\tau R.

@@ -4,16 +4,20 @@
 
 <style>
   @media print, (prefers-color-scheme: light) {
-    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #fafaf7 !important; }
+    [fill='#2e362c'], [fill='#2E362C'], [fill='#2e362c' i] { fill: #faf8f5 !important; }
+    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #faf8f5 !important; }
     [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }
+    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
     [fill='#9ea897'], [fill='#9EA897'], [fill='#9ea897' i] { fill: #666666 !important; }
     [fill='#7eb6ff'], [fill='#7EB6FF'], [fill='#7eb6ff' i] { fill: #1d63b8 !important; }
     [fill='#ff7b7b'], [fill='#FF7B7B'], [fill='#ff7b7b' i] { fill: #c53030 !important; }
     [fill='#f5b942'], [fill='#F5B942'], [fill='#f5b942' i] { fill: #b86e00 !important; }
     [fill='#c084fc'], [fill='#C084FC'], [fill='#c084fc' i] { fill: #7c3aed !important; }
     [fill='#4ade80'], [fill='#4ADE80'], [fill='#4ade80' i] { fill: #15803d !important; }
-    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }
+    [stroke='#2e362c'], [stroke='#2E362C'], [stroke='#2e362c' i] { stroke: #faf8f5 !important; }
+    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #faf8f5 !important; }
     [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }
+    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
     [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }
     [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }
     [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }
@@ -32,7 +36,7 @@
 <path id='g1-76' d='M3.726027-6.027397C3.815691-6.386052 3.845579-6.495641 4.782067-6.495641C5.080946-6.495641 5.160648-6.495641 5.160648-6.684932C5.160648-6.804483 5.051059-6.804483 5.001245-6.804483C4.672478-6.804483 3.855542-6.774595 3.526775-6.774595C3.227895-6.774595 2.500623-6.804483 2.201743-6.804483C2.132005-6.804483 2.012453-6.804483 2.012453-6.60523C2.012453-6.495641 2.102117-6.495641 2.291407-6.495641C2.311333-6.495641 2.500623-6.495641 2.669988-6.475716C2.849315-6.455791 2.938979-6.445828 2.938979-6.316314C2.938979-6.276463 2.929016-6.246575 2.899128-6.127024L1.564134-.777086C1.464508-.388543 1.444583-.308842 .657534-.308842C.488169-.308842 .388543-.308842 .388543-.109589C.388543 0 .478207 0 .657534 0H5.270237C5.50934 0 5.519303 0 5.579078-.169365L6.366127-2.321295C6.405978-2.430884 6.405978-2.450809 6.405978-2.460772C6.405978-2.500623 6.37609-2.570361 6.286426-2.570361S6.1868-2.520548 6.117061-2.361146C5.778331-1.444583 5.339975-.308842 3.616438-.308842H2.67995C2.540473-.308842 2.520548-.308842 2.460772-.318804C2.361146-.328767 2.331258-.33873 2.331258-.418431C2.331258-.448319 2.331258-.468244 2.381071-.647572L3.726027-6.027397Z'/>
 </defs>
 <g id='page1'>
-<rect x='-69.011212' y='-69.011216' width='330.952488' height='262.163786' fill='#30362d'/>
+<rect x='-69.011212' y='-69.011216' width='330.952488' height='262.163786' fill='#2e362c'/>
 <g stroke-miterlimit='10' transform='translate(23.433274,141.680794)scale(0.996264,-0.996264)'>
 <g fill='#000' stroke='#000'>
 <g stroke-width='0.4'>

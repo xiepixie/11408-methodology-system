@@ -1,0 +1,54 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  wndbox/.style={draw=themegray,rounded corners=4pt,minimum width=6.5cm,minimum height=1.0cm,align=center,fill=themefg!3!themebg},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow_data/.style={->,line width=1.1pt,themecurve},
+  flow_ack/.style={->,line width=1.1pt,themeamber},
+  flow_probe/.style={->,line width=1.1pt,themealert,dashed},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.8) {TCP 流量控制：接收窗口 rwnd 通告、零窗口死锁与持续计时器探测};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.2)
+  {核心机制：流量控制是端到端点对点匹配（防止发送方压垮接收方缓冲区）。有效发送窗口 $\text{SendWnd} = \min(\text{cwnd}, \text{rwnd})$。};
+
+% ── 发送端与接收端时序交互 ──
+\node[draw=themecurve,rounded corners=3pt,fill=themecurve!10!themebg,font=\scriptsize\bfseries,text=themecurve] at (3.0,7.3) {发送方 Sender};
+\node[draw=themegreen,rounded corners=3pt,fill=themegreen!10!themebg,font=\scriptsize\bfseries,text=themegreen] at (14.5,7.3) {接收方 Receiver};
+
+\draw[themegray,line width=1.0pt] (3.0,6.9) -- (3.0,1.6);
+\draw[themegray,line width=1.0pt] (14.5,6.9) -- (14.5,1.6);
+
+% 交互 1: 数据填满接收缓冲区
+\draw[flow_data] (3.0,6.5) -- node[above=1pt,lbl,text=themecurve] {发送数据: seq = 1001..2000 (1000B)} (14.5,5.7);
+\draw[flow_ack] (14.5,5.5) -- node[below=1pt,lbl,text=themeamber] {ACK = 2001, \textbf{rwnd = 0} (接收缓冲区满，停止发送!)} (3.0,4.7);
+
+% 零窗口等待与持续计时器
+\node[draw=themealert,rounded corners=3pt,fill=themealert!10!themebg,font=\tiny\bfseries,text=themealert,anchor=east,align=right] at (2.8,4.0)
+  {进入零窗口等待\\启动持续计时器 (Persist Timer)};
+
+% 危险场景：非零窗口通告丢失
+\draw[flow_ack,dashed,themealert] (14.5,4.1) -- node[above=1pt,lbl,text=themealert] {rwnd = 1000 更新报文丢失 $\times$ (若无探测将永久死锁!)} (8.8,3.6);
+
+% 持续计时器超时发送探测报文
+\draw[flow_probe] (3.0,3.1) -- node[above=1pt,lbl,text=themealert] {零窗口探测报文 (Probe: 1B 数据)} (14.5,2.3);
+\draw[flow_ack] (14.5,2.1) -- node[below=1pt,lbl,text=themegreen] {重新通告 ACK: \textbf{rwnd = 1000} (窗口恢复打开!)} (3.0,1.5);
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,0.6)
+  {\textbf{TCP 流量控制与零窗口探测底线：}\\
+   1. \textbf{流量控制 vs 拥塞控制}：流量控制由\textbf{接收方接收能力 (rwnd)} 决定，拥塞控制由\textbf{网络吞吐承载能力 (cwnd)} 决定；\\
+   2. \textbf{持续计时器 (Persist Timer)}：一旦收到 $\text{rwnd} = 0$，发送方立即启动持续计时器。超时后自动发送 1 字节探测报文；\\
+   3. \textbf{死锁预防}：即使接收方的非零窗口通告在网络中丢失，发送方的探测报文也会强制迫使接收方重新发送 ACK 与最新 rwnd，彻底粉碎死锁。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.5)
+  {禁止误读：接收方通告 $\text{rwnd} = 0$ 时，发送方绝不能完全关闭传输；必须保留持续计时器以发送 1 字节零窗口探测报文。};
+\end{tikzpicture}

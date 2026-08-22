@@ -718,6 +718,10 @@ B_0\to B_1\to\cdots\to B_{N-1}\to B_0
 \]
 这已经自然连接到生产者-消费者问题：数据结构只是容器，正确性仍需要处理“空/满、读写索引、并发更新”。
 
+\begin{center}
+\input{assets/src/single_double_buffer_timeline_body.tikz}
+\end{center}
+
 \begin{method}[缓冲时间模型：公式必须绑定假设]
 设设备把一块送入内核缓冲耗时 $T$，从内核缓冲复制到用户工作区耗时 $M$，CPU 处理该块耗时 $C$。在教材常用流水线假设下：
 \[
@@ -1003,6 +1007,10 @@ C-LOOK (C-LOOK 调度) & 属于 C-SCAN 的 LOOK 化改进 & 结合单向扫描�
 \endgroup
 
 判断饥饿不要看平均距离，而要问新请求能否无限插到旧请求前。SSTF 在磁头附近持续到达新请求时可能让远端请求长期得不到服务；SCAN/LOOK 的单调扫描给出有限推进边界。磁臂粘着则是局部请求流使磁头长期停留在少数柱面，属于调度进度受局部高频请求拖住的问题，不能与某个既有请求永远不被选择的饥饿概念混写。
+
+\begin{center}
+\input{assets/src/disk_scheduling_trajectory_body.tikz}
+\end{center}
 
 \begin{method}[磁盘调度题五步法]
 \begin{enumerate}

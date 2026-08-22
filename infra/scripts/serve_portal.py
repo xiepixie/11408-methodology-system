@@ -14,6 +14,7 @@ import os
 import re
 import socketserver
 import sys
+import time
 import webbrowser
 from pathlib import Path
 
@@ -24,6 +25,20 @@ PORTAL_DIR = KAOYAN_DIR / "portal"
 # Import manifest builder directly
 sys.path.insert(0, str(REPO_ROOT / "infra" / "scripts"))
 import generate_portal_manifest
+
+_last_manifest_build_time: float = 0.0
+_manifest_cache_ttl: float = 1.0  # Debounce TTL in seconds
+
+
+def maybe_refresh_manifests(force: bool = False):
+    global _last_manifest_build_time
+    now = time.time()
+    if force or (now - _last_manifest_build_time > _manifest_cache_ttl):
+        try:
+            generate_portal_manifest.build_manifests()
+            _last_manifest_build_time = now
+        except Exception as e:
+            print(f"[Portal] Warning: manifest auto-refresh error: {e}")
 
 
 def find_free_port(start_port: int = 8080) -> int:
@@ -47,6 +62,38 @@ class PortalRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
+
+    def do_GET(self):
+        clean_path = self.path.split("?")[0]
+        if clean_path in ("/portal/data/manifest.json", "/data/manifest.json"):
+            maybe_refresh_manifests()
+            manifest_file = PORTAL_DIR / "data" / "manifest.json"
+            if manifest_file.exists():
+                data = manifest_file.read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_header("Content-Length", str(len(data)))
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+                self.end_headers()
+                self.wfile.write(data)
+                return
+
+        elif clean_path in ("/portal/data/manifest.js", "/data/manifest.js"):
+            maybe_refresh_manifests()
+            manifest_js = PORTAL_DIR / "data" / "manifest.js"
+            if manifest_js.exists():
+                data = manifest_js.read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/javascript; charset=utf-8")
+                self.send_header("Content-Length", str(len(data)))
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+                self.end_headers()
+                self.wfile.write(data)
+                return
+
+        super().do_GET()
 
     def do_POST(self):
         if self.path == "/api/annotate":

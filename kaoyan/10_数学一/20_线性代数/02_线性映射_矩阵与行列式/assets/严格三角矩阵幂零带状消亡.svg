@@ -4,30 +4,32 @@
 
 <style>
   @media print, (prefers-color-scheme: light) {
-    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #fafaf7 !important; }
+    [fill='#2e362c'], [fill='#2E362C'], [fill='#2e362c' i] { fill: #faf8f5 !important; }
+    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #faf8f5 !important; }
     [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }
+    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
     [fill='#9ea897'], [fill='#9EA897'], [fill='#9ea897' i] { fill: #666666 !important; }
     [fill='#7eb6ff'], [fill='#7EB6FF'], [fill='#7eb6ff' i] { fill: #1d63b8 !important; }
     [fill='#ff7b7b'], [fill='#FF7B7B'], [fill='#ff7b7b' i] { fill: #c53030 !important; }
     [fill='#f5b942'], [fill='#F5B942'], [fill='#f5b942' i] { fill: #b86e00 !important; }
     [fill='#c084fc'], [fill='#C084FC'], [fill='#c084fc' i] { fill: #7c3aed !important; }
     [fill='#4ade80'], [fill='#4ADE80'], [fill='#4ade80' i] { fill: #15803d !important; }
-    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
-    [fill='#4b6376'], [fill='#4B6376'], [fill='#4b6376' i] { fill: #adc5e1 !important; }
-    [fill='#756434'], [fill='#756434'], [fill='#756434' i] { fill: #e3c9a1 !important; }
-    [fill='#83514c'], [fill='#83514C'], [fill='#83514c' i] { fill: #e5a9a8 !important; }
-    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }
+    [fill='#4a6376'], [fill='#4A6376'], [fill='#4a6376' i] { fill: #adc4e0 !important; }
+    [fill='#746433'], [fill='#746433'], [fill='#746433' i] { fill: #e3c89f !important; }
+    [fill='#82514b'], [fill='#82514B'], [fill='#82514b' i] { fill: #e5a8a6 !important; }
+    [stroke='#2e362c'], [stroke='#2E362C'], [stroke='#2e362c' i] { stroke: #faf8f5 !important; }
+    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #faf8f5 !important; }
     [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }
+    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
     [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }
     [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }
     [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }
     [stroke='#f5b942'], [stroke='#F5B942'], [stroke='#f5b942' i] { stroke: #b86e00 !important; }
     [stroke='#c084fc'], [stroke='#C084FC'], [stroke='#c084fc' i] { stroke: #7c3aed !important; }
     [stroke='#4ade80'], [stroke='#4ADE80'], [stroke='#4ade80' i] { stroke: #15803d !important; }
-    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
-    [stroke='#4b6376'], [stroke='#4B6376'], [stroke='#4b6376' i] { stroke: #adc5e1 !important; }
-    [stroke='#756434'], [stroke='#756434'], [stroke='#756434' i] { stroke: #e3c9a1 !important; }
-    [stroke='#83514c'], [stroke='#83514C'], [stroke='#83514c' i] { stroke: #e5a9a8 !important; }
+    [stroke='#4a6376'], [stroke='#4A6376'], [stroke='#4a6376' i] { stroke: #adc4e0 !important; }
+    [stroke='#746433'], [stroke='#746433'], [stroke='#746433' i] { stroke: #e3c89f !important; }
+    [stroke='#82514b'], [stroke='#82514B'], [stroke='#82514b' i] { stroke: #e5a8a6 !important; }
     [stroke='#c9cfc4'], [stroke='#C9CFC4'], [stroke='#c9cfc4' i] { stroke: #a3a3a3 !important; }
   }
 </style>
@@ -139,7 +141,7 @@
 <path id='g55-48' d='M4.582814-3.188045C4.582814-3.985056 4.533001-4.782067 4.184309-5.519303C3.726027-6.475716 2.909091-6.635118 2.49066-6.635118C1.892902-6.635118 1.165629-6.37609 .757161-5.449564C.438356-4.762142 .388543-3.985056 .388543-3.188045C.388543-2.440847 .428394-1.544209 .836862-.787049C1.265255 .019925 1.992528 .219178 2.480697 .219178C3.01868 .219178 3.775841 .009963 4.214197-.936488C4.533001-1.62391 4.582814-2.400996 4.582814-3.188045ZM2.480697 0C2.092154 0 1.504359-.249066 1.325031-1.205479C1.215442-1.803238 1.215442-2.719801 1.215442-3.307597C1.215442-3.945205 1.215442-4.60274 1.295143-5.140722C1.484433-6.326276 2.231631-6.41594 2.480697-6.41594C2.809465-6.41594 3.466999-6.236613 3.656289-5.250311C3.755915-4.692403 3.755915-3.935243 3.755915-3.307597C3.755915-2.560399 3.755915-1.882939 3.646326-1.24533C3.496887-.298879 2.929016 0 2.480697 0Z'/>
 </defs>
 <g id='page1'>
-<rect x='-69.011212' y='-69.01121' width='431.806795' height='177.8159' fill='#30362d'/>
+<rect x='-69.011212' y='-69.01121' width='431.806795' height='177.8159' fill='#2e362c'/>
 <g stroke-miterlimit='10' transform='translate(-58.063238,-10.482799)scale(0.996264,-0.996264)'>
 <g fill='#000' stroke='#000'>
 <g stroke-width='0.4'>
@@ -174,7 +176,7 @@
 <path d='M62.59595 39.83366H68.2864V-39.83366H62.59595' fill='none'/>
 </g>
 </g>
-<g fill='#4b6376' stroke='#4b6376'>
+<g fill='#4a6376' stroke='#4a6376'>
 <path d='M12.95863 35.56592H61.01866C62.67554 35.56592 64.01866 34.2228 64.01866 32.56592V-19.76227C64.01866-21.41914 63.10567-21.77722 61.97942-20.56207L11.99788 33.36572C10.87163 34.58087 11.30176 35.56592 12.95863 35.56592Z' stroke='none'/>
 </g>
 <g transform='translate(8.88092,22.38507)'>
@@ -384,8 +386,8 @@
  </g>
  </g>
 </g>
-<g fill='#30362d'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
+<g fill='#2e362c'>
 <path d='M81.80438 3.9H100.29339V13.22227H81.80438Z' stroke='none'/>
 </g>
 <g transform='translate(83.30438,6.23337)'>
@@ -425,7 +427,7 @@
 <path d='M176.40692 39.83366H182.09738V-39.83366H176.40692' fill='none'/>
 </g>
 </g>
-<g fill='#756434' stroke='#756434'>
+<g fill='#746433' stroke='#746433'>
 <path d='M142.41826 35.56592H174.82964C176.48651 35.56592 177.82964 34.2228 177.82964 32.56592V-4.11317C177.82964-5.77005 176.93115-6.11487 175.8228-4.88336L141.4251 33.3361C140.31674 34.56761 140.76138 35.56592 142.41826 35.56592Z' stroke='none'/>
 </g>
 <g transform='translate(122.6919,22.38507)'>
@@ -635,8 +637,8 @@
  </g>
  </g>
 </g>
-<g fill='#30362d'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
+<g fill='#2e362c'>
 <path d='M195.61536 3.9H214.10437V13.22227H195.61536Z' stroke='none'/>
 </g>
 <g transform='translate(197.11536,6.23337)'>
@@ -676,7 +678,7 @@
 <path d='M290.2179 39.83366H295.90836V-39.83366H290.2179' fill='none'/>
 </g>
 </g>
-<g fill='#83514c' stroke='#83514c'>
+<g fill='#82514b' stroke='#82514b'>
 <path d='M270.87833 35.56592H289.64061C290.7452 35.56592 291.64061 34.6705 291.64061 33.56592V11.95863C291.64061 10.85405 291.04576 10.62784 290.31197 11.45335L270.20697 34.0712C269.47318 34.89671 269.77374 35.56592 270.87833 35.56592Z' stroke='none'/>
 </g>
 <g transform='translate(236.50287,22.38507)'>
@@ -886,8 +888,8 @@
  </g>
  </g>
 </g>
-<g fill='#30362d'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
+<g fill='#2e362c'>
 <path d='M309.42633 3.9H327.91534V13.22227H309.42633Z' stroke='none'/>
 </g>
 <g transform='translate(310.92633,6.23337)'>
@@ -1127,10 +1129,10 @@
 </g>
 </g>
 <g stroke='#c9cfc4'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
 <g stroke-width='0.8'>
 <g stroke='#c9cfc4'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
 <g stroke-width='0.8'>
 <path d='M413.7194-71.53185H-4.00008C-6.20924-71.53185-8.00008-73.32268-8.00008-75.53185V-115.33482C-8.00008-117.54399-6.20924-119.33482-4.00008-119.33482H413.7194C415.92857-119.33482 417.7194-117.54399 417.7194-115.33482V-75.53185C417.7194-73.32268 415.92857-71.53185 413.7194-71.53185ZM-8.00008-119.33482'/>
 </g>

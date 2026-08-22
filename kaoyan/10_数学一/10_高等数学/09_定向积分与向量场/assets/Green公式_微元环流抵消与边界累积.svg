@@ -4,28 +4,30 @@
 
 <style>
   @media print, (prefers-color-scheme: light) {
-    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #fafaf7 !important; }
+    [fill='#2e362c'], [fill='#2E362C'], [fill='#2e362c' i] { fill: #faf8f5 !important; }
+    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #faf8f5 !important; }
     [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }
+    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
     [fill='#9ea897'], [fill='#9EA897'], [fill='#9ea897' i] { fill: #666666 !important; }
     [fill='#7eb6ff'], [fill='#7EB6FF'], [fill='#7eb6ff' i] { fill: #1d63b8 !important; }
     [fill='#ff7b7b'], [fill='#FF7B7B'], [fill='#ff7b7b' i] { fill: #c53030 !important; }
     [fill='#f5b942'], [fill='#F5B942'], [fill='#f5b942' i] { fill: #b86e00 !important; }
     [fill='#c084fc'], [fill='#C084FC'], [fill='#c084fc' i] { fill: #7c3aed !important; }
     [fill='#4ade80'], [fill='#4ADE80'], [fill='#4ade80' i] { fill: #15803d !important; }
-    [fill='#435661'], [fill='#435661'], [fill='#435661' i] { fill: #c3d5e8 !important; }
-    [fill='#575031'], [fill='#575031'], [fill='#575031' i] { fill: #eddec6 !important; }
-    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
-    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }
+    [fill='#425661'], [fill='#425661'], [fill='#425661' i] { fill: #c3d3e6 !important; }
+    [fill='#565030'], [fill='#565030'], [fill='#565030' i] { fill: #edddc4 !important; }
+    [stroke='#2e362c'], [stroke='#2E362C'], [stroke='#2e362c' i] { stroke: #faf8f5 !important; }
+    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #faf8f5 !important; }
     [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }
+    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
     [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }
     [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }
     [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }
     [stroke='#f5b942'], [stroke='#F5B942'], [stroke='#f5b942' i] { stroke: #b86e00 !important; }
     [stroke='#c084fc'], [stroke='#C084FC'], [stroke='#c084fc' i] { stroke: #7c3aed !important; }
     [stroke='#4ade80'], [stroke='#4ADE80'], [stroke='#4ade80' i] { stroke: #15803d !important; }
-    [stroke='#435661'], [stroke='#435661'], [stroke='#435661' i] { stroke: #c3d5e8 !important; }
-    [stroke='#575031'], [stroke='#575031'], [stroke='#575031' i] { stroke: #eddec6 !important; }
-    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
+    [stroke='#425661'], [stroke='#425661'], [stroke='#425661' i] { stroke: #c3d3e6 !important; }
+    [stroke='#565030'], [stroke='#565030'], [stroke='#565030' i] { stroke: #edddc4 !important; }
   }
 </style>
 <defs>
@@ -126,7 +128,7 @@
 <path id='g47-43' d='M2.699875-1.105853H4.433375C4.498132-1.105853 4.632628-1.105853 4.632628-1.24533S4.498132-1.384807 4.433375-1.384807H2.699875V-3.118306C2.699875-3.188045 2.699875-3.32254 2.560399-3.32254S2.420922-3.188045 2.420922-3.118306V-1.384807H.682441C.617684-1.384807 .483188-1.384807 .483188-1.24533S.617684-1.105853 .682441-1.105853H2.420922V.627646C2.420922 .697385 2.420922 .83188 2.560399 .83188S2.699875 .697385 2.699875 .627646V-1.105853Z'/>
 </defs>
 <g id='page1'>
-<rect x='-69.011212' y='-69.011217' width='371.944777' height='158.844234' fill='#30362d'/>
+<rect x='-69.011212' y='-69.011217' width='371.944777' height='158.844234' fill='#2e362c'/>
 <g stroke-miterlimit='10' transform='translate(-47.255121,63.418112)scale(0.996264,-0.996264)'>
 <g fill='#000' stroke='#000'>
 <g stroke-width='0.4'>
@@ -175,7 +177,7 @@
 </g>
 </g>
 </g>
-<g fill='#435661' stroke='#435661'>
+<g fill='#425661' stroke='#425661'>
 <path d='M22.76227 28.45274V96.73915H108.1205V28.45274ZM108.1205 96.73915' stroke='none'/>
 </g>
 <g fill='#7eb6ff' stroke='#7eb6ff'>
@@ -484,7 +486,7 @@
 </g>
 </g>
 </g>
-<g fill='#575031' stroke='#575031'>
+<g fill='#565030' stroke='#565030'>
 <path d='M207.7051 19.91682V105.27505H321.51607V19.91682ZM321.51607 105.27505' stroke='none'/>
 </g>
 <g fill='#a4af9d' stroke='#a4af9d'>

@@ -1,0 +1,60 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  box/.style={draw=themegray,rounded corners=3pt,minimum width=3.0cm,minimum height=.82cm,align=center,fill=themefg!3!themebg},
+  user/.style={box,draw=themecurve,fill=themecurve!8!themebg,font=\scriptsize\bfseries,text=themecurve},
+  kernel/.style={box,draw=themeamber,fill=themeamber!8!themebg,font=\scriptsize\bfseries,text=themeamber},
+  switchbox/.style={box,draw=themealert,fill=themealert!8!themebg,font=\scriptsize\bfseries,text=themealert},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themecurve},
+  kflow/.style={->,line width=1.1pt,themeamber},
+  sflow/.style={->,line width=1.1pt,themealert},
+  pflow/.style={->,line width=1.1pt,themegreen},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {一次系统调用：特权级切换 $\ne$ 进程调度（是否换实体取决于服务能否继续）};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.0)
+  {核心逻辑：Trap/Syscall 是权限入口；内核服务执行完毕后，若无需等待 I/O 且无更高优先级抢占，\textbf{直接原地返回当前进程}。};
+
+% ── 第一层：用户态发起与陷入内核 (y = 6.2) ──
+\node[user] (u1) at (1.8,6.2) {Task A (用户态)\\准备系统调用参数};
+\node[kernel] (trap) at (6.4,6.2) {Trap 指令 (陷入内核)\\保存断点 + 提升特权级};
+\node[kernel] (srv) at (11.0,6.2) {内核服务例程 (Service)\\校验参数 + 执行操作};
+
+\draw[flow] (u1) -- node[above=2pt,lbl,text=themecurve] {触发系统调用} (trap);
+\draw[kflow] (trap) -- node[above=2pt,lbl,text=themeamber] {进入内核态} (srv);
+
+% ── 分支一：无需等待（原地返回） (y = 4.6) ──
+\node[kernel] (ret) at (11.0,4.6) {特权级返回 (IRET/Sysret)\\恢复用户态现场与特权级};
+\node[user] (u2) at (6.4,4.6) {Task A (用户态继续)\\读取返回值并执行};
+
+\draw[pflow] (srv) -- node[right=2pt,lbl,text=themegreen] {快速完成 (无阻塞)} (ret);
+\draw[pflow] (ret) -- node[pos=0.5,above=2pt,lbl,text=themegreen] {原地恢复 Task A} (u2);
+
+% ── 分支二：阻塞或被抢占（进程切换） (y = 3.0) ──
+\node[switchbox] (block) at (11.0,3.0) {Task A 无法继续\\进入 Blocked 阻塞队列};
+\node[switchbox] (sched) at (6.4,3.0) {进程调度器 (Scheduler)\\挑选就绪进程 Task B};
+\node[switchbox] (ctx) at (1.8,3.0) {进程上下文切换 (Context Switch)\\切换页表 CR3 + 寄存器};
+
+\draw[sflow] (srv.east) to[out=0,in=0] node[right=2pt,lbl,text=themealert] {等待 I/O 阻塞} (block.east);
+\draw[sflow] (block) -- node[above=2pt,lbl,text=themealert] {触发调度} (sched);
+\draw[sflow] (sched) -- node[above=2pt,lbl,text=themealert] {执行切换} (ctx);
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,1.3)
+  {\textbf{三层概念严格厘清：}\\
+   1. \textbf{模式切换 (Mode Switch)}：用户态 $\leftrightarrow$ 内核态。仅涉及特权级提升/恢复与栈切换，\textbf{不改变运行实体}（仍是 Task A）；\\
+   2. \textbf{调度决策 (Scheduling Decision)}：内核在系统调用阻塞、时间片耗尽或外部中断时，才决定是否重选下一个进程；\\
+   3. \textbf{上下文切换 (Context Switch)}：仅当调度器选出了\textbf{不同进程}（Task B）时才发生，涉及完整 PCB、虚拟地址空间（CR3）与硬件现场切换。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,0.15)
+  {禁止误读：Mode Switch $\ne$ Context Switch。快速系统调用（如 \texttt{getpid}）仅发生模式切换，开销远小于进程上下文切换。};
+\end{tikzpicture}

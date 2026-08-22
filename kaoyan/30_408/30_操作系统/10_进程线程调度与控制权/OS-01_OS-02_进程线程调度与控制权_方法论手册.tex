@@ -380,24 +380,7 @@ CPU 至少区分两类执行权限：
 做 408 考题时，按以下三道闸门逐级推演，不要一步跳到结论：
 
 \begin{center}
-\begingroup
-\small
-\begin{tikzpicture}[>=Stealth, node distance=0.8cm, scale=0.92, transform shape]
-\tikzset{
-  gnode/.style={draw=deepblue, fill=softblue, thick, rounded corners=1.5mm, align=center, font=\footnotesize\bfseries, minimum height=0.72cm},
-  snode/.style={draw=deeporange, fill=softorange, thick, rounded corners=1.5mm, align=center, font=\footnotesize\bfseries, minimum height=0.72cm},
-  rnode/.style={draw=deepred, fill=softred, thick, rounded corners=1.5mm, align=center, font=\footnotesize\bfseries, minimum height=0.72cm}
-}
-\node[gnode] (e) {事件发生\\(Syscall / IRQ)};
-\node[gnode, right=of e] (m) {① 模式切换\\(Mode Switch)};
-\node[snode, right=of m] (s) {② 调度器评估\\(Schedule Pick)};
-\node[rnode, right=of s] (c) {③ 进程切换\\(Context Switch)};
-
-\draw[->, thick, deepblue] (e) -- node[above=1pt, font=\tiny] {进入内核} (m);
-\draw[->, thick, deepblue] (m) -- node[above=1pt, font=\tiny] {需要/允许调度} (s);
-\draw[->, thick, deeporange] (s) -- node[above=1pt, font=\tiny] {选中新进程} (c);
-\end{tikzpicture}
-\endgroup
+\input{assets/src/syscall_control_lifecycle_body.tikz}
 \end{center}
 
 任何一步条件不满足（如快速系统调用原路返回、时间片未耗尽、就绪队列依然选中自己），链条都会立刻提前终止并原路返回，绝不会盲目触发进程切换！
@@ -947,47 +930,7 @@ Pending 回答“事件已到但尚未处理吗”，Mask 回答“当前线程�
 扩展后的完整\kw{七态模型（包含就绪挂起与阻塞挂起）}结构如下：
 
 \begin{center}
-
-\begingroup
-\small
-\begin{tikzpicture}[>=Stealth, scale=0.95, transform shape]
-\tikzset{
-  st/.style={draw=mainblue, thick, fill=softblue, rounded corners=2mm, align=center, minimum width=2.0cm, minimum height=0.80cm, font=\small\bfseries},
-  susp/.style={draw=deeporange, thick, fill=softorange, rounded corners=2mm, align=center, minimum width=2.5cm, minimum height=0.80cm, font=\small\bfseries}
-}
-
-% Uniform Grid Coordinates
-\node[st] (new) at (0, 0) {New\\[-1pt]\scriptsize (新建)};
-\node[st] (ready) at (3.8, 0) {Ready\\[-1pt]\scriptsize (就绪)};
-\node[st] (run) at (7.6, 0) {Running\\[-1pt]\scriptsize (运行)};
-\node[st] (exit) at (11.4, 0) {Exit\\[-1pt]\scriptsize (终止)};
-
-\node[susp] (rsusp) at (3.8, -2.2) {Ready-Suspend\\[-1pt]\scriptsize (就绪挂起)};
-\node[st] (block) at (7.6, -2.2) {Blocked\\[-1pt]\scriptsize (阻塞)};
-
-\node[susp] (bsusp) at (7.6, -4.4) {Blocked-Suspend\\[-1pt]\scriptsize (阻塞挂起)};
-
-% Primary Flow Arrows
-\draw[->, thick, deepblue] (new) -- node[above=1pt, font=\tiny] {创建} (ready);
-\draw[->, thick, deepblue] (new) -- node[below left=1pt, font=\tiny] {挂起创建} (rsusp);
-\draw[->, thick, deepblue] (ready.15) -- node[above=1pt, font=\tiny] {调度} (run.165);
-\draw[->, thick, deepblue] (run.195) -- node[below=1pt, font=\tiny] {抢占 / 时间片} (ready.345);
-\draw[->, thick, deepblue] (run) -- node[above=1pt, font=\tiny] {终止} (exit);
-\draw[->, thick, deepblue] (run) -- node[right=2pt, font=\tiny] {等待事件} (block);
-\draw[->, thick, deepblue] (block) -- node[above right=1pt, font=\tiny] {事件发生} (ready);
-
-% Swapping Vertical Arrows
-\draw[->, thick, deeporange] (ready.240) -- node[left=1pt, font=\tiny] {挂起 (swap out)} (rsusp.120);
-\draw[->, thick, deepgreen] (rsusp.60) -- node[right=1pt, font=\tiny] {激活 (swap in)} (ready.300);
-
-\draw[->, thick, deeporange] (block.240) -- node[left=1pt, font=\tiny] {挂起} (bsusp.120);
-\draw[->, thick, deepgreen] (bsusp.60) -- node[right=1pt, font=\tiny] {激活} (block.300);
-
-% Event occurs arrow in swapped state
-\draw[->, thick, deepblue] (bsusp) -- node[above right=1pt, font=\tiny] {事件发生} (rsusp);
-
-\end{tikzpicture}
-\endgroup
+\input{assets/src/process_seven_state_body.tikz}
 \end{center}
 
 关键转换按“事件是否满足 + 是否重新激活”推：
@@ -1509,6 +1452,10 @@ MLQ 与 MLFQ 的稳定分界恰好落在 Relation/Transition 上：
 
 MLQ 的队列内策略应匹配 workload：前台交互队列常用小时间片 RR，后台批处理队列可用 FCFS；队列间又可以采用固定优先级或预留 CPU share。固定优先级若高层长期非空会饿死低层；份额法牺牲一部分高层即时性，换取低层最低进度保证。
 
+\begin{center}
+\input{assets/src/mlfq_feedback_body.tikz}
+\end{center}
+
 \begin{method}[MLFQ 的五条生成规则与三个防御参数]
 一套经典 MLFQ 可由五条规则生成：
 \begin{enumerate}
@@ -2012,6 +1959,10 @@ ULT 切换的稳定语义是保存 PC/SP/必要寄存器并恢复另一逻辑执
 \end{exam}
 
 \subsection{M:1、1:1、M:N：用户线程怎样映射到内核执行实体}
+
+\begin{center}
+\input{assets/src/thread_mapping_domains_body.tikz}
+\end{center}
 
 设某进程当前拥有 $M$ 个用户逻辑执行上下文 $\{U_1,\dots,U_M\}$，内核为该进程提供了 $N$ 个可独立调度的承载实体 $\{K_1,\dots,K_N\}$：
 

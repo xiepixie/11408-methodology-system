@@ -1,0 +1,48 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  layer/.style={draw=themegray,rounded corners=3pt,fill=themefg!3!themebg,minimum width=2.8cm,minimum height=1.0cm,align=center},
+  contract/.style={draw=themecurve,rounded corners=3pt,fill=themecurve!9!themebg,inner xsep=6pt,inner ysep=5pt,align=center},
+  optional/.style={draw=themeamber,dashed,rounded corners=3pt,fill=themeamber!7!themebg,minimum width=2.45cm,minimum height=.85cm,align=center},
+  flow/.style={->,line width=1.05pt,themecurve},
+  dep/.style={->,line width=1pt,themeamber}
+}
+\node[anchor=west,font=\bfseries\large,align=left,text width=16.2cm] at (0,8.2) {函数调用不是固定栈帧模板：先分清四层约束，\\再由真实保存需求生成帧};
+\node[anchor=west,text=themegray,align=left,text width=16.2cm] at (0,7.52) {稳定对象是“调用契约与保存责任”；具体寄存器名、帧指针和帧内顺序\\只有在 ABI/题设明确时才固定。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,6.95) {A. 同一次调用同时受四层约束};
+\node[layer] (lang) at (1.45,5.95) {源语言\\参数值、返回值、副作用};
+\node[layer] (isa) at (4.55,5.95) {ISA\\跳转、寄存器、load/store};
+\node[contract] (abi) at (7.65,5.95) {ABI\\传参、返回、保存责任、对齐};
+\node[layer] (comp) at (10.75,5.95) {编译器选择\\分配、spill、内联、FP};
+\draw[flow] (lang)--(isa);
+\draw[flow] (isa)--(abi);
+\draw[flow] (abi)--(comp);
+\node[anchor=west,text=themegray] at (0,5.1) {箭头表示实现约束逐层细化，不表示“上一层自动决定唯一下一层实现”。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,4.35) {B. 调用生命周期只要求软件可见状态满足契约};
+\node[contract] (caller) at (1.2,3.35) {Caller\\准备参数与 live 值};
+\node[contract] (call) at (4.2,3.35) {Call\\保存/形成返回位置\\进入 callee};
+\node[contract] (body) at (7.2,3.35) {Callee body\\按 ABI 履行保存责任};
+\node[contract] (ret) at (10.2,3.35) {Return\\交付返回值\\恢复约定状态};
+\draw[flow] (caller)--(call);
+\draw[flow] (call)--(body);
+\draw[flow] (body)--(ret);
+\draw[flow] (ret.south) to[bend left=22] node[below] {Next PC 回到正确返回点} (caller.south);
+
+\node[anchor=west,font=\bfseries,text=themeamber] at (0,2.3) {C. 栈帧按需求生成：这些对象“可能需要”，不是每次调用都必须出现};
+\node[optional] (ra) at (1.35,1.25) {返回地址/返回状态};
+\node[optional] (save) at (4.1,1.25) {需保留的寄存器};
+\node[optional] (spill) at (6.85,1.25) {spill / address-taken 局部量};
+\node[optional] (args) at (9.6,1.25) {栈上传参/溢出区};
+\node[optional] (align) at (12.05,1.25) {对齐/临时空间};
+\node[contract,minimum width=5.1cm] (frame) at (6.7,-.05) {当前函数真正需要的 frame\\大小、对象集合与布局受 ABI + 当前编译结果共同约束};
+\foreach \n in {ra,save,spill,args,align}{\draw[dep] (\n.south)--(frame.north);}
+
+\node[anchor=west,text=themegray,align=left,text width=16.2cm] at (0,-1.15) {边界：callee-saved 表示“若 callee 破坏旧值则负责恢复”，不是“每次进入都必须压栈”；\\leaf、无 spill、可省略 frame pointer 的函数都可能没有完整教材帧。};
+\end{tikzpicture}

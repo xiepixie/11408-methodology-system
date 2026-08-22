@@ -1,0 +1,68 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  inodepart/.style={draw=themecurve,rounded corners=2pt,minimum width=2.8cm,minimum height=.72cm,align=center,fill=themecurve!8!themebg,font=\scriptsize\bfseries,text=themecurve},
+  idx/.style={draw=themeamber,rounded corners=3pt,minimum width=2.4cm,minimum height=.72cm,align=center,fill=themeamber!8!themebg,font=\scriptsize\bfseries,text=themeamber},
+  data/.style={draw=themegreen,rounded corners=3pt,minimum width=2.8cm,minimum height=.72cm,align=center,fill=themegreen!8!themebg,font=\scriptsize\bfseries,text=themegreen},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themecurve},
+  iflow/.style={->,line width=1.1pt,themeamber},
+  dflow/.style={->,line width=1.1pt,themegreen},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {UNIX Inode 混合索引：直接指针、一级间接、二级间接与三级间接结构};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.0)
+  {设计权衡：直接指针保证小文件 0 次额外索引 I/O；多级间接指针通过扇出系数 $K = \text{BlockSize} / \text{AddrSize}$ 实现超大文件支持。};
+
+% ── 四行水平对齐矩阵 ──
+
+% ── 第 1 行：直接指针 (y = 6.4) ──
+\node[inodepart] (in_dir) at (1.6,6.4) {直接指针 $\times 10$};
+\node[data] (d_dir) at (14.2,6.4) {10 个直接数据块\\(覆盖 $10 \times \text{BlockSize}$)};
+\draw[dflow] (in_dir.east) -- node[above=2pt,lbl,text=themegreen] {直接指向数据块 (0 次额外索引 I/O)} (d_dir.west);
+
+% ── 第 2 行：一级间接 (y = 5.0) ──
+\node[inodepart] (in_1) at (1.6,5.0) {一级间接指针 $\times 1$};
+\node[idx] (i_1) at (6.8,5.0) {一级索引表\\(含 $K$ 个盘块地址)};
+\node[data] (d_1) at (14.2,5.0) {$K$ 个数据块\\(覆盖 $K \times \text{BlockSize}$)};
+\draw[iflow] (in_1.east) -- (i_1.west);
+\draw[dflow] (i_1.east) -- node[above=2pt,lbl,text=themegreen] {扇出 $K$ 个盘块} (d_1.west);
+
+% ── 第 3 行：二级间接 (y = 3.6) ──
+\node[inodepart] (in_2) at (1.6,3.6) {二级间接指针 $\times 1$};
+\node[idx] (i_2a) at (5.6,3.6) {二级索引表};
+\node[idx] (i_2b) at (9.4,3.6) {$K$ 个一级索引表};
+\node[data] (d_2) at (14.2,3.6) {$K^2$ 个数据块\\(覆盖 $K^2 \times B$)};
+\draw[iflow] (in_2.east) -- (i_2a.west);
+\draw[iflow] (i_2a.east) -- (i_2b.west);
+\draw[dflow] (i_2b.east) -- (d_2.west);
+
+% ── 第 4 行：三级间接 (y = 2.2) ──
+\node[inodepart] (in_3) at (1.6,2.2) {三级间接指针 $\times 1$};
+\node[idx] (i_3a) at (4.8,2.2) {三级索引};
+\node[idx] (i_3b) at (7.8,2.2) {$K$ 个二级表};
+\node[idx] (i_3c) at (10.8,2.2) {$K^2$ 个一级表};
+\node[data] (d_3) at (14.2,2.2) {$K^3$ 个数据块 ($K^3 \times B$)};
+\draw[iflow] (in_3.east) -- (i_3a.west);
+\draw[iflow] (i_3a.east) -- (i_3b.west);
+\draw[iflow] (i_3b.east) -- (i_3c.west);
+\draw[dflow] (i_3c.east) -- (d_3.west);
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,0.85)
+  {\textbf{文件最大寻址容量计算公式：}\\
+   若每个盘块大小为 $B$，块地址占 $A$ 字节，则扇出系数 $K = B / A$。\\
+   最大文件大小为 $S_{\text{max}} = (10 + 1 \times K + 1 \times K^2 + 1 \times K^3) \times B$。\\
+   例：$B = 4\text{KB}, A = 4\text{B} \implies K = 1024$。三级间接可寻址 $1024^3 \times 4\text{KB} = 4\text{TB}$。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.2)
+  {禁止误读：访问大文件尾部数据块需要经历“读一级表 $\to$ 读二级表 $\to$ 读三级表 $\to$ 读目标数据”共 4 次磁盘 I/O（未命中缓存时）。};
+\end{tikzpicture}

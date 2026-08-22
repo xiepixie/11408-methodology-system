@@ -1,16 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 260" width="440" height="260"><rect width="100%" height="100%" class="bg"/>
-  
-<style>
-  @media print, (prefers-color-scheme: light) {
-    [fill="#30362d"], [fill="#30362D"], [fill="#30362d" i] { fill: #fafaf7 !important; }
-    [stroke="#30362d"], [stroke="#30362D"], [stroke="#30362d" i] { stroke: #fafaf7 !important; }
-    [fill="#edf4e8"], [fill="#EDF4E8"], [fill="#edf4e8" i] { fill: #111111 !important; }
-    [stroke="#edf4e8"], [stroke="#EDF4E8"], [stroke="#edf4e8" i] { stroke: #111111 !important; }
-    [fill="#9ea897"], [fill="#9EA897"], [fill="#9ea897" i] { fill: #666666 !important; }
-    [stroke="#9ea897"], [stroke="#9EA897"], [stroke="#9ea897" i] { stroke: #666666 !important; }
-  }
-</style>
-<defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 260" width="440" height="260">
+  <style>
+    .bg { fill: #2e362c; }
+    .fg { stroke: #edf4e8; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .axis { stroke: #edf4e8; stroke-width: 1.8; fill: none; }
+    .grid { stroke: #596452; stroke-width: 1; stroke-dasharray: 4,4; fill: none; }
+    .curve { stroke: #edf4e8; stroke-width: 2.4; fill: none; }
+    .curve-accent { stroke: #98c379; stroke-width: 2.4; fill: none; }
+    .curve-dashed { stroke: #edf4e8; stroke-width: 2; stroke-dasharray: 5,5; fill: none; }
+    .shade { fill: rgba(237, 244, 232, 0.15); stroke: #edf4e8; stroke-width: 1.5; }
+    .plane1 { fill: rgba(152, 195, 121, 0.25); stroke: #edf4e8; stroke-width: 1.5; }
+    .plane2 { fill: rgba(97, 175, 239, 0.25); stroke: #edf4e8; stroke-width: 1.5; }
+    .plane3 { fill: rgba(229, 192, 123, 0.25); stroke: #edf4e8; stroke-width: 1.5; }
+    .text { fill: #edf4e8; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', Arial, sans-serif; font-size: 15px; text-anchor: middle; }
+    .text-sm { fill: #edf4e8; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', Arial, sans-serif; font-size: 13px; text-anchor: middle; }
+    .text-xs { fill: #edf4e8; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', Arial, sans-serif; font-size: 11px; text-anchor: middle; }
+    .point { fill: #edf4e8; }
+  </style>
+  <rect width="100%" height="100%" class="bg"/>
+  <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#edf4e8"/>
     </marker>

@@ -619,6 +619,14 @@ Source & 本册承接位置 & 核销结论\\
 
 \subsection{电路、报文与分组交换的事件账本}
 
+\begin{figure}[htbp]
+  \centering
+  \resizebox{0.96\linewidth}{!}{\input{assets/src/store_forward_pipeline_body.tikz}}
+  \caption{分组交换存储转发与流水线填管/稳态推进时序图}
+  \label{fig:store-forward-pipeline}
+\end{figure}
+
+
 电路交换先经历资源建立，再持续占用预留能力，最后释放；报文交换逐份完整 message 排队；分组交换逐包排队、逐跳存储转发：
 \[
 \text{Setup}\to\text{Reserved transfer}\to\text{Release}

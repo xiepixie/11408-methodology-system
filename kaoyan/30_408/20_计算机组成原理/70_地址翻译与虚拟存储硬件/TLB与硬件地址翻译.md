@@ -178,6 +178,10 @@ $$
 > [!trap] TLB miss ≠ 缺页
 > TLB miss 之后必须继续查 PTE；只有当前映射、驻留或权限状态不能支持本次访问时，才进入相应 fault 分支。
 
+![一次 Load 中 TLB、权威页表、fault 与 Cache 数据副本的分流](./assets/地址翻译_TLB页表与Cache分流.svg)
+
+图中的主线是语义依赖而不是固定串行时序：TLB hit 可跳过 page walk；只有形成合法 PA 后才进入普通 Cache hit/miss；VIPT 等实现还可让部分 Cache 定位与 TLB lookup 并行。
+
 ## 六、TLB hit 与页表状态的一致性
 
 若系统约定：TLB 只缓存当前有效 mapping，并且页表变更后会正确失效/隔离旧 TLB entry，则：

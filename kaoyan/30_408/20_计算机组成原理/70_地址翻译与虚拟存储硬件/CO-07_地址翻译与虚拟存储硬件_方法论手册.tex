@@ -121,17 +121,9 @@ TLB 保存 translation entry，而不是程序数据。TLB hit 表示当前请�
 
 \section{一次翻译的状态轨迹：Hit、Miss、Fault 分层}
 \begin{center}
-\begin{tikzpicture}[node distance=0.62cm]
-\node[co] (req) {Request\\VA + type + privilege};
-\node[co,right=of req] (tlb) {TLB Lookup};
-\node[co,right=of tlb] (walk) {Page Walk\\if TLB miss};
-\node[co,right=of walk] (check) {Mapping +\\Permission Check};
-\node[co,right=of check] (pa) {Legal PA};
-\node[fault,below=0.9cm of check] (fault) {Fault\\non-present / protection};
-\draw[flow] (req)--(tlb);\draw[flow] (tlb)--(walk);\draw[flow] (walk)--(check);\draw[flow] (check)--(pa);\draw[flow] (check)--(fault);
-\end{tikzpicture}
+\input{assets/src/translation_cache_flow_body.tikz}
 \end{center}
-图中的主线表示\textbf{语义依赖}。TLB hit 时可以跳过 page walk；permission check 也可能与 TLB/PTE 读取融合在硬件中。关键是区分当前失败对象：
+图中的主线表示\textbf{语义依赖}而不是固定串行时序：TLB hit 可跳过 page walk；只有形成合法 PA 后才进入普通 Cache hit/miss；VIPT 等实现还可能让部分 Cache 定位与 TLB lookup 并行。关键是区分当前失败对象：
 \begin{center}\small
 \begin{tabularx}{\linewidth}{L{3cm}YY Y}
 \toprule

@@ -1,0 +1,67 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  state/.style={draw=themegray,rounded corners=4pt,minimum width=2.5cm,minimum height=.82cm,align=center,fill=themefg!3!themebg,font=\scriptsize\bfseries},
+  active/.style={state,draw=themecurve,fill=themecurve!8!themebg,text=themecurve},
+  runstate/.style={state,draw=themegreen,fill=themegreen!10!themebg,text=themegreen},
+  suspend/.style={state,draw=themeamber,fill=themeamber!8!themebg,text=themeamber},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themecurve},
+  sflow/.style={->,line width=1.1pt,themeamber},
+  pflow/.style={->,line width=1.1pt,themegreen},
+  bflow/.style={->,line width=1.1pt,themealert},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {进程七态模型：就绪/阻塞回答“是否缺事件”，挂起回答“是否驻留内存”};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.0)
+  {两维正交：第一维为 CPU 执行资格（Ready / Running / Blocked），第二维为主存驻留资格（Active 内存在籍 / Suspend 外存挂起）。};
+
+% ── 节点定义 (拉开列间距) ──
+\node[state] (new) at (1.2,6.4) {新建态 (New)\\创建 PCB};
+\node[active] (ready) at (4.4,6.4) {就绪态 (Ready)\\仅缺 CPU 资源};
+\node[runstate] (running) at (11.8,6.4) {运行态 (Running)\\占有 CPU 执行};
+\node[state] (exit) at (16.2,6.4) {终止态 (Exit)\\释放资源回收};
+
+\node[active] (blocked) at (11.8,4.5) {阻塞态 (Blocked)\\等待 I/O 或事件};
+
+\node[suspend] (r_susp) at (4.4,2.2) {就绪挂起 (Ready-Suspend)\\驻留外存，等待换入};
+\node[suspend] (b_susp) at (11.8,2.2) {阻塞挂起 (Blocked-Suspend)\\驻留外存，等待事件};
+
+% ── 活跃态转移 ──
+\draw[flow] (new) -- node[above=2pt,lbl,text=themegray] {接纳 (Admit)} (ready);
+\draw[pflow] (ready.north east) to[out=20,in=160] node[above=2pt,lbl,text=themegreen] {调度分派 (Dispatch)} (running.north west);
+\draw[bflow] (running.south west) to[out=-160,in=-20] node[below=2pt,lbl,text=themealert] {时间片到/抢占} (ready.south east);
+\draw[flow] (running) -- node[above=2pt,lbl,text=themegray] {正常/异常退出} (exit);
+
+\draw[bflow] (running) -- node[right=2pt,lbl,text=themealert] {请求 I/O 等待 (Wait)} (blocked);
+\draw[flow] (blocked.north west) to[out=145,in=-30] node[pos=0.5,above=2pt,lbl,text=themecurve] {事件发生 (Event Done)} (ready.south east);
+
+% ── 挂起与换入 (Ready 列垂直双向弧线) ──
+\draw[sflow] (ready.south west) to[out=-120,in=120] node[left=2pt,lbl,text=themeamber] {内存紧张挂起} (r_susp.north west);
+\draw[flow] (r_susp.north east) to[out=60,in=-60] node[right=2pt,lbl,text=themecurve] {换入激活 (Active)} (ready.south east);
+
+% ── 挂起与换入 (Blocked 列垂直双向弧线) ──
+\draw[sflow] (blocked.south east) to[out=-60,in=60] node[right=2pt,lbl,text=themeamber] {挂起} (b_susp.north east);
+\draw[flow] (b_susp.north west) to[out=120,in=-120] node[left=2pt,lbl,text=themecurve] {激活} (blocked.south west);
+
+% ── 外存事件发生 (水平单向流) ──
+\draw[sflow] (b_susp.west) -- node[above=2pt,lbl,text=themeamber] {外存事件就绪 (Event Done)} (r_susp.east);
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,1.0)
+  {\textbf{调度层次与状态转移底线：}\\
+   1. \textbf{低级调度 (进程调度)}：只在内存活跃的 Ready 队列中挑选进程进入 Running 态；\\
+   2. \textbf{中级调度 (内存置换)}：负责将外存的 Ready-Suspend 换入内存 Ready，或将 Blocked/Ready 换出到外存挂起；\\
+   3. \textbf{外存事件发生}：处于 Blocked-Suspend 的进程在事件发生后，\textbf{直接转变为 Ready-Suspend}，无需先换入内存。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.15)
+  {禁止误读：挂起进程无法直接被 CPU 调度运行；必须先经中级调度换入内存转为 Ready 态，才能参与 CPU 竞争。};
+\end{tikzpicture}

@@ -6,7 +6,7 @@
 
 ## 1. 当前基线
 
-2026-08-20 已获得两篇文章的可追溯读后即时脱稿复述转写，来源为《The Magic of Summer Reading》和《English Decoded!》。目前可以建立第一版**跨文章内容组织基线**；但因为仍没有原始音频，暂时不能判断真实发音、语速、意群停顿或填充词频率。
+2026-08-20 已获得《The Magic of Summer Reading》和《English Decoded!》两篇文章的可追溯读后即时脱稿复述转写；2026-08-21 又加入《A new replication crisis?》的第一次概括与最小修复回答。当前基线已经覆盖三篇不同主题文章，但因为仍没有原始音频，暂时不能判断真实发音、语速、意群停顿或填充词频率。
 
 当前可观察到：
 
@@ -17,6 +17,8 @@
 - 已出现真实的主动表达缺口：想说“最让我印象深刻的是……”时第一次用了 `what impressed me best`；第二次在明确提示目标表达后正确说出 `What impressed me most was...`，当前支持 `EXP-011` 达到 `L2 · 提示使用`，但尚未形成无提示主动调用；
 - 第二篇《English Decoded!》的第一次冷输出能直接说出文章在讨论英语沟通中的 nuance，并能列出 assertive / aggressive / passive-aggressive 三类；但在把三者压成英文定义时，`assertive` 被压缩成只有“firm and direct”，遗漏 respectful / fair 这一关键边界，`passive-aggressive` 也被压成只有 sarcasm，说明“理解到英语输出的压缩损失”已经跨两篇文章重复出现。
 - 第二篇还出现新的主动表达缺口：想说“区分这些类型”时说成 `how to distinct these`。这更像缺少可直接调用的比较语块，而不是不了解文章内容；已建立 `EXP-012 distinguish A from B / distinguish among...` 作为后续检索对象。
+- 第三篇《A new replication crisis?》进一步暴露了同类问题：在已经明确纠正“被复现的是 results / findings，而不是 researchers”以后，最小修复回答仍再次说出 `researchers ... cannot be reproduced`；同时出现 `consider ... into consideration` 的固定框架混成，以及 `the area is more cared about the novelty` 这类“意思大致明确但英语关系没有稳定落槽”的表达。
+- 学习者本人也主动提出：介词搭配、逻辑连接方式和固定表达框架不够稳定，可能是当前组织困难的一部分。现有证据支持这个方向，但更准确的机制假设是“高频语块和谓词-对象框架尚未形成可整体检索的单位”，而不是把问题简单归结为不知道若干介词规则。
 - 同一时段连续重复整篇后，新增收益明显下降。当前更适合 `真实首答 → 关键诊断 → AI 参考复述 → 对照 → 间隔后冷检索`，而不是继续机械重复整篇。
 
 当前基线应读作：
@@ -31,10 +33,12 @@
 
 - **可观察症状**：读后能抓住主要内容，但一旦要用英语快速概括多个概念或关系，就容易把必要边界压掉，或者为了继续句子而用不够准确的词替代目标表达。
 - **常见触发条件**：需要同时完成“回忆事实 / 区分概念 / 现场组句”的复述任务。
-- **当前训练动作**：先保留 2--4 个结构节点，再用一意一句压缩；AI 参考版负责提供可达到的正确模型，后续通过间隔冷检索判断这些边界能否自己回来。
+- **可能机制（当前假设）**：当前并不只是“词汇量不够”。更常见的是已经知道想表达的关系，却在实时输出时临时拼接动词、对象、介词和从句，导致语义角色错配或两个固定框架互相污染。语法术语本身不是训练目标；更值得验证的是高频 `verb + object / complement` 与逻辑语块能否作为整体被检索出来。
+- **当前训练动作**：先保留少量结构节点，再用“一意一句”压缩；遇到真实表达缺口时优先按 `沟通意图 → 完整框架 → 填语义槽位` 练习，而不是孤立背介词。AI 参考版负责提供可达到的正确模型，后续通过间隔冷检索判断这些框架能否自己回来。
 - **代表性证据**：
-  - 《The Magic of Summer Reading》：复述中曾把 `summer slide` 压成“被假期分散注意力”，以及把 Kindle 趋势扩展成原文没有的替代判断。
-  - 《English Decoded!》：第一次冷输出能说出三类沟通方式，但把 `assertive` 的 respectful/fair 边界和 `passive-aggressive` 的 indirect-conflict 边界压掉，并出现 `how to distinct these` 的主动表达缺口。
+  - [《The Magic of Summer Reading》训练手札](../01_articles/2026/2026-08-20_the_magic_of_summer_reading/reading_view.tex)：复述中曾把 `summer slide` 压成“被假期分散注意力”，以及把 Kindle 趋势扩展成原文没有的替代判断。
+  - [《English Decoded!》训练手札](../01_articles/2026/2026-08-20_english_decoded/reading_view.tex)：第一次冷输出能说出三类沟通方式，但把 `assertive` 的 respectful/fair 边界和 `passive-aggressive` 的 indirect-conflict 边界压掉，并出现 `how to distinct these` 的主动表达缺口。
+  - [《A new replication crisis?》训练手札](../01_articles/2026/2026-08-21_a_new_replication_crisis/reading_view.tex)：在明确纠正后仍重复 `researchers ... cannot be reproduced`，说明 `reproduce` 的语义对象没有稳定落槽；同一最小修复中又出现 `consider ... into consideration` 的框架混成，进一步支持“整体语块 / 论元框架调用不稳”这一机制假设。
 
 以下现象仍只作为候选观察点，在重复证据出现前不直接定性。
 

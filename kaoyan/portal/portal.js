@@ -37,6 +37,7 @@
     recentIds: JSON.parse(localStorage.getItem('kaoyan_recents') || '[]'),
     theme: localStorage.getItem('kaoyan_theme') || 'dark',
     pdfInvert: localStorage.getItem('kaoyan_pdf_invert') === 'true',
+    fontScale: parseFloat(localStorage.getItem('kaoyan_font_scale')) || 1.0,
     zenMode: false,
     sidebarCollapsed: window.innerWidth <= 768,
     
@@ -77,11 +78,15 @@
     nextDocBtn: document.getElementById('next-doc-btn'),
     docStepperPos: document.getElementById('doc-stepper-pos'),
 
-    // Action Buttons
+    // Action Buttons & Reader Controls
     twinModelBtn: document.getElementById('twin-model-btn'),
     masteryStatusBtn: document.getElementById('mastery-status-btn'),
     masteryIcon: document.getElementById('mastery-icon'),
     masteryText: document.getElementById('mastery-text'),
+    fontSizeGroup: document.getElementById('font-size-group'),
+    fontDecBtn: document.getElementById('font-dec-btn'),
+    fontIncBtn: document.getElementById('font-inc-btn'),
+    fontSizeIndicator: document.getElementById('font-size-indicator'),
     pdfInvertBtn: document.getElementById('pdf-invert-btn'),
     starBtn: document.getElementById('star-btn'),
     copyBtn: document.getElementById('copy-btn'),
@@ -134,11 +139,37 @@
   };
 
   // --------------------------------------------------------------------------
+  // Font Size Scaling System
+  // --------------------------------------------------------------------------
+  const FONT_SCALE_STEPS = [0.85, 0.92, 1.0, 1.10, 1.20, 1.32, 1.45, 1.60, 1.80];
+
+  function applyFontScale(scale) {
+    state.fontScale = Math.max(0.75, Math.min(2.0, scale));
+    document.documentElement.style.setProperty('--article-font-scale', state.fontScale.toString());
+    if (el.fontSizeIndicator) {
+      el.fontSizeIndicator.textContent = Math.round(state.fontScale * 100) + '%';
+    }
+    localStorage.setItem('kaoyan_font_scale', state.fontScale.toString());
+  }
+
+  function adjustFontScale(direction) {
+    let current = state.fontScale || 1.0;
+    if (direction > 0) {
+      const next = FONT_SCALE_STEPS.find(s => s > current + 0.02);
+      applyFontScale(next !== undefined ? next : Math.min(2.0, current * 1.1));
+    } else {
+      const prev = [...FONT_SCALE_STEPS].reverse().find(s => s < current - 0.02);
+      applyFontScale(prev !== undefined ? prev : Math.max(0.75, current * 0.9));
+    }
+  }
+
+  // --------------------------------------------------------------------------
   // Initialization
   // --------------------------------------------------------------------------
   async function init() {
     applyTheme(state.theme);
     applyPdfInvert(state.pdfInvert);
+    applyFontScale(state.fontScale);
     bindEvents();
     await loadManifest();
   }
@@ -425,6 +456,7 @@
 
     if (el.twinModelBtn) el.twinModelBtn.style.display = 'none';
     if (el.masteryStatusBtn) el.masteryStatusBtn.style.display = 'none';
+    if (el.fontSizeGroup) el.fontSizeGroup.style.display = 'none';
     el.pdfInvertBtn.disabled = false;
     
     // Set PDF src with standard Open Parameters (Fit Width + Auto Bookmarks)
@@ -527,6 +559,12 @@
     text = text.replace(/^>\s*(?:\[!RULE\]|\[!TIP\]|\*?\*?解题规则\*?\*?|\*?\*?动作规则\*?\*?)[：:]\s*(.+)$/gm, 
       (m, p1) => `<div class="callout callout-rule"><div class="callout-title">💡 解题动作规则</div>${formatInlineLinks(p1)}</div>`);
 
+    // Standfirst subtitle italic line: *A review of thousands...*
+    text = text.replace(/^\*([^\*\n\r]{15,})\*$/gm, '<div class="article-standfirst">$1</div>');
+
+    // Convert paragraph anchor ^p01 -> subtle anchor badge
+    text = text.replace(/\^p(\d{2})/g, '<span class="block-anchor" data-anchor="^p$1" title="Obsidian 段落锚点 ^p$1">#p$1</span>');
+
     // Convert Obsidian diagnostic highlights ==span== [?] or ==span== [!] or ==span== [★] or ==span== [~]
     text = text.replace(/==([\s\S]+?)==\s*(\[\?\]|\[!\]|\[★\]|\[\~\]|\?|!|★|~)/g, (match, span, tag) => {
       const tagClean = tag.replace(/[\[\]]/g, '');
@@ -558,6 +596,9 @@
     if (el.masteryStatusBtn) {
       el.masteryStatusBtn.style.display = 'inline-flex';
       updateMasteryButtonUI(doc.id);
+    }
+    if (el.fontSizeGroup) {
+      el.fontSizeGroup.style.display = 'inline-flex';
     }
 
     // Training Scope with KaTeX
@@ -596,6 +637,54 @@
     // Markdown + KaTeX Mathematical Isolation Pipeline
     // =========================================================================
     let raw = doc.content || '';
+
+    // Extract metadata for English Daily Reading articles
+    let isEnglishArticle = doc.subject === 'english1' && (doc.id.includes('reading') || (doc.code && doc.code.startsWith('ENG-READ')));
+    let metaHeaderHtml = '';
+
+    if (isEnglishArticle && raw) {
+      const fmMatch = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+      if (fmMatch) {
+        const fmLines = fmMatch[1].split('\n');
+        const articleMeta = { topics: [] };
+        let currentKey = '';
+        for (const line of fmLines) {
+          const mKey = line.match(/^([a-zA-Z0-9_-]+):\s*(.*)$/);
+          if (mKey) {
+            currentKey = mKey[1].trim();
+            const val = mKey[2].trim();
+            if (val) articleMeta[currentKey] = val;
+          } else if (line.trim().startsWith('-') && currentKey === 'topics') {
+            articleMeta.topics.push(line.replace(/^\s*-\s*/, '').trim());
+          }
+        }
+
+        metaHeaderHtml = `
+          <div class="english-article-header">
+            <div class="english-meta-pills">
+              ${articleMeta.source ? `<span class="meta-pill pill-source">📰 ${escapeHtml(articleMeta.source)}</span>` : ''}
+              ${articleMeta.published ? `<span class="meta-pill pill-date">📅 ${escapeHtml(articleMeta.published)}</span>` : ''}
+              ${articleMeta.section ? `<span class="meta-pill pill-section">🏷️ ${escapeHtml(articleMeta.section)}</span>` : ''}
+              ${articleMeta.author ? `<span class="meta-pill pill-author">✍️ ${escapeHtml(articleMeta.author)}</span>` : ''}
+              ${articleMeta.source_page ? `<span class="meta-pill pill-page">📄 P.${escapeHtml(articleMeta.source_page)}</span>` : ''}
+            </div>
+            ${articleMeta.topics && articleMeta.topics.length > 0 ? `
+              <div class="english-topic-chips">
+                ${articleMeta.topics.map(t => `<span class="topic-chip">#${escapeHtml(t)}</span>`).join('')}
+              </div>
+            ` : ''}
+            <div class="english-diag-legend">
+              <span class="legend-title">⚡ 首读诊断：</span>
+              <span class="legend-item"><span class="anno-badge anno-unknown">[?]</span> 词义不懂</span>
+              <span class="legend-item"><span class="anno-badge anno-syntax">[!]</span> 句法脱节</span>
+              <span class="legend-item"><span class="anno-badge anno-star">[★]</span> 优质表达</span>
+              <span class="legend-item"><span class="anno-badge anno-verify">[~]</span> 存疑验证</span>
+            </div>
+          </div>
+        `;
+      }
+    }
+
     const mathStore = [];
     const codeStore = [];
 
@@ -698,7 +787,13 @@
       return `<span class="katex-inline">$${escapeHtml(item.formula)}$</span>`;
     });
 
-    el.markdownBody.innerHTML = html;
+    el.markdownBody.innerHTML = metaHeaderHtml + html;
+
+    if (isEnglishArticle) {
+      el.markdownBody.classList.add('english-reading-mode');
+    } else {
+      el.markdownBody.classList.remove('english-reading-mode');
+    }
 
     // =========================================================================
     // Image & Diagram Card Polish Pipeline (Size, Centering, Caption & Lightbox)
@@ -819,53 +914,58 @@
     activeHighlightElement = null;
   }
 
+  let selectionRafId = null;
+
   function handleTextSelection() {
-    const selection = window.getSelection();
-    if (!selection || selection.isCollapsed || selection.rangeCount === 0) {
-      if (!activeHighlightElement) {
-        if (el.selectionPopover) el.selectionPopover.style.display = 'none';
+    if (selectionRafId) cancelAnimationFrame(selectionRafId);
+    selectionRafId = requestAnimationFrame(() => {
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed || selection.rangeCount === 0) {
+        if (!activeHighlightElement) {
+          if (el.selectionPopover) el.selectionPopover.style.display = 'none';
+        }
+        return;
       }
-      return;
-    }
 
-    const selectedText = selection.toString().trim();
-    if (!selectedText || selectedText.length < 1) {
-      if (el.selectionPopover) el.selectionPopover.style.display = 'none';
-      return;
-    }
+      const selectedText = selection.toString().trim();
+      if (!selectedText || selectedText.length < 1) {
+        if (el.selectionPopover) el.selectionPopover.style.display = 'none';
+        return;
+      }
 
-    // Ensure selection is inside markdownBody
-    const range = selection.getRangeAt(0);
-    let container = range.commonAncestorContainer;
-    if (container.nodeType === Node.TEXT_NODE) container = container.parentElement;
-    if (!el.markdownBody || (!el.markdownBody.contains(container) && el.markdownBody !== container)) {
-      if (el.selectionPopover) el.selectionPopover.style.display = 'none';
-      return;
-    }
+      // Ensure selection is inside markdownBody
+      const range = selection.getRangeAt(0);
+      let container = range.commonAncestorContainer;
+      if (container.nodeType === Node.TEXT_NODE) container = container.parentElement;
+      if (!el.markdownBody || (!el.markdownBody.contains(container) && el.markdownBody !== container)) {
+        if (el.selectionPopover) el.selectionPopover.style.display = 'none';
+        return;
+      }
 
-    // Find closest paragraph or block ID
-    let paragraphId = '';
-    let pElem = container.closest('p, li, blockquote, div, h1, h2, h3');
-    if (pElem) {
-      const match = pElem.textContent.match(/\^p\d{2}/);
-      if (match) paragraphId = match[0];
-    }
+      // Find closest paragraph or block ID
+      let paragraphId = '';
+      let pElem = container.closest('p, li, blockquote, div, h1, h2, h3');
+      if (pElem) {
+        const match = pElem.textContent.match(/\^p\d{2}/);
+        if (match) paragraphId = match[0];
+      }
 
-    const rect = range.getBoundingClientRect();
-    if (rect.width === 0 && rect.height === 0) return;
+      const rect = range.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) return;
 
-    currentSelectionContext = {
-      selected_text: selectedText,
-      paragraph_id: paragraphId,
-      doc_id: state.selectedDocId
-    };
+      currentSelectionContext = {
+        selected_text: selectedText,
+        paragraph_id: paragraphId,
+        doc_id: state.selectedDocId
+      };
 
-    if (el.selectionPopover) {
-      if (el.highlightActionPopover) el.highlightActionPopover.style.display = 'none';
-      el.selectionPopover.style.display = 'flex';
-      el.selectionPopover.style.left = `${rect.left + rect.width / 2}px`;
-      el.selectionPopover.style.top = `${rect.top}px`;
-    }
+      if (el.selectionPopover) {
+        if (el.highlightActionPopover) el.highlightActionPopover.style.display = 'none';
+        el.selectionPopover.style.display = 'flex';
+        el.selectionPopover.style.left = `${rect.left + rect.width / 2}px`;
+        el.selectionPopover.style.top = `${rect.top}px`;
+      }
+    });
   }
 
   function applyAnnotation(markType) {
@@ -1633,8 +1733,22 @@
       } else if (e.shiftKey && e.key.toLowerCase() === 'd') {
         e.preventDefault();
         togglePdfInvert();
+      } else if ((e.metaKey || e.ctrlKey) && (e.key === '=' || e.key === '+')) {
+        e.preventDefault();
+        adjustFontScale(1);
+      } else if ((e.metaKey || e.ctrlKey) && e.key === '-') {
+        e.preventDefault();
+        adjustFontScale(-1);
+      } else if ((e.metaKey || e.ctrlKey) && e.key === '0') {
+        e.preventDefault();
+        applyFontScale(1.0);
       }
     });
+
+    // Font Size Stepper Listeners
+    if (el.fontDecBtn) el.fontDecBtn.addEventListener('click', () => adjustFontScale(-1));
+    if (el.fontIncBtn) el.fontIncBtn.addEventListener('click', () => adjustFontScale(1));
+    if (el.fontSizeIndicator) el.fontSizeIndicator.addEventListener('click', () => applyFontScale(1.0));
 
     // Handle responsive resize
     window.addEventListener('resize', () => {

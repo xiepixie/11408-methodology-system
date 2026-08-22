@@ -1,0 +1,47 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  box/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,inner xsep=6pt,inner ysep=5pt,align=center},
+  band/.style={draw=themecurve,fill=themecurve!9!themebg,minimum height=8mm,align=center},
+  special/.style={draw=themealert,fill=themealert!8!themebg,minimum height=8mm,align=center},
+  sub/.style={draw=themeamber,fill=themeamber!9!themebg,minimum height=8mm,align=center},
+  flow/.style={->,line width=1.05pt,themecurve}
+}
+\node[anchor=west,font=\bfseries\large] at (0,8.55) {IEEE 754 的核心几何：指数选尺度，尾数选尺度内格点};
+\node[anchor=west,text=themegray] at (0,8.05) {以 binary32 为例；图示正数侧，负数关于 0 镜像。格点并非全局等距。};
+
+% encoding classes
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,7.28) {A. 先按阶码字段分类，普通公式只属于 normal};
+\node[box,anchor=west] (s) at (0,6.45) {$S$\\1 bit};
+\node[band,anchor=west,minimum width=5.2cm] (e) at (1.35,6.45) {$E$：8 bit\\$1\ldots254$ 为 normal};
+\node[box,anchor=west,minimum width=5.2cm] (f) at (6.8,6.45) {$F$：23 bit\\normal 的有效精度为 $1+23=24$ bit};
+\node[sub,anchor=west,minimum width=5.8cm] at (0,5.35) {$E=0$：$F=0$ 为 $\pm0$；$F\neq0$ 为 subnormal，隐藏位是 0};
+\node[special,anchor=west,minimum width=5.8cm] at (6.2,5.35) {$E=255$：$F=0$ 为 $\pm\infty$；$F\neq0$ 为 NaN};
+
+% lattice bands
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,4.52) {B. normal：每跨一个指数带，绝对 ULP 翻倍};
+\draw[->,line width=1pt,themegray] (0,3.2) -- (13.3,3.2) node[right] {$x>0$};
+\foreach \x/\lab in {1.4/$2^e$,4.7/$2^{e+1}$,8.0/$2^{e+2}$,12.0/$2^{e+3}$}{
+  \draw[themegray] (\x,3.02)--(\x,3.38) node[above=4pt] {\lab};
+}
+\foreach \x in {1.4,1.8,2.2,2.6,3.0,3.4,3.8,4.2}{\draw[themecurve] (\x,2.93)--(\x,3.47);}
+\foreach \x in {4.7,5.5,6.3,7.1}{\draw[themecurve] (\x,2.93)--(\x,3.47);}
+\foreach \x in {8.0,9.6,11.2}{\draw[themecurve] (\x,2.93)--(\x,3.47);}
+\draw[<->,themeamber,line width=1pt] (1.4,2.55)--(1.8,2.55) node[midway,below] {ULP $\propto2^{e-23}$};
+\draw[<->,themeamber,line width=1pt] (4.7,2.15)--(5.5,2.15) node[midway,below] {$\times2$};
+\draw[<->,themeamber,line width=1pt] (8.0,1.75)--(9.6,1.75) node[midway,below] {$\times2$};
+
+% subnormal zoom
+\node[anchor=west,font=\bfseries,text=themeamber] at (0,1.18) {C. 靠近 0：subnormal 用固定最小指数，把间距保持为最小 ULP};
+\draw[->,line width=1pt,themegray] (0,.28)--(6.9,.28);
+\foreach \x in {.5,1.15,1.8,2.45,3.1,3.75,4.4,5.05,5.7,6.35}{\draw[themeamber] (\x,.05)--(\x,.51);}
+\node[anchor=west,text=themegray] at (7.3,.55) {subnormal 不是“另一套指数递增带”};
+\node[anchor=west,text=themegray] at (7.3,.05) {它用 $0.F\times2^{-126}$ 连到最小 normal，提供渐进下溢。};
+
+\node[box,anchor=west,text width=12.2cm] at (0,-1.0) {\textbf{做题调用：}机器码先看 $E/F$ 分类；真值编码先问“目标格点在哪里”。精度不足是落不到当前格点，范围溢出是指数跨出有限编码区——两条边界必须分开。};
+\end{tikzpicture}

@@ -1,0 +1,76 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  panel/.style={draw=themegray!50,rounded corners=6pt,fill=themefg!2!themebg,inner sep=8pt},
+  proc/.style={draw=themealert,circle,minimum size=.85cm,fill=themealert!10!themebg,font=\scriptsize\bfseries,text=themealert},
+  res/.style={draw=themecurve,rectangle,minimum size=.85cm,fill=themecurve!10!themebg,font=\scriptsize\bfseries,text=themecurve},
+  stepbox/.style={draw=themegray,rounded corners=3pt,minimum width=3.4cm,minimum height=.78cm,align=center,fill=themebg,font=\scriptsize},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  reqflow/.style={->,line width=1.1pt,themealert},
+  allocflow/.style={->,line width=1.1pt,themecurve},
+  algotflow/.style={->,line width=1.1pt,themeamber},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {死锁判定：单实例可用“环路”，多实例必须执行消去化简};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.0)
+  {边语义：请求边 $P_i \to R_j$（进程申请资源）；分配边 $R_j \to P_i$（资源已分配给进程）。每类资源单实例时，有环路 $\iff$ 死锁。};
+
+% ══════════════════════════════════════════════════════════════
+% ── 左侧面板：A. 单实例资源分配图 (Cycle <=> Deadlock) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(0,1.8)}]
+  \draw[panel] (0,0) rectangle (7.8,5.8);
+  \node[font=\bfseries\normalsize,text=themealert] at (3.9,5.3) {A. 单实例：环路 $\iff$ 死锁};
+
+  \node[proc] (p1) at (2.0,3.8) {$P_1$};
+  \node[res] (r1) at (5.8,3.8) {$R_1$};
+  \node[proc] (p2) at (5.8,1.6) {$P_2$};
+  \node[res] (r2) at (2.0,1.6) {$R_2$};
+
+  \draw[reqflow] (p1) -- node[above=2pt,lbl,text=themealert] {请求 (Request)} (r1);
+  \draw[allocflow] (r1) -- node[right=2pt,lbl,text=themecurve] {分配 (Assigned)} (p2);
+  \draw[reqflow] (p2) -- node[below=2pt,lbl,text=themealert] {请求 (Request)} (r2);
+  \draw[allocflow] (r2) -- node[left=2pt,lbl,text=themecurve] {分配 (Assigned)} (p1);
+
+  \node[anchor=north,font=\tiny,text=themealert,align=center] at (3.9,0.8)
+    {每个资源仅 1 个实例，形成闭环\\无法打破循环等待 $\implies$ 必定死锁};
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 右侧面板：B. 多实例化简算法 (资源分配图化简) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(8.4,1.8)}]
+  \draw[panel] (0,0) rectangle (9.2,5.8);
+  \node[font=\bfseries\normalsize,text=themecurve] at (4.6,5.3) {B. 多实例：化简算法（消去边）};
+
+  \node[stepbox] (s1) at (2.4,4.1) {初始化工作向量\\$\text{Work} = \text{Available}$};
+  \node[stepbox] (s2) at (6.8,4.1) {查找非阻塞进程 $P_i$\\$\text{Request}_i \le \text{Work}$};
+  \node[stepbox] (s3) at (6.8,2.2) {假设 $P_i$ 顺利完成\\释放全部占有资源};
+  \node[stepbox] (s4) at (2.4,2.2) {回收资源更新可用量\\$\text{Work} \leftarrow \text{Work} + \text{Allocation}_i$};
+
+  \draw[algotflow] (s1) -- (s2);
+  \draw[algotflow] (s2) -- node[right=2pt,lbl,text=themegreen] {找到满足条件的 $P_i$} (s3);
+  \draw[algotflow] (s3) -- (s4);
+  \draw[algotflow] (s4) -- node[left=2pt,lbl,text=themeamber] {重复循环} (s1);
+
+  \node[anchor=north,font=\tiny,text=themefg,align=center] at (4.6,1.0)
+    {\textbf{化简结论}：若所有进程边均能完全消去 $\implies$ \textbf{无死锁}；\\若最终存在无法消去边的阻塞进程 $\implies$ \textbf{系统处于死锁状态}。};
+\end{scope}
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,0.85)
+  {\textbf{死锁定理与银行家算法对照：}\\
+   $\bullet$ \textbf{死锁定理 (化简法)}：使用当前实际申请量 $\text{Request}_i$，用于\textbf{死锁检测}（判断当前是否已发生死锁）；\\
+   $\bullet$ \textbf{银行家算法 (安全性检查)}：使用最大剩余需求量 $\text{Need}_i = \text{Max}_i - \text{Allocation}_i$，用于\textbf{死锁避免}（动态预防死锁）。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.2)
+  {禁止误读：死锁避免中的“不安全状态”不等于死锁！不安全状态只是有可能演变成死锁，系统仍可能安全渡过。};
+\end{tikzpicture}

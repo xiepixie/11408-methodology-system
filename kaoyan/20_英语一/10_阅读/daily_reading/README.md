@@ -44,6 +44,9 @@ daily_reading/
 │   ├── expression_spec.md            # 表达节点与生命周期规范
 │   ├── prosody_guide.md              # 语音与韵律训练规范
 │   ├── review_rules.md               # 主动检索与后续复习规则
+│   ├── tools/
+│   │   ├── compile_daily_reading.py  # 专有编译调度器
+│   │   └── check_daily_reading.py    # 专有仓库门禁检查
 │   └── templates/
 │       ├── article_template.md       # Obsidian 原文阅读模板
 │       ├── reading_view_template.tex
@@ -162,7 +165,27 @@ AI 参考复述 + 差异对照
 
 ---
 
-## 7. 快速导航
+## 7. 编译与门禁检查
+
+系统提供了专有的编译工具与门禁检查脚本：
+
+```bash
+# 1. 编译单篇训练手札
+python3 "kaoyan/20_英语一/10_阅读/daily_reading/00_system/tools/compile_daily_reading.py" "kaoyan/20_英语一/10_阅读/daily_reading/01_articles/2026/2026-08-20_the_magic_of_summer_reading"
+
+# 2. 验证并编译模板
+python3 "kaoyan/20_英语一/10_阅读/daily_reading/00_system/tools/compile_daily_reading.py" --template
+
+# 3. 批量重新编译全量文章
+python3 "kaoyan/20_英语一/10_阅读/daily_reading/00_system/tools/compile_daily_reading.py" --all
+
+# 4. 运行每日精读静态与动态硬门禁（全仓 check_repo 已自动包含）
+python3 "kaoyan/20_英语一/10_阅读/daily_reading/00_system/tools/check_daily_reading.py" --smoke
+```
+
+---
+
+## 8. 快速导航
 
 - 系统职责与数据边界：[`00_system/architecture.md`](00_system/architecture.md)
 - 单篇交互状态机：[`00_system/session_protocol.md`](00_system/session_protocol.md)
@@ -173,5 +196,7 @@ AI 参考复述 + 差异对照
 - 表达节点规范：[`00_system/expression_spec.md`](00_system/expression_spec.md)
 - 语音训练规范：[`00_system/prosody_guide.md`](00_system/prosody_guide.md)
 - 主动复习规则：[`00_system/review_rules.md`](00_system/review_rules.md)
+- 编译与门禁工具：[`00_system/tools/`](00_system/tools/)
 - 表达网络：[`02_expressions/README.md`](02_expressions/README.md)
 - 能力层：[`03_capabilities/README.md`](03_capabilities/README.md)
+

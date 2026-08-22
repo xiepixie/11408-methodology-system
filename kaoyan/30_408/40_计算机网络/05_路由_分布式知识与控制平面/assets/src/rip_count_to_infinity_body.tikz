@@ -1,0 +1,86 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  panel/.style={draw=themegray!50,rounded corners=6pt,fill=themefg!2!themebg,inner sep=8pt},
+  rtr/.style={draw=themecurve,circle,minimum size=1.0cm,align=center,fill=themecurve!10!themebg,font=\scriptsize\bfseries,text=themecurve},
+  deadnet/.style={draw=themealert,dashed,rounded corners=3pt,minimum width=1.6cm,minimum height=.75cm,align=center,fill=themealert!10!themebg,font=\scriptsize\bfseries,text=themealert},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themecurve},
+  aflow/.style={->,line width=1.1pt,themealert},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.8) {RIP 路由协议：距离向量、计数到无穷现象与毒性反转防御机制};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.2)
+  {核心缺陷：RIP 基于 Bellman-Ford 算法，“好消息传得快，坏消息传得慢”。链路断开时由于慢收敛易引发路由环路。};
+
+% ══════════════════════════════════════════════════════════════
+% ── Panel A: 计数到无穷与路由环路 (x = 0 .. 8.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(0,1.8)}]
+  \draw[panel] (0,0) rectangle (8.4,5.8);
+  \node[font=\bfseries\normalsize,text=themealert] at (4.2,5.4) {A. 慢收敛与计数到无穷 (Count to Infinity)};
+
+  \node[rtr] (a_r1) at (1.6,3.4) {$R_1$};
+  \node[rtr] (a_r2) at (4.6,3.4) {$R_2$};
+  \node[deadnet] (a_net) at (7.2,3.4) {网段 1\\(断开!)};
+
+  \draw[themegray,line width=1.0pt] (a_r1) -- (a_r2);
+  \draw[themealert,line width=1.0pt,dashed] (a_r2) -- node[above=1pt,font=\tiny\bfseries,text=themealert] {故障 $\times$} (a_net);
+
+  % 乒乓环路
+  \draw[aflow] (a_r1.south east) to[out=-40,in=-140] node[below=1pt,lbl,text=themealert] {广播: 到网段1距离2 (经$R_2$)} (a_r2.south west);
+  \draw[aflow] (a_r2.north west) to[out=120,in=60] node[above=1pt,lbl,text=themealert] {$R_2$误学: 到网段1距离3 (经$R_1$)} (a_r1.north east);
+
+  \node[anchor=north,font=\scriptsize,text=themefg,align=left] at (4.2,1.8)
+    {\textbf{计数递增过程：}\\
+     1. $R_2$ 发现网段 1 断开，但尚未广播 $R_1$；\\
+     2. $R_1$ 发送旧通告“我到网段 1 距离为 2”；\\
+     3. $R_2$ 误以为 $R_1$ 有新路径，更新为 $2+1=3$；\\
+     4. 双方互相更新递增：$3 \to 4 \to 5 \cdots \to 16$ (不可达)。};
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── Panel B: 防环机制 (水平分割与毒性反转) (x = 9.0 .. 17.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(9.0,1.8)}]
+  \draw[panel] (0,0) rectangle (8.4,5.8);
+  \node[font=\bfseries\normalsize,text=themegreen] at (4.2,5.4) {B. 防环机制：水平分割与毒性反转};
+
+  \node[rtr] (b_r1) at (1.6,3.4) {$R_1$};
+  \node[rtr] (b_r2) at (4.6,3.4) {$R_2$};
+  \node[deadnet] (b_net) at (7.2,3.4) {网段 1\\(断开!)};
+
+  \draw[themegray,line width=1.0pt] (b_r1) -- (b_r2);
+  \draw[themealert,line width=1.0pt,dashed] (b_r2) -- (b_net);
+
+  % 毒性反转单向通告
+  \draw[flow] (b_r2.south west) to[out=-140,in=-40] node[below=1pt,lbl,text=themeamber] {毒性反转通告: 网段1距离=16} (b_r1.south east);
+
+  \node[anchor=north,font=\scriptsize,text=themefg,align=left] at (4.2,1.8)
+    {\textbf{防环黄金策略：}\\
+     $\bullet$ \textbf{水平分割 (Split Horizon)}：从某接口学到的路由，\\
+     \quad 不再向该接口反向通告；\\
+     $\bullet$ \textbf{毒性反转 (Poison Reverse)}：向原接口通告时，\\
+     \quad 将开销强制置为 $\mathbf{16}$（无穷大），切断双向欺骗；\\
+     $\bullet$ \textbf{触发更新 (Triggered Update)}：拓扑一旦变化立即通告，\\
+     \quad 无需等待 30 秒周期定时器。};
+\end{scope}
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,0.6)
+  {\textbf{RIP 协议核心参数与限制：}\\
+   1. \textbf{度量标准 (Metric)}：跳数 (Hop Count)。直连网段跳数为 1，每经过一个路由器跳数加 1；\\
+   2. \textbf{最大跳数}：最大有效跳数为 15，跳数 $\ge 16$ 表示网络不可达，限制了 RIP 只能用于小型自治系统 (AS)；\\
+   3. \textbf{传输层承载}：RIP 报文封装在 \textbf{UDP} 数据报中（端口 520），作为应用层守护进程运行。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.5)
+  {禁止误读：水平分割和毒性反转只能解决两节点之间的直接环路；对于三节点及以上的环形拓扑，仍需依赖最大跳数 16 彻底终结计数。};
+\end{tikzpicture}

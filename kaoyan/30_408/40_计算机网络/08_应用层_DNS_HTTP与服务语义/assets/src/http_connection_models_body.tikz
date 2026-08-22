@@ -1,0 +1,85 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  panel/.style={draw=themegray!50,rounded corners=6pt,fill=themefg!2!themebg,inner sep=6pt},
+  tcpbar/.style={draw=themeamber,fill=themeamber!15!themebg,font=\tiny\bfseries,text=themeamber,align=center},
+  httpbar/.style={draw=themecurve,fill=themecurve!15!themebg,font=\tiny\bfseries,text=themecurve,align=center},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.8) {HTTP 连接模型：非持久连接、持久非流水线与持久流水线时延对比};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.2)
+  {场景设定：获取 1 个基础 HTML 页面及引用的 3 个内嵌对象（共 4 个资源）。忽略传输时延，单次往返时延为 RTT。};
+
+% ══════════════════════════════════════════════════════════════
+% ── Panel 1: 非持久连接 (Non-persistent HTTP/1.0) (x = 0 .. 5.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(0,2.2)}]
+  \draw[panel] (0,0) rectangle (5.4,5.4);
+  \node[font=\bfseries\normalsize,text=themealert] at (2.7,5.0) {1. 非持久连接 (HTTP/1.0)};
+  \node[font=\tiny,text=themegray,align=center] at (2.7,4.5) {每个对象均新建一条独立 TCP 连接};
+
+  \foreach \i/\name in {1/HTML, 2/Obj 1, 3/Obj 2, 4/Obj 3} {
+    \pgfmathsetmacro{\y}{4.2 - \i * 0.8}
+    \node[anchor=east,font=\tiny\bfseries] at (1.2,\y) {\name};
+    \draw[tcpbar] (1.4,\y-0.25) rectangle (2.8,\y+0.25) node[midway] {1 RTT TCP};
+    \draw[httpbar] (2.8,\y-0.25) rectangle (5.0,\y+0.25) node[midway] {1 RTT HTTP};
+  }
+
+  \node[draw=themealert,rounded corners=2pt,fill=themealert!8!themebg,font=\tiny\bfseries,text=themealert,anchor=north] at (2.7,0.7)
+    {总耗时 $= 4 \times (1 + 1) = \mathbf{8\text{ RTT}}$};
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── Panel 2: 持久非流水线 (HTTP/1.1 Keep-Alive) (x = 6.0 .. 11.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(6.0,2.2)}]
+  \draw[panel] (0,0) rectangle (5.4,5.4);
+  \node[font=\bfseries\normalsize,text=themeamber] at (2.7,5.0) {2. 持久非流水线 (Keep-Alive)};
+  \node[font=\tiny,text=themegray,align=center] at (2.7,4.5) {单条 TCP，必须等前一个响应返回};
+
+  \draw[tcpbar] (0.6,3.4) rectangle (4.8,3.9) node[midway] {握手建立 1 条 TCP (1 RTT)};
+  \draw[httpbar] (0.6,2.7) rectangle (4.8,3.2) node[midway] {请求/接收 HTML (1 RTT)};
+  \draw[httpbar] (0.6,2.0) rectangle (4.8,2.5) node[midway] {串行请求 Obj 1 (1 RTT)};
+  \draw[httpbar] (0.6,1.3) rectangle (4.8,1.8) node[midway] {串行请求 Obj 2 + Obj 3 (2 RTT)};
+
+  \node[draw=themeamber,rounded corners=2pt,fill=themeamber!8!themebg,font=\tiny\bfseries,text=themeamber,anchor=north] at (2.7,0.7)
+    {总耗时 $= 1\text{ (TCP)} + 4 \times 1 = \mathbf{5\text{ RTT}}$};
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── Panel 3: 持久流水线 (HTTP/1.1 Pipelining) (x = 12.0 .. 17.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(12.0,2.2)}]
+  \draw[panel] (0,0) rectangle (5.4,5.4);
+  \node[font=\bfseries\normalsize,text=themegreen] at (2.7,5.0) {3. 持久流水线 (Pipelining)};
+  \node[font=\tiny,text=themegray,align=center] at (2.7,4.5) {单条 TCP，内嵌对象连续并发发出};
+
+  \draw[tcpbar] (0.6,3.4) rectangle (4.8,3.9) node[midway] {握手建立 1 条 TCP (1 RTT)};
+  \draw[httpbar] (0.6,2.7) rectangle (4.8,3.2) node[midway] {请求/接收 HTML (1 RTT)};
+  \draw[httpbar,draw=themegreen,fill=themegreen!15!themebg,text=themegreen] (0.6,1.6) rectangle (4.8,2.4)
+    node[midway,align=center] {并发连续请求全部 3 个内嵌对象\\(仅耗时 1 RTT)};
+
+  \node[draw=themegreen,rounded corners=2pt,fill=themegreen!8!themebg,font=\tiny\bfseries,text=themegreen,anchor=north] at (2.7,0.7)
+    {总耗时 $= 1\text{ (TCP)} + 1\text{ (HTML)} + 1\text{ (Objs)} = \mathbf{3\text{ RTT}}$};
+\end{scope}
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,1.0)
+  {\textbf{HTTP 性能演进与关键考点：}\\
+   1. \textbf{非持久 (HTTP/1.0)}：每引用一个对象都需要经历三次握手（1 RTT TCP）加请求响应（1 RTT HTTP），开销极大；\\
+   2. \textbf{持久非流水线 (HTTP/1.1)}：复用已有 TCP 连接，省去后续对象的握手时延；但下一个请求必须等待前一个响应到达；\\
+   3. \textbf{持久流水线 (HTTP/1.1)}：客户端无需等待上一响应返回，即可连续发送后续请求，所有内嵌对象在 1 个 RTT 内并发交付；\\
+   4. \textbf{HTTP/2 多路复用}：采用二进制分帧在单个 TCP 连接上交错传输，彻底解决应用层队头阻塞 (HoL Blocking)。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.15)
+  {禁止误读：HTTP/1.1 流水线虽然消除了客户端等待，但服务端仍需按请求顺序依次返回响应；HTTP/2 的多路复用才真正实现响应乱序并发。};
+\end{tikzpicture}

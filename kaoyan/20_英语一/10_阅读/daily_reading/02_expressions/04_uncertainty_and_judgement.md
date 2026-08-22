@@ -1,6 +1,6 @@
 # 04 · 不确定与判断
 
-> 本分类归集用于暂缓定论、表达证据不足、保留判断和描述尚未解决问题的可迁移表达。
+> 本分类归集用于暂缓定论、表达证据不足、保留判断、纳入判断因素和描述尚未解决问题的可迁移表达。
 
 ---
 
@@ -17,5 +17,23 @@
   * `Whether [X] will [Y] remains an open question.`
   * `It is still an open question whether [clause].`
 * **使用边界**：`It's still up in the air` 更常表示计划、安排或决定尚未确定，不应默认当作所有科学 / 事实不确定性的等价替换。
-* **来源溯源**：New Scientist 《A New Replication Crisis?》
+* **来源溯源**：[New Scientist《A New Replication Crisis?》P2](../01_articles/2026/2026-08-21_a_new_replication_crisis/article.md#^p02)
 * **生命周期**：`L0 · 捕获`（已建立节点，待真实训练验证）
+
+---
+
+### `[EXP-013]` consider X / take X into consideration
+
+* **释义与沟通功能**：【纳入考虑】提醒自己或别人，在做判断、设计方案或作决定时不要忽略某个因素。
+* **声音形式**：`consideration` /kənˌsɪdəˈreɪʃən/，主重音落在 `-ra-` 对应音节附近；整块 `take X into consideration` 更适合作为一个整体语块练习。
+* **语体关系**：
+  * **正式书面**：take X into consideration / take X into account
+  * **中性通用**：consider X
+  * **自然口语**：keep X in mind / think about X when...
+* **触发情境**：当你想表达“这个因素应该从一开始就被纳入设计、判断或决策”时。
+* **句型骨架**：
+  * `We should consider [X] from the beginning.`
+  * `We should take [X] into consideration when [doing Y].`
+* **使用边界**：不要把两个框架混成 `consider X into consideration`。`consider` 直接接宾语；`take` 才与 `into consideration` 组成固定结构。
+* **来源溯源**：[《A New Replication Crisis?》最小修复输出](../01_articles/2026/2026-08-21_a_new_replication_crisis/reading_view.tex)，学习者主动想表达“实验设计一开始就考虑可复现性”时出现框架混成。
+* **生命周期**：`L0 · 捕获`（已出现真实主动表达缺口，但尚无一次正确无提示使用证据）

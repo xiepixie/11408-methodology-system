@@ -1,0 +1,428 @@
+\documentclass[11pt,a4paper]{ctexart}
+\usepackage[a4paper,margin=1.60cm,top=1.8cm,bottom=1.8cm]{geometry}
+\usepackage{../../../00_system/templates/ipara-reading}
+
+% ==============================================================================
+% 《A new replication crisis?》单篇精读训练手札
+%
+% 原文与学习者首读标记：article.md
+% 本文件：只保存这一篇文章的理解、结构、语音与输出训练。
+% 长期表达定义：02_expressions/
+% 长期能力状态：03_capabilities/
+% ==============================================================================
+
+\begin{document}
+
+\articleheader
+  {A new replication crisis?}
+  {A review of thousands of scientific papers about quantum computers suggests results from one computer may not be reproducible on another machine.}
+  {New Scientist · News · Quantum computing}
+  {Reproducibility · Quantum computing · Scientific research}
+  {精读 · 口语重构 · 语音训练}
+  {2026-08-21}
+
+% ------------------------------------------------------------------------------
+% 一、首读标记握手与定点精读
+% ------------------------------------------------------------------------------
+\readingsection{一、全文精读与首读标记闭环}
+
+\begin{paracol}{2}
+
+\artpara{P1}{
+  The results of most scientific papers reporting on advances in quantum computers can't be replicated, according to a new analysis. \obs{This may undermine the credibility of some of the achievements that the quantum computing industry has reported in recent years, kicking off a replication crisis in the fast-growing field.}{1}
+}
+
+\switchcolumn
+
+\noteobs{1}{[\string~] 结果链：可信度受损 $\rightarrow$ 可能引发危机}
+  {学习者理解基本正确。这里不是“这些研究会损害其他研究”，而是“多数论文结果无法复现”这一发现会削弱近年部分已宣称成果的可信度，并可能进一步引发该领域的 reproducibility crisis。\textit{kicking off} 在这里表示“由此开启 / 引发”。}
+
+\switchcolumn*
+
+\artpara{P2}{
+  There are a few problems that researchers are certain only a quantum computer could solve, but \kw{what these machines could be useful for beyond those select few cases is an open question}{2}. With quantum computing hardware improving rapidly in recent years, researchers across the globe are exploring myriad use cases, from simulating molecules to optimising airline logistics.
+}
+
+\switchcolumn
+
+\noteitem{2}{(remain) an open question · EXP-008}
+  {表示“目前仍没有可靠答案 / 尚不能下定论”。本段不是说量子计算没有用途，而是说除少数确定适合量子计算的问题之外，它还能稳定解决什么，仍未确定。}
+  {We still don't really know what these machines will be useful for beyond a few specific cases.}
+  {长期节点见 \texttt{EXP-008}；来源锚点为 article.md P2。}
+
+\switchcolumn*
+
+\artpara{P3}{
+  Yet, \kw{for any of these to become routinely used, they will have to work on many different quantum computers}{3}, so any demonstration of a truly valuable use of a quantum computer must be reproducible.
+}
+
+\switchcolumn
+
+\noteitem{3}{[★] for X to become routinely used, X will have to... · 本篇候选}
+  {这里的 \textit{these} 指上一段列出的量子计算应用。要从“某次实验演示”进入常规使用，就必须能在不同量子计算机上工作。}
+  {For this technology to become routinely used, it will have to work reliably across different devices.}
+  {迁移骨架有价值，但尚未在学习者真实输出中调用，当前先留为本篇候选。}
+
+\switchcolumn*
+
+\artpara{P4}{
+  Wolfgang Mauerer at the Technical University of Applied Sciences Regensburg in Germany and his colleagues have now evaluated thousands of scientific papers on quantum computing and found that, currently, most can't be reproduced.
+}
+
+\switchcolumn
+
+\noteobs{4}{reproduce 的对象}
+  {这里能够被 \textit{reproduced} 的是论文结果、研究结果或实验，而不是 researchers。后续口语中优先整块调用 \textit{reproduce a result / finding / study / experiment}。}
+
+\switchcolumn*
+
+\artpara{P5}{
+  They carried out their analysis in two parts, first manually evaluating a curated sample of 127 papers from the past five years, then using a computer program to automate and generalise this analysis to 4966 papers.
+}
+
+\switchcolumn
+
+\noteitem{5}{first..., then... · 方法过程骨架}
+  {适合复述研究方法：先人工检查较小样本，再用程序扩大分析范围。}
+  {They carried out the analysis in two stages: first..., then...}
+  {这是组织研究过程的高频骨架，当前留在本篇调用区。}
+
+\switchcolumn*
+
+\artpara{P6}{
+  To assess the reproducibility of each paper's results, the team used five criteria. The first three focused on determining whether the paper included code that could be run on an independent quantum computer and how much instruction and documentation for doing so was provided. The next criterion evaluated available information about hardware. Finally, the team tested whether the provided quantum computing program could run without errors.
+}
+
+\switchcolumn
+
+\noteitem{6}{To assess X, the team used... · 评价标准骨架}
+  {\textit{assess} 后直接接被评价对象；\textit{criteria} 是 criterion 的复数。整段用 \textit{first / the next / finally} 把评价步骤顺序化。}
+  {To assess the reliability of the system, the team used three criteria.}
+  {适合学术复述与写作中的“说明评价方法”。}
+
+\switchcolumn*
+
+\artpara{P7}{
+  Among the 127 papers that the researchers analysed manually, only 24.4\% provided code that they could even try running, and 64.5\% of that code failed to successfully execute.
+}
+
+\switchcolumn
+
+\noteobs{7}{Among + 群体；of that code + 比例范围}
+  {\textit{Among the 127 papers} 先限定统计总体；后面的 \textit{64.5\% of that code} 指“那部分实际提供出来的代码”，不是全部 127 篇论文。复述数据时要保留统计范围。}
+
+\switchcolumn*
+
+\artpara{P8}{
+  The larger, automated analysis didn't include an execution step, but similarly found that only 26.8\% of the almost 5000 papers \kw{provided enough information to attempt a replication}{8} (arXiv, doi.org/rj93).
+}
+
+\switchcolumn
+
+\noteitem{8}{provide enough information to attempt...}
+  {表达“提供足够信息，使某项尝试成为可能”。这里是信息充分到可以尝试复现，不代表复现一定成功。}
+  {The paper provides enough detail to attempt an independent replication.}
+  {注意 \textit{attempt a replication} 与 \textit{successfully reproduce the result} 不是同一阶段。}
+
+\switchcolumn*
+
+\artpara{P9}{
+  Compared with standards for traditional computer science studies, this is a rather negative result, says Mauerer. ``We did a smaller-scale study four or five years ago, and we already found that the situation is bad, but it didn't really \kw{improve over time}{9},'' he says. ``We thought the numbers would be better by now.''
+}
+
+\switchcolumn
+
+\noteitem{9}{Compared with... / improve over time / by now}
+  {三个都适合复述趋势：先给比较基准，再说明随时间变化，最后用 \textit{by now} 表示“到现在这个时间点本来以为已经……”。}
+  {Compared with earlier results, the situation hasn't improved much over time.}
+  {\textit{change / improve / get worse over time} 建议整块记，不单独背介词。}
+
+\switchcolumn*
+
+\artpara{P10}{
+  In Mauerer's view, \kw{a big reason for this finding is the variability and inconsistency of still-maturing quantum computing hardware}{10}. For conventional computers, researchers can work at a very abstract level, describing and writing code without worrying about whether their computer's physical characteristics may change from one day to another. \obs{This isn't the case for quantum computers that currently exist and can, for example, be accessed through the cloud}{11}, says Mauerer.
+}
+
+\switchcolumn
+
+\noteitem{10}{a big reason for this is... · EXP-010}
+  {承接前文结果，再引出一个主要原因。这里原因是 still-maturing hardware 的 variability and inconsistency。}
+  {A big reason for this is that current quantum hardware is unusually variable.}
+  {长期节点见 \texttt{EXP-010}；本篇提供了真实来源语境。}
+
+\noteobs{11}{[!] This 指代上一句的整种情况}
+  {\textit{This} 不是指某个名词，而是指“传统计算机允许研究者在较抽象层次工作，不必担心底层物理特性天天变化”这一整种情况。\textit{that currently exist and can...be accessed through the cloud} 修饰 \textit{quantum computers}。}
+
+\switchcolumn*
+
+\artpara{P11}{
+  ``I don't just want to \kw{attribute the lack of reproducibility to, say, some laziness of authors or non-requirements by the community}{12}. Quantum machines in themselves are unusually variable,'' he says.
+}
+
+\switchcolumn
+
+\noteitem{12}{attribute A to B · EXP-009}
+  {把现象 A 归因于因素 B。原文特意说：不要只把不可复现归因于作者懒惰或社区没有要求，量子机器本身的高度变动性也是重要原因。}
+  {I wouldn't attribute the problem entirely to human error.}
+  {\textit{attribute A to B} 是中性归因，不自动等于“责怪”。长期节点见 \texttt{EXP-009}。}
+
+\switchcolumn*
+
+\artpara{P12}{
+  ``Software, especially in a rapidly evolving field like quantum computing, is a living thing and needs communities of maintainers,'' says William Zeng at the Unitary Foundation, a quantum technology non-profit organisation.
+}
+
+\switchcolumn
+
+\noteitem{13}{a rapidly evolving field / communities of maintainers}
+  {\textit{rapidly evolving field} 表示快速演化的领域；\textit{maintainers} 是长期维护软件、修复问题、保持项目可用的人或群体。}
+  {Software in a rapidly evolving field needs active communities of maintainers.}
+  {本段更偏主题表达，当前不单独建立长期节点。}
+
+\switchcolumn*
+
+\artpara{P13}{
+  Zeng says he isn't surprised by the results of the analysis, but expects that \kw{a combination of community efforts and the use of AI agents for coding will improve the situation going forward}{14}. ``[Agentic coding] is also already making it easier to generate code directly from a paper's result that is used for reproduction,'' he says.
+}
+
+\switchcolumn
+
+\noteitem{14}{a combination of A and B / going forward}
+  {\textit{a combination of A and B} 用来并列多个改善因素；\textit{going forward} 表示“今后 / 接下来”。}
+  {A combination of better standards and better tools may improve the situation going forward.}
+  {适合观点表达，但不需要为了“高级”而强行替代简单的 \textit{in the future}。}
+
+\switchcolumn*
+
+\artpara{P14}{
+  Fred Chong at the University of Chicago says he isn't particularly alarmed by the new analysis. ``Quantum computing and software systems are \kw{in their infancy}{15} and changing rapidly. Reproducibility \kw{becomes more of a priority as the field matures}{16},'' he says. For example, in conventional computer science, it took decades for researchers to start insisting on reproduction standards for each other. ``Innovation may be more important [for quantum computing] than reproducible infrastructure at this time,'' says Chong.
+}
+
+\switchcolumn
+
+\noteitem{15}{[?] be in its / their infancy}
+  {表示某项技术、行业或制度仍处在非常早期、尚未成熟的发展阶段。这里用来解释为什么 Chong 对当前可复现性不足并不特别惊慌。}
+  {The technology is still at a very early stage.}
+  {学习者只标记为理解断点，因此先解决含义，不因可迁移就自动入库。}
+
+\noteitem{16}{become more of a priority as...}
+  {表示随着条件变化，某件事的重要性逐步上升。\textit{as the field matures} 是“随着该领域逐渐成熟”。}
+  {Safety becomes more of a priority as the system is used at larger scale.}
+  {适合解释阶段性取舍：当前优先级与成熟后的优先级可以不同。}
+
+\switchcolumn*
+
+\artpara{P15}{
+  Yet, \kw{there is appetite among quantum computing researchers to make changes for the better already}{17}, and so far, the response to the new study has been positive, says team member Ralf Ramsauer, also at the Technical University of Applied Sciences Regensburg. He says researchers should \kw{start thinking about reproducibility at the beginning of each experiment}{18}, and if they aren't sure where to start, the team's study offers a template for creating a reproducibility package.
+}
+
+\switchcolumn
+
+\noteitem{17}{[★] there is an appetite for... · 本篇候选}
+  {这里的 \textit{appetite} 不是“食欲”，而是对某种改变、投入或行动的意愿与需求。}
+  {There is growing appetite for stronger reproducibility standards.}
+  {更值得迁移的骨架是 \textit{There is an appetite for...} / \textit{There is growing appetite for...}。当前没有真实主动使用证据，先留本篇。}
+
+\noteitem{18}{consider X / take X into consideration · EXP-013}
+  {学习者后续主动想表达“实验设计一开始就考虑可复现性”时出现 \textit{consider ... into consideration} 的框架混成。}
+  {Researchers should consider reproducibility from the beginning of an experiment.}
+  {也可以说 \textit{take reproducibility into consideration from the beginning of an experiment}；两套框架不能混用。长期节点见 \texttt{EXP-013}。}
+
+\end{paracol}
+
+% ------------------------------------------------------------------------------
+% 二、文章结构与主旨
+% ------------------------------------------------------------------------------
+\readingsection{二、文章结构与主旨复原}
+
+\begin{coretakeaway}[训练后主旨]
+  A large analysis suggests that many quantum-computing studies are difficult or impossible to reproduce. The problem comes partly from missing code and documentation, but also from the unusual variability of still-maturing quantum hardware. Researchers disagree on how alarming this is, while broadly agreeing that reproducibility should improve as the field matures.
+\end{coretakeaway}
+
+\begin{itemize}
+  \item \textbf{问题提出}：大量量子计算论文结果难以复现，这可能伤害近期成果的可信度。
+  \item \textbf{证据}：研究团队先人工检查 127 篇论文，再自动分析近 5000 篇；可执行代码、文档和硬件信息普遍不足。
+  \item \textbf{原因解释}：量子硬件仍在快速变化，同一程序跨机器、跨时间复现结果比传统计算机困难。
+  \item \textbf{不同判断}：有人把它视为明显问题，也有人认为新兴领域先创新、后逐步提高复现标准是正常成熟过程。
+  \item \textbf{收束}：研究者已经有改善意愿，社区协作、复现规范与 AI 工具可能帮助改善情况。
+\end{itemize}
+
+% ------------------------------------------------------------------------------
+% 三、语音与韵律训练
+% ------------------------------------------------------------------------------
+\readingsection{三、语音与韵律训练}
+
+\begin{prosodybox}[黄金句 · 论证转折]
+  \prosodysource{当前仅文本参考；尚未使用学习者录音，因此不判断真实发音、停顿或连读表现。}
+  \prosodyorig{Quantum computing and software systems are in their infancy and changing rapidly. Reproducibility becomes more of a priority as the field matures.}
+  \prosodyipa{\textbf{infancy} \ipa{/ˈɪnfənsi/} \quad$\bm{\cdot}$\quad \textbf{reproducibility} \ipa{/rɪˌprɒdjuːsəˈbɪləti/}}
+  \prosodychunks{Quantum computing and software systems are \stress{IN THEIR INFANCY} \chunk and changing \stress{RAPIDLY}. \tonefall \quad Reproducibility becomes \stress{MORE OF A PRIORITY} \chunk as the field \stress{MATURES}. \tonefall}
+  \prosodyfocus{in their infancy, rapidly, more of a priority, matures}
+  \prosodyflaws{
+    \item 尚无学习者音频，本栏暂不记录“真实错误”；后续有录音时只补实际出现的问题。
+  }
+\end{prosodybox}
+
+% ------------------------------------------------------------------------------
+% 四、脱稿输出与对照
+% ------------------------------------------------------------------------------
+\readingsection{四、脱稿输出与对照}
+
+\oralblock{第一次真实概括 · 2026-08-21}{
+  This article mainly focus on the situation that researchers in quantum computer cannot be reproduced Using several sections, describe how the research is going on And several paragraphs point out that this may because the quantum computer itself needs sustain .Its situation would change because of its physical characteristics
+}
+
+\oralblock{关键诊断}{
+  \begin{itemize}
+    \item \textbf{内容主干抓到了}：学习者已经抓住“量子计算领域存在可复现性问题”以及“量子计算机的物理特性会变化”这两个核心点。
+    \item \textbf{最重要的事实修正}：不能说 \textit{researchers ... cannot be reproduced}。被复现的是论文的结果、实验或计算结果，不是 researchers。主语应改成 \textit{the results / many studies / the findings}。
+    \item \textbf{原因表达还没有闭合}：\textit{this may because...} 之后的因果链断开。更准确的意思是：当前量子硬件仍不成熟，而且机器状态与物理特性具有较大变动性，因此同一程序很难在不同机器或不同时间稳定得到相同结果。
+    \item \textbf{结构过早压缩}：概括直接从“有问题”跳到“硬件原因”，漏掉了文章中间最关键的证据层：团队分析了大量论文，并发现代码、文档和可执行性普遍不足。下一次复述至少保留“发现 $\rightarrow$ 证据 $\rightarrow$ 原因 $\rightarrow$ 不同观点”四步。
+    \item \textbf{文本可能来自口语转写}：本次只根据文字判断内容与句型，不据此评价发音、语速、停顿或真实流利度。
+  \end{itemize}
+}
+
+\oralblock{AI 推荐复述 · 完整版}{
+  This article examines a reproducibility problem in quantum computing. Researchers analysed thousands of papers and found that many reported results were difficult or impossible to reproduce. In the manually reviewed sample, only about a quarter of the papers provided code that the team could even try running, and much of that code failed to execute successfully. A big reason for this may be the variability of still-maturing quantum hardware: unlike conventional computers, its physical characteristics can change, which makes it harder to reproduce the same result on another machine. Mauerer therefore warns that the problem should not simply be attributed to careless authors. Other researchers are less alarmed. Zeng expects community efforts and AI coding tools to help, while Chong argues that innovation may be more important than reproducible infrastructure while the field is still in its infancy. The article ends on a more constructive note: researchers already show an appetite for improvement, and Ramsauer argues that reproducibility should be considered from the beginning of each experiment.
+}
+
+\oralblock{AI 推荐复述 · 最小可复述版}{
+  This article is about a reproducibility problem in quantum computing. An analysis of thousands of papers found that many results could not be reproduced because the papers often lacked enough code, documentation or other information. One possible reason is that current quantum hardware is still immature and unusually variable. Some researchers see this as a credibility problem, while others think reproducibility will become more important as the field matures. The researchers therefore suggest thinking about reproducibility from the beginning of an experiment.
+}
+
+\oralblock{对照：我的版本 vs 参考版}{
+  \begin{itemize}
+    \item \textbf{已经说出来的}：reproducibility problem；量子硬件的物理状态会变化。
+    \item \textbf{需要修正的事实}：不是 researchers 无法复现，而是 results / studies 难以被复现。
+    \item \textbf{值得带走的语块}：\textit{a reproducibility problem in...}；\textit{One possible reason is that...}；\textit{be in its infancy}；\textit{as the field matures}。
+    \item \textbf{结构差异}：参考版先给发现，再补论文分析证据，然后解释硬件原因，最后保留文章中的不同立场，而不是只说“问题 + 一个原因”。
+  \end{itemize}
+}
+
+\oralblock{最小修复回答 · 2026-08-21}{
+  The analysis found a lot of researchers in quantum computer science cannot be reproduced. Because the software on it is hard to adjust compared with common computers. And the hardware of it would changes by the time goes on because of its physical characteristic. Because the area is more cared about the novelity. And it suggests that researchers should consider reproductive methods into consideration at the first design of experiment.
+}
+
+\oralblock{学习者自我观察}{
+  学习者主动提出一个更广的诊断假设：自己对介词搭配、部分语法概念、组织逻辑的连接方式和固定表达框架掌握得不够稳定，因此知道大致意思，却常常无法快速、准确地把关系组织成英语。当前先把它作为解释本轮表现的候选机制，不直接拆成多个长期能力问题。
+}
+
+\oralblock{第二轮关键诊断}{
+  \begin{itemize}
+    \item \textbf{同一语义角色错误再次出现}：在已经明确纠正过一次以后，仍说成 \textit{researchers ... cannot be reproduced}。这说明当前断点不只是文章理解，而是说话时没有稳定调用 \textit{reproduce + result / finding / study} 这一谓词与对象的组合。这里被复现的是 \textit{results / findings / studies}，不是 researchers。
+    \item \textbf{原因被改写成了原文没有的内容}：\textit{the software on it is hard to adjust} 不是本文给出的原因。原文强调的是当前量子硬件本身具有较强的变动性和不一致性，机器的物理特性可能变化，从而让同一结果更难稳定复现。
+    \item \textbf{第三问的主理由已经接近，但表达骨架不稳}：学习者想说“当前领域更重视创新”，方向与 Fred Chong 的观点一致。原文更准确的关系是 \textit{innovation may be more important than reproducible infrastructure at this stage}，而不是 \textit{the area is more cared about the novelty}。
+    \item \textbf{出现固定框架混成}：\textit{consider reproductive methods into consideration} 把两个合法框架拼在了一起。只能说 \textit{consider reproducibility from the beginning of an experiment}，或 \textit{take reproducibility into consideration from the beginning of an experiment}。这里需要的是名词 \textit{reproducibility}，不是 \textit{reproductive}。
+    \item \textbf{当前更像“语块与论元框架调用”问题，而不是单独的介词知识不足}：介词、连接词和词形错误都真实存在，但更底层的共同点是说话时先临时找单词，再现场拼接对象、介词和从句。下一阶段优先训练“沟通意图 $\rightarrow$ 完整框架 $\rightarrow$ 填槽位”，而不是孤立背 \textit{in / on / at}。
+  \end{itemize}
+}
+
+\oralblock{最小正确版本}{
+  \begin{itemize}
+    \item \textit{The analysis found that many results in quantum-computing papers could not be reproduced.}
+    \item \textit{One reason may be that current quantum hardware is unusually variable and its physical characteristics can change over time.}
+    \item \textit{Some researchers are not too alarmed because the field is still immature and innovation may be more important than reproducible infrastructure at this stage.}
+    \item \textit{Researchers should consider reproducibility from the beginning of an experiment.}
+  \end{itemize}
+}
+
+\oralblock{下一次冷检索}{
+  下一次先不看本页，按“发现 $\rightarrow$ 证据 $\rightarrow$ 原因 $\rightarrow$ 不同观点”四步复述。除主旨外，重点无提示检查两类框架：\textit{reproduce + result / finding / study} 的对象选择，以及 \textit{consider X} 与 \textit{take X into consideration} 是否还会混成一个句式。
+}
+
+% ------------------------------------------------------------------------------
+% 五、本篇语言积累与调用框架
+% ------------------------------------------------------------------------------
+\readingsection{五、本篇语言积累与调用框架}
+
+\oralblock{A. 谓词、对象与固定搭配}{
+  \begin{itemize}
+    \item \textbf{reproduce + result / finding / study / experiment}：\textit{The team could not reproduce the result.} 被复现的是结果、发现、研究或实验，不是 researcher。
+    \item \textbf{assess + reproducibility / reliability / performance}：\textit{The team used five criteria to assess reproducibility.} \textit{assess} 直接接被评价对象。
+    \item \textbf{attempt + a replication / an experiment / a solution}：\textit{The paper provided enough information to attempt a replication.}
+    \item \textbf{attribute A to B · EXP-009}：\textit{I wouldn't attribute the problem entirely to careless authors.} 用于中性归因，不自动等于责怪。
+    \item \textbf{consider X / take X into consideration · EXP-013}：两个框架二选一，不能混成 \textit{consider X into consideration}。
+  \end{itemize}
+}
+
+\oralblock{B. 介词不单独背，连同语块一起记}{
+  \begin{itemize}
+    \item advances \textbf{in} quantum computing
+    \item work \textbf{on} different quantum computers
+    \item information \textbf{about} hardware
+    \item compared \textbf{with} traditional computer science studies
+    \item \textbf{in} Mauerer's view
+    \item attribute A \textbf{to} B
+    \item accessed \textbf{through} the cloud
+    \item change / improve \textbf{over time}
+    \item \textbf{at} the beginning of an experiment
+    \item response \textbf{to} the new study
+  \end{itemize}
+  当前训练目标不是记一张 \textit{in / on / at} 表，而是让介词跟着完整语义框架一起被检索。
+}
+
+\oralblock{C. 逻辑连接与文章组织}{
+  \begin{itemize}
+    \item \textbf{according to...}：交代信息来源；\textit{according to a new analysis}。
+    \item \textbf{yet}：引出与前文预期相反或需要补充限制的内容。
+    \item \textbf{so}：由前文条件推出结论；P3 用它把“跨机器工作”推到“必须可复现”。
+    \item \textbf{similarly}：说明第二组分析得到了方向一致的结果。
+    \item \textbf{compared with...}：先建立比较基准，再评价结果。
+    \item \textbf{in one's view}：明确后文是某位研究者的解释，而不是记者无来源的断言。
+    \item \textbf{for example}：补一个具体例子，不负责建立主因果链。
+    \item \textbf{as the field matures}：表达“随着领域成熟”这一动态条件。
+    \item \textbf{so far}：限定“截至目前”的证据范围。
+  \end{itemize}
+}
+
+\oralblock{D. 复述时优先调用的功能骨架}{
+  \begin{itemize}
+    \item \textbf{报告发现}：\textit{The analysis found that [result].}
+    \item \textbf{补研究证据}：\textit{The researchers analysed [sample], and only [proportion] provided [evidence / code / information].}
+    \item \textbf{解释原因}：\textit{A big reason for this is that [cause].} / \textit{One possible reason is that [cause].}
+    \item \textbf{谨慎归因}：\textit{I wouldn't attribute [result] entirely to [cause].}
+    \item \textbf{阶段判断}：\textit{The field is still in its infancy, so [current priority].}
+    \item \textbf{动态优先级}：\textit{[X] becomes more of a priority as [condition changes].}
+    \item \textbf{提出建议}：\textit{Researchers should consider [factor] from the beginning of [process].}
+    \item \textbf{表达改善意愿}：\textit{There is an appetite for [change / reform / stronger standards].}
+  \end{itemize}
+}
+
+\oralblock{E. 词形家族：避免“知道意思但选错词性”}{
+  \begin{itemize}
+    \item \textbf{reproduce}（动词）$\rightarrow$ \textbf{reproducible}（形容词）$\rightarrow$ \textbf{reproducibility}（名词）。本文讨论的是 \textit{reproducibility}，不是 \textit{reproductive}。
+    \item \textbf{vary}（动词）$\rightarrow$ \textbf{variable}（形容词）$\rightarrow$ \textbf{variability}（名词）。原文用 \textit{variability and inconsistency} 描述硬件问题。
+    \item \textbf{mature}（动词 / 形容词）$\rightarrow$ \textbf{maturity}（名词）；\textit{as the field matures} 比临时拼 \textit{when the area becomes more mature} 更紧凑。
+    \item \textbf{innovate}（动词）$\rightarrow$ \textbf{innovation}（名词）。本文 Chong 谈的是 \textit{innovation may be more important...}；\textit{novelty} 不是这里最准确的替代。
+  \end{itemize}
+}
+
+% ------------------------------------------------------------------------------
+% 六、对谈与关键反馈
+% ------------------------------------------------------------------------------
+\readingsection{六、对谈与关键反馈}
+
+\begin{aiinteraction}{可复现性和创新，哪个更应该优先？}
+  \aiquestion{Do you agree with Fred Chong that innovation may be more important than reproducible infrastructure while quantum computing is still in its infancy? Why or why not?}
+  \aiuseranswer{}
+  \aicorrection{
+    \begin{itemize}
+      \item 等学习者真实回答后，只记录最影响观点展开、自然度或目标表达调用的问题。
+    \end{itemize}
+  }
+  \ainatural{}
+\end{aiinteraction}
+
+% ------------------------------------------------------------------------------
+% 七、本篇沉淀与跨层引用
+% ------------------------------------------------------------------------------
+\readingsection{七、本篇沉淀与跨层引用}
+
+\begin{itemize}
+  \item \textbf{\color{readGreen}表达层现状}：P03 的 \textit{for X to become routinely used, X will have to...} 与 P15 的 \textit{there is an appetite for...} 继续留作本篇候选；本轮真实输出暴露出的 \textit{consider X / take X into consideration} 属于高价值主动表达缺口，已进入表达层作为 \texttt{EXP-013}，状态保持 \texttt{L0 · 捕获}。
+  \item \textbf{\color{readMain}仍留本篇}：\textit{be in its infancy} 当前首先作为本篇理解与复述语块；是否长期入库等待后续真实调用。
+  \item \textbf{\color{readGray}能力证据}：本篇再次支持能力层 \texttt{P04 · 理解到英语输出的压缩损失}。尤其是 \textit{researchers cannot be reproduced} 在明确纠正后再次出现，以及 \textit{consider ... into consideration} 的框架混成，进一步说明当前重点应放在谓词对象、固定语块和逻辑框架的整体调用，而不是只做零散词汇纠错。
+  \item \textbf{\color{readGray}后续复习}：下一次先冷复述四步结构，再无提示检查 \textit{reproduce} 的对象选择和 \textit{consider / take into consideration} 两套框架是否能稳定分开。
+\end{itemize}
+
+\end{document}

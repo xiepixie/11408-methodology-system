@@ -4,16 +4,20 @@
 
 <style>
   @media print, (prefers-color-scheme: light) {
-    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #fafaf7 !important; }
+    [fill='#2e362c'], [fill='#2E362C'], [fill='#2e362c' i] { fill: #faf8f5 !important; }
+    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #faf8f5 !important; }
     [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }
+    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
     [fill='#9ea897'], [fill='#9EA897'], [fill='#9ea897' i] { fill: #666666 !important; }
     [fill='#7eb6ff'], [fill='#7EB6FF'], [fill='#7eb6ff' i] { fill: #1d63b8 !important; }
     [fill='#ff7b7b'], [fill='#FF7B7B'], [fill='#ff7b7b' i] { fill: #c53030 !important; }
     [fill='#f5b942'], [fill='#F5B942'], [fill='#f5b942' i] { fill: #b86e00 !important; }
     [fill='#c084fc'], [fill='#C084FC'], [fill='#c084fc' i] { fill: #7c3aed !important; }
     [fill='#4ade80'], [fill='#4ADE80'], [fill='#4ade80' i] { fill: #15803d !important; }
-    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }
+    [stroke='#2e362c'], [stroke='#2E362C'], [stroke='#2e362c' i] { stroke: #faf8f5 !important; }
+    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #faf8f5 !important; }
     [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }
+    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
     [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }
     [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }
     [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }
@@ -28,7 +32,7 @@
 <path id='g1-51' d='M2.889166-3.506849C3.706102-3.775841 4.283935-4.473225 4.283935-5.260274C4.283935-6.07721 3.407223-6.635118 2.450809-6.635118C1.444583-6.635118 .687422-6.03736 .687422-5.280199C.687422-4.951432 .9066-4.762142 1.195517-4.762142C1.504359-4.762142 1.703611-4.98132 1.703611-5.270237C1.703611-5.768369 1.235367-5.768369 1.085928-5.768369C1.39477-6.256538 2.052304-6.386052 2.410959-6.386052C2.819427-6.386052 3.367372-6.166874 3.367372-5.270237C3.367372-5.150685 3.347447-4.572852 3.088418-4.134496C2.789539-3.656289 2.450809-3.626401 2.201743-3.616438C2.122042-3.606476 1.882939-3.58655 1.8132-3.58655C1.733499-3.576588 1.663761-3.566625 1.663761-3.466999C1.663761-3.35741 1.733499-3.35741 1.902864-3.35741H2.34122C3.158157-3.35741 3.526775-2.67995 3.526775-1.703611C3.526775-.348692 2.839352-.059776 2.400996-.059776C1.972603-.059776 1.225405-.229141 .876712-.816936C1.225405-.767123 1.534247-.986301 1.534247-1.364882C1.534247-1.723537 1.265255-1.92279 .976339-1.92279C.737235-1.92279 .418431-1.783313 .418431-1.344956C.418431-.438356 1.344956 .219178 2.430884 .219178C3.646326 .219178 4.552927-.687422 4.552927-1.703611C4.552927-2.520548 3.92528-3.297634 2.889166-3.506849Z'/>
 </defs>
 <g id='page1'>
-<rect x='-69.011212' y='-69.011216' width='177.060423' height='177.545953' fill='#30362d'/>
+<rect x='-69.011212' y='-69.011216' width='177.060423' height='177.545953' fill='#2e362c'/>
 <g stroke-miterlimit='10' transform='translate(6.371052,86.229481)scale(0.996264,-0.996264)'>
 <g fill='#000' stroke='#000'>
 <g stroke-width='0.4'>

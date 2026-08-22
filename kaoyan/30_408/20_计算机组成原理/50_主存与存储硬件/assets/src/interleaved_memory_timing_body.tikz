@@ -1,0 +1,54 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  bank/.style={draw=themegray,rounded corners=2pt,minimum width=2.2cm,minimum height=.65cm,align=center,fill=themefg!3!themebg,font=\bfseries\scriptsize},
+  busy/.style={draw=themecurve,fill=themecurve!12!themebg,minimum height=.52cm,inner sep=2pt,align=center,font=\bfseries\scriptsize,text=themecurve},
+  busy2/.style={draw=themegreen,fill=themegreen!12!themebg,minimum height=.52cm,inner sep=2pt,align=center,font=\bfseries\scriptsize,text=themegreen},
+  conflict/.style={draw=themealert,fill=themealert!15!themebg,minimum height=.52cm,inner sep=2pt,align=center,font=\bfseries\scriptsize,text=themealert},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.2) {低位交叉：把连续请求轮转到不同 Bank，购买的是可重叠服务能力};
+\node[anchor=west,text=themegray,text width=16.8cm,align=left] at (0,7.6)
+  {例：4 个 Bank（$m=4$），单 Bank 存取周期 $T=4\tau$，总线传输周期 $\tau$。连续地址 $a_k \bmod 4$ 轮转映射到不同 Bank。};
+
+% ── 坐标轴与 Bank 标签 ──
+\foreach \i in {0,...,3}{
+  \node[bank,anchor=west] at (0,5.8-0.85*\i) {Bank \i};
+}
+\foreach \t in {0,...,9}{
+  \node[text=themegray,font=\scriptsize\bfseries] at (2.9+1.1*\t,6.4) {$\t$\ifnum\t=0\else$\tau$\fi};
+  \draw[themegray!25,dashed] (2.9+1.1*\t,3.0) -- (2.9+1.1*\t,6.1);
+}
+
+% ── 理想流水线：连续地址轮转 (a0 ~ a3) ──
+\draw[busy] (2.9,5.54) rectangle (7.3,6.06) node[midway] {$a_0$ 服务 ($4\tau$)};
+\draw[busy] (4.0,4.69) rectangle (8.4,5.21) node[midway] {$a_1$ 服务 ($4\tau$)};
+\draw[busy] (5.1,3.84) rectangle (9.5,4.36) node[midway] {$a_2$ 服务 ($4\tau$)};
+\draw[busy] (6.2,2.99) rectangle (10.6,3.51) node[midway] {$a_3$ 服务 ($4\tau$)};
+
+% ── 第二轮无缝接续：a4 在 4tau 到达 Bank 0 ──
+\draw[busy2] (7.3,5.54) rectangle (11.7,6.06) node[midway] {$a_4$ 服务 ($4\tau$)};
+\node[text=themegreen,font=\scriptsize\bfseries,anchor=west] at (12.0,5.8) {$\Longleftarrow a_4$ 在 $4\tau$ 无缝接续 Bank 0（流水线满载）};
+
+% ── 冲突对照区 (y = 1.9) ──
+\node[bank,draw=themealert,text=themealert,anchor=west] at (0,1.8) {冲突对比};
+\draw[busy] (2.9,1.54) rectangle (5.1,2.06) node[midway] {$a_0$ 占用 ($0\sim 2\tau$)};
+\draw[conflict] (5.1,1.54) rectangle (7.3,2.06) node[midway] {$a_0^\prime$ 冲突阻塞 ($2\sim 4\tau$)};
+\node[anchor=west,text=themealert,font=\scriptsize\bfseries,text width=8.5cm,align=left] at (7.8,1.8)
+  {若非连续请求 $a_0^{\prime}$ 在 $t=2\tau$ 试图访问 Bank 0，因 Bank 0 仍在忙，必须停顿等待至 $4\tau$ 才能启动。};
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=16.8cm] at (0,0.45)
+  {\textbf{性能读法：}首个请求的结果仍要等待完整的单体服务延迟 $T$；多体交叉的优势是将后续请求的启动窗口错开 $\tau$，使得稳态吞吐率（Bandwidth）达到每 $\tau$ 输出一个字（流水线加速比 $\approx m$）。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themeamber,text width=16.8cm,align=left] at (0,-0.45)
+  {计算法则：$n$ 个连续字的总耗时为 $T + (n-1)\tau$。若到达流重复撞同一 Bank 或总线传输受限，流水线发生气泡停顿。};
+\end{tikzpicture}

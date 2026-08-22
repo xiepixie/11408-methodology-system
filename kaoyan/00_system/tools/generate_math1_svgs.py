@@ -17,7 +17,7 @@ KAOYAN_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 ARCHIVE_ROOT = os.path.join(KAOYAN_ROOT, "archives/math1")
 
 DARK_THEME = {
-    "bg": "#30362d",
+    "bg": "#2e362c",
     "fg": "#edf4e8",
     "node": "#3b4337",
     "soft": "#394136",
@@ -30,7 +30,7 @@ DARK_THEME = {
 }
 
 LIGHT_THEME = {
-    "bg": "#fafaf7",
+    "bg": "#faf8f5",
     "fg": "#111111",
     "node": "#ffffff",
     "soft": "#f7f6f1",

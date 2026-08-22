@@ -1750,14 +1750,101 @@ body.zen-mode .content-viewport {
   border-color: #7c3aed !important;
 }
 
-/* Markdown Typography */
+/* Reader Font Size Stepper Controller */
+.font-size-control-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  padding: 2px 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.font-size-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.font-size-btn:hover {
+  background: var(--bg-surface-elevated);
+  color: var(--accent-primary);
+  transform: scale(1.05);
+}
+
+.font-size-indicator {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 2px 6px;
+  cursor: pointer;
+  user-select: none;
+  min-width: 42px;
+  text-align: center;
+  border-radius: 3px;
+  transition: all var(--transition-fast);
+}
+
+.font-size-indicator:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--accent-primary);
+}
+
+/* Markdown Typography with Proportional Font Scaling */
 .markdown-body {
-  font-size: 15px;
+  font-size: calc(15.5px * var(--article-font-scale, 1));
   line-height: 1.8;
   color: var(--text-primary);
   word-break: break-word;
   max-width: 880px;
   margin: 0 auto;
+  transition: font-size 0.15s ease-out;
+}
+
+/* Specialized English Reading Typography */
+.markdown-body.english-reading-mode {
+  font-size: calc(18px * var(--article-font-scale, 1));
+  line-height: 1.85;
+  letter-spacing: -0.01em;
+  font-family: -apple-system, BlinkMacSystemFont, "Charter", "Georgia", "Segoe UI", Roboto, sans-serif;
+  max-width: 840px;
+}
+
+.markdown-body.english-reading-mode p {
+  margin: 0 0 22px;
+}
+
+.markdown-body.english-reading-mode h1 {
+  font-size: calc(2.1rem * var(--article-font-scale, 1));
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  margin: 0 0 20px;
+}
+
+.markdown-body.english-reading-mode h2 {
+  font-size: calc(1.5rem * var(--article-font-scale, 1));
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 40px 0 16px;
+}
+
+.markdown-body.english-reading-mode h3 {
+  font-size: calc(1.25rem * var(--article-font-scale, 1));
+  font-weight: 600;
+  margin: 32px 0 14px;
 }
 
 .markdown-body h1 {
@@ -2624,6 +2711,150 @@ html[data-theme="light"] .popover-divider {
   border-color: #ef4444;
   color: #ffffff;
   transform: scale(1.05);
+}
+
+/* ==========================================================================
+   English Daily Reading Article View Styling
+   ========================================================================== */
+
+.english-article-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.english-meta-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 20px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.meta-pill.pill-source {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.35);
+  color: #60a5fa;
+}
+
+.meta-pill.pill-date {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #34d399;
+}
+
+.meta-pill.pill-section {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.35);
+  color: #c084fc;
+}
+
+.meta-pill.pill-author {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+}
+
+.meta-pill.pill-page {
+  background: rgba(100, 116, 139, 0.12);
+  border-color: rgba(100, 116, 139, 0.35);
+  color: #94a3b8;
+}
+
+.english-topic-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.topic-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+}
+
+html[data-theme="light"] .topic-chip {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.english-diag-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.legend-title {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Subtitle Standfirst */
+.article-standfirst {
+  font-size: 16px;
+  line-height: 1.6;
+  font-style: italic;
+  color: var(--text-secondary);
+  padding: 10px 16px;
+  margin: -10px 0 20px 0;
+  border-left: 3px solid var(--accent-primary);
+  background: rgba(59, 130, 246, 0.05);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* Subtle Paragraph Block Anchor */
+.block-anchor {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 4px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  opacity: 0.4;
+  border-radius: 3px;
+  user-select: none;
+  cursor: default;
+  transition: opacity var(--transition-fast);
+}
+
+.block-anchor:hover {
+  opacity: 1;
+  color: var(--accent-primary);
+  background: rgba(59, 130, 246, 0.1);
 }
 
 

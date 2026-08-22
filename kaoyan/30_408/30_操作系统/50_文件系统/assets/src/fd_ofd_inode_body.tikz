@@ -1,0 +1,81 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  panel/.style={draw=themegray!50,rounded corners=6pt,fill=themefg!2!themebg,inner sep=8pt},
+  fdbox/.style={draw=themecurve,rounded corners=3pt,minimum width=2.4cm,minimum height=.72cm,align=center,fill=themecurve!8!themebg,font=\scriptsize\bfseries,text=themecurve},
+  ofdbox/.style={draw=themeamber,rounded corners=3pt,minimum width=2.8cm,minimum height=.72cm,align=center,fill=themeamber!8!themebg,font=\scriptsize\bfseries,text=themeamber},
+  inodebox/.style={draw=themegreen,rounded corners=3pt,minimum width=2.2cm,minimum height=.72cm,align=center,fill=themegreen!8!themebg,font=\scriptsize\bfseries,text=themegreen},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themecurve},
+  oflow/.style={->,line width=1.1pt,themeamber},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {进程 fd $\to$ 系统 OFD $\to$ 磁盘 Inode：三层映射与共享 Offset 机制};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.0)
+  {核心逻辑：文件读写偏移量 (Offset) 存放在系统打开文件表 (OFD) 中；\texttt{dup} 或 \texttt{fork} 共享同一 OFD，独立 \texttt{open} 则拥有独立 OFD。};
+
+% ══════════════════════════════════════════════════════════════
+% ── Panel A: 独立 open() 调用 (不共享 Offset) (x = 0 .. 8.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(0,1.8)}]
+  \draw[panel] (0,0) rectangle (8.4,5.8);
+  \node[font=\bfseries\normalsize,text=themecurve] at (4.2,5.3) {A. 独立 open()：独立 OFD，独立 Offset};
+
+  \node[fdbox] (a_fd1) at (1.5,4.0) {进程 A\\$\text{fd} = 3$};
+  \node[ofdbox] (a_ofd1) at (4.4,4.0) {OFD \#1\\$\text{offset} = 100$};
+
+  \node[fdbox] (a_fd2) at (1.5,2.2) {进程 B\\$\text{fd} = 7$};
+  \node[ofdbox] (a_ofd2) at (4.4,2.2) {OFD \#2\\$\text{offset} = 0$};
+
+  \node[inodebox] (a_inode) at (7.2,3.1) {磁盘 Inode\\(文件实体)};
+
+  \draw[flow] (a_fd1) -- (a_ofd1);
+  \draw[flow] (a_fd2) -- (a_ofd2);
+  \draw[oflow] (a_ofd1.east) -- (a_inode.west);
+  \draw[oflow] (a_ofd2.east) -- (a_inode.west);
+
+  \node[anchor=north,font=\scriptsize,text=themefg,align=center] at (4.2,1.2)
+    {两个进程分别独立调用 \texttt{open("file")}\\各自维护读写进度，互不影响};
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── Panel B: dup() / fork() 继承 (共享 Offset) (x = 9.0 .. 17.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(9.0,1.8)}]
+  \draw[panel] (0,0) rectangle (8.4,5.8);
+  \node[font=\bfseries\normalsize,text=themeamber] at (4.2,5.3) {B. dup() / fork()：共享同一 OFD 与 Offset};
+
+  \node[fdbox] (b_fd1) at (1.5,4.2) {父进程\\$\text{fd} = 3$};
+  \node[fdbox] (b_fd2) at (1.5,3.1) {父进程 (dup)\\$\text{fd} = 8$};
+  \node[fdbox] (b_fd3) at (1.5,2.0) {子进程 (fork)\\$\text{fd} = 3$};
+
+  \node[ofdbox] (b_ofd) at (4.4,3.1) {共享同一 OFD\\$\text{offset} = 256$};
+  \node[inodebox] (b_inode) at (7.2,3.1) {磁盘 Inode\\(文件实体)};
+
+  \draw[flow] (b_fd1.east) -- (b_ofd.west);
+  \draw[flow] (b_fd2.east) -- (b_ofd.west);
+  \draw[flow] (b_fd3.east) -- (b_ofd.west);
+  \draw[oflow] (b_ofd.east) -- (b_inode.west);
+
+  \node[anchor=north,font=\scriptsize,text=themeamber,align=center] at (4.2,1.2)
+    {任意一端执行 \texttt{read/write} 推进 offset\\所有关联 fd 均可见最新读写位置};
+\end{scope}
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,0.85)
+  {\textbf{文件系统三大表项层级与职责：}\\
+   1. \textbf{进程打开文件表 (Process fd table)}：进程私有，存放文件描述符与指向系统 OFD 的指针；\\
+   2. \textbf{系统打开文件表 (Open File Description / OFD)}：全系统共享，存放当前文件偏移量 (Offset)、访问模式与引用计数；\\
+   3. \textbf{活动 Inode 表 / VFS Inode}：存放文件元数据、磁盘块物理索引与物理硬链接计数。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.2)
+  {禁止误读：\texttt{close(fd)} 仅将对应 OFD 引用计数减 1；只有当引用计数降为 0 时，内核才释放 OFD 结构。};
+\end{tikzpicture}

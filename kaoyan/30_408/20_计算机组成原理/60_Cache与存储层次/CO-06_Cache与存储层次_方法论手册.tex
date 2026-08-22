@@ -191,6 +191,10 @@ set=block\ number\bmod S.
 \end{itemize}
 常见搭配不是逻辑必然。write-back 不自动推出 write-allocate，做题必须分别判断。
 
+\begin{center}
+\input{assets/src/cache_write_policy_body.tikz}
+\end{center}
+
 \begin{methodbox}{写缓冲的边界}
 write-through 若要求 CPU 等每次下一级写完成，会直接暴露慢层延迟。write buffer 把待写请求先排入有限队列，在缓冲未满时允许前端继续；write-back 的 dirty victim 也可能进入 write-back buffer。二者都用队列吸收短时突发，但没有创造下一级长期带宽：若到达率持续高于排空率，最终仍会反压前端。
 \end{methodbox}

@@ -276,6 +276,10 @@ Index 找候选组
 
 不要从 write-back 自动推出 write-allocate。
 
+![Cache 写命中/写缺失的两条策略轴与 Dirty 状态](./assets/Cache写策略_传播分配与Dirty状态.svg)
+
+图把“命中后何时传播”与“写 miss 是否分配 line”分开；Dirty 只表示 write-back 副本比下一级更新，逐出时才触发必要写回。
+
 ### Way 编号与替换策略的两个边界
 
 - **way 编号通常没有架构语义**：若题目只给“4 路组相联 + 初始为空”，却没规定空 way 的填入编号，就不要问“最后替换 way 2 还是 way 3”。应问语义不变量：哪个主存块是 victim、最后 resident set 是什么。

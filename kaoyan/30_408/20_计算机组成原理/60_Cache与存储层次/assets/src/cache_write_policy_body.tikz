@@ -1,0 +1,66 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  box/.style={draw=themegray,rounded corners=3pt,minimum width=2.8cm,minimum height=.92cm,align=center,fill=themefg!3!themebg},
+  hitbox/.style={box,draw=themecurve,fill=themecurve!10!themebg,font=\bfseries\scriptsize,text=themecurve},
+  missbox/.style={box,draw=themealert,fill=themealert!10!themebg,font=\bfseries\scriptsize,text=themealert},
+  leafblue/.style={box,draw=themecurve,fill=themecurve!6!themebg},
+  leafamber/.style={box,draw=themeamber,fill=themeamber!8!themebg},
+  leafred/.style={box,draw=themealert,fill=themealert!8!themebg},
+  flow/.style={->,line width=1.1pt,themecurve},
+  bad/.style={->,line width=1.1pt,themealert},
+  alt/.style={->,line width=1.1pt,themeamber},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {Cache 写策略：命中传播时机与未命中分配策略（两条独立正交轴）};
+\node[anchor=west,text=themegray,text width=16.8cm,align=left] at (0,8.0)
+  {核心原则：先判断 Hit / Miss，再分别决策“写入何处更新”与“缺失时是否调块”。写回（Write-Back）与写分配（Write-Allocate）是独立设计决策。};
+
+% ── 发起写请求与 Tag 查找 ──
+\node[box] (req) at (1.4,5.4) {CPU Write\\写请求 (块地址 $X$)};
+\node[box] (lookup) at (4.5,5.4) {Tag 比较与查找\\Valid + Tag Matching};
+\draw[flow] (req) -- (lookup);
+
+% ── 上分支：Write Hit (命中时的更新策略) ──
+\node[hitbox] (hit) at (7.8,6.6) {Write Hit\\写命中};
+\draw[flow] (lookup.east) to[out=30,in=180] node[above=2pt,font=\scriptsize\bfseries,text=themecurve] {命中 (Hit)} (hit.west);
+
+\node[leafblue,anchor=west] (wt) at (10.0,7.3) {全写法 (Write-Through)\\同时写 Cache 与下一级主存};
+\node[leafamber,anchor=west] (wb) at (10.0,5.9) {写回法 (Write-Back)\\仅更新 Cache，置 $\text{Dirty}=1$};
+
+\draw[flow] (hit.east) to[out=20,in=180] (wt.west);
+\draw[alt] (hit.east) to[out=-20,in=180] (wb.west);
+
+% 写回法特有的脏块逐出指示 (右侧独立停靠)
+\node[leafred,anchor=west] (victim) at (14.2,5.9) {Dirty 块被替换逐出\\写回下一级主存};
+\draw[bad] (wb.east) -- node[above=2pt,font=\tiny\bfseries,text=themealert] {Eviction 替换时} (victim.west);
+
+% ── 下分支：Write Miss (缺失时的分配策略) ──
+\node[missbox] (miss) at (7.8,3.8) {Write Miss\\写缺失};
+\draw[bad] (lookup.east) to[out=-30,in=180] node[below=2pt,font=\scriptsize\bfseries,text=themealert] {缺失 (Miss)} (miss.west);
+
+\node[leafamber,anchor=west] (wa) at (10.0,4.4) {写分配 (Write-Allocate)\\先从主存调入块，再写入 Cache};
+\node[leafblue,anchor=west] (nwa) at (10.0,3.0) {非写分配 (No-Write-Allocate)\\直接写主存，不调入 Cache};
+
+\draw[alt] (miss.east) to[out=20,in=180] (wa.west);
+\draw[flow] (miss.east) to[out=-20,in=180] (nwa.west);
+
+% 常用搭配大括号指示
+\node[anchor=west,font=\tiny\bfseries,text=themegray] at (14.2,4.4) {通常与 Write-Back 搭配使用};
+\node[anchor=west,font=\tiny\bfseries,text=themegray] at (14.2,3.0) {通常与 Write-Through 搭配使用};
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=16.8cm] at (0,1.3)
+  {\textbf{Dirty 位的真实语义：}仅在写回法（Write-Back）中有效，表示“本层 Cache 副本比下层主存更新”。写穿法（Write-Through）因为每次写都同步下发主存，两层数据时刻严格一致，因此\textbf{绝对不需要 Dirty 位}。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themeamber,text width=16.8cm,align=left] at (0,0.2)
+  {写缓冲（Write Buffer）：全写法通常搭配写缓冲以避免 CPU 阻塞等待主存；但持续高频写入超出写缓冲排空带宽时仍会引起反压阻塞。};
+\end{tikzpicture}

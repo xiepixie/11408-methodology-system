@@ -4,17 +4,20 @@
 
 <style>
   @media print, (prefers-color-scheme: light) {
-    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #fafaf7 !important; }
+    [fill='#2e362c'], [fill='#2E362C'], [fill='#2e362c' i] { fill: #faf8f5 !important; }
+    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #faf8f5 !important; }
     [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }
+    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
     [fill='#9ea897'], [fill='#9EA897'], [fill='#9ea897' i] { fill: #666666 !important; }
     [fill='#7eb6ff'], [fill='#7EB6FF'], [fill='#7eb6ff' i] { fill: #1d63b8 !important; }
     [fill='#ff7b7b'], [fill='#FF7B7B'], [fill='#ff7b7b' i] { fill: #c53030 !important; }
     [fill='#f5b942'], [fill='#F5B942'], [fill='#f5b942' i] { fill: #b86e00 !important; }
     [fill='#c084fc'], [fill='#C084FC'], [fill='#c084fc' i] { fill: #7c3aed !important; }
     [fill='#4ade80'], [fill='#4ADE80'], [fill='#4ade80' i] { fill: #15803d !important; }
-    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
-    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }
+    [stroke='#2e362c'], [stroke='#2E362C'], [stroke='#2e362c' i] { stroke: #faf8f5 !important; }
+    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #faf8f5 !important; }
     [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }
+    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
     [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }
     [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }
     [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }
@@ -207,7 +210,7 @@
 <path id='g76-121' d='M1.63188-3.165131C1.578082-3.29066 1.578082-3.335492 1.578082-3.353425C1.578082-3.58655 1.882939-3.58655 2.071233-3.58655V-3.864508C1.63188-3.846575 1.452553-3.837609 1.075965-3.837609C1.049066-3.837609 .537983-3.837609 .188294-3.864508V-3.58655C.591781-3.58655 .762142-3.568618 .869738-3.326526L2.286426 0L2.062267 .529016C1.865006 1.004234 1.604981 1.613948 1.022167 1.613948C.798007 1.613948 .645579 1.497385 .61868 1.479452C.690411 1.470486 .941469 1.398755 .941469 1.093898C.941469 .860772 .771108 .71731 .564882 .71731C.340722 .71731 .179328 .860772 .179328 1.102864C.179328 1.506351 .555915 1.838107 1.022167 1.838107C1.604981 1.838107 1.990535 1.318057 2.205729 .824907L3.828643-2.96787C3.927273-3.200996 4.088667-3.568618 4.662516-3.58655V-3.864508C4.375592-3.837609 4.097634-3.837609 3.981071-3.837609C3.730012-3.837609 3.452055-3.846575 3.200996-3.864508V-3.58655C3.61345-3.568618 3.61345-3.245828 3.61345-3.209963C3.61345-3.111333 3.577584-3.021669 3.541719-2.949938L2.636115-.81594L1.63188-3.165131Z'/>
 </defs>
 <g id='page1'>
-<rect x='-69.011212' y='-69.011214' width='432.156085' height='201.069569' fill='#30362d'/>
+<rect x='-69.011212' y='-69.011214' width='432.156085' height='201.069569' fill='#2e362c'/>
 <g stroke-miterlimit='10' transform='translate(147.066831,5.287454)scale(0.996264,-0.996264)'>
 <g fill='#000' stroke='#000'>
 <g stroke-width='0.4'>
@@ -527,8 +530,8 @@
  </g>
  </g>
 </g>
-<g fill='#30362d'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
+<g fill='#2e362c'>
 <path d='M-138.39685 63.19615H-66.46323V73.13078H-138.39685Z' stroke='none'/>
 </g>
 <g transform='translate(-137.19685,65.11612)'>
@@ -565,8 +568,8 @@
  </g>
  </g>
 </g>
-<g fill='#30362d'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
+<g fill='#2e362c'>
 <path d='M63.79004 63.19615H141.07004V73.04002H63.79004Z' stroke='none'/>
 </g>
 <g transform='translate(64.99004,65.12717)'>
@@ -592,10 +595,10 @@
 </g>
 </g>
 <g stroke='#ff7b7b'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
 <g stroke-width='0.9'>
 <g stroke='#ff7b7b'>
-<g fill='#30362d'>
+<g fill='#2e362c'>
 <g stroke-width='0.9'>
 <path d='M190.31564-54.51003H14.54443C12.18732-54.51003 10.27654-56.4208 10.27654-58.77792V-98.35544C10.27654-100.71255 12.18732-102.62334 14.54443-102.62334H190.31564C192.67276-102.62334 194.58354-100.71255 194.58354-98.35544V-58.77792C194.58354-56.4208 192.67276-54.51003 190.31564-54.51003ZM10.27654-102.62334'/>
 </g>

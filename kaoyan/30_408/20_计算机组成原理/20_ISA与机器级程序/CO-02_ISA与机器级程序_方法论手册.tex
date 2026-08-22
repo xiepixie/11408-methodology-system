@@ -65,10 +65,10 @@
 \begin{corebox}{母问题：软件意图怎样成为处理器必须兑现的语义？}
 高级语言只说值、控制流和存储访问想要什么；处理器必须把它们编码成有限长度的指令，并规定执行后软件能观察到的下一状态。本册的生成链是
 \[
-\boxed{\text{Program Intent}
-\to\text{Architectural State}
-\to\text{Encoding / Address Semantics}
-\to\text{Next Architectural State}}
+\boxed{\begin{aligned}
+\text{Program Intent}&\to\text{Architectural State}\\
+&\to\text{Encoding / Address Semantics}\to\text{Next Architectural State}
+\end{aligned}}
 \]
 箭头首先表示语义约束的生成方向：意图决定所需状态变化，状态变化必须有编码和地址解释，最后形成新的架构状态。它不是某张具体数据通路图的时序；CO-03 才负责把已经确定的语义交给通路与控制器实现。
 \end{corebox}
@@ -156,15 +156,12 @@ N_{k+1}=\bigl(N_k-U_k\bigr)2^{w_k},
 \section{从程序意图到可执行映像：先按中间产物拆阶段}
 “高级语言能运行”不是编译器一步把文字变成 CPU 动作。408 的阶段化模型应先按\kw{输入/输出产物}拆开：
 \[
-\text{Source}
-\xrightarrow{\text{preprocess}}
-\text{Translation Unit}
-\xrightarrow{\text{compiler}}
-\text{Assembly}
-\xrightarrow{\text{assembler}}
-\text{Relocatable Object}
-\xrightarrow{\text{linker}}
-\text{Executable / Shared Object}.
+\begin{aligned}
+\text{Source}&\xrightarrow{\text{preprocess}}\text{Translation Unit}
+\xrightarrow{\text{compiler}}\text{Assembly}\\
+&\xrightarrow{\text{assembler}}\text{Relocatable Object}
+\xrightarrow{\text{linker}}\text{Executable / Shared Object}.
+\end{aligned}
 \]
 程序真正开始运行时才进入下一条 OS 路径：
 \[
@@ -207,6 +204,10 @@ Loader 消费 executable 并开始建立运行环境，它不属于“把源程�
 EA=f(\text{instruction fields},R,PC,M).
 \]
 它回答“对象在哪里”，不等于已经读出了对象。若系统启用虚拟地址，EA 还要经过 CO-07 的翻译接口；若访问 Cache，则继续进入 CO-06。
+
+\begin{center}
+\input{assets/src/effective_address_layers_body.tikz}
+\end{center}
 
 \begin{center}
 \small
@@ -284,18 +285,7 @@ CO-01 负责产生有限宽度减法结果与 $ZF/CF/SF/OF$ 等候选状态；�
 函数调用至少有四个状态交接：参数/返回值位置、返回地址、保存责任、栈帧布局。ISA 提供跳转、寄存器和访存等原语；ABI 约定哪些寄存器 caller-saved/callee-saved、参数何时溢出到栈、返回值放在哪里。ABI 不是硬件自动保存规则，具体名称也不能跨架构照抄。
 
 \begin{center}
-\begin{tikzpicture}[node distance=7mm and 8mm]
-  \node[abstract] (caller) {Caller\\准备参数};
-  \node[co,right=of caller] (call) {Call\\更新控制流};
-  \node[co,right=of call] (frame) {Callee\\建立栈帧};
-  \node[co,right=of frame] (body) {函数体\\读写状态};
-  \node[co,below=of body] (ret) {Return\\恢复约定状态};
-  \draw[flow] (caller)--(call);
-  \draw[flow] (call)--(frame);
-  \draw[flow] (frame)--(body);
-  \draw[flow] (body)--(ret);
-  \draw[ref] (ret) |- (caller.south);
-\end{tikzpicture}
+\input{assets/src/abi_call_frame_body.tikz}
 \end{center}
 
 \section{贯穿母例：\texorpdfstring{$x=a[i]+1$}{x=a[i]+1}}
@@ -381,6 +371,7 @@ PC 相对 & $\neq$ & 绝对地址 & 相对目标由 PC 基准和位移形成；�
 
 \section{章节与考纲映射}
 
+\begin{center}\small
 \begin{tabularx}{\linewidth}{L{3.2cm}L{5.4cm}Y}
 \toprule
 传统知识块 & 本册的机制位置 & 本册不展开的实现细节\\
@@ -388,10 +379,11 @@ PC 相对 & $\neq$ & 绝对地址 & 相对目标由 PC 基准和位移形成；�
 指令系统与指令格式 & 编码预算、字段竞争、扩展操作码 & 具体控制器实现归 CO-03\\
 寻址方式与有效地址 & EA 生成、地址/值分层、访存次数 & 翻译硬件归 CO-07\\
 机器级程序与 C 映射 & 数组地址、控制流、函数调用、栈帧 & 优化器内部选择只作实现例子\\
-RISC/CISC & 代码密度、规整译码、内存访问和软硬件分工的权衡 & 不推出控制器一一对应\\
+RISC / CISC & 代码密度、规整译码、内存访问和软硬件分工的权衡 & 不推出控制器一一对应\\
 字节序、对齐、访问宽度 & 地址表、扩展、合法访问边界 & 平台特例必须由题设声明\\
 \bottomrule
 \end{tabularx}
+\end{center}
 
 \section{一页压缩与自测}
 
@@ -416,11 +408,10 @@ ISA 先规定“程序执行后软件必须看到什么”；机器级程序把�
 
 指令题不是助记符翻译题，而是有限字段预算、地址形成和架构状态写集共同定义的状态转移。统一回接为
 \[
-\text{Instruction Format}
-\to\text{Operand Interpretation}
-\to\text{EA / Target Formation}
-\to\text{Read/Write Set}
-\to\text{Next Architectural State}.
+\begin{aligned}
+\text{Instruction Format}&\to\text{Operand Interpretation}\to\text{EA / Target Formation}\\
+&\to\text{Read/Write Set}\to\text{Next Architectural State}.
+\end{aligned}
 \]
 
 \subsection{一条指令必须携带的六类信息}
@@ -436,7 +427,7 @@ ISA 先规定“程序执行后软件必须看到什么”；机器级程序把�
 \midrule
 opcode & 做什么 & 指令种类与控制动作 & 数据通路具体节拍 \\
 register field & 对哪个架构寄存器做读写 & 寄存器数量的对数位宽 & 寄存器内部物理位置 \\
-immediate/displacement & 常量或地址偏移如何编码 & 指令字长、符号扩展、范围 & 完整绝对地址 \\
+immediate / displacement & 常量或地址偏移如何编码 & 指令字长、符号扩展、范围 & 完整绝对地址 \\
 addressing mode & 字段怎样解释为值/地址 & ISA 操作数语义 & Cache/TLB 命中结果 \\
 width/sign & 读写多少位、怎样扩展 & 指令后缀或类型规则 & 总线一定只有同宽传输 \\
 next-PC control & 顺序、分支或调用返回 & PC 基准与目标计算规则 & 预测器一定怎样实现 \\

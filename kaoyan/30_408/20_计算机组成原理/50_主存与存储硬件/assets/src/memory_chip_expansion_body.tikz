@@ -1,0 +1,56 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  box/.style={draw=themegray,rounded corners=3pt,minimum width=2.4cm,minimum height=.9cm,align=center,fill=themefg!3!themebg},
+  group/.style={draw=themecurve,rounded corners=6pt,fill=themecurve!6!themebg,inner sep=8pt},
+  chip/.style={draw=themecurve,rounded corners=3pt,minimum width=2.2cm,minimum height=.85cm,align=center,fill=themebg,font=\scriptsize\bfseries},
+  flow/.style={->,line width=1.1pt,themecurve},
+  sel/.style={->,line width=1.1pt,themeamber},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.2) {芯片扩展：先做位扩展凑字长，再做字扩展凑地址深度};
+\node[anchor=west,text=themegray,text width=16.8cm,align=left] at (0,7.6)
+  {例：单片 $8K\times 8$，目标 $32K\times 16$。位扩展需 2 片并联凑成 16 位；字扩展需 4 组凑成 32K 深度，共 8 片。若系统按字节编址，一组 $8K\times 16$ 覆盖 $16KB$ 地址跨度。};
+
+% ── 左侧：规格换算与地址分解 ──
+\node[box,anchor=west] (spec) at (0,6.0) {单片规格\\$8K\times 8\text{ bit}$};
+\node[box,anchor=west] (target) at (4.5,6.0) {目标规格\\$32K\times 16\text{ bit}$};
+\draw[flow] (spec.east) -- node[above=2pt,font=\scriptsize\bfseries,text=themecurve] {位扩展：$16/8=2$ 片并联} (target.west);
+
+\node[box,anchor=west] (hi) at (0,4.2) {高位地址 / 片选\\(2 bit $\to$ 选 4 组之一)};
+\node[box,anchor=west] (lo) at (0,2.6) {低位地址\\(13 bit $\to$ 组内寻址)};
+
+% ── 右侧：单个 8K x 16 芯片组内部无交叉流线 ──
+\node[group,fit={(7.7,5.0) (16.5,1.8)},label={[text=themecurve,font=\bfseries\normalsize]above:一个 $8K\times 16\text{ bit}$ 芯片组（同地址并行工作，拼宽数据）}] (g0) {};
+
+\node[chip,draw=themegray] (addr) at (8.8,3.4) {片内地址\\$A_{12}\sim A_0$ (13 bit)};
+\node[chip] (c00) at (12.0,4.3) {Chip A (低 8 位)\\\texttt{D0..D7}};
+\node[chip] (c01) at (12.0,2.5) {Chip B (高 8 位)\\\texttt{D8..D15}};
+\node[chip,draw=themecurve] (data) at (15.2,3.4) {系统数据总线\\16 bit (\texttt{D0..D15})};
+
+% 地址线分发 (左到右，无交叉)
+\draw[flow] (addr.east) to[out=20,in=180] (c00.west);
+\draw[flow] (addr.east) to[out=-20,in=180] (c01.west);
+
+% 数据线汇聚 (左到右，无交叉)
+\draw[flow] (c00.east) to[out=0,in=160] (data.west);
+\draw[flow] (c01.east) to[out=0,in=-160] (data.west);
+
+% 片选与低位输入连接
+\draw[sel] (hi.east) -- node[above=2pt,font=\scriptsize\bfseries,text=themeamber] {字扩展：$32K/8K=4$ 组} (g0.west |- hi.east);
+\draw[flow] (lo.east) -- (addr.west);
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=16.8cm] at (0,0.85)
+  {\textbf{地址职责分层：}位扩展不增加地址深度，同一地址驱动多片同时输出/写入以拼宽数据；字扩展由更高位地址经译码器产生片选信号（$\overline{\text{CS}}$），在 4 个芯片组之间互斥选择。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=16.8cm,align=left] at (0,-0.2)
+  {禁止误读：$8K$ words 不等于 $8KB$。在本例中每个目标存储字为 16 bit（2 字节），所以一组 $8K\times 16$ 对应 $16KB$ 的系统字节编址跨度。};
+\end{tikzpicture}

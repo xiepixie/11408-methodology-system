@@ -322,27 +322,7 @@ $H$ 因锁直接等 $L$，$M$ 又抢占 $L$，使 $H$ 被无直接资源关系�
 \end{itemize}
 
 \begin{center}
-
-\begingroup
-\normalsize
-\begin{tikzpicture}[>=Stealth, node distance=1.6cm and 3.0cm]
-\tikzset{
-  box/.style={draw=mainblue, ultra thick, fill=softblue, rounded corners=3mm, align=center, minimum width=3.2cm, minimum height=1.1cm, font=\bfseries},
-  act/.style={draw=deeporange, ultra thick, fill=softorange, rounded corners=3mm, align=center, minimum width=3.0cm, minimum height=1.0cm, font=\small\bfseries}
-}
-\node[box] (sem) {信号量实体 $S$\\[3pt]\small\normalfont 许可计数器 Value};
-\node[box, right=3.5cm of sem] (queue) {阻塞等待队列\\[3pt]\small\normalfont Wait Queue (PCBs)};
-
-\node[act, above left=1.2cm and 1.2cm of sem] (p_op) {\code{P(S) / wait()}};
-\node[act, below left=1.2cm and 1.2cm of sem] (v_op) {\code{V(S) / signal()}};
-
-\draw[->, ultra thick, deepblue] (p_op) -- node[above=2pt, sloped, font=\small\bfseries] {$S > 0 \implies S--$} (sem);
-\draw[->, ultra thick, deepred] (p_op) -| node[above=4pt, font=\small\bfseries] {$S \le 0 \implies \text{当前线程入队阻塞 (Blocked)}$} (queue);
-
-\draw[->, ultra thick, deepblue] (v_op) -- node[below=2pt, sloped, font=\small\bfseries] {$S++$} (sem);
-\draw[->, ultra thick, deepgreen] (queue) |- node[below=4pt, font=\small\bfseries] {队列非空 $\implies$ 唤醒队首线程 (Ready)} (v_op);
-\end{tikzpicture}
-\endgroup
+\input{assets/src/semaphore_wait_queue_body.tikz}
 \end{center}
 
 \begin{corebox}[初值不是背出来的]
@@ -1157,6 +1137,10 @@ Hoare 语义的经典握手可压成：
 \endgroup
 
 \subsection{等待图与资源分配图}
+
+\begin{center}
+\input{assets/src/deadlock_rag_reduction_body.tikz}
+\end{center}
 
 分析死锁依赖时，不能仅看代码表面，必须区分两类依赖图：
 

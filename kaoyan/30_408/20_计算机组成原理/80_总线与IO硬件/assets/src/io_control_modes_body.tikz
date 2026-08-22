@@ -1,0 +1,84 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  colbox/.style={draw=themegray!60,rounded corners=5pt,fill=themefg!2!themebg,inner sep=8pt},
+  box/.style={draw=themegray,rounded corners=3pt,minimum width=3.4cm,minimum height=.78cm,align=center,fill=themebg},
+  cpu/.style={box,draw=themealert,fill=themealert!8!themebg,font=\scriptsize\bfseries,text=themealert},
+  dev/.style={box,draw=themecurve,fill=themecurve!8!themebg,font=\scriptsize\bfseries,text=themecurve},
+  dma/.style={box,draw=themeamber,fill=themeamber!10!themebg,font=\scriptsize\bfseries,text=themeamber},
+  mem/.style={box,draw=themegreen,fill=themegreen!8!themebg,font=\scriptsize\bfseries,text=themegreen},
+  flow/.style={->,line width=1.1pt,themecurve},
+  cpuflow/.style={->,line width=1.1pt,themealert},
+  dmaflow/.style={->,line width=1.1pt,themeamber},
+  memflow/.style={->,line width=1.1pt,themegreen},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {Polling、Interrupt、DMA：CPU 等待、搬运与通知责任的演进};
+\node[anchor=west,text=themegray,text width=16.8cm,align=left] at (0,8.0)
+  {三种方式都需要设备接口状态；演进核心是逐步解放 CPU，将“轮询等待”与“逐字搬运”从 CPU 卸载到专用硬件。};
+
+% ══════════════════════════════════════════════════════════════
+% ── 第 1 列：程序查询 (Polling / PIO) (x = 2.4) ──
+% ══════════════════════════════════════════════════════════════
+\node[font=\bfseries\normalsize,text=themealert] at (2.4,7.4) {1. 程序查询 (Polling)};
+\node[cpu] (p1) at (2.4,6.4) {CPU 循环读取 Status\\(Busy-waiting 盲等)};
+\node[dev] (p2) at (2.4,5.0) {I/O 接口 Device Ready};
+\node[cpu] (p3) at (2.4,3.6) {CPU 执行 Load/Store\\逐字搬运数据};
+\node[mem] (p4) at (2.4,2.2) {主存 Memory};
+
+\draw[cpuflow] (p1) -- node[right=2pt,font=\tiny\bfseries,text=themealert] {轮询} (p2);
+\draw[cpuflow] (p2) -- node[right=2pt,font=\tiny\bfseries,text=themealert] {就绪} (p3);
+\draw[cpuflow] (p3) -- node[right=2pt,font=\tiny\bfseries,text=themealert] {写入} (p4);
+
+% ══════════════════════════════════════════════════════════════
+% ── 第 2 列：程序中断 (Interrupt-driven) (x = 8.0) ──
+% ══════════════════════════════════════════════════════════════
+\node[font=\bfseries\normalsize,text=themecurve] at (8.0,7.4) {2. 程序中断 (Interrupt)};
+\node[cpu] (i1) at (8.0,6.4) {CPU 执行其他程序\\(无需轮询等待)};
+\node[dev] (i2) at (8.0,5.0) {设备就绪 发送 IRQ 中断};
+\node[cpu] (i3) at (8.0,3.6) {CPU 暂停并执行 ISR\\逐字搬运数据};
+\node[mem] (i4) at (8.0,2.2) {主存 Memory};
+
+\draw[flow] (i1) -- node[right=2pt,font=\tiny\bfseries,text=themecurve] {并发} (i2);
+\draw[flow] (i2) -- node[right=2pt,font=\tiny\bfseries,text=themecurve] {触发 ISR} (i3);
+\draw[cpuflow] (i3) -- node[right=2pt,font=\tiny\bfseries,text=themealert] {搬运} (i4);
+
+% ══════════════════════════════════════════════════════════════
+% ── 第 3 列：直接内存访问 (DMA) (x = 13.8) ──
+% ══════════════════════════════════════════════════════════════
+\node[font=\bfseries\normalsize,text=themeamber] at (13.8,7.4) {3. 直接内存访问 (DMA)};
+\node[cpu] (d1) at (13.8,6.4) {CPU 初始化 DMAC\\(首地址 / 块大小 / 控制)};
+\node[dma] (d2) at (13.8,5.0) {DMAC 申请总线并接管\\(周期挪用 / 停止 CPU)};
+
+% 硬件直接成块传输
+\node[box,draw=themeamber,fill=themeamber!6!themebg,minimum width=4.2cm] (d_data) at (13.8,3.6) {
+  \begin{tabular}{c}
+    \textbf{硬件直接成块搬运 (Burst/Cycle Steal)}\\
+    $\text{Device}\;\longleftrightarrow\;\text{硬件数据流}\;\longleftrightarrow\;\text{Memory}$
+  \end{tabular}
+};
+
+\node[cpu] (d3) at (13.8,2.2) {CPU 中断服务程序 (ISR)\\仅作传输完成收尾};
+
+\draw[dmaflow] (d1) -- node[right=2pt,font=\tiny\bfseries,text=themeamber] {启动} (d2);
+\draw[dmaflow] (d2) -- node[right=2pt,font=\tiny\bfseries,text=themeamber] {接管总线} (d_data);
+\draw[dmaflow] (d_data) -- node[right=2pt,font=\tiny\bfseries,text=themeamber] {整块传输完毕} (d3);
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=16.8cm] at (0,0.9)
+  {\textbf{责任分工对比：}\\
+   $\bullet$ \textbf{Polling}：CPU 承担“等待就绪”与“逐字搬运”全部开销（CPU 利用率极低）；\\
+   $\bullet$ \textbf{Interrupt}：解除 CPU 盲等，但每次 I/O 仍由 CPU ISR 逐字搬运，高频中断会引起巨大的上下文切换开销；\\
+   $\bullet$ \textbf{DMA}：整块数据由 DMAC 硬件在设备与内存间直传，CPU 仅介入“启动初始化”与“完成收尾”两次。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themeamber,text width=16.8cm,align=left] at (0,-0.2)
+  {概念区分：DREQ（设备向 DMAC 请求）$\ne$ HRQ/Bus Grant（DMAC 向 CPU 申请总线）$\ne$ IRQ（DMAC 向 CPU 发送完成中断）。};
+\end{tikzpicture}

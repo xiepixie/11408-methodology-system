@@ -1,0 +1,63 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  qbox/.style={draw=themegray,rounded corners=5pt,minimum width=11.2cm,minimum height=1.0cm,align=left,fill=themefg!2!themebg},
+  task/.style={draw=themecurve,rounded corners=2pt,minimum width=.9cm,minimum height=.6cm,align=center,fill=themecurve!12!themebg,font=\scriptsize\bfseries,text=themecurve},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themealert},
+  boost/.style={->,line width=1.1pt,themegreen,dashed},
+  cpu/.style={draw=themegreen,rounded corners=4pt,minimum width=4.5cm,minimum height=.78cm,align=center,fill=themegreen!10!themebg,font=\scriptsize\bfseries,text=themegreen},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.7) {MLFQ 多级反馈队列：通过运行历史反馈动态调整优先级};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.1)
+  {核心设计：新进程入顶层，短作业优先完成；用完时间片降级（惩罚 CPU 密集型）；I/O 主动让出保留优先级；周期性提升防止饥饿。};
+
+% ── 队列 0 (最高优先级) ──
+\node[qbox,anchor=west] (q0) at (3.2,6.7) {};
+\node[anchor=west,font=\scriptsize\bfseries,text=themecurve] at (3.4,6.7) {$Q_0$ (高优先级, $q_0 = 10\text{ms}$)};
+\node[task] (t0a) at (9.4,6.7) {Task A};
+\node[task] (t0b) at (10.6,6.7) {Task B};
+\node[font=\tiny\bfseries,text=themegreen,anchor=west] at (11.6,6.7) {$\Longleftarrow$ 新进程进入};
+
+% ── 队列 1 (中优先级) ──
+\node[qbox,anchor=west] (q1) at (3.2,5.3) {};
+\node[anchor=west,font=\scriptsize\bfseries,text=themeamber] at (3.4,5.3) {$Q_1$ (中优先级, $q_1 = 20\text{ms}$)};
+\node[task] (t1c) at (9.4,5.3) {Task C};
+\node[task] (t1d) at (10.6,5.3) {Task D};
+
+% ── 队列 2 (低优先级) ──
+\node[qbox,anchor=west] (q2) at (3.2,3.9) {};
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert] at (3.4,3.9) {$Q_2$ (低优先级, $q_2 = 40\text{ms}$ / FCFS)};
+\node[task] (t2e) at (9.4,3.9) {Task E};
+
+% 降级箭头 (右侧下行)
+\draw[flow] (14.6,6.3) to[out=-40,in=40] node[right=2pt,lbl,text=themealert] {用完 $q_0$ 降级} (14.6,5.7);
+\draw[flow] (14.6,4.9) to[out=-40,in=40] node[right=2pt,lbl,text=themealert] {用完 $q_1$ 降级} (14.6,4.3);
+
+% 周期提升箭头 (左侧上行)
+\draw[boost] (3.0,3.9) to[out=150,in=-150] node[pos=0.5,left=2pt,lbl,text=themegreen,align=right] {\textbf{周期性提升}\\(Priority Boost)} (3.0,6.7);
+
+% 调度执行
+\node[cpu] (cpunode) at (8.8,2.6) {CPU 严格优先调度：非空最高优先级队列};
+\draw[->,line width=1.1pt,themegreen] (8.8,3.35) -- (cpunode.north);
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,1.0)
+  {\textbf{MLFQ 四大黄金规则：}\\
+   1. \textbf{抢占原则}：若 $Priority(A) > Priority(B)$，运行 $A$；若 $Priority(A) = Priority(B)$，轮转运行；\\
+   2. \textbf{初始最高}：工作进入系统时，放在最高优先级队列（假设为短作业）；\\
+   3. \textbf{用完预算降级}：工作用完某一层的时间配额后，降低其优先级（自适应区分 I/O 密集与 CPU 密集）；\\
+   4. \textbf{周期性提升 (Priority Boost)}：经过一段时间 $S$，将系统中所有工作重新移到最高优先级队列，彻底解决饥饿。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.15)
+  {判题重点：I/O 型任务在时间片耗尽前主动让出 CPU，保留在当前高优先级队列，从而获得极低交互响应延迟。};
+\end{tikzpicture}

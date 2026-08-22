@@ -3,6 +3,8 @@
 \usepackage{amsmath,amssymb,mathtools,booktabs,tabularx,array,enumitem}
 \usepackage[most]{tcolorbox}
 \usepackage{xcolor,fancyhdr,hyperref,microtype,lastpage}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
@@ -132,6 +134,10 @@ Radix-2 Booth 用相邻位 $(Q_0,Q_{-1})$ 压缩连续的 1：$01$ 加 $M$，$10
 \]
 把一串加法变为边界处加/减。若题目使用更高基 Booth、不同位对次序或不同寄存器布局，先声明版本；“Booth 对所有输入都更快”不是稳定结论。
 
+\begin{center}
+\input{assets/src/booth_radix2_body.tikz}
+\end{center}
+
 \section{除法：商余关系是最终不变量}
 除法的稳定正确性条件是
 \[
@@ -177,6 +183,10 @@ x=(-1)^s(1.f)_2\,2^{E-Bias}.
 subnormal 使用 $0.f$ 和最小正常指数，提供渐进下溢；infinity 与 NaN 的传播、比较和异常细节以标准/题设为准。把整个 IEEE 754 编码称作“原码”会掩盖偏置阶码、隐藏位和特殊编码。
 
 相邻可表示数的绝对间距随指数增长，因此“大数精度更高”与“有效位数固定”不是一回事：有效相对精度近似稳定，但绝对间距变大。多数十进制小数在二进制中无限展开，输入编码时已经发生第一次舍入。
+
+\begin{center}
+\input{assets/src/ieee754_lattice_body.tikz}
+\end{center}
 
 \section{浮点运算链与舍入证据}
 加减法的生成链是
@@ -248,8 +258,10 @@ rounding & $\neq$ & truncation & 映射到最近/方向格点 vs 直接丢低位
 
 本节把所有表示与运算统一到同一条可检查链上。所有计算先经过
 \[
-\text{Representation}\to\text{Exact Operation}\to\text{Width Reduction}
-\to\text{Status / Error Evidence}\to\text{ISA-visible Result}.
+\begin{aligned}
+\text{Representation}&\to\text{Exact Operation}\to\text{Width Reduction}\\
+&\to\text{Status / Error Evidence}\to\text{ISA-visible Result}.
+\end{aligned}
 \]
 其中每个箭头都对应一个可以被题目追问的状态变化：进制转换改变的是书写表示，补码运算改变的是定长环上的元素，ALU 产生的是低位结果和候选标志，浮点运算改变的是非均匀格点上的近似，校验码则改变合法码字集合的距离。
 
@@ -460,7 +472,7 @@ Endian 只规定多字节对象的字节怎样映射到递增地址，不改变�
 进制/编码 & 位串、解释函数、可表示集合 & typed value、范围、比较顺序 & 先声明格式再读位权 \\
 补码/ALU & 定长环、低位结果、$C/V/Z/N$ & 结果与候选状态位 & 分开 unsigned/signed 判定 \\
 乘除迭代 & 部分积/余数、商、附加位 & 每拍写使能和移位需求 & 写循环不变量并回算 \\
-浮点 & sign/exponent/fraction、特殊类 & 有效数、阶码、GRS、异常候选 & 分类后再对阶/舍入 \\
+浮点 & sign / exponent / fraction、特殊类 & 有效数、阶码、GRS、异常候选 & 分类后再对阶/舍入 \\
 校验码 & 合法码字集合、syndrome & 错误检测/定位结果 & 用码距或多项式余数校验 \\
 C 转换 & 源类型、目标类型、位模式 & 扩展/截断控制与访存宽度 & 截后再扩验证 \\
 大小端/对齐 & 地址—字节映射与合法边界 & load/store 字节选择、事务拆分 & 画地址表，不凭字符串顺序猜 \\

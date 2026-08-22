@@ -1,0 +1,43 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  reg/.style={draw=themegray,rounded corners=2pt,fill=themefg!3!themebg,minimum height=8mm,align=center},
+  act/.style={draw=themecurve,rounded corners=3pt,fill=themecurve!9!themebg,inner xsep=6pt,inner ysep=5pt,align=center},
+  warn/.style={draw=themealert,rounded corners=3pt,fill=themealert!8!themebg,inner xsep=6pt,inner ysep=5pt,align=center},
+  note/.style={draw=themegray,rounded corners=3pt,fill=themefg!3!themebg,inner xsep=6pt,inner ysep=5pt,align=left},
+  flow/.style={->,line width=1.05pt,themecurve},
+  loop/.style={->,line width=1pt,themeamber}
+}
+\node[anchor=west,font=\bfseries\large] at (0,8.25) {Radix-2 Booth：附加位保存“边界”，联合算术右移推进下一拍};
+\node[anchor=west,text=themegray] at (0,7.75) {本图固定经典补码 Booth：观察 $(Q_0,Q_{-1})$；不同教材若改变寄存器布局或先后顺序，应按题设重建。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,6.95) {A. 相邻位只编码四种边界事件};
+\node[act,anchor=west,minimum width=2.7cm] at (0,6.1) {$00$\\不加减};
+\node[act,anchor=west,minimum width=2.7cm] at (3.0,6.1) {$01$\\$A\leftarrow A+M$};
+\node[warn,anchor=west,minimum width=2.7cm] at (6.0,6.1) {$10$\\$A\leftarrow A-M$};
+\node[act,anchor=west,minimum width=2.7cm] at (9.0,6.1) {$11$\\不加减};
+\node[note,anchor=west,text width=12cm] at (0,5.1) {连续的 1 不逐位累加，而由“进入 1 段”和“离开 1 段”两个边界事件表示。例如 $00111100_2=01000000_2-00000100_2$。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,4.15) {B. 一拍状态机：判断 $\to$ 可选加减 $\to$ 联合算术右移};
+\node[reg,minimum width=3.0cm] (A) at (1.6,3.15) {$A$\\部分积};
+\node[reg,minimum width=3.0cm] (Q) at (4.95,3.15) {$Q$\\乘数/低半部};
+\node[reg,minimum width=1.3cm] (qm) at (7.35,3.15) {$Q_{-1}$};
+\node[act,minimum width=2.6cm] (alu) at (10.1,3.15) {加/减器\\$A\pm M$};
+\draw[flow] (Q.south) |- ++(0,-.55) -| node[pos=.22,below] {读 $Q_0$} (alu.south west);
+\draw[flow] (qm.south) |- ++(0,-.85) -| node[pos=.30,below] {读 $Q_{-1}$} (alu.south);
+\draw[flow] (alu.west) -- node[above] {更新 $A$} (A.east);
+\node[anchor=west,text=themeamber,font=\bfseries] at (0,1.65) {随后把 $(A,Q,Q_{-1})$ 当作一个联合状态整体算术右移：};
+\draw[loop] (A.north west) to[bend left=24] node[above] {符号位复制} (A.north east);
+\draw[loop] (A.south east) to[bend right=18] node[below] {$A_0\to Q_{n-1}$} (Q.south west);
+\draw[loop] (Q.south east) to[bend right=18] node[below] {$Q_0\to Q_{-1}$} (qm.south west);
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,.55) {C. 循环不变量与独立验算};
+\node[note,anchor=west,text width=5.9cm] at (0,-.55) {每拍只推进一个乘数位位置；$Q_{-1}$ 保存上一拍最低位，使当前 $(Q_0,Q_{-1})$ 能识别 0/1 段边界。循环共做题设规定的 $n$ 拍。};
+\node[note,anchor=west,text width=5.9cm] at (6.4,-.55) {结束后 $(A,Q)$ 应组成足宽补码乘积。先写十进制数学积，再反向编码为 $2n$ 位，是发现加减号、符号扩展或移位边界错误的独立检查。};
+\node[anchor=west,text=themegray] at (0,-1.75) {禁止误读：Booth 改变的是部分积生成方式，不保证所有乘数都减少操作；交替位型可能产生很多边界事件。};
+\end{tikzpicture}

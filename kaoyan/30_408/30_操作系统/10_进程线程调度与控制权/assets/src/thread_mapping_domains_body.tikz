@@ -1,0 +1,116 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  panel/.style={draw=themegray!50,rounded corners=6pt,fill=themefg!2!themebg,inner sep=8pt},
+  th_u/.style={draw=themeamber,rounded corners=2pt,minimum width=.75cm,minimum height=.6cm,align=center,fill=themeamber!10!themebg,font=\scriptsize\bfseries,text=themeamber},
+  th_k/.style={draw=themecurve,rounded corners=2pt,minimum width=.75cm,minimum height=.6cm,align=center,fill=themecurve!10!themebg,font=\scriptsize\bfseries,text=themecurve},
+  cpu/.style={draw=themegray,rounded corners=3pt,minimum width=1.1cm,minimum height=.65cm,align=center,fill=themebg,font=\scriptsize\bfseries},
+  flow/.style={->,line width=1.05pt,themecurve},
+  uflow/.style={->,line width=1.05pt,themeamber},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {ULT / KLT 映射模型：多对一、一对一与多对多架构对照};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.0)
+  {核心差异：用户级线程 (ULT) 属于线程库管理，内核不可见；内核级线程 (KLT) 才是操作系统调度的独立实体。};
+
+% ══════════════════════════════════════════════════════════════
+% ── 栏 1：多对一模型 (Many-to-One, M:1) (x = 0 .. 5.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(0,2.0)}]
+  \draw[panel] (0,0) rectangle (5.4,5.6);
+  \node[font=\bfseries\normalsize,text=themealert] at (2.7,5.1) {多对一模型 (M:1)};
+  
+  \node[th_u] (u11) at (1.3,4.0) {$U_1$};
+  \node[th_u] (u12) at (2.7,4.0) {$U_2$};
+  \node[th_u] (u13) at (4.1,4.0) {$U_3$};
+  \node[font=\tiny\bfseries,text=themeamber] at (2.7,4.6) {用户级线程库 (ULT)};
+
+  \node[th_k] (k11) at (2.7,2.5) {$K_1$};
+  \node[font=\tiny\bfseries,text=themecurve] at (2.7,1.9) {单内核实体 (KLT)};
+
+  \node[cpu] (c11) at (2.7,0.8) {CPU 0};
+
+  \draw[uflow] (u11.south) -- (k11.north west);
+  \draw[uflow] (u12.south) -- (k11.north);
+  \draw[uflow] (u13.south) -- (k11.north east);
+  \draw[flow] (k11) -- (c11);
+
+  \node[anchor=north,font=\scriptsize\bfseries,text=themealert,align=center] at (2.7,-0.15)
+    {一个 ULT 阻塞 $\implies$ 整个进程阻塞\\无多核物理并发能力};
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 栏 2：一对一模型 (One-to-One, 1:1) (x = 6.0 .. 11.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(6.0,2.0)}]
+  \draw[panel] (0,0) rectangle (5.4,5.6);
+  \node[font=\bfseries\normalsize,text=themegreen] at (2.7,5.1) {一对一模型 (1:1 / 主流)};
+  
+  \node[th_u] (u21) at (1.3,4.0) {$U_1$};
+  \node[th_u] (u22) at (2.7,4.0) {$U_2$};
+  \node[th_u] (u23) at (4.1,4.0) {$U_3$};
+  \node[font=\tiny\bfseries,text=themeamber] at (2.7,4.6) {每个用户线程对应独立内核线程};
+
+  \node[th_k] (k21) at (1.3,2.5) {$K_1$};
+  \node[th_k] (k22) at (2.7,2.5) {$K_2$};
+  \node[th_k] (k23) at (4.1,2.5) {$K_3$};
+
+  \node[cpu] (c21) at (1.8,0.8) {CPU 0};
+  \node[cpu] (c22) at (3.6,0.8) {CPU 1};
+
+  \draw[uflow] (u21) -- (k21);
+  \draw[uflow] (u22) -- (k22);
+  \draw[uflow] (u23) -- (k23);
+  \draw[flow] (k21) -- (c21);
+  \draw[flow] (k22) -- (c21);
+  \draw[flow] (k23) -- (c22);
+
+  \node[anchor=north,font=\scriptsize\bfseries,text=themegreen,align=center] at (2.7,-0.15)
+    {单线程阻塞不影响同进程其他线程\\真正实现多核物理并行};
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 栏 3：多对多模型 (Many-to-Many, M:N) (x = 12.0 .. 17.4) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(12.0,2.0)}]
+  \draw[panel] (0,0) rectangle (5.4,5.6);
+  \node[font=\bfseries\normalsize,text=themeamber] at (2.7,5.1) {多对多模型 (M:N)};
+  
+  \node[th_u] (u31) at (0.9,4.0) {$U_1$};
+  \node[th_u] (u32) at (2.1,4.0) {$U_2$};
+  \node[th_u] (u33) at (3.3,4.0) {$U_3$};
+  \node[th_u] (u34) at (4.5,4.0) {$U_4$};
+  \node[font=\tiny\bfseries,text=themeamber] at (2.7,4.6) {$M$ 个 ULT 复用 $N$ 个 KLT 线程池};
+
+  \node[th_k] (k31) at (1.8,2.5) {$K_1$};
+  \node[th_k] (k32) at (3.6,2.5) {$K_2$};
+
+  \node[cpu] (c31) at (1.8,0.8) {CPU 0};
+  \node[cpu] (c32) at (3.6,0.8) {CPU 1};
+
+  \draw[uflow] (u31) -- (k31);
+  \draw[uflow] (u32) -- (k31);
+  \draw[uflow] (u33) -- (k32);
+  \draw[uflow] (u34) -- (k32);
+  \draw[flow] (k31) -- (c31);
+  \draw[flow] (k32) -- (c32);
+
+  \node[anchor=north,font=\scriptsize\bfseries,text=themeamber,align=center] at (2.7,-0.15)
+    {兼具 ULT 极速切换与 KLT 并发优势\\但两级调度协作极其复杂};
+\end{scope}
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,0.85)
+  {\textbf{核心法则：物理并行度上限}为 $P_{\text{actual}} \le \min(U_{\text{runnable}}, K_{\text{runnable}}, \text{CPU}_{\text{available}})$。即使用户态创建了 1000 个线程，如果只映射到 1 个内核实体，在任何时刻最多也只能有 1 个线程在 1 个 CPU 上物理运行。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.2)
+  {禁止误读：用户级线程切换仅在用户空间修改寄存器和栈指针，不陷入内核（零系统调用开销）；而内核级线程切换必须经过内核调度。};
+\end{tikzpicture}

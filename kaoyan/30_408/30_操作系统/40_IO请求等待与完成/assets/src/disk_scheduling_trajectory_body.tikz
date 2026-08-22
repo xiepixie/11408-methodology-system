@@ -1,0 +1,83 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  trk/.style={draw=themegray,circle,minimum size=.65cm,fill=themefg!4!themebg,font=\tiny\bfseries},
+  cur/.style={trk,draw=themealert,fill=themealert!15!themebg,font=\tiny\bfseries,text=themealert},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow_sstf/.style={->,line width=1.1pt,themecurve},
+  flow_scan/.style={->,line width=1.1pt,themeamber},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.8) {磁盘调度算法：SSTF、SCAN（电梯）、LOOK 磁头寻道轨迹对比};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.2)
+  {例题设定：磁道范围 $0 \sim 199$，当前磁头位置 $80$。磁道请求序列：$\{18, 45, 65, 95, 130, 175\}$。磁头初始向磁道增加方向移动。};
+
+% ══════════════════════════════════════════════════════════════
+% ── Part A: SSTF (最短寻道时间优先) (y = 4.6 .. 7.5) ──
+% ══════════════════════════════════════════════════════════════
+\node[font=\bfseries\normalsize,text=themecurve,anchor=west] at (0,7.5) {A. SSTF (最短寻道时间优先)：贪心选择最近磁道，易导致远端磁道“饥饿”};
+
+\draw[themegray,line width=0.8pt] (1.0,6.8) -- (16.5,6.8);
+\foreach \x/\t in {1.0/0, 2.4/18, 4.5/45, 6.06/65, 7.23/80, 8.4/95, 11.12/130, 14.63/175, 16.5/199} {
+  \draw[themegray] (\x,6.7) -- (\x,6.9);
+  \node[font=\tiny,above=1pt,text=themegray] at (\x,6.9) {\t};
+}
+
+\node[cur] (s_80) at (7.23,5.9) {80};
+\node[trk] (s_65) at (6.06,5.9) {65};
+\node[trk] (s_45) at (4.5,5.9) {45};
+\node[trk] (s_18) at (2.4,5.9) {18};
+\node[trk] (s_95) at (8.4,5.9) {95};
+\node[trk] (s_130) at (11.12,5.9) {130};
+\node[trk] (s_175) at (14.63,5.9) {175};
+
+\draw[flow_sstf] (s_80.north) to[out=135,in=45] node[above=1pt,lbl,text=themecurve] {15} (s_65.north);
+\draw[flow_sstf] (s_65.north) to[out=135,in=45] node[above=1pt,lbl,text=themecurve] {20} (s_45.north);
+\draw[flow_sstf] (s_45.north) to[out=135,in=45] node[above=1pt,lbl,text=themecurve] {27} (s_18.north);
+\draw[flow_sstf] (s_18.south) to[out=-20,in=-160] node[pos=0.5,below=1pt,lbl,text=themecurve] {77} (s_95.south);
+\draw[flow_sstf] (s_95.north) to[out=45,in=135] node[above=1pt,lbl,text=themecurve] {35} (s_130.north);
+\draw[flow_sstf] (s_130.north) to[out=45,in=135] node[above=1pt,lbl,text=themecurve] {45} (s_175.north);
+
+\node[anchor=west,font=\tiny\bfseries,text=themecurve] at (0,4.1)
+  {SSTF 访问序列：$80 \to 65 \to 45 \to 18 \to 95 \to 130 \to 175$。总寻道长度 $= 15 + 20 + 27 + 77 + 35 + 45 = 219$。};
+
+% ══════════════════════════════════════════════════════════════
+% ── Part B: SCAN vs LOOK 轨迹 (y = 1.0 .. 3.6) ──
+% ══════════════════════════════════════════════════════════════
+\node[font=\bfseries\normalsize,text=themeamber,anchor=west] at (0,3.5) {B. SCAN（电梯算法）vs LOOK：区别在于“是否必须到达物理尽头 199”};
+
+\draw[themegray,line width=0.8pt] (1.0,2.8) -- (16.5,2.8);
+\foreach \x/\t in {1.0/0, 2.4/18, 4.5/45, 6.06/65, 7.23/80, 8.4/95, 11.12/130, 14.63/175, 16.5/199} {
+  \draw[themegray] (\x,2.7) -- (\x,2.9);
+  \node[font=\tiny,above=1pt,text=themegray] at (\x,2.9) {\t};
+}
+
+% SCAN 轨迹
+\draw[flow_scan] (7.23,2.3) -- (16.5,2.3)
+  node[pos=0.5,above=1pt,lbl,text=themeamber] {SCAN 向外扫至物理端点 199 ($80 \to 95 \to 130 \to 175 \to 199$)};
+\draw[flow_scan] (16.5,1.8) -- (2.4,1.8)
+  node[pos=0.5,below=1pt,lbl,text=themeamber] {折返向内扫 ($199 \to 65 \to 45 \to 18$)};
+
+% LOOK 轨迹标注
+\node[anchor=west,font=\tiny\bfseries,text=themegreen] at (0,1.1)
+  {LOOK 优化：到达最外侧请求磁道 $175$ 即可直接折返，无需移动到物理端点 $199$。总寻道长度 $= (175 - 80) + (175 - 18) = 252$。};
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,-0.1)
+  {\textbf{四大磁盘调度算法对比精要：}\\
+   1. \textbf{FCFS}：公平无饥饿，但平均寻道距离极长；\\
+   2. \textbf{SSTF}：局部最优贪心，可能导致远离磁头的请求永久饥饿；\\
+   3. \textbf{SCAN / LOOK}：单向扫描到底/到最后请求再折返，消除饥饿；\\
+   4. \textbf{C-SCAN / C-LOOK (循环扫描)}：单向提供服务，返回时不响应请求，提供更均匀的等待时间分布。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-1.2)
+  {判题陷阱：题目若未明确说明到达物理边界（0 或 199），标准考研题目默认为 SCAN 到达物理端点，LOOK 到达最远请求点。};
+\end{tikzpicture}

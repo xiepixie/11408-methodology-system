@@ -669,7 +669,7 @@ def build_manifest() -> dict:
     return manifest
 
 
-def main():
+def build_manifests() -> dict:
     PORTAL_DIR.mkdir(parents=True, exist_ok=True)
     data_dir = PORTAL_DIR / "data"
     data_dir.mkdir(parents=True, exist_ok=True)
@@ -686,6 +686,14 @@ def main():
         f.write("window.__KAOYAN_MANIFEST__ = ")
         json.dump(manifest, f, ensure_ascii=False, indent=2)
         f.write(";\n")
+
+    return manifest
+
+
+def main():
+    manifest = build_manifests()
+    data_dir = PORTAL_DIR / "data"
+    js_manifest_path = data_dir / "manifest.js"
 
     print(f"✅ Portal manifest successfully generated at:")
     print(f"   - JSON: {MANIFEST_PATH}")

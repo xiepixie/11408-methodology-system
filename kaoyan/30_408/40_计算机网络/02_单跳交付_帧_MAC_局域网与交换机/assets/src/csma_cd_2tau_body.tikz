@@ -1,0 +1,66 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  host/.style={draw=themecurve,rounded corners=4pt,minimum width=2.4cm,minimum height=.75cm,align=center,fill=themecurve!10!themebg,font=\scriptsize\bfseries,text=themecurve},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow_a/.style={->,line width=1.1pt,themecurve},
+  flow_jam/.style={->,line width=1.1pt,themealert},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.8) {CSMA/CD 争用期 $2\tau$ 与最小帧长：边发边听与最坏碰撞检测时延};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.2)
+  {物理场景：半双工总线，单向最远传播时延为 $\tau$。主机 A 在 $t=0$ 开始发帧，主机 B 在信号到达前一瞬 $t=\tau-\epsilon$ 开始发送。};
+
+% ── 主机位置 (x = 3.0, x = 14.5) ──
+\node[host] (ha) at (3.0,7.1) {主机 Station A};
+\node[host] (hb) at (14.5,7.1) {主机 Station B};
+
+% ── 时间线坐标轴 ──
+\draw[->,line width=0.8pt,themegray] (1.5,7.1) -- (1.5,2.4) node[below=2pt,font=\tiny\bfseries] {时间 $t$ 下行};
+\draw[themegray,dashed] (3.0,6.6) -- (3.0,2.6);
+\draw[themegray,dashed] (14.5,6.6) -- (14.5,2.6);
+
+% ── 关键时序事件 ──
+% t = 0
+\node[font=\tiny\bfseries,text=themecurve,anchor=east] at (1.4,6.4) {$t = 0$};
+\node[font=\tiny\bfseries,text=themecurve,anchor=west] at (3.2,6.4) {A 开始发送数据帧};
+
+% A 的信号向右传播
+\draw[flow_a] (3.0,6.2) -- (14.5,4.6)
+  node[pos=0.5,above=2pt,lbl,text=themecurve] {A 发送的前导信号单向传播（历时 $\tau$）};
+
+% t = tau - eps
+\node[font=\tiny\bfseries,text=themeamber,anchor=west] at (14.7,4.8) {$t = \tau - \epsilon$ (B 误判信道空闲并发送)};
+\node[font=\tiny\bfseries,text=themealert,anchor=west] at (14.7,4.4) {$t = \tau$ (信号相撞，B 立即检测出碰撞并停止)};
+
+% 碰撞信号向左返回
+\draw[flow_jam] (14.5,4.4) -- (3.0,2.8)
+  node[pos=0.5,below=2pt,lbl,text=themealert] {碰撞能量 / 强化干扰信号 (Jam) 向回传播（历时 $\tau$）};
+
+% t = 2tau
+\node[font=\tiny\bfseries,text=themealert,anchor=east] at (1.4,2.8) {$t = 2\tau$};
+\node[font=\tiny\bfseries,text=themealert,anchor=west] at (3.2,2.8) {A 终于检测到碰撞！若此时 A 已发完帧，则无法感知失败};
+
+% ── 争用期约束不等式 ──
+\node[draw=themeamber,rounded corners=4pt,fill=themeamber!8!themebg,inner xsep=10pt,inner ysep=6pt,anchor=west] at (4.0,1.7)
+  {\Large $\displaystyle \text{帧发送时延 } T_{\text{frame}} = \frac{L_{\text{min}}}{R} \ge 2\tau \iff L_{\text{min}} \ge 2\tau \cdot R = 2 \cdot \frac{D}{v} \cdot R$};
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,-0.2)
+  {\textbf{CSMA/CD 四大核心判题底线：}\\
+   1. \textbf{争用期 (RTT = $2\tau$)}：端到端往返传播时延。经历 $2\tau$ 仍未检测到碰撞，方可确定本次发送成功；\\
+   2. \textbf{最小帧长约束}：若帧长小于 $L_{\text{min}}$，发送端在收到碰撞前已发完最后一 bit 并清空发送缓冲区，导致“静默丢包且无法重传”；\\
+   3. \textbf{截断二进制指数退避 (BEB)}：退避时间 $r \times 2\tau$，$r \in [0, 2^k - 1]$，其中 $k = \min(\text{重传次数}, 10)$；重传 16 次失败则报错放弃；\\
+   4. \textbf{以太网经典常数}：$10\text{Mbps}$ 传统以太网取争用期 $51.2\mu\text{s}$，最小帧长为 $51.2\mu\text{s} \times 10\text{Mbps} = 512\text{bit} = 64\text{B}$。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-1.3)
+  {禁止误读：全双工以太网（如交换机点对点链路）无碰撞介质，不使用 CSMA/CD 协议；无线网络由于隐藏站与能量衰减使用 CSMA/CA 协议。};
+\end{tikzpicture}

@@ -4,75 +4,159 @@
 \providecolor{themecurve}{HTML}{1D63B8}
 \providecolor{themealert}{HTML}{C53030}
 \providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
 \begin{tikzpicture}[>=Stealth,font=\small,color=themefg,text=themefg]
 \tikzset{
-  cell/.style={draw=themegray,minimum width=8.2mm,minimum height=8.2mm,inner sep=0pt,font=\small},
-  hit/.style={cell,draw=themecurve,fill=themecurve!10!themebg},
-  border/.style={cell,draw=themeamber,fill=themeamber!12!themebg},
-  miss/.style={cell,draw=themealert,fill=themealert!10!themebg},
-  note/.style={rounded corners=3pt,draw=themegray,fill=themefg!3!themebg,inner xsep=7pt,inner ysep=5pt,align=left}
+  cell/.style={draw=themegray!60,minimum width=9.2mm,minimum height=8.4mm,inner sep=0pt,font=\normalsize},
+  idx/.style={font=\scriptsize,text=themegray},
+  matched/.style={cell,draw=themecurve!70,fill=themecurve!10!themebg},
+  border/.style={cell,draw=themecurve,fill=themecurve!22!themebg,font=\bfseries\normalsize,text=themecurve},
+  miss/.style={cell,draw=themealert,fill=themealert!18!themebg,font=\bfseries\normalsize,text=themealert},
+  nextcmp/.style={cell,draw=themegreen,fill=themegreen!18!themebg,font=\bfseries\normalsize,text=themegreen},
+  panel/.style={rounded corners=6pt,draw=themegray!40,fill=themefg!2!themebg},
+  badge/.style={rounded corners=3pt,font=\scriptsize\bfseries,inner xsep=6pt,inner ysep=3.5pt}
 }
 
-\node[anchor=west,font=\bfseries\large] at (0,6.5) {KMP 失配回退：保留已知相等部分，主串指针不回退};
-\node[anchor=west,text=themegray] at (0,5.95)
-  {例：$T=\texttt{abababaca}$，$P=\texttt{ababaca}$。在 $i=5,j=5$ 处，$T[i]=\texttt b\neq\texttt c=P[j]$。};
+% ── 全局主标题 ──
+\node[anchor=west,font=\bfseries\Large] at (0,10.6) {KMP 失配回退：复用最长相等前后缀，主串指针不回退};
+\node[anchor=west,font=\small,text=themegray] at (0,10.05)
+  {母题设定：主串 $T = \texttt{abababaca}$，模式串 $P = \texttt{ababaca}$。};
 
-\node[anchor=east,font=\bfseries] at (1.35,4.75) {主串 $T$};
-\foreach \x/\ch in {0/a,1/b,2/a,3/b,4/a,5/b,6/a,7/c,8/a}{
-  \pgfmathsetmacro{\xx}{2.0+0.82*\x}
-  \node[cell] (t\x) at (\xx,4.75) {\texttt{\ch}};
-  \node[font=\scriptsize,text=themegray] at (\xx,5.25) {\x};
-}
-\node[draw=themealert,rounded corners=1pt,fit=(t5),inner sep=1.5pt] {};
-\node[anchor=west,font=\scriptsize,text=themealert] at (10.05,4.75) {$i=5$};
+% ══════════════════════════════════════════════════════════════
+% ── 阶段一面板：失配发生与前后缀识别 (y = 5.4 .. 9.6) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(0,5.4)}]
+  % 面板背景
+  \filldraw[panel] (-0.3,-0.3) rectangle (19.6,4.1);
+  
+  % 面板标题与状态
+  \node[anchor=west,font=\bfseries\normalsize,text=themecurve] at (0.3,3.55)
+    {阶段一：在 $i=5, j=5$ 处失配 $\Longrightarrow$ 提取已匹配段的最长相等真前后缀};
+  
+  % 1. 主串 T (y = 2.4)
+  \node[anchor=east,font=\bfseries] at (1.4,2.4) {主串 $T$};
+  \foreach \x/\ch in {0/a,1/b,2/a,3/b,4/a,5/b,6/a,7/c,8/a}{
+    \pgfmathsetmacro{\xx}{1.9 + 0.95*\x}
+    \ifnum\x<2
+      \node[matched] (t1\x) at (\xx,2.4) {\texttt{\ch}};
+    \else
+      \ifnum\x<5
+        \node[border] (t1\x) at (\xx,2.4) {\texttt{\ch}};
+      \else
+        \ifnum\x=5
+          \node[miss] (t1\x) at (\xx,2.4) {\texttt{\ch}};
+        \else
+          \node[cell] (t1\x) at (\xx,2.4) {\texttt{\ch}};
+        \fi
+      \fi
+    \fi
+    \node[idx] at (\xx,2.95) {\x};
+  }
+  \node[badge,draw=themealert,text=themealert,anchor=west] at (10.8,2.4) {$i=5$（失配扫描点）};
 
-\node[anchor=east,font=\bfseries] at (1.35,3.55) {失配前 $P$};
-\foreach \x/\ch in {0/a,1/b,2/a,3/b,4/a,5/c,6/a}{
-  \pgfmathsetmacro{\xx}{2.0+0.82*\x}
-  \ifnum\x<5
+  % 2. 模式串 P (y = 0.95)
+  \node[anchor=east,font=\bfseries] at (1.4,0.95) {模式串 $P$};
+  \foreach \x/\ch in {0/a,1/b,2/a,3/b,4/a,5/c,6/a}{
+    \pgfmathsetmacro{\xx}{1.9 + 0.95*\x}
+    \ifnum\x<2
+      \node[matched] (p1\x) at (\xx,0.95) {\texttt{\ch}};
+    \else
+      \ifnum\x<5
+        \node[border] (p1\x) at (\xx,0.95) {\texttt{\ch}};
+      \else
+        \ifnum\x=5
+          \node[miss] (p1\x) at (\xx,0.95) {\texttt{\ch}};
+        \else
+          \node[cell] (p1\x) at (\xx,0.95) {\texttt{\ch}};
+        \fi
+      \fi
+    \fi
+  }
+  \node[badge,draw=themealert,text=themealert,anchor=west] at (10.8,0.95) {$j=5$（$T[5]\neq P[5]$）};
+
+  % 失配红线
+  \draw[themealert,line width=1.4pt] (t15.south) -- node[fill=themebg,inner sep=2pt,font=\scriptsize\bfseries,text=themealert]{$\neq$} (p15.north);
+
+  % 前缀与后缀标注
+  \draw[themecurve,line width=0.8pt,decorate,decoration={brace,amplitude=3pt}] (1.45,1.48) -- (4.25,1.48)
+    node[midway,above=3pt,font=\tiny\bfseries,text=themecurve] {最长真前缀 $P[0..2]=\texttt{aba}$};
+  \draw[themecurve,line width=0.8pt,decorate,decoration={brace,amplitude=3pt,mirror}] (3.35,0.42) -- (6.15,0.42)
+    node[midway,below=3pt,font=\tiny\bfseries,text=themecurve] {最长真后缀 $P[2..4]=\texttt{aba}$};
+
+  % 右侧说明
+  \node[anchor=north west,align=left,font=\scriptsize,text=themefg] at (14.2,2.6)
+    {$\bullet$ 已匹配段：\texttt{ababa}（长度 5）；\\[1.5mm]
+     $\bullet$ 最长相等真前后缀：\texttt{aba}（长度 $k=3$）；\\[1.5mm]
+     $\bullet$ 关键等式：$P[0..2] = P[2..4] = T[2..4]$。};
+\end{scope}
+
+% ── 中间过渡条 (y = 4.7) ──
+\draw[->,line width=1.5pt,themeamber] (5.7,5.0) -- (5.7,4.3);
+\node[anchor=west,font=\small\bfseries,text=themeamber] at (6.0,4.65)
+  {模式串向右滑动 $5 - 3 = 2$ 格 $\;\Longrightarrow\;$ 指针更新：$j\leftarrow next[5]=3$，主串 $i=5$ 保持不动};
+
+% ══════════════════════════════════════════════════════════════
+% ── 阶段二面板：滑动对齐与下一拍比对 (y = 0.0 .. 4.2) ──
+% ══════════════════════════════════════════════════════════════
+\begin{scope}[shift={(0,0.0)}]
+  % 面板背景
+  \filldraw[panel] (-0.3,-0.3) rectangle (19.6,4.1);
+  
+  % 面板标题与状态
+  \node[anchor=west,font=\bfseries\normalsize,text=themegreen] at (0.3,3.55)
+    {阶段二：复用公共前缀天然对齐 $\Longrightarrow$ 直接从 $T[5]$ 与 $P[3]$ 恢复比对};
+
+  % 1. 主串 T (y = 2.4)
+  \node[anchor=east,font=\bfseries] at (1.4,2.4) {主串 $T$};
+  \foreach \x/\ch in {0/a,1/b,2/a,3/b,4/a,5/b,6/a,7/c,8/a}{
+    \pgfmathsetmacro{\xx}{1.9 + 0.95*\x}
     \ifnum\x>1
-      \node[border] (p\x) at (\xx,3.55) {\texttt{\ch}};
+      \ifnum\x<5
+        \node[border] (t2\x) at (\xx,2.4) {\texttt{\ch}};
+      \else
+        \ifnum\x=5
+          \node[nextcmp] (t2\x) at (\xx,2.4) {\texttt{\ch}};
+        \else
+          \node[cell] (t2\x) at (\xx,2.4) {\texttt{\ch}};
+        \fi
+      \fi
     \else
-      \node[hit] (p\x) at (\xx,3.55) {\texttt{\ch}};
+      \node[cell] (t2\x) at (\xx,2.4) {\texttt{\ch}};
     \fi
-  \else
-    \ifnum\x=5
-      \node[miss] (p\x) at (\xx,3.55) {\texttt{\ch}};
+    \node[idx] at (\xx,2.95) {\x};
+  }
+  \node[badge,draw=themegreen,text=themegreen,anchor=west] at (10.8,2.4) {$i=5$（保持不退）};
+
+  % 2. 回退后 P (y = 0.95, 右移 2 格，起始于 x = 2)
+  \node[anchor=east,font=\bfseries] at (1.4,0.95) {对齐后 $P$};
+  \foreach \x/\ch in {0/a,1/b,2/a,3/b,4/a,5/c,6/a}{
+    \pgfmathsetmacro{\xx}{3.8 + 0.95*\x}
+    \ifnum\x<3
+      \node[border] (p2\x) at (\xx,0.95) {\texttt{\ch}};
     \else
-      \node[cell] (p\x) at (\xx,3.55) {\texttt{\ch}};
+      \ifnum\x=3
+        \node[nextcmp] (p2\x) at (\xx,0.95) {\texttt{\ch}};
+      \else
+        \node[cell] (p2\x) at (\xx,0.95) {\texttt{\ch}};
+      \fi
     \fi
-  \fi
-}
-\node[anchor=west,font=\scriptsize,text=themealert] at (10.05,3.55) {$j=5$};
-\node[anchor=west,font=\scriptsize,text=themeamber] at (2.0,2.92)
-  {已匹配的 \texttt{ababa} 中，最长真前后缀是 \texttt{aba}：前缀 $P[0..2]=$ 后缀 $P[2..4]$。};
+  }
+  \node[badge,draw=themegreen,text=themegreen,anchor=west] at (10.8,0.95) {$j=3$（下一比对）};
 
-\draw[->,line width=1.1pt,themeamber] (6.25,2.65) -- node[right,font=\scriptsize,text=themeamber] {$j\leftarrow next[5]=3$} (6.25,1.95);
+  % 垂直重合区域虚线框
+  \draw[themecurve,dashed,line width=0.9pt,rounded corners=2pt] (3.35,0.45) rectangle (6.15,2.85);
+  \node[font=\tiny\bfseries,text=themecurve,anchor=north] at (4.75,0.40) {$\texttt{aba}$ 天然对齐（无需重比 $\checkmark$）};
 
-\node[anchor=east,font=\bfseries] at (1.35,1.45) {回退后 $P$};
-\foreach \x/\ch in {0/a,1/b,2/a,3/b,4/a,5/c,6/a}{
-  \pgfmathsetmacro{\xx}{3.64+0.82*\x}
-  \ifnum\x<3
-    \node[border] (q\x) at (\xx,1.45) {\texttt{\ch}};
-  \else
-    \ifnum\x=3
-      \node[hit] (q\x) at (\xx,1.45) {\texttt{\ch}};
-    \else
-      \node[cell] (q\x) at (\xx,1.45) {\texttt{\ch}};
-    \fi
-  \fi
-}
-\draw[themeamber,densely dashed,line width=.9pt] (3.64,1.0) -- (3.64,4.25);
-\draw[themeamber,densely dashed,line width=.9pt] (5.28,1.0) -- (5.28,4.25);
-\node[anchor=west,font=\scriptsize,text=themecurve] at (10.05,1.45) {$i=5$ 不变，$j=3$};
+  % 下一比对连接线
+  \draw[themegreen,line width=1.4pt,->] (p23.north) -- 
+    node[pos=0.50,right=4pt,fill=themebg,inner sep=2pt,font=\scriptsize\bfseries,text=themegreen] {$T[5]=P[3]=\texttt{b}$（比对成功 $\checkmark$）} (t25.south);
 
-\node[note,anchor=west,text width=4.55cm] at (9.85,5.55)
-  {\textbf{安全移动的证据}\\[-1mm]
-   已匹配后缀 \texttt{aba} 已知等于模式前缀 \texttt{aba}，因此移动后这 3 个字符无需重比。};
-\node[note,anchor=west,text width=4.55cm] at (9.85,2.75)
-  {\textbf{禁止误读}\\[-1mm]
-   图中右移的是模式串的候选对齐位置；主串 $i$ 没有回退，也不是重新从 $T[2]$ 开始扫描。};
+  % 右侧结论
+  \node[anchor=north west,align=left,font=\scriptsize,text=themefg] at (14.2,2.6)
+    {\textbf{算法收益}：\\[1.5mm]
+     1. 主串 $i=5$ 绝不倒退，保证 $O(n)$ 时间；\\[1.5mm]
+     2. 模式串 $P[0..2]$ 免除重复计算；\\[1.5mm]
+     3. 比较从 $T[5]$ 与 $P[3]$ 顺利继续。};
+\end{scope}
 
-\node[anchor=west,font=\bfseries,text=themecurve] at (0,.35)
-  {$\boxed{\text{失配}\;\Rightarrow\;\text{复用最长可用边界}\;\Rightarrow\;j\text{ 回退而 }i\text{ 单调前进}}$};
 \end{tikzpicture}

@@ -156,8 +156,8 @@ def compile_tikz_source(
 
     # (theme_name, bg, fg, gray, curve, alert, amber, purple, green, destination)
     themes = [
-        ("dark", "30362d", "edf4e8", "a4af9d", "7eb6ff", "ff7b7b", "f5b942", "c084fc", "4ade80", dark_output),
-        ("light", "fafaf7", "111111", "666666", "1d63b8", "c53030", "b86e00", "7c3aed", "15803d", light_output),
+        ("dark", "2e362c", "edf4e8", "a4af9d", "7eb6ff", "ff7b7b", "f5b942", "c084fc", "4ade80", dark_output),
+        ("light", "faf8f5", "111111", "666666", "1d63b8", "c53030", "b86e00", "7c3aed", "15803d", light_output),
     ]
 
     print(f"[tikz] {source.name} -> dark/light SVG")
@@ -263,8 +263,10 @@ def compile_tikz_source(
             light_text = light_file.read_text(encoding="utf-8")
 
             base_pairs = [
-                ("30362d", "fafaf7"),
+                ("2e362c", "faf8f5"),
+                ("30362d", "faf8f5"),
                 ("edf4e8", "111111"),
+                ("a4af9d", "666666"),
                 ("9ea897", "666666"),
                 ("7eb6ff", "1d63b8"),
                 ("ff7b7b", "c53030"),

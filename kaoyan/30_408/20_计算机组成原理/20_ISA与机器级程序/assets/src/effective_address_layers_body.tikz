@@ -1,0 +1,46 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  box/.style={draw=themegray,rounded corners=3pt,fill=themefg!3!themebg,minimum height=.9cm,align=center},
+  addr/.style={draw=themecurve,rounded corners=3pt,fill=themecurve!9!themebg,minimum height=.9cm,align=center},
+  mem/.style={draw=themeamber,rounded corners=3pt,fill=themeamber!9!themebg,minimum height=.9cm,align=center},
+  warn/.style={draw=themealert,rounded corners=3pt,fill=themealert!8!themebg,minimum height=.9cm,align=center},
+  flow/.style={->,line width=1.05pt,themecurve},
+  deref/.style={->,line width=1.05pt,themeamber}
+}
+\node[anchor=west,font=\bfseries\large] at (0,8.2) {有效地址题的稳定骨架：先分清 value、address、address-of-address，再数解引用};
+\node[anchor=west,text=themegray] at (0,7.72) {寻址方式名称只是索引；真正决定语义和访存次数的是“当前这一步产出值还是地址”。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,6.9) {A. 不同来源最终都要落到同一 EA 层};
+\node[box,minimum width=2.35cm] (imm) at (1.2,5.9) {指令字段\\disp / imm};
+\node[box,minimum width=2.35cm] (base) at (4.0,5.9) {寄存器\\Base / Index};
+\node[box,minimum width=2.35cm] (pc) at (6.8,5.9) {$PC_{base}$\\相对寻址};
+\node[addr,minimum width=3.2cm] (alu) at (10.2,5.9) {地址形成\\$EA=B+I\times K+sext(d)$};
+\draw[flow] (imm)--(alu);
+\draw[flow] (base)--(alu);
+\draw[flow] (pc)--(alu);
+\node[anchor=west,text=themegray] at (0,5.05) {字段若带符号，先按字段位宽解释/符号扩展，再参与地址加法；字节序此时还没有进入。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,4.25) {B. 三层对象：地址形成与内存解引用必须分开};
+\node[addr,minimum width=2.9cm] (ea) at (1.7,3.15) {$EA$\\对象起始地址};
+\node[mem,minimum width=2.9cm] (p) at (5.25,3.15) {$M[EA]$\\可能是 value，也可能是 pointer};
+\node[mem,minimum width=2.9cm] (v) at (8.8,3.15) {$M[M[EA]]$\\再次解引用后的 value};
+\draw[deref] (ea)-- node[above] {1 次数据访存} (p);
+\draw[deref] (p)-- node[above] {再 1 次} (v);
+\node[warn,minimum width=3.2cm] at (12.05,3.15) {不能把\\$EA$ 直接写成 $M[EA]$};
+
+\node[anchor=west,font=\bfseries,text=themeamber] at (0,2.05) {C. 常见方式按“产出层级”对齐};
+\node[box,minimum width=2.6cm] at (1.4,1.05) {Immediate\\字段直接给 value};
+\node[box,minimum width=2.6cm] at (4.25,1.05) {Register\\寄存器直接给 value};
+\node[addr,minimum width=2.6cm] at (7.1,1.05) {Direct / Base+Disp\\先得到 EA};
+\node[mem,minimum width=2.6cm] at (9.95,1.05) {Register Indirect\\寄存器内容是 EA};
+\node[mem,minimum width=2.6cm] at (12.8,1.05) {Indirect\\先取下一层地址};
+
+\node[box,anchor=west,text width=12.7cm] at (0,-.25) {\textbf{做题调用：}每多一层 $M[\cdot]$ 就新增一次数据解引用。PC-relative 先写 $PC_{base}+sext(disp)\times unit$；数组再确认 scale 是否为元素大小。最终得到对象起始 EA 后，才进入访问宽度、对齐和字节序。};
+\node[anchor=west,text=themegray] at (0,-1.35) {独立检查：把每个中间量标成 value / address；若同一量在相邻两步身份无理由改变，通常就是少/多解引用或漏了符号扩展。};
+\end{tikzpicture}

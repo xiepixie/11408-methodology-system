@@ -22,7 +22,7 @@ AI 协作时还必须遵守根目录 [`../AGENTS.md`](../AGENTS.md)。`AGENTS.md
 ---
 
 ## 2. 模板
-
+ 
 `templates/` 只负责提供稳定的工作起点：
 
 - [`templates/article_template.md`](templates/article_template.md)：Obsidian 原文阅读与首读标记模板；
@@ -33,7 +33,16 @@ AI 协作时还必须遵守根目录 [`../AGENTS.md`](../AGENTS.md)。`AGENTS.md
 
 ---
 
-## 3. 分对象事实源
+## 3. 编译与门禁工具
+
+`tools/` 维护领域专有的编译与完整性门禁：
+
+- [`tools/compile_daily_reading.py`](tools/compile_daily_reading.py)：单篇/模板/全量批量编译调度器，自动装配环境并清理中间件；
+- [`tools/check_daily_reading.py`](tools/check_daily_reading.py)：五维静态与动态硬门禁（结构规范、双栏超链接闭环、无剧透检查、构建清洁度、模板冒烟测试）。
+
+---
+
+## 4. 分对象事实源
 
 本系统不维护一份包含所有内容的总文件，而是让不同对象各有唯一长期所有者：
 

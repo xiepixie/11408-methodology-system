@@ -145,8 +145,8 @@ kaoyan/archives/<exam_id>/
    - 统一使用 `infra/scripts/compile_tikz_to_svg.py` 执行底层 TikZ→SVG 渲染；具体年份/题图批处理范围由 Kaoyan domain tool 决定；
    - 强制使用 `--no-fonts --exact-bbox` 将数学公式与坐标字符（$x, y, z, 0, \theta$）直接栅格化为纯矢量 `<path>` 路径，彻底消除跨平台（Obsidian macOS/iOS/Windows）字体缺失或字体排版错位；
 5. **1:1 纯净双主题输出（Dark & Light Pair）**：
-   - 默认暗色版：`assets/<name>.svg`（底色 `#30362d`，线条/文字 `#edf4e8`，辅助线 `#9ea897`）；
-   - 亮色版本：`assets/light/<name>.svg`（底色 `#fafaf7`，线条/文字 `#111111`，辅助线 `#666666`）。
+   - 默认暗色版：`assets/<name>.svg`（底色 `#2e362c`，线条/文字 `#edf4e8`，辅助线 `#9ea897`）；
+   - 亮色版本：`assets/light/<name>.svg`（底色 `#faf8f5`，线条/文字 `#111111`，辅助线 `#666666`）。
 
 ```text
 kaoyan/archives/math1/2008年真题/
@@ -742,7 +742,7 @@ page7pic.svg
 ### 默认暗色主题固定为当前 Obsidian 背景
 
 ```text
-background  #30362d   RGB(48,54,45)
+background  #2e362c   RGB(46,54,44)
 foreground  #edf4e8
 node        #3b4337
 soft        #394136

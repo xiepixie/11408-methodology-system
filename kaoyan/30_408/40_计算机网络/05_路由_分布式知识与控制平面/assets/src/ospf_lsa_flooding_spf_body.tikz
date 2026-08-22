@@ -1,0 +1,89 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  stepbox/.style={draw=themecurve,rounded corners=4pt,minimum width=5.4cm,minimum height=4.6cm,align=center,fill=themecurve!5!themebg,font=\scriptsize\bfseries,text=themecurve},
+  nodebox/.style={draw=themeamber,circle,minimum size=.75cm,align=center,fill=themeamber!10!themebg,font=\tiny\bfseries,text=themeamber},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themecurve},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.8) {OSPF 链路状态协议：LSA 洪泛、LSDB 全网同步与本地 SPF 最短路径树};
+\node[anchor=west,text=themegray,text width=17.5cm,align=left] at (0,8.2)
+  {核心设计：基于 Dijkstra 算法，每台路由器拥有全区域完全一致的链路状态数据库 (LSDB)，独立以自身为根计算最短路径树，天然无环。};
+
+% ── 三步全流程面板 ──
+
+% 步骤 1：LSA 洪泛 (x = 0 .. 5.4)
+\node[stepbox,anchor=north west] (p1) at (0,7.0) {};
+\node[font=\bfseries\normalsize,text=themecurve] at (2.7,6.6) {Step 1: LSA 洪泛通告};
+\node[font=\tiny,text=themefg,align=left,anchor=north] at (2.7,6.1)
+  {路由器向所有邻居发送 LSA\\
+   描述“我和谁直连，代价是多少”\\
+   邻居继续向外扩散（可靠洪泛）};
+
+% 简易洪泛图
+\node[nodebox] (n_a) at (1.4,3.8) {A};
+\node[nodebox] (n_b) at (3.8,4.6) {B};
+\node[nodebox] (n_c) at (3.8,3.0) {C};
+\draw[->,line width=1.0pt,themeamber] (n_a) -- node[above=1pt,lbl,text=themeamber] {LSA} (n_b);
+\draw[->,line width=1.0pt,themeamber] (n_a) -- node[below=1pt,lbl,text=themeamber] {LSA} (n_c);
+\draw[->,line width=1.0pt,themeamber] (n_b) -- (n_c);
+
+% 步骤 2：LSDB 拓扑数据库 (x = 6.0 .. 11.4)
+\node[stepbox,anchor=north west,draw=themeamber,fill=themeamber!5!themebg,text=themeamber] (p2) at (6.0,7.0) {};
+\node[font=\bfseries\normalsize,text=themeamber] at (8.7,6.6) {Step 2: 全网 LSDB 100\% 一致};
+\node[font=\tiny,text=themefg,align=left,anchor=north] at (8.7,6.1)
+  {收集区域内全部 LSA 汇总为\\
+   全网拓扑有向图（LSDB）\\
+   同区域每台路由器的 LSDB 完全相同};
+
+% 拓扑图示意
+\node[draw=themegray,rounded corners=3pt,fill=themefg!3!themebg,inner sep=6pt,anchor=north] at (8.7,4.6) {
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{源路由} & \textbf{直连邻居} & \textbf{Cost}\\
+    \hline
+    A & B & 10\\
+    A & C & 30\\
+    B & C & 5\\
+    \hline
+  \end{tabular}
+};
+
+% 步骤 3：本地 SPF 计算 (x = 12.0 .. 17.4)
+\node[stepbox,anchor=north west,draw=themegreen,fill=themegreen!5!themebg,text=themegreen] (p3) at (12.0,7.0) {};
+\node[font=\bfseries\normalsize,text=themegreen] at (14.7,6.6) {Step 3: 本地 Dijkstra SPF};
+\node[font=\tiny,text=themefg,align=left,anchor=north] at (14.7,6.1)
+  {以自身为根构建最短路径树\\
+   计算到所有目的地的最优下一跳\\
+   生成底层硬件转发表 (FIB)};
+
+% 最短路径树示意
+\node[nodebox,draw=themegreen,text=themegreen] (s_a) at (14.7,4.8) {Root: A};
+\node[nodebox,draw=themegreen,text=themegreen] (s_b) at (13.5,3.2) {B (10)};
+\node[nodebox,draw=themegreen,text=themegreen] (s_c) at (15.9,3.2) {C (15)};
+\draw[flow,themegreen] (s_a) -- (s_b);
+\draw[flow,themegreen] (s_b) -- (s_c);
+
+% 步骤间连接箭头
+\draw[->,line width=1.5pt,themegray] (5.5,4.7) -- (5.9,4.7);
+\draw[->,line width=1.5pt,themegray] (11.5,4.7) -- (11.9,4.7);
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=17.5cm] at (0,0.6)
+  {\textbf{OSPF 分层架构与核心特性：}\\
+   1. \textbf{分层区域结构}：骨干区域 (Area 0) 负责汇聚，非骨干区域通过区域边界路由器 (ABR) 与 Area 0 相连，隔离 LSA 洪泛风暴；\\
+   2. \textbf{直接封装在 IP}：OSPF 报文直接封装在 \textbf{IP 数据报} 中（协议号 89），具备自主可靠传输机制（ACK 与重传）；\\
+   3. \textbf{快速收敛与无环}：每台路由器拥有全局拓扑图并由 Dijkstra 算法算出无环最短路径树，彻底杜绝了距离向量的“慢收敛”与环路。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themealert,text width=17.5cm,align=left] at (0,-0.5)
+  {禁止误读：OSPF 的 LSA 洪泛虽然发送给所有邻居，但每个路由器只把“自己直连链路的状态”发出去，绝不转发其他路由器计算好的路由。};
+\end{tikzpicture}

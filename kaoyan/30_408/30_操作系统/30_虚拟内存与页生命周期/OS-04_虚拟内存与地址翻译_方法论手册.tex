@@ -402,6 +402,10 @@ VA=I_1\mid I_2\mid\cdots\mid I_k\mid Offset.
 \]
 每一级索引选择下一张表，只有实际使用的虚拟区域才需要逐层建立低级页表页。
 
+\begin{center}
+\input{assets/src/multilevel_page_table_body.tikz}
+\end{center}
+
 \begin{bridge}[多级页表：用树形索引描述稀疏地址空间]
 多级页表拿\kw{更多查询步骤}换\kw{更少的页表空间}。它与文件系统的 inode 间接块、目录树、B+ 树一样，都是“稀疏大命名空间”的层次化描述方法。
 \end{bridge}
@@ -521,7 +525,7 @@ MMU 在正常 快路径 不能完成访问时触发 page-fault exception。内�
 
 \subsection{统一处理流程}
 \begin{center}
-\resizebox{0.96\linewidth}{!}{\input{30_408/30_操作系统/30_虚拟内存与页生命周期/assets/src/page_fault_lifecycle_body.tikz}}
+\resizebox{0.96\linewidth}{!}{\input{assets/src/page_fault_lifecycle_body.tikz}}
 \end{center}
 图把 Page Fault 之后的三条真实分支拆开：纯内存修复可直接返回重试，需要外部内容时才阻塞等待 I/O，非法地址或真实权限错误则拒绝访问。PTE 只能在目标页内容已经就绪后再对普通访问开放。
 
@@ -661,7 +665,7 @@ CLOCK / 二次机会算法利用 PTE 中的 Reference Bit，将“精确的时�
 \end{method}
 
 \begin{center}
-\resizebox{0.96\linewidth}{!}{\input{30_408/30_操作系统/30_虚拟内存与页生命周期/assets/src/clock_replacement_body.tikz}}
+\resizebox{0.96\linewidth}{!}{\input{assets/src/clock_replacement_body.tikz}}
 \end{center}
 Basic CLOCK 的扫描规则可以直接复原；加入 dirty/modification bit 后，图只固定两类状态的语义，不把某一教材的 Enhanced CLOCK 扫描轮次冒充统一标准。
 

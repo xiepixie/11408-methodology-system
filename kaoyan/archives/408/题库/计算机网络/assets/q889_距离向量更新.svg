@@ -4,16 +4,20 @@
 
 <style>
   @media print, (prefers-color-scheme: light) {
-    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #fafaf7 !important; }
+    [fill='#2e362c'], [fill='#2E362C'], [fill='#2e362c' i] { fill: #faf8f5 !important; }
+    [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #faf8f5 !important; }
     [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }
+    [fill='#a4af9d'], [fill='#A4AF9D'], [fill='#a4af9d' i] { fill: #666666 !important; }
     [fill='#9ea897'], [fill='#9EA897'], [fill='#9ea897' i] { fill: #666666 !important; }
     [fill='#7eb6ff'], [fill='#7EB6FF'], [fill='#7eb6ff' i] { fill: #1d63b8 !important; }
     [fill='#ff7b7b'], [fill='#FF7B7B'], [fill='#ff7b7b' i] { fill: #c53030 !important; }
     [fill='#f5b942'], [fill='#F5B942'], [fill='#f5b942' i] { fill: #b86e00 !important; }
     [fill='#c084fc'], [fill='#C084FC'], [fill='#c084fc' i] { fill: #7c3aed !important; }
     [fill='#4ade80'], [fill='#4ADE80'], [fill='#4ade80' i] { fill: #15803d !important; }
-    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #fafaf7 !important; }
+    [stroke='#2e362c'], [stroke='#2E362C'], [stroke='#2e362c' i] { stroke: #faf8f5 !important; }
+    [stroke='#30362d'], [stroke='#30362D'], [stroke='#30362d' i] { stroke: #faf8f5 !important; }
     [stroke='#edf4e8'], [stroke='#EDF4E8'], [stroke='#edf4e8' i] { stroke: #111111 !important; }
+    [stroke='#a4af9d'], [stroke='#A4AF9D'], [stroke='#a4af9d' i] { stroke: #666666 !important; }
     [stroke='#9ea897'], [stroke='#9EA897'], [stroke='#9ea897' i] { stroke: #666666 !important; }
     [stroke='#7eb6ff'], [stroke='#7EB6FF'], [stroke='#7eb6ff' i] { stroke: #1d63b8 !important; }
     [stroke='#ff7b7b'], [stroke='#FF7B7B'], [stroke='#ff7b7b' i] { stroke: #c53030 !important; }
@@ -31,7 +35,7 @@
 <path id='g0-70' d='M5.798257-6.774595H.328767V-6.465753H.56787C1.334994-6.465753 1.354919-6.356164 1.354919-5.997509V-.777086C1.354919-.418431 1.334994-.308842 .56787-.308842H.328767V0C.67746-.029888 1.454545-.029888 1.843088-.029888C2.251557-.029888 3.158157-.029888 3.516812 0V-.308842H3.188045C2.241594-.308842 2.241594-.438356 2.241594-.787049V-3.237858H3.098381C4.054795-3.237858 4.154421-2.919054 4.154421-2.072229H4.403487V-4.712329H4.154421C4.154421-3.875467 4.054795-3.5467 3.098381-3.5467H2.241594V-6.067248C2.241594-6.396015 2.261519-6.465753 2.729763-6.465753H3.92528C5.419676-6.465753 5.668742-5.907846 5.828144-4.533001H6.07721L5.798257-6.774595Z'/>
 </defs>
 <g id='page1'>
-<rect x='-65.026156' y='-65.026159' width='210.859636' height='103.143093' fill='#30362d'/>
+<rect x='-65.026156' y='-65.026159' width='210.859636' height='103.143093' fill='#2e362c'/>
 <g stroke-miterlimit='10' transform='translate(-53.139639,-13.454611)scale(0.996264,-0.996264)'>
 <g fill='#000' stroke='#000'>
 <g stroke-width='0.4'>

@@ -1,0 +1,70 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  box/.style={draw=themegray,rounded corners=3pt,minimum width=2.4cm,minimum height=.82cm,align=center,fill=themefg!3!themebg},
+  blue/.style={box,draw=themecurve,fill=themecurve!8!themebg,font=\scriptsize\bfseries,text=themecurve},
+  amber/.style={box,draw=themeamber,fill=themeamber!8!themebg,font=\scriptsize\bfseries,text=themeamber},
+  red/.style={box,draw=themealert,fill=themealert!10!themebg,font=\scriptsize\bfseries,text=themealert},
+  green/.style={box,draw=themegreen,fill=themegreen!10!themebg,font=\scriptsize\bfseries,text=themegreen},
+  lbl/.style={font=\tiny\bfseries,fill=themebg,inner sep=1.5pt,rounded corners=1pt},
+  flow/.style={->,line width=1.1pt,themecurve},
+  slow/.style={->,line width=1.1pt,themeamber},
+  fault/.style={->,line width=1.1pt,themealert},
+  pass/.style={->,line width=1.1pt,themegreen},
+  note/.style={rounded corners=4pt,draw=themegray!70,fill=themefg!3!themebg,inner xsep=8pt,inner ysep=7pt,align=left}
+}
+
+% ── 标题与例题说明 ──
+\node[anchor=west,font=\bfseries\Large] at (0,8.6) {一次 Load 的三条轨道：翻译副本、权威页表、数据副本必须分流};
+\node[anchor=west,text=themegray,text width=18.0cm,align=left] at (0,8.0)
+  {地址映射：$VA=[VPN\mid offset] \Longrightarrow PA=[PFN\mid offset]$。TLB Miss 仅缺翻译副本；合法 PA 形成后才进入 Cache 体系。};
+
+% ── 1. CPU 发起请求 ──
+\node[box] (va) at (1.3,5.5) {CPU Load 请求\\$VA = [VPN \mid offset]$};
+\node[blue] (tlb) at (4.3,5.5) {TLB 查询\\VPN 命中检测};
+\draw[flow] (va) -- (tlb);
+
+% ── 2. TLB Hit vs Miss (翻译轨道) ──
+\node[blue] (hit) at (7.8,6.4) {TLB Hit\\直接获得 PFN};
+\node[amber] (walk) at (7.8,4.6) {TLB Miss\\Page Walk 查页表};
+\draw[flow] (tlb.east) to[out=25,in=180] node[pos=0.45,lbl,text=themecurve] {命中 (Hit)} (hit.west);
+\draw[slow] (tlb.east) to[out=-25,in=180] node[pos=0.45,lbl,text=themeamber] {未命中 (Miss)} (walk.west);
+
+% ── 3. 权限与存在性检验 ──
+\node[box] (check) at (11.4,5.5) {PTE 属性校验\\有效位 / 访问权限};
+\draw[flow] (hit.east) to[out=0,in=155] (check.west);
+\draw[slow] (walk.east) to[out=0,in=-155] (check.west);
+
+% ── 4. 分流：合法 PA vs 异常 Fault ──
+\node[green] (pa) at (15.2,5.5) {合法物理地址\\$PA = [PFN \mid offset]$};
+\node[red] (pf) at (11.4,3.4) {页面异常 (Page Fault)\\缺页中断 / 保护异常};
+
+\draw[pass] (check.east) -- node[pos=0.5,lbl,text=themegreen] {合法通过} (pa.west);
+\draw[fault] (check.south) -- node[pos=0.5,lbl,text=themealert] {非法/缺页} (pf.north);
+\node[anchor=north,font=\tiny\bfseries,text=themealert] at (11.4,2.8) {$\Longrightarrow$ 陷入 OS 处理};
+
+% ── 5. Cache 数据轨道 ──
+\node[blue] (cache) at (15.2,3.4) {Cache Tag 查询\\物理地址索引与比较};
+\node[green] (c_hit) at (18.6,4.2) {Cache Hit\\返回 CPU 数据};
+\node[amber] (c_miss) at (18.6,2.6) {Cache Miss\\主存调块填入};
+
+\draw[flow] (pa.south) -- node[pos=0.5,lbl,text=themecurve] {物理寻址} (cache.north);
+\draw[pass] (cache.east) to[out=20,in=180] node[pos=0.45,lbl,text=themegreen] {命中} (c_hit.west);
+\draw[slow] (cache.east) to[out=-20,in=180] node[pos=0.45,lbl,text=themeamber] {缺失} (c_miss.west);
+
+% ── 底部总结与误读警示 ──
+\node[note,anchor=west,text width=18.0cm] at (0,1.3)
+  {\textbf{三种失败对象严格分流：}\\
+   1. \textbf{TLB Miss}：仅缺失地址翻译的高速缓存副本，通过 Page Walk 访问内存中的多级页表即可正常补回，\textbf{无需操作系统介入}；\\
+   2. \textbf{Page Fault}：页表项指示页面不在内存（缺页）或权限不符，必须\textbf{陷入操作系统内核}执行磁盘 I/O 或信号终止；\\
+   3. \textbf{Cache Miss}：发生在合法 PA 产生之后，仅表示数据不在 Cache，由硬件发起主存读块并重填 Cache，\textbf{不产生异常中断}。};
+
+\node[anchor=west,font=\scriptsize\bfseries,text=themeamber,text width=18.0cm,align=left] at (0,0.15)
+  {硬件实现优化（VIPT）：虚索引物理标记（VIPT）Cache 允许在 TLB 查询 VPN 的同时利用 VA 索引并发查找 Cache 行，PA 产生后仅需直接比对 Tag。};
+\end{tikzpicture}

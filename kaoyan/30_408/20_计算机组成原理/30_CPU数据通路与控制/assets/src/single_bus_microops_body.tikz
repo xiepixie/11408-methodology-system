@@ -1,0 +1,48 @@
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\begin{tikzpicture}[font=\scriptsize,color=themefg,text=themefg,>=Stealth]
+\tikzset{
+  reg/.style={draw=themegray,rounded corners=2pt,fill=themefg!3!themebg,minimum width=1.8cm,minimum height=.8cm,align=center},
+  comb/.style={draw=themecurve,rounded corners=3pt,fill=themecurve!9!themebg,minimum width=2.2cm,minimum height=.9cm,align=center},
+  note/.style={draw=themegray,rounded corners=3pt,fill=themefg!3!themebg,inner xsep=6pt,inner ysep=5pt,align=left},
+  active/.style={draw=themeamber,rounded corners=2pt,fill=themeamber!9!themebg,minimum height=.72cm,align=center},
+  flow/.style={->,line width=1.05pt,themecurve},
+  bus/.style={line width=2.2pt,themegray}
+}
+\node[anchor=west,font=\bfseries\large] at (0,8.35) {经典单总线教学机：一拍一个 Bus Source，多目标可同时锁存};
+\node[anchor=west,text=themegray] at (0,7.88) {本图只声明一种常见 Y/Z 结构，用于解释资源冲突；换成多总线、多端口或旁路后必须重新调度。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,7.1) {A. 数据通路：Y 保存第一个 ALU 输入，Z 保存组合结果};
+\node[reg] (r1) at (1.2,6.05) {$R_1$};
+\node[reg] (r2) at (3.35,6.05) {$R_2$};
+\node[reg] (r3) at (5.5,6.05) {$R_3$};
+\node[reg] (pc) at (7.65,6.05) {PC};
+\node[reg] (mdr) at (9.8,6.05) {MDR};
+\draw[bus] (.25,4.78)--(11.0,4.78);
+\node[anchor=west,text=themegray] at (11.15,4.78) {internal bus};
+\foreach \n in {r1,r2,r3,pc,mdr}{\draw[flow] (\n.south)--(\n.south |- 0,4.84);}
+\node[reg] (y) at (2.45,3.55) {$Y$\\ALU input latch};
+\node[comb] (alu) at (5.55,3.55) {ALU\\$f(Y,Bus)$};
+\node[reg] (z) at (8.55,3.55) {$Z$\\result latch};
+\draw[flow] (2.45,4.78)--(y.north);
+\draw[flow] (y.east)--(alu.west);
+\draw[flow] (5.55,4.78)--(alu.north);
+\draw[flow] (alu.east)--(z.west);
+\draw[flow] (z.north)--(8.55,4.78);
+\node[note,anchor=west,text width=2.8cm] at (11.2,3.55) {两个独立源不能同拍同时驱动 Bus；Y/Z 把“需要两个输入和一个输出”的动作拆成合法时间序列。};
+
+\node[anchor=west,font=\bfseries,text=themecurve] at (0,2.35) {B. 例：$R_3\leftarrow R_1+R_2$ 的最小三拍状态账本};
+\node[active,minimum width=3.4cm] at (1.9,1.35) {$T_1$: $R_1\to Bus\to Y$};
+\node[active,minimum width=4.4cm] at (6.15,1.35) {$T_2$: $R_2\to Bus$, $ALU(Y,Bus)\to Z$};
+\node[active,minimum width=3.4cm] at (10.65,1.35) {$T_3$: $Z\to Bus\to R_3$};
+\draw[flow] (3.65,1.35)--(3.9,1.35);
+\draw[flow] (8.4,1.35)--(8.9,1.35);
+
+\node[anchor=west,font=\bfseries,text=themeamber] at (0,.35) {C. 每一拍四问：Source / Targets / Combinational / External Resource};
+\node[note,anchor=west,text width=12.8cm] at (0,-.75) {先写“谁唯一驱动 Bus”，再写哪些寄存器在边界锁存；ALU/MUX 只说明本拍组合结果怎样形成；若还有 memory ready/read/write，则单独列外部资源。一个值出现在 ALU 输出端不等于已经提交到架构状态。};
+\node[anchor=west,text=themegray] at (0,-1.75) {独立检查：每拍若出现两个不同 Bus Source，或目标寄存器没有写使能却被认为已改变，调度必然有问题。};
+\end{tikzpicture}

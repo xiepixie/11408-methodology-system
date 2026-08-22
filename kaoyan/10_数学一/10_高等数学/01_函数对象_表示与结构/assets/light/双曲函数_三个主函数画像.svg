@@ -59,7 +59,7 @@
 <path id='g22-61' d='M5.355915-2.343213C5.460523-2.343213 5.620922-2.343213 5.620922-2.517559C5.620922-2.684932 5.453549-2.684932 5.362889-2.684932H.746202C.655542-2.684932 .488169-2.684932 .488169-2.517559C.488169-2.343213 .648568-2.343213 .753176-2.343213H5.355915ZM5.362889-.808966C5.453549-.808966 5.620922-.808966 5.620922-.976339C5.620922-1.150685 5.460523-1.150685 5.355915-1.150685H.753176C.648568-1.150685 .488169-1.150685 .488169-.976339C.488169-.808966 .655542-.808966 .746202-.808966H5.362889Z'/>
 </defs>
 <g id='page1'>
-<rect x='-69.011212' y='-69.01121' width='445.35741' height='189.304966' fill='#fafaf7'/>
+<rect x='-69.011212' y='-69.01121' width='445.35741' height='189.304966' fill='#faf8f5'/>
 <g stroke-miterlimit='10' transform='translate(-68.811962,120.092378)scale(0.996264,-0.996264)'>
 <g fill='#000' stroke='#000'>
 <g stroke-width='0.4'>
@@ -370,7 +370,7 @@
 <g stroke='#111' stroke-miterlimit='10' transform='translate(-68.612713,119.893128)scale(0.996264,-0.996264)'>
 <g fill='#111' stroke='#111'>
 <g stroke-width='0.4'>
-<g fill='#d56d6c' stroke='#d56d6c'>
+<g fill='#d56c6b' stroke='#d56c6b'>
 <g stroke-dasharray='3.0,3.0' stroke-dashoffset='0.0'>
 <g stroke-width='1.0'>
 <path d='M0 45.6836H125.71533' fill='none'/>
@@ -631,8 +631,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M65.47527 50.16643H92.46138V58.74803H65.47527Z' stroke='none'/>
 </g>
 <g transform='translate(66.47527,51.78697)'>
@@ -661,14 +661,14 @@
 <g stroke='#111' stroke-miterlimit='10' transform='translate(-64.306337,119.893128)scale(0.996264,-0.996264)'>
 <g fill='#111' stroke='#111'>
 <g stroke-width='0.4'>
-<g fill='#d56d6c' stroke='#d56d6c'>
+<g fill='#d56c6b' stroke='#d56c6b'>
 <g stroke-dasharray='3.0,3.0' stroke-dashoffset='0.0'>
 <g stroke-width='1.0'>
 <path d='M0 120.6372H125.71289' fill='none'/>
 </g>
 </g>
 </g>
-<g fill='#d56d6c' stroke='#d56d6c'>
+<g fill='#d56c6b' stroke='#d56c6b'>
 <g stroke-dasharray='3.0,3.0' stroke-dashoffset='0.0'>
 <g stroke-width='1.0'>
 <path d='M0 27.83936H125.71289' fill='none'/>
@@ -929,8 +929,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M100.60011 124.54912H121.58436V132.42132H100.60011Z' stroke='none'/>
 </g>
 <g transform='translate(101.60011,126.9102)'>
@@ -947,8 +947,8 @@
 </g>
 </g>
 </g>
-<g fill='#fafaf7'>
-<g fill='#fafaf7'>
+<g fill='#faf8f5'>
+<g fill='#faf8f5'>
 <path d='M94.35011 16.05525H121.58436V23.92745H94.35011Z' stroke='none'/>
 </g>
 <g transform='translate(95.35011,18.41634)'>
