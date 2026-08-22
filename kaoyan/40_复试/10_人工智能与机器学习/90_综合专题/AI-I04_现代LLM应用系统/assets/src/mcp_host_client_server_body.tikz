@@ -1,0 +1,50 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  hostnode/.style={draw=themecurve,fill=themecurve!12!themebg,rounded corners=4pt,minimum width=2.8cm,minimum height=0.9cm,align=center,line width=1pt},
+  clientnode/.style={draw=themeamber,fill=themeamber!12!themebg,rounded corners=4pt,minimum width=2.55cm,minimum height=0.84cm,align=center,line width=0.95pt},
+  servernode/.style={draw=themegreen,fill=themegreen!11!themebg,rounded corners=4pt,minimum width=3.05cm,minimum height=0.96cm,align=center,line width=1pt},
+  backendnode/.style={draw=themegray,fill=themegray!10!themebg,rounded corners=4pt,minimum width=2.7cm,minimum height=0.84cm,align=center,line width=0.9pt},
+  protocol/.style={<->,draw=themefg!88,line width=1pt},
+  local/.style={->,draw=themegreen,line width=0.95pt,dashed},
+  internal/.style={->,draw=themeamber,line width=0.95pt}
+]
+
+% Two responsibility regions. Position groups roles; it does not encode execution time.
+\begin{pgfonlayer}{background}
+  \fill[fill=themecurve!5!themebg,draw=themecurve!45,dashed,rounded corners=7pt]
+    (-0.2,0.55) rectangle (6.15,8.3);
+  \fill[fill=themegreen!5!themebg,draw=themegreen!45,dashed,rounded corners=7pt]
+    (6.85,0.55) rectangle (15.6,8.3);
+\end{pgfonlayer}
+
+\node[anchor=west,font=\bfseries,color=themecurve] at (0.1,7.9) {Host Application};
+\node[anchor=west,font=\bfseries,color=themegreen] at (7.15,7.9) {External MCP Servers};
+
+% Host-side topology: application owns clients; each client owns one server connection.
+\node[hostnode] (app) at (2.0,6.55) {LLM Application\\\scriptsize model / workflow};
+\node[clientnode] (ca) at (4.3,5.15) {MCP Client A};
+\node[clientnode] (cb) at (4.3,2.75) {MCP Client B};
+
+% Separate internal corridors prevent Client A / Client B edges from crossing.
+\draw[internal] (app.east) -- ++(0.55,0) -| (ca.north);
+\draw[internal] (app.south) -- ++(0,-3.35) -- (cb.west);
+
+% Client-server pairs are horizontally aligned; protocol edges are direct and unambiguous.
+\node[servernode] (sa) at (9.25,5.15) {Server A\\\scriptsize Tools · Resources · Prompts};
+\node[servernode] (sb) at (9.25,2.75) {Server B\\\scriptsize Tools · Resources · Prompts};
+\draw[protocol] (ca.east) -- node[above=1pt,font=\scriptsize]{MCP} (sa.west);
+\draw[protocol] (cb.east) -- node[above=1pt,font=\scriptsize]{MCP} (sb.west);
+
+% Server-local backends are outside the MCP role model itself.
+\node[backendnode] (dba) at (13.55,5.15) {Customer DB};
+\node[backendnode] (svc) at (13.55,2.75) {Weather / SaaS API};
+\draw[local] (sa) -- node[above=1pt,font=\scriptsize,color=themegreen]{本地集成} (dba);
+\draw[local] (sb) -- node[above=1pt,font=\scriptsize,color=themegreen]{本地集成} (svc);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.15,1.05)
+  {这是角色与连接关系图，不是执行时序图：MCP 规范 Client ↔ Server 交互，Agent / Workflow 仍负责决定何时调用。};
+
+\end{tikzpicture}

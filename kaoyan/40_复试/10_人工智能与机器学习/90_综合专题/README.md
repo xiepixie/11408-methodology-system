@@ -39,7 +39,20 @@ Token / Context
 → Optimization
 → Decoding / Search
 → Output
+
+AI-I04 现代 LLM 应用系统
+Context Assembly
+→ Retrieval / RAG
+→ Model Generation
+→ Tool Calling
+→ Agent / Workflow State
+→ External Capability via MCP
+→ Evaluation / Security / Observability
 ```
+
+AI-I04 的正式入口：
+
+- [现代 LLM 应用系统：Context、Retrieval、RAG、Agent、Workflow 与 MCP](AI-I04_现代LLM应用系统/README.md)
 
 ## Ownership Rule
 

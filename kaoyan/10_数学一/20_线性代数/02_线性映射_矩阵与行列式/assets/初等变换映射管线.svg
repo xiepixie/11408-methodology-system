@@ -3,7 +3,9 @@
 <svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='436.708672pt' height='285.163238pt' viewBox='-69.011212 -69.011207 436.708672 285.163238'>
 
 <style>
+  svg { max-width: 100%; height: auto; }
   @media print, (prefers-color-scheme: light) {
+    svg { max-width: 100% !important; height: auto !important; }
     [fill='#2e362c'], [fill='#2E362C'], [fill='#2e362c' i] { fill: #faf8f5 !important; }
     [fill='#30362d'], [fill='#30362D'], [fill='#30362d' i] { fill: #faf8f5 !important; }
     [fill='#edf4e8'], [fill='#EDF4E8'], [fill='#edf4e8' i] { fill: #111111 !important; }

@@ -1,0 +1,50 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  base/.style={draw=themecurve,fill=themecurve!11!themebg,rounded corners=5pt,minimum width=3.0cm,minimum height=0.92cm,align=center,line width=1pt},
+  seq/.style={draw=themeamber,fill=themeamber!10!themebg,rounded corners=5pt,minimum width=3.15cm,minimum height=0.92cm,align=center,line width=1pt},
+  depth/.style={draw=themegreen,fill=themegreen!10!themebg,rounded corners=5pt,minimum width=3.15cm,minimum height=0.92cm,align=center,line width=1pt},
+  impl/.style={draw=themealert,fill=themealert!8!themebg,rounded corners=5pt,minimum width=3.15cm,minimum height=0.92cm,align=center,line width=1pt},
+  flow/.style={->,draw=themefg!88,line width=1.0pt},
+  combine/.style={->,draw=themeamber,line width=0.98pt},
+  relation/.style={->,draw=themegray,dashed,line width=0.95pt},
+  implrel/.style={<->,draw=themealert,dashed,line width=0.95pt}
+]
+
+% Sequence-axis architecture choices.
+\begin{pgfonlayer}{background}
+  \fill[fill=themeamber!4!themebg,draw=themeamber!40,dashed,rounded corners=7pt]
+    (-0.1,2.0) rectangle (15.2,6.2);
+  \fill[fill=themegreen!4!themebg,draw=themegreen!40,dashed,rounded corners=7pt]
+    (-0.1,-2.2) rectangle (15.2,1.45);
+\end{pgfonlayer}
+
+\node[anchor=west,font=\bfseries,color=themeamber] at (0.15,5.8) {Sequence axis：token 之间怎样交换信息};
+\node[base] (full) at (3.0,4.35) {Full Softmax Attention\\\scriptsize explicit token-to-token interaction};
+\node[seq] (linear) at (8.0,4.35) {Recurrent / Linear Attention\\\scriptsize finite-state sequence mixer};
+\node[seq] (hybrid) at (13.0,4.35) {Hybrid Attention\\\scriptsize recurrent + periodic global mixing};
+
+\draw[combine] (full.north) -- ++(0,0.58) -| node[pos=0.62,above=1pt,font=\scriptsize,color=themeamber]{保留 global path} (hybrid.north);
+\draw[combine] (linear.east) -- node[above=1pt,font=\scriptsize,color=themeamber]{组合} (hybrid.west);
+
+% FlashAttention is an implementation relation to full Softmax, not a sibling architecture choice.
+\node[impl] (flash) at (3.0,2.65) {FlashAttention\\\scriptsize same mathematical mapping · tiled I/O};
+\draw[implrel] (full.south) -- node[right=2pt,font=\scriptsize,color=themealert]{数学映射相同} (flash.north);
+
+\node[seq,minimum width=3.75cm] (state) at (8.0,2.65) {$S_t\leftarrow F(S_{t-1},k_t,v_t)$\\$o_t=G(S_t,q_t)$};
+\draw[relation] (linear.south) -- node[right=2pt,font=\scriptsize,color=themegray]{典型状态化形式} (state.north);
+
+% Depth-axis routing is separate from sequence mixing.
+\node[anchor=west,font=\bfseries,color=themegreen] at (0.15,1.05) {Depth axis：当前层怎样读取更早层表示};
+\node[base] (resid) at (3.0,-0.35) {Standard Residual\\$h_{\ell+1}=h_\ell+f_\ell(h_\ell)$};
+\node[depth] (attnres) at (8.0,-0.35) {Attention Residuals\\\scriptsize learned routing over earlier layers};
+\node[depth] (variants) at (13.0,-0.35) {Block / Delta AttnRes\\\scriptsize compress sources / change routed values};
+\draw[flow,draw=themegreen] (resid) -- node[above=1pt,font=\scriptsize,color=themegreen]{显式 depth routing} (attnres);
+\draw[flow,draw=themegreen] (attnres) -- node[above=1pt,font=\scriptsize,color=themegreen]{继续改写 source} (variants);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.15,-1.55)
+  {关键分层：FlashAttention 只改变 Full Softmax 的执行方式；Linear/Hybrid 改写 sequence mixer；AttnRes 则在另一条 depth 轴上路由更早层表示。};
+
+\end{tikzpicture}

@@ -1,0 +1,48 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  seq/.style={draw=themeamber,fill=themeamber!10!themebg,rounded corners=5pt,minimum width=3.55cm,minimum height=0.94cm,align=center,line width=1pt},
+  depth/.style={draw=themegreen,fill=themegreen!10!themebg,rounded corners=5pt,minimum width=3.55cm,minimum height=0.94cm,align=center,line width=1pt},
+  channel/.style={draw=themecurve,fill=themecurve!11!themebg,rounded corners=5pt,minimum width=3.55cm,minimum height=0.94cm,align=center,line width=1pt},
+  snapshot/.style={draw=themegray,fill=themegray!8!themebg,rounded corners=5pt,minimum width=6.1cm,minimum height=0.82cm,align=center,line width=0.9pt},
+  flow/.style={->,draw=themefg!88,line width=1pt}
+]
+
+% Column semantics are shared by all three rows.
+\node[anchor=west,font=\scriptsize\bfseries,color=themegray] at (0.25,5.65) {信息来源};
+\node[anchor=west,font=\scriptsize\bfseries,color=themegray] at (6.55,5.65) {路由 / 混合机制};
+\node[anchor=west,font=\scriptsize\bfseries,color=themegray] at (12.55,5.65) {送往哪里};
+
+% Sequence axis.
+\node[anchor=west,font=\bfseries,color=themeamber] at (0.25,4.85) {Sequence axis};
+\node[seq] (seqsrc) at (2.65,3.75) {History tokens / state\\\scriptsize full KV interaction or recurrent memory};
+\node[seq] (seqmix) at (8.05,3.75) {69 KDA + 24 Gated MLA\\\scriptsize recurrent mixing + periodic global mixing};
+\node[seq] (seqdst) at (13.45,3.75) {Current token context\\\scriptsize sequence-wise information aggregation};
+\draw[flow,draw=themeamber] (seqsrc) -- (seqmix);
+\draw[flow,draw=themeamber] (seqmix) -- (seqdst);
+
+% Depth axis.
+\node[anchor=west,font=\bfseries,color=themegreen] at (0.25,2.65) {Depth axis};
+\node[depth] (depsrc) at (2.65,1.55) {Earlier block representations\\\scriptsize candidate depth sources};
+\node[depth] (depmix) at (8.05,1.55) {Block AttnRes\\\scriptsize learned softmax across depth sources};
+\node[depth] (depdst) at (13.45,1.55) {Current layer input\\\scriptsize selective cross-layer aggregation};
+\draw[flow,draw=themegreen] (depsrc) -- (depmix);
+\draw[flow,draw=themegreen] (depmix) -- (depdst);
+
+% Channel / parameter axis.
+\node[anchor=west,font=\bfseries,color=themecurve] at (0.25,0.45) {Channel / parameter axis};
+\node[channel] (chsrc) at (2.65,-0.65) {Hidden state $x$\\\scriptsize residual width $7168$};
+\node[channel] (chmix) at (8.05,-0.65) {Stable LatentMoE\\\scriptsize down-project $3584$ · Top-16 / 896 experts};
+\node[channel] (chdst) at (13.45,-0.65) {Expert contribution\\\scriptsize up-project to residual width};
+\draw[flow,draw=themecurve] (chsrc) -- (chmix);
+\draw[flow,draw=themecurve] (chmix) -- (chdst);
+
+\node[snapshot] at (8.05,-2.5)
+  {Kimi K3 · 2026 architecture snapshot：2.8T total · 104B activated · 93 layers · $1{,}048{,}576$ context};
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.25,-3.45)
+  {三行共享同一读法：先找“从哪里读”，再看“怎样路由/混合”，最后看“写到哪里”。三个轴可以同时存在，但路由对象完全不同。};
+
+\end{tikzpicture}

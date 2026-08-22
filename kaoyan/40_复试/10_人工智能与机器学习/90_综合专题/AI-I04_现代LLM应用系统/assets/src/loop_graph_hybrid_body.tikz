@@ -1,0 +1,45 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  nodebox/.style={draw=themecurve,fill=themecurve!12!themebg,rounded corners=4pt,minimum width=2.25cm,minimum height=0.82cm,align=center,line width=0.95pt},
+  tool/.style={draw=themegreen,fill=themegreen!10!themebg,rounded corners=4pt,minimum width=2.25cm,minimum height=0.82cm,align=center,line width=0.9pt},
+  decision/.style={draw=themeamber,fill=themeamber!11!themebg,rounded corners=4pt,minimum width=2.15cm,minimum height=0.82cm,align=center,line width=0.95pt},
+  embedded/.style={draw=themealert,fill=themealert!6!themebg,dashed,rounded corners=6pt,minimum width=2.7cm,minimum height=1.22cm,align=center,line width=0.95pt},
+  flow/.style={->,draw=themefg!90,line width=1.0pt},
+  dynamic/.style={->,draw=themeamber,line width=1.0pt,dashed}
+]
+
+% Left panel: an open loop. The model decides the next action after each observation.
+\node[anchor=west,font=\bfseries,color=themeamber] at (0.1,5.05) {Agent Loop：下一步由运行时观察决定};
+\node[nodebox] (lm) at (2.45,3.55) {Model Decision};
+\node[tool] (action) at (2.45,1.95) {Tool / Action};
+\node[nodebox] (obs) at (2.45,0.35) {Observation / State};
+\node[decision] (done) at (5.05,3.55) {Stop Condition};
+
+\draw[flow] (lm) -- node[right=2pt,font=\scriptsize]{选择动作} (action);
+\draw[flow] (action) -- (obs);
+\draw[dynamic] (obs.west) -- ++(-1.15,0) |- node[pos=0.62,left=2pt,font=\scriptsize,color=themeamber]{下一轮} (lm.west);
+\draw[dynamic] (lm.east) -- (done.west);
+\draw[flow] (done.east) -- ++(0.85,0) node[right,font=\scriptsize]{满足：结束};
+
+% Right panel: the graph fixes the large-scale topology; one node may itself contain a loop.
+\node[anchor=west,font=\bfseries,color=themecurve] at (7.45,5.05) {Graph / Workflow：大结构显式，局部仍可动态};
+\node[nodebox] (start) at (8.25,3.35) {START};
+\node[nodebox] (retrieve) at (10.65,3.35) {Retrieve};
+\node[embedded] (agent) at (13.05,3.35) {Agent Loop Node\\\scriptsize decide $\rightarrow$ tool $\rightarrow$ observe $\looparrowleft$};
+\node[nodebox] (verify) at (15.45,3.35) {Verify};
+\node[nodebox] (end) at (15.45,1.15) {END};
+
+\draw[flow] (start) -- (retrieve);
+\draw[flow] (retrieve) -- node[above=1pt,font=\scriptsize]{开放子任务} (agent);
+\draw[flow] (agent) -- node[above=1pt,font=\scriptsize]{artifact / result} (verify);
+\draw[flow] (verify) -- node[right=2pt,font=\scriptsize]{通过} (end);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.1,-0.75)
+  {左图的循环边本身就是主控制结构；右图的 START / Retrieve / Agent Loop / Verify / END 已预先固定，只有 Agent Loop Node 内部保留开放决策。};
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.1,-1.18)
+  {因此 Graph 与 Loop 的差异是控制权落在哪里，不是“确定性系统”和“智能系统”的二选一。};
+
+\end{tikzpicture}

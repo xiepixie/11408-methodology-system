@@ -1,0 +1,69 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  main/.style={draw=themecurve,fill=themecurve!14!themebg,rounded corners=4pt,minimum width=2.7cm,minimum height=0.9cm,align=center,line width=1pt},
+  support/.style={draw=themeamber,fill=themeamber!13!themebg,rounded corners=4pt,minimum width=2.55cm,minimum height=0.86cm,align=center,line width=0.95pt},
+  external/.style={draw=themegreen,fill=themegreen!12!themebg,rounded corners=4pt,minimum width=2.65cm,minimum height=0.86cm,align=center,line width=0.95pt},
+  guard/.style={draw=themealert,fill=themealert!10!themebg,rounded corners=4pt,minimum width=2.75cm,minimum height=0.9cm,align=center,line width=0.95pt},
+  flow/.style={->,draw=themefg!90,line width=1.05pt},
+  retrieval/.style={->,draw=themeamber,line width=1pt,dashed},
+  action/.style={->,draw=themegreen,line width=1pt},
+  feedback/.style={->,draw=themecurve,line width=1pt,dashed}
+]
+
+% Three semantic regions. Horizontal position expresses responsibility, not time.
+\begin{pgfonlayer}{background}
+  \fill[fill=themeamber!5!themebg,draw=themeamber!45,dashed,rounded corners=7pt]
+    (-0.2,1.45) rectangle (4.0,9.7);
+  \fill[fill=themecurve!5!themebg,draw=themecurve!45,dashed,rounded corners=7pt]
+    (4.35,0.25) rectangle (10.7,10.35);
+  \fill[fill=themegreen!5!themebg,draw=themegreen!45,dashed,rounded corners=7pt]
+    (11.05,1.45) rectangle (15.75,9.7);
+\end{pgfonlayer}
+
+\node[anchor=west,font=\bfseries,color=themeamber] at (0.05,9.25) {外部知识};
+\node[anchor=west,font=\bfseries,color=themecurve] at (4.65,9.9) {应用运行时};
+\node[anchor=west,font=\bfseries,color=themegreen] at (11.35,9.25) {外部能力};
+
+% Knowledge path: one-way preprocessing and retrieval support.
+\node[support] (docs)  at (1.9,7.8) {文档 / 文件};
+\node[support] (chunk) at (1.9,6.15) {解析与 Chunk};
+\node[support] (embed) at (1.9,4.5) {Embedding};
+\node[support] (index) at (1.9,2.85) {Retrieval Index};
+\draw[flow,draw=themeamber] (docs) -- (chunk);
+\draw[flow,draw=themeamber] (chunk) -- (embed);
+\draw[flow,draw=themeamber] (embed) -- (index);
+
+% Runtime primary path.
+\node[main] (user)    at (7.5,8.55) {用户任务};
+\node[main] (context) at (7.5,6.85) {Context Assembly};
+\node[main] (model)   at (7.5,5.05) {LLM / Model Decision};
+\node[main] (answer)  at (5.75,2.75) {最终输出};
+\node[guard] (runtime) at (9.25,2.75) {Runtime\\\scriptsize 校验 · 路由 · 授权};
+\node[main] (state)   at (7.5,0.95) {State / Checkpoint};
+\draw[flow] (user) -- (context);
+\draw[flow] (context) -- (model);
+\draw[flow] (model) -| node[pos=0.35,above=1pt,font=\scriptsize]{直接回答} (answer);
+\draw[flow,draw=themealert] (model) -| node[pos=0.35,above=1pt,font=\scriptsize,color=themealert]{Tool Call} (runtime);
+
+% Retrieval injects evidence only into context assembly.
+\draw[retrieval] (index.east) -- ++(1.1,0) |- node[pos=0.7,above=1pt,font=\scriptsize,color=themeamber]{检索证据} (context.west);
+
+% External capability path.
+\node[external] (tool)    at (13.35,6.25) {Tool / MCP Client};
+\node[external] (server)  at (13.35,4.45) {MCP Server / API};
+\node[external] (backend) at (13.35,2.65) {业务系统\\\scriptsize DB · SaaS · Service};
+\draw[action] (runtime.east) -- ++(0.8,0) |- node[pos=0.68,right=2pt,font=\scriptsize,color=themegreen]{执行} (tool.south);
+\draw[action] (tool) -- (server);
+\draw[action] (server) -- (backend);
+
+% Observation updates state; the next turn re-enters context assembly via an outer corridor.
+\draw[feedback] (backend.west) -- ++(-1.2,0) |- node[pos=0.72,below=1pt,font=\scriptsize,color=themecurve]{Observation} (state.east);
+\draw[feedback] (state.east) -- ++(6.6,0) |- node[pos=0.6,right=2pt,font=\scriptsize,color=themecurve]{下一轮} (context.east);
+
+\node[anchor=west,font=\scriptsize\bfseries,color=themealert] at (4.65,0.25)
+  {贯穿全程：Security · Evaluation · Observability · Cost / Latency · Human Approval · Recovery};
+
+\end{tikzpicture}

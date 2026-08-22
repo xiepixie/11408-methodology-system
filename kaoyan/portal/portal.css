@@ -26,6 +26,7 @@
   --scrollbar-thumb-hover: #94a3b8;
 
   /* Domain Accent Colors */
+  --accent-primary: #2563eb;
   --accent-math: #2563eb;
   --accent-math-bg: #eff6ff;
   --accent-408: #0d9488;
@@ -34,6 +35,9 @@
   --accent-eng-bg: #fffbeb;
   --accent-sys: #7c3aed;
   --accent-sys-bg: #f5f3ff;
+
+  /* Typography Fonts */
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   /* Document Type Badge Colors */
   --type-atlas: #6366f1;
@@ -95,6 +99,7 @@
   --scrollbar-thumb: #283650;
   --scrollbar-thumb-hover: #3d4f70;
 
+  --accent-primary: #38bdf8;
   --accent-math: #38bdf8;
   --accent-math-bg: rgba(56, 189, 248, 0.15);
   --accent-408: #2dd4bf;

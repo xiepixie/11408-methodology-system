@@ -773,7 +773,7 @@ Direction Atlas 必须先回答：
 
 当前已经锁定 **Area Topology + Leaf Ownership**，但仍不批量创建几十个空 Topic。
 
-八个 Area Atlas 已全部物理建立；Leaf Topic 目前只存在于 Area README 的 Canonical Map 中。物理创建某个 Leaf Handbook 的触发条件改为：
+八个 Area Atlas 已全部物理建立；Leaf Topic 默认仍只在 Area README 的 Canonical Map 中登记，但真实学习进入机制后允许按需建立。当前已经由真实材料触发 `Area 50 / Leaf 07 Automatic Differentiation` 与 `Area 60 / Leaf 06 Attention 与 Transformer` 两个深度 Handbook。物理创建其他 Leaf Handbook 的触发条件仍为：
 
 ```text
 真实学习已经进入该机制
@@ -799,7 +799,7 @@ Area 50 Optimization
 Area 60 Neural Representation
 ```
 
-因此下一步应优先物理建立 **Area 40 / Leaf 01 与 Leaf 02**，再在进入 MLP 时建立 **Area 60 / Leaf 01**；Area 50 的 Leaf 只有当求解与梯度机制真正成为主问题时再建。这样目录继续由真实认知需求长出来，而不是把“已经锁定的 Leaf 名单”误解成“必须立刻生成的文件夹清单”。
+原规划仍可优先推进 **Area 40 / Leaf 01 与 Leaf 02**，再在进入 MLP 时建立 **Area 60 / Leaf 01**；但实际建设顺序服从真实学习输入。此次 GPU/FlashAttention 学习已经使 AutoDiff 与 Attention 的机制成为主问题，因此先建立了 Area 50 / Leaf 07 与 Area 60 / Leaf 06。这样目录继续由真实认知需求长出来，而不是把“已经锁定的 Leaf 名单”误解成“必须按预设顺序生成的文件夹清单”。
 
 ---
 

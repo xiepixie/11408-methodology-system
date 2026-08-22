@@ -1,24 +1,24 @@
 {
   "meta": {
-    "generated_at": "2026-08-22T00:32:46.199065+00:00",
-    "total_documents": 352,
+    "generated_at": "2026-08-22T04:36:03.897314+00:00",
+    "total_documents": 336,
     "subject_counts": {
       "math1": 172,
-      "408": 160,
+      "408": 144,
       "english1": 17,
       "system": 3,
       "interview": 0
     },
     "type_counts": {
       "Atlas": 9,
-      "Topic": 80,
+      "Topic": 67,
       "Bridge": 35,
       "Integration": 6,
-      "Control": 9,
+      "Control": 6,
       "Drill": 213
     },
     "format_counts": {
-      "pdf": 139,
+      "pdf": 123,
       "markdown": 213
     }
   },
@@ -33,7 +33,7 @@
       "id": "408",
       "name": "408 计算机",
       "color": "#0d9488",
-      "count": 160
+      "count": 144
     },
     {
       "id": "english1",
@@ -6421,32 +6421,6 @@
       "content": "# 多路归并、败者树与虚段\n\n> 训练定位：解决“数据不能全进内存时，给 $N/M/k/r$、缓冲块、初始 runs 或段长，要求归并趟数、I/O、败者树比较次数、最佳归并树虚段数”的题目族。  \n> 模型归属：[DS12｜外部排序](DS12_外部排序_方法论手册.tex)。初始 run、置换选择、多路归并、败者树、缓冲与虚段的机制归 Canonical；本文件只训练参数账本和 I/O 计算。\n\n## 母题表示：外排先把成本模型从“比较”切成“块 I/O”\n\n草稿第一行固定写：\n\n```text\nN = 总记录/块数\nM = 内存一次可处理规模\nr = 初始 run 数\nk = 归并路数\nS = 归并趟数\n```\n\n普通初始段：\n\n$$\nr=\\left\\lceil\\frac NM\\right\\rceil.\n$$\n\n平衡 $k$ 路归并：\n\n$$\nS=\\lceil\\log_k r\\rceil.\n$$\n\n若每趟把全部数据读一遍、写一遍，归并阶段 I/O 量级：\n\n$$\n2NS.\n$$\n\n## 问题一：$k$ 不能只为了少趟数无限增大\n\n每个输入 run 至少需要输入缓冲，输出还要缓冲。\n\n若内存有 $B$ 个缓冲块，经典最小配置通常要求：\n\n$$\nk+1\\le B.\n$$\n\n因此先由缓冲预算求可行 $k$，再算 $\\log_k r$。\n\n### 局部规则：归并路数先过缓冲预算\n\n**触发信号**：题目同时给“缓冲区数量”和“k 路归并”。\n\n**第一动作**：先检查 $k$ 是否可实现，不要直接把题目中最大的 $k$ 代入趟数公式。\n\n**检查与退出**：至少要为每个输入路和输出保留题设要求的缓冲；若内存预算不支持该 $k$，停止计算 $\\lceil\\log_k r\\rceil$，先降低可行路数。\n\n## 问题二：多路归并的候选集合只有“每路当前首元素”\n\n```text\nrun1 -> current head\nrun2 -> current head\n...\nrunk -> current head\n```\n\n每次输出全局最小候选后，只推进它所属的那一路，再补入该路的新首元素。\n\n### 不变量\n\n- 每条尚未耗尽的 run 在候选结构中恰有一个当前项；\n- 已输出序列不大于任何当前候选；\n- 每一路内部指针只向前。\n\n把所有未输出记录一次性放入堆，会丢失“每条 run 已有序”的结构优势。\n\n## 问题三：败者树优化的是“每次选冠军的比较路径”\n\n朴素从 $k$ 个首元素线性找最小：每输出一个记录约需 $k-1$ 次比较。\n\n败者树维护一棵比较树：每次某一路补入新值，只沿该叶到根的路径重新比赛，更新成本约：\n\n$$O(\\log k).\n$$\n\n![4 路败者树中每次只沿补入元素所属叶到根的路径重新比赛](./assets/败者树_四路归并与单路径更新.svg)\n\n图中内部节点保存本轮比较的败者，顶部单独保留全局胜者；某一路输出并补入新值后，只有它到根的比较链失效，其他子树不需要重赛。\n\n### 边界\n\n败者树不改变：\n\n- 多路归并的 I/O 趟数；\n- 每一路必须有序；\n- 缓冲块需求。\n\n它主要降低内部选择当前最小候选的比较代价。\n\n## 问题四：置换选择要维护“活动/冻结”两种槽位\n\n输出当前 run 的最小活动记录 $x$ 后读入新记录 $y$：\n\n- 若 $y\\ge x$：仍可留在当前 run，设为活动；\n- 若 $y<x$：冻结到下一 run。\n\n当活动记录全部耗尽：当前 run 结束，把冻结集合解冻，开始新 run。\n\n### 检查与退出\n\n“冻结”不等于输入已经结束；输入结束后，当前内存中剩余活动记录仍要继续输出。\n\n随机输入下平均 run 长度常约为 $2M$，这是统计性教材结论，不是每个输入都恰好 $2M$。\n\n## 问题五：最佳归并树先补虚段，再做 $k$ 叉 Huffman\n\n若初始段长度不等，较短 run 应尽量早合并，减少长 run 被重复读写的层数。\n\n把每个 run 长度看成叶权，构造 $k$ 叉 Huffman 式归并树。\n\n严格 $k$ 叉树要求：\n\n$$\n\\frac{r-1}{k-1}\\in\\mathbb Z.\n$$\n\n令：\n\n$$\nu=(r-1)\\bmod(k-1).\n$$\n\n若 $u\\ne0$，需要补：\n\n$$\n\\boxed{k-u-1}\n$$\n\n个权值为 0 的虚段。\n\n### 代表母题：4 路归并，6 个初始段\n\n$$\n(r-1)\\bmod(k-1)=5\\bmod3=2.\n$$\n\n所以补：\n\n$$\n4-2-1=1\n$$\n\n个虚段。\n\n之后以 7 个叶子做严格 4 叉最优归并树。\n\n### 局部规则：虚段是“结构补位”，不是外存真实数据\n\n**触发信号**：$k$ 路最佳归并树的初始段数不满足严格 $k$ 叉树叶数同余条件，需要补虚段。\n\n**第一动作**：求最小 $s\\ge0$ 使 $(r+s-1)\\bmod(k-1)=0$，补 $s$ 个权值 0 的虚段后再做 $k$ 叉 Huffman 合并。\n\n**检查与退出**：虚段只参与归并树计算，权值为 0，不产生真实记录 I/O；若把它当成真实 run 计读写量，或补段后仍不满足同余条件，立即重算。\n\n## 问题六：为什么虚段要放在最底层\n\n虚段权为 0，应让它承担尽可能深的位置，避免真实 run 因补位而多经过一层归并。\n\n等价理解：若第一趟无法凑满 $k$ 路，可先做一个较少路数的归并，使后续结构成为严格 $k$ 叉树。\n\n不能把“最后一趟少合几路”当成同样效果；那可能让真实大 run 已经重复参与额外 I/O。\n\n## 问题七：归并趟数与最佳归并树是两类题\n\n### 初始 runs 等长、每趟平衡合并\n\n重点是：\n\n$$S=\\lceil\\log_k r\\rceil.$$\n\n### runs 长度不等、问总读写代价最小\n\n重点转成带权路径长度：\n\n$$\nI/O\\ cost\\propto2\\times WPL.\n$$\n\n此时不能只用 $\\lceil\\log_k r\\rceil$ 判断总成本，因为不同 run 在不同深度会被重复读写不同次数。\n\n## 问题八：缓冲块耗尽 ≠ run 耗尽\n\n- 某输入 buffer 空：只说明要从该 run 再读一个块；\n- run 真正耗尽：才从候选集合中移除该路；\n- 输出 buffer 满：触发一次块写；\n- 全部 run 耗尽：整个归并结束。\n\n把块级 I/O 事件与记录级顺序事件分开，是外排计算不乱的关键。\n\n## 代表母题：等长 runs 的趟数\n\n若：\n\n```text\nr = 25 initial runs\nk = 5-way merge\n```\n\n则：\n\n$$\n25\\to5\\to1\n$$\n\n共 2 趟：\n\n$$S=\\lceil\\log_5 25\\rceil=2.$$\n\n若总数据规模为 $N$ 个块，归并阶段读写约：\n\n$$4N\n$$\n\n块 I/O（每趟读 $N$、写 $N$）。初始 run 生成阶段的读写是否另计，以题目口径为准。\n\n## 陌生外排题固定落笔协议\n\n```text\n1. 先确认数据是否真的不能全进内存；能进则转 DS11。\n2. 写 N、M、r、k、buffer budget。\n3. 普通初始段 r=ceil(N/M)；置换选择则按实际/题设 run 长度。\n4. 先检查 k 路是否满足输入+输出缓冲预算。\n5. 等长平衡 runs 用 S=ceil(log_k r)。\n6. 每趟 I/O 分读 N + 写 N，是否包含初始段生成单独声明。\n7. 段长不等时转最佳归并树：先补虚段，再反复合并最小 k 个权。\n8. 败者树只优化候选比较，不改变 I/O 趟数。\n9. 最后检查：虚段数是否满足 (r'-1)%(k-1)=0。\n```\n\n## 最短压缩\n\n> **外排先数 I/O：初始 run → 可行 k 路 → 归并趟数；段长不等时把 run 长当 Huffman 权值，先补零权虚段，再让短段更深、早合并。**\n"
     },
     {
-      "id": "408_CO-01_数据表示与运算_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "计算机组成原理",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "CO-01",
-      "title": "数据表示与运算",
-      "full_name": "CO-01_数据表示与运算_方法论手册 2",
-      "filename": "CO-01_数据表示与运算_方法论手册 2.pdf",
-      "url": "../90_publish/408/CO-01_数据表示与运算_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/CO-01_数据表示与运算_方法论手册 2.pdf",
-      "size_bytes": 443150,
-      "size_human": "432.8 KB",
-      "modified_at": "2026-08-21T15:49:07+00:00",
-      "modified_date": "2026-08-21",
-      "tags": [
-        "408 计算机",
-        "计算机组成原理",
-        "Topic",
-        "CO-01",
-        "数据表示",
-        "运算"
-      ]
-    },
-    {
       "id": "408_CO-01_数据表示与运算_方法论手册",
       "subject": "408",
       "subject_name": "408 计算机",
@@ -6470,32 +6444,6 @@
         "CO-01",
         "数据表示",
         "运算"
-      ]
-    },
-    {
-      "id": "408_CO-02_ISA与机器级程序_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "计算机组成原理",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "CO-02",
-      "title": "ISA与机器级程序",
-      "full_name": "CO-02_ISA与机器级程序_方法论手册 2",
-      "filename": "CO-02_ISA与机器级程序_方法论手册 2.pdf",
-      "url": "../90_publish/408/CO-02_ISA与机器级程序_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/CO-02_ISA与机器级程序_方法论手册 2.pdf",
-      "size_bytes": 435774,
-      "size_human": "425.6 KB",
-      "modified_at": "2026-08-21T15:49:11+00:00",
-      "modified_date": "2026-08-21",
-      "tags": [
-        "408 计算机",
-        "计算机组成原理",
-        "Topic",
-        "CO-02",
-        "ISA",
-        "机器级程序"
       ]
     },
     {
@@ -6525,32 +6473,6 @@
       ]
     },
     {
-      "id": "408_CO-04_流水线与指令级并行_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "计算机组成原理",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "CO-04",
-      "title": "流水线与指令级并行",
-      "full_name": "CO-04_流水线与指令级并行_方法论手册 2",
-      "filename": "CO-04_流水线与指令级并行_方法论手册 2.pdf",
-      "url": "../90_publish/408/CO-04_流水线与指令级并行_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/CO-04_流水线与指令级并行_方法论手册 2.pdf",
-      "size_bytes": 432973,
-      "size_human": "422.8 KB",
-      "modified_at": "2026-08-21T16:05:10+00:00",
-      "modified_date": "2026-08-21",
-      "tags": [
-        "408 计算机",
-        "计算机组成原理",
-        "Topic",
-        "CO-04",
-        "流水线",
-        "指令级并行"
-      ]
-    },
-    {
       "id": "408_CO-04_流水线与指令级并行_方法论手册",
       "subject": "408",
       "subject_name": "408 计算机",
@@ -6574,32 +6496,6 @@
         "CO-04",
         "流水线",
         "指令级并行"
-      ]
-    },
-    {
-      "id": "408_CO-05_主存与存储硬件_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "计算机组成原理",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "CO-05",
-      "title": "主存与存储硬件",
-      "full_name": "CO-05_主存与存储硬件_方法论手册 2",
-      "filename": "CO-05_主存与存储硬件_方法论手册 2.pdf",
-      "url": "../90_publish/408/CO-05_主存与存储硬件_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/CO-05_主存与存储硬件_方法论手册 2.pdf",
-      "size_bytes": 348534,
-      "size_human": "340.4 KB",
-      "modified_at": "2026-08-21T15:54:44+00:00",
-      "modified_date": "2026-08-21",
-      "tags": [
-        "408 计算机",
-        "计算机组成原理",
-        "Topic",
-        "CO-05",
-        "主存",
-        "存储硬件"
       ]
     },
     {
@@ -6629,32 +6525,6 @@
       ]
     },
     {
-      "id": "408_CO-06_Cache与存储层次_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "计算机组成原理",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "CO-06",
-      "title": "Cache与存储层次",
-      "full_name": "CO-06_Cache与存储层次_方法论手册 2",
-      "filename": "CO-06_Cache与存储层次_方法论手册 2.pdf",
-      "url": "../90_publish/408/CO-06_Cache与存储层次_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/CO-06_Cache与存储层次_方法论手册 2.pdf",
-      "size_bytes": 366399,
-      "size_human": "357.8 KB",
-      "modified_at": "2026-08-21T15:24:04+00:00",
-      "modified_date": "2026-08-21",
-      "tags": [
-        "408 计算机",
-        "计算机组成原理",
-        "Topic",
-        "CO-06",
-        "Cache",
-        "存储层次"
-      ]
-    },
-    {
       "id": "408_CO-06_Cache与存储层次_方法论手册",
       "subject": "408",
       "subject_name": "408 计算机",
@@ -6681,32 +6551,6 @@
       ]
     },
     {
-      "id": "408_CO-07_地址翻译与虚拟存储硬件_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "计算机组成原理",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "CO-07",
-      "title": "地址翻译与虚拟存储硬件",
-      "full_name": "CO-07_地址翻译与虚拟存储硬件_方法论手册 2",
-      "filename": "CO-07_地址翻译与虚拟存储硬件_方法论手册 2.pdf",
-      "url": "../90_publish/408/CO-07_地址翻译与虚拟存储硬件_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/CO-07_地址翻译与虚拟存储硬件_方法论手册 2.pdf",
-      "size_bytes": 297390,
-      "size_human": "290.4 KB",
-      "modified_at": "2026-08-20T07:17:37+00:00",
-      "modified_date": "2026-08-20",
-      "tags": [
-        "408 计算机",
-        "计算机组成原理",
-        "Topic",
-        "CO-07",
-        "地址翻译",
-        "虚拟存储硬件"
-      ]
-    },
-    {
       "id": "408_CO-07_地址翻译与虚拟存储硬件_方法论手册",
       "subject": "408",
       "subject_name": "408 计算机",
@@ -6730,32 +6574,6 @@
         "CO-07",
         "地址翻译",
         "虚拟存储硬件"
-      ]
-    },
-    {
-      "id": "408_CO-08_总线与IO硬件_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "计算机组成原理",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "CO-08",
-      "title": "总线与IO硬件",
-      "full_name": "CO-08_总线与IO硬件_方法论手册 2",
-      "filename": "CO-08_总线与IO硬件_方法论手册 2.pdf",
-      "url": "../90_publish/408/CO-08_总线与IO硬件_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/CO-08_总线与IO硬件_方法论手册 2.pdf",
-      "size_bytes": 399920,
-      "size_human": "390.5 KB",
-      "modified_at": "2026-08-18T04:03:11+00:00",
-      "modified_date": "2026-08-18",
-      "tags": [
-        "408 计算机",
-        "计算机组成原理",
-        "Topic",
-        "CO-08",
-        "总线",
-        "IO硬件"
       ]
     },
     {
@@ -6859,32 +6677,6 @@
         "Integration",
         "CO-I01",
         "一条指令的一生"
-      ]
-    },
-    {
-      "id": "408_CO-03_CPU数据通路与控制_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "计算机组成原理",
-      "type": "Control",
-      "format": "pdf",
-      "code": "CO-03",
-      "title": "CPU数据通路与控制",
-      "full_name": "CO-03_CPU数据通路与控制_方法论手册 2",
-      "filename": "CO-03_CPU数据通路与控制_方法论手册 2.pdf",
-      "url": "../90_publish/408/CO-03_CPU数据通路与控制_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/CO-03_CPU数据通路与控制_方法论手册 2.pdf",
-      "size_bytes": 456932,
-      "size_human": "446.2 KB",
-      "modified_at": "2026-08-21T16:05:07+00:00",
-      "modified_date": "2026-08-21",
-      "tags": [
-        "408 计算机",
-        "计算机组成原理",
-        "Control",
-        "CO-03",
-        "CPU数据通路",
-        "控制"
       ]
     },
     {
@@ -7654,32 +7446,6 @@
       ]
     },
     {
-      "id": "408_OS-03_并发锁与PV_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "操作系统",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "OS-03",
-      "title": "并发锁与PV",
-      "full_name": "OS-03_并发锁与PV_方法论手册 2",
-      "filename": "OS-03_并发锁与PV_方法论手册 2.pdf",
-      "url": "../90_publish/408/OS-03_并发锁与PV_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/OS-03_并发锁与PV_方法论手册 2.pdf",
-      "size_bytes": 483319,
-      "size_human": "472.0 KB",
-      "modified_at": "2026-08-18T15:19:20+00:00",
-      "modified_date": "2026-08-18",
-      "tags": [
-        "408 计算机",
-        "操作系统",
-        "Topic",
-        "OS-03",
-        "并发锁",
-        "PV"
-      ]
-    },
-    {
       "id": "408_OS-03_并发锁与PV_方法论手册",
       "subject": "408",
       "subject_name": "408 计算机",
@@ -7703,32 +7469,6 @@
         "OS-03",
         "并发锁",
         "PV"
-      ]
-    },
-    {
-      "id": "408_OS-04_虚拟内存与地址翻译_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "操作系统",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "OS-04",
-      "title": "虚拟内存与地址翻译",
-      "full_name": "OS-04_虚拟内存与地址翻译_方法论手册 2",
-      "filename": "OS-04_虚拟内存与地址翻译_方法论手册 2.pdf",
-      "url": "../90_publish/408/OS-04_虚拟内存与地址翻译_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/OS-04_虚拟内存与地址翻译_方法论手册 2.pdf",
-      "size_bytes": 469137,
-      "size_human": "458.1 KB",
-      "modified_at": "2026-08-20T10:10:46+00:00",
-      "modified_date": "2026-08-20",
-      "tags": [
-        "408 计算机",
-        "操作系统",
-        "Topic",
-        "OS-04",
-        "虚拟内存",
-        "地址翻译"
       ]
     },
     {
@@ -7758,31 +7498,6 @@
       ]
     },
     {
-      "id": "408_OS-05_IO系统_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "操作系统",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "OS-05",
-      "title": "IO系统",
-      "full_name": "OS-05_IO系统_方法论手册 2",
-      "filename": "OS-05_IO系统_方法论手册 2.pdf",
-      "url": "../90_publish/408/OS-05_IO系统_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/OS-05_IO系统_方法论手册 2.pdf",
-      "size_bytes": 660138,
-      "size_human": "644.7 KB",
-      "modified_at": "2026-08-18T15:19:27+00:00",
-      "modified_date": "2026-08-18",
-      "tags": [
-        "408 计算机",
-        "操作系统",
-        "Topic",
-        "OS-05",
-        "IO系统"
-      ]
-    },
-    {
       "id": "408_OS-05_IO系统_方法论手册",
       "subject": "408",
       "subject_name": "408 计算机",
@@ -7805,32 +7520,6 @@
         "Topic",
         "OS-05",
         "IO系统"
-      ]
-    },
-    {
-      "id": "408_OS-06_OS-07_文件系统与持久化_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "操作系统",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "OS-06/OS-07",
-      "title": "文件系统与持久化",
-      "full_name": "OS-06_OS-07_文件系统与持久化_方法论手册 2",
-      "filename": "OS-06_OS-07_文件系统与持久化_方法论手册 2.pdf",
-      "url": "../90_publish/408/OS-06_OS-07_文件系统与持久化_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/OS-06_OS-07_文件系统与持久化_方法论手册 2.pdf",
-      "size_bytes": 419558,
-      "size_human": "409.7 KB",
-      "modified_at": "2026-08-18T15:19:31+00:00",
-      "modified_date": "2026-08-18",
-      "tags": [
-        "408 计算机",
-        "操作系统",
-        "Topic",
-        "OS-06/OS-07",
-        "文件系统",
-        "持久化"
       ]
     },
     {
@@ -8087,32 +7776,6 @@
         "OS-I02",
         "ForkCOW",
         "资源引用"
-      ]
-    },
-    {
-      "id": "408_OS-01_OS-02_进程线程调度与控制权_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "操作系统",
-      "type": "Control",
-      "format": "pdf",
-      "code": "OS-01/OS-02",
-      "title": "进程线程调度与控制权",
-      "full_name": "OS-01_OS-02_进程线程调度与控制权_方法论手册 2",
-      "filename": "OS-01_OS-02_进程线程调度与控制权_方法论手册 2.pdf",
-      "url": "../90_publish/408/OS-01_OS-02_进程线程调度与控制权_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/OS-01_OS-02_进程线程调度与控制权_方法论手册 2.pdf",
-      "size_bytes": 683125,
-      "size_human": "667.1 KB",
-      "modified_at": "2026-08-18T15:19:15+00:00",
-      "modified_date": "2026-08-18",
-      "tags": [
-        "408 计算机",
-        "操作系统",
-        "Control",
-        "OS-01/OS-02",
-        "进程线程调度",
-        "控制权"
       ]
     },
     {
@@ -8808,31 +8471,6 @@
       ]
     },
     {
-      "id": "408_NET-03_可靠传输_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "计算机网络",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "NET-03",
-      "title": "可靠传输",
-      "full_name": "NET-03_可靠传输_方法论手册 2",
-      "filename": "NET-03_可靠传输_方法论手册 2.pdf",
-      "url": "../90_publish/408/NET-03_可靠传输_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/NET-03_可靠传输_方法论手册 2.pdf",
-      "size_bytes": 344118,
-      "size_human": "336.1 KB",
-      "modified_at": "2026-08-16T00:30:43+00:00",
-      "modified_date": "2026-08-16",
-      "tags": [
-        "408 计算机",
-        "计算机网络",
-        "Topic",
-        "NET-03",
-        "可靠传输"
-      ]
-    },
-    {
       "id": "408_NET-03_可靠传输_方法论手册",
       "subject": "408",
       "subject_name": "408 计算机",
@@ -8882,32 +8520,6 @@
         "IP地址",
         "子网",
         "分组转发"
-      ]
-    },
-    {
-      "id": "408_NET-06_传输层与TCP_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "计算机网络",
-      "type": "Topic",
-      "format": "pdf",
-      "code": "NET-06",
-      "title": "传输层与TCP",
-      "full_name": "NET-06_传输层与TCP_方法论手册 2",
-      "filename": "NET-06_传输层与TCP_方法论手册 2.pdf",
-      "url": "../90_publish/408/NET-06_传输层与TCP_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/NET-06_传输层与TCP_方法论手册 2.pdf",
-      "size_bytes": 401623,
-      "size_human": "392.2 KB",
-      "modified_at": "2026-08-16T00:30:52+00:00",
-      "modified_date": "2026-08-16",
-      "tags": [
-        "408 计算机",
-        "计算机网络",
-        "Topic",
-        "NET-06",
-        "传输层",
-        "TCP"
       ]
     },
     {
@@ -9130,10 +8742,10 @@
       "filename": "NET-I01_一个网络请求的一生_综合手册.pdf",
       "url": "../90_publish/408/NET-I01_一个网络请求的一生_综合手册.pdf",
       "local_path": "kaoyan/90_publish/408/NET-I01_一个网络请求的一生_综合手册.pdf",
-      "size_bytes": 186639,
-      "size_human": "182.3 KB",
-      "modified_at": "2026-08-21T17:17:33.750028+00:00",
-      "modified_date": "2026-08-21",
+      "size_bytes": 595153,
+      "size_human": "581.2 KB",
+      "modified_at": "2026-08-22T04:33:01.213070+00:00",
+      "modified_date": "2026-08-22",
       "tags": [
         "408 计算机",
         "计算机网络",
@@ -9166,31 +8778,6 @@
         "NET-05",
         "路由",
         "控制平面"
-      ]
-    },
-    {
-      "id": "408_NET-07_拥塞控制_方法论手册 2",
-      "subject": "408",
-      "subject_name": "408 计算机",
-      "sub_subject": "计算机网络",
-      "type": "Control",
-      "format": "pdf",
-      "code": "NET-07",
-      "title": "拥塞控制",
-      "full_name": "NET-07_拥塞控制_方法论手册 2",
-      "filename": "NET-07_拥塞控制_方法论手册 2.pdf",
-      "url": "../90_publish/408/NET-07_拥塞控制_方法论手册 2.pdf",
-      "local_path": "kaoyan/90_publish/408/NET-07_拥塞控制_方法论手册 2.pdf",
-      "size_bytes": 379166,
-      "size_human": "370.3 KB",
-      "modified_at": "2026-08-16T00:30:55+00:00",
-      "modified_date": "2026-08-16",
-      "tags": [
-        "408 计算机",
-        "计算机网络",
-        "Control",
-        "NET-07",
-        "拥塞控制"
       ]
     },
     {
@@ -9540,15 +9127,15 @@
       "title": "跨层网络请求状态推演",
       "full_name": "跨层网络请求状态推演",
       "filename": "跨层网络请求状态推演.md",
-      "training_scope": "解决“给出 URL 与一组本地/网络缓存状态后，怎样判断实际会经过哪些模块、按什么顺序创建或复用状态，并定位第一次失败”的综合题。",
-      "model_owner": "[NET-I01 一个网络请求的一生](NET-I01_一个网络请求的一生_综合手册.tex)。模块组合顺序、四条并行轨迹与失败边界由 Canonical Integration 拥有；DNS、ARP/LPM、TCP、拥塞和 HTTP 的局部机制继续由各 Topic/Bridge Owner 拥有。",
+      "training_scope": "给出一个 URL、当前缓存/表项/连接状态和网络拓扑后，判断真正会发生哪些事件、哪些已有状态可以复用、每个设备会改什么，并找到第一次失败的位置。",
+      "model_owner": "[NET-I01 一个网络请求的一生](NET-I01_一个网络请求的一生_综合手册.tex)。协议机制仍由 NET01--NET08 与 NET-B01--B06 拥有；本文件只训练“怎样调用”和“怎样检查”。",
       "model_owner_id": "408_NET-I01_一个网络请求的一生_综合手册",
       "url": "../30_408/40_计算机网络/60_综合专题/NET-I01_一个网络请求的一生/跨层网络请求状态推演.md",
       "local_path": "kaoyan/30_408/40_计算机网络/60_综合专题/NET-I01_一个网络请求的一生/跨层网络请求状态推演.md",
-      "size_bytes": 10054,
-      "size_human": "9.8 KB",
-      "modified_at": "2026-08-21T17:45:33.149385+00:00",
-      "modified_date": "2026-08-21",
+      "size_bytes": 15686,
+      "size_human": "15.3 KB",
+      "modified_at": "2026-08-22T03:58:17.230135+00:00",
+      "modified_date": "2026-08-22",
       "tags": [
         "408 计算机",
         "计算机网络",
@@ -9557,7 +9144,7 @@
         "跨层网络请求状态推演",
         "训练手册"
       ],
-      "content": "# 跨层网络请求状态推演\n\n> 训练定位：解决“给出 URL 与一组本地/网络缓存状态后，怎样判断实际会经过哪些模块、按什么顺序创建或复用状态，并定位第一次失败”的综合题。  \n> 模型归属：[NET-I01 一个网络请求的一生](NET-I01_一个网络请求的一生_综合手册.tex)。模块组合顺序、四条并行轨迹与失败边界由 Canonical Integration 拥有；DNS、ARP/LPM、TCP、拥塞和 HTTP 的局部机制继续由各 Topic/Bridge Owner 拥有。\n\n## 母题表示：输入不是一个 URL，而是 `URL + 当前状态`\n\n同一个 URL 在第一次访问和第二次访问时，事件轨迹可能完全不同。草稿先把初始状态写成六格：\n\n```text\nIP configuration / DHCP lease: valid or missing?\nDNS cache: hit / miss / expired?\nFIB + next-hop decision: available?\nARP/ND neighbor cache: hit / miss?\nTransport connection: existing / absent / reset?\nHTTP cache / reusable application state: hit / miss?\n```\n\n只有缺失状态才需要创建；已有且仍有效的状态直接复用。\n\n### 局部规则：先找第一个未满足的前置条件\n\n**触发信号**：题目同时出现 URL、DNS、ARP、TCP、HTTP、网关、缓存或“第一次/第二次访问”。\n\n**第一动作**：从“能否形成合法 source IP 配置”开始，沿依赖顺序寻找第一个未满足条件：\n\n```text\nConfiguration\n-> Name resolution\n-> Forwarding / current next hop\n-> Link identity\n-> Transport state\n-> Application semantics\n```\n\n**检查与退出**：不要从最熟悉的协议名开始。例如没有 IP 配置时，不能先 DNS；DNS 已命中时，也不应机械再画 root/TLD/authority 查询。\n\n![跨层网络请求综合拓扑：从本地主机到 ISP 骨干网与 Web 服务器集群](./assets/ISP骨干网与Web服务全流程拓扑.svg)\n\n图中展示跨层请求推演的完整物理与逻辑基准：左侧为校园网/家庭主机通过默认网关接入 ISP 骨干网络（WAN），右侧为目标互联网公司的多级服务器集群（Web 服务器、DNS 服务器、内部网关与核心交换机）；推演时必须依托当前拓扑状态向量确定下一跳与协议调用链。\n\n## 四条轨迹必须同时保持类型正确\n\n### Name / Identity\n\n```text\nURL/domain\n-> destination IP\n-> current next-hop IP\n-> current-link MAC/identity\n-> transport port/endpoint\n```\n\n这些不是同一种“地址”。DNS 不输出 next-hop MAC，ARP 不解析远端 HTTP resource，port 也不参与 LPM。\n\n### Encapsulation\n\n```text\nHTTP message bytes\ninside transport segment/datagram\ninside IP packet\ninside current-link frame\n```\n\n跨 router 时旧 frame 被删除并重建；在无 NAT/隧道等改写时，destination IP 仍保持端到端语义。\n\n### State Owner\n\n| 状态 | Owner |\n|---|---|\n| DHCP lease / host prefix / gateway | host configuration / NET04 |\n| DNS RR + TTL | resolver/cache / NET08 |\n| selected route / installed FIB | NET05/NET04 |\n| IP→MAC neighbor state | current host/router interface / NET04-B01 |\n| TCP SEQ/ACK/rwnd/cwnd | transport endpoints / NET06/07 |\n| HTTP resource/cache/session semantics | application / NET08 |\n\n### Cost / Dependency\n\n只有真正串行依赖才相加：DNS cache miss、TCP 建连、HTTP main object、解析后发现的 subresources 等必须先画 DAG，再计算 RTT/传输时间。\n\n## 问题一：第一次访问与第二次访问为什么不能共用一条固定流程\n\n设第一次访问时：\n\n```text\nlease missing\nDNS cache miss\nneighbor cache miss\nTCP connection absent\nHTTP cache miss\n```\n\n则必须逐步创建配置、DNS 结果、当前一跳身份和 TCP state，再交换 HTTP request/response。\n\n若第二次立即访问同一 origin：\n\n- lease 可能仍有效；\n- DNS RR 可能仍在 TTL 内；\n- neighbor cache 可能仍命中；\n- persistent TCP connection 可能可复用；\n- HTTP cache 还可能直接满足请求。\n\n因此：\n\n$$\n\\text{same logical request}\\not\\Rightarrow\\text{same event trace}.\n$$\n\n### 检查与退出\n\n“访问过一次”不代表所有缓存都必然有效。每个状态有自己的 key、scope 和 lifetime；任何一个失效都只重建对应阶段。\n\n## 问题二：跨层故障题怎样找 First Divergence\n\n不要从最终症状倒推一个喜欢的协议。按前置条件链逐项问：\n\n1. 主机是否有合法 source IP / prefix / gateway / DNS 配置？\n2. domain 是否已解析成可用 destination IP？\n3. FIB 是否给出可执行 next hop/egress？\n4. 当前链路是否已经知道 next-hop identity？\n5. transport endpoint 是否建立/可用？\n6. application response 是否满足目标语义？\n\n第一个“不成立”的位置就是首个候选 Owner。后面的失败现象可能只是连锁结果。\n\n### 局部规则：错误归属必须停在第一处证据断裂\n\n**触发信号**：浏览器打不开、连接超时、DNS 成功但网页不返回等综合症状。\n\n**第一动作**：只使用当前可观察证据，找到第一条无法继续满足的接口，不越级猜后续层。\n\n**检查与退出**：若 DNS 已返回 IP，却把“ARP cache miss”写成 DNS 错误，或 TCP 尚未建立就分析 HTTP status code，说明 Owner 越级。\n\n## 题库证据：目前只验证了局部接口，还没有真正打穿 Integration\n\n现有 305 题提供了可以拼接的局部证据：\n\n| 证据题 | 验证的接口 |\n|---|---|\n| 968 | 无 IP 配置时 DHCP 是 DNS/TCP 之前的前置条件 |\n| 987 | 域名 cache miss 时 DNS 必须先于 Web TCP 建连 |\n| 860、862、865–867 | destination IP -> next-hop IP -> current-link MAC 的 B01 交接 |\n| 847、909 | installed FIB + LPM 决定 packet-time action |\n| 934–936 | TCP connection state 必须先完成序号同步，应用才有稳定 byte stream |\n| 993–996 | HTTP 主对象/子资源依赖、persistent/pipeline 决定后续 RTT |\n| 997 | 同一次成功 Web 访问中 DNS/HTTP/TCP/ARP 是否出现取决于状态与前置条件 |\n| 1000 | NAT mapping 是额外的 stateful forwarding 分支，不能只靠地址表面判断 |\n\n这些题说明各接口方向是正确的，但**没有任何一道题单独要求把完整状态链从 URL 推到 HTTP representation，并在中间插入 cache hit/miss 与失败分支**。所以 NET-I01 当前应视为“Canonical 组合模型成立，但训练证据仍不足”。\n\n## 变式轴\n\n1. **配置状态**：lease 有/无、是否过期；\n2. **名字状态**：DNS RR hit/miss/expired；\n3. **Scope**：同网段目标 / 远端目标；\n4. **链路状态**：neighbor cache hit/miss、Ethernet/其他链路；\n5. **控制状态**：route selected 但 FIB 尚未安装、next hop 无法解析；\n6. **transport 状态**：新建 / persistent reuse / reset / zero window / congestion-limited；\n7. **HTTP 状态**：cache hit、main object 后发现 subresources、pipeline/multiplex；\n8. **第二次请求**：只重建已经失效的状态，而不是重跑全部协议。\n\n## 题目攻击：用现有题只改一个状态，检查事件图是否真的重算\n\n把现有题库看成一组接口靶点，而不是协议清单：\n\n| 基准题 | 只改一个条件 | 正确的模型变化 |\n|---|---|---|\n| 968 | `DHCP lease = valid` | DHCP 前置阶段消失，直接进入名字/转发依赖 |\n| 967 | `.com delegation cached` | DNS 不再从 root 开始，查询链缩短 |\n| 866 | gateway ARP cache hit | 当前第一跳不再发 ARP Request；不能仍按“路由器数”计次 |\n| 890 | 某 router FIB 仍是旧版本 | 不能再使用最终收敛路径，进入 NET-B02 mixed-state 推演 |\n| 934–936 | TCP connection already reusable | 三次握手阶段消失，但 HTTP authority/请求语义仍存在 |\n| 995 | 禁止 pipeline | 3 个图片请求不再共享同一 RTT 批次，总依赖时间改变 |\n| 997 | DNS 与 neighbor cache 都 hit | DNS/ARP 事件都可能消失，只保留仍缺失的 transport/application 阶段 |\n\n### 局部规则：单变量攻击后，只有依赖于该状态的子图可以变化\n\n**触发信号**：同一道综合题只修改一个 cache、FIB、connection 或 pipeline 条件。\n\n**第一动作**：在原依赖 DAG 上标出这个状态的直接 consumers，只重算从它向后的受影响分支。\n\n**检查与退出**：例如把 DNS cache 从 miss 改成 hit，不应让 ARP/TCP/HTTP 的语义自动消失；把 ARP cache 改成 hit，也不应改变 destination IP。若无关分支一起变化，说明层次依赖被串成了错误的裸线性链。\n\n## 代表母题：状态向量驱动实际事件轨迹\n\n给定：\n\n```text\nURL = http://www.example.test/index.html\nDHCP lease = valid\nDNS cache = miss\nFIB = installed\nARP cache for gateway = hit\nTCP connection = absent\nHTTP cache = miss\n```\n\n正确轨迹不是 DORA 全流程，而是：\n\n```text\nreuse host configuration\n-> DNS resolution\n-> consume installed FIB\n-> reuse gateway neighbor entry\n-> build current-hop frame\n-> route across network\n-> TCP handshake\n-> HTTP request/response\n```\n\n若把 DNS cache 改成 hit，则 DNS authority 查询消失；若再把 TCP 改成可复用 persistent connection，则 handshake 也消失。题目的本质是**状态复用改变事件图**，而不是背协议名顺序。\n\n## 陌生综合题固定落笔协议\n\n```text\n1. 把 URL 和初始状态分开写。\n2. 先找第一个缺失前置条件，不机械重跑全部协议。\n3. Name track 保持 domain / dst IP / next-hop IP / MAC / port 类型正确。\n4. 每过 router 只替换当前 frame；无改写时 dst IP 保持。\n5. 把 control-plane state 与 packet-time state 分开。\n6. TCP 建立/复用后才进入 HTTP message semantics。\n7. 性能题先画依赖 DAG，再数 RTT 与数据传输。\n8. 第二次请求只重建 expired/missing state。\n9. 失败时停在第一处接口断裂，并回到唯一 Owner。\n```\n\n## 最短压缩\n\n> **综合题不是背 `DHCP→DNS→ARP→TCP→HTTP`：先盘点已有状态，再沿前置条件找缺口；同一个请求因为 cache/connection 状态不同，可以拥有完全不同的事件轨迹。**\n"
+      "content": "# 跨层网络请求状态推演\n\n> 训练定位：给出一个 URL、当前缓存/表项/连接状态和网络拓扑后，判断真正会发生哪些事件、哪些已有状态可以复用、每个设备会改什么，并找到第一次失败的位置。\n> 模型归属：[NET-I01 一个网络请求的一生](NET-I01_一个网络请求的一生_综合手册.tex)。协议机制仍由 NET01--NET08 与 NET-B01--B06 拥有；本文件只训练“怎样调用”和“怎样检查”。\n\n## 先记住两个过程，不背协议顺序\n\n一次 Web 访问不是固定的：\n\n```text\nDHCP -> DNS -> ARP -> TCP -> HTTP\n```\n\n更稳的想法是：\n\n```text\n请求过程：这次访问还缺什么状态？\n逐跳过程：一旦要发一条普通 IP 数据报，当前节点怎样把它送到下一节点？\n```\n\n![请求推进与逐跳数据报交付](./assets/事务层与逐跳数据报双层执行模型.svg)\n\n看到综合题时，先把这两个问题分开。DNS 查询、TCP SYN、TCP ACK、HTTP 数据都会产生需要逐跳转发的 IP 数据报；DHCP 初始广播则是启动阶段的特殊路径。\n\n## 第一张草稿：先写“现在已经有什么”\n\n不要一上来写协议流程。先把题目给出的状态写成一张表：\n\n```text\nHostConfig   = 有效 / 缺失 / 过期\nDNSCache     = 命中 / 未命中 / 过期\nInstalledFIB = 可用 / 缺路由 / 旧版本\nNeighbor     = 命中 / 未命中 / 正在解析\nSwitchState  = 已学习 / 目的未知 / STP 阻塞\nNATState     = 已有映射 / 无映射\nTCPState     = 可复用 / 不存在 / 已复位 / 正在关闭\nHTTPState    = 可直接使用缓存 / 需重新验证 / 未命中\n```\n\n然后只重建缺失或失效的状态。\n\n![已有状态怎样省掉不必要的网络步骤](./assets/状态命中裁剪网络请求事件DAG.svg)\n\n注意：FIB、ARP/ND、交换机 MAC 表和 NAT mapping 没有从模型里消失。它们属于“发送每一条数据报时”的逐跳过程，所以没有重复画成高层检查节点。\n\n## 五种名字不要混成一种“地址”\n\n综合题最容易错的不是某个字段没背住，而是把不同层使用的名字混在一起。\n\n| 名字 | 谁解释 | 它回答的问题 |\n| ------------------- | --------------------- | ---------------------------- |\n| URL / domain | 应用层 | 我要访问哪个资源/站点？ |\n| destination IP | IP 层 | 最终目标主机在哪里？ |\n| next-hop IP | 当前 host/router 的 FIB | 这一跳先交给谁？ |\n| MAC / 当前链路地址 | 当前链路 | 这个 frame 在本链路交给哪个接口/对端？ |\n| port | TCP/UDP | 到达主机后交给哪个传输端点？ |\n\n这些不是“逐级变换成同一种东西”。DNS 不产生 next-hop MAC；ARP 不解析 HTTP resource；port 不参与 LPM。\n\n## DNS 先做三分流：不一定真的会发 DNS 查询\n\n浏览器从 URL 得到 host 后，先判断：\n\n```text\nhost 直接是 IP          -> 跳过 DNS\nDNS 缓存命中            -> 复用已有结果\nDNS 缓存未命中          -> 向递归 DNS 服务器发送查询\n```\n\n若 DNS 缓存未命中，已知的是**递归 DNS 服务器的 IP**，还不是 Web 服务器的 IP。为了把这条 DNS 查询送到递归服务器，客户端仍要执行：\n\n```text\nresolver IP\n-> 查本机 FIB / LPM\n-> 得到 egress + next hop\n-> Ethernet/WLAN 若需要，先得到网关的链路地址\n-> 当前链路发送\n-> routers ...\n-> 递归 DNS 服务器\n```\n\n所以 **ARP/ND 完全可能出现在目标网站 DNS 应答之前**。这时解析的是 DNS 查询报文当前这一跳的下一跳地址，通常是默认网关，不是 `www.example.test` 对应服务器的 MAC。\n\n递归 DNS 服务器如果自己也没有缓存，再从它自己的网络环境继续查询根 DNS、顶级域 DNS（TLD）和权威 DNS 服务器。客户端不应该被画成亲自和这些层级逐个通信。\n\nDNS 在这条综合链中只负责输出：\n\n```text\ndomain name -> destination IP candidate(s) + DNS TTL\n```\n\n它不输出 next-hop MAC，也不保证目标服务器当前可达。\n\n## 贯穿拓扑：先认清谁是二层设备，谁是路由器\n\n![NET-I01 贯穿母场景拓扑](./assets/ISP骨干网与Web服务全流程拓扑.svg)\n\n读图时先做三件事：\n\n1. 圈出真正的 IP router：R1、R2、Core、BR1、BR2、Rn；只有它们推进 IP hop / TTL。\n2. 圈出二层设备：AP、S1、S2；它们不因为转发 frame 就让 TTL 减 1。\n3. 把 DNS/DHCP 看成“通过网络可达的服务”，不要把图中的服务关系误读成客户端物理直连。\n\n主场景中 S1--S2 的冗余链路由 STP 保留一条 active path；R1--R2 是 Native PPP，所以这一段没有 Ethernet 源/目的 MAC；BR1--BR2 的 eBGP 是控制关系，普通 packet 只使用已经安装好的 FIB。\n\n## 核心训练单元：每出现一条 IP 数据报，就跑一次逐跳子程序\n\n无论这条报文来自 DNS、TCP 还是 HTTP，只要已经形成普通 IP 数据报，就先回答六件事：\n\n1. destination IP 是谁？\n2. 当前节点的 FIB / LPM 选出哪个出接口和 next hop？\n3. 当前链路是否需要 ARP/ND 等邻居解析，还是像 Native PPP 一样直接面对唯一对端？\n4. 本跳使用什么链路帧或链路格式？\n5. 下一节点若是 router，TTL 和本跳封装怎样变化？\n6. 下一节点若已是目的主机，交给哪个 TCP/UDP 端点？\n\n每一跳都可以用同一张草稿表：\n\n| 当前节点 | destination IP | FIB 结果 | next hop | 当前链路怎么交付 | 本节点改了什么 |\n|---|---|---|---|---|---|\n| 客户端 | 远端 Web IP | 默认路由 | R1 | WLAN/Ethernet，需要网关链路地址 | 通常不改 IP 首部 |\n| R1 | 同一个 Web IP | 上游 route | R2 | Native PPP，唯一对端 | TTL--；可能 NAPT |\n| 中间 router | 同一个 Web IP | 当前 FIB 的 LPM 结果 | 下一 router | 取决于出接口 | TTL--；重新封装本跳链路 |\n| Rn | Web IP | 直连 server LAN | Web host | Ethernet；ARP Web MAC | TTL--；最后一跳 frame |\n\n### 检查：destination 和 next hop 必须同时写\n\n远端访问时第一跳常见关系是：\n\n```text\ndestination IP = Web server\nnext-hop IP    = 默认网关 IP\n本跳帧目的     = 默认网关 MAC / 当前点对点链路的对端\n```\n\n如果草稿只写“目的地址变成网关”，说明已经把 IP destination 和 link destination 混在一起。\n\n## 字段变化用三行账，不用一句“都变”或“都不变”\n\n![TCP、IPv4 与链路字段在不同边界上的变化](./assets/跨介质全链路帧转换与端到端状态演进拓扑图.svg)\n\n跨设备推演时只维护三行：\n\n```text\nTCP:  port / Seq / Ack / rwnd / cwnd\nIP:   source / destination / TTL\nLink: frame type / source link address / destination link address / FCS\n```\n\n典型变化：\n\n- AP bridge：802.11 表示换成 Ethernet，TTL 不减；\n- Ethernet switch：学习 source MAC、查 destination MAC，不产生新的 IP hop；\n- R1 router + NAPT：TTL--，source IP/port 可能改写，出接口链路封装重新建立；\n- Native PPP：没有 Ethernet 源/目的 MAC；\n- 中间 router：每过一台继续 TTL--，再按出接口准备下一跳；\n- Rn 最后一跳：ARP 得到 Web MAC，再送到服务器。\n\n## 冷启动和热访问：不要共用一条固定流程\n\n### 冷启动\n\n假设：\n\n```text\nHostConfig = 缺失\nDNSCache = 未命中\nNeighbor(默认网关) = 未命中\nSwitchState = MAC 表为空；STP 已收敛\nNATState = 无映射\nTCPState = 不存在\nHTTPState = 未命中\n```\n\n正确推演：\n\n```text\n1. DHCP 建立主机配置。\n2. DNS 缓存未命中，需要向递归 DNS 服务器发送查询。\n3. 为了发送这条 DNS 查询：\n   FIB -> next hop R1 -> 需要时 ARP 默认网关\n   -> WLAN / Ethernet -> R1 -> routers -> DNS server.\n4. 得到 Web IP。\n5. 建立 TCP connection。\n   每个 SYN / SYN+ACK / ACK 都重新走逐跳转发。\n6. HTTP request / response。\n7. TCP 把字节交给 HTTP；HTML 还可能产生新的子资源请求。\n```\n\n最重要的观察：**ARP 可以先为了 DNS query 建立，随后继续被 TCP/HTTP 复用。** 所以 ARP 不能固定放在 DNS 之后。\n\n### 热访问\n\n若第二次很快访问时：\n\n```text\nHostConfig = 有效\nDNSCache = 命中\nNeighbor = 命中\nTCPState = 可复用\nHTTPState = 未命中\n```\n\nDNS 查询、ARP 交换和 TCP 三次握手都可以省掉，但真正发送 HTTP 数据时，FIB 和链路转发仍然在工作，只是已有状态可以直接使用。\n\n若 `HTTPState = 可直接使用缓存`，则本次请求可能在浏览器本地就满足，后续网络事件整体消失。\n\n## 故障题：只找第一次真正断掉的地方\n\n### 局部规则：错误归属必须停在第一次断点\n\n**触发信号**：网页打不开、连接超时、DNS 已成功但页面不返回、某一跳没有后续报文。\n\n**第一动作**：按实际依赖检查当前应该发生的下一件事，不从最终症状直接猜协议。\n\n```text\n本地缓存能否直接满足？\n-> 网络配置有效？\n-> 目标 IP 已知？\n-> 当前 FIB 有可执行 route？\n-> 当前链路下一跳信息可用？\n-> frame 能完成这一跳？\n-> router 的 TTL / MTU / NAT / LPM 合法？\n-> TCP/UDP 还能继续？\n-> HTTP 语义成立？\n```\n\n**检查与退出**：第一条有证据“不成立”的位置就是**第一次断点（First Divergence）**。比如 DNS 已经返回 IP，就不能把后面的 ARP 未命中说成“DNS 故障”；TCP 尚未建立时，也不要提前分析 HTTP 状态码。\n\n## 变式轴：改一个条件，看哪一部分必须重算\n\n1. **主机配置**：lease 有效 / 缺失 / 过期；\n2. **DNS 状态**：资源记录（RR）命中 / 未命中 / 过期，或上级委派信息已经缓存；\n3. **目标范围**：同子网 / 远端网络；\n4. **当前链路**：Ethernet / WLAN / Native PPP / PPPoE；\n5. **邻居状态**：ARP/ND 命中 / 未命中；\n6. **转发状态**：FIB 已安装 / 缺路由 / 仍是旧版本；\n7. **NAT 状态**：mapping 已存在 / 需要新建；\n8. **TCP 状态**：需要新建 / 可复用 / 已复位 / 零窗口 / 受拥塞窗口限制；\n9. **HTTP 状态**：缓存可直接使用 / 需要重新验证 / 未命中；连接是否持久；是否允许 pipeline / multiplex；\n10. **MTU 与时延**：是否触发 fragmentation/MSS，是否出现高 RTT/BDP。\n\n### 局部规则：单变量变化只允许影响依赖它的部分\n\n**触发信号**：同一道综合题只改一个 cache、FIB、connection、MTU 或 HTTP 并发条件。\n\n**第一动作**：在原事件图上圈出谁直接依赖这个状态，只从那里开始重算。\n\n**检查与退出**：把 DNS 从“未命中”改成“命中”，不应自动改变得到 destination IP 之后的转发规则；把 ARP 从“未命中”改成“命中”，也不应该让 TCP 三次握手消失。如果无关步骤一起变化，说明模型仍被画成了错误的线性链。\n\n## 题库证据：这些题分别打穿哪一个接口\n\n旧版训练稿中的这组证据应保留，因为它说明 NET-I01 不是凭空设计出来的，而是把已经被题目验证的局部接口组合起来。\n\n| 证据题 | 它验证了什么 |\n| --------- | ----------------------------------------------------------- |\n| 968 | 二层已经接入但没有 IP 配置时，先通过 DHCP 得到 IP、前缀、默认网关和 DNS 服务器，再进入普通 DNS/TCP 等通信 |\n| 987 | URL 使用域名且 DNS 未缓存时，必须先得到目标服务器 IP，才能建立到该服务器的 TCP 连接 |\n| 860 | 远端目标的第一跳：IP destination 是远端主机，frame destination 是本地 R1 MAC |\n| 862 | 经过 router 后旧 frame 结束，下一跳重新封装；普通转发不改最终 destination IP |\n| 865 | ARP 的触发条件是“next-hop IP 已确定，但本地没有该 IP→MAC mapping” |\n| 866 | 多段 Ethernet 且相关缓存全空时，每一段发送者都可能为本段 next hop 触发 ARP；换成 PPP 或缓存命中后次数会变 |\n| 867 | 同子网时 next hop 就是目标主机，可以直接 ARP 目标主机 MAC |\n| 847、909 | LPM 与默认路由：更具体前缀优先，`/0` 只在没有更具体匹配时兜底 |\n| 934–936 | TCP 三次握手怎样同步双方序号空间，以及第三次握手补齐的知识是什么 |\n| 993–996 | HTTP 主对象与子资源依赖、持久连接/pipeline 和传输时间怎样共同决定 RTT |\n| 997 | 一次成功 Web 访问中 DNS、ARP、TCP、HTTP 是否出现取决于题设状态，而不是固定协议清单 |\n| 1000 | NAPT 映射按端点组合区分；同一主机换端口仍可能需要新的映射 |\n\n这些题主要验证了局部接口。NET-I01 的价值是把它们放进同一个可重建过程，并要求跨层时始终分清名字属于哪一层、状态保存在哪里、机制作用到什么范围。\n\n## 用现有题做单变量攻击\n\n| 基准题 | 只改一个条件 | 模型应该怎样变 |\n| ---------- | -------------------------- | -------------------------------- |\n| 968 | `DHCP lease = 有效` | DHCP 建立配置的步骤消失；是否需要 DNS/TCP 继续由后续状态决定 |\n| 967 | `.com` 的上级委派信息已经缓存 | 递归 DNS 服务器不必从根 DNS 重新开始完整查询链 |\n| 866 | 默认网关 ARP 缓存命中 | 当前第一跳不再发送 ARP Request；不能仍按固定“链路段数”计数 |\n| 890 | 某 router 仍使用旧 FIB | 不能拿最终收敛路径倒写当前 packet，转入 NET-B02 的中间态推演 |\n| 934–936 | TCP connection 已可复用 | 三次握手消失，但 HTTP request/response 仍存在 |\n| 995 | 禁止 pipeline | 图片请求不再共享同一个请求批次，RTT 依赖图改变 |\n| 997 | DNS 缓存与邻居缓存都命中 | DNS 查询和 ARP 交换都可能消失，只保留真正缺失的传输层/应用层事件 |\n\n## 代表母题：状态决定事件，不是 URL 决定固定协议链\n\n给定：\n\n```text\nURL = http://www.example.test/index.html\nHostConfig = 有效\nDNSCache = 未命中\nFIB = 可用\nNeighbor(默认网关) = 命中\nTCPState = 不存在\nHTTPState = 未命中\n```\n\n第一层先判断缺口：\n\n```text\n配置可复用\nDNS 需要新建结果\nFIB / 默认网关邻居表项可复用\nTCP 需要建立\nHTTP 需要联网取得内容\n```\n\n因此高层事件是：\n\n```text\nDNS query / response\n-> TCP 三次握手\n-> HTTP request / response\n```\n\n但每一条 DNS/TCP/HTTP 报文内部都还要执行：\n\n```text\ndestination IP\n-> current FIB\n-> egress + next hop\n-> 当前链路完成本跳交付\n-> next node\n-> repeat at router\n```\n\n这就是整个专题最重要的双层结构。\n\n## 陌生综合题固定落笔协议\n\n```text\n1. 写应用目标和初始状态，不先写协议名。\n2. 找当前真正缺失的前置条件。\n3. 一旦出现“发送一条普通 IP 数据报”，切到逐跳账本。\n4. 同时写 destination IP 与 next-hop IP，不能只写“目的地址”。\n5. 每到一个设备，只让它修改自己真正负责的状态。\n6. OSPF/BGP/STP 怎样形成状态，与当前数据报怎样使用这些状态分开。\n7. TCP/UDP 先处理端口、序号和传输状态，HTTP 再解释应用内容。\n8. 性能题先画依赖关系；只把真正串行的时间相加。\n9. 故障题停在第一次断点，不跨层猜后续。\n10. 最后反查六件事：名字类型、IP 跳数、链路帧、状态归属、时间先后和性能代价。\n```\n\n## 最短压缩\n\n> **先看这次访问还缺什么，只补缺失状态；一旦要发送一条普通 IP 数据报，就追踪 `destination IP -> 当前 FIB -> 出接口/next hop -> 当前链路交付 -> 下一节点`。经过 router 时重新决定下一跳，经过 switch/AP 不要误加 IP hop。**\n"
     },
     {
       "id": "drill_408_地址翻译软硬件交接",
@@ -9731,9 +9318,9 @@
       "model_owner_id": null,
       "url": "../20_英语一/10_阅读/daily_reading/01_articles/2026/2026-08-21_a_new_replication_crisis/article.md",
       "local_path": "kaoyan/20_英语一/10_阅读/daily_reading/01_articles/2026/2026-08-21_a_new_replication_crisis/article.md",
-      "size_bytes": 5827,
+      "size_bytes": 5863,
       "size_human": "5.7 KB",
-      "modified_at": "2026-08-22T00:31:53.048068+00:00",
+      "modified_at": "2026-08-22T00:39:44.911214+00:00",
       "modified_date": "2026-08-22",
       "tags": [
         "英语一",
@@ -9745,7 +9332,7 @@
         "外刊精读",
         "训练手册"
       ],
-      "content": "---\ntype: english-article\nsource: New Scientist\nsection: News · Quantum computing\nauthor: Karmela Padavic-Callaghan\npublished: 2026-08-22\nsource_page: 4\ntopics:\n  - quantum computing\n  - reproducibility\n  - scientific research\n---\n\n# A new replication crisis?\n\n*A review of thousands of scientific papers about quantum computers suggests results from one computer may not be reproducible on another machine.*\n\n%%\n首读只留下最轻量的诊断痕迹：\n\n==最小必要文本跨度== [?]  词义、搭配或整体意思不懂\n==最小必要文本跨度== [!]  单词大体认识，但句法、修饰或指代关系没有接上\n==最小必要文本跨度== [★]  自己主动想学、想以后使用的表达\n==最小必要文本跨度== [~]  大致理解，但不确定自己的解释是否准确\n\n不要在 article.md 中写答案、翻译或 AI 解释。\n每个自然段末尾保留稳定块标识，编号依次为 p01、p02……\n%%\n\nThe results of most scientific papers reporting on advances in quantum computers can’t be replicated, according to a new analysis. ==This may undermine the credibility of some of the achievements that the quantum computing industry has reported in recent years, kicking off a replication crisis in the fast-growing field.== [~] ^p01\n\nThere are a few problems that researchers are certain only a quantum computer could solve, but what these machines could be useful for beyond those select few cases is an open question. With quantum computing hardware improving rapidly in recent years, researchers across the globe are exploring myriad use cases, from simulating molecules to optimising airline logistics. ^p02\n\nYet, for any of these to become routinely used, they will have to work on many different quantum computers, so any demonstration of a truly valuable use of a quantum computer must be reproducible. ^p03\n\nWolfgang Mauerer at the Technical University of Applied Sciences Regensburg in Germany and his colleagues have now evaluated thousands of scientific papers on quantum computing and found that, currently, most can’t be reproduced. ^p04\n\nThey carried out their analysis in two parts, first manually evaluating a curated sample of 127 papers from the past five years, then using a computer program to automate and generalise this analysis to 4966 papers. ^p05\n\nTo assess the reproducibility of each paper’s results, the team used five criteria. The first three focused on determining whether the paper included code that could be run on an independent quantum computer and how much instruction and documentation for doing so was provided. The next criterion evaluated available information about hardware. Finally, the team tested whether the provided quantum computing program could run without errors. ^p06\n\nAmong the 127 papers that the researchers analysed manually, only 24.4 per cent provided code that they could even try running, and 64.5 per cent of that code failed to successfully execute. ^p07\n\nThe larger, automated analysis didn’t include an execution step, but similarly found that only 26.8 per cent of the almost 5000 papers provided enough information to attempt a replication (arXiv, doi.org/rj93). ^p08\n\nCompared with standards for traditional computer science studies, this is a rather negative result, says Mauerer. “We did a smaller-scale study four or five years ago, and we already found that the situation is bad, but it didn’t really improve over time,” he says. “We thought the numbers would be better by now.” ^p09\n\nIn Mauerer’s view, a big reason for this finding is the variability and inconsistency of still-maturing quantum computing hardware. For conventional computers, researchers can work at a very abstract level, describing and writing code without worrying about whether their computer’s physical characteristics may change from one day to another. This isn’t the case for quantum computers that currently exist and can, for example, be accessed through the cloud, says Mauerer. ^p10\n\n“I don’t just want to attribute the lack of reproducibility to, say, some laziness of authors or non-requirements by the community. Quantum machines in themselves are unusually variable,” he says. ^p11\n\n“Software, especially in a rapidly evolving field like quantum computing, is a living thing and needs communities of maintainers,” says William Zeng at the Unitary Foundation, a quantum technology non-profit organisation. ^p12\n\n## Rapidly changing field\n\nZeng says he isn’t surprised by the results of the analysis, but expects that a combination of community efforts and the use of AI agents for coding will improve the situation going forward. “[Agentic coding] is also already making it easier to generate code directly from a paper’s result that is used for reproduction,” he says. ^p13\n\nFred Chong at the University of Chicago says he isn’t particularly alarmed by the new analysis. “Quantum computing and software systems are in their infancy and changing rapidly. Reproducibility becomes more of a priority as the field matures,” he says. For example, in conventional computer science, it took decades for researchers to start insisting on reproduction standards for each other. “Innovation may be more important [for quantum computing] than reproducible infrastructure at this time,” says Chong. ^p14\n\nYet, there is appetite among quantum computing researchers to make changes for the better already, and so far, the response to the new study has been positive, says team member Ralf Ramsauer, also at the Technical University of Applied Sciences Regensburg. He says researchers should start thinking about reproducibility at the beginning of each experiment, and if they aren’t sure where to start, the team’s study offers a template for creating a reproducibility package. ^p15\n"
+      "content": "---\ntype: english-article\nsource: New Scientist\nsection: News · Quantum computing\nauthor: Karmela Padavic-Callaghan\npublished: 2026-08-22\nsource_page: 4\ntopics:\n  - quantum computing\n  - reproducibility\n  - scientific research\n---\n\n# A new replication crisis?\n\n*A review of thousands of scientific papers about quantum computers suggests results from one computer may not be reproducible on another machine.*\n\n%%\n首读只留下最轻量的诊断痕迹：\n\n==最小必要文本跨度== [?]  词义、搭配或整体意思不懂\n==最小必要文本跨度== [!]  单词大体认识，但句法、修饰或指代关系没有接上\n==最小必要文本跨度== [★]  自己主动想学、想以后使用的表达\n==最小必要文本跨度== [~]  大致理解，但不确定自己的解释是否准确\n\n不要在 article.md 中写答案、翻译或 AI 解释。\n每个自然段末尾保留稳定块标识，编号依次为 p01、p02……\n%%\n\nThe results of most scientific papers reporting on advances in quantum computers can’t be replicated, according to a new analysis. ==This may undermine the credibility of some of the achievements that the quantum computing industry has reported in recent years, kicking off a replication crisis in the fast-growing field.== [~] ^p01\n\nThere are a few problems that researchers are certain only a quantum computer could solve, but what these machines could be useful for beyond those select few cases is an open question. With quantum computing hardware improving rapidly in recent years, researchers across the globe are exploring myriad use cases, from simulating molecules to optimising airline logistics. ^p02\n\nYet, ==for any of these to become routinely used, they will have to work on many different quantum computers, so any demonstration of a truly valuable use of a quantum computer must be reproducible.== [★] ^p03\n\nWolfgang Mauerer at the Technical University of Applied Sciences Regensburg in Germany and his colleagues have now evaluated thousands of scientific papers on quantum computing and found that, currently, most can’t be reproduced. ^p04\n\nThey carried out their analysis in two parts, first manually evaluating a curated sample of 127 papers from the past five years, then using a computer program to automate and generalise this analysis to 4966 papers. ^p05\n\nTo assess the reproducibility of each paper’s results, the team used five criteria. The first three focused on determining whether the paper included code that could be run on an independent quantum computer and how much instruction and documentation for doing so was provided. The next criterion evaluated available information about hardware. Finally, the team tested whether the provided quantum computing program could run without errors. ^p06\n\nAmong the 127 papers that the researchers analysed manually, only 24.4 per cent provided code that they could even try running, and 64.5 per cent of that code failed to successfully execute. ^p07\n\nThe larger, automated analysis didn’t include an execution step, but similarly found that only 26.8 per cent of the almost 5000 papers provided enough information to attempt a replication (arXiv, doi.org/rj93). ^p08\n\nCompared with standards for traditional computer science studies, this is a rather negative result, says Mauerer. “We did a smaller-scale study four or five years ago, and we already found that the situation is bad, but it didn’t really improve over time,” he says. “We thought the numbers would be better by now.” ^p09\n\nIn Mauerer’s view, a big reason for this finding is the variability and inconsistency of still-maturing quantum computing hardware. For conventional computers, researchers can work at a very abstract level, describing and writing code without worrying about whether their computer’s physical characteristics may change from one day to another. ==This isn’t the case for quantum computers that currently exist and can, for example, be accessed through the cloud, says Mauerer.== [!] ^p10\n\n“I don’t just want to attribute the lack of reproducibility to, say, some laziness of authors or non-requirements by the community. Quantum machines in themselves are unusually variable,” he says. ^p11\n\n“Software, especially in a rapidly evolving field like quantum computing, is a living thing and needs communities of maintainers,” says William Zeng at the Unitary Foundation, a quantum technology non-profit organisation. ^p12\n\n## Rapidly changing field\n\nZeng says he isn’t surprised by the results of the analysis, but expects that a combination of community efforts and the use of AI agents for coding will improve the situation going forward. “[Agentic coding] is also already making it easier to generate code directly from a paper’s result that is used for reproduction,” he says. ^p13\n\nFred Chong at the University of Chicago says he isn’t particularly alarmed by the new analysis. ==“Quantum computing and software systems are in their infancy and changing rapidly.== [?] Reproducibility becomes more of a priority as the field matures,” he says. For example, in conventional computer science, it took decades for researchers to start insisting on reproduction standards for each other. “Innovation may be more important [for quantum computing] than reproducible infrastructure at this time,” says Chong. ^p14\n\nYet, ==there is appetite among quantum computing researchers to make changes for the better already, and so far, the response to the new study has been positive, says team member Ralf Ramsauer, also at the Technical University of Applied Sciences Regensburg.== [★] He says researchers should start thinking about reproducibility at the beginning of each experiment, and if they aren’t sure where to start, the team’s study offers a template for creating a reproducibility package. ^p15\n"
     },
     {
       "id": "drill_english1_exp_01_opinions_and_stances",
@@ -9795,10 +9382,10 @@
       "model_owner_id": null,
       "url": "../20_英语一/10_阅读/daily_reading/02_expressions/02_causes_and_attribution.md",
       "local_path": "kaoyan/20_英语一/10_阅读/daily_reading/02_expressions/02_causes_and_attribution.md",
-      "size_bytes": 2225,
-      "size_human": "2.2 KB",
-      "modified_at": "2026-08-20T16:52:21.443156+00:00",
-      "modified_date": "2026-08-20",
+      "size_bytes": 2446,
+      "size_human": "2.4 KB",
+      "modified_at": "2026-08-22T01:31:12.213401+00:00",
+      "modified_date": "2026-08-22",
       "tags": [
         "英语一",
         "高频学术表达库",
@@ -9809,7 +9396,7 @@
         "归因",
         "表达库"
       ],
-      "content": "# 02 · 因果与归因\n\n> 本分类归集用于解释原因、建立因果联系、追溯来源与分配责任的可迁移表达。归因不一定等于责备，节点需要保留这种语义边界。\n\n---\n\n### `[EXP-009]` attribute A to B\n\n* **释义与沟通功能**：【归因】把结果、现象、变化或问题 A 解释为由因素 B 导致或促成；本身可以是中性因果判断，不自动带有“归咎”意味。\n* **声音形式**：动词 `attribute` /əˈtrɪbjuːt/，主重音在第二音节。\n* **语体映射**：\n  * **正式书面**：attribute A to B / ascribe A to B\n  * **中性通用**：link A to B / explain A in terms of B\n  * **自然口语**：put A down to B / say A is mainly because of B\n* **触发情境**：当你需要解释“为什么出现这个结果”，又不想简单重复 `because` 时。\n* **句型骨架**：\n  * `Researchers attribute [the replication problem] to [hardware variability].`\n  * `I wouldn't attribute [the result] entirely to [one factor].`\n* **使用边界**：如果明确强调“责任 / 责怪”，再考虑 `blame A on B`、`hold B responsible for A`；它们不与中性的 `attribute A to B` 完全等价。\n* **来源溯源**：New Scientist 《A New Replication Crisis?》\n* **生命周期**：`L0 · 捕获`（已建立节点，待真实训练验证）\n\n---\n\n### `[EXP-010]` a big reason for this is...\n\n* **释义与沟通功能**：【口语归因】承接前文已经提到的现象或观点，再引出其中一个重要原因；适合用于脱稿解释和多轮对谈。\n* **声音形式**：`a big reason for this is...` 作为一个完整意群连贯输出，`for` 通常弱读。\n* **语体映射**：\n  * **正式书面**：One important contributing factor is... / One major factor is...\n  * **中性通用**：One major reason for this is... / This is partly because...\n  * **自然口语**：A big reason for this is...\n* **触发情境**：已经说出现象或观点，接下来需要解释其中一个主要原因时。\n* **句型骨架**：\n  * `A big reason for this is that [clause].`\n  * `A big reason for [noun phrase] is [noun phrase].`\n* **生命周期**：`L0 · 捕获`（已建立节点，待真实训练验证）\n"
+      "content": "# 02 · 因果与归因\n\n> 本分类归集用于解释原因、建立因果联系、追溯来源与分配责任的可迁移表达。归因不一定等于责备，节点需要保留这种语义边界。\n\n---\n\n### `[EXP-009]` attribute A to B\n\n* **释义与沟通功能**：【归因】把结果、现象、变化或问题 A 解释为由因素 B 导致或促成；本身可以是中性因果判断，不自动带有“归咎”意味。\n* **声音形式**：动词 `attribute` /əˈtrɪbjuːt/，主重音在第二音节。\n* **语体映射**：\n  * **正式书面**：attribute A to B / ascribe A to B\n  * **中性通用**：link A to B / explain A in terms of B\n  * **自然口语**：put A down to B / say A is mainly because of B\n* **触发情境**：当你需要解释“为什么出现这个结果”，又不想简单重复 `because` 时。\n* **句型骨架**：\n  * `Researchers attribute [the replication problem] to [hardware variability].`\n  * `I wouldn't attribute [the result] entirely to [one factor].`\n* **使用边界**：如果明确强调“责任 / 责怪”，再考虑 `blame A on B`、`hold B responsible for A`；它们不与中性的 `attribute A to B` 完全等价。\n* **来源溯源**：[New Scientist《A New Replication Crisis?》P11](../01_articles/2026/2026-08-21_a_new_replication_crisis/article.md#^p11)\n* **生命周期**：`L0 · 捕获`（已建立节点，待真实训练验证）\n\n---\n\n### `[EXP-010]` a big reason for this is...\n\n* **释义与沟通功能**：【口语归因】承接前文已经提到的现象或观点，再引出其中一个重要原因；适合用于脱稿解释和多轮对谈。\n* **声音形式**：`a big reason for this is...` 作为一个完整意群连贯输出，`for` 通常弱读。\n* **语体映射**：\n  * **正式书面**：One important contributing factor is... / One major factor is...\n  * **中性通用**：One major reason for this is... / This is partly because...\n  * **自然口语**：A big reason for this is...\n* **触发情境**：已经说出现象或观点，接下来需要解释其中一个主要原因时。\n* **句型骨架**：\n  * `A big reason for this is that [clause].`\n  * `A big reason for [noun phrase] is [noun phrase].`\n* **来源溯源**：[New Scientist《A New Replication Crisis?》P10](../01_articles/2026/2026-08-21_a_new_replication_crisis/article.md#^p10)\n* **生命周期**：`L0 · 捕获`（已建立节点，待真实训练验证）\n"
     },
     {
       "id": "drill_english1_exp_03_comparison_and_contrast",
@@ -9854,15 +9441,15 @@
       "title": "04 · 不确定与判断",
       "full_name": "04_uncertainty_and_judgement",
       "filename": "04_uncertainty_and_judgement.md",
-      "training_scope": "本分类归集用于暂缓定论、表达证据不足、保留判断和描述尚未解决问题的可迁移表达。",
+      "training_scope": "本分类归集用于暂缓定论、表达证据不足、保留判断、纳入判断因素和描述尚未解决问题的可迁移表达。",
       "model_owner": "",
       "model_owner_id": null,
       "url": "../20_英语一/10_阅读/daily_reading/02_expressions/04_uncertainty_and_judgement.md",
       "local_path": "kaoyan/20_英语一/10_阅读/daily_reading/02_expressions/04_uncertainty_and_judgement.md",
-      "size_bytes": 1417,
-      "size_human": "1.4 KB",
-      "modified_at": "2026-08-20T16:28:40.231675+00:00",
-      "modified_date": "2026-08-20",
+      "size_bytes": 2875,
+      "size_human": "2.8 KB",
+      "modified_at": "2026-08-22T00:54:31.389115+00:00",
+      "modified_date": "2026-08-22",
       "tags": [
         "英语一",
         "高频学术表达库",
@@ -9873,7 +9460,7 @@
         "判断",
         "表达库"
       ],
-      "content": "# 04 · 不确定与判断\n\n> 本分类归集用于暂缓定论、表达证据不足、保留判断和描述尚未解决问题的可迁移表达。\n\n---\n\n### `[EXP-008]` (remain) an open question (whether...)\n\n* **释义与沟通功能**：【暂缓定论】某个问题目前仍没有可靠答案，现有证据不足以支持确定结论。\n* **声音形式**：`open question` /ˌəʊpən ˈkwestʃən/，主要信息重音通常落在 `question`；整句重音随对比信息调整。\n* **语体映射**：\n  * **正式书面**：It remains an open question whether... / The question of whether... remains unresolved.\n  * **中性通用**：It is still unclear whether... / It remains uncertain whether...\n  * **自然口语**：We still don't really know whether... / It's too early to say whether...\n* **触发情境**：当别人要求你对一个尚缺证据的技术、趋势、政策或结果下结论，而你需要明确表示“现在还不能确定”时。\n* **句型骨架**：\n  * `Whether [X] will [Y] remains an open question.`\n  * `It is still an open question whether [clause].`\n* **使用边界**：`It's still up in the air` 更常表示计划、安排或决定尚未确定，不应默认当作所有科学 / 事实不确定性的等价替换。\n* **来源溯源**：New Scientist 《A New Replication Crisis?》\n* **生命周期**：`L0 · 捕获`（已建立节点，待真实训练验证）\n"
+      "content": "# 04 · 不确定与判断\n\n> 本分类归集用于暂缓定论、表达证据不足、保留判断、纳入判断因素和描述尚未解决问题的可迁移表达。\n\n---\n\n### `[EXP-008]` (remain) an open question (whether...)\n\n* **释义与沟通功能**：【暂缓定论】某个问题目前仍没有可靠答案，现有证据不足以支持确定结论。\n* **声音形式**：`open question` /ˌəʊpən ˈkwestʃən/，主要信息重音通常落在 `question`；整句重音随对比信息调整。\n* **语体映射**：\n  * **正式书面**：It remains an open question whether... / The question of whether... remains unresolved.\n  * **中性通用**：It is still unclear whether... / It remains uncertain whether...\n  * **自然口语**：We still don't really know whether... / It's too early to say whether...\n* **触发情境**：当别人要求你对一个尚缺证据的技术、趋势、政策或结果下结论，而你需要明确表示“现在还不能确定”时。\n* **句型骨架**：\n  * `Whether [X] will [Y] remains an open question.`\n  * `It is still an open question whether [clause].`\n* **使用边界**：`It's still up in the air` 更常表示计划、安排或决定尚未确定，不应默认当作所有科学 / 事实不确定性的等价替换。\n* **来源溯源**：[New Scientist《A New Replication Crisis?》P2](../01_articles/2026/2026-08-21_a_new_replication_crisis/article.md#^p02)\n* **生命周期**：`L0 · 捕获`（已建立节点，待真实训练验证）\n\n---\n\n### `[EXP-013]` consider X / take X into consideration\n\n* **释义与沟通功能**：【纳入考虑】提醒自己或别人，在做判断、设计方案或作决定时不要忽略某个因素。\n* **声音形式**：`consideration` /kənˌsɪdəˈreɪʃən/，主重音落在 `-ra-` 对应音节附近；整块 `take X into consideration` 更适合作为一个整体语块练习。\n* **语体关系**：\n  * **正式书面**：take X into consideration / take X into account\n  * **中性通用**：consider X\n  * **自然口语**：keep X in mind / think about X when...\n* **触发情境**：当你想表达“这个因素应该从一开始就被纳入设计、判断或决策”时。\n* **句型骨架**：\n  * `We should consider [X] from the beginning.`\n  * `We should take [X] into consideration when [doing Y].`\n* **使用边界**：不要把两个框架混成 `consider X into consideration`。`consider` 直接接宾语；`take` 才与 `into consideration` 组成固定结构。\n* **来源溯源**：[《A New Replication Crisis?》最小修复输出](../01_articles/2026/2026-08-21_a_new_replication_crisis/reading_view.tex)，学习者主动想表达“实验设计一开始就考虑可复现性”时出现框架混成。\n* **生命周期**：`L0 · 捕获`（已出现真实主动表达缺口，但尚无一次正确无提示使用证据）\n"
     },
     {
       "id": "drill_english1_exp_05_trends_and_dynamics",
@@ -9955,10 +9542,10 @@
       "model_owner_id": null,
       "url": "../20_英语一/10_阅读/daily_reading/03_capabilities/oral_retell.md",
       "local_path": "kaoyan/20_英语一/10_阅读/daily_reading/03_capabilities/oral_retell.md",
-      "size_bytes": 5892,
-      "size_human": "5.8 KB",
-      "modified_at": "2026-08-21T03:41:23.607027+00:00",
-      "modified_date": "2026-08-21",
+      "size_bytes": 7875,
+      "size_human": "7.7 KB",
+      "modified_at": "2026-08-22T01:31:24.806682+00:00",
+      "modified_date": "2026-08-22",
       "tags": [
         "英语一",
         "英语能力与输出",
@@ -9967,7 +9554,7 @@
         "口语复述能力追踪",
         "训练手册"
       ],
-      "content": "# 口语复述能力追踪\n\n> **定位**：记录跨文章逐渐形成的口语复述能力状态、稳定问题与代表性证据。这里不把单篇手札里的参考答案、AI 示例或一次性表现直接当作长期能力结论。\n\n---\n\n## 1. 当前基线\n\n2026-08-20 已获得两篇文章的可追溯读后即时脱稿复述转写，来源为《The Magic of Summer Reading》和《English Decoded!》。目前可以建立第一版**跨文章内容组织基线**；但因为仍没有原始音频，暂时不能判断真实发音、语速、意群停顿或填充词频率。\n\n当前可观察到：\n\n- 能主动抓住并说出文章的主要文化主题，以及 Goodreads、教育者 / 图书馆、公共人物和作者个人阅读习惯等多个信息点；\n- 第一次复述更像“想到一个点就接着补一个点”；第二次在明确四步脚手架下已经能按 `culture → reason → personal memory → digital continuation` 顺序推进，说明结构支持有效，但尚未证明无脚手架时也能稳定复原；\n- 内容理解整体明显强于即兴英语组织：当一句话只承载一个核心动作时，能够说出较稳定的 `Goodreads helps people track books, share recommendations, and set reading goals.`；一旦同时回忆事实、选择词组和组织长句，转写中更容易出现句型崩塌、信息混写或把个人推断带进原文；\n- 出现一次影响内容准确性的理解偏差：把 `summer slide` 说成“孩子被长假分散注意力”，而原文重点是长假期间可能遗忘已学内容；另一次把 Kindle 的“越来越流行”扩展成“比纸质书更流行 / 会替代纸质书”，说明复述时需要继续区分原文事实与自己的推断；\n- 已出现真实的主动表达缺口：想说“最让我印象深刻的是……”时第一次用了 `what impressed me best`；第二次在明确提示目标表达后正确说出 `What impressed me most was...`，当前支持 `EXP-011` 达到 `L2 · 提示使用`，但尚未形成无提示主动调用；\n- 第二篇《English Decoded!》的第一次冷输出能直接说出文章在讨论英语沟通中的 nuance，并能列出 assertive / aggressive / passive-aggressive 三类；但在把三者压成英文定义时，`assertive` 被压缩成只有“firm and direct”，遗漏 respectful / fair 这一关键边界，`passive-aggressive` 也被压成只有 sarcasm，说明“理解到英语输出的压缩损失”已经跨两篇文章重复出现。\n- 第二篇还出现新的主动表达缺口：想说“区分这些类型”时说成 `how to distinct these`。这更像缺少可直接调用的比较语块，而不是不了解文章内容；已建立 `EXP-012 distinguish A from B / distinguish among...` 作为后续检索对象。\n- 同一时段连续重复整篇后，新增收益明显下降。当前更适合 `真实首答 → 关键诊断 → AI 参考复述 → 对照 → 间隔后冷检索`，而不是继续机械重复整篇。\n\n当前基线应读作：\n\n> **已经能脱离原文提取多个关键点；当前主要瓶颈不是“完全没理解”，而是把已理解内容快速压成稳定英语句块。下一阶段优先建立少量可直接调用的口语骨架，并用参考复述做对照，再通过间隔冷检索检验是否真的留下。**\n\n---\n\n## 2. 当前稳定问题与候选观察点\n\n### `[P04] 理解到英语输出的压缩损失`\n\n- **可观察症状**：读后能抓住主要内容，但一旦要用英语快速概括多个概念或关系，就容易把必要边界压掉，或者为了继续句子而用不够准确的词替代目标表达。\n- **常见触发条件**：需要同时完成“回忆事实 / 区分概念 / 现场组句”的复述任务。\n- **当前训练动作**：先保留 2--4 个结构节点，再用一意一句压缩；AI 参考版负责提供可达到的正确模型，后续通过间隔冷检索判断这些边界能否自己回来。\n- **代表性证据**：\n  - 《The Magic of Summer Reading》：复述中曾把 `summer slide` 压成“被假期分散注意力”，以及把 Kindle 趋势扩展成原文没有的替代判断。\n  - 《English Decoded!》：第一次冷输出能说出三类沟通方式，但把 `assertive` 的 respectful/fair 边界和 `passive-aggressive` 的 indirect-conflict 边界压掉，并出现 `how to distinct these` 的主动表达缺口。\n\n以下现象仍只作为候选观察点，在重复证据出现前不直接定性。\n\n### `[P01?] 逐词拼接与过度停顿`\n\n观察：\n\n- 是否经常逐个单词实时拼装；\n- 是否在意群内部出现不自然停顿；\n- 是否频繁依赖 `um`、`ah` 等填充词维持句子。\n\n若后续在不同训练中反复出现，再正式升级为能力层的长期问题。\n\n### `[P03?] 新学表达无法自然调用`\n\n观察：\n\n- 有提示时能够使用的新表达，到了自由复述是否消失；\n- 是否总退回少数熟悉但单一的旧表达；\n- 同一表达在不同主题中是否仍需要明显提醒。\n\n这些现象只有在真实输出中出现才记录，不根据手札里的预设目标推断。\n\n---\n\n## 3. 建立基线时记录什么\n\n第一次拿到真实口语样本后，优先记录：\n\n- 能否讲清主旨；\n- 结构是否完整；\n- 停顿主要发生在哪里；\n- 是否以自然意群而不是单词为单位输出；\n- 已学表达在什么条件下能够主动出现；\n- 下一次训练最应该优先处理哪一个问题。\n\n不要急着给 CEFR 等级，也不要用“高级句式数量”代替真实沟通能力。\n\n---\n\n## 4. 证据如何回链\n\n能力层只保存简洁结论和代表性链接，例如：\n\n```text\nP01 · 逐词拼接\n代表证据：\n- 《文章 A》reading_view.tex · 结构复述\n- 《文章 B》reading_view.tex · 即兴观点\n```\n\n完整复述文本、逐句纠错和 AI 对话仍留在对应文章的训练手札中。\n"
+      "content": "# 口语复述能力追踪\n\n> **定位**：记录跨文章逐渐形成的口语复述能力状态、稳定问题与代表性证据。这里不把单篇手札里的参考答案、AI 示例或一次性表现直接当作长期能力结论。\n\n---\n\n## 1. 当前基线\n\n2026-08-20 已获得《The Magic of Summer Reading》和《English Decoded!》两篇文章的可追溯读后即时脱稿复述转写；2026-08-21 又加入《A new replication crisis?》的第一次概括与最小修复回答。当前基线已经覆盖三篇不同主题文章，但因为仍没有原始音频，暂时不能判断真实发音、语速、意群停顿或填充词频率。\n\n当前可观察到：\n\n- 能主动抓住并说出文章的主要文化主题，以及 Goodreads、教育者 / 图书馆、公共人物和作者个人阅读习惯等多个信息点；\n- 第一次复述更像“想到一个点就接着补一个点”；第二次在明确四步脚手架下已经能按 `culture → reason → personal memory → digital continuation` 顺序推进，说明结构支持有效，但尚未证明无脚手架时也能稳定复原；\n- 内容理解整体明显强于即兴英语组织：当一句话只承载一个核心动作时，能够说出较稳定的 `Goodreads helps people track books, share recommendations, and set reading goals.`；一旦同时回忆事实、选择词组和组织长句，转写中更容易出现句型崩塌、信息混写或把个人推断带进原文；\n- 出现一次影响内容准确性的理解偏差：把 `summer slide` 说成“孩子被长假分散注意力”，而原文重点是长假期间可能遗忘已学内容；另一次把 Kindle 的“越来越流行”扩展成“比纸质书更流行 / 会替代纸质书”，说明复述时需要继续区分原文事实与自己的推断；\n- 已出现真实的主动表达缺口：想说“最让我印象深刻的是……”时第一次用了 `what impressed me best`；第二次在明确提示目标表达后正确说出 `What impressed me most was...`，当前支持 `EXP-011` 达到 `L2 · 提示使用`，但尚未形成无提示主动调用；\n- 第二篇《English Decoded!》的第一次冷输出能直接说出文章在讨论英语沟通中的 nuance，并能列出 assertive / aggressive / passive-aggressive 三类；但在把三者压成英文定义时，`assertive` 被压缩成只有“firm and direct”，遗漏 respectful / fair 这一关键边界，`passive-aggressive` 也被压成只有 sarcasm，说明“理解到英语输出的压缩损失”已经跨两篇文章重复出现。\n- 第二篇还出现新的主动表达缺口：想说“区分这些类型”时说成 `how to distinct these`。这更像缺少可直接调用的比较语块，而不是不了解文章内容；已建立 `EXP-012 distinguish A from B / distinguish among...` 作为后续检索对象。\n- 第三篇《A new replication crisis?》进一步暴露了同类问题：在已经明确纠正“被复现的是 results / findings，而不是 researchers”以后，最小修复回答仍再次说出 `researchers ... cannot be reproduced`；同时出现 `consider ... into consideration` 的固定框架混成，以及 `the area is more cared about the novelty` 这类“意思大致明确但英语关系没有稳定落槽”的表达。\n- 学习者本人也主动提出：介词搭配、逻辑连接方式和固定表达框架不够稳定，可能是当前组织困难的一部分。现有证据支持这个方向，但更准确的机制假设是“高频语块和谓词-对象框架尚未形成可整体检索的单位”，而不是把问题简单归结为不知道若干介词规则。\n- 同一时段连续重复整篇后，新增收益明显下降。当前更适合 `真实首答 → 关键诊断 → AI 参考复述 → 对照 → 间隔后冷检索`，而不是继续机械重复整篇。\n\n当前基线应读作：\n\n> **已经能脱离原文提取多个关键点；当前主要瓶颈不是“完全没理解”，而是把已理解内容快速压成稳定英语句块。下一阶段优先建立少量可直接调用的口语骨架，并用参考复述做对照，再通过间隔冷检索检验是否真的留下。**\n\n---\n\n## 2. 当前稳定问题与候选观察点\n\n### `[P04] 理解到英语输出的压缩损失`\n\n- **可观察症状**：读后能抓住主要内容，但一旦要用英语快速概括多个概念或关系，就容易把必要边界压掉，或者为了继续句子而用不够准确的词替代目标表达。\n- **常见触发条件**：需要同时完成“回忆事实 / 区分概念 / 现场组句”的复述任务。\n- **可能机制（当前假设）**：当前并不只是“词汇量不够”。更常见的是已经知道想表达的关系，却在实时输出时临时拼接动词、对象、介词和从句，导致语义角色错配或两个固定框架互相污染。语法术语本身不是训练目标；更值得验证的是高频 `verb + object / complement` 与逻辑语块能否作为整体被检索出来。\n- **当前训练动作**：先保留少量结构节点，再用“一意一句”压缩；遇到真实表达缺口时优先按 `沟通意图 → 完整框架 → 填语义槽位` 练习，而不是孤立背介词。AI 参考版负责提供可达到的正确模型，后续通过间隔冷检索判断这些框架能否自己回来。\n- **代表性证据**：\n  - [《The Magic of Summer Reading》训练手札](../01_articles/2026/2026-08-20_the_magic_of_summer_reading/reading_view.tex)：复述中曾把 `summer slide` 压成“被假期分散注意力”，以及把 Kindle 趋势扩展成原文没有的替代判断。\n  - [《English Decoded!》训练手札](../01_articles/2026/2026-08-20_english_decoded/reading_view.tex)：第一次冷输出能说出三类沟通方式，但把 `assertive` 的 respectful/fair 边界和 `passive-aggressive` 的 indirect-conflict 边界压掉，并出现 `how to distinct these` 的主动表达缺口。\n  - [《A new replication crisis?》训练手札](../01_articles/2026/2026-08-21_a_new_replication_crisis/reading_view.tex)：在明确纠正后仍重复 `researchers ... cannot be reproduced`，说明 `reproduce` 的语义对象没有稳定落槽；同一最小修复中又出现 `consider ... into consideration` 的框架混成，进一步支持“整体语块 / 论元框架调用不稳”这一机制假设。\n\n以下现象仍只作为候选观察点，在重复证据出现前不直接定性。\n\n### `[P01?] 逐词拼接与过度停顿`\n\n观察：\n\n- 是否经常逐个单词实时拼装；\n- 是否在意群内部出现不自然停顿；\n- 是否频繁依赖 `um`、`ah` 等填充词维持句子。\n\n若后续在不同训练中反复出现，再正式升级为能力层的长期问题。\n\n### `[P03?] 新学表达无法自然调用`\n\n观察：\n\n- 有提示时能够使用的新表达，到了自由复述是否消失；\n- 是否总退回少数熟悉但单一的旧表达；\n- 同一表达在不同主题中是否仍需要明显提醒。\n\n这些现象只有在真实输出中出现才记录，不根据手札里的预设目标推断。\n\n---\n\n## 3. 建立基线时记录什么\n\n第一次拿到真实口语样本后，优先记录：\n\n- 能否讲清主旨；\n- 结构是否完整；\n- 停顿主要发生在哪里；\n- 是否以自然意群而不是单词为单位输出；\n- 已学表达在什么条件下能够主动出现；\n- 下一次训练最应该优先处理哪一个问题。\n\n不要急着给 CEFR 等级，也不要用“高级句式数量”代替真实沟通能力。\n\n---\n\n## 4. 证据如何回链\n\n能力层只保存简洁结论和代表性链接，例如：\n\n```text\nP01 · 逐词拼接\n代表证据：\n- 《文章 A》reading_view.tex · 结构复述\n- 《文章 B》reading_view.tex · 即兴观点\n```\n\n完整复述文本、逐句纠错和 AI 对话仍留在对应文章的训练手札中。\n"
     },
     {
       "id": "english1_英语语言学习与考试_统一心智模型与方法论手册_v1",

@@ -1,7 +1,7 @@
 # 深度学习 Area Atlas：构造可训练的层级函数与表示
 
 > 类型：Atlas
-> 状态：已采用；Area Boundary v1 + Leaf Boundary v1 已锁定。Leaf Topic 仅建立 Canonical 归属与依赖，不批量创建深度正文。
+> 状态：已采用；Area Boundary v1 + Leaf Boundary v1 已锁定。Leaf Topic 不批量创建；`06 Attention 与 Transformer` 已因真实学习输入建立 Canonical 深度正文。
 
 ## Mother Question
 
@@ -87,7 +87,7 @@ Input
 | **03 深网训练：初始化、归一化、残差与正则机制** | vanishing/exploding gradient、initialization、normalization、residual/skip connection、dropout 等 neural-specific trainability / optimization interaction | regularization/generalization 的一般原则回 Area 40；optimizer update rule 回 Area 50；具体 architecture branch 转 04–07 |
 | **04 CNN：空间结构与参数共享** | convolution/pooling/common CNN block、local receptive field、translation-related inductive bias、parameter sharing、spatial feature hierarchy | image classification/detection/segmentation 任务体系进入 CV Direction；不 Own general convolution math outside neural role |
 | **05 RNN：状态记忆与序列建模** | recurrence、hidden state、unrolling、BPTT 的 network semantics、gating/LSTM/GRU、long-term dependency 的 architecture problem | probabilistic temporal state estimation 回 Area 30；MDP state/policy 回 Area 70；autoregressive generative principle 回 Area 80 |
-| **06 Attention 与 Transformer** | query/key/value、attention as information routing、self-/cross-attention、multi-head、positional information、Transformer block / architecture-level information flow | autoregressive LM objective 回 Area 80；self-supervised learning setting 回 Area 40；完整 LLM system 进入 90/95 |
+| **[06 Attention 与 Transformer](06_Attention与Transformer/README.md)** | query/key/value、attention as information routing、self-/cross-attention、multi-head、positional information、Transformer block / architecture-level information flow | autoregressive LM objective 回 Area 80；self-supervised learning setting 回 Area 40；完整 LLM system 进入 90/95 |
 | **07 结构化神经网络：GNN 等** **Candidate** | message-passing / graph-structured neural information flow，以及真正改变 representation topology 的结构化 neural mechanism | GraphML task ecosystem 回 95；若只是把已有 MLP/attention 应用到图数据，不足以晋升独立 Topic |
 
 ### Internal Dependency DAG

@@ -1,0 +1,64 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  sw/.style={draw=themecurve,fill=themecurve!10!themebg,rounded corners=4pt,minimum width=2.0cm,minimum height=0.76cm,align=center,line width=0.9pt},
+  hw/.style={draw=themeamber,fill=themeamber!10!themebg,rounded corners=4pt,minimum width=2.65cm,minimum height=0.82cm,align=center,line width=0.92pt},
+  tile/.style={draw=themegreen,fill=themegreen!10!themebg,rounded corners=4pt,minimum width=2.45cm,minimum height=0.82cm,align=center,line width=0.92pt},
+  flow/.style={->,draw=themefg!90,line width=1pt},
+  map/.style={->,draw=themegray,dashed,line width=0.95pt},
+  mem/.style={<->,draw=themeamber,line width=0.95pt}
+]
+
+\begin{pgfonlayer}{background}
+  \fill[fill=themecurve!4!themebg,draw=themecurve!40,dashed,rounded corners=7pt]
+    (-0.2,1.25) rectangle (9.55,5.1);
+  \fill[fill=themeamber!4!themebg,draw=themeamber!40,dashed,rounded corners=7pt]
+    (9.95,1.25) rectangle (16.65,5.1);
+  \fill[fill=themegreen!4!themebg,draw=themegreen!40,dashed,rounded corners=7pt]
+    (-0.2,-3.45) rectangle (16.65,0.75);
+\end{pgfonlayer}
+
+% CUDA software hierarchy: generic structural nesting, not a concrete launch diagram.
+\node[anchor=west,font=\bfseries,color=themecurve] at (0.05,4.72) {CUDA software hierarchy};
+\node[sw] (grid) at (1.2,3.05) {Grid};
+\node[sw] (block) at (3.75,3.05) {Thread Block / CTA};
+\node[sw] (warp) at (6.35,3.05) {Warp\\\scriptsize 32 threads};
+\node[sw] (thread) at (8.55,3.05) {Thread};
+\draw[flow] (grid) -- (block);
+\draw[flow] (block) -- (warp);
+\draw[flow] (warp) -- (thread);
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.25,1.72)
+  {Grid 含多个 blocks；每个 block 再划分为 warps。这里画的是层级，不表示只有一个 block / warp。};
+
+% Hardware hierarchy. Mapping is scheduling, not identity.
+\node[anchor=west,font=\bfseries,color=themeamber] at (10.2,4.72) {GPU hardware};
+\node[hw] (sm) at (11.55,3.2) {Streaming Multiprocessor\\\scriptsize registers · shared/L1 · warp schedulers};
+\node[hw] (l2) at (14.85,3.2) {Shared L2 Cache};
+\node[hw] (hbm) at (14.85,1.75) {Device DRAM / HBM};
+\draw[mem] (sm) -- (l2);
+\draw[mem] (l2) -- (hbm);
+\draw[map] (block.north) -- ++(0,0.68) -| node[pos=0.62,above=1pt,font=\scriptsize,color=themegray]{scheduled to one SM} (sm.north west);
+\node[anchor=west,font=\scriptsize,color=themegray] at (10.25,1.35)
+  {一个 SM 可随资源允许驻留多个 blocks；Thread 不与“某个 CUDA core”建立一一身份关系。};
+
+% Triton abstraction: program instance and data tile are compiler-level concepts.
+\node[anchor=west,font=\bfseries,color=themegreen] at (0.05,0.35) {Triton blocked-program view};
+\node[tile] (tgrid) at (1.45,-1.25) {Launch Grid};
+\node[tile] (pid) at (4.45,-1.25) {Program Instance\\\scriptsize $pid=\mathrm{program\_id}$};
+\node[tile] (dtile) at (7.55,-1.25) {Logical Data Tile\\\scriptsize e.g. one $Q_i$ block};
+\node[hw] (lower) at (10.85,-1.25) {Compiler Lowering};
+\node[hw] (exec) at (14.45,-1.25) {Warps / Threads + On-chip State\\\scriptsize registers · shared memory};
+\node[tile,minimum width=3.1cm] (cfg) at (10.85,-2.65) {Execution Config\\\scriptsize num\_warps · num\_stages · tile sizes};
+
+\draw[flow] (tgrid) -- (pid);
+\draw[flow] (pid) -- (dtile);
+\draw[map] (dtile) -- node[above=1pt,font=\scriptsize,color=themegray]{lowered by compiler} (lower);
+\draw[map] (cfg.north) -- (lower.south);
+\draw[map] (lower) -- (exec);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.15,-3.12)
+  {Triton 的 program instance 首先描述“一个程序实例处理哪块数据”；实际用多少 warps、threads、registers/shared memory 是编译与配置后的执行映射。};
+
+\end{tikzpicture}

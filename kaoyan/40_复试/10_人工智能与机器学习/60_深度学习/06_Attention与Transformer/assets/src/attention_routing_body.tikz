@@ -1,0 +1,33 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  tensor/.style={draw=themecurve,fill=themecurve!11!themebg,rounded corners=4pt,minimum width=2.05cm,minimum height=0.82cm,align=center,line width=0.95pt},
+  op/.style={draw=themeamber,fill=themeamber!10!themebg,rounded corners=4pt,minimum width=2.45cm,minimum height=0.88cm,align=center,line width=0.95pt},
+  weight/.style={draw=themegreen,fill=themegreen!10!themebg,rounded corners=4pt,minimum width=2.25cm,minimum height=0.82cm,align=center,line width=0.95pt},
+  flow/.style={->,draw=themefg!90,line width=1.05pt}
+]
+
+\node[tensor] (q) at (0,1.65) {$Q$\\\scriptsize 当前要查询什么};
+\node[tensor] (k) at (0,0) {$K$\\\scriptsize 候选怎样被匹配};
+\node[tensor] (v) at (7.35,-1.8) {$V$\\\scriptsize 候选提供的内容};
+
+\node[op] (score) at (3.2,0.82) {$S=QK^{\mathsf T}/\sqrt{d_k}$\\\scriptsize pairwise score};
+\node[op] (mask) at (6.15,0.82) {$S+M$\\\scriptsize 可选 mask / bias};
+\node[weight] (p) at (9.0,0.82) {$P=\operatorname{softmax}_{row}(S+M)$\\\scriptsize 路由权重};
+\node[op] (mix) at (11.85,0.82) {$PV$\\\scriptsize weighted aggregation};
+\node[tensor] (o) at (14.35,0.82) {$O$\\\scriptsize 路由后的表示};
+
+\draw[flow] (q.east) -- ++(0.75,0) |- (score.north west);
+\draw[flow] (k.east) -- ++(0.75,0) |- (score.south west);
+\draw[flow] (score) -- (mask);
+\draw[flow] (mask) -- (p);
+\draw[flow] (p) -- (mix);
+\draw[flow] (v.east) -- ++(2.85,0) |- (mix.south);
+\draw[flow] (mix) -- (o);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (0,-2.55)
+  {位置只表示数据依赖顺序；框之间的几何距离不表示计算耗时或重要性。};
+
+\end{tikzpicture}

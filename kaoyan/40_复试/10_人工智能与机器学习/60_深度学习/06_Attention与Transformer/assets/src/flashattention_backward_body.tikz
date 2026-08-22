@@ -1,0 +1,35 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  shared/.style={draw=themeamber,fill=themeamber!10!themebg,rounded corners=4pt,minimum width=3.0cm,minimum height=0.86cm,align=center,line width=0.95pt},
+  kernel/.style={draw=themecurve,fill=themecurve!10!themebg,rounded corners=5pt,minimum width=4.0cm,minimum height=1.05cm,align=center,line width=1pt},
+  result/.style={draw=themegreen,fill=themegreen!10!themebg,rounded corners=4pt,minimum width=2.2cm,minimum height=0.78cm,align=center,line width=0.95pt},
+  flow/.style={->,draw=themefg!90,line width=1.05pt},
+  support/.style={->,draw=themegray,dashed,line width=0.95pt}
+]
+
+\node[shared] (up) at (2.3,2.85) {$O,\ \bar O$};
+\node[shared] (prep) at (6.2,2.85) {$D_i=\sum_k O_{ik}\bar O_{ik}$\\\scriptsize row-wise preprocess};
+\node[shared] (saved) at (10.3,2.85) {$Q,K,V,\ LSE$\\\scriptsize saved forward state};
+
+\draw[flow] (up) -- (prep);
+
+\node[kernel] (kv) at (4.1,0.65) {固定一个 KV tile\\遍历全部 Q tiles\\\scriptsize recompute $P$，累计 $\bar K,\bar V$};
+\node[kernel] (q) at (9.15,0.65) {固定一个 Q tile\\遍历全部 KV tiles\\\scriptsize recompute $P$，累计 $\bar Q$};
+
+\draw[support] (prep.south) -- ++(0,-0.55) -| (kv.north);
+\draw[support] (prep.south) -- ++(0,-0.55) -| (q.north);
+\draw[support] (saved.south) -- ++(0,-0.45) -| (kv.north east);
+\draw[support] (saved.south) -- ++(0,-0.45) -| (q.north east);
+
+\node[result] (dk) at (4.1,-1.55) {$\bar K,\ \bar V$};
+\node[result] (dq) at (9.15,-1.55) {$\bar Q$};
+\draw[flow] (kv) -- node[right,font=\scriptsize,color=themegray]{一次写回} (dk);
+\draw[flow] (q) -- node[right,font=\scriptsize,color=themegray]{一次写回} (dq);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (0,-2.75)
+  {两条 kernel 路径使用同一梯度公式，只改变累积顺序；目标是让当前梯度 tile 尽量留在片上直到完成。};
+
+\end{tikzpicture}

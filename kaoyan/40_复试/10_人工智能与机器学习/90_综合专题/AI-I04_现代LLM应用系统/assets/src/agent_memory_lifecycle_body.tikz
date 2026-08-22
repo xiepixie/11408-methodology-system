@@ -1,0 +1,50 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  source/.style={draw=themegray,fill=themegray!10!themebg,rounded corners=4pt,minimum width=2.85cm,minimum height=0.9cm,align=center,line width=0.92pt},
+  gate/.style={draw=themealert,fill=themealert!10!themebg,rounded corners=4pt,minimum width=2.85cm,minimum height=0.9cm,align=center,line width=0.98pt},
+  store/.style={draw=themecurve,fill=themecurve!12!themebg,rounded corners=5pt,minimum width=3.55cm,minimum height=1.2cm,align=center,line width=1.05pt},
+  maintain/.style={draw=themeamber,fill=themeamber!11!themebg,rounded corners=4pt,minimum width=3.15cm,minimum height=0.95cm,align=center,line width=0.98pt},
+  context/.style={draw=themegreen,fill=themegreen!11!themebg,rounded corners=4pt,minimum width=2.85cm,minimum height=0.9cm,align=center,line width=0.98pt},
+  flow/.style={->,draw=themefg!90,line width=1.02pt},
+  write/.style={->,draw=themealert,dashed,line width=0.98pt},
+  read/.style={->,draw=themegreen,line width=0.98pt},
+  maintenance/.style={->,draw=themeamber,dashed,line width=0.95pt},
+  constraint/.style={->,draw=themegray,densely dashed,line width=0.9pt}
+]
+
+% Central store. Left is the write path; right is the read path; top is maintenance.
+\node[source] (evidence) at (1.55,3.45) {Candidate Evidence\\\scriptsize interaction · tool result · event};
+\node[gate]   (writegate) at (4.8,3.45) {Write Policy\\\scriptsize should persist? scope?};
+\node[store]  (memory) at (8.55,3.45) {Durable Memory\\\scriptsize semantic · episodic · procedural};
+\node[gate]   (readgate) at (12.45,3.45) {Retrieval Policy\\\scriptsize need memory? how to search?};
+\node[context] (context) at (15.75,3.45) {Context Injection\\\scriptsize selected memory only};
+
+\draw[flow] (evidence) -- (writegate);
+\draw[write] (writegate) -- node[above=1pt,font=\scriptsize,color=themealert]{accepted write} (memory);
+\draw[read] (memory) -- node[above=1pt,font=\scriptsize,color=themegreen]{query / candidates} (readgate);
+\draw[read] (readgate) -- node[above=1pt,font=\scriptsize,color=themegreen]{selected records} (context);
+
+% Retrieval is conditioned on the current task, not only on what is stored.
+\node[source] (task) at (12.45,1.25) {Current Task / Turn\\\scriptsize query · intent · current state};
+\draw[constraint] (task.north) -- node[right=2pt,font=\scriptsize,color=themegray]{触发 / 约束检索} (readgate.south);
+
+% Maintenance reads the store, reasons about lifecycle, then commits an update.
+\node[maintain] (maintain) at (8.55,6.0) {Maintenance / Reflection\\\scriptsize correct · supersede · expire · merge · delete};
+\draw[maintenance] (memory.north east) -- ++(0.75,0.55) |- node[pos=0.72,right=2pt,font=\scriptsize,color=themeamber]{inspect} (maintain.east);
+\draw[maintenance] (maintain.west) -- ++(-0.9,0) |- node[pos=0.62,left=2pt,font=\scriptsize,color=themeamber]{commit update} (memory.north west);
+
+% Metadata constrains all lifecycle decisions; it is not another memory type.
+\node[source,minimum width=3.8cm] (meta) at (3.65,6.0) {Scope + Provenance + Time\\\scriptsize user · project · source · validity};
+\draw[constraint] (meta.south west) -- ++(0,-0.55) -| (writegate.north);
+\draw[constraint] (meta.east) -- (maintain.west);
+\draw[constraint] (meta.south east) -- ++(0,-1.05) -| (readgate.north west);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.1,7.05)
+  {长期记忆不是一条“保存历史”的流水线：写入、维护、检索、注入分别有自己的触发条件与失败模式。};
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.1,0.05)
+  {Reject / Skip 没有画成进入 Memory 或 Context 的箭头；未通过 gate 的信息就停在该决策点。};
+
+\end{tikzpicture}

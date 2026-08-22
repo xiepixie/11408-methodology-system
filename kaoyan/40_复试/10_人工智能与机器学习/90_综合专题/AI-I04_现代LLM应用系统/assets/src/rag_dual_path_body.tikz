@@ -1,0 +1,53 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  idx/.style={draw=themeamber,fill=themeamber!13!themebg,rounded corners=4pt,minimum width=2.25cm,minimum height=0.86cm,align=center,line width=0.95pt},
+  run/.style={draw=themecurve,fill=themecurve!13!themebg,rounded corners=4pt,minimum width=2.25cm,minimum height=0.86cm,align=center,line width=0.95pt},
+  evidence/.style={draw=themegreen,fill=themegreen!12!themebg,rounded corners=4pt,minimum width=2.35cm,minimum height=0.86cm,align=center,line width=0.95pt},
+  indexflow/.style={->,draw=themeamber,line width=1pt},
+  requestflow/.style={->,draw=themecurve,line width=1pt},
+  evidencejoin/.style={->,draw=themegreen,line width=1pt,dashed}
+]
+
+\begin{pgfonlayer}{background}
+  \fill[fill=themeamber!5!themebg,draw=themeamber!45,dashed,rounded corners=7pt]
+    (-0.15,4.35) rectangle (14.2,7.35);
+  \fill[fill=themecurve!5!themebg,draw=themecurve!45,dashed,rounded corners=7pt]
+    (-0.15,0.15) rectangle (16.0,4.0);
+\end{pgfonlayer}
+
+\node[anchor=west,font=\bfseries,color=themeamber] at (0.05,6.95) {索引路径：把外部知识整理成可检索结构};
+\node[anchor=west,font=\bfseries,color=themecurve] at (0.05,3.62) {请求路径：为当前问题选择证据，再把证据送入模型};
+
+% Index path.
+\node[idx] (source) at (1.35,5.55) {Document Source};
+\node[idx] (chunk)  at (3.9,5.55) {Parse / Chunk};
+\node[idx] (embed)  at (6.45,5.55) {Embedding};
+\node[idx] (index)  at (9.0,5.55) {Retrieval Index};
+\draw[indexflow] (source) -- (chunk);
+\draw[indexflow] (chunk) -- (embed);
+\draw[indexflow] (embed) -- (index);
+\node[anchor=west,font=\scriptsize,color=themegray] at (10.35,5.55) {content reference + metadata + permissions};
+
+% Request path. Each edge is request-time data/control flow.
+\node[run]      (query)    at (1.35,2.35) {User Query};
+\node[run]      (retrieve) at (3.9,2.35) {Retrieve\\\scriptsize rewrite / filter};
+\node[evidence] (select)   at (6.45,2.35) {Evidence Selection\\\scriptsize rerank / top-k / threshold};
+\node[evidence] (context)  at (9.15,2.35) {Context Assembly};
+\node[run]      (model)    at (11.85,2.35) {LLM};
+\node[run]      (answer)   at (14.55,2.35) {Answer / Citation};
+\draw[requestflow] (query) -- (retrieve);
+\draw[requestflow] (retrieve) -- (select);
+\draw[requestflow] (select) -- (context);
+\draw[requestflow] (context) -- (model);
+\draw[requestflow] (model) -- (answer);
+
+% The two paths meet only here: the index serves retrieval.
+\draw[evidencejoin] (index.south) -- ++(0,-0.75) -| node[pos=0.72,above=1pt,font=\scriptsize,color=themegreen]{候选内容} (retrieve.north);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.1,0.55)
+  {Retrieval 找证据；RAG 还包括 Context Assembly 与 Generation。两条路径不能压成“向量库 = RAG”。};
+
+\end{tikzpicture}

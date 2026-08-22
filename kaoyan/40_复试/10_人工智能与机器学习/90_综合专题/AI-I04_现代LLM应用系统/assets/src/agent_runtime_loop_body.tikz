@@ -1,0 +1,49 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  core/.style={draw=themecurve,fill=themecurve!13!themebg,rounded corners=4pt,minimum width=2.8cm,minimum height=0.9cm,align=center,line width=1pt},
+  guard/.style={draw=themealert,fill=themealert!10!themebg,rounded corners=4pt,minimum width=2.8cm,minimum height=0.9cm,align=center,line width=1pt},
+  tool/.style={draw=themegreen,fill=themegreen!12!themebg,rounded corners=4pt,minimum width=2.8cm,minimum height=0.9cm,align=center,line width=1pt},
+  state/.style={draw=themeamber,fill=themeamber!12!themebg,rounded corners=4pt,minimum width=2.8cm,minimum height=0.9cm,align=center,line width=1pt},
+  flow/.style={->,draw=themefg!90,line width=1.05pt},
+  conditional/.style={->,draw=themealert,line width=1pt,dashed},
+  feedback/.style={->,draw=themeamber,line width=1pt,dashed},
+  support/.style={->,draw=themegray,line width=0.95pt,densely dashed}
+]
+
+% Primary loop is vertical. Side branches never cross it.
+\node[core]  (context)  at (6.5,8.1) {Context Assembly};
+\node[core]  (model)    at (6.5,6.25) {Model Decision};
+\node[guard] (validate) at (6.5,4.35) {Validate / Authorize};
+\node[tool]  (execute)  at (6.5,2.45) {Tool Execution};
+\node[state] (observe)  at (6.5,0.55) {Observation + State Update};
+\draw[flow] (context) -- (model);
+\draw[flow,draw=themealert] (model) -- node[right=2pt,font=\scriptsize,color=themealert]{Tool Call} (validate);
+\draw[flow,draw=themegreen] (validate) -- node[right=2pt,font=\scriptsize,color=themegreen]{允许执行} (execute);
+\draw[flow,draw=themegreen] (execute) -- (observe);
+
+% Termination branch: answer is a terminal output, not another loop state.
+\node[core,minimum width=2.65cm] (answer) at (2.25,6.25) {Final Answer\\\scriptsize terminate};
+\draw[flow] (model.west) -- node[above=1pt,font=\scriptsize]{直接回答} (answer.east);
+
+% Human approval is conditional and only gates sensitive tool calls.
+\node[guard,minimum width=2.75cm] (human) at (10.75,3.4) {Human Approval\\\scriptsize high-risk only};
+\draw[conditional] (validate.east) -| node[pos=0.45,above=1pt,font=\scriptsize,color=themealert]{敏感操作} (human.north);
+\draw[conditional] (human.south) |- node[pos=0.55,below=1pt,font=\scriptsize,color=themealert]{批准 / 拒绝} (execute.east);
+
+% Checkpoint is a persistence branch. It does not decide the next action.
+\node[state,minimum width=2.75cm] (checkpoint) at (10.75,0.55) {Checkpoint / Trace};
+\draw[support] (observe.east) -- (checkpoint.west);
+
+% Normal next turn returns through the left outer corridor.
+\draw[feedback] (observe.west) -- ++(-4.7,0) |- node[pos=0.62,left=2pt,font=\scriptsize,color=themeamber]{下一轮} (context.west);
+
+% Recovery / replay returns from persisted state through the far-right corridor.
+\draw[support] (checkpoint.east) -- ++(1.55,0) |- node[pos=0.58,right=2pt,font=\scriptsize,color=themegray]{恢复 / 回放} (context.east);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.15,9.05)
+  {主循环只回答“下一步怎样执行”；人工批准和 checkpoint 都是旁路控制，不能画成模型自主性的组成部分。};
+
+\end{tikzpicture}

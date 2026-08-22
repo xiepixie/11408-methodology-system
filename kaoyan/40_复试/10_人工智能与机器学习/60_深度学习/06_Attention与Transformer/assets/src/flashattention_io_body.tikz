@@ -1,0 +1,70 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  data/.style={draw=themecurve,fill=themecurve!11!themebg,rounded corners=4pt,minimum width=1.9cm,minimum height=0.72cm,align=center,line width=0.9pt},
+  op/.style={draw=themeamber,fill=themeamber!10!themebg,rounded corners=4pt,minimum width=2.35cm,minimum height=0.78cm,align=center,line width=0.9pt},
+  mem/.style={draw=themealert,fill=themealert!9!themebg,rounded corners=4pt,minimum width=2.25cm,minimum height=0.76cm,align=center,line width=0.9pt},
+  state/.style={draw=themegreen,fill=themegreen!10!themebg,rounded corners=4pt,minimum width=2.7cm,minimum height=0.86cm,align=center,line width=0.95pt},
+  flow/.style={->,draw=themefg!90,line width=1pt},
+  stream/.style={->,draw=themegreen,line width=0.98pt},
+  loop/.style={->,draw=themeamber,dashed,line width=0.98pt}
+]
+
+\begin{pgfonlayer}{background}
+  \fill[fill=themealert!4!themebg,draw=themealert!40,dashed,rounded corners=7pt]
+    (-0.4,-4.65) rectangle (7.0,4.6);
+  \fill[fill=themegreen!4!themebg,draw=themegreen!40,dashed,rounded corners=7pt]
+    (7.5,-4.65) rectangle (16.3,4.6);
+  \fill[fill=themealert!3!themebg,draw=themealert!35,densely dashed,rounded corners=5pt]
+    (7.85,-3.95) rectangle (10.25,3.7);
+\end{pgfonlayer}
+
+\node[anchor=west,font=\bfseries,color=themealert] at (-0.05,4.18) {朴素多 Kernel：完整中间矩阵落回 HBM};
+\node[anchor=west,font=\bfseries,color=themegreen] at (7.85,4.18) {Tiled exact Attention：HBM 流式供给，片上维护状态};
+
+% Naive path: each large intermediate is materialized between kernels.
+\node[data] (qk) at (1.15,2.85) {$Q,K$};
+\node[op] (gemm) at (4.2,2.85) {$S=QK^{\mathsf T}$};
+\node[mem] (hbmS) at (4.2,1.35) {HBM\\\scriptsize materialize $S$};
+\node[op] (soft) at (4.2,-0.15) {row Softmax};
+\node[mem] (hbmP) at (4.2,-1.65) {HBM\\\scriptsize materialize $P$};
+\node[data] (v) at (1.15,-3.05) {$V$};
+\node[op] (pv) at (4.2,-3.05) {$O=PV$};
+\node[data] (o1) at (6.05,-3.05) {$O$};
+\draw[flow] (qk) -- (gemm);
+\draw[flow] (gemm) -- (hbmS);
+\draw[flow] (hbmS) -- (soft);
+\draw[flow] (soft) -- (hbmP);
+\draw[flow] (hbmP) -- (pv);
+\draw[flow] (v) -- (pv);
+\draw[flow] (pv) -- (o1);
+
+% Right panel: HBM column on the left, on-chip working set on the right.
+\node[anchor=west,font=\scriptsize\bfseries,color=themealert] at (8.15,3.35) {HBM};
+\node[mem] (hq) at (9.05,2.45) {$Q_i$ source};
+\node[mem] (hkv) at (9.05,0.55) {$K_j,V_j$ source\\\scriptsize streamed tile by tile};
+\node[mem] (ho) at (9.05,-3.0) {$O_i$ write-back};
+
+\node[anchor=west,font=\scriptsize\bfseries,color=themegreen] at (10.75,3.35) {on-chip working set};
+\node[data] (qtile) at (11.7,2.45) {$Q_i$ resident};
+\node[data] (kvtile) at (11.7,0.55) {current $(K_j,V_j)$};
+\node[op] (score) at (14.55,2.05) {$S_{ij}=Q_iK_j^{\mathsf T}$\\\scriptsize ephemeral score tile};
+\node[state] (online) at (14.55,0.15) {online state\\$m,l,\widetilde O$};
+\node[op] (norm) at (14.55,-2.05) {$O_i=\widetilde O/l$};
+
+\draw[stream] (hq.east) -- (qtile.west);
+\draw[stream] (hkv.east) -- (kvtile.west);
+\draw[flow] (qtile.east) -- ++(0.55,0) |- (score.north west);
+\draw[flow] (kvtile.east) -- ++(0.55,0) |- (score.south west);
+\draw[flow] (score) -- (online);
+\draw[flow] (kvtile.east) -- ++(0.85,0) |- node[pos=0.72,below=1pt,font=\scriptsize]{提供 $V_j$} (online.west);
+\draw[loop] (online.west) -- ++(-3.45,0) |- node[pos=0.58,left=2pt,font=\scriptsize,color=themeamber]{还有 KV tile：$j\!\leftarrow\!j+1$} (hkv.south);
+\draw[flow] (online) -- (norm);
+\draw[stream] (norm.west) -- ++(-2.0,0) |- (ho.east);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (7.85,-4.28)
+  {右侧循环的持久对象只有 $Q_i$、当前 KV tile 与行级 online state；$S_{ij}$ / 局部概率只在片上短暂存在，不组成完整 $N\times N$ HBM 张量。};
+
+\end{tikzpicture}

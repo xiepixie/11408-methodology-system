@@ -1,0 +1,37 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  state/.style={draw=themecurve,fill=themecurve!11!themebg,rounded corners=4pt,minimum width=1.9cm,minimum height=0.82cm,align=center,line width=0.95pt},
+  op/.style={draw=themeamber,fill=themeamber!10!themebg,rounded corners=4pt,minimum width=2.1cm,minimum height=0.86cm,align=center,line width=0.95pt},
+  add/.style={circle,draw=themegreen,fill=themegreen!10!themebg,minimum size=0.68cm,line width=1pt,font=\bfseries},
+  flow/.style={->,draw=themefg!90,line width=1.05pt},
+  residual/.style={->,draw=themecurve,line width=1pt,dashed}
+]
+
+\node[state] (x) at (0,0) {$X$};
+\node[op] (n1) at (2.35,0) {Norm};
+\node[op] (attn) at (5.0,0) {Multi-Head\\Attention};
+\node[add] (a1) at (7.25,0) {$+$};
+\node[op] (n2) at (9.45,0) {Norm};
+\node[op] (ffn) at (12.0,0) {FFN};
+\node[add] (a2) at (14.2,0) {$+$};
+\node[state] (y) at (16.25,0) {$Y$};
+
+\draw[flow] (x) -- (n1);
+\draw[flow] (n1) -- (attn);
+\draw[flow] (attn) -- (a1);
+\draw[flow] (a1) -- (n2);
+\draw[flow] (n2) -- (ffn);
+\draw[flow] (ffn) -- (a2);
+\draw[flow] (a2) -- (y);
+
+\draw[residual] (x.north) -- ++(0,1.35) -| (a1.north);
+\draw[residual] (a1.south) -- ++(0,-1.35) -| (a2.south);
+
+\node[anchor=west,font=\scriptsize,color=themecurve] at (2.2,1.55) {residual：保留输入并与子层输出相加};
+\node[anchor=west,font=\scriptsize,color=themegray] at (0,-1.9)
+  {此图画的是常见 Pre-Norm 结构；Post-Norm 等变体改变 Norm 位置，但不改变 Attention 与 FFN 的职责边界。};
+
+\end{tikzpicture}

@@ -307,6 +307,32 @@ Observe
 
 未来用它验收 Search、Probability、Planning、RL、Perception 是否真正接上，而不是各学各的。
 
+### AI-I03｜一个现代语言模型训练与推理生命周期
+
+```text
+Token / Context
+→ Neural Representation
+→ Transformer
+→ Autoregressive Objective
+→ Optimization
+→ Decoding / Search
+→ Output
+```
+
+### AI-I04｜现代 LLM 应用系统：Context、Retrieval、RAG、Agent、Workflow 与 MCP
+
+```text
+Context Assembly
+→ Retrieval / RAG
+→ Model Generation
+→ Tool Calling
+→ Agent / Workflow State
+→ External Capability via MCP
+→ Evaluation / Security / Observability
+```
+
+正式入口：[`90_综合专题/AI-I04_现代LLM应用系统/README.md`](90_综合专题/AI-I04_现代LLM应用系统/README.md)
+
 ---
 
 ## 6. Direction Layer：研究方向不与 Core Topic 混放

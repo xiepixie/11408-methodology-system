@@ -1,0 +1,67 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  session/.style={draw=themecurve,fill=themecurve!12!themebg,rounded corners=5pt,minimum width=3.15cm,minimum height=0.92cm,align=center,line width=1pt},
+  brain/.style={draw=themeamber,fill=themeamber!10!themebg,rounded corners=5pt,minimum width=3.15cm,minimum height=0.92cm,align=center,line width=1pt},
+  hand/.style={draw=themegreen,fill=themegreen!10!themebg,rounded corners=5pt,minimum width=3.15cm,minimum height=0.92cm,align=center,line width=1pt},
+  guard/.style={draw=themealert,fill=themealert!9!themebg,rounded corners=5pt,minimum width=3.15cm,minimum height=0.86cm,align=center,line width=0.95pt},
+  flow/.style={->,draw=themefg!88,line width=1.02pt},
+  durable/.style={->,draw=themecurve,line width=0.98pt,dashed},
+  action/.style={->,draw=themegreen,line width=1.0pt},
+  observe/.style={->,draw=themeamber,line width=0.98pt,dashed},
+  policy/.style={->,draw=themealert,line width=0.95pt,dashed}
+]
+
+% Three failure domains. Horizontal position encodes ownership, not time.
+\begin{pgfonlayer}{background}
+  \fill[fill=themecurve!4!themebg,draw=themecurve!45,dashed,rounded corners=8pt]
+    (-0.15,-1.25) rectangle (4.35,5.65);
+  \fill[fill=themeamber!4!themebg,draw=themeamber!45,dashed,rounded corners=8pt]
+    (4.75,-1.25) rectangle (10.85,5.65);
+  \fill[fill=themegreen!4!themebg,draw=themegreen!45,dashed,rounded corners=8pt]
+    (11.25,-1.25) rectangle (16.15,5.65);
+\end{pgfonlayer}
+
+\node[anchor=west,font=\bfseries,color=themecurve] at (0.1,5.25) {Durable Session};
+\node[anchor=west,font=\bfseries,color=themeamber] at (5.0,5.25) {Brain = Model + Harness};
+\node[anchor=west,font=\bfseries,color=themegreen] at (11.5,5.25) {Hands = Execution Environments};
+
+% Durable session stores the history that survives any one context window.
+\node[session] (log) at (2.1,3.75) {Append-only Event Log\\\scriptsize user · model · tool · state · error};
+\node[session] (artifact) at (2.1,1.55) {Artifacts / Checkpoints\\\scriptsize spec · plan · files · committed progress};
+\node[anchor=west,font=\scriptsize,color=themegray] at (0.2,-0.65)
+  {可恢复事实源：Context 可以压缩或丢弃，Session 历史与关键产物仍保留。};
+
+% Brain main path: select a view, decide, then govern the candidate action.
+\node[brain] (context) at (6.25,3.75) {Context View$_t$\\\scriptsize select · slice · compact};
+\node[brain] (model)   at (8.15,2.15) {LLM + Agent Loop\\\scriptsize decide next action / stop};
+\node[brain] (runtime) at (9.15,0.35) {Harness Runtime\\\scriptsize validate · route · retry · resume};
+
+\draw[durable] (log.east) -- node[above=1pt,font=\scriptsize,color=themecurve]{replay / select} (context.west);
+\draw[durable] (artifact.east) -- ++(0.75,0) |- node[pos=0.7,below=1pt,font=\scriptsize,color=themecurve]{resume / reference} (context.south west);
+\draw[flow] (context.south east) -- (model.north west);
+\draw[flow] (model.south east) -- (runtime.north west);
+
+% Hands are reached through one explicit execution gateway; generated code never owns credentials.
+\node[hand] (gateway) at (13.65,3.55) {Execution Gateway\\\scriptsize provision · dispatch · collect result};
+\node[hand] (sandbox) at (12.45,1.35) {Sandbox / Workspace\\\scriptsize files · shell · code};
+\node[hand] (tools)   at (14.85,1.35) {External Tools / MCP\\\scriptsize DB · SaaS · browser · APIs};
+\node[guard] (vault)  at (13.65,-0.45) {Credential / Egress Boundary\\\scriptsize scoped secrets · network policy};
+
+\draw[action] (runtime.east) to[bend left=12] node[above=1pt,font=\scriptsize,color=themegreen]{execute(name,input)} (gateway.west);
+\draw[observe] (gateway.west) to[bend left=12] node[below=1pt,font=\scriptsize,color=themeamber]{observation / error} (runtime.east);
+\draw[action] (gateway.south west) -- (sandbox.north);
+\draw[action] (gateway.south east) -- (tools.north);
+\draw[policy] (vault.north west) -- (sandbox.south);
+\draw[policy] (vault.north east) -- (tools.south);
+
+% Every committed step returns to durable state before the next context view is assembled.
+\draw[durable] (runtime.south) -- ++(0,-1.05) -- (0.45,-0.7) |- node[pos=0.79,left=2pt,font=\scriptsize,color=themecurve]{append event} (log.west);
+\draw[durable] (runtime.south) -- ++(0,-0.55) -| node[pos=0.62,above=1pt,font=\scriptsize,color=themecurve]{checkpoint / artifact} (artifact.south);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (4.95,-1.85)
+  {主循环是 Session $\rightarrow$ Context View $\rightarrow$ Decision $\rightarrow$ Execution $\rightarrow$ Session；Tool result 不绕过 Context Assembly 直接“喂回”模型。};
+
+\end{tikzpicture}

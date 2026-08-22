@@ -1,7 +1,7 @@
 # 优化与学习计算 Area Atlas：把目标函数变成可执行更新
 
 > 类型：Atlas
-> 状态：已采用；Area Boundary v1 + Leaf Boundary v1 已锁定。Leaf Topic 仅建立 Canonical 归属与依赖，不批量创建深度正文。
+> 状态：已采用；Area Boundary v1 + Leaf Boundary v1 已锁定。Leaf Topic 不批量创建；`07 Automatic Differentiation 与计算图求导` 已因真实学习输入建立 Canonical 深度正文。
 
 ## Mother Question
 
@@ -83,7 +83,7 @@ Variable θ
 | **04 二阶与拟牛顿：Newton、BFGS、Trust Region** | Hessian/curvature-based step、Newton/quasi-Newton、trust-region logic、local convergence/compute-memory trade-off | Hessian 数学定义 Use 数学；深网中是否值得用二阶法是调用问题，不另建 DL Owner |
 | **05 约束优化：Lagrange 与 KKT** | equality/inequality constraints、Lagrangian、KKT、duality/basic constrained optimality、feasible-vs-optimal distinction | sequential dynamics constraint + trajectory cost 的 control semantics 回 Area 70；CSP 离散约束回 Area 10 |
 | **06 Projected / Proximal 与非光滑优化** | projection、subgradient/proximal operator、composite objective、L1-style nonsmooth structure 与 constrained first-order computation | regularizer 为什么合理回 Area 40；具体 sparse model family 不由 solver Own |
-| **07 Automatic Differentiation 与计算图求导** | computation graph differentiation、forward/reverse mode、JVP/VJP、first/second derivative computation 与 compute-memory trade-off | 不 Own parameter update；神经网络中的 layer-wise backprop / credit assignment 回 Area 60 |
+| **[07 Automatic Differentiation 与计算图求导](07_AutomaticDifferentiation与计算图求导/README.md)** | computation graph differentiation、forward/reverse mode、JVP/VJP、first/second derivative computation 与 compute-memory trade-off | 不 Own parameter update；神经网络中的 layer-wise backprop / credit assignment 回 Area 60 |
 
 ### Internal Dependency DAG
 

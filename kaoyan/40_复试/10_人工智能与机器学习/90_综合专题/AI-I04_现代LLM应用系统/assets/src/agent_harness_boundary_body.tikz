@@ -1,0 +1,60 @@
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  model/.style={draw=themecurve,fill=themecurve!16!themebg,rounded corners=5pt,minimum width=3.05cm,minimum height=1.0cm,align=center,line width=1.05pt},
+  runtime/.style={draw=themeamber,fill=themeamber!11!themebg,rounded corners=4pt,minimum width=2.8cm,minimum height=0.86cm,align=center,line width=0.95pt},
+  guard/.style={draw=themealert,fill=themealert!10!themebg,rounded corners=4pt,minimum width=2.9cm,minimum height=0.86cm,align=center,line width=0.95pt},
+  state/.style={draw=themegreen,fill=themegreen!10!themebg,rounded corners=4pt,minimum width=2.8cm,minimum height=0.84cm,align=center,line width=0.92pt},
+  io/.style={draw=themegray,fill=themegray!9!themebg,rounded corners=4pt,minimum width=2.55cm,minimum height=0.82cm,align=center,line width=0.9pt},
+  flow/.style={->,draw=themefg!90,line width=1.05pt},
+  support/.style={->,draw=themegray,dashed,line width=0.9pt},
+  control/.style={->,draw=themealert,dashed,line width=0.95pt},
+  persist/.style={->,draw=themegreen,dashed,line width=0.95pt}
+]
+
+\begin{pgfonlayer}{background}
+  \fill[fill=themecurve!4!themebg,draw=themecurve!50,dashed,rounded corners=8pt]
+    (1.7,-3.15) rectangle (13.95,5.2);
+\end{pgfonlayer}
+\node[anchor=west,font=\bfseries,color=themecurve] at (1.95,4.82) {Agent Harness / Runtime Contract};
+
+% Main invocation path: the model is only one stage inside the harness.
+\node[io]      (input)      at (0.15,1.25) {用户任务 / Event};
+\node[runtime] (context)    at (4.0,1.25) {Context Builder\\\scriptsize 选择并组装当前工作集};
+\node[model]   (model)      at (7.75,1.25) {LLM / Model\\\scriptsize Context $\rightarrow$ candidate output};
+\node[guard]   (controller) at (11.45,1.25) {Runtime Controller\\\scriptsize validate · route · stop · execute};
+\node[io]      (output)     at (15.55,1.25) {Approved Answer / Action};
+
+\draw[flow] (input.east) -- (context.west);
+\draw[flow] (context.east) -- (model.west);
+\draw[flow] (model.east) -- node[above=1pt,font=\scriptsize]{候选输出 / Tool Call} (controller.west);
+\draw[flow] (controller.east) -- (output.west);
+
+% Control-plane inputs. They support the main path but do not become extra model capabilities.
+\node[runtime] (registry) at (4.0,3.55) {Tool Registry\\\scriptsize schemas · implementations};
+\node[runtime] (planner)  at (7.75,3.55) {Loop / Planner\\\scriptsize next call · stop condition};
+\node[guard]   (policy)   at (11.45,3.55) {Policy / Permissions\\\scriptsize allow · deny · approve};
+
+\draw[support] (registry.south) -- node[right=2pt,font=\scriptsize,color=themegray]{tool schemas} (context.north);
+\draw[support] (registry.north) -- ++(0,0.72) -| node[pos=0.62,above=1pt,font=\scriptsize,color=themegray]{dispatch} (controller.north west);
+\draw[control] (planner.south) -- ++(0,-0.55) -| (controller.north);
+\draw[control] (policy.south) -- (controller.north east);
+
+% Persistence plane. Durable state feeds context; committed effects and traces return here.
+\node[state] (session) at (4.0,-1.15) {Session / State\\\scriptsize current task · checkpoint};
+\node[state] (memory)  at (7.75,-1.15) {Memory / Artifacts\\\scriptsize persist · retrieve · reference};
+\node[guard] (trace)   at (11.45,-1.15) {Trace / Eval Hooks\\\scriptsize calls · errors · latency · cost};
+
+\draw[persist] (session.north) -- ++(0,0.55) -| (context.south west);
+\draw[persist] (memory.north) -- ++(0,0.55) -| (context.south east);
+\draw[persist] (controller.south) -- ++(0,-0.55) -| node[pos=0.72,below=1pt,font=\scriptsize,color=themegreen]{commit state} (session.east);
+\draw[control] (controller.south) -- (trace.north);
+
+\node[anchor=west,font=\scriptsize,color=themegray] at (1.95,-2.45)
+  {主线只表示一次受控调用：Context Builder 组装输入，Model 产生候选，Runtime Controller 决定候选能否成为真实输出或动作。};
+\node[anchor=west,font=\scriptsize,color=themegray] at (1.95,-2.88)
+  {上方是控制面，下方是持久化与观测面；它们围绕模型工作，但不等同于模型本身。};
+
+\end{tikzpicture}
