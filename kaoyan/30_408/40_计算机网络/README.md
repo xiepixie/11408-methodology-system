@@ -187,9 +187,9 @@ Graph Algorithm × Routing 当前只作为 Routing Topic 对数据结构图算�
 
 Canonical product：[NET-I01｜一个网络请求的一生](60_综合专题/NET-I01_一个网络请求的一生/README.md)，已发布阅读版。
 
-它只追踪一个请求在实际条件下可能调用的模块：若主机尚未配置则先处理 DHCP；解析 DNS；判断目标是否同子网并选择 next-hop；必要时完成邻居地址解析和链路封装；经交换机/路由器逐跳转发；维护 TCP 端点状态；最后交换 HTTP 请求与响应。具体条件分支和事件顺序由 Integration 正文显式标注，不把这些模块写成每次请求都必经的固定线性链。
+它追踪一个应用目标在当前状态下实际需要调用哪些模块。先判断本地应用状态能否直接满足目标；只有仍需联网时，才按需要补齐 host configuration、目标 IP 与 transport state。DNS、TCP、HTTP 一旦产生报文，每一条报文都重新调用 `destination IP -> FIB/LPM -> next hop -> current-link delivery` 的逐跳交付过程。具体条件分支和事件顺序由 Integration 正文显式标注，不把 DHCP、DNS、ARP、TCP、HTTP 写成每次请求都必经的固定线性链。
 
-同时维护 Name/Address、Encapsulation、Distributed State 和 Scope 四条轨迹，不重写任何协议机制。
+推演时同时保持名字/地址类型、封装表示、State Owner、Scope 与 Execution Role 正确；局部协议机制仍回到各 Topic / Bridge Owner。
 
 ## Cross-Subject Bridge
 

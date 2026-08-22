@@ -1,0 +1,207 @@
+% ── NET-I01 Canonical Cross-Media Frame & State Evolution Diagram ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  stagehdr/.style={draw=themefg!70,fill=themefg!8!themebg,rounded corners=4pt,minimum width=3.4cm,minimum height=1.05cm,align=center,font=\scriptsize\bfseries,line width=1.0pt},
+  hdrfield/.style={draw=themegreen!80,fill=themegreen!12!themebg,rounded corners=2pt,font=\fontsize{5.2pt}{6.2pt}\selectfont,minimum height=1.2cm,inner sep=2pt,align=left},
+  payloadfield/.style={draw=themecurve,fill=themecurve!18!themebg,rounded corners=2pt,font=\fontsize{5.5pt}{6.5pt}\selectfont\bfseries,minimum height=1.2cm,inner sep=2pt,align=center},
+  fcsfield/.style={draw=themealert,fill=themealert!18!themebg,rounded corners=2pt,font=\fontsize{5.2pt}{6.2pt}\selectfont\bfseries,minimum height=1.2cm,inner sep=2pt,align=center}
+]
+
+\def\colA{1.8}
+\def\colB{5.6}
+\def\colC{9.4}
+\def\colD{13.2}
+\def\colE{17.0}
+
+\begin{pgfonlayer}{background}
+  \fill[fill=themeamber!6!themebg,draw=themeamber!45,dashed,line width=0.9pt,rounded corners=8pt]
+    (-0.3, 10.4) rectangle (19.0, 13.8);
+  \fill[fill=themecurve!6!themebg,draw=themecurve!45,dashed,line width=0.9pt,rounded corners=8pt]
+    (-0.3, 6.4) rectangle (19.0, 10.0);
+  \fill[fill=themegreen!6!themebg,draw=themegreen!45,dashed,line width=0.9pt,rounded corners=8pt]
+    (-0.3, 1.4) rectangle (19.0, 6.0);
+  \fill[fill=themecurve!8!themebg,draw=themecurve!50,line width=0.9pt,rounded corners=6pt]
+    (-0.3, -1.1) rectangle (19.0, 1.0);
+  \draw[themefg!15,dashed,line width=0.6pt] (3.7, 1.4) -- (3.7, 13.8);
+  \draw[themefg!15,dashed,line width=0.6pt] (7.5, 1.4) -- (7.5, 13.8);
+  \draw[themefg!15,dashed,line width=0.6pt] (11.3, 1.4) -- (11.3, 13.8);
+  \draw[themefg!15,dashed,line width=0.6pt] (15.1, 1.4) -- (15.1, 13.8);
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{foreground}
+  \node[anchor=west,font=\small\bfseries,color=themeamber] at (-0.1, 13.4) {【TCP】序号、确认号和可靠传输状态由通信两端维护};
+  \node[anchor=west,font=\small\bfseries,color=themecurve] at (-0.1, 9.6) {【IPv4】路由器逐跳转发；TTL 在每个 IP 路由器处递减};
+  \node[anchor=west,font=\small\bfseries,color=themegreen] at (-0.1, 5.6) {【链路层】802.11、Ethernet、PPP 使用各自的本跳帧表示};
+\end{pgfonlayer}
+
+\node[stagehdr,draw=themegreen] at (\colA, 14.8) {① 主机 $\to$ AP 无线跳\\\tiny 802.11 CSMA/CA 信道};
+\node[stagehdr,draw=themegreen] at (\colB, 14.8) {② AP $\to$ 交换机 $\to$ 网关 R1\\\tiny 802.3 双绞线以太网};
+\node[stagehdr,draw=themecurve] at (\colC, 14.8) {③ R1 $\to$ R2 广域网跳\\\tiny Native PPP 点对点光纤};
+\node[stagehdr,draw=themecurve] at (\colD, 14.8) {④ 运营商 / 跨 AS 路由器\\\tiny 按已安装 FIB 逐跳转发};
+\node[stagehdr,draw=themeamber] at (\colE, 14.8) {⑤ 网关 Rn $\to$ Web 服务器\\\tiny 服务器局域网以太网};
+
+\draw[->,draw=themefg!80,line width=1.3pt] (\colA+1.8, 14.8) -- (\colB-1.8, 14.8);
+\draw[->,draw=themefg!80,line width=1.3pt] (\colB+1.8, 14.8) -- (\colC-1.8, 14.8);
+\draw[->,draw=themefg!80,line width=1.3pt] (\colC+1.8, 14.8) -- (\colD-1.8, 14.8);
+\draw[->,draw=themefg!80,line width=1.3pt] (\colD+1.8, 14.8) -- (\colE-1.8, 14.8);
+
+\node[align=center,font=\scriptsize] at (\colA, 12.0) {
+  \textbf{\color{themeamber}TCP 端点:}\\[1pt]
+  \texttt{src=192.168.10.23:$p$}\\
+  \texttt{dst=203.0.113.80:80}\\[2pt]
+  \textbf{\color{themefg}Seq / Ack:} 由两端 TCP 维护
+};
+
+\node[align=center,font=\scriptsize] at (\colB, 12.0) {
+  \textbf{\color{themeamber}TCP 端点仍是两端主机:}\\[1pt]
+  \texttt{src=192.168.10.23:$p$}\\
+  \texttt{dst=203.0.113.80:80}\\[2pt]
+  \textbf{\color{themegray}AP / switch 不维护 TCP 状态}
+};
+
+\node[align=center,font=\scriptsize] at (\colC, 12.0) {
+  \textbf{\color{themealert}R1 执行 NAPT:}\\
+  \texttt{src=198.51.100.9:$p'$}\\
+  \texttt{dst=203.0.113.80:80}\\[2pt]
+  \textbf{\color{themefg}Seq / Ack 仍由两端 TCP 维护}
+};
+
+\node[align=center,font=\scriptsize] at (\colD, 12.0) {
+  \textbf{\color{themeamber}公网侧看到的端点:}\\[1pt]
+  \texttt{src=198.51.100.9:$p'$}\\
+  \texttt{dst=203.0.113.80:80}\\[2pt]
+  \textbf{\color{themegray}中间路由器不维护}\\[1pt]
+  \textbf{\color{themegray}TCP 连接状态}
+};
+
+\node[align=center,font=\scriptsize] at (\colE, 12.0) {
+  \textbf{\color{themeamber}到达服务器 TCP:}\\[1pt]
+  \texttt{src=198.51.100.9:$p'$}\\
+  \texttt{dst=203.0.113.80:80}\\[2pt]
+  \textbf{\color{themefg}TCP 处理 Seq / Ack}\\[1pt]
+  \textbf{\color{themefg}再把重组后的字节交给 Web 进程}
+};
+
+\node[align=center,font=\scriptsize] at (\colA, 8.1) {
+  \textbf{\color{themecurve}源 IP:} \texttt{192.168.10.23} (私网)\\[2pt]
+  \textbf{\color{themecurve}目的 IP:} \texttt{203.0.113.80} (公网)\\[3pt]
+  \textbf{\color{themeamber}TTL 初始值:} $t$ (如 64 或 128)
+};
+
+\node[align=center,font=\scriptsize] at (\colB, 8.1) {
+  \textbf{\color{themecurve}源 IP 与目的 IP 均不变}\\[2pt]
+  \textbf{\color{themegreen}TTL 不减 1!} (二层交换不耗 TTL)\\[3pt]
+  \textbf{\color{themegray}首部校验和保持原值}
+};
+
+\node[align=center,font=\scriptsize] at (\colC, 8.1) {
+  \textbf{\color{themealert}网关 R1 转发动作:}\\
+  1. 源 IP 转换为公网 \texttt{198.51.100.9}\\[2pt]
+  2. \textbf{\color{themealert}TTL 减 1} $\to t-1$\\[2pt]
+  3. \textbf{\color{themealert}重新计算 IP 首部校验和}
+};
+
+\node[align=center,font=\scriptsize] at (\colD, 8.1) {
+  \textbf{\color{themecurve}目的 IP 203.0.113.80 保持}\\[2pt]
+  \textbf{\color{themealert}每过一个 IP 路由器:}\\
+  $\text{TTL} \leftarrow \text{TTL} - 1$\\[2pt]
+  重新计算 IP 首部校验和
+};
+
+\node[align=center,font=\scriptsize] at (\colE, 8.1) {
+  \textbf{\color{themecurve}成功到达目标:} \texttt{203.0.113.80}\\[2pt]
+  \textbf{\color{themecurve}最终 TTL:} $t - \text{总路由跳数}$\\[3pt]
+  Server 剥离 IP 首部交付 TCP
+};
+
+\node[align=center] at (\colA, 3.6) {
+  \textbf{\color{themegreen}\scriptsize 802.11 无线数据帧}\\[3pt]
+  \begin{tikzpicture}
+    \node[hdrfield,minimum width=2.05cm] at (0,0) {
+      \textbf{802.11 帧首部 (三地址)}\\
+      \texttt{RA = AP\_MAC} (接收端)\\
+      \texttt{TA = STA\_MAC} (发送端)\\
+      \texttt{Addr3 = R1\_MAC} (网关)
+    };
+    \node[payloadfield,minimum width=0.75cm] at (1.46,0) {IP\\报文};
+    \node[fcsfield,minimum width=0.55cm] at (2.16,0) {FCS\\(CRC)};
+  \end{tikzpicture}\\[3pt]
+  \tiny \color{themegray} 无线网卡硬件计算并追加 FCS
+};
+
+\node[align=center] at (\colB, 3.6) {
+  \textbf{\color{themegreen}\scriptsize Ethernet II（DIX）帧}\\[3pt]
+  \begin{tikzpicture}
+    \node[hdrfield,minimum width=2.05cm] at (0,0) {
+      \textbf{标准以太网帧首部}\\
+      \texttt{目的: R1\_MAC} (网关)\\
+      \texttt{源: STA\_MAC} (主机)\\
+      \texttt{类型: 0x0800} (IPv4)
+    };
+    \node[payloadfield,minimum width=0.75cm] at (1.46,0) {IP\\报文};
+    \node[fcsfield,minimum width=0.55cm] at (2.16,0) {FCS\\(重算)};
+  \end{tikzpicture}\\[3pt]
+  \tiny \color{themegray} AP 桥接：剥离 802.11 重构以太网帧
+};
+
+\node[align=center] at (\colC, 3.6) {
+  \textbf{\color{themecurve}\scriptsize Native PPP 点对点帧}\\[3pt]
+  \begin{tikzpicture}
+    \node[hdrfield,minimum width=2.05cm,draw=themecurve!80,fill=themecurve!12!themebg] at (0,0) {
+      \textbf{PPP 首部 (点对点链路)}\\
+      \texttt{Flag = 0x7E, Addr = 0xFF}\\
+      \texttt{Control = 0x03}\\
+      \texttt{协议 = 0x0021} (IPv4)
+    };
+    \node[payloadfield,minimum width=0.75cm] at (1.46,0) {IP\\报文};
+    \node[fcsfield,minimum width=0.55cm] at (2.16,0) {FCS\\(CRC)};
+  \end{tikzpicture}\\[3pt]
+  \tiny \bfseries \color{themealert} 点对点链路：无以太网 MAC 地址!
+};
+
+\node[align=center] at (\colD, 3.6) {
+  \textbf{\color{themecurve}\scriptsize 路由器按出接口重新封装}\\[3pt]
+  \begin{tikzpicture}
+    \node[hdrfield,minimum width=2.05cm,draw=themecurve!80,fill=themecurve!12!themebg] at (0,0) {
+      \textbf{出接口链路首部}\\
+      依出接口链路类型确定\\
+      PPP / Ethernet / 其他链路\\
+      \texttt{建立本跳所需链路信息}
+    };
+    \node[payloadfield,minimum width=0.75cm] at (1.46,0) {IP\\报文};
+    \node[fcsfield,minimum width=0.55cm] at (2.16,0) {FCS\\(每跳)};
+  \end{tikzpicture}\\[3pt]
+  \tiny \color{themegray} 剥离旧 L2 首部 $\to$ 查表 $\to$ 封装新 L2
+};
+
+\node[align=center] at (\colE, 3.6) {
+  \textbf{\color{themeamber}\scriptsize 服务器局域网以太网帧}\\[3pt]
+  \begin{tikzpicture}
+    \node[hdrfield,minimum width=2.05cm,draw=themeamber!80,fill=themeamber!12!themebg] at (0,0) {
+      \textbf{服务器以太网帧首部}\\
+      \texttt{目的: Web\_MAC} (服务器)\\
+      \texttt{源: Rn\_MAC} (网关)\\
+      \texttt{类型: 0x0800} (IPv4)
+    };
+    \node[payloadfield,minimum width=0.75cm] at (1.46,0) {IP\\报文};
+    \node[fcsfield,minimum width=0.55cm] at (2.16,0) {FCS\\(校验)};
+  \end{tikzpicture}\\[3pt]
+  \tiny \bfseries \color{themeamber} 网关 Rn 通过 ARP 解析获得 Web\_MAC
+};
+
+\node[anchor=west,font=\small\bfseries,color=themecurve] at (-0.1, 0.70) {★ 读这张图时只分清三件事：};
+\node[anchor=west,font=\scriptsize\bfseries,color=themefg] at (-0.1, 0.25) {
+  1. \textbf{TCP：}Seq / Ack 和可靠传输状态由两端维护；NAPT 可以改写公网侧看到的源 IP / Port；
+};
+\node[anchor=west,font=\scriptsize\bfseries,color=themefg] at (-0.1, -0.20) {
+  2. \textbf{IPv4：}本例的目的 IP 始终指向 Web server；每经过一个 IP 路由器，TTL 减 1 并更新 IPv4 首部校验和；
+};
+\node[anchor=west,font=\scriptsize\bfseries,color=themefg] at (-0.1, -0.65) {
+  3. \textbf{链路层：}AP 可在 802.11 / Ethernet 间转换表示；经过 IP 路由器后，下一条链路按自己的格式重新封装。
+};
+
+\end{tikzpicture}

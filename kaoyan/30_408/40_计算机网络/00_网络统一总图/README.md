@@ -75,6 +75,9 @@ Physical: signal representation + propagation
 
 分层的价值是替换局部实现而保持接口，代价是 header、复制、跨层信息不足和功能重复。Middlebox、offload 和 cross-layer optimization 说明工程实现未必物理上严格分层，但责任分析仍应先从接口开始。
 
+![协议分层封装结构与分用解包全景图](./assets/协议分层封装结构与分用解包全景图.svg)
+
+
 ## 5. 名字不是一种东西
 
 一次 Web 访问中的典型命名链：

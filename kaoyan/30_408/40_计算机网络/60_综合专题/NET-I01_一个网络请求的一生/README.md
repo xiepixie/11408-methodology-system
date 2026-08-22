@@ -1,30 +1,96 @@
-# NET-I01｜一个网络请求的一生：从域名到网页返回
+# NET-I01｜一个网络请求的一生
 
-状态：待人工确认；Canonical Integration 正文已建立并发布，组合边界已复核。305 题已验证各局部接口方向，但完整 `URL + 初始状态 -> HTTP representation` 综合迁移证据仍不足，已建立专门训练入口继续攻击。
+> 状态：待人工确认
+>
+> 类型：Integration（综合专题）
 
-## Hook
+## 这本手册解决什么问题
 
-浏览器只有 URL 时，配置、名字解析、逐跳转发、端点连接和 HTTP 语义必须按依赖组合；缓存与已有状态又会改变实际事件轨迹。本册追踪这条组合链，不重新解释任何局部协议。
+在浏览器里输入一个 URL 以后，网络并不会固定执行一遍 `DHCP -> DNS -> ARP -> TCP -> HTTP`。
 
-## Canonical Problem
+真实过程取决于两件事：
 
-`URL -> DHCP（若无配置） -> DNS -> Destination IP -> FIB/Next Hop -> ARP/ND -> Frame/Switch -> Router/LPM -> TCP Endpoint -> HTTP Request/Response`
+1. **现在已经有什么状态**：主机是否已经有 IP 配置，DNS/ARP/HTTP 缓存是否命中，TCP 连接是否还能复用；
+2. **每一条报文怎样穿过当前拓扑**：当前节点查哪张转发表、下一跳是谁、本跳使用什么链路、经过路由器后哪些字段要改变。
 
-## Owns / Uses
+所以本专题始终分开两个问题：
 
-- Owns 模块识别、组合次序、四条并行轨迹、失败分支与独立验证；
-- Uses NET01--NET08 与 NET-B01--NET-B04；
-- DNS、ARP、routing、TCP、拥塞和 HTTP 的机制仍由各 Topic Owner 修改。
+```text
+请求还缺什么？
+-> 只补缺失或失效的状态
 
-## Stop Boundary
+已经要发送一条 IP 数据报？
+-> 查当前 FIB
+-> 确定出接口和下一跳
+-> 按当前链路完成这一跳
+-> 到路由器后继续重复
+```
 
-到第一份 HTTP response 被应用解释为止。NIC/driver/kernel stack、TLS/QUIC 内部、CDN 调度与浏览器渲染是 Extension；网络接收唤醒进程仍受 X-B04 Promotion Gate 约束。
+DNS、TCP、HTTP 都会产生自己的报文，而这些报文都会再次使用下面的逐跳交付过程。DHCP 初始广播属于启动阶段的特殊路径，不强行塞进普通单播数据报流程。
 
-## Canonical Manual
+## 贯穿场景
 
-- [Canonical LaTeX 正文](NET-I01_一个网络请求的一生_综合手册.tex)
-- [Published PDF](../../../../90_publish/408/NET-I01_一个网络请求的一生_综合手册.pdf)
+主场景固定为一条可以真实同时成立的路径：
 
-## Training
+```text
+802.11 客户端
+-> AP 二层桥接
+-> Ethernet / VLAN / STP
+-> 出口路由器 R1（DHCP Relay + NAPT）
+-> Native PPP 点对点 WAN
+-> ISP 内部路由器
+-> AS 间链路 + eBGP
+-> 内容提供商网络
+-> Ethernet 服务器 LAN
+-> Web 服务器
+```
 
-- [跨层网络请求状态推演](跨层网络请求状态推演.md)：从 `URL + 当前状态` 出发，按前置条件复用/创建 DHCP、DNS、FIB/next-hop、ARP/ND、TCP 与 HTTP 状态，并用 First Divergence 定位综合故障。
+递归 DNS 服务器和 DHCP 服务器都是通过网络可达的服务节点，不是客户端的物理直连设备。OSPF、BGP、STP 负责形成或维护控制状态；普通数据报真正转发时使用的是当时已经生效的 FIB、端口状态和邻居信息。
+
+共享半双工 Ethernet/CSMA-CD、Polling/Token、FDM/TDM/CDM、PPPoE、IPv6 SLAAC/ND、RIP、HTTP/2/3 等互斥或替代机制放在比较分支中，不制造“所有协议同时出现在一条链路上”的假场景。
+
+## 本册负责什么
+
+本册负责把已有专题接成一个完整过程：
+
+- 第一次访问和第二次访问为什么可能产生完全不同的报文；
+- DNS 查询为什么自己也要先经过 FIB、下一跳和链路交付；
+- destination IP、next-hop IP、MAC/链路地址和 port 为什么不能混用；
+- AP、交换机、路由器和 NAT 分别能改什么、不能改什么；
+- 控制协议怎样形成状态，当前 packet 又怎样使用这些状态；
+- 出现故障时怎样找到第一处真正断掉的地方；
+- 性能题怎样先画依赖关系，再计算 RTT、传输时间和窗口影响。
+
+DHCP、DNS、ARP、OSPF/BGP、TCP、拥塞控制、HTTP 等协议的完整机制仍放在 NET01--NET08 与 NET-B01--B06 各自唯一的负责位置，本册不重复写第二套教材。
+
+## 正文与训练
+
+- [综合手册 LaTeX 正文](NET-I01_一个网络请求的一生_综合手册.tex)
+- [发布阅读版 PDF](../../../../90_publish/408/NET-I01_一个网络请求的一生_综合手册.pdf)
+- [跨层网络请求状态推演](跨层网络请求状态推演.md)：专门训练“给定 URL + 当前状态 + 拓扑，实际会发生什么”。
+
+训练时最重要的一条动作是：
+
+> **每出现一条普通 IP 数据报，都重新写 destination IP，查当前 FIB，确定 next hop，再按当前链路完成这一跳。**
+
+## 四张配图分别看什么
+
+- `事务层与逐跳数据报双层执行模型`：为什么请求过程不是固定协议流水线；DNS/TCP/HTTP 产生的报文怎样反复进入逐跳交付。
+- `ISP骨干网与Web服务全流程拓扑`：设备、链路、VLAN/AS 边界以及 DNS/DHCP 服务到底位于哪里。
+- `状态命中裁剪网络请求事件DAG`：已有配置、缓存和连接怎样省掉对应步骤。
+- `跨介质全链路帧转换与端到端状态演进拓扑图`：TCP、IPv4 和链路层字段在 AP、NAT、路由器和最后一跳分别怎样变化。
+
+## 本册在哪里停止
+
+主线到“目标 HTTP 响应已经到达并被应用层解释”为止。TCP 连接关闭的完整状态机回到 NET06；TLS/QUIC 细节、CDN 选站、浏览器渲染、内核与 NIC 内部执行路径属于其他专题。
+
+## 下一轮验证重点
+
+继续用题目重点攻击这些边界：
+
+1. DNS query 自己先调用 FIB/下一跳/ARP，而不是把 ARP 固定放在 DNS 之后；
+2. cold / warm 访问只重建真正失效的状态；
+3. AP/switch 不减 TTL，router 才推进 IP hop；
+4. 路由协议算出的结果、FIB 安装完成、当前 packet 真正使用之间不能混成同一时刻；
+5. NAT、MTU、TCP 流量控制/拥塞控制同时出现时仍能找对负责状态的设备；
+6. 题目只改一个状态时，只重算真正依赖它的部分。

@@ -316,7 +316,14 @@ def compile_tikz_source(
             for d_col, l_col in stroke_map.items():
                 rules.append(f"    [stroke='{d_col}'], [stroke='{d_col.upper()}'], [stroke='{d_col}' i] {{ stroke: {l_col} !important; }}")
 
-            adaptive_style = "\n<style>\n  @media print, (prefers-color-scheme: light) {\n" + "\n".join(rules) + "\n  }\n</style>\n"
+            adaptive_style = (
+                "\n<style>\n"
+                "  svg { max-width: 100%; height: auto; }\n"
+                "  @media print, (prefers-color-scheme: light) {\n"
+                "    svg { max-width: 100% !important; height: auto !important; }\n"
+                + "\n".join(rules)
+                + "\n  }\n</style>\n"
+            )
 
             if "<style>" not in dark_text:
                 dark_text = re.sub(r"(<defs|<path|<g)", rf"{adaptive_style}\1", dark_text, count=1)

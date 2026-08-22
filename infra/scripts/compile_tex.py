@@ -82,13 +82,13 @@ def build_environment(target_dir: Path) -> dict[str, str]:
     """Build a domain-neutral TEXINPUTS search path.
 
     ``infra/latex`` is the global design-system owner. ``REPO_ROOT`` allows
-    canonical sources to address repository-relative assets. Any caller-provided
-    TEXINPUTS is preserved; this is how a domain can expose its own compatibility
-    surface without teaching the shared compiler about that domain.
+    canonical sources to address repository-relative assets. ``kaoyan`` is
+    included for handbook compatibility layer resolution. Any caller-provided
+    TEXINPUTS is preserved.
     """
     env = os.environ.copy()
     existing = env.get("TEXINPUTS", "")
-    roots = [target_dir, LATEX_ROOT, REPO_ROOT]
+    roots = [target_dir, LATEX_ROOT, REPO_ROOT / "kaoyan", REPO_ROOT]
     env["TEXINPUTS"] = ".:" + ":".join(str(path) for path in roots) + f":{existing}:"
     return env
 

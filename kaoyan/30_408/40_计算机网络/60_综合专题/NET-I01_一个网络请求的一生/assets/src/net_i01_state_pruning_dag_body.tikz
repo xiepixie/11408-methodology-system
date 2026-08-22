@@ -1,0 +1,63 @@
+% ── NET-I01 Canonical State Pruning DAG ──
+\begin{tikzpicture}[
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg,
+  gate/.style={draw=themecurve,fill=themecurve!9!themebg,rounded corners=4pt,minimum width=3.4cm,minimum height=0.9cm,align=center,font=\scriptsize\bfseries},
+  create/.style={draw=themeamber,fill=themeamber!9!themebg,rounded corners=4pt,minimum width=3.0cm,minimum height=0.85cm,align=center,font=\scriptsize\bfseries},
+  reuse/.style={draw=themegreen,fill=themegreen!9!themebg,rounded corners=4pt,minimum width=2.8cm,minimum height=0.82cm,align=center,font=\scriptsize\bfseries},
+  edge/.style={->,draw=themefg!85,line width=0.85pt},
+  bypass/.style={->,draw=themegreen,line width=0.8pt,dashed}
+]
+
+\node[gate] (intent) at (7.4,8.0) {用户在浏览器输入 URL};
+\node[gate] (httpcache) at (7.4,6.65) {本地是否存在有效强缓存？};
+\node[reuse] (localdone) at (11.8,6.65) {直接读取本地缓存渲染};
+\draw[edge] (intent) -- (httpcache);
+\draw[bypass] (httpcache) -- node[above=2pt,font=\tiny\bfseries,color=themegreen]{命中 (200 from cache)} (localdone);
+
+\node[gate] (config) at (7.4,5.15) {本机是否已配置有效 IP 与网关？};
+\node[create] (dhcp) at (2.2,5.15) {触发 DHCP 动态获取配置};
+\draw[edge] (httpcache) -- node[right,font=\tiny\bfseries,color=themealert]{未命中 (需联网)} (config);
+\draw[edge] (config) -- node[above,font=\tiny\bfseries,color=themealert]{未配置 / 已过期} (dhcp);
+\draw[edge] (dhcp.south) |- (7.4,4.45);
+\draw[bypass] (config) -- node[right,font=\tiny\bfseries,color=themegreen]{已有配置 (valid)} (7.4,4.45);
+
+\node[gate] (dns) at (7.4,3.75) {是否已知目标服务器 IP 地址？};
+\node[create] (resolve) at (2.2,3.75) {发送 DNS 报文进行域名解析};
+\draw[edge] (7.4,4.45) -- (dns);
+\draw[edge] (dns) -- node[above,font=\tiny\bfseries,color=themealert]{无 DNS 缓存 / 域名未解析} (resolve);
+\draw[edge] (resolve.south) |- (7.4,3.05);
+\draw[bypass] (dns) -- node[right,font=\tiny\bfseries,color=themegreen]{DNS 缓存命中 / 直填 IP} (7.4,3.05);
+
+\node[gate] (tcp) at (7.4,2.35) {是否存在可复用的 TCP 连接？};
+\node[create] (handshake) at (2.2,2.35) {执行 TCP 三次握手建立连接};
+\draw[edge] (7.4,3.05) -- (tcp);
+\draw[edge] (tcp) -- node[above,font=\tiny\bfseries,color=themealert]{无可用连接} (handshake);
+\draw[edge] (handshake.south) |- (7.4,1.65);
+\draw[bypass] (tcp) -- node[right,font=\tiny\bfseries,color=themegreen]{可复用 (Keep-Alive)} (7.4,1.65);
+
+\node[gate,draw=themealert,fill=themealert!8!themebg] (http) at (7.4,0.95) {发送 HTTP 请求（或协商缓存 304）并接收响应};
+\draw[edge] (7.4,1.65) -- (http);
+
+\begin{pgfonlayer}{background}
+  % 左侧创建动作分组框（紧凑包裹 3 个动作节点）
+  \fill[fill=themeamber!4!themebg,draw=themeamber!35,dashed,rounded corners=5pt]
+    (0.45,1.70) rectangle (3.95,5.75);
+  % 右侧强缓存命中终结分组框
+  \fill[fill=themegreen!3!themebg,draw=themegreen!30,dashed,rounded corners=5pt]
+    (10.15,6.05) rectangle (13.45,7.25);
+  % 底部双层执行原则说明卡片
+  \fill[fill=themecurve!5!themebg,draw=themecurve!30,rounded corners=4pt]
+    (0.45,-0.65) rectangle (13.45,0.25);
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{foreground}
+  \node[anchor=south,font=\scriptsize\bfseries,color=themeamber] at (2.2,5.80) {仅当状态缺失时才执行创建};
+  \node[anchor=center,font=\scriptsize,color=themefg!90] at (6.95,0.0)
+    {★ \textbf{冷启动（无缓存/未配置）}走完整创建流程；\textbf{已有状态命中}则直接跳过对应建立步骤。};
+  \node[anchor=center,font=\scriptsize,color=themefg!90] at (6.95,-0.38)
+    {★ \textbf{DNS 解析、TCP 握手与 HTTP 请求}产生的报文，均走底层逐跳转发通道。};
+\end{pgfonlayer}
+\end{tikzpicture}

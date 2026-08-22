@@ -53,6 +53,27 @@
 \RequirePackage{caption}
 \RequirePackage{xltabular}
 
+% Float placement & spacing (紧凑混排，杜绝大面积空白与孤立图页)
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.90}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+
+% Captions: 专业级图注排版（小五号字、无衬线粗体深蓝标签、左右内缩 2em、单行居中多行工整方块）
+\captionsetup{
+  font={footnotesize},
+  labelfont={bf,sf,color=iparaDeep},
+  textfont={color=black!85},
+  labelsep=quad,
+  skip=6pt,
+  margin=2em,
+  justification=justified,
+  singlelinecheck=true
+}
+
 % Page geometry is configured only after CTeX/Core establish the actual baseline.
 \ifiparahandbookmargin
   \RequirePackage{marginnote}

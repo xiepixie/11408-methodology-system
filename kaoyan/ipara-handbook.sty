@@ -61,6 +61,22 @@
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,calc,fit,matrix,shapes.geometric}
+
+% -----------------------------------------------------
+% TikZ universal layers & semantic diagram palette
+% -----------------------------------------------------
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\providecolor{themepurple}{HTML}{7C3AED}
 \RequirePackage{fancyhdr}
 \RequirePackage{lastpage}
 \RequirePackage{caption}
@@ -84,13 +100,36 @@
 \definecolor{iparaCodeBg}{RGB}{247,248,249}
 
 % -----------------------------------------------------
-% Page rhythm and headings
+% Page rhythm, headings and float placement
 % -----------------------------------------------------
 \setlength{\parindent}{2em}
 \setlength{\parskip}{0.32em plus 0.08em minus 0.04em}
 \setlength{\emergencystretch}{2.5em}
 \setlist[itemize]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
 \setlist[enumerate]{itemsep=0.18em,topsep=0.35em,leftmargin=2em}
+
+% Float placement & spacing (紧凑混排，杜绝大面积空白与孤立图页)
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.90}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+
+% -----------------------------------------------------
+% Captions: 专业级图注排版（小五号字、无衬线粗体深蓝标签、左右内缩 2em、单行居中多行工整方块）
+% -----------------------------------------------------
+\captionsetup{
+  font={footnotesize},
+  labelfont={bf,sf,color=iparaDeep},
+  textfont={color=black!85},
+  labelsep=quad,
+  skip=6pt,
+  margin=2em,
+  justification=justified,
+  singlelinecheck=true
+}
 
 \ctexset{
   section={

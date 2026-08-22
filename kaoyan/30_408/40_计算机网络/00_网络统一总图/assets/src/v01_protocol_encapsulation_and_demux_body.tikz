@@ -1,0 +1,314 @@
+% ── V01 协议分层封装结构与分用解包全景图 ──
+\begin{tikzpicture}[
+  scale=1.0,
+  >=Stealth,
+  font=\small,
+  color=themefg,
+  text=themefg
+]
+
+% ══════════════════════════════════════════════════════════════
+% ── 1. 上半部：物理与字节尺寸展开（协议封装“套娃”层级图）──
+% ══════════════════════════════════════════════════════════════
+
+% 大区段标题
+\begin{pgfonlayer}{foreground}
+  \node[anchor=west, font=\large\bfseries, color=themecurve] at (-13.0, 11.4) {一、协议纵向分层封装结构与字节开销（PDU 逐层包裹与首尾叠加）};
+\end{pgfonlayer}
+
+% ── L7 应用层 ──
+\begin{scope}[yshift=9.2cm]
+  \begin{pgfonlayer}{background}
+    % 左侧层级胶囊 (绿)
+    \fill[fill=themegreen!18!themebg, draw=themegreen, line width=1.1pt, rounded corners=4pt]
+      (-13.0, 0) rectangle (-9.0, 1.45);
+    % 应用层载荷 (绿)
+    \fill[fill=themegreen!20!themebg, draw=themegreen, line width=1.2pt, rounded corners=4pt]
+      (8.0, 0) rectangle (20.0, 1.45);
+    % 梯形投影带 L7 -> L4 (绿色系)
+    \fill[fill=themegreen!12!themebg, draw=themegreen!60, dashed, line width=0.7pt]
+      (8.0, 0) -- (8.0, -0.85) -- (20.0, -0.85) -- (20.0, 0) -- cycle;
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\normalsize\bfseries, color=themegreen, align=center] at (-11.0, 0.72) {L7 应用层\\\scriptsize (Application Message)};
+    \node[font=\normalsize\bfseries, color=themegreen] at (14.0, 0.95) {应用层数据载荷 (Application Data / Message)};
+    \node[font=\footnotesize\bfseries, color=themefg] at (14.0, 0.45) {HTTP 请求/响应报文 $\cdot$ DNS 查询应答 $\cdot$ FTP 文件数据 $\cdot$ SMTP/POP3 邮件};
+  \end{pgfonlayer}
+\end{scope}
+
+% ── L4 传输层 ──
+\begin{scope}[yshift=6.9cm]
+  \begin{pgfonlayer}{background}
+    % 左侧层级胶囊 (琥珀)
+    \fill[fill=themeamber!18!themebg, draw=themeamber, line width=1.1pt, rounded corners=4pt]
+      (-13.0, 0) rectangle (-9.0, 1.45);
+    % TCP/UDP 首部 (琥珀)
+    \fill[fill=themeamber!28!themebg, draw=themeamber, line width=1.2pt, rounded corners=4pt]
+      (2.5, 0) rectangle (8.0, 1.45);
+    % 传输层载荷 (套娃槽：承接上层 L7 报文，继承绿色语义底色)
+    \fill[fill=themegreen!12!themebg, draw=themegreen!70, line width=1.0pt, rounded corners=3pt]
+      (8.0, 0) rectangle (20.0, 1.45);
+    % 梯形投影带 L4 -> L3 (琥珀色系)
+    \fill[fill=themeamber!12!themebg, draw=themeamber!60, dashed, line width=0.7pt]
+      (2.5, 0) -- (2.5, -0.85) -- (20.0, -0.85) -- (20.0, 0) -- cycle;
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\normalsize\bfseries, color=themeamber, align=center] at (-11.0, 0.72) {L4 传输层\\\scriptsize (Transport Segment)};
+    % TCP/UDP 首部文字 (高对比度)
+    \node[font=\small\bfseries, color=themeamber] at (5.25, 1.05) {TCP / UDP 传输层首部};
+    \node[font=\footnotesize\bfseries, color=themefg] at (5.25, 0.70) {20B (TCP 固定) / 8B (UDP 固定)};
+    \node[font=\scriptsize\bfseries, color=themefg] at (5.25, 0.32) {源/目端口 $\cdot$ 序号/确认号 $\cdot$ 控制位 Flags};
+    % 载荷文字
+    \node[font=\normalsize\bfseries, color=themegreen] at (14.0, 0.95) {TCP / UDP 数据载荷};
+    \node[font=\footnotesize\bfseries, color=themefg] at (14.0, 0.45) {（即上层完整的 L7 应用层报文，受 MSS 限制分段）};
+  \end{pgfonlayer}
+\end{scope}
+
+% ── L3 网络层 ──
+\begin{scope}[yshift=4.6cm]
+  \begin{pgfonlayer}{background}
+    % 左侧层级胶囊 (天蓝)
+    \fill[fill=themecurve!18!themebg, draw=themecurve, line width=1.1pt, rounded corners=4pt]
+      (-13.0, 0) rectangle (-9.0, 1.45);
+    % IPv4/v6 首部 (天蓝)
+    \fill[fill=themecurve!28!themebg, draw=themecurve, line width=1.2pt, rounded corners=4pt]
+      (-3.0, 0) rectangle (2.5, 1.45);
+    % IP 数据报载荷 (套娃槽：承接上层 L4 报文段，继承琥珀金语义底色)
+    \fill[fill=themeamber!12!themebg, draw=themeamber!70, line width=1.0pt, rounded corners=3pt]
+      (2.5, 0) rectangle (20.0, 1.45);
+    % 梯形投影带 L3 -> L2 (天蓝色系)
+    \fill[fill=themecurve!12!themebg, draw=themecurve!60, dashed, line width=0.7pt]
+      (-3.0, 0) -- (-3.0, -0.85) -- (20.0, -0.85) -- (20.0, 0) -- cycle;
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\normalsize\bfseries, color=themecurve, align=center] at (-11.0, 0.72) {L3 网络层\\\scriptsize (Network Packet)};
+    % IP 首部文字 (高对比度)
+    \node[font=\small\bfseries, color=themecurve] at (-0.25, 1.05) {IPv4 / IPv6 数据报首部};
+    \node[font=\footnotesize\bfseries, color=themefg] at (-0.25, 0.70) {20~60B (v4) / 40B (v6 固定)};
+    \node[font=\scriptsize\bfseries, color=themefg] at (-0.25, 0.32) {TTL (8b) $\cdot$ \textbf{Protocol (8b)} $\cdot$ 源/目 IP 地址};
+    % 载荷文字
+    \node[font=\normalsize\bfseries, color=themeamber] at (11.25, 0.95) {IP 数据报数据载荷 (包含 L4 首部与数据)};
+    \node[font=\footnotesize\bfseries, color=themefg] at (11.25, 0.45) {（承载完整传输层报文段，受出接口 MTU 限制分片，通常 $\le 1480$B）};
+  \end{pgfonlayer}
+\end{scope}
+
+% ── L2 数据链路层 ──
+\begin{scope}[yshift=2.3cm]
+  \begin{pgfonlayer}{background}
+    % 左侧层级胶囊 (珊瑚红)
+    \fill[fill=themealert!18!themebg, draw=themealert, line width=1.1pt, rounded corners=4pt]
+      (-13.0, 0) rectangle (-9.0, 1.45);
+    % MAC 首部 (珊瑚红)
+    \fill[fill=themealert!28!themebg, draw=themealert, line width=1.2pt, rounded corners=4pt]
+      (-8.5, 0) rectangle (-3.0, 1.45);
+    % 帧数据载荷 (套娃槽：承接上层整个 L3 IP 数据报，继承天蓝语义底色)
+    \fill[fill=themecurve!12!themebg, draw=themecurve!70, line width=1.0pt, rounded corners=3pt]
+      (-3.0, 0) rectangle (20.0, 1.45);
+    % FCS 尾部 (珊瑚红)
+    \fill[fill=themealert!28!themebg, draw=themealert, line width=1.2pt, rounded corners=4pt]
+      (20.0, 0) rectangle (22.8, 1.45);
+    % 梯形投影带 L2 -> L1 (珊瑚红色系)
+    \fill[fill=themealert!12!themebg, draw=themealert!60, dashed, line width=0.7pt]
+      (-8.5, 0) -- (-8.5, -0.85) -- (22.8, -0.85) -- (22.8, 0) -- cycle;
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\normalsize\bfseries, color=themealert, align=center] at (-11.0, 0.72) {L2 链路层\\\scriptsize (Data Link Frame)};
+    % MAC 首部文字 (高对比度)
+    \node[font=\small\bfseries, color=themealert] at (-5.75, 1.05) {以太网 MAC 帧首部};
+    \node[font=\footnotesize\bfseries, color=themefg] at (-5.75, 0.70) {14 字节 \textnormal{\scriptsize(+4B 802.1Q Tag)}};
+    \node[font=\scriptsize\bfseries, color=themefg] at (-5.75, 0.32) {目的MAC(6B) + 源MAC(6B) + \textbf{\color{themealert}Type(2B)}};
+    % 载荷文字
+    \node[font=\normalsize\bfseries, color=themecurve] at (8.5, 0.95) {以太网帧数据载荷 (Ethernet Frame Payload)};
+    \node[font=\footnotesize\bfseries, color=themefg] at (8.5, 0.45) {（即完整的 L3 IP 数据报，有效净荷要求：\textbf{46B $\sim$ 1500B MTU}）};
+    % FCS 尾部文字
+    \node[font=\small\bfseries, color=themealert] at (21.4, 0.95) {FCS 尾部};
+    \node[font=\footnotesize\bfseries, color=themefg] at (21.4, 0.50) {4B (CRC32)};
+  \end{pgfonlayer}
+\end{scope}
+
+% ── L1 物理层 ──
+\begin{scope}[yshift=0.0cm]
+  \begin{pgfonlayer}{background}
+    % 前导码与 SFD (深青/冷蓝)
+    \fill[fill=themecurve!25!themebg, draw=themecurve, line width=1.1pt, rounded corners=4pt]
+      (-12.0, 0) rectangle (-8.5, 1.45);
+    % 完整物理帧信号 (继承珊瑚红语义底色)
+    \fill[fill=themealert!10!themebg, draw=themealert!70, line width=1.1pt, rounded corners=4pt]
+      (-8.5, 0) rectangle (22.8, 1.45);
+  \end{pgfonlayer}
+  \begin{pgfonlayer}{foreground}
+    \node[font=\small\bfseries, color=themecurve] at (-10.25, 0.95) {前导码 / SFD};
+    \node[font=\footnotesize\bfseries, color=themefg] at (-10.25, 0.50) {8B (物理时钟同步)};
+    \node[font=\normalsize\bfseries, color=themealert] at (7.15, 0.95) {物理介质上传输的完整以太网帧比特流};
+    \node[font=\footnotesize\bfseries, color=themefg] at (7.15, 0.45) {（以太网最小帧长 \textbf{64B} $\le L_{\text{frame}} \le$ 最大帧长 \textbf{1518B} / 带 802.1Q 标签 \textbf{1522B}）};
+  \end{pgfonlayer}
+\end{scope}
+
+% ══════════════════════════════════════════════════════════════
+% ── 2. 下半部：全协议栈分用指示键（Demultiplexing Key Tree）──
+% ══════════════════════════════════════════════════════════════
+
+\begin{scope}[yshift=-1.8cm]
+  \begin{pgfonlayer}{background}
+    \draw[themegray!40, line width=0.8pt, dashed] (-13.0, 1.0) -- (22.8, 1.0);
+    % L2 链路层基座条
+    \fill[fill=themealert!18!themebg, draw=themealert, line width=1.2pt, rounded corners=4pt]
+      (-13.0, -0.7) rectangle (22.8, 0.0);
+    % ARP 模块
+    \fill[fill=themealert!22!themebg, draw=themealert, line width=1.1pt, rounded corners=4pt]
+      (-12.0, -2.6) rectangle (-7.0, -1.65);
+    % IPv4 模块
+    \fill[fill=themecurve!18!themebg, draw=themecurve, line width=1.1pt, rounded corners=4pt]
+      (-5.5, -2.6) rectangle (22.0, -1.65);
+    % ICMP, OSPF, TCP, UDP
+    \fill[fill=themecurve!22!themebg, draw=themecurve!90, line width=1.1pt, rounded corners=4pt]
+      (-5.2, -4.5) rectangle (-1.2, -3.5);
+    \fill[fill=themecurve!22!themebg, draw=themecurve!90, line width=1.1pt, rounded corners=4pt]
+      (-0.5, -4.5) rectangle (3.5, -3.5);
+    \fill[fill=themeamber!22!themebg, draw=themeamber, line width=1.2pt, rounded corners=4pt]
+      (4.2, -4.5) rectangle (12.8, -3.5);
+    \fill[fill=themeamber!22!themebg, draw=themeamber, line width=1.2pt, rounded corners=4pt]
+      (13.6, -4.5) rectangle (21.8, -3.5);
+
+    % L7 应用层小方块底色 (background 层物理分离)
+    \fill[fill=themegreen!18!themebg, draw=themegreen, line width=1.0pt, rounded corners=3pt]
+      (4.5, -5.85) rectangle (7.1, -5.25);
+    \fill[fill=themegreen!18!themebg, draw=themegreen, line width=1.0pt, rounded corners=3pt]
+      (7.3, -5.85) rectangle (9.7, -5.25);
+    \fill[fill=themealert!18!themebg, draw=themealert, line width=1.0pt, rounded corners=3pt]
+      (9.9, -5.85) rectangle (12.5, -5.25);
+
+    \fill[fill=themegreen!18!themebg, draw=themegreen, line width=1.0pt, rounded corners=3pt]
+      (13.9, -5.85) rectangle (16.5, -5.25);
+    \fill[fill=themegreen!18!themebg, draw=themegreen, line width=1.0pt, rounded corners=3pt]
+      (16.7, -5.85) rectangle (19.1, -5.25);
+    \fill[fill=themealert!18!themebg, draw=themealert, line width=1.0pt, rounded corners=3pt]
+      (19.3, -5.85) rectangle (21.5, -5.25);
+
+    % 判定胶囊底色 (background 实体白色/深色)
+    \fill[fill=themebg, draw=themealert, line width=1.0pt, rounded corners=2pt]
+      (-10.8, -1.35) rectangle (-8.2, -1.0);
+    \fill[fill=themebg, draw=themecurve, line width=1.0pt, rounded corners=2pt]
+      (6.9, -1.35) rectangle (9.6, -1.0);
+
+    \fill[fill=themebg, draw=themecurve, line width=1.0pt, rounded corners=1pt]
+      (-4.2, -3.2) rectangle (-2.2, -2.85);
+    \fill[fill=themebg, draw=themecurve, line width=1.0pt, rounded corners=1pt]
+      (0.5, -3.2) rectangle (2.5, -2.85);
+    \fill[fill=themebg, draw=themeamber, line width=1.0pt, rounded corners=1pt]
+      (7.5, -3.2) rectangle (9.5, -2.85);
+    \fill[fill=themebg, draw=themeamber, line width=1.0pt, rounded corners=1pt]
+      (16.7, -3.2) rectangle (18.7, -2.85);
+
+    \fill[fill=themebg, draw=themegreen, line width=1.0pt, rounded corners=1pt]
+      (4.8, -5.12) rectangle (6.8, -4.78);
+    \fill[fill=themebg, draw=themegreen, line width=1.0pt, rounded corners=1pt]
+      (7.5, -5.12) rectangle (9.5, -4.78);
+    \fill[fill=themebg, draw=themealert, line width=1.0pt, rounded corners=1pt]
+      (10.2, -5.12) rectangle (12.2, -4.78);
+
+    \fill[fill=themebg, draw=themegreen, line width=1.0pt, rounded corners=1pt]
+      (14.2, -5.12) rectangle (16.2, -4.78);
+    \fill[fill=themebg, draw=themegreen, line width=1.0pt, rounded corners=1pt]
+      (16.9, -5.12) rectangle (18.9, -4.78);
+    \fill[fill=themebg, draw=themealert, line width=1.0pt, rounded corners=1pt]
+      (19.4, -5.12) rectangle (21.4, -4.78);
+
+    % 总结卡片底色
+    \fill[fill=themecurve!8!themebg, draw=themecurve!50, line width=0.9pt, rounded corners=4pt]
+      (-13.0, -7.05) rectangle (22.8, -6.0);
+  \end{pgfonlayer}
+
+  \begin{pgfonlayer}{foreground}
+    \node[anchor=west, font=\large\bfseries, color=themecurve] at (-13.0, 0.55) {二、全协议栈分用指示链（Demultiplexing Tree：从底层帧向上层逐级分流）};
+
+    % L2 链路层基座条文字
+    \node[font=\normalsize\bfseries, color=themefg] at (4.9, -0.35) {数据链路层 (L2 Ethernet Frame) —— 收到帧校验 FCS 成功后，查 MAC 首部中的【\textbf{\color{themealert}Type 字段 (2B)}】向上分流};
+
+    % L2 -> L3 分流判定点
+    \node[font=\footnotesize\bfseries, color=themealert] at (-9.5, -1.18) {Type = 0x0806};
+    \node[font=\footnotesize\bfseries, color=themecurve] at (8.25, -1.18) {Type = 0x0800};
+
+    % L3 模块文字
+    \node[font=\small\bfseries, color=themefg, align=center] at (-9.5, -2.12) {ARP 地址解析协议 (28B)\\\scriptsize \color{themefg} 直接由以太网帧承载 (无 IP 首部)};
+    \node[font=\small\bfseries, color=themefg] at (8.25, -2.12) {IPv4 协议模块 —— 校验 Checksum，检查目的 IP 是否本机，TTL 减 1，查 IPv4 首部中的【\textbf{\color{themecurve}Protocol 字段 (8b)}】向上分流};
+
+    % 连线 L2 -> L3
+    \draw[themealert, line width=1.2pt, ->] (-9.5, -0.7) -- (-9.5, -1.0);
+    \draw[themealert, line width=1.2pt, ->] (-9.5, -1.35) -- (-9.5, -1.65);
+    \draw[themecurve, line width=1.2pt, ->] (8.25, -0.7) -- (8.25, -1.0);
+    \draw[themecurve, line width=1.2pt, ->] (8.25, -1.35) -- (8.25, -1.65);
+
+    % L3 -> L4 分流判定点
+    \node[font=\scriptsize\bfseries, color=themecurve] at (-3.2, -3.02) {Protocol = 1};
+    \node[font=\scriptsize\bfseries, color=themecurve] at (1.5, -3.02) {Protocol = 89};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (8.5, -3.02) {Protocol = 6};
+    \node[font=\scriptsize\bfseries, color=themeamber] at (17.7, -3.02) {Protocol = 17};
+
+    % L3/L4 协议文字
+    \node[font=\small\bfseries, color=themefg, align=center] at (-3.2, -4.0) {ICMP 差错/探测\\\scriptsize \color{themefg} (属 L3 网络层，由 IP 封装)};
+    \node[font=\small\bfseries, color=themefg, align=center] at (1.5, -4.0) {OSPF 路由协议\\\scriptsize \color{themefg} (网络层路由协议，由 IP 直承)};
+    \node[font=\small\bfseries, color=themefg, align=center] at (8.5, -4.0) {TCP 传输控制协议\\\scriptsize \color{themefg} (面向连接 / 可靠字节流 / 流量与拥塞控制)};
+    \node[font=\small\bfseries, color=themefg, align=center] at (17.7, -4.0) {UDP 用户数据报协议\\\scriptsize \color{themefg} (无连接 / 不可靠交互 / 尽最大努力交付)};
+
+    % 连线 L3 -> L4
+    \draw[themecurve, line width=1.1pt, ->] (-3.2, -2.6) -- (-3.2, -2.85);
+    \draw[themecurve, line width=1.1pt, ->] (-3.2, -3.2) -- (-3.2, -3.5);
+
+    \draw[themecurve, line width=1.1pt, ->] (1.5, -2.6) -- (1.5, -2.85);
+    \draw[themecurve, line width=1.1pt, ->] (1.5, -3.2) -- (1.5, -3.5);
+
+    \draw[themeamber, line width=1.2pt, ->] (8.5, -2.6) -- (8.5, -2.85);
+    \draw[themeamber, line width=1.2pt, ->] (8.5, -3.2) -- (8.5, -3.5);
+
+    \draw[themeamber, line width=1.2pt, ->] (17.7, -2.6) -- (17.7, -2.85);
+    \draw[themeamber, line width=1.2pt, ->] (17.7, -3.2) -- (17.7, -3.5);
+
+    % L4 -> L7 应用层端口分用文字
+    \node[font=\scriptsize\bfseries, color=themegreen] at (5.8, -4.95) {Port 80/443};
+    \node[font=\scriptsize\bfseries, color=themegreen] at (8.5, -4.95) {Port 20/21};
+    \node[font=\scriptsize\bfseries, color=themealert] at (11.2, -4.95) {Port 179};
+
+    \node[font=\small\bfseries, color=themefg] at (5.8, -5.55) {HTTP / HTTPS};
+    \node[font=\small\bfseries, color=themefg] at (8.5, -5.55) {FTP 数据/控制};
+    \node[font=\small\bfseries, color=themefg] at (11.2, -5.55) {BGP 路由协议};
+
+    \draw[themegreen, line width=1.0pt, ->] (5.8, -4.5) -- (5.8, -4.78);
+    \draw[themegreen, line width=1.0pt, ->] (5.8, -5.12) -- (5.8, -5.25);
+
+    \draw[themegreen, line width=1.0pt, ->] (8.5, -4.5) -- (8.5, -4.78);
+    \draw[themegreen, line width=1.0pt, ->] (8.5, -5.12) -- (8.5, -5.25);
+
+    \draw[themealert, line width=1.0pt, ->] (11.2, -4.5) -- (11.2, -4.78);
+    \draw[themealert, line width=1.0pt, ->] (11.2, -5.12) -- (11.2, -5.25);
+
+    % UDP 支路
+    \node[font=\scriptsize\bfseries, color=themegreen] at (15.2, -4.95) {Port 53};
+    \node[font=\scriptsize\bfseries, color=themegreen] at (17.9, -4.95) {Port 67/68};
+    \node[font=\scriptsize\bfseries, color=themealert] at (20.4, -4.95) {Port 520};
+
+    \node[font=\small\bfseries, color=themefg] at (15.2, -5.55) {DNS 域名系统};
+    \node[font=\small\bfseries, color=themefg] at (17.9, -5.55) {DHCP 动态配置};
+    \node[font=\small\bfseries, color=themefg] at (20.4, -5.55) {RIP 路由协议};
+
+    \draw[themegreen, line width=1.0pt, ->] (15.2, -4.5) -- (15.2, -4.78);
+    \draw[themegreen, line width=1.0pt, ->] (15.2, -5.12) -- (15.2, -5.25);
+
+    \draw[themegreen, line width=1.0pt, ->] (17.9, -4.5) -- (17.9, -4.78);
+    \draw[themegreen, line width=1.0pt, ->] (17.9, -5.12) -- (17.9, -5.25);
+
+    \draw[themealert, line width=1.0pt, ->] (20.4, -4.5) -- (20.4, -4.78);
+    \draw[themealert, line width=1.0pt, ->] (20.4, -5.12) -- (20.4, -5.25);
+
+    % 总结结论文字
+    \node[anchor=west, font=\small\bfseries, color=themecurve] at (-12.6, -6.32) {★ 408 核心分用辨析结论：};
+    \node[anchor=west, font=\footnotesize\bfseries, color=themefg] at (-12.6, -6.72) {
+      1. \textbf{ARP} 由链路层直承 (无 IP 首部，Type=\texttt{0x0806})；\quad
+      2. \textbf{ICMP} 属网络层但由 IP 封装 (Protocol=\textbf{1})；\quad
+      3. \textbf{OSPF} 属路由协议直连 IP (Protocol=\textbf{89})；\quad
+      4. \textbf{RIP} (UDP 520) 与 \textbf{BGP} (TCP 179) 借用传输层！
+    };
+  \end{pgfonlayer}
+\end{scope}
+
+\end{tikzpicture}

@@ -132,6 +132,19 @@
   ipara semantic warning/.style={colback=white,colframe=iparaWarn}
 }
 
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\providecolor{themebg}{HTML}{FAFAF7}
+\providecolor{themefg}{HTML}{111111}
+\providecolor{themegray}{HTML}{666666}
+\providecolor{themecurve}{HTML}{1D63B8}
+\providecolor{themealert}{HTML}{C53030}
+\providecolor{themeamber}{HTML}{B86E00}
+\providecolor{themegreen}{HTML}{15803D}
+\providecolor{themepurple}{HTML}{7C3AED}
+
 \NewTColorBox{mentalmodel}{m}{ipara semantic base,ipara semantic mentalmodel,title={#1}}
 \NewTColorBox{mechanism}{m}{ipara semantic base,ipara semantic mechanism,title={#1}}
 \NewTColorBox{criterion}{m}{ipara semantic base,ipara semantic criterion,title={#1}}
@@ -139,9 +152,9 @@
 \NewTColorBox{example}{m}{ipara semantic base,ipara semantic example,title={#1}}
 \NewTColorBox{warning}{m}{ipara semantic base,ipara semantic warning,title={#1}}
 
-\newcommand{\kw}[1]{\textbf{\color{iparaDeep}#1}}
-\newcommand{\code}[1]{\texttt{#1}}
-\newcommand{\codepath}[1]{\nolinkurl{#1}}
+\providecommand{\kw}[1]{\textbf{\color{iparaDeep}#1}}
+\providecommand{\code}[1]{\texttt{#1}}
+\providecommand{\codepath}[1]{\nolinkurl{#1}}
 \urlstyle{tt}
 
 % -----------------------------------------------------
